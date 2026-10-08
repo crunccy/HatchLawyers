@@ -5,6 +5,8 @@ Findings are ranked. Each says whether it is **solid** (it follows from synced C
 structure of the game) or **depends on guesses** (re-check after syncing the `GUESS` values with Studio).
 
 Reproduce: `python3 tools/economy_sim.py --report`, `--sweep 1.25`, `--sweep 2`, `--active 0.2`.
+Findings 1–8 were measured before the sim counted hatch-animation time; that shifts the baseline from 15.8 h to
+16.0 h and doesn't change any conclusion.
 
 ## Summary
 | # | Finding | Confidence | Suggested owner |

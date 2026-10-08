@@ -50,7 +50,7 @@ Quick what-ifs without Studio: `python3 tools/economy_sim.py` prints a timeline,
 - AFK baseline: no courtroom bonus, daily/playtime rewards, desk tiers or lawyer skills.
 - Skins: each equipped lawyer needs its own copy (`Eggs.CopiesPerLawyer`; DESIGN.md is ambiguous — confirm).
 
-With the current guesses the mirror hits both targets (first paid egg 0.7 min at 450/s; 1T/s at ~15.8 h),
+With the current guesses the mirror hits both targets (first paid egg 0.7 min at 450/s; 1T/s at ~16 h),
 which agrees with the Studio sim's "all OK" — but treat that as a sanity check until the guesses are synced.
 
 ## Known inconsistencies (decide, then fix the doc that's wrong)
