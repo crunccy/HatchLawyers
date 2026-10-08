@@ -19,6 +19,7 @@ Model (expected values, event-driven, greedy player):
     or roll an egg. AFK baseline: no courtroom bonus, no daily/playtime rewards.
 
 Run:  python3 tools/economy_sim.py [--hours 24] [--seed 1] [--log] [--report] [--active 0.2] [--sweep [2]]
+                                   [--scenario egg-tiers,multi-hatch,busy-lawyers]
 """
 
 import argparse
@@ -70,6 +71,12 @@ CONFIG = {
             "Legendary": (0.025, 0.20, 15_000),
         },
         "CopiesPerLawyer": True,   # GUESS: each equipped lawyer needs its own copy (vs one copy for all)
+        "HatchSeconds": 4,         # GUESS: hatch animation length; the player can't roll faster than this
+        "MultiHatch": 1,           # eggs per hatch animation
+        # Egg machines in the hub. Live game: one egg (Price above). Scenario "egg-tiers" adds more.
+        # BonusScale multiplies the skin bonus (and sell value) of skins from that egg.
+        "Tiers": [{"Name": "Egg", "UnlockIncome": 0, "Price": None, "BonusScale": 1}],  # Price None = Eggs.Price
+        "PriceRamp": 1.0,          # each roll multiplies that egg's price by this (live game: 1 = fixed price)
     },
     "Targets": {                                          # SYNCED  pacing targets
         "FirstEggMinutes": 2,
@@ -78,8 +85,45 @@ CONFIG = {
     },
 }
 
+# Proposed changes to try against the live baseline: --scenario name[,name...]
+# Each is a patch of CONFIG paths -> values. Not in the live game unless docs/ECONOMY.md says so.
+SCENARIOS = {
+    # hub egg machines unlocked by income, each priced at ~2 min of income at unlock, bigger bonuses
+    "egg-tiers": {("Eggs", "Tiers"): [
+        {"Name": "Starter", "UnlockIncome": 0, "Price": None, "BonusScale": 1},
+        {"Name": "Office", "UnlockIncome": 1e5, "Price": 1.2e7, "BonusScale": 1.5},
+        {"Name": "Courthouse", "UnlockIncome": 1e8, "Price": 1.2e10, "BonusScale": 2.5},
+        {"Name": "Supreme", "UnlockIncome": 1e11, "Price": 1.2e13, "BonusScale": 4},
+    ]},
+    "multi-hatch": {("Eggs", "MultiHatch"): 3},
+    # each roll makes that egg 1.5 % pricier, so eggs stay something you save for
+    "egg-price-ramp": {("Eggs", "PriceRamp"): 1.015},
+    # clients arrive about as fast as lawyers finish, so every lawyer stays busy
+    "busy-lawyers": {("ClientInterval", "PerLawyerSeconds"): 48},
+}
+
+
+def apply_scenarios(names):
+    """Patch CONFIG in place; returns a function that undoes it."""
+    undo = []
+    for name in names:
+        for path, value in SCENARIOS[name].items():
+            d = CONFIG
+            for k in path[:-1]:
+                d = d[k]
+            undo.append((d, path[-1], d[path[-1]]))
+            d[path[-1]] = value
+    client_stats.cache_clear()
+
+    def restore():
+        for d, k, v in reversed(undo):
+            d[k] = v
+        client_stats.cache_clear()
+    return restore
+
+
 GUESSES = [
-    "StartLevel", "CaseSeconds", "Outcomes (if Config differs from design)", "Clients spawn weights",
+    "StartLevel", "CaseSeconds", "Eggs.HatchSeconds", "Outcomes (if Config differs from design)", "Clients spawn weights",
     "ClientInterval", "Firm.MaxSegments", "Firm.ExpandCost*", "Firm.HireCostShare", "Eggs.Price",
     "Eggs.FreeFirstRarity", "Eggs.RushFirstPaid", "Eggs.CopiesPerLawyer",
 ]
@@ -142,7 +186,28 @@ def hire_cost(k):
     return expand_cost(k) * CONFIG["Firm"]["HireCostShare"]
 
 
-SKIN_BONUS = {r: b for r, (_, b, _) in CONFIG["Eggs"]["Skins"].items()}
+def egg_tiers():
+    return [dict(t, Price=t["Price"] or CONFIG["Eggs"]["Price"]) for t in CONFIG["Eggs"]["Tiers"]]
+
+
+def skin_bonus(skin):
+    """skin = (tier index, rarity) or None."""
+    if skin is None:
+        return 0.0
+    tier, rarity = skin
+    return CONFIG["Eggs"]["Skins"][rarity][1] * CONFIG["Eggs"]["Tiers"][tier]["BonusScale"]
+
+
+def skin_sell(skin):
+    tier, rarity = skin
+    return CONFIG["Eggs"]["Skins"][rarity][2] * CONFIG["Eggs"]["Tiers"][tier]["BonusScale"]
+
+
+def skin_name(skin):
+    if skin is None:
+        return "-"
+    tier, rarity = skin
+    return rarity if len(CONFIG["Eggs"]["Tiers"]) == 1 else f"{CONFIG['Eggs']['Tiers'][tier]['Name']} {rarity}"
 
 
 def roll_skin(rng):
@@ -167,7 +232,8 @@ class Firm:
         self.expansions = 0
         self.coins = 0.0
         self.eggs_paid = 0
-        self.kept = set()          # rarities with a spare copy kept in the collection
+        self.kept = set()          # skins with a spare copy kept in the collection
+        self.rolls = {}            # egg tier -> times rolled (for Eggs.PriceRamp)
 
     def income(self, levels=None, skins=None):
         """Coins/s when each client goes to the best-paid free lawyer (player or Manager)."""
@@ -176,7 +242,7 @@ class Firm:
         desks = []
         for lvl, skin in zip(levels, skins):
             p, tries = client_stats(lvl)
-            pay = base_payout(lvl) * p * (1 + (SKIN_BONUS[skin] if skin else 0))
+            pay = base_payout(lvl) * p * (1 + skin_bonus(skin))
             desks.append((pay, 1 / (CONFIG["CaseSeconds"] * tries)))   # (pay per client, clients/s)
         left = 1 / client_interval(len(levels))
         total = 0.0
@@ -188,16 +254,20 @@ class Firm:
                 break
         return total
 
-    def _place(self, skins, rarity):
-        """Equip `rarity` on the best lawyer it improves, cascading the displaced skin down.
+    def _place(self, skins, skin):
+        """Equip `skin` on the best lawyer it improves, cascading the displaced skin down.
         Returns the skin left over (None if it filled an empty slot)."""
         order = sorted(range(len(skins)), key=lambda j: -self.levels[j])
         for j in order:
-            if SKIN_BONUS[rarity] > SKIN_BONUS.get(skins[j], 0):
-                rarity, skins[j] = skins[j], rarity
-                if rarity is None:
+            if skin_bonus(skin) > skin_bonus(skins[j]):
+                skin, skins[j] = skins[j], skin
+                if skin is None:
                     return None
-        return rarity
+        return skin
+
+    def egg_tier(self, inc):
+        """Best egg machine unlocked at this income."""
+        return max(i for i, t in enumerate(egg_tiers()) if t["UnlockIncome"] <= inc)
 
     # each action: (name, cost, income gain, apply())
     def actions(self):
@@ -222,15 +292,17 @@ class Firm:
                                skins=self.skins + [None] * slots) - inc
             out.append(("expand", cost, gain, self._expand))
 
+        tier = self.egg_tier(inc)
         gain = 0.0
         for rarity, (odds, _, _) in CONFIG["Eggs"]["Skins"].items():
             sk = list(self.skins)
             if CONFIG["Eggs"]["CopiesPerLawyer"]:
-                self._place(sk, rarity)
-            elif SKIN_BONUS[rarity] > SKIN_BONUS.get(sk[0], 0):
-                sk = [rarity] * len(sk)
+                self._place(sk, (tier, rarity))
+            elif skin_bonus((tier, rarity)) > skin_bonus(sk[0]):
+                sk = [(tier, rarity)] * len(sk)
             gain += odds * (self.income(skins=sk) - inc)
-        out.append(("egg", CONFIG["Eggs"]["Price"], gain, None))
+        price = egg_tiers()[tier]["Price"] * CONFIG["Eggs"]["PriceRamp"] ** self.rolls.get(tier, 0)
+        out.append(("egg", price, gain, tier))
         return out
 
     def _train(self, i):
@@ -243,18 +315,19 @@ class Firm:
         self.levels += [CONFIG["StartLevel"]] * slots
         self.skins += [None] * slots
 
-    def open_egg(self, rarity):
+    def open_egg(self, rarity, tier=0):
+        skin = (tier, rarity)
         if not CONFIG["Eggs"]["CopiesPerLawyer"]:
-            # one copy dresses every lawyer: equip the best owned rarity everywhere
-            self.kept.add(rarity)
-            best = max(self.kept, key=SKIN_BONUS.get)
+            # one copy dresses every lawyer: equip the best owned skin everywhere
+            self.kept.add(skin)
+            best = max(self.kept, key=skin_bonus)
             self.skins = [best] * len(self.skins)
             return
-        spare = self._place(self.skins, rarity)
+        spare = self._place(self.skins, skin)
         if spare is None:
             return
         if spare in self.kept or spare in self.skins:   # always keep one copy, sell the rest
-            self.coins += CONFIG["Eggs"]["Skins"][spare][2]
+            self.coins += skin_sell(spare)
         else:
             self.kept.add(spare)
 
@@ -282,15 +355,15 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0):
 
     def note_skins():
         for s in firm.skins:
-            if s and s not in res["skin_first"]:
-                res["skin_first"][s] = t
-        if res["all_legendary_at"] is None and all(s == "Legendary" for s in firm.skins):
+            if s and s[1] not in res["skin_first"]:
+                res["skin_first"][s[1]] = t
+        if res["all_legendary_at"] is None and all(s and s[1] == "Legendary" for s in firm.skins):
             res["all_legendary_at"] = t
 
     def snapshot(at):
         res["rows"].append((at, income(), len(firm.levels), sum(firm.levels) / len(firm.levels),
                             max(firm.levels), firm.eggs_paid,
-                            max((s for s in firm.skins if s), key=SKIN_BONUS.get, default="-")))
+                            skin_name(max(firm.skins, key=skin_bonus))))
 
     if CONFIG["Eggs"]["FreeFirst"]:
         firm.open_egg(CONFIG["Eggs"]["FreeFirstRarity"])
@@ -318,7 +391,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0):
                 best = (score, wait, name, cost, apply)
         if best is None:
             break
-        _, wait, name, cost, apply = best
+        _, wait, name, cost, apply = best    # for eggs, `apply` is the egg tier
         # pass checkpoints while saving up
         while checkpoints and checkpoints[0] <= t + wait:
             firm.coins += inc * (checkpoints[0] - t)
@@ -333,8 +406,13 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0):
             firm.eggs_paid += 1
             if res["first_egg"] is None:
                 res["first_egg"] = (t, inc)
-            firm.open_egg(roll_skin(rng))
+            firm.rolls[apply] = firm.rolls.get(apply, 0) + 1
+            firm.open_egg(roll_skin(rng), apply)
             note_skins()
+            # the hatch animation takes time; MultiHatch eggs share one animation
+            dt = CONFIG["Eggs"]["HatchSeconds"] / CONFIG["Eggs"]["MultiHatch"]
+            firm.coins += inc * dt
+            t += dt
         else:
             apply()
         res["events"].append((t, name, cost, inc))   # inc = income while saving up for it
@@ -480,7 +558,17 @@ def main():
                     help="model an active player with this courtroom payout bonus (e.g. 0.2)")
     ap.add_argument("--sweep", type=float, nargs="?", const=2.0, metavar="FACTOR",
                     help="sensitivity of the targets to each tunable (default factor 2)")
+    ap.add_argument("--scenario", default="", metavar="NAMES",
+                    help="comma-separated proposed changes to apply: " + ", ".join(SCENARIOS))
     args = ap.parse_args()
+
+    names = [n for n in args.scenario.split(",") if n]
+    unknown = [n for n in names if n not in SCENARIOS]
+    if unknown:
+        ap.error(f"unknown scenario {unknown}; choose from {list(SCENARIOS)}")
+    if names:
+        apply_scenarios(names)
+        print(f"Scenario: {', '.join(names)} (proposed - not the live game)")
 
     if args.sweep:
         run_sweep(args.hours, args.seed, args.sweep)

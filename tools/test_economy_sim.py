@@ -48,8 +48,8 @@ class Firm(unittest.TestCase):
         f.levels[0] = 10
         f.open_egg("Rare")
         f.open_egg("Legendary")
-        self.assertEqual(f.skins[0], "Legendary")
-        self.assertIn("Rare", f.skins)
+        self.assertEqual(f.skins[0], (0, "Legendary"))
+        self.assertIn((0, "Rare"), f.skins)
 
 
 class Simulation(unittest.TestCase):

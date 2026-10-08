@@ -107,6 +107,26 @@ win, free Uncommon egg, no walls of text).
 In the sweep, the guessed `CaseSeconds` and `clientInterval` move results most (×2 on case time: 1T at 8 h vs
 never). Egg price, expansion and hire costs barely move it. Sync `Config` in that order.
 
+## Prototyped fixes (`--scenario`)
+Proposed changes, run against the live baseline with `python3 tools/economy_sim.py --report --scenario <names>`.
+The sim now also counts a 4 s hatch animation per egg (`Eggs.HatchSeconds`, guess). Numbers depend on the guesses —
+use them to compare options, not as final tuning.
+
+| Scenario | Eggs / day | Lawyer levels at 24 h (avg / max) | 1T/s at | Read |
+| --- | --- | --- | --- | --- |
+| baseline (live rules) | 763 | 72 / 98 | 16.0 h | eggs ≈ free; bottom lawyers idle |
+| `busy-lawyers` (interval 48 s per lawyer ≈ case time) | 979 | **94 / 98** | 15.0 h | every lawyer gets trained; early income 579/s (trim `Payout.Base` ~15 %) |
+| `multi-hatch` (×3 per animation) | 763 | 72 / 98 | 15.9 h | quality of life only — no economy effect |
+| `egg-tiers` (Starter/Office/Courthouse/Supreme, ×1/1.5/2.5/4 bonus) | 1648 | 75 / 101 | 13.0 h | new best skin at ~1 h, ~5 h, ~13 h — but even more egg spam |
+| `egg-price-ramp` (+1.5 % per roll, one egg) | 763 | 72 / 98 | 16.0 h | no effect alone — income outgrows any ramp |
+| `egg-tiers,egg-price-ramp` | 468 | 73 / 102 | 14.6 h | chase lasts all day, egg rolls drop ~40 % |
+| same, ramp +3 % | 269 | 72 / 102 | 16.1 h | eggs become a choice; late gaps up to ~14 min |
+| `egg-tiers,egg-price-ramp,busy-lawyers` | 451 | 94 / 102 | 14.2 h | best combination tried |
+
+**Recommendation:** adopt `busy-lawyers` (tie `clientInterval` to case length) once `CaseSeconds` is synced;
+prototype egg tiers **with** a per-roll price ramp of ~2–3 % (show the next price on the odds board so it's not a
+surprise). Tiers alone or a ramp alone don't fix egg pacing. Treat multi-hatch as a free convenience.
+
 ## Not covered
 Courtroom/evidence bonus (only as a flat `--active` bonus: +15 % → 1T at 13.3 h, +30 % → 11.4 h), lawyer skills,
 desk tiers, daily/playtime rewards and prestige — none are in the mirror yet. Random skin luck barely matters

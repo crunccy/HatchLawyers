@@ -39,7 +39,8 @@ Latest analysis and what needs attention: [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md)
 
 Quick what-ifs without Studio: `python3 tools/economy_sim.py` prints a timeline, the pacing checks and the
 `GUESS` values still unsynced. Flags: `--report` (purchases, gaps and prices per window, milestones),
-`--sweep [factor]` (how much each tunable moves the targets), `--active 0.2` (courtroom bonus), `--log`
+`--sweep [factor]` (how much each tunable moves the targets), `--active 0.2` (courtroom bonus),
+`--scenario egg-tiers,egg-price-ramp,busy-lawyers,multi-hatch` (proposed changes, not live), `--log`
 (every purchase), `--hours`, `--seed`. Tests: `python3 -m unittest discover tools`.
 
 ### What the Python mirror assumes

@@ -9,8 +9,11 @@ it is the to-do list for the next session. Move finished items into the dated en
       `CaseSeconds` and `clientInterval` first (they move results most). Then rerun docs/ECONOMY_REVIEW.md.
 - [ ] **Check AFK before the Manager** (review §3): with nobody assigning, do clients pile up / get dropped?
       If so, add auto-assign after ~10–15 s waiting (queue is ours).
-- [ ] **Egg pacing** (review §2): one fixed-price egg is free within minutes. Decide: hub egg tiers and/or
-      free multi-hatch. Decide whether the ×2.5 cap covers skins alone or the whole stack.
+- [ ] **Egg pacing** (review §2 + "Prototyped fixes"): one fixed-price egg is free within minutes. Sim says
+      egg tiers + a ~2–3 % per-roll price ramp works; multi-hatch is QoL only. Decide, and whether the ×2.5 cap
+      covers skins alone or the whole stack.
+- [ ] **Busy lawyers:** after syncing `CaseSeconds`, set `clientInterval ≈ CaseSeconds / lawyers × 1.05` so every
+      lawyer gets clients (trim `Payout.Base` ~15 % to keep the first-egg target).
 - [ ] **Train ×10 / Max** on the lawyer card (review §4) — needs a heads-up to mr.robe (`TrainLawyer` remote).
 - [ ] Add a `Config` comment next to `Payout.Growth` / `Training.Growth`: their ratio sets the whole curve.
 - [ ] Rewrite the tutorial steps for the new firm (waiting room + Assign) — review §7.
@@ -36,6 +39,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 - Wrote docs/ECONOMY_REVIEW.md. Key results: the curve hangs on `Training.Growth / Payout.Growth` (income ∝ T^3.35;
   TrainGrowth 1.33 → 1T at 11.4 h, 1.34 → 19.8 h); a fixed-price egg is free within minutes; pre-Manager AFK
   income may be zero; early game is ~1 purchase per 2.5 s; late game is training-only.
+- Prototyped fixes as `--scenario`s (egg tiers, per-roll egg price ramp, multi-hatch, busy lawyers) and added a
+  hatch-time cost per egg. Best combo: egg tiers + ~2–3 % price ramp + `clientInterval` tied to case length
+  (results table in the review).
 - New open items above. Nothing was changed in Studio.
 
 ## 2026-10-08 — cloud session: repo set up
