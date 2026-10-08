@@ -13,7 +13,8 @@
 | Cash System & Scaling | ❌ superseded | [ECONOMY.md](ECONOMY.md) (Base 1200, TrainGrowth 1.336) |
 | Art Direction → Color Palette / "navy, gold, chrome" | ❌ superseded | Cartoony voxel palette in [../CLAUDE.md](../CLAUDE.md) |
 | Monetization, Rewards & Engagement | 🕒 post-MVP | Not built; MVP rules in "MVP Risk Fixes" still apply |
-| Tutorial, Mini Courtroom, MVP Risk Fixes | ✅ current | — |
+| Tutorial & New Player Flow | ⚠️ needs rewrite | Rules still apply; steps assume the old 1-desk office — [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md) §7 |
+| Mini Courtroom, MVP Risk Fixes | ✅ current | — |
 
 ## 📌 Summary
 

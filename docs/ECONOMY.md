@@ -27,14 +27,20 @@ this file summarizes them, and `tools/economy_sim.py` mirrors them. Overrides do
 - Cases 30 s – 3 min. Design caps (from DESIGN.md §MVP Risk Fixes): total payout multiplier ×2.5,
   win-chance bonus +12 pp, case-time −30 %, XP ×2.0 — enforce server-side.
 
+Latest analysis and what needs attention: [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md).
+
 ## How to retune
+0. **Never change `Payout.Growth` or `Training.Growth` casually** — their ratio (1.0688) sets the whole curve; a
+   0.3 % change moves "1T/s" by ~4 h (see the review). Retune pace with `Training.Base` / `Payout.Base` and costs.
 1. Change numbers in `Config` only (never in scripts).
 2. Run the Studio sim: `ServerScriptService.Dev.EconomySim` via the disabled `RunEconomySim` (clone `Shared` +
    the sim before requiring, to dodge module caching). Check every pacing target says OK.
 3. Copy the changed values into `CONFIG` in `tools/economy_sim.py` (tag them `SYNCED`) and into the table above.
 
-Quick what-ifs without Studio: `python3 tools/economy_sim.py` (`--hours`, `--seed`, `--log` for every
-purchase). It prints a timeline, the pacing checks, and the list of `GUESS` values still unsynced.
+Quick what-ifs without Studio: `python3 tools/economy_sim.py` prints a timeline, the pacing checks and the
+`GUESS` values still unsynced. Flags: `--report` (purchases, gaps and prices per window, milestones),
+`--sweep [factor]` (how much each tunable moves the targets), `--active 0.2` (courtroom bonus), `--log`
+(every purchase), `--hours`, `--seed`. Tests: `python3 -m unittest discover tools`.
 
 ### What the Python mirror assumes
 - Each client goes to the best-paid free lawyer (player or Manager); each lawyer works one case at a time.

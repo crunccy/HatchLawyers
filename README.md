@@ -12,6 +12,8 @@ the working notes for Claude, and offline tools.
 | [SESSION_LOG.md](SESSION_LOG.md) | Current state, open items, history |
 | [docs/DESIGN.md](docs/DESIGN.md) | Original design manifesto (with a status table of what's superseded) |
 | [docs/ECONOMY.md](docs/ECONOMY.md) | Economy rules, pacing targets, how to retune |
+| [docs/ECONOMY_REVIEW.md](docs/ECONOMY_REVIEW.md) | Sim analysis: what needs attention, ranked |
 | [docs/CLIENTS.md](docs/CLIENTS.md) | Client roster and bios |
 | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) | Plan for remaking models in Blender |
-| [tools/economy_sim.py](tools/economy_sim.py) | Offline economy simulator: `python3 tools/economy_sim.py` |
+| [tools/economy_sim.py](tools/economy_sim.py) | Offline economy simulator: `python3 tools/economy_sim.py --report` |
+| [tools/test_economy_sim.py](tools/test_economy_sim.py) | Sim tests: `python3 -m unittest discover tools` |

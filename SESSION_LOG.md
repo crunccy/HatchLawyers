@@ -5,7 +5,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## Open items
 - [ ] **Sync the economy mirror.** Paste `ReplicatedStorage.Shared.Config` (and `Formulas.clientInterval`)
-      into a session and replace every `GUESS` in `tools/economy_sim.py` / docs/ECONOMY.md with real values.
+      into a session and replace every `GUESS` in `tools/economy_sim.py` / docs/ECONOMY.md with real values —
+      `CaseSeconds` and `clientInterval` first (they move results most). Then rerun docs/ECONOMY_REVIEW.md.
+- [ ] **Check AFK before the Manager** (review §3): with nobody assigning, do clients pile up / get dropped?
+      If so, add auto-assign after ~10–15 s waiting (queue is ours).
+- [ ] **Egg pacing** (review §2): one fixed-price egg is free within minutes. Decide: hub egg tiers and/or
+      free multi-hatch. Decide whether the ×2.5 cap covers skins alone or the whole stack.
+- [ ] **Train ×10 / Max** on the lawyer card (review §4) — needs a heads-up to mr.robe (`TrainLawyer` remote).
+- [ ] Add a `Config` comment next to `Payout.Growth` / `Training.Growth`: their ratio sets the whole curve.
+- [ ] Rewrite the tutorial steps for the new firm (waiting room + Assign) — review §7.
+- [ ] Late-game content for hours 6–15 (desk tiers, rooms, prestige) — review §5.
 - [ ] **Add the user's local files to this repo:** `references/`, `tools/firm_kit.py`, `tools/firm_pieces.py`,
       `tools/voxel_builder.py`, `tools/clients.py`, `ClientPalette.png`. Decide whether `.fbx` exports go in
       (they're big; maybe Git LFS) or stay local.
@@ -19,6 +28,15 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-08 — cloud session: economy analysis
+- `tools/economy_sim.py`: added `--report` (purchases, gaps, prices per window, milestones), `--sweep`
+  (sensitivity of the targets to each tunable), `--active` (courtroom bonus), runaway detection; prices are
+  tracked in seconds of income. Added `tools/test_economy_sim.py` (12 tests).
+- Wrote docs/ECONOMY_REVIEW.md. Key results: the curve hangs on `Training.Growth / Payout.Growth` (income ∝ T^3.35;
+  TrainGrowth 1.33 → 1T at 11.4 h, 1.34 → 19.8 h); a fixed-price egg is free within minutes; pre-Manager AFK
+  income may be zero; early game is ~1 purchase per 2.5 s; late game is training-only.
+- New open items above. Nothing was changed in Studio.
 
 ## 2026-10-08 — cloud session: repo set up
 - Created this repo's layout: `CLAUDE.md` (rules only), this log, `docs/` (DESIGN, ECONOMY, CLIENTS,

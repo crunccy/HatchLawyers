@@ -10,7 +10,8 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 | The game | Roblox Studio, Team Create — place "Hatch a Lawyer & Get Rich!", **placeId 94345095795403** |
 | Rules, layout, gotchas | this file |
 | Current state, open items, history | [SESSION_LOG.md](SESSION_LOG.md) |
-| Economy numbers + how to retune | [docs/ECONOMY.md](docs/ECONOMY.md), sim: [tools/economy_sim.py](tools/economy_sim.py) |
+| Economy numbers + how to retune | [docs/ECONOMY.md](docs/ECONOMY.md), sim: [tools/economy_sim.py](tools/economy_sim.py) (tests: `python3 -m unittest discover tools`) |
+| Economy analysis, what needs attention | [docs/ECONOMY_REVIEW.md](docs/ECONOMY_REVIEW.md) |
 | Original design manifesto | [docs/DESIGN.md](docs/DESIGN.md) — read its "Status" table; parts are superseded |
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
@@ -79,6 +80,7 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - MVP: no Robux for coins, eggs or power. Fictional clients only — no real people or brands.
 - All numbers come from `Config`; never hard-code a tunable in a script. Retune → see docs/ECONOMY.md.
+  Never change `Payout.Growth` / `Training.Growth` without running the sim — their ratio sets the whole curve.
 
 ## Studio MCP gotchas
 - Edits only work in **Edit mode**. A playtest (anyone's) blocks edits and hides server scripts — ask to stop it.

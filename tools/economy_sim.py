@@ -18,7 +18,7 @@ Model (expected values, event-driven, greedy player):
     (time to save up + cost / income gained): train the lowest lawyer, expand + hire,
     or roll an egg. AFK baseline: no courtroom bonus, no daily/playtime rewards.
 
-Run:  python3 tools/economy_sim.py [--hours 15] [--seed 1] [--log]
+Run:  python3 tools/economy_sim.py [--hours 24] [--seed 1] [--log] [--report] [--active 0.2] [--sweep [2]]
 """
 
 import argparse
@@ -265,29 +265,45 @@ class Firm:
 CHECKPOINTS_MIN = [1, 2, 5, 10, 20, 30, 60, 120, 240, 480, 720, 900, 1200, 1440]
 
 
-def simulate(hours, seed, log):
+def simulate(hours, seed=1, log=False, active_bonus=0.0):
+    """Run one player for `hours`. Returns a dict with the timeline, every purchase and milestones.
+    active_bonus: extra payout share for a player who attends court (design: +15-30 %); 0 = AFK."""
     rng = random.Random(seed)
     firm = Firm()
     t = 0.0
     end = hours * 3600
-    first_egg = None
-    trillion_at = None
-    rows = []
+    res = {"rows": [], "events": [], "first_egg": None, "trillion_at": None, "skin_first": {},
+           "all_legendary_at": None, "runaway_at": None, "hours": hours}
     checkpoints = [m * 60 for m in CHECKPOINTS_MIN if m * 60 <= end]
+    mult = 1 + active_bonus
+
+    def income():
+        return firm.income() * mult
+
+    def note_skins():
+        for s in firm.skins:
+            if s and s not in res["skin_first"]:
+                res["skin_first"][s] = t
+        if res["all_legendary_at"] is None and all(s == "Legendary" for s in firm.skins):
+            res["all_legendary_at"] = t
+
+    def snapshot(at):
+        res["rows"].append((at, income(), len(firm.levels), sum(firm.levels) / len(firm.levels),
+                            max(firm.levels), firm.eggs_paid,
+                            max((s for s in firm.skins if s), key=SKIN_BONUS.get, default="-")))
 
     if CONFIG["Eggs"]["FreeFirst"]:
         firm.open_egg(CONFIG["Eggs"]["FreeFirstRarity"])
-
-    def snapshot(at):
-        rows.append((at, firm.income(), len(firm.levels), sum(firm.levels) / len(firm.levels),
-                     max(firm.levels), firm.eggs_paid,
-                     max((s for s in firm.skins if s), key=SKIN_BONUS.get, default="-")))
+        note_skins()
 
     while t < end:
-        inc = firm.income()
-        rush = CONFIG["Eggs"]["RushFirstPaid"] and first_egg is None
-        if trillion_at is None and inc >= 1e12:
-            trillion_at = t
+        inc = income()
+        rush = CONFIG["Eggs"]["RushFirstPaid"] and res["first_egg"] is None
+        if res["trillion_at"] is None and inc >= 1e12:
+            res["trillion_at"] = t
+        if inc >= 1e40:                    # payout outgrows costs: the economy has no ceiling
+            res["runaway_at"] = t
+            break
         # pick the action that pays itself back soonest (including the time to save up)
         best = None
         for name, cost, gain, apply in firm.actions():
@@ -295,6 +311,7 @@ def simulate(hours, seed, log):
                 continue
             if gain <= 0 and not rush:
                 continue
+            gain *= mult
             wait = max(0.0, cost - firm.coins) / inc
             score = wait + (cost / gain if gain > 0 else 0)
             if best is None or score < best[0]:
@@ -314,16 +331,143 @@ def simulate(hours, seed, log):
         firm.coins = max(0.0, firm.coins + inc * wait - cost)
         if name == "egg":
             firm.eggs_paid += 1
-            if first_egg is None:
-                first_egg = (t, inc)
+            if res["first_egg"] is None:
+                res["first_egg"] = (t, inc)
             firm.open_egg(roll_skin(rng))
+            note_skins()
         else:
             apply()
+        res["events"].append((t, name, cost, inc))   # inc = income while saving up for it
         if log:
-            print(f"  {t / 60:8.2f} min  {name:<6} {format_coins(cost):>10}  -> {format_coins(firm.income())}/s")
+            print(f"  {t / 60:8.2f} min  {name:<6} {format_coins(cost):>10}  -> {format_coins(income())}/s")
     for c in checkpoints:
         snapshot(c)
-    return rows, first_egg, trillion_at
+    res["final"] = {"lawyers": len(firm.levels), "segments": firm.segments, "levels": list(firm.levels)}
+    return res
+
+
+def fmt_time(sec):
+    if sec is None:
+        return "never"
+    if sec < 90:
+        return f"{sec:.0f}s"
+    if sec < 5400:
+        return f"{sec / 60:.1f}m"
+    return f"{sec / 3600:.1f}h"
+
+
+def pacing_checks(res):
+    """[(ok, text)] for the CONFIG targets."""
+    tg = CONFIG["Targets"]
+    out = []
+    if res["first_egg"]:
+        t, inc = res["first_egg"]
+        lo, hi = tg["IncomeAtFirstEgg"]
+        ok = t <= tg["FirstEggMinutes"] * 60 * 1.5 and lo <= inc <= hi
+        out.append((ok, f"first paid egg at {fmt_time(t)}, earning {format_coins(inc)}/s "
+                        f"(target ~{tg['FirstEggMinutes']} min, {lo}-{hi}/s)"))
+    else:
+        out.append((False, "never bought a paid egg"))
+    ta = res["trillion_at"]
+    ok = ta is not None and ta <= tg["TrillionPerSecHours"] * 3600 * 1.2
+    out.append((ok, f"1T coins/s at {fmt_time(ta)} (target ~{tg['TrillionPerSecHours']} h)"))
+    return out
+
+
+# ----------------------------------------------------------------------------------------
+# Reports
+# ----------------------------------------------------------------------------------------
+WINDOWS_H = [(0, 0.25), (0.25, 1), (1, 2), (2, 4), (4, 8), (8, 12), (12, 16), (16, 24)]
+
+
+def print_timeline(res):
+    print(f"\n{'Time':>8} {'Coins/s':>10} {'Lawyers':>8} {'Avg lvl':>8} {'Top lvl':>8} {'Eggs':>6}  Best skin")
+    for at, inc, n, avg, top, eggs, skin in res["rows"]:
+        label = f"{at / 3600:.0f}h" if at >= 3600 else f"{at / 60:.0f}m"
+        print(f"{label:>8} {format_coins(inc):>10} {n:>8} {avg:>8.1f} {top:>8} {eggs:>6}  {skin}")
+
+
+def print_report(res):
+    """Where does the pacing feel bad? Purchases per window, longest dry spell, what's being bought."""
+    ev = res["events"]
+    print("\nPacing by window (purchases = things the player gets to click; long gaps feel like a wall)")
+    print(f"{'Window':>11} {'Buys':>6} {'Train':>6} {'Expand':>7} {'Eggs':>6} {'Median gap':>11} {'Longest gap':>12}"
+          f" {'Train price':>12} {'Egg price':>10}")
+    for a, b in WINDOWS_H:
+        if a >= res["hours"]:
+            break
+        lo, hi = a * 3600, min(b, res["hours"]) * 3600
+        inside = [e for e in ev if lo <= e[0] < hi]
+        times = [lo] + [e[0] for e in inside] + [hi]
+        gaps = sorted(y - x for x, y in zip(times, times[1:]))
+        count = lambda n: sum(1 for e in inside if e[1] == n)
+        med = gaps[len(gaps) // 2] if gaps else 0
+
+        def price(n):   # median price in seconds of income (DESIGN.md: next upgrade ~10 min of earning)
+            p = sorted(e[2] / e[3] for e in inside if e[1] == n)
+            return fmt_time(p[len(p) // 2]) if p else "-"
+        print(f"{a:>4g}-{b:<4g}h {len(inside):>6} {count('train'):>6} {count('expand'):>7} {count('egg'):>6} "
+              f"{fmt_time(med):>11} {fmt_time(max(gaps) if gaps else 0):>12} {price('train'):>12} {price('egg'):>10}")
+
+    print("\nMilestones")
+    for r in CONFIG["Eggs"]["Skins"]:
+        print(f"  first {r:<10} skin: {fmt_time(res['skin_first'].get(r))}")
+    print(f"  every lawyer in Legendary: {fmt_time(res['all_legendary_at'])}"
+          "  (after this, eggs no longer raise income)")
+    exp = [e for e in ev if e[1] == "expand"]
+    print(f"  expansions: {len(exp)} (" + ", ".join(fmt_time(e[0]) for e in exp[:12])
+          + (" ..." if len(exp) > 12 else "") + ")")
+    late_eggs = sum(1 for e in ev if e[1] == "egg" and res["all_legendary_at"] and e[0] > res["all_legendary_at"])
+    if late_eggs:
+        print(f"  eggs bought after full Legendary: {late_eggs}")
+    lv = res["final"]["levels"]
+    print(f"  final levels: min {min(lv)}, max {max(lv)}, lawyers {len(lv)}")
+
+
+# which CONFIG values the sweep perturbs: (label, path)
+SWEEP = [
+    ("CaseSeconds", ("CaseSeconds",)),
+    ("ClientInterval", ("ClientInterval", "PerLawyerSeconds")),
+    ("ExpandCostBase", ("Firm", "ExpandCostBase")),
+    ("ExpandCostGrowth", ("Firm", "ExpandCostGrowth")),
+    ("HireCostShare", ("Firm", "HireCostShare")),
+    ("Eggs.Price", ("Eggs", "Price")),
+    ("Payout.Base", ("Payout", "Base")),
+    ("Training.Base", ("Training", "Base")),
+    ("Payout.Growth", ("Payout", "Growth")),
+    ("Training.Growth", ("Training", "Growth")),
+]
+
+
+def _get(path):
+    d = CONFIG
+    for k in path[:-1]:
+        d = d[k]
+    return d, path[-1]
+
+
+def run_sweep(hours, seed, factor):
+    """Scale each value by 1/factor and xfactor (growth rates: their excess over 1) and show the targets."""
+    def summary(res):
+        fe = res["first_egg"]
+        runaway = f"  RUNAWAY at {fmt_time(res['runaway_at'])}" if res["runaway_at"] is not None else ""
+        return (f"{fmt_time(fe[0]) if fe else 'never':>7} @ {format_coins(fe[1]) if fe else '-':>6}/s  "
+                f"1T {fmt_time(res['trillion_at']):>6}{runaway}")
+
+    print(f"\nSensitivity: each value scaled by 1/{factor:g} and x{factor:g} "
+          "(growth rates scale their excess over 1)")
+    print(f"{'baseline':<18} {summary(simulate(hours, seed))}")
+    for label, path in SWEEP:
+        d, k = _get(path)
+        orig = d[k]
+        parts = []
+        for f in (1 / factor, factor):
+            d[k] = 1 + (orig - 1) * f if "Growth" in k else orig * f
+            client_stats.cache_clear()
+            parts.append(summary(simulate(hours, seed)))
+        d[k] = orig
+        client_stats.cache_clear()
+        print(f"{label:<18} low:  {parts[0]}\n{'':<18} high: {parts[1]}")
 
 
 def main():
@@ -331,31 +475,25 @@ def main():
     ap.add_argument("--hours", type=float, default=24)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--log", action="store_true", help="print every purchase")
+    ap.add_argument("--report", action="store_true", help="pacing diagnostics: gaps, purchase mix, milestones")
+    ap.add_argument("--active", type=float, default=0.0, metavar="BONUS",
+                    help="model an active player with this courtroom payout bonus (e.g. 0.2)")
+    ap.add_argument("--sweep", type=float, nargs="?", const=2.0, metavar="FACTOR",
+                    help="sensitivity of the targets to each tunable (default factor 2)")
     args = ap.parse_args()
 
-    rows, first_egg, trillion_at = simulate(args.hours, args.seed, args.log)
-
-    print(f"\n{'Time':>8} {'Coins/s':>10} {'Lawyers':>8} {'Avg lvl':>8} {'Top lvl':>8} {'Eggs':>6}  Best skin")
-    for at, inc, n, avg, top, eggs, skin in rows:
-        label = f"{at / 3600:.0f}h" if at >= 3600 else f"{at / 60:.0f}m"
-        print(f"{label:>8} {format_coins(inc):>10} {n:>8} {avg:>8.1f} {top:>8} {eggs:>6}  {skin}")
-
-    tg = CONFIG["Targets"]
-    print("\nPacing targets")
-    if first_egg:
-        t, inc = first_egg
-        lo, hi = tg["IncomeAtFirstEgg"]
-        ok = t <= tg["FirstEggMinutes"] * 60 * 1.5 and lo <= inc <= hi
-        print(f"  [{'OK' if ok else 'MISS'}] first paid egg at {t / 60:.1f} min, earning {format_coins(inc)}/s "
-              f"(target ~{tg['FirstEggMinutes']} min, {lo}-{hi}/s)")
+    if args.sweep:
+        run_sweep(args.hours, args.seed, args.sweep)
     else:
-        print("  [MISS] never bought a paid egg")
-    if trillion_at is not None:
-        ok = trillion_at <= tg["TrillionPerSecHours"] * 3600 * 1.2
-        print(f"  [{'OK' if ok else 'MISS'}] 1T coins/s at {trillion_at / 3600:.1f} h "
-              f"(target ~{tg['TrillionPerSecHours']} h)")
-    else:
-        print(f"  [MISS] never reached 1T coins/s in {args.hours:g} h (target ~{tg['TrillionPerSecHours']} h)")
+        res = simulate(args.hours, args.seed, args.log, args.active)
+        print_timeline(res)
+        if args.report:
+            print_report(res)
+        print("\nPacing targets")
+        for ok, text in pacing_checks(res):
+            print(f"  [{'OK' if ok else 'MISS'}] {text}")
+        if res["runaway_at"] is not None:
+            print(f"  [MISS] income ran away (>1e40/s) at {fmt_time(res['runaway_at'])} - payout outgrows costs")
 
     print("\nGUESS values (only Studio's Config has the real numbers - sync before trusting results):")
     print("  " + ", ".join(GUESSES))
