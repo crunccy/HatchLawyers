@@ -27,6 +27,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: per-character court questions
+- New `Server.ClientEvidence` (ModuleScript): an opponent + 3 evidence questions (first card right, server shuffles)
+  for each of the 36 clients whose tier set in `Server.EvidenceCards` was written for someone else (Grandma Pearl,
+  Skater Kev, Captain Barnacle, Dr. Fizz, Baron von Banana, Beep + the 30 new clients). Dave, Rosa, Tung Tung, the
+  CEO and the 5 celebrities keep their tier sets (written for them).
+- `CaseService.makeClientModel` sets attr `ClientId`; `CourtService.attend` uses `ClientEvidence[ClientId]`, falling
+  back to `EvidenceCards[tier]`; the no-repeat history is keyed per set.
+- Checked: all 45 ClientCharacters covered (36 own sets + 9 tier owners), every set 3 prompts × 3 cards. Playtest: real
+  clients sent to court got their own case (Lemonade Lily vs Inspector Sourpuss, Camper Cam vs Mayor Marigold,
+  Farmer Frank vs Pie Contest Judge Penny). Heads-up mr.robe (EvidenceCards is theirs; it's untouched).
+
 ## 2026-10-09 — local session: Pet / Food / Ocean / Space eggs + 30 more clients
 - `tools/themed_cast.py` (Blender, on top of lawyers_v2.py): 32 themed lawyers (8 per egg: 2 C / 2 U / 2 R / 2 L)
   + 30 clients (10 Common, 9 Uncommon, 7 Rare, 4 Epic), exported to `tools/themed_parts.json` (adds a Glass flag).
@@ -45,8 +56,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 - Tested: 3,000 rolls per egg — every pool only its own 8 (Briefcase 13), splits match the weights; every catalog
   Model and client template exists (53 lawyers, 45 clients); real E press at the Space Egg hatched UFO Counsel
   (hatch screen OK); no console errors.
-- OPEN: court evidence questions are per client TIER (`Server.EvidenceCards`), so every Common client gets Dave's
-  parking-ticket questions. Needs per-character question sets (or generic ones) — heads-up mr.robe.
+- (fixed right after — see the next entry: per-character court questions)
 
 ## 2026-10-09 — local session: starter egg = Briefcase Egg
 - The starter machine (`Hub.EggMachine`, Pad2) is now the **Briefcase Egg**: mr.robe's yellow/brown Briefcase egg
