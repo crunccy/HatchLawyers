@@ -30,6 +30,27 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: [E] Assign Client proximity prompts
+User spec: replace the bottom-of-screen ASSIGN CLIENT button with Roblox's built-in ProximityPrompt; keep the
+existing assignment picker exactly as it is.
+- `StarterPlayerScripts.AssignClients` (lives in Studio only): the HUD button + count badge are gone. Each of
+  YOUR waiting clients (tag FirmClient, OwnerUserId = you) gets one client-side `ProximityPrompt` "AssignPrompt"
+  on its HumanoidRootPart: ActionText "Assign Client", ObjectText = client's name, KeyCode E, HoldDuration 0,
+  MaxActivationDistance 8, RequiresLineOfSight false (couch backs), Exclusivity OnePerButton (crowded sofas
+  show only the nearest). Enabled only while `Waiting` and no Manager is hired; follows attribute changes.
+  Triggered -> the existing `open(model)`, so the picker opens for that exact client (gold outline, lawyer
+  cards, BEST FREE LAWYER, "moves on to the next waiting client") - picker code untouched.
+  No duplicates: one prompt per model in a table, an old "AssignPrompt" is replaced, connections are cleaned up
+  when the client's tag is removed / it leaves workspace; a 0.5 s safety net tracks late-replicated clients.
+  Other players never get prompts for your clients (created locally, owner-checked).
+- Hud tutorial step 1 now reads "Walk up to Dave and press E to Assign Client" (the Guide beam already points
+  at the waiting client).
+- Verified in playtest: prompts on my waiting clients only (enabled when seated, off while walking / once
+  assigned); PromptShown "Barber Bob / Assign Client key=E"; pressing E opened "Assign Barber Bob" with the
+  outline on that client. Could not click through an assignment (all 11 lawyers busy at the time), but that
+  path (`send` -> Remotes.AssignClient) is unchanged. No console errors.
+- Heads-up: the pre-Manager self-assign (12 s) can send a client off just as you walk up; the prompt then hides.
+
 ## 2026-10-09 — local session: client name tags
 User: "give names to all of the clients too, using the same method you just did".
 - `LawyerTags` now tags every client in every firm (walking in, on the waiting-room sofas, at a desk) with the
