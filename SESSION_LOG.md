@@ -4,6 +4,7 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
 - [ ] Eye-check a merged lawyer's Gold / Rainbow tag line (LawyerTags).
 - [ ] Eye-check the hatch screen's Rare/Legendary VFX (star flare + slash ring) on a real rare roll.
 - [ ] Egg-machine floor rings sit under the pedestals. Raise `FxRing` in `ServerStorage.EggMachineFx` or drop it.
@@ -29,6 +30,21 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-09 — local session: suspenseful 3D egg hatch
+User: "make the hatching animation super cool and use the 3D model of the eggs and make it suspenseful".
+- `StarterPlayerScripts.Eggs`: the flat 2D egg is replaced by a copy of the real machine egg
+  (Hub.<Machine>.Egg.Voxel, Briefcase or themed) in a ViewportFrame. Sequence: drop-in bounce -> 3 shake rounds
+  (4 for Legendary), each harder/faster, camera creeping in, heartbeat pulse, room darkening, glow behind the egg
+  flickering through rarity colours (last flicker = real rarity), glowing Neon cracks spreading -> Rare+ fake-out
+  (dead still + dark) -> rumble + camera rush -> voxels shatter out at the camera -> existing reveal.
+  Tap/click skips ahead. Measured burst: Common ~3.9 s, Rare ~5.0 s, Legendary ~6.8 s.
+- `HatchCue` (client BindableEvent in ReplicatedStorage): "beat" per crack round, "burst" at the shatter.
+  Sounds plays a rising ping per beat and the sting at the burst (was a fixed 2.1 s delay).
+- EggServer world burst over the machine now waits 5.0 s (Rare) / 6.8 s (Legendary) to match.
+- Verified with fake EggHatched results (Briefcase, Space, Ocean, Food, Brainrot, Pet): egg, cracks, glow,
+  fake-out and reveal all render; no console errors. Not captured on screen: the shatter frame itself (it lasts
+  under a second), and a real paid hatch / a Common run end-to-end.
 
 ## 2026-10-09 — local session: Tung Tung Sahur client removed
 User: remove the client "Tung Tung Sahur" (clashed with the lawyer just renamed "Tung Tung Tung Sahur").
