@@ -27,6 +27,19 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-08 — local session: no overhead words, one ASSIGN button, typography pass
+- No text over anyone's head: lawyer nameplates removed (CaseService), Manager name tag removed (ManagerService),
+  clients get a slim wordless progress bar tinted by rarity, shown only during their case (name/situation now in
+  attributes `ClientName` / `Situation`). Empty-office tag shortened to "EMPTY OFFICE", visible within 35 studs.
+- `AssignClients` rewritten: one **ASSIGN CLIENT** HUD button (count badge) instead of a button per client; opens
+  the picker for the most valuable waiting client (rarest, then first come), gold outline on that client, and
+  moves straight on to the next one after each assignment. Hud hint updated.
+- Typography (user's spec): new `Shared.UIFonts` (Primary FredokaOne / Title LuckiestGuy / Body BuilderSansMedium,
+  all verified to exist). Title: hatch reveal name + NEW!, Hud WIN toast, skill reveal, reward pop-up, verdict,
+  MERGED message. Body: case status, skill + Manager upgrade descriptions, goal text, menu subtitles, courtroom
+  question, picker details, Expand sign sub-line. Money (coin counter) bigger. Playtest: no errors; every visible
+  text uses the three fonts.
+
 ## 2026-10-08 — local session: open offices, lawyers as the focal point
 - User: floor too harsh, laptops faced away from the lawyer, make the lawyers the focal point (desk only, no
   bookshelves, no walls between lawyers).

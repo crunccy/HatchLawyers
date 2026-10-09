@@ -42,7 +42,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   wood light 214,140,70 · wood dark 122,70,34 · floor 222,160,96 · wall cream 246,226,180 · sign green 98,205,48.
   UI: white panels, ink 40,40,52, green 98,205,48, orange 255,160,24, gold 255,200,40, red 240,70,70.
   Rarity colors come from `Config.RarityColors`.
-- **Fonts:** FredokaOne only. White text + thick black UIStroke. No serif / navy / brass.
+- **Fonts** (`ReplicatedStorage.Shared.UIFonts`): **FredokaOne** for buttons, headings, menus, HUD and money (money
+  bigger); **LuckiestGuy** only for big moments (hatch reveal name, NEW!, WIN!, MERGED!, reward pop-ups, verdict);
+  **BuilderSansMedium** for descriptions and small print. White text + thick black UIStroke on important text.
+  No serif / navy / brass. **No words over characters' heads** (lawyers, clients, Manager) — user's call.
 - **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones.
 - **Builds:** plain Parts, **Plastic with `TopSurface = Studs`** (every part of the map — Ground, Plaza, Trees,
   IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
