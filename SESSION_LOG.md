@@ -27,6 +27,19 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: Brainrot Egg
+- New machine `workspace.Hub.BrainrotEggMachine` on **Pad1** (a clone of EggMachine rotated 45° around the plaza,
+  recoloured purple / lime / pink / cyan, sign BRAINROT EGG, own odds board). mr.robe's "Briefcase Egg - Coming
+  Soon" placeholder from Pad1 is saved in `ServerStorage.ComingSoonEggs.Pad1_BriefcaseEgg` (dirt left in place).
+- `Config.Eggs.Brainrot` { PriceMultiplier 3, Weights U/R/L 60/32/8 }; catalog skins tagged `Egg = "Brainrot"`
+  (the 8 brainrot lawyers) only hatch there; `Formulas.rollSkinId(rng, rarity, egg)` filters by egg;
+  `Formulas.brainrotEggPrice`. EggServer: `onRoll(player, brainrot)`; free egg + reward tokens only on the normal
+  egg; shares Eggs.Opened and pity; payload `egg = "Brainrot"`; attr `BrainrotEggPrice`. Client Eggs: bob, prompt
+  text, odds board, purple egg on the hatch screen.
+- Playtested with a real E press at the machine: charged 3x, hatched Brr Brr Patapim, hatch screen fine, no errors.
+  4,000 test rolls: brainrot pool = exactly the 8, normal pool = the other 13, split 61/31/8 %.
+- Sim catalog back to the normal egg's pool (3/3/4/3); Brainrot Egg not modelled (worse power per coin).
+
 ## 2026-10-09 — local session: 8 brainrot lawyers (hatchable)
 - `tools/lawyers_v2.py` BRAINROT (Blender, same block recipe, each in lawyer gear) → `ReplicatedStorage.SkinModels`
   (attr Brainrot) + `Config.SkinCatalog`:

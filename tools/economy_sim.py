@@ -82,11 +82,11 @@ CONFIG = {
         # lawyer ids per rarity in Config.SkinCatalog (merges need 3 of the SAME id)          SYNCED
         "Catalog": {
             "Common": ["Rookie", "InternSuit", "CasualFriday"],
-            "Uncommon": ["BowTieBarrister", "NavyPowerSuit", "BensonBond", "ChimpanziniBananini", "BonecaAmbalabu"],
-            "Rare": ["GoldenGavel", "NeonLitigator", "KaiSueNat", "KhabyClaim", "BallerinaCappuccina",
-                     "BrrBrrPatapim", "LiriliLarila"],
-            "Legendary": ["PinstripePartner", "IShowSued", "IceJustice", "Tralalero", "Bombardiro",
-                          "CappuccinoAvvocato"],
+            # the normal egg's pool; brainrot lawyers (Egg = "Brainrot") only come from the Brainrot Egg,
+            # which the sim doesn't model (3x price for 60/32/8 % U/R/L: worse power per coin than the normal egg)
+            "Uncommon": ["BowTieBarrister", "NavyPowerSuit", "BensonBond"],
+            "Rare": ["GoldenGavel", "NeonLitigator", "KaiSueNat", "KhabyClaim"],
+            "Legendary": ["PinstripePartner", "IShowSued", "IceJustice"],
         },
         "Tiers": None,     # scenario "egg-tiers": list of extra egg machines (None = the one live egg)
     },
