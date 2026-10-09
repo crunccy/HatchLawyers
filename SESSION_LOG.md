@@ -31,6 +31,27 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: hatch v2 - no visible square, Blender-made animated cracks
+User: the hatch was visibly confined to a square, and the cracks looked bad; wants seamless + natural, animated
+cracks, made in Blender or Figma (whichever is better).
+- **No square**: the egg ViewportFrame now covers the full screen (transparent background). The egg's on-screen
+  size comes from the camera FOV (EGG_PX = 300 px x fit() at rest, any resolution), the camera aims low so the
+  egg sits at 42% height (on the glow / rays). Nothing (egg, rumble, shards) can hit a frame edge any more.
+  The heartbeat is now a camera "punch" (scaling a full-screen frame would bring edges back).
+- **Cracks (Blender)**: `tools/egg_cracks.py` (numpy in Blender, picked over Figma because cracks need to be
+  procedural and *grow* - Figma is static vector UI). Jagged eggshell fissures radiate from an impact point
+  (+2 later impacts), branch once, taper, and stay inside an egg-shaped mask. Every segment has a birth time ->
+  10 growth stages x 2 layers: `egg_crack_dark_XX` (fissure, tinted dark brown) + `egg_crack_glow_XX` (hot core
+  + halo; cream, then the rarity colour on the last round). IDs in ASSET_IDS.md. v2 = bolder widths.
+- **Applied**: a crack card on the egg's front face carries the two decals; the `crack` value tweens through
+  the stages while each round shakes (85% by the last round, the rest during the final rumble); the glow
+  breathes; decals fade in the burst flash. Egg sway reduced to 0.12 rad so the card stays flush. The old Neon
+  stick cracks are gone.
+- Gotcha (CLAUDE.md-worthy): a ViewportFrame skips parts with Transparency = 1, *including their decals* - the
+  card is 0.99.
+- Verified in playtest: Briefcase (Legendary, gold cracks) and Space (Rare, blue cracks) - cracks render and
+  spread, no square, no console errors.
+
 ## 2026-10-09 — local session: suspenseful 3D egg hatch
 User: "make the hatching animation super cool and use the 3D model of the eggs and make it suspenseful".
 - `StarterPlayerScripts.Eggs`: the flat 2D egg is replaced by a copy of the real machine egg

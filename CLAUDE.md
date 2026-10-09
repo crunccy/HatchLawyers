@@ -58,7 +58,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   LightEmission ≤ 0.3 (the yellow floor eats additive sprites), burst Brightness ≤ 1.4 (stacks clip to white),
   aura lights dim. Part-parented ambient emitters use Surface/Outward. **Test at a high graphics level**
   (`settings().Rendering.QualityLevel` in the Client) — Studio's Automatic level throttles particles so hard
-  that effects look missing. Egg machine effects: `require(game.ServerStorage.EggMachineFx:Clone()).apply()`.
+  that effects look missing. A ViewportFrame skips Transparency = 1 parts *and their decals* (use 0.99).
+  Egg machine effects: `require(game.ServerStorage.EggMachineFx:Clone()).apply()`.
 - **Builds:** plain Parts, **Plastic with `TopSurface = Studs`** (every part of the map — Ground, Plaza, Trees,
   IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
   colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
