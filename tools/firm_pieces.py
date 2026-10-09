@@ -24,8 +24,8 @@ TP = 1.0    # stud cell size on props
 # plaza white + orange checker, the hub's greens, gold 255,205,70, red 240,70,70, egg-pad wood 122,62,24.
 FLOOR_WOOD = sw("floor_wood", (214, 140, 70))          # EggMachine wood light
 FLOOR_WOOD_B = sw("floor_wood_b", (196, 124, 58))
-FLOOR_TILE = sw("floor_white", (250, 250, 245))         # Plaza white
-FLOOR_TILE_B = sw("floor_orange", (255, 160, 40))       # Plaza orange
+FLOOR_TILE = sw("floor_cream", (246, 232, 204))         # soft warm cream (the white/orange checker was harsh)
+FLOOR_TILE_B = sw("floor_cream_b", (238, 222, 192))
 PATH = sw("carpet_red", (240, 70, 70))                  # UI / leaderboard red
 DASH = sw("carpet_gold", (255, 205, 70))                # Plaza gold
 WALL = sw("wall_cream", (250, 240, 215))
@@ -403,68 +403,38 @@ def waiting_room():
 
 
 def office_segment():
+    """Open office floor: no partitions between lawyers, so the lawyers are the focal point."""
     p = Piece("OfficeSegment")
     depth = SEG
     floor(p, 0, depth, FLOOR_WOOD)
     skirt(p, 0, depth, seed=11)
     side_walls(p, 0, depth, seed=4)
-    for s in (-1, 1):
-        # partition between neighbouring offices: wood lower panel, glass top, chunky post at the aisle
-        lo, hi = sorted((s * 8.5, s * (W - 0.8)))
-        B(p, (lo, -0.25, 0), (hi, 0.25, 2.2), WOOD)
-        B(p, (lo, -0.15, 2.2), (hi, 0.15, 3.8), GLASS)
-        B(p, (lo, -0.3, 3.8), (hi, 0.3, 4.2), WOOD_PLANK)
-        B(p, (s * 8.5 - 0.5, -0.5, 0), (s * 8.5 + 0.5, 0.5, 4.8), WOOD_DARK)
-        B(p, (s * 8.5 - 0.6, -0.6, 4.8), (s * 8.5 + 0.6, 0.6, 5.1), WOOD)
     return p
 
 
 def lawyer_desk():
-    """One lawyer's office furniture, for the RIGHT side. Origin = slot centre on the floor.
-    LawyerSpot = (+2.3, 0) facing -X; ClientSpot = (-2.6, 0) facing +X."""
+    """One lawyer's desk, for the RIGHT side. Origin = slot centre on the floor.
+    LawyerSpot = (+2.3, 0) facing -X; ClientSpot = (-2.6, 0) facing +X. Just the desk (user: lawyers are the
+    focal point) - the laptop screen faces the lawyer (+X), the nameplate faces the client (-X)."""
     p = Piece("LawyerDesk")
-    # chunky desk, long side along Y, front facing the aisle (-X)
     for y0, y1 in ((-2.5, -1.0), (1.0, 2.5)):
         B(p, (-1.15, y0, 0), (1.15, y1, 2.2), WOOD)
         for z in (0.55, 1.35):
-            F(p, (-1.25, (y0 + y1) / 2 - 0.3, z), (-1.1, (y0 + y1) / 2 + 0.3, z + 0.2), GOLD_FLAT)
-    B(p, (-1.0, -1.0, 0.5), (-0.7, 1.0, 2.2), WOOD_DARK)
+            F(p, (1.1, (y0 + y1) / 2 - 0.3, z), (1.25, (y0 + y1) / 2 + 0.3, z + 0.2), GOLD_FLAT)   # drawers, lawyer side
+    B(p, (-1.0, -1.0, 0.5), (-0.7, 1.0, 2.2), WOOD_DARK)                                        # modesty panel
     B(p, (-1.4, -2.8, 2.2), (1.4, 2.8, 2.65), WOOD_PLANK)
-    B(p, (-1.5, -0.9, 2.3), (-1.4, 0.9, 2.6), GOLD, 0.15)                                    # nameplate
-    # laptop, papers, pen cup, banker's lamp
+    B(p, (-1.5, -0.9, 2.3), (-1.4, 0.9, 2.6), GOLD, 0.15)                                        # nameplate
+    # laptop: base toward the lawyer, lid on the client side, screen facing the lawyer
     F(p, (-0.3, 0.2, 2.65), (0.8, 1.7, 2.75), DARK)
-    F(p, (0.75, 0.2, 2.65), (0.88, 1.7, 3.6), DARK)
-    F(p, (0.7, 0.3, 2.78), (0.75, 1.6, 3.5), SCREEN)
+    F(p, (-0.43, 0.2, 2.65), (-0.3, 1.7, 3.6), DARK)
+    F(p, (-0.3, 0.3, 2.78), (-0.25, 1.6, 3.5), SCREEN)
     F(p, (-0.6, -1.9, 2.65), (0.4, -0.7, 2.85), PAPER)
     F(p, (-0.5, -1.7, 2.85), (0.5, -0.9, 2.92), BOOKS_RED)
     B(p, (0.4, -2.3, 2.65), (0.8, -1.9, 3.2), METAL, 0.2)
-    B(p, (0.65, 1.9, 2.65), (1.15, 2.4, 2.8), GOLD, 0.25)
-    F(p, (0.85, 2.1, 2.8), (0.95, 2.2, 3.8), GOLD_FLAT)
-    B(p, (0.5, 1.8, 3.7), (1.3, 2.5, 4.15), LEATHER, 0.35)
-    # big comfy chair behind the lawyer
-    B(p, (3.4, -0.4, 0), (4.4, 0.4, 0.3), DARK, 0.25)
-    B(p, (3.7, -0.15, 0.3), (4.1, 0.15, 1.1), METAL, 0.2)
-    B(p, (3.0, -1.0, 1.1), (4.7, 1.0, 1.7), LEATHER)
-    B(p, (4.3, -1.0, 1.7), (4.9, 1.0, 4.5), LEATHER)
-    for ay in (-1.0, 0.7):
-        B(p, (3.1, ay, 1.7), (4.3, ay + 0.3, 2.4), LEATHER_DARK, 0.25)
-    # bookshelf on the wall behind
-    B(p, (6.0, -3.2, 0), (7.6, 3.2, 4.6), WOOD_DARK)
-    for i, books in enumerate((BOOKS_RED, BOOKS_BLUE, BOOKS_GREEN, BOOKS_GOLD)):
-        z0 = 0.3 + i * 1.05
-        p.box((5.95, -2.95, z0), (6.1, 2.95, z0 + 0.8), books, 0.0, tile=1.0)
-        B(p, (5.85, -3.2, z0 + 0.8), (6.2, 3.2, z0 + 0.95), WOOD, 0.25)
-    B(p, (5.85, -3.3, 4.6), (7.7, 3.3, 4.9), WOOD)
-    bush(p, 6.8, 2.2, 4.9, 0.45)
-    # filing cabinet beside the bookshelf (offices are 11 deep now)
-    B(p, (6.0, 3.7, 0), (7.6, 5.0, 2.6), WOOD_DARK)
-    for z in (0.5, 1.3, 2.1):
-        F(p, (5.9, 4.1, z), (6.0, 4.6, z + 0.15), GOLD_FLAT)
-    bush(p, 6.8, 4.35, 2.6, 0.4)
-    # client rug in front of the desk + potted plant in the corner
-    B(p, (-4.2, -1.8, 0), (-1.6, 1.8, 0.06), RUG, 0.5)
-    B(p, (4.9, -3.6, 0), (6.0, -2.5, 0.9), POT)
-    bush(p, 5.45, -3.05, 0.9, 0.55)
+    B(p, (-1.15, 1.9, 2.65), (-0.65, 2.4, 2.8), GOLD, 0.25)                                       # banker's lamp
+    F(p, (-0.95, 2.1, 2.8), (-0.85, 2.2, 3.8), GOLD_FLAT)
+    B(p, (-1.3, 1.8, 3.7), (-0.5, 2.5, 4.15), LEATHER, 0.35)
+    B(p, (-4.2, -1.8, 0), (-1.6, 1.8, 0.06), RUG, 0.5)                                            # client rug
     return p
 
 

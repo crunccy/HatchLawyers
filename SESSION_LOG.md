@@ -27,6 +27,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-08 — local session: open offices, lawyers as the focal point
+- User: floor too harsh, laptops faced away from the lawyer, make the lawyers the focal point (desk only, no
+  bookshelves, no walls between lawyers).
+- `tools/firm_pieces.py`: waiting-room floor = soft cream (246,232,204 / 238,222,192) instead of the white/orange
+  checker; `office_segment` has no partitions; `lawyer_desk` is just the desk (+ client rug) with the laptop screen
+  facing the lawyer (verified in a playtest on both sides). Backup: `tools/firm_pieces_v4_cubicles.py`.
+- `tools/export_parts.py` now keeps existing palette indices (only appends), so unchanged pieces stay valid in
+  Studio; re-sent OfficeSegment + LawyerDesk, recoloured the WaitingRoom floor in place.
+- `CaseService.applyLawyer`: the lawyer stands on a glowing pad in their rarity colour (+ a PointLight); empty
+  offices keep the gold pad. No errors in play.
+
 ## 2026-10-08 — local session: firm matches the world (studs + world palette)
 - User: the firm looked too smooth, no stud texture, not the same style as the world / lawyers / eggs.
   Cause (measured in Studio): every map part uses Plastic with **TopSurface = Studs**; the firm's 824 parts were

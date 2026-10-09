@@ -42,7 +42,13 @@ def record_pieces():
 
 
 def export():
+    # keep existing colour numbers stable (only append), so unchanged pieces in Studio stay valid
     palette, out = [], {}
+    path = os.path.join(TOOLS, "firm_parts_palette.txt")
+    if os.path.exists(path):
+        for rgb in open(path).read().split(";"):
+            if rgb.strip():
+                palette.append(tuple(int(v) for v in rgb.split(",")))
 
     def ci(rgb):
         if rgb not in palette:
