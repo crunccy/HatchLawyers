@@ -31,6 +31,31 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: reveal redesign - one continuous 3D stage
+User: the reveal (spinning sunburst, slash ring, star, confetti, coin rain, little 2D preview box) looked
+generic; wants a cohesive scene where the character is the star, rarity identity via lighting / composition /
+timing, polished text, a continuous flow from the egg opening.
+- All of those effects are REMOVED. `StarterPlayerScripts.Eggs` (full copy now in src/Eggs.client.lua) builds one
+  scene in the full-screen egg viewport:
+  - a blocky studded pedestal (map style: Plastic + Studs, stepped round slab, glowing trim band, Neon light
+    pool) that the egg already sits on when it drops in;
+  - at the burst: a controlled flash in the rarity light, the stage lights up (trim + pool + viewport
+    Ambient/LightColor in the rarity colour, lit from the front-top-left), and the REAL lawyer (office-1 lawyer
+    re-dressed in the new skin, like the desks) rises out of the light onto the pedestal - scale 0.25 -> overshoot
+    -> settle - then idles via Shared.Puppet ("celebrate" for Rare+, "nod" otherwise) with a slow turn while
+    the camera glides to a hero framing (character 36% of screen height, centred at 32%) and drifts in;
+  - 2D light layers behind it: rarity-tinted backdrop gradient + vignette, a breathing soft spotlight, and for
+    Rare+ a light shaft from above (stretched glow texture - a CanvasGroup version never rendered).
+  - Legendary extra: camera impact on landing, brighter shaft, 10 slow gold motes, gold shimmer through the name.
+  - Text below the character (never over it): name rises in (Back), rarity pill pops, earnings fade, NEW! stamps
+    just past the end of the name, buttons slide up.
+- Gotchas: the EggHatch ScreenGui uses GLOBAL ZIndex - layers are dim 1, backdrop 2, glow 3, shaft 4, 3D 5,
+  text/buttons 6+ (buttons were hidden under the backdrop at z 1). Shell shards now fade in ~0.45 s so the rising
+  lawyer reads clean.
+- Verified in playtest: Legendary (Briefcase/Tralalero, Brainrot/Bombardiro), Rare (Space/Star Judge,
+  Pet/Corgi Counsel); KEEP closes cleanly (viewport emptied, egg prompt back), no console errors.
+  Not checked on screen: Common / Uncommon reveal, phone layout.
+
 ## 2026-10-09 — local session: hatch v3 - the egg physically splits open (Blender)
 User: crack textures failed; remake in Blender so the shell really separates along its cracks, a glowing
 interior in the rarity colour, then the lawyer reveal (reference: a pet-sim egg opening, screen recording).
