@@ -45,7 +45,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - **Fonts** (`ReplicatedStorage.Shared.UIFonts`): **FredokaOne** for buttons, headings, menus, HUD and money (money
   bigger); **LuckiestGuy** only for big moments (hatch reveal name, NEW!, WIN!, MERGED!, reward pop-ups, verdict);
   **BuilderSansMedium** for descriptions and small print. White text + thick black UIStroke on important text.
-  No serif / navy / brass. **No words over characters' heads** (lawyers, clients, Manager) — user's call.
+  No serif / navy / brass. **No words over clients' or the Manager's heads** — user's call. Lawyers DO get overhead name tags + case pop-ups
+  (user's call 2026-10-09, `StarterPlayerScripts.LawyerTags`, mirrored in `src/LawyerTags.client.lua`): "Steal a Brainrot"
+  style — no panel, stacked bold text with thick black outlines (Gold/Rainbow tier · name · rarity · Earns xN).
 - **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones.
 - **Effects** (`ReplicatedStorage.Shared.Effects`, mirrored in `src/Effects.lua`; textures from
   `tools/vfx_textures.py` (v2, anime style from the user's 4 reference images) + `tools/effects_textures.py` (v1);

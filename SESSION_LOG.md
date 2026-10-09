@@ -4,6 +4,7 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] Eye-check a merged lawyer's Gold / Rainbow tag line (LawyerTags).
 - [ ] Eye-check the hatch screen's Rare/Legendary VFX (star flare + slash ring) on a real rare roll.
 - [ ] Egg-machine floor rings sit under the pedestals. Raise `FxRing` in `ServerStorage.EggMachineFx` or drop it.
 - [x] **Pre-Manager auto-assign** — DONE 2026-10-08 (`Case.SelfAssignAfter` 12 s). (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
@@ -28,6 +29,26 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-09 — local session: lawyer name tags + case pop-ups
+User spec (overhead UI for lawyers) + a "Steal a Brainrot" screenshot as the style reference. The user chose to
+override the "no words over heads" rule **for lawyers only** (clients / Manager unchanged; CLAUDE.md updated).
+- New client script `StarterPlayerScripts.LawyerTags` (copy in `src/LawyerTags.client.lua`):
+  - **Name tag** on every lawyer in every firm: stacked outlined text, no panel — `Gold`/`Rainbow` merge tier
+    (rainbow animated) · name (white, biggest) · rarity in its colour (Legendary has a sweeping gold shimmer) ·
+    `Earns xN` in yellow (Formulas.lawyerEarn). BillboardGuis in PlayerGui, sized in studs (shrink with distance),
+    MaxDistance 95, measured to float just above each skin's head. A 0.5 s firm scan (DeskLife pattern) builds,
+    rebuilds on re-dress/merge (key = id|stars) and removes them — no duplicates.
+  - **Case pop-up** from the real `CaseResult` remote (fired at case completion): "CASE WON!" + big green
+    "+$250", pop in (Back scale + 0.18 s rise/fade-in) → 0.8 s hold → 0.7 s drift up + fade → destroyed.
+    Orange SETTLED, blue MISTRIAL ("RETRYING"); same colours as the Hud coin floaters. Rapid results on one desk
+    stack upward and alternate slightly sideways.
+- Server: `CaseService.applyLawyer` now also sets desk attribute `LawyerStars` (for the tier line). Nothing else
+  in gameplay changed.
+- Verified in playtest: 11 tags on the firm, correct names/rarities/earn; stacked win + settled pop-ups over the
+  right lawyers, no console errors. Note: `AlwaysOnTop` billboards never appear in Studio captures, so pop-ups
+  use `AlwaysOnTop = false` (a wall can hide one).
+- Not yet seen on screen: a Gold / Rainbow (merged) tag — no merged lawyer in the test save.
 
 ## 2026-10-09 — local session: VFX v2 (anime effects from 4 reference images)
 User sent 4 reference images (ice crystal burst, fire tornado, dark-red star explosion, blue energy orb) and asked
