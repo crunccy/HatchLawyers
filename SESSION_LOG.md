@@ -15,8 +15,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Late-game sink beyond office level 100: prestige into the sim, or new content (review B).
 - [ ] Add a `Config` comment next to `Payout.Growth` / `Lawyer.TrainGrowth`: their ratio sets the whole curve.
 - [ ] Update DESIGN.md's tutorial + rewards text for v12 (review §7).
-- [ ] Commit the v12 Blender/tool files that are still untracked: `tools/clients_v2.py`, `tools/firm_pieces.py`
-      (Parts export), `tools/build_firm.py`, `tools/firm_parts_*.txt` (see below).
 - [ ] **Add the user's local files to this repo:** `references/`, `tools/firm_kit.py`, `tools/firm_pieces.py`,
       `tools/voxel_builder.py`, `tools/clients.py`, `ClientPalette.png`. Decide whether `.fbx` exports go in
       (they're big; maybe Git LFS) or stay local.
