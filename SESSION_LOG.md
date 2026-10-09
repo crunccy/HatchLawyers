@@ -27,6 +27,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: case results as small floating numbers
+- Hud: the big result pop-up (WIN! / Settled! / Mistrial card + big-win sunburst) is gone. Every `CaseResult` now
+  spawns a small labeled number right of the coin counter — "+1.50K WIN" green, "+820 SETTLED" orange,
+  "MISTRIAL - case reruns" blue (bigger for Epic/Legendary clients). It fades in, drifts up and fades out (2.2 s);
+  numbers stack like a feed (newest pushes older ones up, max 6), so busy firms never overlap. Coin pill still pulses.
+- Tutorial: a legend strip under the STEP banner for the whole tutorial — "Case coins float up by your money:
+  GREEN = WIN · ORANGE = SETTLED · BLUE = MISTRIAL" in those colours.
+- Unchanged: the courtroom's own verdict banner, the in-world coin burst for big wins, reward pop-ups (daily gifts).
+- Tested with a stream of 3 results/s (clean stack, colours right) and a reset tutorial (legend shows, readable).
+
 ## 2026-10-09 — local session: per-character court questions
 - New `Server.ClientEvidence` (ModuleScript): an opponent + 3 evidence questions (first card right, server shuffles)
   for each of the 36 clients whose tier set in `Server.EvidenceCards` was written for someone else (Grandma Pearl,
