@@ -30,6 +30,18 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: Pinstripe Partner fix + two renames
+- **Bug** (user screenshot: the lawyer lay on the floor under its tag): `PinstripePartner` wears mr.robe's rig
+  `SkinModels.LawyerSkin_Legendary`, the only skin with unanchored parts on 16 Motor6Ds (+ 8 Bones). Physics
+  toppled it and it fought Shared.Puppet. `SkinLook.putOnModel` now, for every model skin: records each joint
+  (Part0, Part1, C0, C1), destroys the joints, anchors every part (CanCollide off), then places each Part1 at
+  Part0 * C0 * C1^-1 (8 passes down the tree). The rig's stored part CFrames are stale; its real pose lives in
+  the joints (anchoring alone left it upside down in the floor). Bones kept for the skinned meshes. Other skins
+  have no joints, so they're unaffected. Verified: upright at Desk 9, 0 unanchored parts, tag above the head.
+- **Renames** (user's calls; ids/models unchanged so saves still work): `PinstripePartner` is now shown as
+  "Tung Tung Tung Sahur"; `CappuccinoAvvocato` is now "Cappuccino Assassino". Verified on the name tags.
+  Note: the Rare *client* "Tung Tung Sahur" (Config.Clients[3]) is a different character with a similar name.
+
 ## 2026-10-09 — local session: picker closes after one assignment
 User: after assigning one client the picker stayed open and jumped to the next client; they want it to close so
 the Manager (auto-assign) feels more rewarding.
