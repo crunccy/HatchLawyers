@@ -1,0 +1,348 @@
+--!strict
+-- Lawyers and offices (v12 "hatch real lawyers"). Clients ask, the server checks and charges.
+--   TrainLawyer(office)        upgrades an OFFICE one level (the main coin sink; the level stays with
+--                              the office when lawyers swap). Free tutorial level-ups are spent first.
+--   PlaceLawyer(office, uid?)  puts an owned lawyer in an office (swapping with wherever it was) or,
+--                              with uid nil, sends the office's lawyer back to the inventory.
+--   MergeLawyers(uid)          merges that lawyer with Config.Lawyers.MergeCount - 1 copies of the same
+--                              lawyer at the same stars into one lawyer with +1 star.
+--   MergeSelected({uids})      the Lawyer Merger machine (Hub.MergeMachine): the player picks exactly
+--                              MergeCount lawyers. Same rule, but the server merges exactly those, after
+--                              checking every one (owned, distinct, same lawyer + stars, not max, not busy).
+--                              The first pick (or the one in an office) keeps its uid/office and gets +1 star.
+-- LawyerService.hatch() makes a new lawyer for EggServer (rolls its starting skills).
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage.Shared.Config)
+local Formulas = require(ReplicatedStorage.Shared.Formulas)
+local PlayerData = require(script.Parent.PlayerData)
+local CaseService = require(script.Parent.CaseService)
+
+local Remotes = ReplicatedStorage.Remotes
+local TrainLawyer = Remotes.TrainLawyer :: RemoteFunction
+local PlaceLawyer = Remotes.PlaceLawyer :: RemoteFunction
+local MergeLawyers = Remotes.MergeLawyers :: RemoteFunction
+local MergeSelected = Remotes:FindFirstChild("MergeSelected") :: RemoteFunction
+
+local COOLDOWN = 0.15
+
+local LawyerService = {}
+
+local rng = Random.new()
+local lastRequest: { [Player]: number } = {}
+
+local function throttled(player: Player): boolean
+	local t = os.clock()
+	if t - (lastRequest[player] or 0) < COOLDOWN then
+		return true
+	end
+	lastRequest[player] = t
+	return false
+end
+
+local function isIndex(n: unknown): boolean
+	return type(n) == "number" and n == n // 1
+end
+
+-- An office's lawyer can only move while it isn't walking a client in or working a case.
+local function officeFree(player: Player, index: number): boolean
+	local desk = CaseService.getDesk(player, index)
+	return not desk or desk.phase == "Idle" or desk.phase == "Empty"
+end
+
+-- Office upgrade. Returns ok and, on failure, a short reason the client can show.
+local function upgradeOffice(player: Player, index: unknown): (boolean, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	if not isIndex(index) or not data.Desks[index :: number] then
+		return false, "Bad office"
+	end
+	local office = data.Desks[index :: number]
+	if office.Level >= Config.Lawyer.MaxLevel then
+		return false, "Max level!"
+	end
+	if data.Tutorial.FreeLevelUps > 0 then
+		data.Tutorial.FreeLevelUps -= 1
+	elseif not PlayerData.spendCoins(player, Formulas.trainCost(office.Level)) then
+		return false, "Not enough coins"
+	end
+	local oldTier = Formulas.officeTier(office.Level)
+	office.Level += 1
+	PlayerData.sync(player)
+	local GoalService = require(script.Parent.GoalService) :: any
+	GoalService.track(player, "train")
+	local newTier = Formulas.officeTier(office.Level)
+	if newTier > oldTier then
+		GoalService.track(player, "deskUpgrade")
+	end
+	CaseService.refreshDesk(player, index :: number, newTier > oldTier)
+	if newTier > oldTier then
+		CaseService.burst(player, index :: number, "tier")
+	end
+	return true, if newTier > oldTier then Config.Desks.Tiers[newTier].Name else nil
+end
+
+local function place(player: Player, index: unknown, uid: unknown): (boolean, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	if not isIndex(index) or not data.Desks[index :: number] then
+		return false, "Bad office"
+	end
+	local target = index :: number
+	local office = data.Desks[target]
+	if uid == nil then
+		-- back to the inventory
+		if not office.Lawyer then
+			return false, "That office is empty"
+		end
+		if not officeFree(player, target) then
+			return false, "Busy with a case!"
+		end
+		office.Lawyer = nil
+		PlayerData.sync(player)
+		CaseService.refreshDesk(player, target)
+		return true, nil
+	end
+	if type(uid) ~= "string" or not data.Lawyers[uid] then
+		return false, "You don't have that lawyer"
+	end
+	if office.Lawyer == uid then
+		return true, nil
+	end
+	local from = PlayerData.officeOf(data, uid)
+	if not officeFree(player, target) or (from and not officeFree(player, from)) then
+		return false, "Busy with a case!"
+	end
+	local wasEmpty = office.Lawyer == nil
+	if from then
+		-- swap: whoever sat here moves to the lawyer's old office
+		data.Desks[from].Lawyer = office.Lawyer
+	end
+	office.Lawyer = uid
+	PlayerData.sync(player)
+	CaseService.refreshDesk(player, target, true)
+	if from then
+		CaseService.refreshDesk(player, from)
+	end
+	if wasEmpty and not from then
+		require(script.Parent.GoalService).track(player, "place")
+	end
+	local def = Formulas.getSkin(data.Lawyers[uid].Id)
+	local rarity = def and Config.Eggs.Skins[def.Rarity]
+	if rarity and (rarity.Id == "Legendary" or rarity.Id == "Rare") then
+		CaseService.burst(player, target, if rarity.Id == "Legendary" then "legendary" else "rare")
+	end
+	return true, nil
+end
+
+-- Total skill levels, to keep the best skill set when merging.
+local function skillScore(lawyer: PlayerData.LawyerData): number
+	local n = 0
+	for _, skill in lawyer.Skills do
+		n += skill.Level
+	end
+	return n
+end
+
+local mergeInto: (Player, PlayerData.Data, string, { string }) -> (boolean, string?)
+
+local function merge(player: Player, uid: unknown): (boolean, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	if type(uid) ~= "string" or not data.Lawyers[uid] then
+		return false, "You don't have that lawyer"
+	end
+	local base = data.Lawyers[uid]
+	if base.Stars >= #Config.Lawyers.StarEarn then
+		return false, "Already max stars!"
+	end
+	-- the copies to use up: inventory ones first, then ones in offices that aren't busy
+	local spare, working = {}, {}
+	for otherUid, other in data.Lawyers do
+		if otherUid ~= uid and other.Id == base.Id and other.Stars == base.Stars then
+			local at = PlayerData.officeOf(data, otherUid)
+			if not at then
+				table.insert(spare, otherUid)
+			elseif officeFree(player, at) then
+				table.insert(working, otherUid)
+			end
+		end
+	end
+	local need = Config.Lawyers.MergeCount - 1
+	local used = {}
+	for _, list in { spare, working } do
+		for _, otherUid in list do
+			if #used < need then
+				table.insert(used, otherUid)
+			end
+		end
+	end
+	if #used < need then
+		return false, string.format("Need %d of this lawyer", Config.Lawyers.MergeCount)
+	end
+	local at = PlayerData.officeOf(data, uid)
+	if at and not officeFree(player, at) then
+		return false, "Busy with a case!"
+	end
+	return mergeInto(player, data, uid, used)
+end
+
+-- The merge itself, shared by MergeLawyers and MergeSelected. Everything is already validated; nothing in
+-- here yields, so two requests can never interleave and consume the same lawyers.
+function mergeInto(player: Player, data: PlayerData.Data, uid: string, used: { string }): (boolean, string?)
+	local base = data.Lawyers[uid]
+	local at = PlayerData.officeOf(data, uid)
+	-- the merged lawyer keeps the best skills of the three and every free roll / case count
+	local best = base
+	local refresh = {}
+	for _, otherUid in used do
+		local other = data.Lawyers[otherUid]
+		if skillScore(other) > skillScore(best) then
+			best = other
+		end
+		base.FreeSkillRolls += other.FreeSkillRolls or 0
+		base.CasesDone += other.CasesDone or 0
+		local otherAt = PlayerData.officeOf(data, otherUid)
+		if otherAt then
+			data.Desks[otherAt].Lawyer = nil
+			table.insert(refresh, otherAt)
+		end
+		data.Lawyers[otherUid] = nil
+	end
+	if best ~= base then
+		base.Skills = table.clone(best.Skills)
+		base.PendingSkill = nil
+	end
+	base.Stars += 1
+	PlayerData.sync(player)
+	for _, i in refresh do
+		CaseService.refreshDesk(player, i)
+	end
+	if at then
+		CaseService.refreshDesk(player, at, true)
+		CaseService.burst(player, at, if base.Stars >= 3 then "rainbow" else "merge")
+	end
+	require(script.Parent.GoalService).track(player, "merge")
+	return true, Formulas.lawyerName(base.Id, base.Stars)
+end
+
+-- The Lawyer Merger: exactly the lawyers the player picked. Returns ok, the merged lawyer's name (or the
+-- reason it failed) and its uid.
+local function mergeSelected(player: Player, picks: unknown): (boolean, string?, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	local need = Config.Lawyers.MergeCount
+	if type(picks) ~= "table" or #(picks :: { any }) ~= need then
+		return false, string.format("Pick %d lawyers", need)
+	end
+	local uids = picks :: { any }
+	local seen: { [string]: boolean } = {}
+	local first: PlayerData.LawyerData? = nil
+	for _, u in uids do
+		if type(u) ~= "string" or not data.Lawyers[u] then
+			return false, "You don't have that lawyer"
+		end
+		if seen[u] then
+			return false, "Pick 3 different lawyers"
+		end
+		seen[u] = true
+		local lawyer = data.Lawyers[u]
+		if first and (lawyer.Id ~= first.Id or lawyer.Stars ~= first.Stars) then
+			return false, "They must be the same lawyer"
+		end
+		first = first or lawyer
+		local at = PlayerData.officeOf(data, u)
+		if at and not officeFree(player, at) then
+			return false, "One of them is busy with a case!"
+		end
+	end
+	if (first :: PlayerData.LawyerData).Stars >= #Config.Lawyers.StarEarn then
+		return false, "Already max stars!"
+	end
+	-- keep the one sitting in an office (it stays at its desk), else the first pick
+	local keep = uids[1] :: string
+	for _, u in uids do
+		if PlayerData.officeOf(data, u :: string) then
+			keep = u :: string
+			break
+		end
+	end
+	local used = {}
+	for _, u in uids do
+		if u ~= keep then
+			table.insert(used, u :: string)
+		end
+	end
+	local ok, name = mergeInto(player, data, keep, used)
+	if ok then
+		local machine = workspace:FindFirstChild("Hub") and workspace.Hub:FindFirstChild("MergeMachine")
+		if machine and machine:IsA("Model") then -- everyone near the machine sees it go off
+			local Effects = require(ReplicatedStorage.Shared.Effects) :: any
+			local box, size = machine:GetBoundingBox()
+			task.delay(1.2, Effects.burst, box.Position + Vector3.new(0, size.Y / 2, 0), if data.Lawyers[keep].Stars >= 3 then "rainbow" else "merge")
+		end
+	end
+	return ok, name, if ok then keep else nil
+end
+
+-- A freshly hatched lawyer of this catalog id: rolls its starting skills (Config.Eggs.Skins
+-- StartSkills) and adds it to the player's lawyers. Returns its uid and record.
+function LawyerService.hatch(data: PlayerData.Data, id: string): (string, PlayerData.LawyerData)
+	local def = Formulas.getSkin(id)
+	local rarity = def and Config.Eggs.Skins[def.Rarity]
+	local lawyer = PlayerData.newLawyer(id, 1)
+	for _ = 1, if rarity then rarity.StartSkills else 1 do
+		local skillId, param = Formulas.rollSkill(rng, lawyer.Skills)
+		if not skillId then
+			break
+		end
+		local owned = nil
+		for _, s in lawyer.Skills do
+			if s.Id == skillId then
+				owned = s
+			end
+		end
+		if owned then
+			owned.Level = math.min(owned.Level + 1, Config.Skills.MaxLevel)
+		else
+			table.insert(lawyer.Skills, { Id = skillId, Level = 1, Param = param })
+		end
+	end
+	return PlayerData.addLawyer(data, lawyer), lawyer
+end
+
+function LawyerService.start()
+	TrainLawyer.OnServerInvoke = upgradeOffice
+	PlaceLawyer.OnServerInvoke = place
+	MergeLawyers.OnServerInvoke = merge
+	if MergeSelected then
+		MergeSelected.OnServerInvoke = mergeSelected
+	end
+	Players.PlayerRemoving:Connect(function(player)
+		lastRequest[player] = nil
+	end)
+end
+
+return LawyerService

@@ -4,6 +4,8 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
+- [ ] Eye-check the Lawyer Merger panel + merge animation in a playtest (window wasn't rendering during the build).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
 - [ ] Eye-check a merged lawyer's Gold / Rainbow tag line (LawyerTags).
 - [ ] Eye-check the hatch screen's Rare/Legendary VFX (star flare + slash ring) on a real rare roll.
@@ -30,6 +32,45 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-09 — local session: Robux Shop, Lawyer Merger machine, egg particle fix
+User spec: a Shop (Robux passes + products, real MarketplaceService), a Lawyer Merger (reference: "Fuse Machine"),
+and fix egg particles stuck in the middle of the map. References: "Steal an Egg" Trail Shop / Fuse Machine.
+- **Egg particles - root cause**: the Eggs client script bobbed each machine egg with `PivotTo(home * ...)`,
+  reading `home = egg:GetPivot()` ONCE at startup. Players spawn at their firm, far from the hub, so with
+  StreamingEnabled the egg (PrimaryPart = invisible Shell) hadn't streamed in -> home read as the map origin ->
+  every frame, whatever had streamed in (Shell + FX_Shell / FX_Aura, which hold the emitters) was dragged to
+  the middle of the map. Fix: EggServer publishes each egg's true pivot as attribute `Home` and sets the egg
+  `ModelStreamingMode = Atomic`; the client bobs from `Home` only, and only once the egg's PrimaryPart exists.
+  Tested (numbers - see below): moved egg -> fx follow (0.0 studs); second egg elsewhere keeps its own fx;
+  destroyed egg leaves 0 emitters; 0 emitters near the map origin.
+- **Shop**: `Config.Shop` (4 passes: 2x Cash, Lucky Eggs, Speedy Cases, Bigger Firm; 4 products: 10 min / 1 h /
+  6 h of income, 3 Rare Eggs). **All Ids = 0 -> fill in from the Creator Dashboard** (cards say COMING SOON,
+  nothing prompts or grants until then). `Server.ShopService`: passes via UserOwnsGamePassAsync on join +
+  PromptGamePassPurchaseFinished(purchased); products ONLY via ProcessReceipt, deduped by PurchaseId in the new
+  `PlayerData.Purchases` (schema v13 + migration) and saved (`PlayerData.saveNow`) before PurchaseGranted.
+  Effects: CaseService (DoubleCash payout, SpeedyCases time), EggServer (LuckyEggs Rare/Legendary weights x2,
+  BigFirm +100 storage). `StarterPlayerScripts.Shop`: purple striped studded panel, Passes / Boosts tabs,
+  coloured studded cards with spinning 3D icons, dark perk banner, green price button (real price from
+  GetProductInfo), "..." while prompting, OWNED ✓. SHOP button under LAWYERS in the HUD column. World:
+  `Hub.ShopStall` (striped awning stall on Mr Blox's ShopSpot pad, ShopPrompt). UI textures: tools/ui_textures.py.
+- **Lawyer Merger**: `Hub.MergeMachine` on MergeMachineSpot (blue machine, dome, pipes, "?" window that turns
+  "!" + sign "N merges ready!" when you can merge). `StarterPlayerScripts.Merger`: Fuse-Machine layout - 3 slots
+  with green + piped into a result window, "N Lawyers Left" / MERGE!, help card (3 small ≈ 1 big, OK!), a
+  picker that groups lawyers by kind with copy counts and auto-fills the other slots, preview of the result
+  (name, stars, Earns x old -> new), flash + burst reveal. Rule = the game's existing one (3 same lawyer + stars ->
+  +1 star, Config.Lawyers). Server: `Remotes.MergeSelected` -> LawyerService.mergeSelected (validates count,
+  distinct, owned, same id+stars, not max, not busy; no yields between check and consume; shares mergeInto()
+  with the old MergeLawyers so skills / free rolls / office handling are identical).
+- Streaming gotcha (both new UIs): the hub can stream in late or re-stream as NEW instances, so prompts are
+  handled through ProximityPromptService.PromptTriggered by name, and the sign is looked up fresh.
+- Verified: Shop opens, both tabs render, OWNED state; receipts via a Studio-only test hook through the real
+  handler (grant, same receipt again = no double grant, unknown player / product -> NotProcessedYet); pass
+  effect only from server ownership. Merger server via the real remote: 5 invalid requests rejected, valid
+  merge consumed exactly 2 and starred the kept one, re-use rejected, concurrent duplicate rejected.
+  NOT verified on screen: the Merger panel opening + its animation - the Studio window stopped rendering
+  (0 render fps) mid-test, so prompts/screenshots couldn't run. Test data: 3 Brr Brr Patapim were added to the
+  Studio test save and two test merges were made.
 
 ## 2026-10-09 — local session: reveal redesign - one continuous 3D stage
 User: the reveal (spinning sunburst, slash ring, star, confetti, coin rain, little 2D preview box) looked

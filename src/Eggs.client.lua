@@ -92,10 +92,21 @@ end
 -- World: idle bob, FREE badge, prompt text, odds board
 -------------------------------------------------------------------------------
 
-local eggHome = eggModel:GetPivot()
+-- The egg's home comes from the server (EggServer sets the egg's "Home" attribute; it always has every part).
+-- Never GetPivot() here: with StreamingEnabled the egg's parts may not have streamed in yet when this runs,
+-- and the pivot then reads as the map origin - the bob below would drag the egg's effect parts (FX_Shell /
+-- FX_Aura, holding the particles) to the middle of the map. Don't bob until the home is known.
+local function eggHomeOf(egg: Model): CFrame?
+	local home = egg:GetAttribute("Home")
+	return if typeof(home) == "CFrame" then home else nil
+end
 RunService.RenderStepped:Connect(function()
+	local home = eggHomeOf(eggModel)
+	if not home or not eggModel.PrimaryPart then
+		return -- not streamed in yet: leave it where the server put it
+	end
 	local t = os.clock()
-	eggModel:PivotTo(eggHome * CFrame.new(0, math.sin(t * 2) * 0.35, 0) * CFrame.Angles(0, t * 0.6, math.sin(t * 1.3) * 0.06))
+	eggModel:PivotTo(home * CFrame.new(0, math.sin(t * 2) * 0.35, 0) * CFrame.Angles(0, t * 0.6, math.sin(t * 1.3) * 0.06))
 end)
 
 local freeBadge = Instance.new("BillboardGui")
@@ -169,10 +180,13 @@ for n, def in Config.Eggs.Themed do
 		table.insert(themedPrompts, tPrompt)
 	end
 	local bEgg = tMachine:WaitForChild("Egg") :: Model
-	local bHome = bEgg:GetPivot()
 	RunService.RenderStepped:Connect(function()
+		local home = eggHomeOf(bEgg) -- server-published home, see the Briefcase egg above
+		if not home or not bEgg.PrimaryPart then
+			return
+		end
 		local t = os.clock() + 1.7 * n -- out of step with each other
-		bEgg:PivotTo(bHome * CFrame.new(0, math.sin(t * 2) * 0.35, 0) * CFrame.Angles(0, t * 0.6, math.sin(t * 1.3) * 0.06))
+		bEgg:PivotTo(home * CFrame.new(0, math.sin(t * 2) * 0.35, 0) * CFrame.Angles(0, t * 0.6, math.sin(t * 1.3) * 0.06))
 	end)
 	local attr = def.Id .. "EggPrice"
 	local function refreshThemed()
