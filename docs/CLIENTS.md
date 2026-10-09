@@ -52,3 +52,12 @@ own tier in `Config.Clients`).
 - **Milo Vex** (`MiloVex`): hot-pink blazer, pink shades, tall blond swoop, shopping bags.
 - **DJ Beatbox** (`DJBeatbox`): black hoodie with neon-pink stripes, cap, big headphones, gold chain, vinyl record.
 - **Kiki Glow** (`KikiGlow`): sparkly lavender dress, long pink hair, glowing tiara, hand mirror.
+
+## 30 more (block style, Parts — `tools/themed_cast.py` CLIENTS, 2026-10-09)
+- **Common:** Mail Carrier Mo, Lemonade Lily, Gamer Gabe, Gardener Gus, Ice Cream Ivy, Barber Bob, Crossing Guard
+  Carol, Librarian Lou, Camper Cam, Yoga Yasmin.
+- **Uncommon:** Firefighter Faye, Magician Marvin, Farmer Frank, Nurse Nina, Mechanic Max, Artist Aria, Wrestler Ronda,
+  Pilot Paige, Musician Moe.
+- **Rare:** Pirate Patches, Cowboy Cody, Zombie Zeke, Ninja Noodle, Knight Kevin, Mermaid Marina, Chuckles the Clown.
+- **Epic:** Tech Billionaire Ted, Movie Star Maya, King Reginald, Astronaut Ace.
+Each one's case is in `Config.ClientCharacters` (Situation).

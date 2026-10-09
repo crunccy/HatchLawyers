@@ -27,6 +27,27 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: Pet / Food / Ocean / Space eggs + 30 more clients
+- `tools/themed_cast.py` (Blender, on top of lawyers_v2.py): 32 themed lawyers (8 per egg: 2 C / 2 U / 2 R / 2 L)
+  + 30 clients (10 Common, 9 Uncommon, 7 Rare, 4 Epic), exported to `tools/themed_parts.json` (adds a Glass flag).
+  Built in Studio with the new dev module `ServerStorage.BlockCharacterBuilder` (compact rows, see its header):
+  lawyers → `ReplicatedStorage.SkinModels`, clients → `ServerStorage.Templates.Clients` (+ invisible root).
+- `Config.Eggs.Themed` replaces `Config.Eggs.Brainrot`: Brainrot ×3 (0/60/32/8), Pet ×2 (55/28/14/3), Food ×4
+  (45/32/18/5), Ocean ×8 (35/35/22/8), Space ×16 (25/35/28/12); each has Machine, Color (hatch-screen egg), Tagline.
+  Catalog: 32 lawyers added by a compact loop at the bottom of Config (Egg = theme; Legendary = Neon).
+  `Formulas.themedEgg(id)`, `Formulas.themedEggPrice(id, opened)`; EggServer `onRoll(player, eggId)` for every
+  machine, attrs `<Id>EggPrice`; client Eggs loops over all themed machines (bob, prompt, odds board).
+- Machines: `Hub.PetEggMachine` Pad3, `FoodEggMachine` Pad4, `OceanEggMachine` Pad5, `SpaceEggMachine` Pad6 (clones of
+  the Brainrot machine, recoloured, rotated around the plaza). mr.robe's Money / Gold / Diamond / Courtroom
+  "Coming Soon" placeholders saved in `ServerStorage.ComingSoonEggs.Pad3_MoneyEgg`..`Pad6_CourtroomEgg`.
+  Shadow (Pad7) and Lava (Pad8) placeholders untouched.
+- `Config.ClientCharacters`: +30 (tiers 1-4). Odds boards now round "28.0%" → "28%".
+- Tested: 3,000 rolls per egg — every pool only its own 8 (Briefcase 13), splits match the weights; every catalog
+  Model and client template exists (53 lawyers, 45 clients); real E press at the Space Egg hatched UFO Counsel
+  (hatch screen OK); no console errors.
+- OPEN: court evidence questions are per client TIER (`Server.EvidenceCards`), so every Common client gets Dave's
+  parking-ticket questions. Needs per-character question sets (or generic ones) — heads-up mr.robe.
+
 ## 2026-10-09 — local session: starter egg = Briefcase Egg
 - The starter machine (`Hub.EggMachine`, Pad2) is now the **Briefcase Egg**: mr.robe's yellow/brown Briefcase egg
   voxels (from `ServerStorage.ComingSoonEggs.Pad1_BriefcaseEgg`, rotated Pad1→Pad2) replace the generic shell
