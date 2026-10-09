@@ -42,3 +42,13 @@ Refers to himself in the third person and tips in banana peels.
 **B0-P "Beep"** (`BeepBot`) — A cheerful delivery robot who means extremely well. Speaks only in happy beeps and
 has a 100% delivery rate, technically.
 *Case:* Delivered 300 pizzas… to the wrong planet.
+
+## Epic & Legendary (block style, Parts — `tools/lawyers_v2.py`)
+Built 2026-10-08 so no client is the blocky NPC any more. One character per tier (each Legendary celebrity is its
+own tier in `Config.Clients`).
+- **A retired CEO** (Epic, `RetiredCEO`): bald with white tufts and a walrus mustache, maroon velvet jacket, gold cravat and cane.
+- **Chef Mega** (`ChefMega`): giant chef hat with a gold band, curled mustache, red neckerchief, glowing star badge, golden ladle.
+- **Rocket Baron Rex** (`RocketBaronRex`): silver flight suit with orange stripes, goggles on his forehead, toy rocket.
+- **Milo Vex** (`MiloVex`): hot-pink blazer, pink shades, tall blond swoop, shopping bags.
+- **DJ Beatbox** (`DJBeatbox`): black hoodie with neon-pink stripes, cap, big headphones, gold chain, vinyl record.
+- **Kiki Glow** (`KikiGlow`): sparkly lavender dress, long pink hair, glowing tiara, hand mirror.
