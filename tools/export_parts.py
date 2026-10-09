@@ -20,7 +20,7 @@ import firm_pieces  # noqa: E402
 importlib.reload(firm_kit)
 importlib.reload(firm_pieces)
 
-BOOKS = [(150, 30, 30), (28, 44, 110), (30, 110, 50), (230, 200, 130)]
+BOOKS = [(240, 70, 70), (60, 150, 255), (98, 205, 48), (255, 205, 70)]
 
 
 def record_pieces():
@@ -68,7 +68,7 @@ def export():
                 for i in range(n):
                     a, b = list(mn), list(mx)
                     a[ax], b[ax] = mn[ax] + length * i / n, mn[ax] + length * (i + 1) / n
-                    color = BOOKS[(start + i) % 4] if pattern == "books" else ((255, 190, 50) if i % 2 == 0 else (30, 30, 34))
+                    color = BOOKS[(start + i) % 4] if pattern == "books" else ((255, 205, 70) if i % 2 == 0 else (40, 40, 52))
                     emit(a, b, color)
             else:
                 emit(mn, mx, rgb)

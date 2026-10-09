@@ -27,6 +27,15 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-08 — local session: firm matches the world (studs + world palette)
+- User: the firm looked too smooth, no stud texture, not the same style as the world / lawyers / eggs.
+  Cause (measured in Studio): every map part uses Plastic with **TopSurface = Studs**; the firm's 824 parts were
+  Smooth, and used mr.robe's muted courtroom palette instead of the world's bright one.
+- Fix: all `FirmKitParts` templates + `FirmKitParts.Build`, `FirmBuilder.part`, `DeskService.cartoonPart` and
+  `DeskLook.piece` now make studded Plastic. `tools/firm_pieces.py` palette "v4" = world colors (plaza white /
+  orange checker floor, hub greens, gold 255,205,70, red 240,70,70, egg-pad wood 122,62,24); all 6 pieces re-sent.
+  Playtest: 1,535 firm parts studded, 0 smooth, no errors.
+
 ## 2026-10-08 — local session: roomier offices, no overhead arch (Studio + Blender)
 - User: more room between lawyers, drop the overhead arches. `tools/firm_pieces.py`: `SEG = 11` (offices 11 deep,
   was 8; filing cabinet added to each office), divider posts cut to 2.9 studs with no beam/plaque. Backup of the

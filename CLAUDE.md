@@ -44,8 +44,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   Rarity colors come from `Config.RarityColors`.
 - **Fonts:** FredokaOne only. White text + thick black UIStroke. No serif / navy / brass.
 - **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones.
-- **Builds:** Plastic (WoodPlanks for crates/floors), anchored, chunky, low part count — every player gets a
-  firm, ×8 per server. Mesh budgets are in docs/BLENDER_BRIEF.md.
+- **Builds:** plain Parts, **Plastic with `TopSurface = Studs`** (every part of the map — Ground, Plaza, Trees,
+  IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
+  colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
+  Studio's command bar caches required modules: after editing a ModuleScript, re-require a fresh clone.
 - mr.robe's realistic restyle is **archived, not deleted**: `ServerStorage.Templates.LuxuryFirm` (953 parts →
   future top firm tier) and `ServerStorage.ArchivedVisuals` (skyline, sidewalks/lampposts, planters).
 
