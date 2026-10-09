@@ -27,6 +27,14 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-08 — local session: pre-Manager self-assign (review §3 fix #1)
+- `Config.Case.SelfAssignAfter = 12`: before the Manager is hired, a client seated that long walks to the first
+  free lawyer by itself (`CaseService.autoAssign`; longest wait first, ≤1 per 0.8 s; never before the tutorial's
+  first case). The Manager still assigns instantly and picks the best-paying lawyer.
+- Playtested with nobody clicking: the client walked over after 12 s, finished and paid (1,500 coins).
+- Sim synced (`CONFIG.Case.SelfAssignAfter`; scenario `auto-assign` replaced by `no-self-assign`); 20 tests pass.
+  Starting firm: AFK ~53/s vs active ~64/s (was 0 AFK). Retune the delay if AFK should earn less.
+
 ## 2026-10-08 — local session: nobody is blocky any more (lawyers, Manager, Epic/Legendary clients)
 - `tools/lawyers_v2.py` (Blender; reuses the `clients_v2.py` recipe) designs 14 block-style characters and exports
   `tools/lawyer_parts.json` (Roblox-space boxes). Studio builds them as anchored Plastic Parts, like mr.robe's

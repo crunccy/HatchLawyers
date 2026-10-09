@@ -20,7 +20,7 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 | Non-wins | 70 % settlement (40–60 % pay), 30 % mistrial (the whole case reruns, no pay) |
 | Clients | Common ×1 (70, diff 0, 30 s), Uncommon ×3 (25, 10, 60 s), Rare ×8 (5, 25, 120 s), Epic ×20 (1, 45, 180 s), 5 Legendary celebrities ×50 (0.06 each, 70, 240 s) |
 | Arrivals | one client every `max(1, 3.5 × 8 / working lawyers)` s while one of the **10** waiting seats is free |
-| Assigning | the player clicks ASSIGN TO LAWYER; the **Manager** (5e7) auto-assigns. Nothing else assigns (see review §3) |
+| Assigning | the player clicks ASSIGN CLIENT; the **Manager** (5e7) auto-assigns instantly to the best lawyer; before it, a client waiting **12 s** (`Case.SelfAssignAfter`) walks to the first free lawyer by itself (not in the tutorial) |
 | Firm | Expand Firm = +1 segment = 2 **empty** offices: 3e7, 6e8, 3e10, 1.5e12, 8e13, 4e15 (segments 5–10); no hiring |
 | Eggs | hatch a lawyer: Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 %; even among that rarity's lawyers (3 / 3 / 4 / 3 in the catalog) |
 | Egg price | `7,500 × 1.15^(eggs opened)`; first egg free and guaranteed Uncommon; pity: 50th egg without a Legendary is one |
@@ -34,7 +34,8 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 **Current status (sim, live Config):** first egg 40 s at 188/s — OK; first Expand 16 min — slightly early;
 1T/s at **68–88 min — far too fast**, then a hard wall at office level 100 around 4 h.
 See [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md) for the analysis and the fixes (TrainBase ~10–12K + new offices not
-starting at level 1; pre-Manager auto-assign).
+starting at level 1). Pre-Manager self-assign is live since 2026-10-08: an AFK starting firm earns ~53/s
+vs ~64/s active (it used to earn 0).
 
 ## How to retune
 0. **Never change `Payout.Growth` or `Lawyer.TrainGrowth` casually** — their ratio (1.0688) sets the whole curve.
@@ -45,8 +46,8 @@ starting at level 1; pre-Manager auto-assign).
 3. Copy the changed values into `CONFIG` in `tools/economy_sim.py` (tag them `SYNCED`) and into the table above.
 
 Flags: `--report` (purchases, gaps and prices per window, milestones), `--sweep [factor]` (how much each tunable
-moves the targets), `--active 0.2` (courtroom bonus, inside the ×2.5 cap), `--afk` (nobody clicks Assign),
-`--scenario busy-lawyers,auto-assign,multi-hatch,egg-ramp-10,egg-ramp-20,egg-tiers` (proposed changes, not live),
+moves the targets), `--active 0.2` (courtroom bonus, inside the ×2.5 cap), `--afk` (nobody clicks Assign; clients self-assign),
+`--scenario busy-lawyers,no-self-assign,multi-hatch,egg-ramp-10,egg-ramp-20,egg-tiers` (proposed changes, not live),
 `--log` (every purchase), `--hours`, `--seed`. Tests: `python3 -m unittest discover tools`.
 
 ### What the Python mirror assumes (not Config values; printed on every run)

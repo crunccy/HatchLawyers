@@ -17,8 +17,8 @@ Model (expected values, event-driven, greedy player):
     Lawyer power = rarity Earn x StarEarn[stars]; 3 copies of the same lawyer and stars merge (+1 star).
   - Clients walk in every Formulas.clientInterval(working lawyers) s while a waiting seat is free; each
     lawyer works one case at a time (walk to desk + case; mistrials rerun the same case). Clients go to the
-    best-paid free lawyer. Before the Manager is hired, someone must click Assign: an active player assigns
-    at most BEHAVIOR.AssignRate clients/s, an AFK player (--afk) none.
+    best-paid free lawyer. Before the Manager is hired, an active player assigns at most BEHAVIOR.AssignRate clients/s; for an AFK
+    player (--afk) clients self-assign after Config.Case.SelfAssignAfter s of waiting.
   - The player always buys the action with the shortest payback time (time to save up + cost / income
     gained): upgrade an office, roll an egg, expand the firm (+2 empty offices) or hire the Manager.
     Merges happen as soon as they raise income. Lawyers are placed best-first into the best offices.
@@ -102,6 +102,9 @@ CONFIG = {
     },
     "Caps": {"PayoutMultiplier": 2.5, "WinChanceBonus": 0.12, "CaseTimeReduction": 0.30},  # SYNCED
     "Manager": {"HireCost": 5e7},                                    # SYNCED  auto-assigns once hired
+    # Config.Case.SelfAssignAfter: before the Manager, a client waiting this long walks to a free lawyer
+    # by itself (CaseService.autoAssign), so an AFK firm still earns. None = the old behaviour (nobody).
+    "Case": {"SelfAssignAfter": 12},                                 # SYNCED
     # Config.Pacing (test targets)                                                          SYNCED
     "Targets": {"FirstEggMinutes": 2, "IncomeAtFirstEgg": (100, 500),
                 "FirstExpandMinutes": (20, 30), "TrillionPerSecHours": (10, 20)},
@@ -123,8 +126,9 @@ ASSUMPTIONS = {
 SCENARIOS = {
     # clients arrive about as fast as lawyers free up, so every lawyer stays busy (see review §6)
     "busy-lawyers": {("CONFIG", "Firm", "ClientInterval"): 5.6},
-    # pre-Manager auto-assign after a short wait (review §3): AFK players earn too
-    "auto-assign": {("ASSUMPTIONS", "AfkAutoAssign"): True},
+    # before 2026-10-08: nothing assigned clients before the Manager (AFK firms earned 0). Now live:
+    # Config.Case.SelfAssignAfter. This scenario turns it back off for comparison.
+    "no-self-assign": {("CONFIG", "Case", "SelfAssignAfter"): None},
     "multi-hatch": {("ASSUMPTIONS", "MultiHatch"): 3},
     "egg-ramp-10": {("CONFIG", "Eggs", "PriceGrowth"): 1.10},
     "egg-ramp-20": {("CONFIG", "Eggs", "PriceGrowth"): 1.20},
@@ -394,14 +398,19 @@ class Firm:
                 pay += share * mult * frac * min(1 + b, caps["PayoutMultiplier"])
                 busy += share * secs * time_mult
             pay *= base_payout(level) * lawyer.earn()
-            desks.append((pay, 1 / (busy + ASSUMPTIONS["WalkSeconds"])))
+            desks.append((pay, busy + ASSUMPTIONS["WalkSeconds"]))
         left = 1 / client_interval(len(pairs))
         hired = self.manager if manager is None else manager
+        wait = 0.0
         if not hired:
-            if afk and not ASSUMPTIONS.get("AfkAutoAssign"):
-                return 0.0      # nobody clicks Assign and nothing else assigns (CaseService)
-            if not afk:
+            if afk:
+                wait = CONFIG["Case"]["SelfAssignAfter"]
+                if wait is None:
+                    return 0.0  # nobody clicks Assign and nothing else assigns
+            else:
                 left = min(left, ASSUMPTIONS["AssignRate"])
+        # an AFK firm's clients sit SelfAssignAfter seconds before walking over: the lawyer idles meanwhile
+        desks = [(pay, 1 / (cycle + wait)) for pay, cycle in desks]
         total = 0.0
         for pay, rate in sorted(desks, reverse=True):
             take = min(left, rate)
@@ -780,7 +789,7 @@ def main():
     ap.add_argument("--report", action="store_true", help="pacing diagnostics: gaps, purchase mix, milestones")
     ap.add_argument("--active", type=float, default=0.0, metavar="BONUS",
                     help="courtroom payout bonus of an active player (e.g. 0.2; inside the x2.5 cap)")
-    ap.add_argument("--afk", action="store_true", help="nobody clicks Assign (only the Manager assigns)")
+    ap.add_argument("--afk", action="store_true", help="nobody clicks Assign (clients self-assign after SelfAssignAfter s; the Manager instantly)")
     ap.add_argument("--sweep", type=float, nargs="?", const=2.0, metavar="FACTOR",
                     help="sensitivity of the targets to each tunable (default factor 2)")
     ap.add_argument("--scenario", default="", metavar="NAMES",

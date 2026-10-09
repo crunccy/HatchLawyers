@@ -72,10 +72,16 @@ class Firm(unittest.TestCase):
         best = max(sim.base_payout(o) * 50 * 2.5 for o in f.offices)
         self.assertLessEqual(f.income(), best / sim.client_interval(1))
 
-    def test_afk_before_manager_earns_nothing(self):
+    def test_afk_before_manager_still_earns(self):
+        # clients self-assign after Config.Case.SelfAssignAfter: slower than an active player, but not 0
         f = sim.Firm()
-        self.assertEqual(f.income(afk=True), 0)
-        self.assertGreater(f.income(afk=True, manager=True), 0)
+        self.assertGreater(f.income(afk=True), 0)
+        self.assertLess(f.income(afk=True), f.income())
+        undo = sim.apply_scenarios(["no-self-assign"])
+        try:
+            self.assertEqual(f.income(afk=True), 0)
+        finally:
+            undo()
 
     def test_no_merge_while_offices_are_empty(self):
         # 3 working Uncommons (3 x2) beat one Gold (x5): merging only pays once offices are full
@@ -120,11 +126,11 @@ class Simulation(unittest.TestCase):
             sim.print_report(res)
         self.assertEqual(len(sim.pacing_checks(res)), 3)
 
-    def test_afk_gets_stuck_without_auto_assign(self):
-        self.assertIsNotNone(sim.simulate(1, afk=True)["stuck_at"])
-        undo = sim.apply_scenarios(["auto-assign"])
+    def test_afk_only_gets_stuck_without_self_assign(self):
+        self.assertIsNone(sim.simulate(1, afk=True)["stuck_at"])
+        undo = sim.apply_scenarios(["no-self-assign"])
         try:
-            self.assertIsNone(sim.simulate(1, afk=True)["stuck_at"])
+            self.assertIsNotNone(sim.simulate(1, afk=True)["stuck_at"])
         finally:
             undo()
 
