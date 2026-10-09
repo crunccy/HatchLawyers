@@ -27,6 +27,27 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: tutorial rewrite + first case always goes to court
+- `Config.Tutorial`: `FirstCaseInCourt = true`, `CourtWait = 90`, `Steps = 5`.
+- Server: CourtService allows court on the tutorial case and gives it a fixed question about Dave's actual ticket
+  (parking in his own driveway; right card = the house deed). CaseService holds the tutorial verdict until the
+  player has been to court (or CourtWait runs out; desk attr `AwaitingCourt`). The case is still a guaranteed win.
+- Courtroom: opens by itself 1.2 s after Dave's case starts; gold coach banner "YOUR FIRST CASE GOES TO COURT!" /
+  "It's a guaranteed win! Pick the right evidence for +15% bonus coins."; tutorial-specific lines for a wrong
+  card / time-up ("...your first case is a guaranteed win!"); verdict tip "Tip: tap ATTEND COURT during any case
+  for bonus coins!"; button reads GO TO COURT! on the tutorial case; court shows the real client's name/situation.
+- HUD hint banner: RichText "STEP n/5" in gold, shrinks to fit (no more overflow). Steps:
+  1 "Neighbor Dave needs a lawyer! Tap ASSIGN CLIENT" → "Nice! Dave is walking to your lawyer's office..."
+  2 "Dave's case is going to COURT! Tap GO TO COURT" → "Your lawyer is wrapping up Dave's case..."
+  3 "You won! Tap UPGRADE OFFICE: your first one is FREE"
+  4 "Follow the green line and hatch your FREE egg!"
+  5 "Walk to a glowing EMPTY OFFICE to place your new lawyer" → 7 s "TUTORIAL COMPLETE! Win cases, upgrade
+  offices and hatch lawyers!". Guide beam now waits for step 3 before pointing at the egg. Case status shows the
+  real client name; "1 client waiting" plural fixed; Manager hint "Walk to your firm's door and press F".
+- Playtested end to end (both the right-card and time-up paths): court opened by itself, Dave won (1.5K, 1.72K
+  with the bonus), every step showed in order, beam targets correct, no errors.
+- NOTE: Studio disconnected right after testing — check the place was saved (these edits are Studio-only).
+
 ## 2026-10-08 — local session: pre-Manager self-assign (review §3 fix #1)
 - `Config.Case.SelfAssignAfter = 12`: before the Manager is hired, a client seated that long walks to the first
   free lawyer by itself (`CaseService.autoAssign`; longest wait first, ≤1 per 0.8 s; never before the tutorial's
