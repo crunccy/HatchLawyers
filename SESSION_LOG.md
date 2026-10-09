@@ -27,6 +27,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: starter egg = Briefcase Egg
+- The starter machine (`Hub.EggMachine`, Pad2) is now the **Briefcase Egg**: mr.robe's yellow/brown Briefcase egg
+  voxels (from `ServerStorage.ComingSoonEggs.Pad1_BriefcaseEgg`, rotated Pad1→Pad2) replace the generic shell
+  (backup: `ComingSoonEggs.EggMachine_GenericVoxel`); sign BRIEFCASE EGG, odds board "BRIEFCASE EGG ODDS", gold light,
+  gold egg on the hatch screen, prompt "Hatch FREE Briefcase Egg!", tutorial step 4 "...hatch your FREE Briefcase
+  Egg!". `Config.Eggs.Name = "Briefcase Egg"`. It still hatches the 13 regular lawyers, gives the free first egg
+  and takes reward tokens — no gameplay change.
+- Playtested: E at the machine hatched Khaby Claim (normal pool), no errors; screenshot checked.
+- Remaining "Coming Soon" pads: Money, Gold, Diamond, Courtroom, Shadow, Lava (no egg decided yet).
+
 ## 2026-10-09 — local session: Brainrot Egg
 - New machine `workspace.Hub.BrainrotEggMachine` on **Pad1** (a clone of EggMachine rotated 45° around the plaza,
   recoloured purple / lime / pink / cyan, sign BRAINROT EGG, own odds board). mr.robe's "Briefcase Egg - Coming

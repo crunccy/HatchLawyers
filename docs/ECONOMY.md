@@ -22,7 +22,7 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 | Arrivals | one client every `max(1, 3.5 × 8 / working lawyers)` s while one of the **10** waiting seats is free |
 | Assigning | the player clicks ASSIGN CLIENT; the **Manager** (5e7) auto-assigns instantly to the best lawyer; before it, a client waiting **12 s** (`Case.SelfAssignAfter`) walks to the first free lawyer by itself (not in the tutorial) |
 | Firm | Expand Firm = +1 segment = 2 **empty** offices: 3e7, 6e8, 3e10, 1.5e12, 8e13, 4e15 (segments 5–10); no hiring |
-| Eggs | hatch a lawyer: Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 %; even among that rarity's lawyers in the normal egg (3 / 3 / 4 / 3) |
+| Eggs | **Briefcase Egg** (starter, Pad2) hatches a lawyer: Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 %; even among that rarity's lawyers in the normal egg (3 / 3 / 4 / 3) |
 | Brainrot Egg | 3x the normal egg's price; only the 8 brainrot lawyers: Uncommon / Rare / Legendary = 60 / 32 / 8 %; shares the opened count (both prices climb) and pity; never free |
 | Egg price | `7,500 × 1.15^(eggs opened)`; first egg free and guaranteed Uncommon; pity: 50th egg without a Legendary is one |
 | Lawyer cap | 150 owned (merge to make room) |
