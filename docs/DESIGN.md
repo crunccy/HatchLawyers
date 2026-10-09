@@ -55,7 +55,7 @@ A Roblox idle/gacha game where players roll for lawyer skins, take on randomized
 | --- | --- | --- | --- |
 | Common | Your neighbor Dave | Disputes a parking ticket | 1x |
 | Uncommon | A local bakery owner | Suing a supplier for a broken contract | 3x |
-| Rare | Tung Tung Sahur | Accused of property damage after a midnight rampage | 8x |
+| Rare | A mysterious stranger *(tier fallback; Tung Tung Sahur removed 2026-10-09)* | Accused of property damage after a midnight rampage | 8x |
 | Epic | A retired CEO | Multi-million dollar inheritance dispute with 12 family members | 20x |
 | Legendary | Chef Mega | Sued by contestants claiming a fictional cooking contest was rigged | 50x |
 | Legendary | Rocket Baron Rex | Accused of abruptly laying off staff at a fictional launch company | 50x |

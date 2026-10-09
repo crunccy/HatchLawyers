@@ -30,6 +30,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: Tung Tung Sahur client removed
+User: remove the client "Tung Tung Sahur" (clashed with the lawyer just renamed "Tung Tung Tung Sahur").
+- `Config.ClientCharacters`: `TungTungSahur` entry deleted. The Rare pool is now 9 characters (Baron von Banana,
+  Beep, Pirate Patches, Cowboy Cody, Zombie Zeke, Ninja Noodle, Knight Kevin, Mermaid Marina, Chuckles), all
+  with their own ClientEvidence sets.
+- `Config.Clients[3]` (Rare tier) fallback name "Tung Tung Sahur" -> "A mysterious stranger".
+- `EvidenceCards` Rare fallback set rewritten without Tung Tung ("your client"); `ClientEvidence` header comment.
+- Template model moved (not deleted) to `ServerStorage.RetiredClients.TungTungSahur`. docs/CLIENTS.md and
+  docs/DESIGN.md marked. tools/clients*.py still build it (harmless).
+- Verified in playtest: Config loads, Rare pool has no Tung Tung, no console errors.
+
 ## 2026-10-09 — local session: Pinstripe Partner fix + two renames
 - **Bug** (user screenshot: the lawyer lay on the floor under its tag): `PinstripePartner` wears mr.robe's rig
   `SkinModels.LawyerSkin_Legendary`, the only skin with unanchored parts on 16 Motor6Ds (+ 8 Bones). Physics

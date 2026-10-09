@@ -31,9 +31,7 @@ arm-wrestled a squid. Lives in a lighthouse that is mostly fishing nets.
 *Case:* His prize-winning soda volcano covered the entire science fair in green goo.
 
 ## Rare
-**Tung Tung Sahur** (`TungTungSahur`) — A living log with a baseball bat and a very loud wake-up routine. Nobody
-knows where he came from, only that he is always awake at midnight.
-*Case:* Property damage after a midnight "rampage" he insists was just enthusiastic drumming.
+~~**Tung Tung Sahur** (`TungTungSahur`) — A living log with a baseball bat and a very loud wake-up routine. Nobody knows where he came from, only that he is always awake at midnight. *Case:* Property damage after a midnight "rampage" he insists was just enthusiastic drumming.~~ *(removed from the game 2026-10-09, user's call; model kept in ServerStorage.RetiredClients)*
 
 **Baron von Banana** (`BaronVonBanana`) — A posh monkey tycoon with a monocle, a top hat and a banana empire.
 Refers to himself in the third person and tips in banana peels.
