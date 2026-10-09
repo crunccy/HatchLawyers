@@ -30,6 +30,14 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: picker closes after one assignment
+User: after assigning one client the picker stayed open and jumped to the next client; they want it to close so
+the Manager (auto-assign) feels more rewarding.
+- `AssignClients.send`: on success, `close()` (removed the "straight on to the next waiting client" step).
+- Refresh loop: if the open client stops waiting (self-assign / left), close instead of retargeting another.
+- Verified in playtest: E on Camper Cam -> BEST FREE LAWYER -> Camper Cam went to Desk1, picker closed, the
+  other 4 waiting clients untouched. No console errors.
+
 ## 2026-10-09 — local session: [E] Assign Client proximity prompts
 User spec: replace the bottom-of-screen ASSIGN CLIENT button with Roblox's built-in ProximityPrompt; keep the
 existing assignment picker exactly as it is.
@@ -39,7 +47,7 @@ existing assignment picker exactly as it is.
   MaxActivationDistance 8, RequiresLineOfSight false (couch backs), Exclusivity OnePerButton (crowded sofas
   show only the nearest). Enabled only while `Waiting` and no Manager is hired; follows attribute changes.
   Triggered -> the existing `open(model)`, so the picker opens for that exact client (gold outline, lawyer
-  cards, BEST FREE LAWYER, "moves on to the next waiting client") - picker code untouched.
+  cards, BEST FREE LAWYER) - picker code untouched.
   No duplicates: one prompt per model in a table, an old "AssignPrompt" is replaced, connections are cleaned up
   when the client's tag is removed / it leaves workspace; a 0.5 s safety net tracks late-replicated clients.
   Other players never get prompts for your clients (created locally, owner-checked).
