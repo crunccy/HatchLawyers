@@ -27,6 +27,20 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-08 — local session: legendary effects (Blender textures + Studio)
+- `tools/effects_textures.py` (run in Blender) makes 10 white+alpha textures (glow, flare, twinkle, rays, ring, wisp,
+  swirl, column, dot) + a coloured coin → `Models - Effects/`; uploaded, ids in `Models - Effects/ASSET_IDS.md`.
+- New `ReplicatedStorage.Shared.Effects`: `aura(model, rarity, stars)` (Rare: blue twinkles + glow; Legendary: gold
+  light column, turning sunburst, rising wisps, flare stars, floor shockwave, light; 2★ gold dust; 3★ rainbow +
+  feet swirl), `burst(where, kind)` (legendary / rare / merge / rainbow / win / tier), `guiBurst(...)` for pop-ups.
+- Hooks: CaseService.applyLawyer → aura; `CaseService.burst(player, office, kind)`; LawyerService: new office tier
+  → "tier", placing a Rare/Legendary → "rare"/"legendary", merge → "merge" (3★ "rainbow"); CaseService win vs
+  Epic/Legendary client → "win" coins; EggServer Rare/Legendary hatch → burst over the machine (2.2 s, timed to
+  the crack). Client: Eggs hatch screen (suspense glow on shakes, gold flash, double sunburst, twinkles, coin
+  rain for Legendary), Hud big-win pop-up and Rewards pop-ups get `guiBurst`.
+- Playtested: no errors; auras attach (Legendary 11 instances); hatch screen verified by screenshot. The MCP
+  3D capture showed a frozen frame, so in-world particles still need an eyeball check in a real playtest.
+
 ## 2026-10-08 — local session: no overhead words, one ASSIGN button, typography pass
 - No text over anyone's head: lawyer nameplates removed (CaseService), Manager name tag removed (ManagerService),
   clients get a slim wordless progress bar tinted by rarity, shown only during their case (name/situation now in

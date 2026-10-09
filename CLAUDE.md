@@ -47,6 +47,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   **BuilderSansMedium** for descriptions and small print. White text + thick black UIStroke on important text.
   No serif / navy / brass. **No words over characters' heads** (lawyers, clients, Manager) — user's call.
 - **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones.
+- **Effects** (`ReplicatedStorage.Shared.Effects`, textures from `tools/effects_textures.py`, ids in
+  `Models - Effects/ASSET_IDS.md`): glowy/magical, laddered by rarity — Rare light blue sparkle, Legendary full gold
+  aura, 2★ gold dust, 3★ rainbow. Use `Effects.aura / burst / guiBurst`; don't hand-roll new emitters. Keep
+  LightEmission ≲ 0.4 on sprites (the yellow firm floor eats fully additive particles).
 - **Builds:** plain Parts, **Plastic with `TopSurface = Studs`** (every part of the map — Ground, Plaza, Trees,
   IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
   colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
