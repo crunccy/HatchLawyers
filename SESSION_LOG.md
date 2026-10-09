@@ -4,7 +4,7 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
-- [ ] **Pre-Manager auto-assign** (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
+- [x] **Pre-Manager auto-assign** — DONE 2026-10-08 (`Case.SelfAssignAfter` 12 s). (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
       Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
 - [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
       starting at the firm's lowest office level (`DeskService.upgradeFirm`), or expansions stall. Sim it first.
