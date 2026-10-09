@@ -30,6 +30,21 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: client name tags
+User: "give names to all of the clients too, using the same method you just did".
+- `LawyerTags` now tags every client in every firm (walking in, on the waiting-room sofas, at a desk) with the
+  same outlined style, compact: name (ClientName attribute) + one rich-text line "Rare · Pays x8" (tier rarity
+  colour + Config.Clients[Tier].Multiplier). Shared `makeTag` builder so lawyers and clients always match.
+- Clients are followed by events (Plots.DescendantAdded / AncestryChanged), not by desk, since they move from
+  `WaitingClients` to a desk. Tags float above the case progress bar (CLIENT_GAP), are a bit smaller than lawyer
+  tags, draw to 60 studs, and every other waiting client (WaitingId parity) sits higher so sofa neighbours
+  don't collide.
+- Fix for all tags: stud-sized tags got huge right next to the camera (BillboardGui.DistanceLowerLimit did not
+  help with scale sizes), so inside NEAR_LIMIT = 22 studs the tag is resized each frame to keep its on-screen
+  size, anchored at its bottom so it stays just above the head.
+- Note: several clients can share a character (e.g. two "Barber Bob"s) - that's the tier pool, not a tag bug.
+- Verified in playtest (waiting room close-up + firm), no console errors. CLAUDE.md rule updated (Manager only).
+
 ## 2026-10-09 — local session: lawyer name tags + case pop-ups
 User spec (overhead UI for lawyers) + a "Steal a Brainrot" screenshot as the style reference. The user chose to
 override the "no words over heads" rule **for lawyers only** (clients / Manager unchanged; CLAUDE.md updated).

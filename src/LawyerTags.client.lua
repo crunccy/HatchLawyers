@@ -1,6 +1,11 @@
 --!strict
--- Overhead UI for desk lawyers (user's spec 2026-10-09, styled after the user's "Steal a Brainrot" reference:
--- no panel, just stacked bold text with thick black outlines). Lawyers only - clients and the Manager stay clean.
+-- Overhead UI for lawyers AND clients (user's spec 2026-10-09, styled after the user's "Steal a Brainrot"
+-- reference: no panel, just stacked bold text with thick black outlines). The Manager stays clean.
+--   Client tag (every client in every firm - walking in, waiting on the sofas, at a desk), compact:
+--       Lemonade Lily         the client's name (ClientName attribute), white
+--       Rare · Pays x8        tier rarity (Config.Clients[Tier].Id, coloured like the lawyers') + payout multiplier
+--     It floats above the client's case progress bar (CaseService.caseBar); every other waiting client sits a
+--     bit higher so neighbours on the sofas don't collide; shorter draw distance than lawyer tags.
 --   Name tag (every lawyer in every firm):
 --       Gold / Rainbow        merge tier, only for 2-3 star lawyers (Rainbow is an animated rainbow)
 --       Tralalero Tralala     the lawyer's name, white
@@ -33,6 +38,8 @@ local MAX_DISTANCE = 95
 local TAG_W = 9 -- studs; the tag shrinks with distance like the reference
 local LINE_H = 0.8 -- studs per text line
 local HEAD_GAP = 0.35 -- studs between the top of the lawyer and the tag
+local NEAR_LIMIT = 22 -- studs: closer than this, tags shrink with the distance (keeps their on-screen size,
+-- instead of a stud-sized tag filling the screen; BillboardGui.DistanceLowerLimit didn't do it for scale sizes)
 
 local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
@@ -45,6 +52,8 @@ local RARITY_TEXT: { [string]: Color3 } = {
 	Rare = Color3.fromRGB(70, 170, 255),
 	Epic = Color3.fromRGB(190, 90, 255),
 	Legendary = GOLD,
+	Mythic = Color3.fromRGB(255, 70, 70),
+	Supreme = WHITE, -- + rainbow gradient
 }
 local RAINBOW = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)),
@@ -104,6 +113,60 @@ local function removeTag(model: Model)
 	end
 end
 
+type Row = { text: string, color: Color3, font: Font?, size: number?, gradient: ColorSequence?, rich: boolean? }
+
+-- A stacked outlined tag over `model` (rows top to bottom; the name row passes size 1.35), floating `gap`
+-- studs above the model's top. Used for lawyers and clients alike so they always match.
+local function makeTag(model: Model, root: BasePart, name: string, rows: { Row }, gap: number, width: number?, lineH: number?, maxDistance: number?): (BillboardGui, number, { UIGradient })
+	local units = 0
+	for _, row in rows do
+		units += row.size or 1
+	end
+	local gui = Instance.new("BillboardGui")
+	gui.Name = name
+	gui.Adornee = root
+	gui.Size = UDim2.new(width or TAG_W, 0, (lineH or LINE_H) * units, 0)
+	gui.LightInfluence = 0
+	gui.MaxDistance = maxDistance or MAX_DISTANCE
+	gui.ResetOnSpawn = false
+	gui.ClipsDescendants = false
+	local list = Instance.new("UIListLayout")
+	list.SortOrder = Enum.SortOrder.LayoutOrder
+	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	list.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	list.Parent = gui
+	local gradients = {}
+	for i, row in rows do
+		local label = line(gui, row.text, row.color, i, (row.size or 1) / units, row.font)
+		label.RichText = row.rich == true
+		if row.gradient then
+			label.TextColor3 = WHITE
+			local g = Instance.new("UIGradient")
+			g.Color = row.gradient
+			g.Parent = label
+			table.insert(gradients, g)
+		end
+	end
+	-- measure: skin / client models differ in height
+	local box, size = model:GetBoundingBox()
+	local top = box.Position.Y + size.Y / 2
+	local center = top - root.Position.Y + gap + gui.Size.Y.Scale / 2
+	gui.StudsOffsetWorldSpace = Vector3.new(0, center, 0)
+	gui:SetAttribute("BaseW", gui.Size.X.Scale)
+	gui:SetAttribute("BaseH", gui.Size.Y.Scale)
+	gui:SetAttribute("Bottom", center - gui.Size.Y.Scale / 2) -- shrinking keeps the tag sitting on this line
+	gui.Parent = playerGui
+	return gui, center + gui.Size.Y.Scale / 2, gradients
+end
+
+local function rarityRow(rarityId: string): Row
+	return {
+		text = rarityId,
+		color = RARITY_TEXT[rarityId] or WHITE,
+		gradient = if rarityId == "Legendary" then SHIMMER elseif rarityId == "Supreme" then RAINBOW else nil,
+	}
+end
+
 local function buildTag(model: Model, desk: Instance, id: string, stars: number): Tag?
 	local root = rootOf(model)
 	local def = Formulas.getSkin(id)
@@ -111,54 +174,16 @@ local function buildTag(model: Model, desk: Instance, id: string, stars: number)
 		return nil
 	end
 	local rarity = Config.Eggs.Skins[def.Rarity]
-	local rarityId = if rarity then rarity.Id else "Common"
 	local tierName = Config.Lawyers.StarNames[stars] or ""
-
-	local rows = if tierName ~= "" then 4 else 3
-	local gui = Instance.new("BillboardGui")
-	gui.Name = "LawyerTag"
-	gui.Adornee = root
-	gui.Size = UDim2.new(TAG_W, 0, LINE_H * (rows + 0.35), 0) -- the name row is a bit taller
-	gui.LightInfluence = 0
-	gui.MaxDistance = MAX_DISTANCE
-	gui.ResetOnSpawn = false
-	gui.ClipsDescendants = false
-
-	local list = Instance.new("UIListLayout")
-	list.SortOrder = Enum.SortOrder.LayoutOrder
-	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	list.VerticalAlignment = Enum.VerticalAlignment.Bottom
-	list.Parent = gui
-
-	local unit = 1 / (rows + 0.35)
-	local gradients = {}
+	local rows: { Row } = {}
 	if tierName ~= "" then
-		local tier = line(gui, tierName, if stars >= 3 then WHITE else GOLD, 1, unit, UIFonts.TitleFace)
-		if stars >= 3 then
-			local g = Instance.new("UIGradient")
-			g.Color = RAINBOW
-			g.Parent = tier
-			table.insert(gradients, g)
-		end
+		table.insert(rows, { text = tierName, color = GOLD, font = UIFonts.TitleFace, gradient = if stars >= 3 then RAINBOW else nil })
 	end
-	line(gui, def.Name, WHITE, 2, unit * 1.35)
-	local rarityLabel = line(gui, rarityId, RARITY_TEXT[rarityId] or WHITE, 3, unit)
-	if rarityId == "Legendary" then
-		rarityLabel.TextColor3 = WHITE
-		local g = Instance.new("UIGradient")
-		g.Color = SHIMMER
-		g.Parent = rarityLabel
-		table.insert(gradients, g)
-	end
-	line(gui, "Earns x" .. tostring(Formulas.lawyerEarn(id, stars)), YELLOW, 4, unit)
-
-	-- float the tag just above the lawyer's head (skin models differ in height, so measure)
-	local box, size = model:GetBoundingBox()
-	local top = box.Position.Y + size.Y / 2
-	local height = top - root.Position.Y + HEAD_GAP + gui.Size.Y.Scale / 2
-	gui.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
-	gui.Parent = playerGui
-	return { gui = gui, key = id .. "|" .. stars, desk = desk, root = root, height = height + gui.Size.Y.Scale / 2, gradients = gradients }
+	table.insert(rows, { text = def.Name, color = WHITE, size = 1.35 })
+	table.insert(rows, rarityRow(if rarity then rarity.Id else "Common"))
+	table.insert(rows, { text = "Earns x" .. tostring(Formulas.lawyerEarn(id, stars)), color = YELLOW })
+	local gui, height, gradients = makeTag(model, root, "LawyerTag", rows, HEAD_GAP)
+	return { gui = gui, key = id .. "|" .. stars, desk = desk, root = root, height = height, gradients = gradients }
 end
 
 local function scan()
@@ -209,10 +234,103 @@ task.spawn(function()
 	end
 end)
 
+-- ---------------------------------------------------------------------------------------------- client tags
+-- Clients are created by CaseService.makeClientModel (Model "Client" with Tier / ClientName attributes) in the
+-- firm's waiting-room folder and later re-parented to a desk, so follow them by events, not by desk.
+local CLIENT_GAP = 2.3 -- clears the case progress bar that floats over a client's head
+local CLIENT_W = 6 -- studs: a little smaller than lawyer tags (lawyers are the stars of the firm)
+local CLIENT_LINE_H = 0.6
+local CLIENT_STAGGER = 1.4 -- extra height for every other waiting client
+local CLIENT_DISTANCE = 60
+local clientTags: { [Model]: { gui: BillboardGui, root: BasePart, gradients: { UIGradient } } } = {}
+
+local function untagClient(model: Model)
+	local tag = clientTags[model]
+	if tag then
+		tag.gui:Destroy()
+		clientTags[model] = nil
+	end
+end
+
+local function tagClient(model: Instance)
+	if not (model:IsA("Model") and model.Name == "Client") or clientTags[model] then
+		return
+	end
+	local tier = model:GetAttribute("Tier")
+	local def = typeof(tier) == "number" and Config.Clients[tier]
+	local root = rootOf(model)
+	if not def or not root then
+		return
+	end
+	local name = model:GetAttribute("ClientName")
+	-- compact (clients crowd the waiting-room sofas): name, then "Rare · Pays x8" on one line
+	local rarityHex = (RARITY_TEXT[def.Id] or WHITE):ToHex()
+	local rows: { Row } = {
+		{ text = if typeof(name) == "string" then name else def.Name, color = WHITE, size = 1.3 },
+		{ text = string.format('<font color="#%s">%s</font> · Pays x%s', rarityHex, def.Id, tostring(def.Multiplier)), color = YELLOW, rich = true },
+	}
+	-- neighbours on the sofas alternate heights so their names don't collide
+	local waitingId = model:GetAttribute("WaitingId")
+	local stagger = if typeof(waitingId) == "number" and waitingId % 2 == 1 then CLIENT_STAGGER else 0
+	local gui, _, gradients = makeTag(model, root, "ClientTag", rows, CLIENT_GAP + stagger, CLIENT_W, CLIENT_LINE_H, CLIENT_DISTANCE)
+	clientTags[model] = { gui = gui, root = root, gradients = gradients }
+	model.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			untagClient(model) -- client left (case done) or streamed out
+		end
+	end)
+end
+
+task.spawn(function()
+	local plots = workspace:WaitForChild("Plots")
+	plots.DescendantAdded:Connect(function(d)
+		if d:IsA("Model") and d.Name == "Client" then
+			task.defer(tagClient, d) -- let its parts finish replicating before measuring
+		end
+	end)
+	for _, d in plots:GetDescendants() do
+		tagClient(d)
+	end
+	-- safety net: drop tags whose client vanished without an AncestryChanged we saw
+	while true do
+		task.wait(2)
+		for model in clientTags do
+			if not model:IsDescendantOf(workspace) then
+				untagClient(model)
+			end
+		end
+	end
+end)
+
 -- Rainbow tiers drift, the Legendary shimmer sweeps across every couple of seconds.
+local function clampNear(gui: BillboardGui, root: BasePart, eye: Vector3)
+	local f = math.clamp((root.Position - eye).Magnitude / NEAR_LIMIT, 0.2, 1)
+	local w = (gui:GetAttribute("BaseW") :: number) * f
+	if math.abs(gui.Size.X.Scale - w) > 0.02 then
+		local h = (gui:GetAttribute("BaseH") :: number) * f
+		gui.Size = UDim2.new(w, 0, h, 0)
+		gui.StudsOffsetWorldSpace = Vector3.new(0, (gui:GetAttribute("Bottom") :: number) + h / 2, 0)
+	end
+end
+
 RunService.RenderStepped:Connect(function()
 	local t = os.clock()
 	local sweep = ((t * 0.6) % 1.6) - 0.8
+	local camera = workspace.CurrentCamera
+	if camera then
+		local eye = camera.CFrame.Position
+		for _, tag in tags do
+			clampNear(tag.gui, tag.root, eye)
+		end
+		for _, tag in clientTags do
+			clampNear(tag.gui, tag.root, eye)
+		end
+	end
+	for _, tag in clientTags do
+		for _, g in tag.gradients do
+			g.Offset = if g.Color == RAINBOW then Vector2.new(math.sin(t * 1.2) * 0.25, 0) else Vector2.new(sweep, 0)
+		end
+	end
 	for _, tag in tags do
 		for _, g in tag.gradients do
 			if g.Color == RAINBOW then
