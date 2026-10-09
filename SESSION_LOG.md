@@ -31,6 +31,28 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: hatch v3 - the egg physically splits open (Blender)
+User: crack textures failed; remake in Blender so the shell really separates along its cracks, a glowing
+interior in the rarity colour, then the lawyer reveal (reference: a pet-sim egg opening, screen recording).
+- `tools/egg_shells.py` (Blender + numpy): each machine egg's Voxel parts (posted from Studio into
+  tools/egg_data/<Machine>.json) are re-voxelized (0.42 studs) into a HOLLOW 2-layer shell - egg colours outside,
+  pale lining inside - and fractured into 9 shards (bottom cup, 3 lower + 4 upper petals, top cap) by noisy
+  Voronoi on the sphere of directions, so the seams are jagged and follow the voxel grid. Greedy-merged into
+  ~500 boxes per egg. Per shard: outward dir, hinge pivot + axis (lower edge), crack order. Renders a preview
+  strip (Models - Effects/egg_shell_preview_EggMachine.png) and writes src/HatchShells.lua
+  -> ReplicatedStorage.Shared.HatchShells (generated; regenerate, don't hand-edit).
+- `StarterPlayerScripts.Eggs` egg block replaced (copy: src/HatchEgg.lua). Values crack / open / glow drive
+  shardPose() (same maths as shard_pose() in the tool): seams split one by one with real 0.16-stud gaps; the
+  inner lining turns Neon in the rarity colour (Common = soft white) so every gap and inner edge glows; a Neon
+  core + halo swell inside; petals fold out on their hinges, the cap lifts off, the camera rises to look in;
+  then the pieces blow outward and the core flares into the existing reveal. Old crack decals/textures gone
+  (the egg_crack_* assets are unused now). Full-screen viewport kept (no square).
+- Sequence: drop/bounce -> 3-4 shake rounds (seams opening, light leaking) -> Rare+ fake-out (light dims to an
+  ember) -> peel open with rumble -> burst. Measured: Uncommon 4.3 s, Rare 5.1 s, Legendary 6.5 s; EggServer's
+  world burst synced.
+- Verified in playtest: Briefcase/Legendary (gold), Ocean/Uncommon (green), Space/Rare - seams, glow, opening,
+  reveal; no console errors.
+
 ## 2026-10-09 — local session: hatch v2 - no visible square, Blender-made animated cracks
 User: the hatch was visibly confined to a square, and the cracks looked bad; wants seamless + natural, animated
 cracks, made in Blender or Figma (whichever is better).
