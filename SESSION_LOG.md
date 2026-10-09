@@ -4,6 +4,8 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] Eye-check the hatch screen's Rare/Legendary VFX (star flare + slash ring) on a real rare roll.
+- [ ] Egg-machine floor rings sit under the pedestals. Raise `FxRing` in `ServerStorage.EggMachineFx` or drop it.
 - [x] **Pre-Manager auto-assign** — DONE 2026-10-08 (`Case.SelfAssignAfter` 12 s). (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
       Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
 - [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
@@ -26,6 +28,33 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-09 — local session: VFX v2 (anime effects from 4 reference images)
+User sent 4 reference images (ice crystal burst, fire tornado, dark-red star explosion, blue energy orb) and asked
+for detailed VFX made in Blender to replace the old sparkles.
+- **Blender textures** `tools/vfx_textures.py` (numpy, white+alpha, `ALPHA_GAMMA` boost): slash arc, slash ring,
+  4-point star flare, smoky tendrils, spark needle, beam streak, ember, speck, ice crystal shard, and three 4x4
+  flipbooks (ice shockwave, flame tongue, churning energy orb). Uploaded; ids in `Models - Effects/ASSET_IDS.md`.
+- **Shared.Effects rewritten** (copy in `src/Effects.lua`):
+  - Auras: Rare = ice (counter-spinning floor swirls, tilted slash rings round the body, slash flashes, crystals
+    popping from the floor, light orbs, ice shockwave flipbook). Epic (had nothing before) = energy orb flipbook
+    + spark spikes + motes + dark specks. Legendary = fire tornado (4 stacked spinning rings, flame flipbook,
+    embers, star glints, light column). 2★ = gold star glints + dust + ring; 3★ = rainbow + rainbow energy.
+  - Bursts: rare = ice; merge = energy; rainbow = energy + star burst; legendary = star burst (white-hot flare,
+    dark-red ground tendrils, sparks, embers, shockwave) + fire rings + flames + coins; win/tier = gold star burst.
+  - New `Effects.ambient(parent, theme, color, scale)` replaced every old plain sparkle emitter: Neon skins
+    (SkinLook), the gold desk tier (DeskLook), the EXPAND FIRM sign (DeskService) and the 6 hub egg machines.
+    The machines are themed (Briefcase/Pet star, Brainrot/Space energy, Food fire, Ocean ice) with a spinning
+    ring, built by the dev tool `ServerStorage.EggMachineFx`. Pads 7/8 (mr.robe's coming-soon eggs) untouched.
+  - `guiBurst` (reward pop-ups) and the hatch screen (Eggs) now use a star flare + spinning slash ring + star/slash
+    twinkles.
+- **Lessons** (now in CLAUDE.md): Studio's Automatic graphics level throttles particles until effects look
+  missing, so test at Level 16-21. Additive sprites vanish on the yellow floor. Stacked bright bursts clip to
+  white. Ambient emitters inside an opaque egg shell need Surface/Outward.
+- Verified in playtest: every aura and burst kind on a test stage; the real firm (ice + fire auras on desks); egg
+  machines; a real Space hatch (Common roll, no errors). **Not yet seen on screen:** the hatch screen's Rare /
+  Legendary star flare, because no rare roll came up.
+- Note: old v1 textures `dot` and `swirl` no longer load (moderated?). v2 doesn't use them.
 
 ## 2026-10-09 — local session: case results as small floating numbers
 - Hud: the big result pop-up (WIN! / Settled! / Mistrial card + big-win sunburst) is gone. Every `CaseResult` now

@@ -47,10 +47,15 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   **BuilderSansMedium** for descriptions and small print. White text + thick black UIStroke on important text.
   No serif / navy / brass. **No words over characters' heads** (lawyers, clients, Manager) — user's call.
 - **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones.
-- **Effects** (`ReplicatedStorage.Shared.Effects`, textures from `tools/effects_textures.py`, ids in
-  `Models - Effects/ASSET_IDS.md`): glowy/magical, laddered by rarity — Rare light blue sparkle, Legendary full gold
-  aura, 2★ gold dust, 3★ rainbow. Use `Effects.aura / burst / guiBurst`; don't hand-roll new emitters. Keep
-  LightEmission ≲ 0.4 on sprites (the yellow firm floor eats fully additive particles).
+- **Effects** (`ReplicatedStorage.Shared.Effects`, mirrored in `src/Effects.lua`; textures from
+  `tools/vfx_textures.py` (v2, anime style from the user's 4 reference images) + `tools/effects_textures.py` (v1);
+  ids in `Models - Effects/ASSET_IDS.md`). Ladder: Rare = ICE, Epic = ENERGY orb, Legendary = FIRE tornado,
+  2★ gold star layer, 3★ rainbow + energy. Bursts: rare/merge/rainbow/legendary/win/tier. Use
+  `Effects.aura / burst / ambient / guiBurst`; don't hand-roll emitters (the old plain sparkles are gone). Keep
+  LightEmission ≤ 0.3 (the yellow floor eats additive sprites), burst Brightness ≤ 1.4 (stacks clip to white),
+  aura lights dim. Part-parented ambient emitters use Surface/Outward. **Test at a high graphics level**
+  (`settings().Rendering.QualityLevel` in the Client) — Studio's Automatic level throttles particles so hard
+  that effects look missing. Egg machine effects: `require(game.ServerStorage.EggMachineFx:Clone()).apply()`.
 - **Builds:** plain Parts, **Plastic with `TopSurface = Studs`** (every part of the map — Ground, Plaza, Trees,
   IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
   colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
