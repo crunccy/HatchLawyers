@@ -1,64 +1,67 @@
 # Economy
 
 Single place for how the economy works. **The live numbers are in `ReplicatedStorage.Shared.Config`** —
-this file summarizes them, and `tools/economy_sim.py` mirrors them. Overrides docs/DESIGN.md's
-"Cash System & Scaling" section (that was the original pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
+this file summarizes them, and `tools/economy_sim.py` mirrors them (synced with Studio on 2026-10-08, save schema
+v12 "hatch real lawyers"). Overrides docs/DESIGN.md's "Cash System & Scaling" section (that was the original
+pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 
-## The loop in numbers
-| Piece | Rule | Status |
-| --- | --- | --- |
-| Case payout | `Payout.Base 1200 × 1.25^L × client multiplier × (1 + skin bonus)` | synced |
-| Training (level L → L+1) | `TrainBase 800 × TrainGrowth 1.336^L` coins | synced |
-| Win chance | `clamp(0.70 + (L − difficulty) × 0.003, 0.45, 0.95)` | design doc — confirm vs Config |
-| Non-wins | 70 % settlement (~50 % pay), 30 % mistrial (requeue, no pay) | design doc — confirm |
-| Clients | Common ×1 (diff 0), Uncommon ×3 (10), Rare ×8 (25); Epic ×20 (45), Legendary ×50 (70) on fallback NPC | multipliers synced, spawn weights unknown |
-| Arrivals | one client every `Formulas.clientInterval(lawyers)` s — more lawyers, faster arrivals; income is capped by arrivals | formula unknown |
-| Firm | starts 4 segments × 2 = 8 lawyers; Expand Firm = +1 segment (2 slots), then Hire into each | synced |
-| Expand / hire cost | `Config.ExpandCosts`, `Config.UnlockCosts` | values unknown |
-| Eggs | Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 % | synced |
-| Skin bonus | +1 / +2 / +5 / +20 % payout | synced |
-| Sell duplicate | 750 / 1.5K / 3.75K / 15K, always keeps one copy | synced |
-| First egg | free (`Eggs.FreeUsed`) | synced; "guaranteed Uncommon" from design — confirm |
-| Egg price | `Config` | unknown |
+## The loop in numbers (all synced 2026-10-08)
+| Piece | Rule |
+| --- | --- |
+| Start | 4 segments = 8 offices; 1 **Rookie** lawyer (Common) in office 1; office 1 gets 1 free tutorial level |
+| Case payout | `Payout.Base 1200 × 1.25^(office level) × client multiplier × capped buffs × outcome × lawyer power` |
+| Lawyer power | rarity Earn **×1 / 2 / 4 / 10** (Common / Uncommon / Rare / Legendary) × StarEarn **×1 / 2.5 / 6** |
+| Merging | 3 copies of the same lawyer at the same stars → one with +1 star (max 3 stars); keeps the best skills |
+| Office upgrade (L → L+1) | `TrainBase 800 × TrainGrowth 1.336^L` coins (`Config.Lawyer`; the level stays with the office), max L100 |
+| Office tiers | +0 / 5 / 10 / 20 % payout at L1 / 10 / 30 / 60 (Basic → Oak → Executive → Partner's Suite; automatic) |
+| Buff caps | payout ×2.5, win +12 pp, case time −30 % (`Config.Caps`, enforced in `Formulas.combineBuffs`) |
+| Skills | each hatched lawyer rolls 1 (Common/Uncommon) or 2 (Rare/Legendary) skills: Fast Talker −6 % time, Organized +5 %, Charming rare clients +25 %, Specialist +20 % vs one client, Silver Tongue +3 pp win, Shark +12 % (per level, max 3) |
+| Win chance | `clamp(0.70 + (L − difficulty) × 0.003 + bonus, 0.45, 0.95)` |
+| Non-wins | 70 % settlement (40–60 % pay), 30 % mistrial (the whole case reruns, no pay) |
+| Clients | Common ×1 (70, diff 0, 30 s), Uncommon ×3 (25, 10, 60 s), Rare ×8 (5, 25, 120 s), Epic ×20 (1, 45, 180 s), 5 Legendary celebrities ×50 (0.06 each, 70, 240 s) |
+| Arrivals | one client every `max(1, 3.5 × 8 / working lawyers)` s while one of the **10** waiting seats is free |
+| Assigning | the player clicks ASSIGN TO LAWYER; the **Manager** (5e7) auto-assigns. Nothing else assigns (see review §3) |
+| Firm | Expand Firm = +1 segment = 2 **empty** offices: 3e7, 6e8, 3e10, 1.5e12, 8e13, 4e15 (segments 5–10); no hiring |
+| Eggs | hatch a lawyer: Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 %; even among that rarity's lawyers (3 / 3 / 4 / 3 in the catalog) |
+| Egg price | `7,500 × 1.15^(eggs opened)`; first egg free and guaranteed Uncommon; pity: 50th egg without a Legendary is one |
+| Lawyer cap | 150 owned (merge to make room) |
 
-## Pacing targets
-- First egg within **~2 min**, earning **~100–500 coins/s** at that point.
-- **Trillions of coins/s** after **~15 h** of play.
-- Cases 30 s – 3 min. Design caps (from DESIGN.md §MVP Risk Fixes): total payout multiplier ×2.5,
-  win-chance bonus +12 pp, case-time −30 %, XP ×2.0 — enforce server-side.
+## Pacing targets (`Config.Pacing`)
+- First paid egg within **~2 min**, earning **~100–500 coins/s** then.
+- First Expand Firm (the old "next desk") around **20–30 min**.
+- **Trillions of coins/s** after **10–20 h** of play.
 
-Latest analysis and what needs attention: [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md).
+**Current status (sim, live Config):** first egg 40 s at 188/s — OK; first Expand 16 min — slightly early;
+1T/s at **68–88 min — far too fast**, then a hard wall at office level 100 around 4 h.
+See [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md) for the analysis and the fixes (TrainBase ~10–12K + new offices not
+starting at level 1; pre-Manager auto-assign).
 
 ## How to retune
-0. **Never change `Payout.Growth` or `Training.Growth` casually** — their ratio (1.0688) sets the whole curve; a
-   0.3 % change moves "1T/s" by ~4 h (see the review). Retune pace with `Training.Base` / `Payout.Base` and costs.
+0. **Never change `Payout.Growth` or `Lawyer.TrainGrowth` casually** — their ratio (1.0688) sets the whole curve.
+   Retune pace with `Lawyer.TrainBase` / `Payout.Base` and costs.
 1. Change numbers in `Config` only (never in scripts).
-2. Run the Studio sim: `ServerScriptService.Dev.EconomySim` via the disabled `RunEconomySim` (clone `Shared` +
-   the sim before requiring, to dodge module caching). Check every pacing target says OK.
+2. Run the Python mirror: `python3 tools/economy_sim.py --report` (and a few `--seed`s). Studio's
+   `Dev.EconomySim` is **stale (pre-v12)** until it's ported — don't trust its output.
 3. Copy the changed values into `CONFIG` in `tools/economy_sim.py` (tag them `SYNCED`) and into the table above.
 
-Quick what-ifs without Studio: `python3 tools/economy_sim.py` prints a timeline, the pacing checks and the
-`GUESS` values still unsynced. Flags: `--report` (purchases, gaps and prices per window, milestones),
-`--sweep [factor]` (how much each tunable moves the targets), `--active 0.2` (courtroom bonus),
-`--scenario egg-tiers,egg-price-ramp,busy-lawyers,multi-hatch` (proposed changes, not live), `--log`
-(every purchase), `--hours`, `--seed`. Tests: `python3 -m unittest discover tools`.
+Flags: `--report` (purchases, gaps and prices per window, milestones), `--sweep [factor]` (how much each tunable
+moves the targets), `--active 0.2` (courtroom bonus, inside the ×2.5 cap), `--afk` (nobody clicks Assign),
+`--scenario busy-lawyers,auto-assign,multi-hatch,egg-ramp-10,egg-ramp-20,egg-tiers` (proposed changes, not live),
+`--log` (every purchase), `--hours`, `--seed`. Tests: `python3 -m unittest discover tools`.
 
-### What the Python mirror assumes
-- Each client goes to the best-paid free lawyer (player or Manager); each lawyer works one case at a time.
-- Greedy player: always buys the action with the shortest payback (save-up time + cost ÷ income gained) —
-  train any lawyer, Expand + Hire, or roll an egg. Rushes the first paid egg (hub tutorial step).
-- AFK baseline: no courtroom bonus, daily/playtime rewards, desk tiers or lawyer skills.
-- Skins: each equipped lawyer needs its own copy (`Eggs.CopiesPerLawyer`; DESIGN.md is ambiguous — confirm).
-
-With the current guesses the mirror hits both targets (first paid egg 0.7 min at 450/s; 1T/s at ~16 h),
-which agrees with the Studio sim's "all OK" — but treat that as a sanity check until the guesses are synced.
+### What the Python mirror assumes (not Config values; printed on every run)
+- `WalkSeconds 6` (derived: ~70 studs from seat to desk at `WalkSpeed` 11; the desk is busy meanwhile),
+  `HatchSeconds 4` (derived: server cooldown 2.5 s + hatch animation), `AssignRate 0.5` clients/s for an active
+  player before the Manager, `RushFirstPaid` (the tutorial sends you to the egg first).
+- Greedy player: always buys the action with the shortest payback (save-up time + cost ÷ income gained) — upgrade an
+  office, roll an egg, Expand (judged as a bundle: expand + fill + level the new offices to the firm's median), or the
+  Manager. Merges happen when they raise income. Best lawyers sit in the best offices.
+- Not modelled: paid skill rolls, Manager upgrades, daily/playtime/offline rewards, prestige.
 
 ## Known inconsistencies (decide, then fix the doc that's wrong)
-- DESIGN.md's payout table doesn't match its own formula `10 × 1.25^L` (e.g. L25 table 2,800 vs formula ~2,650;
-  L50 808K vs ~701K). Moot for the live game (Base 1200), but the doc still shows it.
-- DESIGN.md's max modifier stack (×1.25 × 1.5 × 1.2 × 1.3 × 2 ≈ ×5.85) exceeds its own ×2.5 cap.
-- "Lawyer egg" wording in DESIGN.md's rewards section — eggs roll **skins**, not lawyers.
+- DESIGN.md's payout table doesn't match its own formula `10 × 1.25^L`. Moot for the live game (Base 1200).
+- DESIGN.md's max modifier stack (≈ ×5.85) exceeds its own ×2.5 cap. Live game: buffs capped at ×2.5, but lawyer
+  power (up to ×60) and prestige multiply **outside** the cap by design.
+- DESIGN.md's tutorial and rewards text still describe skins / the 1-desk office (eggs now hatch lawyers).
 - "Supreme" is both a rarity tier and a Legendary skill name.
-- Skins: "same skin on multiple lawyers" vs "duplicates can be equipped on multiple lawyers" — one copy or one each?
-- Skin rarities: live game has 4 (no Epic/Mythic/Supreme yet); DESIGN.md lists 7 with pity at 50/150/300 —
-  pity isn't in the live summary; confirm whether it exists.
+- The Specialist skill targets one of 9 `Config.Clients` entries (5 are single Legendary celebrities) — see review D.

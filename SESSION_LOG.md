@@ -4,33 +4,60 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
-- [ ] **Sync the economy mirror.** Paste `ReplicatedStorage.Shared.Config` (and `Formulas.clientInterval`)
-      into a session and replace every `GUESS` in `tools/economy_sim.py` / docs/ECONOMY.md with real values —
-      `CaseSeconds` and `clientInterval` first (they move results most). Then rerun docs/ECONOMY_REVIEW.md.
-- [ ] **Check AFK before the Manager** (review §3): with nobody assigning, do clients pile up / get dropped?
-      If so, add auto-assign after ~10–15 s waiting (queue is ours).
-- [ ] **Egg pacing** (review §2 + "Prototyped fixes"): one fixed-price egg is free within minutes. Sim says
-      egg tiers + a ~2–3 % per-roll price ramp works; multi-hatch is QoL only. Decide, and whether the ×2.5 cap
-      covers skins alone or the whole stack.
-- [ ] **Busy lawyers:** after syncing `CaseSeconds`, set `clientInterval ≈ CaseSeconds / lawyers × 1.05` so every
-      lawyer gets clients (trim `Payout.Base` ~15 % to keep the first-egg target).
-- [ ] **Train ×10 / Max** on the lawyer card (review §4) — needs a heads-up to mr.robe (`TrainLawyer` remote).
-- [ ] Add a `Config` comment next to `Payout.Growth` / `Training.Growth`: their ratio sets the whole curve.
-- [ ] Rewrite the tutorial steps for the new firm (waiting room + Assign) — review §7.
-- [ ] Late-game content for hours 6–15 (desk tiers, rooms, prestige) — review §5.
+- [ ] **Pre-Manager auto-assign** (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
+      Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
+- [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
+      starting at the firm's lowest office level (`DeskService.upgradeFirm`), or expansions stall. Sim it first.
+- [ ] **Upgrade ×10 / Max** on the office card (review §4) — `LawyerService` (ours since v12) + Hud.
+- [ ] **Egg tiers** (review §2): stretch the merge chase (first Rainbow at 6 min today). Do after the retune.
+- [ ] Specialist skill targets 1 of 9 `Config.Clients` entries (review D) — heads-up to mr.robe.
+- [ ] Port this repo's sim model into Studio's `Dev.EconomySim` (stale since v12) or retire it (review E).
+- [ ] Late-game sink beyond office level 100: prestige into the sim, or new content (review B).
+- [ ] Add a `Config` comment next to `Payout.Growth` / `Lawyer.TrainGrowth`: their ratio sets the whole curve.
+- [ ] Update DESIGN.md's tutorial + rewards text for v12 (review §7).
+- [ ] Commit the v12 Blender/tool files that are still untracked: `tools/clients_v2.py`, `tools/firm_pieces.py`
+      (Parts export), `tools/build_firm.py`, `tools/firm_parts_*.txt` (see below).
 - [ ] **Add the user's local files to this repo:** `references/`, `tools/firm_kit.py`, `tools/firm_pieces.py`,
       `tools/voxel_builder.py`, `tools/clients.py`, `ClientPalette.png`. Decide whether `.fbx` exports go in
       (they're big; maybe Git LFS) or stay local.
-- [ ] Responsive HUD pass: on narrow/phone screens the left-edge buttons (mr.robe's DAILY gift + our SKINS)
-      overlap the coin counter and the lawyer card.
+- [ ] Responsive HUD pass: on narrow/phone screens the left-edge buttons (mr.robe's DAILY gift + our LAWYERS)
+      overlap the coin counter and the office card.
 - [ ] Publish the lawyer animations (Animation Editor → import .fbx → publish), play Idle at the desk and
       Objection on a win. `PinstripePartner`'s Idle/Walk/Objection are not published yet (user must do it).
-- [ ] Desk tier visuals (Folding Table → Oak → Executive → Mahogany): `UpgradeDesk` exists, model doesn't change.
-- [ ] EQUIP on the hatch screen always targets desk 1 — let the player pick a lawyer.
-- [ ] More skins: add entries to `Config.SkinCatalog` (recolor) or `SkinModels` + catalog (model skins).
+- [ ] More hatchable lawyers: add entries to `Config.SkinCatalog` (now the lawyer catalog; ids are saved).
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-08 — local session: economy sim synced with Studio (read-only in Studio)
+- Read the live `Config`, `Formulas` (incl. `clientInterval`), `CaseService`, `FirmBuilder`, `RewardsService`.
+  The live game is v12 (below), so `tools/economy_sim.py`'s **model** was rewritten, not just its numbers: hatched
+  lawyers (rarity Earn × merge stars, skills), office levels + tiers, per-tier case lengths, `max(1, 28 / working)`
+  arrivals, 10 waiting seats, ~6 s walk, Manager / AFK assigning, egg ×1.15 ramp + pity, real ExpandCosts, buffs
+  capped like `combineBuffs`. Every GUESS is gone (SYNCED / DERIVED / BEHAVIOR tags). Tests rewritten: 20 pass.
+- Results (docs/ECONOMY_REVIEW.md rewritten, docs/ECONOMY.md updated): first egg OK (40 s at 188/s); **1T/s at
+  68–88 min** (target 10–20 h); **hard wall at office level 100 ~4 h**; AFK before the Manager earns 0 forever
+  (confirmed in code); lawyers (not arrivals) are the bottleneck, so `ClientInterval` doesn't matter.
+  `TrainBase` ~10–12K puts 1T at 10–20 h but needs new offices to stop starting at level 1.
+- Nothing changed in Studio in this step.
+
+## 2026-10-08 — local session: v12 "hatch real lawyers", block-style clients, firm as Parts (Studio)
+- **Lawyer system (user's spec):** start with 1 Rookie; eggs hatch real lawyers (rarity Earn ×1/2/4/10, 1–2 skills);
+  3 copies merge (+1 star, ×2.5 / ×6); place/swap into offices; office levels replace training (tiers by level).
+  PlayerData **v12** (`Lawyers`, `NextLawyer`, `Desks[i] = { Level, Lawyer = uid }`, migration from v11).
+  Server: `LawyerService` rewritten (TrainLawyer = office upgrade, PlaceLawyer, MergeLawyers, hatch), `EggServer`
+  rewritten (price `7500 × 1.15^opened`, cap 150), `CaseService` (empty offices, lawyer power, dressing),
+  `DeskService` (no hiring; expand adds empty offices), Skill/Rewards/Prestige/Leaderboard updated. New remotes
+  PlaceLawyer, MergeLawyers, OpenLawyerPicker. Client: new `Lawyers` panel (replaces disabled `SkinInventory`),
+  Hud office card (UPGRADE OFFICE / PLACE-SWAP LAWYER), hatch screen (PUT IN OFFICE N), AssignClients, Guide,
+  Skills title, Manager prestige check. Playtested: tutorial case, free egg → place → merge → unplace all work.
+- **Clients** rebuilt in mr.robe's block style (`tools/clients_v2.py` → ClientsV2.fbx): 6 meshes per client named
+  for Puppet + Part HRP; old voxel clients in `ServerStorage.Clients_v1`. Fixed sit-facing bug in `ClientWalk`
+  (CaseService sets `RestPivot`).
+- **Firm** now built from plain Plastic Parts like the rest of the map (`ServerStorage.Templates.FirmKitParts`,
+  803 parts, courtroom palette, no palms), generated from `tools/firm_pieces.py` → `firm_parts_*.txt`;
+  FirmBuilder prefers it over the textured `FirmKit`. Floor raised 1.5 studs (`FirmBuilder.FLOOR_H`), upright
+  Expand Firm billboard.
 
 ## 2026-10-08 — cloud session: economy analysis
 - `tools/economy_sim.py`: added `--report` (purchases, gaps, prices per window, milestones), `--sweep`

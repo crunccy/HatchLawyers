@@ -15,7 +15,8 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 | Original design manifesto | [docs/DESIGN.md](docs/DESIGN.md) — read its "Status" table; parts are superseded |
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
-| Art references, Blender scripts (`tools/firm_kit.py`, `voxel_builder.py`, `clients.py`…), `.fbx` exports | user's local `HatchLawyers` folder — **not in this repo yet** |
+| Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
+| Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |
 
 ### What each kind of session can do
 - **Local Claude Code (user's PC):** Roblox Studio MCP + blender-mcp → edit the place, build models, playtest.
@@ -26,7 +27,8 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 - **User (crnuch) + Claude own ALL UI and visuals:** map, builds, lighting, and the *look* of every GUI —
   including mr.robe's `Hud` and `Courtroom` scripts (colors/fonts only, never their gameplay).
 - **Claude also owns the firm redesign end to end, including its gameplay** (user's call, 2026-10-08):
-  `FirmBuilder`, `DeskService`, the CaseService client queue, `ClientWalk`, `AssignClients`.
+  `FirmBuilder`, `DeskService`, the CaseService client queue, `ClientWalk`, `AssignClients`, and the v12
+  hatched-lawyer system the user specified (`LawyerService`, `EggServer`, the `Lawyers` panel).
 - **mr.robe** (always "mr.robe"; Roblox account `mr_blox174`) owns the rest of the server gameplay:
   `ServerScriptService.Server.*` (PlayerData, PlotService, CaseService, LawyerService, CourtService,
   EvidenceCards, Main). Edit only with a heads-up, and only for clear bugs/integration.
@@ -54,14 +56,16 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ReplicatedStorage.Shared.SkinLook` — dresses an NPC in a skin; `showInViewport` for previews.
 - `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`).
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
-  Ours: EggHatched, EquipSkin, SellSkins, MarkSkinsSeen, AssignClient.
+  Ours: EggHatched, MarkSkinsSeen, AssignClient, PlaceLawyer, MergeLawyers, OpenLawyerPicker.
+  (TrainLawyer now upgrades an OFFICE; UpgradeDesk just answers "offices upgrade with their level".)
 - `ServerScriptService`
   - `Server.*` — mr.robe's gameplay (above) + ours: `FirmBuilder`, `DeskService`.
   - `Eggs.EggServer` — egg rolls, equip, sell duplicates, NEW-badge count.
   - `Dev.EconomySim` (+ disabled `RunEconomySim`) — authoritative 24 h economy sim.
-- `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `SkinInventory`, `ClientWalk`,
-  `AssignClients`. mr.robe's logic, our styling: `Hud`, `Courtroom`, `DeskProgress`.
-- `ServerStorage.Templates` — `FirmKit` (Blender kit pieces, attr `Offset`), `Clients` (9 Blender clients),
+- `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (collection, place/merge;
+  `SkinInventory` is disabled), `ClientWalk`, `AssignClients`, `Guide`. mr.robe's logic, our styling: `Hud`, `Courtroom`, `DeskProgress`.
+- `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
+  meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
 - `Workspace.Hub` — Street, Plaza, EggMachine (persistent streaming), Palms. `Workspace.Plots.Plot1–8`.
   Front/door = local −Z; plots are rotated to face the street.
@@ -75,7 +79,7 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 
 ## Game rules that code must respect
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema is **v11** (`PlayerData`). Before adding any saved field: bump `SCHEMA_VERSION` and add a
+- Save schema is **v12** (`PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`). Before adding any saved field: bump `SCHEMA_VERSION` and add a
   `MIGRATIONS` entry.
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - MVP: no Robux for coins, eggs or power. Fictional clients only — no real people or brands.
