@@ -436,9 +436,296 @@ def kiki_glow():
 OTHERS = [manager, retired_ceo, chef_mega, rocket_baron_rex, milo_vex, dj_beatbox, kiki_glow]
 
 
+# ------------------------------------------------------------------ brainrot lawyers (hatchable, 2026-10-09)
+# Parodies of the Italian-brainrot memes, each in lawyer gear. Not humanoid underneath, but every box still sits
+# in one of the 6 limb groups (Head / UpperTorso / arms / legs) so Shared.Puppet can walk and animate them.
+def eye(ch, x, y, z, size=0.34, pupil=BLACK, white=WHITE, part="Head"):
+    """A block eye facing -y at (x, y, z): white, pupil, shine."""
+    ch.box(part, (x, y, z), (size, 0.05, size), white)
+    ch.box(part, (x * 0.96, y - 0.03, z - 0.02), (size * 0.48, 0.04, size * 0.62), pupil)
+    ch.box(part, (x * 0.9, y - 0.05, z + size * 0.15), (size * 0.16, 0.02, size * 0.16), WHITE)
+
+
+def tie(ch, rgb, z_top=3.82, y=-0.47):
+    ch.box("UpperTorso", (0, y - 0.01, z_top), (0.22, 0.05, 0.16), shade(rgb, 0.8))
+    ch.box("UpperTorso", (0, y, z_top - 0.45), (0.17, 0.04, 0.78), rgb)
+
+
+def briefcase(ch, rgb=(130, 80, 40), x=-0.89):
+    ch.box("RightUpperArm", (x, -0.05, 1.45), (0.2, 0.85, 0.62), rgb)
+    ch.box("RightUpperArm", (x, -0.05, 1.8), (0.08, 0.3, 0.12), shade(rgb, 0.7))
+    ch.box("RightUpperArm", (x, -0.05, 1.5), (0.22, 0.08, 0.12), (255, 200, 40))
+
+
+def tralalero():
+    ch = Lawyer("Tralalero")
+    shark, belly = (96, 140, 186), (236, 240, 246)
+    shoe = (50, 110, 230)
+    body(ch, shark, shirt=shark, pants=shark, shoes=shoe, cuff=shade(shark, 0.8))
+    for x in (0.34, -0.34):                                               # sneaker swoosh + white soles
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperLeg", (x, -0.13, 0.03), (0.45, 0.76, 0.06), WHITE)
+        ch.box(f"{side}UpperLeg", (x * 1.02, -0.2, 0.16), (0.46, 0.3, 0.06), WHITE, rot_y=-15)
+    ch.box("UpperTorso", (0, -0.46, 2.9), (0.95, 0.04, 1.4), belly)          # white belly
+    tie(ch, (220, 40, 50))
+    ch.box("UpperTorso", (0, 0.62, 2.35), (0.34, 0.5, 0.4), shark)            # tail + tail fin
+    ch.box("UpperTorso", (0, 0.92, 2.55), (0.12, 0.3, 0.8), shade(shark, 0.85), rot_x=20)
+    # shark head: block skull, long snout, toothy grin, side eyes, dorsal fin
+    ch.box("Head", (0, 0, 4.6), (1.3, 1.2, 1.3), shark)
+    ch.box("Head", (0, -0.85, 4.45), (1.0, 0.6, 0.8), shark)
+    ch.box("Head", (0, -0.9, 4.1), (0.95, 0.55, 0.12), belly)                # pale chin
+    ch.box("Head", (0, -1.16, 4.22), (0.8, 0.05, 0.2), MOUTH)
+    for i in range(5):                                                    # teeth
+        ch.box("Head", (-0.32 + i * 0.16, -1.19, 4.27), (0.08, 0.03, 0.1), WHITE)
+    for x in (0.4, -0.4):
+        eye(ch, x, -1.16, 4.7, size=0.26)
+    ch.box("Head", (0, 0.1, 5.5), (0.14, 0.8, 0.7), shade(shark, 0.85), rot_x=-25)   # dorsal fin
+    for x in (0.7, -0.7):
+        ch.box("Head", (x, -0.1, 4.4), (0.06, 0.3, 0.05), shade(shark, 0.7))  # gills
+    briefcase(ch, (40, 40, 46))
+    return ch
+
+
+def bombardiro():
+    ch = Lawyer("Bombardiro")
+    croc, olive = (90, 150, 70), (110, 120, 70)
+    body(ch, croc, shirt=olive, pants=croc, shoes=shade(croc, 0.7), cuff=shade(olive, 0.8), hands=croc)
+    for x in (0.34, -0.34):                                               # claws
+        side = "Left" if x > 0 else "Right"
+        for dx in (-0.12, 0, 0.12):
+            ch.box(f"{side}UpperLeg", (x + dx, -0.52, 0.06), (0.08, 0.1, 0.08), WHITE)
+    # bomber plane body: wings, propellers, bombs, a star, cockpit
+    wing = (140, 150, 90)
+    ch.box("UpperTorso", (0, 0.2, 3.65), (4.4, 1.3, 0.2), wing)                  # big bomber wings
+    for x in (2.1, -2.1):
+        ch.box("UpperTorso", (x, 0.2, 3.65), (0.2, 1.32, 0.22), (200, 40, 40))   # red wingtips
+    for x in (1.45, -1.45):
+        ch.box("UpperTorso", (x, -0.4, 3.62), (0.4, 0.5, 0.4), (70, 74, 60))     # engine
+        ch.box("UpperTorso", (x, -0.68, 3.62), (0.12, 0.06, 0.12), (40, 40, 44))
+        ch.box("UpperTorso", (x, -0.7, 3.62), (1.1, 0.04, 0.14), (40, 40, 44))   # propeller
+        ch.box("UpperTorso", (x, 0.2, 3.3), (0.24, 0.7, 0.24), (70, 70, 76))     # bomb
+        ch.box("UpperTorso", (x, 0.6, 3.3), (0.28, 0.1, 0.28), (200, 40, 40))
+    ch.box("UpperTorso", (0, -0.47, 2.7), (0.4, 0.04, 0.4), WHITE)               # star roundel
+    ch.box("UpperTorso", (0, -0.49, 2.7), (0.22, 0.04, 0.22), (40, 80, 200))
+    ch.box("UpperTorso", (0, 0.55, 3.0), (0.5, 0.3, 1.2), olive)                 # tail
+    ch.box("UpperTorso", (0, 0.75, 3.75), (0.1, 0.3, 0.6), olive)
+    tie(ch, (230, 200, 60))
+    # crocodile head: long snout with teeth, eye bumps on top, flight goggles
+    ch.box("Head", (0, 0, 4.4), (1.3, 1.1, 1.0), croc)
+    ch.box("Head", (0, -1.05, 4.2), (0.95, 1.2, 0.45), croc)
+    ch.box("Head", (0, -1.05, 4.0), (0.9, 1.15, 0.08), MOUTH)
+    for i in range(6):
+        for x in (0.42, -0.42):
+            ch.box("Head", (x, -0.6 - i * 0.18, 4.04), (0.06, 0.08, 0.12), WHITE)
+    for x in (0.18, -0.18):
+        ch.box("Head", (x, -1.6, 4.45), (0.08, 0.08, 0.05), shade(croc, 0.6))     # nostrils
+    for x in (0.35, -0.35):
+        ch.box("Head", (x, -0.25, 5.0), (0.42, 0.42, 0.3), croc)                  # eye bumps
+        eye(ch, x, -0.47, 5.0, size=0.3, pupil=(30, 30, 30), white=(250, 220, 60))
+    ch.box("Head", (0, 0.05, 5.2), (1.34, 1.0, 0.1), (110, 70, 40))               # goggle strap
+    for x in (0.35, -0.35):
+        ch.box("Head", (x, -0.3, 5.25), (0.4, 0.3, 0.2), (110, 70, 40))
+        ch.box("Head", (x, -0.46, 5.25), (0.3, 0.03, 0.12), (150, 210, 255))
+    return ch
+
+
+def cappuccino_avvocato():
+    ch = Lawyer("CappuccinoAvvocato")
+    suit, cup, coffee = (28, 28, 34), (248, 246, 240), (130, 80, 45)
+    body(ch, (232, 190, 150), shirt=suit, pants=suit, shoes=BLACK, cuff=(200, 30, 40), hands=(30, 30, 34))
+    suit_front(ch, suit, (200, 30, 40), shirt=(45, 45, 52))
+    ch.box("UpperTorso", (0, 0, 2.75), (1.48, 0.94, 0.14), (200, 30, 40))       # ninja sash
+    for y in (0.5,):
+        ch.box("UpperTorso", (0.3, y, 3.2), (0.1, 0.1, 1.6), (60, 60, 66), rot_y=-30)   # sheath on the back
+    # cup head: white mug, black ninja mask band with eye slit, coffee + foam on top, handle
+    ch.box("Head", (0, 0, 4.6), (1.2, 1.2, 1.35), cup)
+    ch.box("Head", (0, 0, 3.98), (1.0, 1.0, 0.12), shade(cup, 0.9))
+    ch.box("Head", (0, 0, 4.72), (1.24, 1.24, 0.42), (25, 25, 30))
+    for x in (0.27, -0.27):
+        ch.box("Head", (x, -0.63, 4.72), (0.32, 0.03, 0.14), WHITE)
+        ch.box("Head", (x * 0.9, -0.65, 4.72), (0.12, 0.03, 0.1), BLACK)
+    for x, r in ((0.27, 12), (-0.27, -12)):
+        ch.box("Head", (x, -0.65, 4.86), (0.36, 0.03, 0.06), (200, 30, 40), rot_y=r)   # angry brows
+    ch.box("Head", (0, 0, 5.3), (1.1, 1.1, 0.05), coffee)
+    ch.box("Head", (0, 0, 5.33), (0.6, 0.6, 0.03), (245, 225, 195))              # foam
+    ch.box("Head", (0.75, 0, 4.6), (0.3, 0.12, 0.6), cup)                        # handle
+    ch.box("Head", (0, 0.66, 4.72), (0.3, 0.1, 0.5), (25, 25, 30))               # mask knot tails
+    # crossed golden gavels
+    gold = (255, 205, 60)
+    for r in (35, -35):
+        ch.box("RightUpperArm", (-0.89, -0.3, 2.3), (0.1, 0.1, 1.1), (90, 60, 30), rot_x=r)
+    ch.box("RightUpperArm", (-0.89, -0.62, 2.75), (0.36, 0.36, 0.7), gold)
+    ch.box("RightUpperArm", (-0.89, 0.02, 2.75), (0.36, 0.36, 0.7), gold)
+    return ch
+
+
+def ballerina_cappuccina():
+    ch = Lawyer("BallerinaCappuccina")
+    skin, pink = (244, 206, 180), (255, 150, 200)
+    cup, coffee = (250, 248, 244), (140, 90, 55)
+    pink = (255, 110, 175)
+    body(ch, skin, shirt=pink, pants=skin, shoes=(255, 170, 210), sleeves=skin, cuff=pink)
+    for x in (0.34, -0.34):                                               # ribbons up the legs
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperLeg", (x, -0.23, 0.55), (0.37, 0.03, 0.05), (255, 120, 180), rot_y=20)
+    ch.box("UpperTorso", (0, 0, 2.12), (2.5, 1.7, 0.18), (255, 225, 240))        # fluffy tutu, two layers
+    ch.box("UpperTorso", (0, 0, 2.28), (2.1, 1.45, 0.16), (255, 190, 225))
+    for x, r in ((0.15, 20), (-0.15, -20)):                               # bow tie, she's a lawyer
+        ch.box("UpperTorso", (x, -0.5, 3.78), (0.26, 0.06, 0.18), (60, 40, 120), rot_y=r)
+    # cappuccino cup head with a foam heart and a face on the cup
+    ch.box("Head", (0, 0, 4.6), (1.3, 1.3, 1.35), cup)
+    ch.box("Head", (0, 0, 5.29), (1.2, 1.2, 0.06), coffee)
+    for x, y in ((0.12, 0.05), (-0.12, 0.05), (0, -0.12)):
+        ch.box("Head", (x, y, 5.33), (0.28, 0.28, 0.03), (250, 235, 215))
+    ch.box("Head", (0, 0, 3.98), (1.4, 1.4, 0.1), (230, 230, 236))               # saucer
+    ch.box("Head", (0.8, 0, 4.65), (0.3, 0.12, 0.55), cup)
+    for x in (0.27, -0.27):
+        eye(ch, x, -0.67, 4.7, size=0.34)
+        ch.box("Head", (x, -0.68, 4.95), (0.34, 0.03, 0.05), BLACK)              # lashes
+        ch.box("Head", (x * 1.6, -0.67, 4.38), (0.18, 0.03, 0.08), (255, 160, 180))
+    ch.box("Head", (0, -0.67, 4.3), (0.3, 0.03, 0.1), MOUTH)
+    # legal scroll with a pink ribbon
+    ch.box("RightUpperArm", (-0.89, -0.3, 1.95), (0.24, 1.0, 0.24), (250, 240, 210))
+    ch.box("RightUpperArm", (-0.89, -0.3, 1.95), (0.28, 0.1, 0.28), (255, 120, 180))
+    return ch
+
+
+def brr_brr_patapim():
+    ch = Lawyer("BrrBrrPatapim")
+    wood, bark, leaf = (150, 100, 60), (110, 70, 40), (90, 170, 60)
+    body(ch, wood, shirt=wood, pants=wood, shoes=bark, cuff=bark)
+    for x in (0.34, -0.34):                                               # HUGE feet
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperLeg", (x * 1.1, -0.45, 0.14), (0.62, 1.5, 0.28), bark)
+        for dx in (-0.18, 0, 0.18):
+            ch.box(f"{side}UpperLeg", (x * 1.1 + dx, -1.22, 0.14), (0.16, 0.08, 0.2), shade(bark, 0.8))
+    for z in (2.4, 3.1, 3.7):
+        ch.box("UpperTorso", (0, 0, z), (1.47, 0.93, 0.05), bark)                 # bark rings
+    tie(ch, (220, 40, 50))
+    ch.box("UpperTorso", (0.3, -0.47, 3.3), (0.2, 0.05, 0.3), leaf)            # sprouting twig
+    # monkey face on a log, long nose, leafy hair
+    ch.box("Head", (0, 0, 4.6), (1.32, 0.9, 1.35), wood)
+    ch.box("Head", (0, -0.47, 4.45), (0.95, 0.06, 0.8), (225, 180, 130))       # face patch
+    for x in (0.25, -0.25):
+        eye(ch, x, -0.52, 4.68, size=0.3)
+    ch.box("Head", (0, -0.8, 4.4), (0.2, 0.6, 0.2), (200, 140, 90))             # long nose
+    ch.box("Head", (0, -0.5, 4.13), (0.4, 0.03, 0.1), MOUTH)
+    for x in (0.74, -0.74):
+        ch.box("Head", (x, 0, 4.6), (0.18, 0.3, 0.4), (225, 180, 130))         # ears
+    for (x, y, z, s) in ((0, 0, 5.45, 1.0), (0.45, 0.1, 5.6, 0.6), (-0.45, 0.1, 5.6, 0.6), (0, -0.2, 5.8, 0.6),
+                         (0.2, 0.25, 5.9, 0.45)):
+        ch.box("Head", (x, y, z), (s * 1.3, s, s * 0.6), leaf)
+    # legal pad
+    ch.box("RightUpperArm", (-0.89, -0.32, 1.95), (0.06, 0.6, 0.8), (255, 230, 100))
+    ch.box("RightUpperArm", (-0.89, -0.32, 2.3), (0.08, 0.6, 0.1), (200, 60, 60))
+    return ch
+
+
+def lirili_larila():
+    ch = Lawyer("LiriliLarila")
+    grey, cactus = (150, 152, 160), (90, 170, 80)
+    body(ch, grey, shirt=cactus, pants=grey, shoes=(160, 110, 60), sleeves=cactus, cuff=shade(cactus, 0.8))
+    for x in (0.34, -0.34):                                               # sandals: straps over grey toes
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperLeg", (x, -0.12, 0.3), (0.45, 0.6, 0.08), (120, 80, 40))
+        ch.box(f"{side}UpperLeg", (x, -0.4, 0.2), (0.4, 0.2, 0.12), grey)
+    for (x, z) in ((0.5, 3.6), (-0.4, 3.3), (0.3, 2.6), (-0.55, 2.5), (0.1, 3.0), (0.62, 2.95), (-0.15, 2.3)):
+        ch.box("UpperTorso", (x, -0.47, z), (0.04, 0.12, 0.04), (250, 245, 200))   # cactus spines
+    for x in (0.95, -0.95):
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperArm", (x, -0.18, 3.3), (0.04, 0.1, 0.04), (250, 245, 200))
+    ch.box("UpperTorso", (0, 0, 4.02), (0.5, 0.5, 0.2), (255, 120, 170))          # cactus flower at the neck
+    tie(ch, (60, 100, 220), z_top=3.7)
+    # elephant head: big floppy ears, trunk, tusks
+    ch.box("Head", (0, 0, 4.6), (1.3, 1.0, 1.3), grey)
+    for x in (0.85, -0.85):
+        ch.box("Head", (x, 0.1, 4.6), (0.5, 0.14, 1.1), shade(grey, 0.9))
+        ch.box("Head", (x * 1.01, 0.03, 4.6), (0.36, 0.04, 0.8), (225, 170, 175))
+    for x in (0.27, -0.27):
+        eye(ch, x, -0.53, 4.8, size=0.3)
+    ch.box("Head", (0, -0.65, 4.3), (0.32, 0.3, 0.5), grey)                     # trunk
+    ch.box("Head", (0, -0.85, 3.95), (0.28, 0.28, 0.5), grey)
+    ch.box("Head", (0, -0.95, 3.68), (0.26, 0.26, 0.16), shade(grey, 0.85))
+    for x in (0.28, -0.28):
+        ch.box("Head", (x, -0.65, 4.05), (0.1, 0.4, 0.1), WHITE, rot_x=30)       # tusks
+    # a big pocket clock
+    ch.box("RightUpperArm", (-0.89, -0.32, 1.95), (0.1, 0.6, 0.6), (255, 200, 40))
+    ch.box("RightUpperArm", (-0.95, -0.32, 1.95), (0.02, 0.48, 0.48), WHITE)
+    ch.box("RightUpperArm", (-0.97, -0.32, 2.03), (0.02, 0.04, 0.18), BLACK)
+    ch.box("RightUpperArm", (-0.97, -0.24, 1.95), (0.02, 0.16, 0.04), BLACK)
+    return ch
+
+
+def chimpanzini_bananini():
+    ch = Lawyer("ChimpanziniBananini")
+    fur, muzzle, banana = (110, 70, 40), (220, 180, 140), (255, 220, 60)
+    body(ch, fur, shirt=banana, pants=banana, shoes=(120, 90, 30), sleeves=fur, cuff=banana, hands=muzzle)
+    for x in (0.34, -0.34):                                               # banana tip feet
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperLeg", (x, -0.1, 0.12), (0.36, 0.6, 0.24), (110, 80, 30))
+    peel = (255, 235, 110)
+    for x, r in ((0.78, -28), (-0.78, 28)):                               # opened peel flaps around the head
+        ch.box("UpperTorso", (x, 0, 4.35), (0.34, 0.8, 1.1), peel, rot_y=r)
+        ch.box("UpperTorso", (x * 1.22, 0, 4.88), (0.2, 0.5, 0.18), (120, 90, 30), rot_y=r)
+    ch.box("UpperTorso", (0, 0.62, 4.35), (1.0, 0.3, 1.1), peel, rot_x=20)
+    ch.box("UpperTorso", (0, -0.47, 2.2), (1.0, 0.05, 0.12), (120, 90, 30))      # banana spots
+    for z in (2.6, 3.3):
+        ch.box("UpperTorso", (0, 0, z), (1.47, 0.93, 0.04), shade(banana, 0.85))     # banana ridges
+    ch.box("UpperTorso", (0, 0, 3.98), (1.6, 1.05, 0.18), (250, 230, 120))     # peeled rim
+    tie(ch, (200, 40, 50), z_top=3.75)
+    # chimp head
+    ch.box("Head", (0, 0, 4.6), (1.25, 0.95, 1.25), fur)
+    ch.box("Head", (0, -0.48, 4.6), (0.95, 0.04, 0.6), muzzle)                 # face
+    ch.box("Head", (0, -0.55, 4.28), (0.7, 0.2, 0.4), muzzle)                  # snout
+    for x in (0.22, -0.22):
+        eye(ch, x, -0.52, 4.72, size=0.28)
+        ch.box("Head", (x * 0.4, -0.66, 4.38), (0.06, 0.03, 0.06), (60, 36, 20))
+    ch.box("Head", (0, -0.66, 4.2), (0.36, 0.03, 0.08), MOUTH)
+    for x in (0.7, -0.7):
+        ch.box("Head", (x, 0, 4.65), (0.2, 0.2, 0.42), muzzle)
+    ch.box("Head", (0, 0, 5.28), (0.5, 0.5, 0.12), fur)
+    # banana-phone
+    ch.box("RightUpperArm", (-0.89, -0.25, 2.0), (0.18, 0.6, 0.18), banana, rot_x=15)
+    return ch
+
+
+def boneca_ambalabu():
+    ch = Lawyer("BonecaAmbalabu")
+    frog, belly, skin = (110, 190, 80), (230, 240, 170), (232, 180, 140)
+    tire, hub = (32, 32, 36), (150, 150, 158)
+    body(ch, skin, shirt=tire, pants=skin, shoes=(240, 240, 240), sleeves=frog, cuff=shade(frog, 0.8), hands=frog)
+    for x in (0.34, -0.34):                                               # sneakers with red laces
+        side = "Left" if x > 0 else "Right"
+        ch.box(f"{side}UpperLeg", (x, -0.4, 0.26), (0.3, 0.1, 0.05), (220, 50, 50))
+        ch.box(f"{side}UpperLeg", (x, 0, 2.05), (0.4, 0.48, 0.25), (60, 70, 140))   # little shorts
+    # the tire torso: tread blocks + a silver hub where the belly would be
+    ch.box("UpperTorso", (0, -0.47, 3.0), (0.9, 0.05, 0.9), hub)
+    ch.box("UpperTorso", (0, -0.5, 3.0), (0.4, 0.04, 0.4), shade(hub, 0.7))
+    for z in (2.2, 2.6, 3.4, 3.8):
+        ch.box("UpperTorso", (0, 0, z), (1.52, 0.98, 0.1), (20, 20, 22))
+    ch.box("UpperTorso", (0.48, -0.5, 3.6), (0.2, 0.04, 0.36), (220, 40, 50))   # tiny tie on the tire
+    # frog head: wide, eyes on top, big grin
+    ch.box("Head", (0, 0, 4.5), (1.5, 1.1, 1.1), frog)
+    ch.box("Head", (0, -0.4, 4.2), (1.3, 0.3, 0.45), belly)
+    ch.box("Head", (0, -0.57, 4.38), (1.1, 0.05, 0.1), MOUTH)
+    for x in (0.4, -0.4):
+        ch.box("Head", (x, -0.15, 5.15), (0.5, 0.5, 0.4), frog)
+        eye(ch, x, -0.42, 5.18, size=0.38)
+        ch.box("Head", (x * 0.4, -0.57, 4.62), (0.06, 0.03, 0.06), shade(frog, 0.6))
+    for (x, z) in ((0.55, 4.7), (-0.6, 4.3), (0.2, 4.95)):
+        ch.box("Head", (x, -0.56, z), (0.12, 0.03, 0.12), shade(frog, 0.8))   # spots
+    briefcase(ch, (180, 40, 40))
+    return ch
+
+
+BRAINROT = [tralalero, bombardiro, cappuccino_avvocato, ballerina_cappuccina, brr_brr_patapim, lirili_larila,
+            chimpanzini_bananini, boneca_ambalabu]
+
+
 def preview_material():
     """Palette texture for the Blender preview only (Roblox gets plain coloured Parts, no texture). Kept apart
     from the clients' ClientPalette2 so their exported texture never changes."""
+    cv.GRID = 32                                   # >256 colours with the brainrot cast (preview only)
     size = cv.GRID * cv.CELL
     px = [1.0] * (size * size * 4)
     for rgb, i in cv.COLORS.items():
@@ -448,7 +735,11 @@ def preview_material():
                 row = size - 1 - (cy * cv.CELL + y)
                 j = (row * size + cx * cv.CELL + x) * 4
                 px[j:j + 4] = [rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, 1.0]
-    img = bpy.data.images.get("LawyerPalette2") or bpy.data.images.new("LawyerPalette2", size, size, alpha=False)
+    img = bpy.data.images.get("LawyerPalette2")
+    if img and img.size[0] != size:
+        bpy.data.images.remove(img)
+        img = None
+    img = img or bpy.data.images.new("LawyerPalette2", size, size, alpha=False)
     img.pixels = px
     mat = bpy.data.materials.get("LawyerPalette2") or bpy.data.materials.new("LawyerPalette2")
     mat.use_nodes = True
@@ -469,10 +760,14 @@ def build_all():
     else:
         coll = bpy.data.collections.new("LawyersV2")
         bpy.context.scene.collection.children.link(coll)
-    chars = [fn() for fn in ROSTER + OTHERS]
+    chars = [fn() for fn in ROSTER + OTHERS + BRAINROT]
     mat = preview_material()
     for i, ch in enumerate(chars):
-        ch.build(coll, mat, (i - 7) * 3.0)
+        ch.build(coll, mat, (i - 7) * 3.0 if i < 14 else (i - 18) * 3.2)
+        if i >= 14:
+            for o in coll.objects:
+                if o.name.startswith(ch.cid + "_"):
+                    o.location.y = 8
     return coll
 
 
@@ -482,7 +777,7 @@ M = Matrix(((-1, 0, 0), (0, 0, 1), (0, 1, 0)))
 
 def export_rows():
     out = {}
-    for fn in ROSTER + OTHERS:
+    for fn in ROSTER + OTHERS + BRAINROT:
         ch = fn()
         rows, head_done = [], False
         for part, boxes in ch.boxes.items():

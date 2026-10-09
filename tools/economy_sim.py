@@ -82,9 +82,11 @@ CONFIG = {
         # lawyer ids per rarity in Config.SkinCatalog (merges need 3 of the SAME id)          SYNCED
         "Catalog": {
             "Common": ["Rookie", "InternSuit", "CasualFriday"],
-            "Uncommon": ["BowTieBarrister", "NavyPowerSuit", "BensonBond"],
-            "Rare": ["GoldenGavel", "NeonLitigator", "KaiSueNat", "KhabyClaim"],
-            "Legendary": ["PinstripePartner", "IShowSued", "IceJustice"],
+            "Uncommon": ["BowTieBarrister", "NavyPowerSuit", "BensonBond", "ChimpanziniBananini", "BonecaAmbalabu"],
+            "Rare": ["GoldenGavel", "NeonLitigator", "KaiSueNat", "KhabyClaim", "BallerinaCappuccina",
+                     "BrrBrrPatapim", "LiriliLarila"],
+            "Legendary": ["PinstripePartner", "IShowSued", "IceJustice", "Tralalero", "Bombardiro",
+                          "CappuccinoAvvocato"],
         },
         "Tiers": None,     # scenario "egg-tiers": list of extra egg machines (None = the one live egg)
     },

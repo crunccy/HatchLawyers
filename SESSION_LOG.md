@@ -27,6 +27,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: 8 brainrot lawyers (hatchable)
+- `tools/lawyers_v2.py` BRAINROT (Blender, same block recipe, each in lawyer gear) → `ReplicatedStorage.SkinModels`
+  (attr Brainrot) + `Config.SkinCatalog`:
+  Uncommon: Chimpanzini Bananini, Boneca Ambalabu · Rare: Ballerina Cappuccina, Brr Brr Patapim, Lirilì Larilà ·
+  Legendary (Neon): Tralalero Tralala, Bombardiro Crocodilo, Cappuccino Avvocato.
+- Catalog per rarity is now 3 / 5 / 7 / 6 (rarity odds unchanged; each lawyer is rarer within its rarity, so
+  merges come slower). Sim synced: 1T/s moves from ~1.3–1.5 h to ~1.6 h (pacing fix still open). 20 tests pass.
+- Playtested: all 8 load in offices with feet on the floor, auras by rarity (Legendary 11 fx, Rare 6), the hatch
+  preview viewport works, no errors. (Studio screenshots timed out this session; looks checked in Blender.)
+
 ## 2026-10-09 — local session: tutorial rewrite + first case always goes to court
 - `Config.Tutorial`: `FirstCaseInCourt = true`, `CourtWait = 90`, `Steps = 5`.
 - Server: CourtService allows court on the tutorial case and gives it a fixed question about Dave's actual ticket
