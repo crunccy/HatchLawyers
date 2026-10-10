@@ -27,6 +27,7 @@ it is the to-do list for the next session. Move finished items into the dated en
       `tools/voxel_builder.py`, `tools/clients.py`, `ClientPalette.png`. Decide whether `.fbx` exports go in
       (they're big; maybe Git LFS) or stay local.
 - [ ] Eye-check Manager / BigCase / Courtroom panels under the new UIKit colours (2026-10-09 UI pass).
+- [ ] Ask mr.robe about `ServerStorage.StagePreviews_MovedFromWorkspace` (moved out of Workspace in the perf pass).
 - [ ] Publish the lawyer animations (Animation Editor → import .fbx → publish), play Idle at the desk and
       Objection on a win. `PinstripePartner`'s Idle/Walk/Objection are not published yet (user must do it).
 - [ ] More hatchable lawyers: add entries to `Config.SkinCatalog` (now the lawyer catalog; ids are saved).
@@ -53,6 +54,13 @@ What was changed:
 - **DeskLife**: off-screen lawyers aren't re-posed (on-screen + 220 px margin, as before within 110 studs).
 - **Hud** hints 5x/s, **Rewards** timers 4x/s, **Courtroom** attend-office pick 4x/s (all were every frame).
 - Gotcha for testing: when the Studio window isn't focused, RenderStepped stops - per-frame UI looks frozen.
+- **Biggest find: `Workspace.PREVIEW_Stage1..6`** (firm-stage preview builds "Dingy Shack" .. "Supreme Tower",
+  attrs Stage/StageName/Segments): ~9,100 instances (8,400 parts, all visible, some collidable) that every player
+  loaded, sitting ON the real plots (Stage1 overlapped Plot1's firm). No script references them; not ours (probably
+  mr.robe's WIP). **Moved, untouched, to `ServerStorage.StagePreviews_MovedFromWorkspace`** (folder has a Note
+  attribute) - drag back if they're needed in Workspace. Client workspace instances 19,953 -> ~10,900.
+- Workspace also holds 4 inert post effects (Bloom / Blur / ColorCorrection / SunRays) - effects only work in
+  Lighting or a Camera; the live ones are in Lighting. Harmless, left alone.
 
 ## 2026-10-09 — local session: HUD / UI pass ("the ui is cooked") + real PNG icons
 - **Why it looked broken**: (1) UIKit's icon sprite sheet `rbxassetid://76384361895353` belongs to another account
