@@ -59,6 +59,10 @@ What was changed:
   loaded, sitting ON the real plots (Stage1 overlapped Plot1's firm). No script references them; not ours (probably
   mr.robe's WIP). **Moved, untouched, to `ServerStorage.StagePreviews_MovedFromWorkspace`** (folder has a Note
   attribute) - drag back if they're needed in Workspace. Client workspace instances 19,953 -> ~10,900.
+- Exploit audit (all 26 remotes): every one has a server handler except EquipSkin / SellSkins (retired skin
+  inventory - unanswered, harmless). Spot-read Rewards (activity can't speed playtime; daily is per UTC day), Skills
+  (throttle, pay before roll), Court (type checks, one answer, server deadline) - nothing to fix.
+- Save system reviewed: session lock, UpdateAsync, retries with backoff, 60 s autosave, BindToClose - fine.
 - Workspace also holds 4 inert post effects (Bloom / Blur / ColorCorrection / SunRays) - effects only work in
   Lighting or a Camera; the live ones are in Lighting. Harmless, left alone.
 
