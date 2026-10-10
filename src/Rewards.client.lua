@@ -277,7 +277,13 @@ local function render()
 	giftLine.Text = string.format("Playtime gift in %s (keep playing, AFK doesn't count)", clock(left))
 end
 
-RunService.Heartbeat:Connect(render)
+-- countdowns tick in whole seconds: 4 refreshes a second are plenty (was every frame; perf 2026-10-09)
+task.spawn(function()
+	while true do
+		render()
+		task.wait(0.25)
+	end
+end)
 
 local function fit(): number
 	local camera = workspace.CurrentCamera

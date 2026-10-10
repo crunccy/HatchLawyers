@@ -718,8 +718,10 @@ attendButton.Activated:Connect(open)
 closeButton.Activated:Connect(close)
 dim.Activated:Connect(close)
 
+local nextPick = 0
 RunService.Heartbeat:Connect(function()
-	if state == "closed" then
+	if state == "closed" and os.clock() >= nextPick then
+		nextPick = os.clock() + 0.25 -- (4x a second is plenty; perf 2026-10-09)
 		-- the office picked in the LAWYERS panel; if it has no case to attend, any office that does
 		-- (there's no office card on screen any more to pick one with - lawyer-management overhaul 2026-10-09)
 		local selected = player:GetAttribute("SelectedDesk")

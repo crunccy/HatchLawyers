@@ -317,7 +317,13 @@ local function refresh()
 	legend.Visible = hintText ~= nil and string.find(hintText, "STEP ", 1, true) ~= nil
 end
 
-RunService.Heartbeat:Connect(refresh)
+-- hints only change a few times a second: no need to rebuild them every frame (perf 2026-10-09)
+task.spawn(function()
+	while true do
+		refresh()
+		task.wait(0.2)
+	end
+end)
 
 CaseResult.OnClientEvent:Connect(function(result: { outcome: string, payout: number, tutorial: boolean, clientTier: number? })
 	-- a small coloured number beside the coin counter (bigger for Epic / Legendary clients)

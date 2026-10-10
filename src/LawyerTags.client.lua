@@ -313,32 +313,31 @@ local function clampNear(gui: BillboardGui, root: BasePart, eye: Vector3)
 	end
 end
 
+-- (perf 2026-10-09: tags farther than their MaxDistance aren't drawn, so they're skipped entirely - every write
+-- to a tag's size or gradient makes Roblox redraw that billboard, and there's one per lawyer / client on 8 firms)
+local function animate(tag: { gui: BillboardGui, root: BasePart, gradients: { UIGradient } }, eye: Vector3?, rainbow: Vector2, shimmer: Vector2)
+	if eye then
+		if (tag.root.Position - eye).Magnitude > tag.gui.MaxDistance then
+			return
+		end
+		clampNear(tag.gui, tag.root, eye)
+	end
+	for _, g in tag.gradients do
+		g.Offset = if g.Color == RAINBOW then rainbow else shimmer
+	end
+end
+
 RunService.RenderStepped:Connect(function()
 	local t = os.clock()
-	local sweep = ((t * 0.6) % 1.6) - 0.8
+	local shimmer = Vector2.new(((t * 0.6) % 1.6) - 0.8, 0)
+	local rainbow = Vector2.new(math.sin(t * 1.2) * 0.25, 0)
 	local camera = workspace.CurrentCamera
-	if camera then
-		local eye = camera.CFrame.Position
-		for _, tag in tags do
-			clampNear(tag.gui, tag.root, eye)
-		end
-		for _, tag in clientTags do
-			clampNear(tag.gui, tag.root, eye)
-		end
+	local eye = if camera then camera.CFrame.Position else nil
+	for _, tag in tags do
+		animate(tag, eye, rainbow, shimmer)
 	end
 	for _, tag in clientTags do
-		for _, g in tag.gradients do
-			g.Offset = if g.Color == RAINBOW then Vector2.new(math.sin(t * 1.2) * 0.25, 0) else Vector2.new(sweep, 0)
-		end
-	end
-	for _, tag in tags do
-		for _, g in tag.gradients do
-			if g.Color == RAINBOW then
-				g.Offset = Vector2.new(math.sin(t * 1.2) * 0.25, 0)
-			else
-				g.Offset = Vector2.new(sweep, 0)
-			end
-		end
+		animate(tag, eye, rainbow, shimmer)
 	end
 end)
 

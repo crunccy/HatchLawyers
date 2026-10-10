@@ -34,6 +34,26 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: performance pass ("just optimize the game")
+Measured first (playtest, client + server Stats): server heartbeat 0.08 ms, physics 0.12 ms, 22 moving parts, ~13
+attribute changes/s, ~2 KB/s -> the server and network are fine. A full Puppet pose is 0.012 ms of Lua (BulkMoveTo
+measured no faster), and the shell templates are already greedy-merged (769 -> 767), so neither was worth changing.
+The ~66 ms client frames in Studio were Studio throttling its unfocused window (render stats read 0).
+What was changed:
+- **CanTouch off** on 6,181 static map parts + 7,226 template parts (ServerStorage/ReplicatedStorage). Only
+  Dev.DevCoinPickup uses Touched (left alone); there are no Seats. Touch detection was running on ~6k parts for nothing.
+- **Lighting**: 7 Sky objects -> 1 (Roblox picks an undefined one when there are several; kept the cartoon-cloud
+  sky that renders today, checked by screenshot with only it present).
+- **EffectsLod** (new LocalScript, `src/EffectsLod.client.lua`): continuous particle emitters > 150 studs from the
+  camera pause, resume inside 130. Tested: at the firm 86 far emitters paused, 0 far ones running, every near one
+  on; at the egg machine all 10 near ones on.
+- **DeskProgress**: was a recursive FindFirstChild into every client on every firm, every frame -> cached per desk,
+  only visible bars updated. Verified bars fill (0.92 -> 0.97 over 1.5 s).
+- **LawyerTags**: tags past their MaxDistance (not drawn) no longer get size/gradient writes every frame.
+- **DeskLife**: off-screen lawyers aren't re-posed (on-screen + 220 px margin, as before within 110 studs).
+- **Hud** hints 5x/s, **Rewards** timers 4x/s, **Courtroom** attend-office pick 4x/s (all were every frame).
+- Gotcha for testing: when the Studio window isn't focused, RenderStepped stops - per-frame UI looks frozen.
+
 ## 2026-10-09 — local session: HUD / UI pass ("the ui is cooked") + real PNG icons
 - **Why it looked broken**: (1) UIKit's icon sprite sheet `rbxassetid://76384361895353` belongs to another account
   and isn't shared with this experience ("doesn't have access permission" in the output) -> every UIKit icon was
