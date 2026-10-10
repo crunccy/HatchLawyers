@@ -3,7 +3,11 @@
 --   TrainLawyer(office)        upgrades an OFFICE one level (the main coin sink; the level stays with
 --                              the office when lawyers swap). Free tutorial level-ups are spent first.
 --   PlaceLawyer(office, uid?)  puts an owned lawyer in an office (swapping with wherever it was) or,
---                              with uid nil, sends the office's lawyer back to the inventory.
+--                              with uid nil, sends the office's lawyer back to the inventory. If the office is
+--                              busy with a case, the change is QUEUED (unseat, or a bench lawyer replacing them)
+--                              and happens the moment the case ends (CaseService.releaseDesk). Returns
+--                              ok, message, "queued" when it was queued.
+--   CancelLawyerChange(office) drops a queued change.
 --   MergeLawyers(uid)          merges that lawyer with Config.Lawyers.MergeCount - 1 copies of the same
 --                              lawyer at the same stars into one lawyer with +1 star.
 --   MergeSelected({uids})      the Lawyer Merger machine (Hub.MergeMachine): the player picks exactly
@@ -25,6 +29,7 @@ local TrainLawyer = Remotes.TrainLawyer :: RemoteFunction
 local PlaceLawyer = Remotes.PlaceLawyer :: RemoteFunction
 local MergeLawyers = Remotes.MergeLawyers :: RemoteFunction
 local MergeSelected = Remotes:FindFirstChild("MergeSelected") :: RemoteFunction
+local CancelLawyerChange = Remotes:FindFirstChild("CancelLawyerChange") :: RemoteFunction
 
 local COOLDOWN = 0.15
 
@@ -89,42 +94,16 @@ local function upgradeOffice(player: Player, index: unknown): (boolean, string?)
 	return true, if newTier > oldTier then Config.Desks.Tiers[newTier].Name else nil
 end
 
-local function place(player: Player, index: unknown, uid: unknown): (boolean, string?)
-	if throttled(player) then
-		return false, "Slow down!"
-	end
-	local data = PlayerData.get(player)
-	if not data then
-		return false, "Still loading"
-	end
-	if not isIndex(index) or not data.Desks[index :: number] then
-		return false, "Bad office"
-	end
-	local target = index :: number
+-- The move itself (office free, everything validated by the caller). uid nil = back to the inventory.
+local function doPlace(player: Player, data: PlayerData.Data, target: number, uid: string?)
 	local office = data.Desks[target]
 	if uid == nil then
-		-- back to the inventory
-		if not office.Lawyer then
-			return false, "That office is empty"
-		end
-		if not officeFree(player, target) then
-			return false, "Busy with a case!"
-		end
 		office.Lawyer = nil
 		PlayerData.sync(player)
 		CaseService.refreshDesk(player, target)
-		return true, nil
-	end
-	if type(uid) ~= "string" or not data.Lawyers[uid] then
-		return false, "You don't have that lawyer"
-	end
-	if office.Lawyer == uid then
-		return true, nil
+		return
 	end
 	local from = PlayerData.officeOf(data, uid)
-	if not officeFree(player, target) or (from and not officeFree(player, from)) then
-		return false, "Busy with a case!"
-	end
 	local wasEmpty = office.Lawyer == nil
 	if from then
 		-- swap: whoever sat here moves to the lawyer's old office
@@ -144,7 +123,88 @@ local function place(player: Player, index: unknown, uid: unknown): (boolean, st
 	if rarity and (rarity.Id == "Legendary" or rarity.Id == "Rare") then
 		CaseService.burst(player, target, if rarity.Id == "Legendary" then "legendary" else "rare")
 	end
+end
+
+local function lawyerLabel(data: PlayerData.Data, uid: string): string
+	local l = data.Lawyers[uid]
+	return if l then Formulas.lawyerName(l.Id, l.Stars) else "That lawyer"
+end
+
+-- Returns ok, a message for the player, and "queued" when the change waits for the current case to end.
+local function place(player: Player, index: unknown, uid: unknown): (boolean, string?, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	if not isIndex(index) or not data.Desks[index :: number] then
+		return false, "Bad office"
+	end
+	local target = index :: number
+	local office = data.Desks[target]
+	if uid == nil then
+		-- back to the inventory
+		if not office.Lawyer then
+			return false, "That office is already empty"
+		end
+		if not officeFree(player, target) then
+			CaseService.setQueued(player, target, "unseat")
+			return true, lawyerLabel(data, office.Lawyer) .. " will leave after this case", "queued"
+		end
+		doPlace(player, data, target, nil)
+		return true, nil
+	end
+	if type(uid) ~= "string" or not data.Lawyers[uid] then
+		return false, "You don't have that lawyer"
+	end
+	if office.Lawyer == uid then
+		return false, "Already working in this office"
+	end
+	local from = PlayerData.officeOf(data, uid)
+	if from and not officeFree(player, from) then
+		return false, string.format("%s is on a case in Office %d", lawyerLabel(data, uid), from)
+	end
+	if not officeFree(player, target) then
+		if from then
+			-- a swap between two offices needs both free; only bench lawyers can wait in line
+			return false, string.format("Office %d is on a case. Wait for it, or pick a lawyer from your bench", target)
+		end
+		CaseService.setQueued(player, target, uid)
+		return true, lawyerLabel(data, uid) .. " takes over after this case", "queued"
+	end
+	doPlace(player, data, target, uid)
 	return true, nil
+end
+
+-- A queued change, now that the office's case is over (CaseService.releaseDesk). Re-validated: the bench
+-- lawyer may have been merged away or placed elsewhere since.
+local function applyQueued(player: Player, target: number, uid: string?): boolean
+	local data = PlayerData.get(player)
+	local office = data and data.Desks[target]
+	if not data or not office or not office.Lawyer or not officeFree(player, target) then
+		return false
+	end
+	if uid ~= nil and (not data.Lawyers[uid] or PlayerData.officeOf(data, uid) ~= nil) then
+		return false
+	end
+	doPlace(player, data, target, uid)
+	return true
+end
+
+local function cancelChange(player: Player, index: unknown): (boolean, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	if not isIndex(index) then
+		return false, "Bad office"
+	end
+	if not CaseService.queuedChange(player, index :: number) then
+		return false, "Nothing to cancel"
+	end
+	CaseService.setQueued(player, index :: number, nil)
+	return true, "Change cancelled"
 end
 
 -- Total skill levels, to keep the best skill set when merging.
@@ -336,6 +396,10 @@ end
 function LawyerService.start()
 	TrainLawyer.OnServerInvoke = upgradeOffice
 	PlaceLawyer.OnServerInvoke = place
+	CaseService.applyQueued = applyQueued
+	if CancelLawyerChange then
+		CancelLawyerChange.OnServerInvoke = cancelChange
+	end
 	MergeLawyers.OnServerInvoke = merge
 	if MergeSelected then
 		MergeSelected.OnServerInvoke = mergeSelected

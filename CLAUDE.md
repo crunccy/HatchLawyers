@@ -74,14 +74,17 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ReplicatedStorage.Shared.SkinLook` — dresses an NPC in a skin; `showInViewport` for previews.
 - `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`).
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
-  Ours: EggHatched, MarkSkinsSeen, AssignClient, PlaceLawyer, MergeLawyers, OpenLawyerPicker.
+  Ours: EggHatched, MarkSkinsSeen, AssignClient, PlaceLawyer, MergeLawyers, MergeSelected, CancelLawyerChange,
+  OpenLawyerPicker. Local bindables: `LawyersUI` (open the LAWYERS panel), `SkillsUI` (open Skills).
   (TrainLawyer now upgrades an OFFICE; UpgradeDesk just answers "offices upgrade with their level".)
 - `ServerScriptService`
   - `Server.*` — mr.robe's gameplay (above) + ours: `FirmBuilder`, `DeskService`.
   - `Eggs.EggServer` — egg rolls, equip, sell duplicates, NEW-badge count.
   - `Dev.EconomySim` (+ disabled `RunEconomySim`) — authoritative 24 h economy sim.
-- `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (collection, place/merge;
-  `SkinInventory` is disabled), `ClientWalk`, `AssignClients`, `Guide`. mr.robe's logic, our styling: `Hud`, `Courtroom`, `DeskProgress`.
+- `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (THE lawyer screen since
+  2026-10-09: office slots bar, office card with upgrade/skills/unseat, CLIENTS tab to assign, BENCH tab to place/
+  swap/merge; `SkinInventory` is disabled), `ClientWalk`, `AssignClients` (only the [E] prompts now), `Guide`.
+  There is no office card at the bottom of the HUD any more. mr.robe's logic, our styling: `Hud`, `Courtroom`, `DeskProgress`.
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
@@ -96,6 +99,8 @@ character parts `Head`/`Torso`/`Left Arm`/`Right Arm`/`Left Leg`/`Right Leg`/`Hu
 client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 
 ## Game rules that code must respect
+- Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
+  the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
 - Save schema is **v12** (`PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`). Before adding any saved field: bump `SCHEMA_VERSION` and add a
   `MIGRATIONS` entry.

@@ -4,6 +4,8 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] Lawyer panel at phone size: the smallest labels (office-card names, client situations) are tiny at 0.58 scale.
+- [ ] Tell mr.robe: the Hud's bottom office card is gone (user's call) and CaseService/LawyerService changed (queued lawyer changes, rest window).
 - [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
 - [ ] Eye-check the Lawyer Merger panel + merge animation in a playtest (window wasn't rendering during the build).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
@@ -14,7 +16,7 @@ it is the to-do list for the next session. Move finished items into the dated en
       Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
 - [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
       starting at the firm's lowest office level (`DeskService.upgradeFirm`), or expansions stall. Sim it first.
-- [ ] **Upgrade ×10 / Max** on the office card (review §4) — `LawyerService` (ours since v12) + Hud.
+- [ ] **Upgrade ×10 / Max** in the LAWYERS panel (review §4) — `LawyerService` + `Lawyers`.
 - [ ] **Egg tiers** (review §2): stretch the merge chase (first Rainbow at 6 min today). Do after the retune.
 - [ ] Specialist skill targets 1 of 9 `Config.Clients` entries (review D) — heads-up to mr.robe.
 - [ ] Port this repo's sim model into Studio's `Dev.EconomySim` (stale since v12) or retire it (review E).
@@ -25,13 +27,48 @@ it is the to-do list for the next session. Move finished items into the dated en
       `tools/voxel_builder.py`, `tools/clients.py`, `ClientPalette.png`. Decide whether `.fbx` exports go in
       (they're big; maybe Git LFS) or stay local.
 - [ ] Responsive HUD pass: on narrow/phone screens the left-edge buttons (mr.robe's DAILY gift + our LAWYERS)
-      overlap the coin counter and the office card.
+      overlap the coin counter.
 - [ ] Publish the lawyer animations (Animation Editor → import .fbx → publish), play Idle at the desk and
       Objection on a win. `PinstripePartner`'s Idle/Walk/Objection are not published yet (user must do it).
 - [ ] More hatchable lawyers: add entries to `Config.SkinCatalog` (now the lawyer catalog; ids are saved).
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-09 — local session: lawyer management overhaul (unseat fix + one LAWYERS panel)
+User spec: lawyers could never be unseated ("busy with a case" forever), and the lawyer UI + the bottom office card
+were confusing. Wanted: a slots bar, client assigning inside the Lawyer tab, clear statuses, working unseat/replace.
+- **Root cause**: nothing ever let a lawyer be free long enough. `CaseService.autoAssign` re-booked any Idle lawyer
+  within a tick (Manager every 0.8 s; without a Manager, any client seated 12 s self-assigns), a Mistrial re-runs the
+  same case, and `PlaceLawyer` simply refused while busy. So "wait until the case is finished" never had a window.
+- **Fix (server)**: (1) lawyer changes on a busy office are QUEUED: `PlaceLawyer(office, nil)` -> "leaves after this
+  case", `PlaceLawyer(office, benchUid)` -> "takes over after this case" (swapping in a lawyer from ANOTHER office
+  still needs both free - clear message). `CaseService.releaseDesk` applies the queued change the instant the case
+  ends (after the payout), before anything can book the lawyer again; re-validated (`LawyerService.applyQueued`).
+  New `Remotes.CancelLawyerChange`. A queued office skips Mistrial re-runs (client leaves; mistrials pay 0 anyway).
+  (2) `Config.Case.RestAfterCase = 5`: after every case, and when a lawyer is newly placed, auto-assign (Manager and
+  self-assign) leaves the office alone for 5 s; manual assigning works immediately. (3) Live office state is mirrored
+  on the PLAYER (`Desk<N>Phase/CaseStart/CaseEnd/ClientName/ClientTier/RestUntil/Queued`, `WaitingClients` JSON),
+  so the panel works anywhere (desk models stream out at the hub).
+- **UI (`StarterPlayerScripts.Lawyers`, rewritten)**: Shop/Merger style. Top: YOUR OFFICES slot bar (lawyer, status
+  pill FREE / ON A CASE m:ss with progress / CLIENT ARRIVING / LEAVING or SWAP AFTER CASE / EMPTY, skills "!").
+  Left: selected office (3D lawyer, rarity, Earns xN, live status, UPGRADE OFFICE, SKILLS, UNSEAT / UNSEAT AFTER
+  CASE / CANCEL CHANGE). Right: CLIENTS tab (waiting room, win % for this office, ASSIGN; info bar says why an office
+  can't take one + which are free) and BENCH tab (all lawyers, PUT IN / SWAP INTO / REPLACE AFTER THIS CASE, MERGE).
+  Assigning still closes the panel (earlier user call). Feedback pill for every refusal.
+- **Removed**: the HUD's bottom office card (`Hud.LawyerPanel`: < >, UPGRADE OFFICE, SWAP LAWYER, SKILLS) - mr.robe's
+  Hud script, user asked for it; hints now say "Open LAWYERS". The old AssignPicker panel: the [E] Assign Client
+  prompt now opens the LAWYERS panel on CLIENTS with that client highlighted and the best free office selected.
+  `Skills` opens via the new local `ReplicatedStorage.SkillsUI` bindable (its "!" moved onto the LAWYERS button);
+  `Courtroom`'s ATTEND COURT button moved down and now finds any office with a case to attend.
+- **Tested in a playtest** (real remotes, real UI clicks): ASSIGN click -> client walks to that office, panel closes;
+  UNSEAT AFTER CASE -> purple LEAVING pill -> case finished (Win +18K paid) -> lawyer on bench, office Empty; Bench ->
+  PUT IN OFFICE 4 works; REPLACE AFTER THIS CASE -> Settlement +29.9K paid -> new lawyer in, old one benched; office
+  stayed Idle the whole 5 s rest with 10 clients waiting; manual assign during rest -> true; second full replace
+  cycle (Win +187.5K) also correct; queue/cancel/garbage-input refusals return clear messages. Phone scale (0.585)
+  screenshot: fits, buttons readable.
+- **Not verified**: the Mistrial + queued path (couldn't force a mistrial); a UI ASSIGN click inside the 5 s rest
+  window (tool latency is longer than the window - verified with the same remote instead).
 
 ## 2026-10-09 — local session: Robux Shop, Lawyer Merger machine, egg particle fix
 User spec: a Shop (Robux passes + products, real MarketplaceService), a Lawyer Merger (reference: "Fuse Machine"),

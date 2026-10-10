@@ -261,6 +261,9 @@ Config.Case = {
 	-- the firm keeps earning while the player is away (the Manager assigns instantly and picks the best
 	-- lawyer). Not during the tutorial's first case.
 	SelfAssignAfter = 12,
+	-- After every case a lawyer rests this long: the Manager and self-assigning clients leave them alone, so the
+	-- player can always catch them free to unseat or swap (manual assigning still works right away).
+	RestAfterCase = 5,
 	TutorialDuration = 10,
 }
 
