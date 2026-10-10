@@ -1,7 +1,8 @@
--- Brings the firms to life on this player's screen: every lawyer and client at a desk is animated
--- with Shared.Puppet. Lawyers type while a case runs and look around between clients; clients fidget
--- and watch their lawyer. Your own lawyers celebrate or sulk when a case ends. Purely visual: the
--- poses are local to this client and only people near the camera are animated.
+-- Brings the firms to life on this player's screen. Lawyers FLOAT: a gentle bob (each its own rhythm) and a hop
+-- when your case is won - no limb animation, because since the 2026-10-10 model remakes every lawyer has its own
+-- shape (a shark on three legs, a crocodile bomber...) and a humanoid rig pose doesn't fit them (user's call).
+-- Clients are people: they're still animated with Shared.Puppet (fidget, watch their lawyer, react to the verdict).
+-- Purely visual and local; only things near the camera and on screen move.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -14,7 +15,21 @@ local player = Players.LocalPlayer
 local ANIMATE_RANGE = 110 -- studs from the camera
 local SCAN_EVERY = 0.5
 
-type Tracked = { model: Model, desk: Instance, role: string, anim: any, dirty: boolean, conns: { RBXScriptConnection } }
+type Tracked = { model: Model, desk: Instance, role: string, anim: any, dirty: boolean, conns: { RBXScriptConnection }, phase: number, hopAt: number }
+local FLOAT = { rootPos = Vector3.zero, rootRot = Vector3.zero, head = Vector3.zero, armL = Vector3.zero, armR = Vector3.zero, legL = Vector3.zero, legR = Vector3.zero }
+local BOB, HOP, HOP_TIME = 0.14, 0.7, 0.55
+
+-- a lawyer's float: bob + (after a win) a quick hop arc
+local function float(entry: Tracked, t: number)
+	local y = 0.14 + math.sin(t * 2 + entry.phase) * BOB
+	local since = t - entry.hopAt
+	if since >= 0 and since < HOP_TIME then
+		local u = since / HOP_TIME
+		y += math.sin(u * math.pi) * HOP
+	end
+	FLOAT.rootPos = Vector3.new(0, y, 0)
+	entry.anim.puppet:apply(FLOAT)
+end
 local tracked: { [Model]: Tracked } = {}
 
 local function untrack(model: Model)
@@ -41,7 +56,8 @@ local function track(model: Model, desk: Instance, role: string)
 	if not ok then
 		return
 	end
-	local entry: Tracked = { model = model, desk = desk, role = role, anim = Puppet.animator(puppet, role), dirty = false, conns = {} }
+	local entry: Tracked = { model = model, desk = desk, role = role, anim = Puppet.animator(puppet, role), dirty = false, conns = {},
+		phase = math.random() * 6.28, hopAt = -10 }
 	-- a skin change adds/removes parts: re-sort the puppet on the next scan
 	local function markDirty(d)
 		if d:IsA("BasePart") then
@@ -125,7 +141,7 @@ RunService.RenderStepped:Connect(function()
 		local screen, inFront = camera:WorldToViewportPoint(at)
 		local margin = 220
 		if inFront and screen.X > -margin and screen.X < view.X + margin and screen.Y > -margin and screen.Y < view.Y + margin then
-			local ok = pcall(entry.anim.step, entry.anim, t)
+			local ok = pcall(if entry.role == "lawyer" then float else entry.anim.step, if entry.role == "lawyer" then entry else entry.anim, t)
 			if not ok then
 				untrack(model)
 			end
@@ -145,7 +161,11 @@ CaseResult.OnClientEvent:Connect(function(result: { desk: number, outcome: strin
 	end
 	for _, child in desk:GetChildren() do
 		local entry = tracked[child :: any]
-		if entry then
+		if entry and entry.role == "lawyer" then
+			if result.outcome == "Win" then
+				entry.hopAt = os.clock() -- a happy hop
+			end
+		elseif entry then
 			if result.outcome == "Win" then
 				entry.anim:play(if entry.role == "lawyer" then "celebrate" else "cheer")
 			elseif result.outcome == "Settlement" then

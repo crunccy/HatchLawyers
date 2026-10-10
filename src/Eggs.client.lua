@@ -1001,19 +1001,15 @@ local function startReveal(skinId: string, rarityName: string, accent: Color3)
 			m:ScaleTo(s)
 			m:PivotTo(stand(s, rise))
 		else
-			if not anim then
+			-- lawyers aren't limb-animated (every model has its own shape, 2026-10-10): it floats and turns slowly
+			if not restBase then
 				m:ScaleTo(1)
 				m:PivotTo(stand(1, 0))
-				local ok, puppet = pcall(Puppet.new, m)
-				if ok then
-					anim = Puppet.animator(puppet, "lawyer")
-					anim:play(look.clip)
-				end
 				restBase = m:GetPivot()
 			end
-			if anim and restBase then
-				anim.puppet.base = restBase * CFrame.Angles(0, math.sin((u - ENTER) * 0.55) * 0.4, 0)
-				pcall(anim.step, anim, os.clock())
+			if restBase then
+				local t = u - ENTER
+				m:PivotTo(restBase * CFrame.new(0, 0.12 + math.sin(t * 2.2) * 0.12, 0) * CFrame.Angles(0, math.sin(t * 0.55) * 0.4, 0))
 			end
 		end
 		-- the light breathes
