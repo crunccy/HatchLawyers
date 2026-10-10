@@ -35,6 +35,18 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-09 — local session: LAWYERS panel shows real 3D lawyers; EQUIP / UNEQUIP wording
+- **3D lawyers everywhere in the panel** (user: "not a 2D cutout"): office cards, EQUIP-tab cards and the big preview
+  now show each lawyer's real rigged model (`ReplicatedStorage.SkinModels`, posed by `SkinLook.dress` on an
+  invisible stand-in body, so it works even when the firm is streamed out). One posed master per lawyer id, cloned
+  into each ViewportFrame. Cards are now persistent (keyed by office / uid): a model is built once and only text,
+  outlines and pills update, so office state changes don't rebuild ~60 viewports. Tested: 67 viewports kept across
+  10 office state changes; frame time identical with the panel open or closed. The drawn icon is only a fallback.
+- **Wording** (user: easier for kids): seat / unseat / place / bench -> EQUIP / UNEQUIP. Buttons UNEQUIP,
+  UNEQUIP AFTER CASE, EQUIP LAWYER, EQUIP IN OFFICE N, EQUIP AFTER THIS CASE; tab EQUIP (n); pill UNEQUIPS AFTER
+  CASE / SWAPS AFTER CASE; server messages "... gets (un)equipped after this case"; HUD hints; the empty office's
+  world prompt now says "Equip Lawyer" (`FirmBuilder`; the prompt is still named `PlacePrompt`). Screenshot-checked.
+
 ## 2026-10-09 — local session: lawyer management overhaul (unseat fix + one LAWYERS panel)
 User spec: lawyers could never be unseated ("busy with a case" forever), and the lawyer UI + the bottom office card
 were confusing. Wanted: a slots bar, client assigning inside the Lawyer tab, clear statuses, working unseat/replace.

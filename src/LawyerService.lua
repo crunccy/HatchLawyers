@@ -151,7 +151,7 @@ local function place(player: Player, index: unknown, uid: unknown): (boolean, st
 		end
 		if not officeFree(player, target) then
 			CaseService.setQueued(player, target, "unseat")
-			return true, lawyerLabel(data, office.Lawyer) .. " will leave after this case", "queued"
+			return true, lawyerLabel(data, office.Lawyer) .. " gets unequipped after this case", "queued"
 		end
 		doPlace(player, data, target, nil)
 		return true, nil
@@ -160,7 +160,7 @@ local function place(player: Player, index: unknown, uid: unknown): (boolean, st
 		return false, "You don't have that lawyer"
 	end
 	if office.Lawyer == uid then
-		return false, "Already working in this office"
+		return false, "Already equipped here"
 	end
 	local from = PlayerData.officeOf(data, uid)
 	if from and not officeFree(player, from) then
@@ -169,10 +169,10 @@ local function place(player: Player, index: unknown, uid: unknown): (boolean, st
 	if not officeFree(player, target) then
 		if from then
 			-- a swap between two offices needs both free; only bench lawyers can wait in line
-			return false, string.format("Office %d is on a case. Wait for it, or pick a lawyer from your bench", target)
+			return false, string.format("Office %d is on a case. Wait for it, or pick an unequipped lawyer", target)
 		end
 		CaseService.setQueued(player, target, uid)
-		return true, lawyerLabel(data, uid) .. " takes over after this case", "queued"
+		return true, lawyerLabel(data, uid) .. " gets equipped after this case", "queued"
 	end
 	doPlace(player, data, target, uid)
 	return true, nil

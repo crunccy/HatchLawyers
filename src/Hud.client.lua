@@ -281,10 +281,10 @@ local function refresh()
 	if not hintText and firstDone and player:GetAttribute("FreeEgg") == true and owned <= 1 then
 		hintText = step(4, "Follow the green line and hatch your FREE Briefcase Egg!")
 	elseif not hintText and owned > working and hasEmpty and owned <= 2 then
-		hintText = step(5, "Walk to a glowing EMPTY OFFICE to place your new lawyer")
+		hintText = step(5, "Walk to a glowing EMPTY OFFICE to equip your new lawyer")
 		onLastStep = true
 	elseif not hintText and owned > working and hasEmpty then
-		hintText = "A lawyer is waiting for a desk! Open LAWYERS to place them"
+		hintText = "A lawyer is waiting for a desk! Open LAWYERS to equip them"
 	elseif not hintText and hasEmpty and coins >= ((player:GetAttribute("EggPrice") or math.huge) :: number) then
 		hintText = "Hatch an egg at the hub to fill your empty offices!"
 	end
