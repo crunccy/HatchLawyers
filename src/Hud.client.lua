@@ -49,39 +49,47 @@ end
 
 local gui = make("ScreenGui", { Name = "Hud", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling })
 
--- Coin counter
+-- Coin counter: dark pill with a gold rim, the real coin image (Shared.HudMenu.Icons) hanging off its left end,
+-- big white outlined money (UI pass 2026-10-09; opted out of UISkin so it keeps this look)
+local Icons = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons
 local coinLabel = make("TextLabel", {
-	Position = UDim2.fromOffset(56, 0),
-	Size = UDim2.new(1, -66, 1, 0),
+	Position = UDim2.fromOffset(58, 4),
+	Size = UDim2.new(1, -72, 1, -8),
 	BackgroundTransparency = 1,
 	FontFace = FONT,
-	TextSize = 34, -- money stands out
-	TextColor3 = INK,
-	TextXAlignment = Enum.TextXAlignment.Left,
+	TextScaled = true,
+	TextColor3 = WHITE,
+	TextXAlignment = Enum.TextXAlignment.Center,
 	Text = "0",
+	ZIndex = 3,
+}, {
+	make("UITextSizeConstraint", { MaxTextSize = 36 }),
+	make("UIStroke", { Color = BLACK, Thickness = 3, LineJoinMode = Enum.LineJoinMode.Round }),
 })
 local coinPill = make("Frame", {
 	Name = "Coins",
 	AnchorPoint = Vector2.new(0.5, 0),
 	Position = UDim2.new(0.5, 0, 0, 10),
-	Size = UDim2.fromOffset(230, 54),
-	BackgroundColor3 = WHITE,
+	Size = UDim2.fromOffset(240, 54),
+	BackgroundColor3 = WHITE, -- (the gradient below carries the colour)
 	Parent = gui,
 }, {
 	corner(27),
-	make("UIStroke", { Color = BLACK, Thickness = 3 }),
-	make("TextLabel", {
-		Position = UDim2.fromOffset(8, 7),
-		Size = UDim2.fromOffset(40, 40),
-		BackgroundColor3 = GOLD,
-		FontFace = FONT,
-		TextSize = 26,
-		TextColor3 = WHITE,
-		TextStrokeTransparency = 0,
-		Text = "$",
-	}, { corner(20), make("UIStroke", { Color = BLACK, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }) }),
+	make("UIStroke", { Color = GOLD, Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(78, 72, 112), Color3.fromRGB(34, 32, 50)) }),
+	make("ImageLabel", {
+		Name = "CoinIcon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0, 22, 0.5, 0),
+		Size = UDim2.fromOffset(62, 62),
+		BackgroundTransparency = 1,
+		Image = Icons.Coin,
+		ScaleType = Enum.ScaleType.Fit,
+		ZIndex = 4,
+	}),
 	coinLabel,
 })
+coinPill:SetAttribute("NoSkin", true)
 
 -- Hint banner (tutorial nudges)
 -- (RichText: tutorial hints start with a gold "STEP n/5"; long hints shrink to fit instead of spilling out)

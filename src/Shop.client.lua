@@ -3,7 +3,7 @@
 -- purple striped header with a red X, studded panels, colourful studded cards with a big picture, a dark perk
 -- banner and a green price button). Items, ids and prices: Config.Shop. Server: Server.ShopService.
 -- This script only PROMPTS purchases (MarketplaceService); the server alone grants anything.
--- Opened by the SHOP button on the left of the HUD and by the ShopPrompt on Hub.ShopStall.
+-- Opened by the SHOP tile in the HUD's menu column (Shared.HudMenu) and by the ShopPrompt on Hub.ShopStall.
 
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
@@ -388,38 +388,16 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
------------------------------------------------------------------- the HUD button (reference: green "Shop" with a cart and a red "!")
-local hud = make("ScreenGui", { Name = "ShopButton", ResetOnSpawn = false, DisplayOrder = 4, Parent = playerGui })
-local hudButton = make("TextButton", {
-	Name = "Shop", Position = UDim2.fromOffset(14, 381), Size = UDim2.fromOffset(96, 96),
-	BackgroundColor3 = Color3.fromRGB(70, 216, 40), Text = "", AutoButtonColor = true, Parent = hud,
-}, { corner(14), stroke(5, Color3.fromRGB(20, 70, 20)) })
-studs(hudButton, 0.85)
-make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(150, 255, 110), Color3.fromRGB(60, 200, 40)), Parent = hudButton })
-text({ Position = UDim2.fromOffset(8, 4), Size = UDim2.new(1, -16, 0, 56), Text = "🛒", Parent = hudButton }, 52)
-text({ Position = UDim2.new(0, 4, 1, -34), Size = UDim2.new(1, -8, 0, 30), Text = "SHOP", FontFace = TITLE, Parent = hudButton }, 28)
-local badge = make("TextLabel", {
-	AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 6), Size = UDim2.fromOffset(32, 32), BackgroundColor3 = RED,
-	Text = "!", FontFace = TITLE, TextScaled = true, TextColor3 = WHITE, ZIndex = 3, Parent = hudButton,
-}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(3, WHITE) })
-hudButton.Activated:Connect(function()
-	squish(hudButton)
-	badge.Visible = false
+------------------------------------------------------------------ the HUD button: SHOP tile in the shared menu column
+local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
+local menuEntry = HudMenu.button({ name = "Shop", label = "SHOP", icon = "Shop", color = Color3.fromRGB(70, 200, 40), order = 3 })
+menuEntry.setAlert(true) -- "come look" until the first visit
+menuEntry.button.Activated:Connect(function()
+	menuEntry.setAlert(false)
 	if gui.Enabled then
 		close()
 	else
 		open()
-	end
-end)
--- sit right under the HUD's left column (Rewards.DailyButton, Lawyers.LawyersButton), same size and gap
-task.spawn(function()
-	local lawyersGui = playerGui:WaitForChild("Lawyers", 30)
-	local lawyersButton = lawyersGui and lawyersGui:WaitForChild("LawyersButton", 30) :: GuiObject?
-	while lawyersButton and lawyersButton.Parent do
-		hud.IgnoreGuiInset = (lawyersGui :: ScreenGui).IgnoreGuiInset -- same space, so positions copy straight over
-		hudButton.Size = UDim2.fromOffset(lawyersButton.AbsoluteSize.X, lawyersButton.AbsoluteSize.Y)
-		hudButton.Position = UDim2.fromOffset(lawyersButton.AbsolutePosition.X, lawyersButton.AbsolutePosition.Y + lawyersButton.AbsoluteSize.Y + 10)
-		task.wait(1)
 	end
 end)
 

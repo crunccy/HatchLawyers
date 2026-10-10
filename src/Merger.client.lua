@@ -142,7 +142,7 @@ local line1 = text({ Position = UDim2.fromOffset(20, 112), Size = UDim2.new(1, -
 	Text = string.format('Bring <font color="#FF3B3B">%d</font> same Lawyers to Merge', NEED), Parent = panel }, 46)
 line1.RichText = true
 local line2 = text({ Position = UDim2.fromOffset(20, 162), Size = UDim2.new(1, -40, 0, 38), RichText = true, FontFace = Font.new(TITLE.Family, Enum.FontWeight.Bold, Enum.FontStyle.Italic),
-	Text = '<font color="#5CF03C">Merged lawyers</font> earn <font color="#5CF03C">way more</font> 💰!', Parent = panel }, 34)
+	Text = '<font color="#5CF03C">Merged lawyers</font> earn <font color="#5CF03C">way more</font>!', Parent = panel }, 34)
 line2.RichText = true
 
 ------------------------------------------------------------------ slots, pipes, result

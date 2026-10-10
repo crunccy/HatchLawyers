@@ -267,23 +267,8 @@ local function render()
 	rollButton.BackgroundColor3 = if pending then ORANGE elseif canRoll then GREEN else GRAY
 end
 
--- little "!" on the HUD's LAWYERS button (top-left corner; the NEW count sits top-right) while any lawyer has a
--- free roll or a skill waiting
-local lawyersGui = player.PlayerGui:WaitForChild("Lawyers")
-local skillsButton = lawyersGui:WaitForChild("LawyersButton") :: TextButton
-local badge = make("TextLabel", {
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.new(0, 4, 0, 6),
-	Size = UDim2.fromOffset(26, 26),
-	ZIndex = 3,
-	BackgroundColor3 = RED,
-	FontFace = FONT,
-	TextSize = 14,
-	TextColor3 = WHITE,
-	Text = "!",
-	Visible = false,
-	Parent = skillsButton,
-}, { corner(10), stroke(2) })
+-- yellow "!" on the HUD's LAWYERS tile (Shared.HudMenu) while any lawyer has a free roll or a skill waiting
+local lawyersTile = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).wait("Lawyers")
 
 local function refreshBadge()
 	local count = player:GetAttribute("DeskCount") or 1
@@ -293,7 +278,7 @@ local function refreshBadge()
 			any = true
 		end
 	end
-	badge.Visible = any
+	lawyersTile.setAlert(any)
 end
 
 player.AttributeChanged:Connect(function(name)

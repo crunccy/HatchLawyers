@@ -26,14 +26,34 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] **Add the user's local files to this repo:** `references/`, `tools/firm_kit.py`, `tools/firm_pieces.py`,
       `tools/voxel_builder.py`, `tools/clients.py`, `ClientPalette.png`. Decide whether `.fbx` exports go in
       (they're big; maybe Git LFS) or stay local.
-- [ ] Responsive HUD pass: on narrow/phone screens the left-edge buttons (mr.robe's DAILY gift + our LAWYERS)
-      overlap the coin counter.
+- [ ] Eye-check Manager / BigCase / Courtroom panels under the new UIKit colours (2026-10-09 UI pass).
 - [ ] Publish the lawyer animations (Animation Editor → import .fbx → publish), play Idle at the desk and
       Objection on a win. `PinstripePartner`'s Idle/Walk/Objection are not published yet (user must do it).
 - [ ] More hatchable lawyers: add entries to `Config.SkinCatalog` (now the lawyer catalog; ids are saved).
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-09 — local session: HUD / UI pass ("the ui is cooked") + real PNG icons
+- **Why it looked broken**: (1) UIKit's icon sprite sheet `rbxassetid://76384361895353` belongs to another account
+  and isn't shared with this experience ("doesn't have access permission" in the output) -> every UIKit icon was
+  blank: close buttons were empty red circles, the DAILY tile's title had been swapped for a gift that never loaded.
+  (2) DAILY / LAWYERS / SHOP were placed by three scripts with different GUI insets -> they piled on top of each
+  other. (3) UIKit painted everything navy, clashing with the purple studded Shop / Merger / LAWYERS panels.
+- **New `ReplicatedStorage.Shared.HudMenu`** (`src/HudMenu.lua`): one left-edge column (UIListLayout, scales with
+  screen height) that builds every menu tile the same way - gradient + studs, real PNG icon, LuckiestGuy label,
+  red count badge, yellow "!" alert, optional timer pill. DAILY (Rewards), LAWYERS (Lawyers), SHOP (Shop) use it;
+  Skills sets the LAWYERS "!" through it. Also holds `HudMenu.Icons`, the game's icon set.
+- **Icons** (user: "find pngs online"): free Creator Store images, decal ids resolved to image ids with
+  InsertService: gavel, shop stall, cart, gift (x2), coin stack, money bag, target (goals), star, trophy, scales.
+  Skipped a "Coin From PSX" (ripped from Pet Sim X) and stock-photo uploads. Emojis gone from the HUD / Merger.
+- **UIKit retheme** (`src/UIKit.lua`): icons from HudMenu.Icons (a glyph with no image keeps its text), panels dark
+  studded purple instead of navy checker, close buttons a red tile with a real LuckiestGuy "X". Rewards calendar,
+  Skills, Manager, hint banner etc. all follow automatically.
+- **Coin counter** (Hud): coin-stack image, dark purple pill with a gold rim, big outlined money. **Goals card**: dark
+  studded panel, purple header with the target icon, green bars on dark tracks.
+- Screenshot-checked in a playtest: HUD, Daily calendar, Skills panel. Not yet eye-checked: Manager panel, BigCase,
+  Courtroom overlay under the new UIKit colours.
 
 ## 2026-10-09 — local session: LAWYERS panel shows real 3D lawyers; EQUIP / UNEQUIP wording
 - **3D lawyers everywhere in the panel** (user: "not a 2D cutout"): office cards, EQUIP-tab cards and the big preview

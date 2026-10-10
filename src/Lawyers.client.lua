@@ -392,19 +392,10 @@ local gui = make("ScreenGui", { Name = "Lawyers", ResetOnSpawn = false, DisplayO
 local shade = make("TextButton", { Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Visible = false, Parent = gui })
 shade:SetAttribute("NoSkin", true)
 
--- HUD button (left edge; Shop's button lines up under it)
-local openScale = make("UIScale", {})
-local openButton = make("TextButton", {
-	Name = "LawyersButton", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = UDim2.fromOffset(96, 96),
-	BackgroundColor3 = PURPLE, Text = "", AutoButtonColor = true, Parent = gui,
-}, { corner(14), stroke(5, Color3.fromRGB(50, 10, 90)), openScale })
-openButton:SetAttribute("NoSkin", true)
-make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(210, 140, 255), PURPLE_DARK), Parent = openButton })
-studs(openButton, 0.85)
-text({ Position = UDim2.fromOffset(8, 4), Size = UDim2.new(1, -16, 0, 56), Text = "⚖️", Parent = openButton }, 50, 0)
-text({ Position = UDim2.new(0, 4, 1, -34), Size = UDim2.new(1, -8, 0, 30), Text = "LAWYERS", FontFace = TITLE, Parent = openButton }, 24)
-local badge = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 6), Size = UDim2.fromOffset(32, 32), BackgroundColor3 = RED, Visible = false, ZIndex = 3, Parent = openButton }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(3, WHITE) })
-local badgeText = text({ Size = UDim2.fromScale(1, 1), Text = "", FontFace = TITLE, ZIndex = 4, Parent = badge }, 20)
+-- HUD button: the LAWYERS tile in the shared left-edge menu column (Shared.HudMenu, real gavel icon)
+local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
+local menuEntry = HudMenu.button({ name = "Lawyers", label = "LAWYERS", icon = "Gavel", color = PURPLE, order = 2 })
+local openButton = menuEntry.button
 
 -- the panel
 local panelScale = make("UIScale", {})
@@ -1100,8 +1091,6 @@ end
 
 ------------------------------------------------------------------ actions
 openButton.Activated:Connect(function()
-	openScale.Scale = 0.85
-	tween(openScale, 0.3, { Scale = 1 }, Enum.EasingStyle.Back)
 	if panel.Visible then
 		closePanel()
 	else
@@ -1250,8 +1239,7 @@ end)
 local function updateBadge()
 	local unseen = player:GetAttribute("SkinsUnseen")
 	local n = if typeof(unseen) == "number" then unseen else 0
-	badge.Visible = n > 0
-	badgeText.Text = if n > 9 then "9+" else tostring(n)
+	menuEntry.setBadge(if n > 9 then "9+" elseif n > 0 then tostring(n) else nil)
 end
 player:GetAttributeChangedSignal("SkinsUnseen"):Connect(updateBadge)
 updateBadge()

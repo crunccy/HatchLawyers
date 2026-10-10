@@ -49,7 +49,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   2026-10-09, `StarterPlayerScripts.LawyerTags`, mirrored in `src/LawyerTags.client.lua`): "Steal a Brainrot" style —
   no panel, stacked bold text with thick black outlines. Lawyers: Gold/Rainbow tier · name · rarity · Earns xN (+ case
   pop-ups). Clients (compact): name · "Rarity · Pays xN". Tags are stud-sized but clamped up close (NEAR_LIMIT).
-- **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones.
+- **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones. Panels are dark
+  studded purple with purple striped headers (Shop / Merger / LAWYERS; UIKit restyles older ones to match). HUD menu
+  tiles ONLY via `Shared.HudMenu.button` (one column, never hand-placed); icons are PNGs in `HudMenu.Icons` - no emoji.
 - **Effects** (`ReplicatedStorage.Shared.Effects`, mirrored in `src/Effects.lua`; textures from
   `tools/vfx_textures.py` (v2, anime style from the user's 4 reference images) + `tools/effects_textures.py` (v1);
   ids in `Models - Effects/ASSET_IDS.md`). Ladder: Rare = ICE, Epic = ENERGY orb, Legendary = FIRE tornado,
