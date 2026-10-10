@@ -422,7 +422,7 @@ text({ Size = UDim2.fromScale(1, 1), Text = "X", FontFace = TITLE, ZIndex = 5, P
 
 -- OFFICE SLOTS bar
 text({ Position = UDim2.fromOffset(22, 84), Size = UDim2.fromOffset(200, 22), Text = "YOUR OFFICES", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = panel }, 20)
-local slotsHint = text({ Position = UDim2.fromOffset(230, 84), Size = UDim2.new(1, -252, 0, 22), FontFace = BODY, Text = "Tap an office to manage it", TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = SOFT, Parent = panel }, 18, 0)
+text({ Position = UDim2.fromOffset(200, 84), Size = UDim2.new(1, -460, 0, 22), FontFace = BODY, Text = "Tap an office to manage it", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = panel }, 18, 0)
 local slotBar = make("ScrollingFrame", {
 	Position = UDim2.fromOffset(20, 110), Size = UDim2.new(1, -40, 0, 138), BackgroundColor3 = SLOT, BorderSizePixel = 0,
 	ScrollBarThickness = 6, ScrollingDirection = Enum.ScrollingDirection.X, AutomaticCanvasSize = Enum.AutomaticSize.X,
@@ -432,6 +432,9 @@ local slotBar = make("ScrollingFrame", {
 	make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }),
 	make("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }),
 })
+
+-- UPGRADE ALL: every office with a lawyer, cheapest level first, while coins last (Remotes.TrainLawyer("all"))
+local allButton, allLabel = button({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -20, 0, 78), Size = UDim2.fromOffset(240, 30), BackgroundColor3 = GREEN, Parent = panel }, "UPGRADE ALL OFFICES", 18)
 
 -- LEFT: the selected office
 local BODY_Y = 262
@@ -450,8 +453,11 @@ local earnLabel = text({ Position = UDim2.fromOffset(122, 162), Size = UDim2.new
 local statusLabel = text({ Position = UDim2.fromOffset(10, 190), Size = UDim2.new(1, -20, 0, 22), FontFace = BODY, Text = "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, Parent = left }, 18, 0)
 local statusBar = make("Frame", { Position = UDim2.fromOffset(10, 214), Size = UDim2.new(1, -20, 0, 10), BackgroundColor3 = Color3.fromRGB(20, 20, 30), Visible = false, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
 local statusFill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = ORANGE, BorderSizePixel = 0, Parent = statusBar }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
-local upgradeButton, upgradeLabel = button({ Position = UDim2.fromOffset(10, 232), Size = UDim2.new(1, -20, 0, 50), BackgroundColor3 = GREEN, Parent = left }, "UPGRADE OFFICE", 22)
+local upgradeButton, upgradeLabel = button({ Position = UDim2.fromOffset(10, 232), Size = UDim2.new(0.62, -14, 0, 50), BackgroundColor3 = GREEN, Parent = left }, "UPGRADE", 20)
 upgradeLabel.TextWrapped = true
+-- MAX: as many levels as you can afford for this office (economy pass 2026-10-09: a Supreme resets every office)
+local maxButton, maxLabel = button({ Position = UDim2.new(0.62, 2, 0, 232), Size = UDim2.new(0.38, -12, 0, 50), BackgroundColor3 = Color3.fromRGB(40, 170, 30), Parent = left }, "MAX", 20)
+maxLabel.TextWrapped = true
 local skillsButton, skillsLabel = button({ Position = UDim2.fromOffset(10, 290), Size = UDim2.new(0.5, -14, 0, 44), BackgroundColor3 = GOLD, Parent = left }, "SKILLS", 22)
 local skillsBang = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(24, 24), BackgroundColor3 = RED, Visible = false, ZIndex = 4, Parent = skillsButton }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2, WHITE) })
 text({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = TITLE, ZIndex = 5, Parent = skillsBang }, 18)
@@ -665,13 +671,34 @@ end
 local function upgradeText(o: Office): (string, boolean)
 	local coins = (player:GetAttribute("Coins") :: number?) or 0
 	if o.level >= Config.Lawyer.MaxLevel then
-		return "OFFICE MAX LEVEL", false
+		return "MAX LEVEL", false
 	end
 	if ((player:GetAttribute("FreeLevelUps") :: number?) or 0) > 0 then
-		return string.format("UPGRADE OFFICE  Lv %d → %d\nFREE!", o.level, o.level + 1), true
+		return string.format("UPGRADE Lv %d→%d\nFREE!", o.level, o.level + 1), true
 	end
 	local cost = Formulas.trainCost(o.level)
-	return string.format("UPGRADE OFFICE  Lv %d → %d\n$%s", o.level, o.level + 1, Formulas.formatCoins(cost)), coins >= cost
+	return string.format("UPGRADE Lv %d→%d\n$%s", o.level, o.level + 1, Formulas.formatCoins(cost)), coins >= cost
+end
+
+-- how many levels MAX would buy right now (same rule as the server: free level-ups first, then coins)
+local function affordableLevels(fromLevel: number): number
+	local coins = (player:GetAttribute("Coins") :: number?) or 0
+	local free = (player:GetAttribute("FreeLevelUps") :: number?) or 0
+	local n, level = 0, fromLevel
+	while level < Config.Lawyer.MaxLevel and n < 100 do
+		if free > 0 then
+			free -= 1
+		else
+			local cost = Formulas.trainCost(level)
+			if coins < cost then
+				break
+			end
+			coins -= cost
+		end
+		level += 1
+		n += 1
+	end
+	return n
 end
 
 -- the live parts of the left card (status line, progress, buttons) - also run by the 4x/s tick
@@ -696,6 +723,18 @@ local function renderLeftLive()
 	-- buttons
 	local up, canUp = upgradeText(o)
 	setButton(upgradeButton, upgradeLabel, up, GREEN, canUp)
+	local n = if o.level < Config.Lawyer.MaxLevel then affordableLevels(o.level) else 0
+	setButton(maxButton, maxLabel, if n > 0 then string.format("MAX\n+%d", n) else "MAX", Color3.fromRGB(40, 170, 30), n > 1)
+	-- UPGRADE ALL: any office with a lawyer that can take a level right now
+	local anyAffordable = false
+	for i = 1, deskCount() do
+		local oi = office(i)
+		if oi.lawyerId and oi.level < Config.Lawyer.MaxLevel and affordableLevels(oi.level) > 0 then
+			anyAffordable = true
+			break
+		end
+	end
+	setButton(allButton, allLabel, "UPGRADE ALL OFFICES", GREEN, anyAffordable)
 	setButton(skillsButton, skillsLabel, "SKILLS", GOLD, o.lawyerId ~= nil)
 	skillsBang.Visible = o.skillsReady
 	unseatButton.Visible = true
@@ -1109,6 +1148,41 @@ for name, b in tabButtons do
 		render()
 	end)
 end
+
+local function upgrade(target: any, count: any, label: string)
+	if busy then
+		return
+	end
+	busy = true
+	local ok, reason, bought = TrainLawyer:InvokeServer(target, count)
+	busy = false
+	if ok then
+		if reason then
+			flash("NEW LOOK: " .. string.upper(reason) .. "!", GREEN)
+		else
+			flash(string.format("%s +%d level%s!", label, bought or 1, if (bought or 1) == 1 then "" else "s"), GREEN)
+		end
+	else
+		flash(reason or "Can't upgrade", RED)
+	end
+	render()
+end
+
+maxButton.Activated:Connect(function()
+	if not maxButton:GetAttribute("Enabled") then
+		flash(if office(selectedOffice).level >= Config.Lawyer.MaxLevel then "This office is max level!" else "Not enough coins for 2+ levels yet", RED)
+		return
+	end
+	upgrade(selectedOffice, "max", "Office " .. selectedOffice)
+end)
+
+allButton.Activated:Connect(function()
+	if not allButton:GetAttribute("Enabled") then
+		flash("Not enough coins for any office yet", RED)
+		return
+	end
+	upgrade("all", nil, "All offices")
+end)
 
 upgradeButton.Activated:Connect(function()
 	if busy then

@@ -19,8 +19,9 @@ class Formulas(unittest.TestCase):
 
     def test_payout_and_office_cost_match_config(self):
         self.assertAlmostEqual(sim.base_payout(1), 1500)
-        self.assertEqual(sim.train_cost(0), 800)
-        self.assertEqual(sim.train_cost(1), 1068)   # floor(800 x 1.336), like Formulas.trainCost
+        lawyer = sim.CONFIG["Lawyer"]
+        self.assertEqual(sim.train_cost(0), lawyer["TrainBase"])
+        self.assertEqual(sim.train_cost(1), int(lawyer["TrainBase"] * lawyer["TrainGrowth"]))   # floor, like Formulas.trainCost
 
     def test_client_interval_matches_formulas(self):
         # Formulas.clientInterval = max(MinInterval 1, ClientInterval 3.5 x StartLawyers 8 / n)
@@ -30,8 +31,9 @@ class Formulas(unittest.TestCase):
         self.assertAlmostEqual(sim.client_interval(0), 28)   # max(n, 1)
 
     def test_egg_price_ramps(self):
-        self.assertEqual(sim.egg_price(0), 7500)
-        self.assertEqual(sim.egg_price(1), 8625)
+        eggs = sim.CONFIG["Eggs"]
+        self.assertEqual(sim.egg_price(0), eggs["Price"])
+        self.assertEqual(sim.egg_price(1), int(eggs["Price"] * eggs["PriceGrowth"]))
 
     def test_lawyer_power(self):
         self.assertEqual(sim.lawyer_earn("Common", 1), 1)
@@ -115,9 +117,33 @@ class Simulation(unittest.TestCase):
         b = sim.simulate(1, seed=3)
         self.assertEqual(a["rows"], b["rows"])
 
-    def test_income_is_monotonic(self):
-        incomes = [r[1] for r in sim.simulate(4)["rows"]]
+    def test_income_is_monotonic_within_a_run(self):
+        # a Supreme resets income by design, so check one run with prestige out of reach
+        saved = dict(sim.CONFIG["Prestige"])
+        sim.CONFIG["Prestige"].update({"CostBase": 1e300})
+        try:
+            incomes = [r[1] for r in sim.simulate(4)["rows"]]
+        finally:
+            sim.CONFIG["Prestige"].clear()
+            sim.CONFIG["Prestige"].update(saved)
         self.assertEqual(incomes, sorted(incomes))
+
+    def test_prestige_resets_firm_keeps_lawyers(self):
+        f = sim.Firm()
+        f.lawyers += [sim.Lawyer("GoldenGavel", "Rare")] * 3
+        f.offices = [50] * 12
+        f.segments = 6
+        f.coins = 1e15
+        before = len(f.lawyers)
+        f.do_prestige()
+        self.assertEqual(f.prestige, 1)
+        self.assertEqual(f.coins, 0)
+        self.assertEqual(len(f.offices), sim.CONFIG["Firm"]["StartSegments"] * 2)
+        self.assertEqual(max(f.offices), sim.CONFIG["Lawyer"]["StartLevel"])
+        self.assertEqual(len(f.lawyers), before)
+        cost, offices = sim.prestige_requirement(1)
+        self.assertEqual(cost, sim.CONFIG["Prestige"]["CostBase"] * sim.CONFIG["Prestige"]["CostGrowth"])
+        self.assertEqual(offices, 12)
 
     def test_reports_run(self):
         res = sim.simulate(2)

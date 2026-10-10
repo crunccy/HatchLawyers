@@ -72,6 +72,14 @@ local DATA_WAIT = 120
 local rng = Random.new()
 local lastRoll: { [Player]: number } = {}
 
+-- the egg price ramp: eggs opened since the last Supreme, x Config.Eggs.PrestigePriceScale per Supreme level
+local function priceCount(data: any): number
+	return data.Eggs.RunOpened or data.Eggs.Opened
+end
+local function prestigeLevel(data: any): number
+	return if data.Prestige then data.Prestige.Level else 0
+end
+
 local function hatchCount(data: any): number
 	return data.Eggs.Opened + (if data.Eggs.FreeUsed then 1 else 0)
 end
@@ -88,9 +96,9 @@ local function sync(player: Player)
 	player:SetAttribute("EggTokens", data.Eggs.FreeTokens or 0)
 	player:SetAttribute("RareEggTokens", data.Eggs.RareTokens or 0)
 	player:SetAttribute("EggsOpened", data.Eggs.Opened)
-	player:SetAttribute("EggPrice", Formulas.eggPrice(data.Eggs.Opened))
+	player:SetAttribute("EggPrice", Formulas.eggPrice(priceCount(data), prestigeLevel(data)))
 	for _, def in Config.Eggs.Themed do
-		player:SetAttribute(def.Id .. "EggPrice", Formulas.themedEggPrice(def.Id, data.Eggs.Opened))
+		player:SetAttribute(def.Id .. "EggPrice", Formulas.themedEggPrice(def.Id, priceCount(data), prestigeLevel(data)))
 	end
 	if Config.Eggs.PityTop then
 		player:SetAttribute("EggPity", math.max(Config.Eggs.PityTop - (data.Eggs.SinceTop or 0), 1)) -- eggs until a guaranteed top lawyer
@@ -144,7 +152,8 @@ local function onRoll(player: Player, eggId: string?)
 	-- Reward tokens: a Rare token always hatches Rare; a free token rolls normally. Both skip the price.
 	local rareToken = not themed and not free and (data.Eggs.RareTokens or 0) > 0
 	local freeToken = not themed and not free and not rareToken and (data.Eggs.FreeTokens or 0) > 0
-	local price = if themed then Formulas.themedEggPrice(themed.Id, data.Eggs.Opened) else Formulas.eggPrice(data.Eggs.Opened)
+	local price = if themed then Formulas.themedEggPrice(themed.Id, priceCount(data), prestigeLevel(data))
+		else Formulas.eggPrice(priceCount(data), prestigeLevel(data))
 	if not free and not rareToken and not freeToken and not PlayerData.spendCoins(player, price) then
 		EggHatched:FireClient(player, { ok = false, reason = "coins", price = price, egg = if themed then themed.Id else nil })
 		return
@@ -159,6 +168,7 @@ local function onRoll(player: Player, eggId: string?)
 	elseif rareToken then
 		data.Eggs.RareTokens -= 1
 		data.Eggs.Opened += 1
+		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
 		rarity = 3
 		for index, tier in Config.Eggs.Skins do
 			if tier.Id == "Rare" then
@@ -167,12 +177,14 @@ local function onRoll(player: Player, eggId: string?)
 		end
 	elseif themed then
 		data.Eggs.Opened += 1
+		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
 		rarity = Formulas.rollSkin(rng, luckyWeights(player, themed.Weights))
 	else
 		if freeToken then
 			data.Eggs.FreeTokens -= 1
 		end
 		data.Eggs.Opened += 1
+		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
 		rarity = Formulas.rollSkin(rng, luckyWeights(player, nil))
 	end
 	-- pity: every egg but the tutorial one counts; the rarest tier resets it, and hitting the

@@ -196,7 +196,7 @@ Config.Firm = {
 	StartSegments = 4, -- 8 offices; only office 1 starts with a lawyer (Config.Lawyers.StartId)
 	MaxSegments = 10,
 	StartLawyers = 8, -- clientInterval reference size (a firm of this many lawyers gets ClientInterval)
-	ExpandCosts = { [5] = 7e7, [6] = 6e8, [7] = 3e10, [8] = 1.5e12, [9] = 8e13, [10] = 4e15 },
+	ExpandCosts = { [5] = 2e7, [6] = 6e8, -- [5] was 7e7: the first Supreme needs 10 offices (economy pass 2026-10-09) [7] = 3e10, [8] = 1.5e12, [9] = 8e13, [10] = 4e15 },
 	-- Seconds between clients walking in for a firm of StartLawyers lawyers. A bigger firm draws
 	-- more clients: the gap shrinks in proportion to the lawyer count (never below MinInterval).
 	ClientInterval = 3.5,
@@ -274,8 +274,8 @@ Config.Case = {
 Config.Lawyer = {
 	StartLevel = 1,
 	MaxLevel = 100,
-	TrainBase = 800,
-	TrainGrowth = 1.37, -- v12 tune (EconomySimV12): 1T/s around 12-15 h
+	TrainBase = 2000, -- economy pass 2026-10-09 (was 800: an upgrade cost ~1 s of income, 370 buys in 15 min)
+	TrainGrowth = 1.37, -- v12 tune (EconomySimV12). Keep the TrainGrowth / Payout.Growth ratio (docs/ECONOMY.md)
 }
 
 -- HATCHED LAWYERS. Eggs give real lawyers (one of Config.SkinCatalog, which is now the lawyer
@@ -308,13 +308,19 @@ Config.Eggs = {
 	-- The starter egg (workspace.Hub.EggMachine, Pad2): the Briefcase Egg. Hatches every catalog lawyer without
 	-- an Egg tag (the 13 regular lawyers); gives the free tutorial egg and takes reward egg tokens.
 	Name = "Briefcase Egg",
-	Price = 1500, -- the first paid egg (= the tutorial case's payout, so it's affordable ~1 min in); each egg opened after that costs PriceGrowth x more
-	PriceGrowth = 1.15,
+	-- economy pass 2026-10-09: eggs are a real sink like other hatch games (were ~1 s of income each, so Gold came at
+	-- 1 min and Rainbow at 4-6 min); now first Rare ~6 min, Legendary ~25 min, Rainbow ~30 min (sim)
+	Price = 8000, -- the first paid egg (was 1500); each egg opened since your last Supreme costs PriceGrowth x more
+	PriceGrowth = 1.22, -- (was 1.15)
 	FreeFirstEgg = true,
 	FirstEggRarity = 2, -- index into Skins: guaranteed Uncommon, does not touch pity
 	-- Pity: after this many eggs in a row without the rarest skin, the next one is guaranteed it.
 	-- Counts every egg except the free tutorial one (reward tokens count). Shown via EggPity.
 	PityTop = 50,
+	-- Economy pass 2026-10-09: the x PriceGrowth ramp counts eggs opened since your last Supreme (Eggs.RunOpened),
+	-- and every Supreme level makes eggs PrestigePriceScale x pricier - eggs stay a real choice every run instead of
+	-- costing a lifetime-count price right after a reset (Formulas.eggPrice).
+	PrestigePriceScale = 3,
 	Skins = {
 		-- SellValue: coins for selling one duplicate (10% / 20% / 50% / 200% of the egg price).
 		{ Id = "Common", Weight = 58, PayoutBonus = 0.01, SellValue = 750, Earn = 1, StartSkills = 1 },
@@ -663,8 +669,20 @@ Config.Manager = {
 -- reward for starting over, not a stacking buff). Skins, eggs, streaks, goals and stats are kept.
 Config.Prestige = {
 	Name = "Supreme Empire",
-	RequiredDesks = 20, -- a fully expanded firm with a lawyer in every office
-	PayoutBonusPerLevel = 0.5,
+	-- Economy pass 2026-10-09 (user: "fit how other games similar to this one operate"): a rebirth LADDER like
+	-- Steal a Brainrot / Pet Sim - the first one ~45 min in, each later one costs more and pays more. Going Supreme
+	-- from level N costs CostBase x CostGrowth^N coins and needs min(20, OfficesBase + OfficesPerLevel x N) offices
+	-- with a lawyer in them (Formulas.prestigeRequirement). Tuned with tools/economy_sim.py (docs/ECONOMY.md).
+	CostBase = 1e10, -- the first Supreme: ~45-75 min in (sim, 5 seeds)
+	CostGrowth = 5, -- each next one costs 5x more; ~11 Supremes in the first 24 h, then slower and slower
+	OfficesBase = 10,
+	OfficesPerLevel = 2,
+	RequiredDesks = 20, -- the most offices any level asks for (a fully expanded firm)
+	PayoutBonusPerLevel = 1.0, -- payouts x(1 + this x level), on top of everything
+	-- the firm's front building (Server.FirmStages) normally grows with expansions; the Supreme Tower is the reward
+	-- for reaching this Supreme level (it used to come with the FIRST one - now that's ~45 min in, that would skip
+	-- the other 5 stages every run)
+	TowerLevel = 5,
 }
 
 -- Badges: create them on the Creator Dashboard, then paste each badge id here. 0 = off.
@@ -712,11 +730,14 @@ Config.Tutorial = {
 -- v12 targets are checked by Dev.EconomySimV12 (FirstEgg = first PAID egg, after the free tutorial one).
 -- NextDesk is only used by the legacy pre-v12 sim (Dev.EconomySim).
 Config.Pacing = {
-	FirstEgg = { 0, 60 },
-	FirstExpand = { 20 * 60, 30 * 60 },
+	FirstEgg = { 0, 120 },
+	FirstExpand = { 12 * 60, 30 * 60 },
 	IncomeAtFirstEgg = { 100, 500 }, -- coins per second
-	NextDesk = { 20 * 60, 30 * 60 },
-	TrillionPerSecond = { 10 * 3600, 20 * 3600 },
+	NextDesk = { 12 * 60, 30 * 60 },
+	-- economy pass 2026-10-09: rebirth-game norms (first reset ~30-60 min, then a ladder) replace "1T coins/s at 10-20 h"
+	FirstSupreme = { 40 * 60, 80 * 60 },
+	SupremesPerDay = { 8, 14 },
+	TrillionPerSecond = { 10 * 3600, 20 * 3600 }, -- (legacy: Dev.EconomySimV12 still reads it; not a target any more)
 }
 
 -- Themed egg lawyers (Pet / Food / Ocean / Space; models built by tools/themed_cast.py into ReplicatedStorage.

@@ -43,7 +43,7 @@ export type Data = {
 	Skins: { Owned: { [string]: number }, Equipped: { [string]: string } },
 	-- Seen: how many hatches the player has looked at in the skin inventory (drives the NEW badge).
 	-- SinceTop: eggs since the last top-rarity skin (drives the pity guarantee).
-	Eggs: { Opened: number, FreeUsed: boolean, Seen: number, FreeTokens: number, RareTokens: number, SinceTop: number },
+	Eggs: { Opened: number, RunOpened: number, FreeUsed: boolean, Seen: number, FreeTokens: number, RareTokens: number, SinceTop: number },
 	-- LastDay: UTC day number (os.time() // 86400) of the last daily claim, -1 = never.
 	Daily: { Streak: number, LastDay: number },
 	-- Active: seconds of active play banked toward the next playtime gift.
@@ -65,7 +65,7 @@ export type Data = {
 
 type Session = { data: Data, releasing: boolean }
 
-local SCHEMA_VERSION = 13
+local SCHEMA_VERSION = 14
 local STORE_NAME = "PlayerData"
 local AUTOSAVE_INTERVAL = 60
 local LOCK_EXPIRY = 5 * 60 -- a lock this old belongs to a crashed server and can be taken over
@@ -188,6 +188,13 @@ local MIGRATIONS: { [number]: (any) -> any } = {
 		end
 		return data
 	end,
+	-- v14 (economy pass 2026-10-09): eggs' price ramp counts eggs opened since the last Supreme. Existing players
+	-- keep today's prices (RunOpened = everything opened so far) until they go Supreme.
+	[13] = function(data)
+		data.Eggs = data.Eggs or { Opened = 0, FreeUsed = false }
+		data.Eggs.RunOpened = data.Eggs.Opened or 0
+		return data
+	end,
 }
 
 local PlayerData = {}
@@ -255,7 +262,7 @@ local function template(): Data
 		Tutorial = { FirstCaseDone = false, FreeLevelUps = Config.Tutorial.FreeLevelUps },
 		Stats = { Wins = 0, Settlements = 0, Mistrials = 0, CoinsEarned = 0, BestPayout = 0 },
 		Skins = { Owned = {}, Equipped = {} },
-		Eggs = { Opened = 0, FreeUsed = false, Seen = 0, FreeTokens = 0, RareTokens = 0, SinceTop = 0 },
+		Eggs = { Opened = 0, RunOpened = 0, FreeUsed = false, Seen = 0, FreeTokens = 0, RareTokens = 0, SinceTop = 0 },
 		Daily = { Streak = 0, LastDay = -1 },
 		Playtime = { Active = 0, Gifts = 0 },
 		LastOnline = 0,
@@ -382,7 +389,7 @@ local function syncAttributes(player: Player, data: Data)
 	player:SetAttribute("FreeLevelUps", data.Tutorial.FreeLevelUps)
 	player:SetAttribute("FirstCaseDone", data.Tutorial.FirstCaseDone)
 	player:SetAttribute("DeskCount", #data.Desks) -- offices
-	player:SetAttribute("EggPrice", Formulas.eggPrice(data.Eggs and data.Eggs.Opened or 0))
+	player:SetAttribute("EggPrice", Formulas.eggPrice(data.Eggs and (data.Eggs.RunOpened or data.Eggs.Opened) or 0, data.Prestige and data.Prestige.Level))
 	-- the lawyer inventory, for the LAWYERS panel: { Uid, Id, Stars, Skills, Office }
 	local list, placed = {}, 0
 	local officeByUid = {}

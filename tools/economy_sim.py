@@ -60,18 +60,21 @@ CONFIG = {
     # n = lawyers WORKING in offices (CaseService.workingLawyers)                          SYNCED
     "Firm": {"StartSegments": 4, "MaxSegments": 10,                  # SYNCED  2 offices per segment
              "StartLawyers": 8, "ClientInterval": 3.5, "MinInterval": 1,
-             "ExpandCosts": {5: 3e7, 6: 6e8, 7: 3e10, 8: 1.5e12, 9: 8e13, 10: 4e15},  # SYNCED by segment
+             "ExpandCosts": {5: 2e7, 6: 6e8, 7: 3e10, 8: 1.5e12, 9: 8e13, 10: 4e15},  # SYNCED by segment
              "WaitSeats": 10},                                       # SYNCED  FirmBuilder.SEATS
     "Lawyer": {"StartLevel": 1, "MaxLevel": 100,                     # SYNCED  office levels
-               "TrainBase": 800, "TrainGrowth": 1.336},              # SYNCED  cost L -> L+1
+               "TrainBase": 2000, "TrainGrowth": 1.37},              # SYNCED 2026-10-09 economy pass  cost L -> L+1
     "Tutorial": {"FreeLevelUps": 1},                                 # SYNCED
     # Config.Desks.Tiers: office look + payout bonus by office level: (MinLevel, PayoutBonus)  SYNCED
     "OfficeTiers": [(1, 0.0), (10, 0.05), (30, 0.10), (60, 0.20)],
     "Lawyers": {"StartId": "Rookie", "MergeCount": 3, "StarEarn": [1, 2.5, 6], "MaxOwned": 150},  # SYNCED
     "Eggs": {
-        "Price": 7500, "PriceGrowth": 1.15,                          # SYNCED  price = 7500 x 1.15^eggs opened
+        "Price": 8000, "PriceGrowth": 1.22,                          # SYNCED 2026-10-09 economy pass
         "FreeFirstEgg": True, "FirstEggRarity": "Uncommon",          # SYNCED  tutorial egg, not counted
         "PityTop": 50,                                               # SYNCED  50th egg without Legendary = Legendary
+        # proposed: the x PriceGrowth ramp counts eggs opened THIS prestige, and every prestige level multiplies
+        # the price by PrestigePriceScale (False / 1 = live: lifetime count, no scale)
+        "RampResetsOnPrestige": True, "PrestigePriceScale": 3,
         # rarity: (Weight %, Earn, StartSkills)                                             SYNCED
         "Rarities": {
             "Common": (58, 1, 1),
@@ -104,12 +107,21 @@ CONFIG = {
     },
     "Caps": {"PayoutMultiplier": 2.5, "WinChanceBonus": 0.12, "CaseTimeReduction": 0.30},  # SYNCED
     "Manager": {"HireCost": 5e7},                                    # SYNCED  auto-assigns once hired
+    # Config.Prestige ("Supreme Empire"). Live (2026-10-09): RequiredDesks lawyers working, no coin cost,
+    # payout x(1 + PayoutBonusPerLevel x level). Resets coins, offices (back to StartSegments, level 1), firm size and
+    # the Manager; keeps every lawyer and the egg price ramp (PrestigeService). The ladder fields (CostBase /
+    # CostGrowth / OfficesBase / OfficesPerLevel) are the proposed rule: prestige N costs CostBase x CostGrowth^N coins
+    # and needs min(20, OfficesBase + OfficesPerLevel x N) working offices. CostBase None = the live rule.
+    "Prestige": {"RequiredDesks": 20, "PayoutBonusPerLevel": 1.0,   # SYNCED 2026-10-09 economy pass (the ladder)
+                 "CostBase": 1e10, "CostGrowth": 5, "OfficesBase": 10, "OfficesPerLevel": 2},
     # Config.Case.SelfAssignAfter: before the Manager, a client waiting this long walks to a free lawyer
     # by itself (CaseService.autoAssign), so an AFK firm still earns. None = the old behaviour (nobody).
     "Case": {"SelfAssignAfter": 12},                                 # SYNCED
     # Config.Pacing (test targets)                                                          SYNCED
+    # 2026-10-09 economy pass: rebirth-game norms (first reset ~30-60 min, a ladder of them) replace the old
+    # "1T coins/s at 10-20 h" target
     "Targets": {"FirstEggMinutes": 2, "IncomeAtFirstEgg": (100, 500),
-                "FirstExpandMinutes": (20, 30), "TrillionPerSecHours": (10, 20)},
+                "FirstExpandMinutes": (12, 30), "FirstPrestigeMinutes": (40, 80), "PrestigesPerDay": (8, 14)},
 }
 
 ASSUMPTIONS = {
@@ -118,6 +130,9 @@ ASSUMPTIONS = {
     "WalkSeconds": 6.0,                                              # DERIVED
     # time per egg: server ROLL_COOLDOWN 2.5 s, client hatch animation ~3.3 s + a tap to close
     "HatchSeconds": 4.0,                                             # DERIVED
+    # a player stops buying and saves for the next prestige once it's within this many seconds of income
+    # (guides for rebirth games: "rebirth as soon as you can")
+    "PrestigeSaveSeconds": 300,                                      # BEHAVIOR
     "AssignRate": 0.5,       # BEHAVIOR  clients/s an active player assigns before the Manager
     "RushFirstPaid": True,   # BEHAVIOR  saves for the first paid egg first (hub tutorial step)
     "MultiHatch": 1,         # eggs per hatch animation (scenario "multi-hatch")
@@ -221,6 +236,19 @@ def expand_cost(segment):
 def egg_price(opened, base=None):
     e = CONFIG["Eggs"]
     return math.floor((base or e["Price"]) * e["PriceGrowth"] ** max(opened, 0))
+
+
+def prestige_multiplier(level):
+    return 1 + level * CONFIG["Prestige"]["PayoutBonusPerLevel"]
+
+
+def prestige_requirement(level):
+    """(coins needed, working offices needed) for the NEXT prestige from `level`."""
+    p = CONFIG["Prestige"]
+    if p.get("CostBase") is None:
+        return 0.0, p["RequiredDesks"]
+    offices = min(CONFIG["Firm"]["MaxSegments"] * 2, p["OfficesBase"] + p["OfficesPerLevel"] * level)
+    return p["CostBase"] * p["CostGrowth"] ** level, offices
 
 
 def lawyer_earn(rarity, stars):
@@ -362,9 +390,11 @@ class Firm:
         self.lawyers = [Lawyer(start, self._rarity_of(start))]     # the Rookie
         self.coins = 0.0
         self.eggs_opened = {}      # egg tier -> eggs opened (price ramp)
+        self.run_eggs = {}         # egg tier -> eggs opened since the last prestige
         self.since_top = 0         # pity counter
         self.manager = False
         self.merges = 0
+        self.prestige = 0
 
     @staticmethod
     def _rarity_of(lawyer_id):
@@ -420,7 +450,16 @@ class Firm:
             left -= take
             if left <= 0:
                 break
-        return total
+        return total * prestige_multiplier(self.prestige)
+
+    def do_prestige(self):
+        """PrestigeService.prestige: keep lawyers + egg ramp, reset everything else."""
+        self.prestige += 1
+        self.coins = 0.0
+        self.segments = CONFIG["Firm"]["StartSegments"]
+        self.offices = [CONFIG["Lawyer"]["StartLevel"]] * (self.segments * 2)
+        self.manager = False
+        self.run_eggs = {}
 
     # --- merging --------------------------------------------------------------------------
     def merge_all(self, **kw):
@@ -456,7 +495,9 @@ class Firm:
         return max(i for i, t in enumerate(egg_tiers()) if t["UnlockIncome"] <= inc)
 
     def next_egg_price(self, tier):
-        return egg_price(self.eggs_opened.get(tier, 0), egg_tiers()[tier]["Price"])
+        e = CONFIG["Eggs"]
+        count = self.run_eggs.get(tier, 0) if e.get("RampResetsOnPrestige") else self.eggs_opened.get(tier, 0)
+        return egg_price(count, egg_tiers()[tier]["Price"]) * e.get("PrestigePriceScale", 1) ** self.prestige
 
     def actions(self, **kw):
         inc = self.income(**kw)
@@ -541,6 +582,7 @@ class Firm:
             if rarity == top:
                 self.since_top = 0
             self.eggs_opened[tier] = self.eggs_opened.get(tier, 0) + 1
+            self.run_eggs[tier] = self.run_eggs.get(tier, 0) + 1
         lawyer = hatch(rng, rng.choice(CONFIG["Eggs"]["Catalog"][rarity]), rarity)
         self.lawyers.append(lawyer)
         return lawyer
@@ -563,7 +605,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
     end = hours * 3600
     res = {"rows": [], "events": [], "first_egg": None, "trillion_at": None, "rarity_first": {},
            "stars_first": {}, "manager_at": None, "first_expand": None, "full_at": None,
-           "runaway_at": None, "hours": hours, "stuck_at": None}
+           "runaway_at": None, "hours": hours, "stuck_at": None, "prestiges": []}
     checkpoints = [m * 60 for m in CHECKPOINTS_MIN if m * 60 <= end]
 
     def note():
@@ -577,7 +619,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
         best = max(firm.lawyers, key=lambda l: l.earn())
         res["rows"].append((at, firm.income(**kw), len(pairs), len(firm.offices),
                             sum(o for o, _ in pairs) / max(len(pairs), 1), max(firm.offices),
-                            sum(firm.eggs_opened.values()), f"{best.rarity}{'*' * (best.stars - 1)}"))
+                            sum(firm.eggs_opened.values()), f"{best.rarity}{'*' * (best.stars - 1)}  P{firm.prestige}"))
 
     note()
     if CONFIG["Eggs"]["FreeFirstEgg"]:
@@ -596,7 +638,23 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
             res["stuck_at"] = t     # e.g. AFK before the Manager: no income, nothing to buy
             break
         best = None
-        for name, cost, gain, apply in firm.actions(**kw):
+        # prestige: once the office requirement is met and the coin cost is close, save up and take it
+        p_cost, p_offices = prestige_requirement(firm.prestige)
+        working = min(len(firm.lawyers), len(firm.offices))
+        if working >= p_offices and not rush:
+            p_wait = max(0.0, p_cost - firm.coins) / inc
+            if p_wait <= ASSUMPTIONS["PrestigeSaveSeconds"]:
+                best = (-1, p_wait, "prestige", p_cost, firm.do_prestige)
+        acts = [] if best else firm.actions(**kw)
+        # the Supreme panel tells the player how many offices the next level needs: short of that, expanding
+        # comes first whenever it's within PrestigeSaveSeconds of saving
+        if not best and working < p_offices and not rush:
+            for name, cost, gain, apply in acts:
+                if name == "expand":
+                    e_wait = max(0.0, cost - firm.coins) / inc
+                    if e_wait <= ASSUMPTIONS["PrestigeSaveSeconds"]:
+                        best = (-1, e_wait, name, cost, apply)
+        for name, cost, gain, apply in ([] if best else acts):
             if rush and name != "egg":
                 continue
             if gain <= 0 and not rush:
@@ -605,6 +663,9 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
             score = wait + (cost / gain if gain > 0 else 0)
             if best is None or score < best[0]:
                 best = (score, wait, name, cost, apply)
+        if best is None and working >= p_offices:
+            # nothing left worth buying (every office maxed): save up for the next Supreme
+            best = (-1, max(0.0, p_cost - firm.coins) / inc, "prestige", p_cost, firm.do_prestige)
         if best is None:
             break
         _, wait, name, cost, apply = best
@@ -632,6 +693,8 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
                 res["first_expand"] = t
             if name == "expand" and firm.segments == CONFIG["Firm"]["MaxSegments"]:
                 res["full_at"] = t
+            if name == "prestige":
+                res["prestiges"].append((t, inc))
         merged = firm.merge_all(**kw)
         note()
         res["events"].append((t, name, cost, inc))
@@ -675,10 +738,15 @@ def pacing_checks(res):
     fx = res["first_expand"]
     out.append((fx is not None and lo * 60 <= fx <= hi * 60,
                 f"first Expand Firm at {fmt_time(fx)} (target {lo}-{hi} min)"))
-    lo, hi = tg["TrillionPerSecHours"]
-    ta = res["trillion_at"]
-    out.append((ta is not None and lo * 3600 <= ta <= hi * 3600,
-                f"1T coins/s at {fmt_time(ta)} (target {lo}-{hi} h)"))
+    pr = res["prestiges"]
+    lo, hi = tg["FirstPrestigeMinutes"]
+    first = pr[0][0] if pr else None
+    out.append((first is not None and lo * 60 <= first <= hi * 60,
+                f"first Supreme at {fmt_time(first)} (target {lo}-{hi} min)"))
+    if res["hours"] >= 24:
+        lo, hi = tg["PrestigesPerDay"]
+        n = sum(1 for p in pr if p[0] <= 24 * 3600)
+        out.append((lo <= n <= hi, f"{n} Supremes in the first 24 h (target {lo}-{hi})"))
     return out
 
 
@@ -729,6 +797,8 @@ def print_report(res):
     print(f"  expansions: {len(exp)} (" + ", ".join(fmt_time(e[0]) for e in exp) + ")"
           + (f"; all 20 offices at {fmt_time(res['full_at'])}" if res["full_at"] else ""))
     f = res["final"]
+    pr = res["prestiges"]
+    print(f"  prestiges: {len(pr)}" + (" (" + ", ".join(fmt_time(x[0]) for x in pr[:12]) + (" ..." if len(pr) > 12 else "") + ")" if pr else ""))
     print(f"  final: {f['eggs']} eggs opened, {f['lawyers']} lawyers owned, {f['working']} working, "
           f"{f['merges']} merges; office levels min {min(f['offices'])} max {max(f['offices'])}")
     print(f"  final lawyer power in offices: {', '.join(f'{p:g}' for p in f['power'])}")
