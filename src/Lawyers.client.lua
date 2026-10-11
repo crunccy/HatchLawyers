@@ -13,8 +13,9 @@
 --           selected office (Remotes.AssignClient). After one assignment the panel closes (user's call: one
 --           client per assignment; assigning everyone is the Manager's perk).
 --           EQUIP tab (internally "Bench"): every lawyer you own - EQUIP IN OFFICE N / EQUIP AFTER THIS CASE
---           (Remotes.PlaceLawyer,
---           queued for a busy office) and MERGE (Remotes.MergeLawyers).
+--           (Remotes.PlaceLawyer, queued for a busy office) and EQUIP BEST (Remotes.PlaceLawyer("best"): the
+--           strongest lawyers into every office). No merging here (user's call 2026-10-11): a "3x" tag and the info
+--           line send players to the Lawyer Merger machine (StarterPlayerScripts.Merger).
 -- Opened by: the LAWYERS button (left edge), an empty office's Place Lawyer prompt (Remotes.OpenLawyerPicker),
 -- a waiting client's [E] Assign Client prompt (StarterPlayerScripts.AssignClients), the hatch screen's
 -- equip button - all through the local ReplicatedStorage.LawyersUI bindable: Fire(office) or
@@ -39,7 +40,6 @@ local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local PlaceLawyer = Remotes:WaitForChild("PlaceLawyer") :: RemoteFunction
-local MergeLawyers = Remotes:WaitForChild("MergeLawyers") :: RemoteFunction
 local OpenLawyerPicker = Remotes:WaitForChild("OpenLawyerPicker") :: RemoteEvent
 local MarkSkinsSeen = Remotes:WaitForChild("MarkSkinsSeen") :: RemoteEvent
 local AssignClient = Remotes:WaitForChild("AssignClient") :: RemoteFunction
@@ -511,7 +511,7 @@ local benchGrid = make("ScrollingFrame", {
 })
 local placeButton, placeLabel = button({ Position = UDim2.new(0, 0, 1, -50), Size = UDim2.new(0.66, -6, 0, 50), BackgroundColor3 = GREEN, Parent = benchFrame }, "PICK A LAWYER", 22)
 placeLabel.TextWrapped = true
-local mergeButton, mergeLabel = button({ Position = UDim2.new(0.66, 6, 1, -50), Size = UDim2.new(0.34, -6, 0, 50), BackgroundColor3 = PURPLE, Parent = benchFrame }, "MERGE", 22)
+local bestButton, bestLabel = button({ Position = UDim2.new(0.66, 6, 1, -50), Size = UDim2.new(0.34, -6, 0, 50), BackgroundColor3 = GOLD, Parent = benchFrame }, "EQUIP BEST", 22)
 
 -- feedback pill over the "YOUR OFFICES" row (never covers a button)
 local toastPill = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 95), Size = UDim2.fromOffset(660, 40), BackgroundColor3 = Color3.fromRGB(24, 22, 36), Visible = false, ZIndex = 20, Parent = panel }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(3) })
@@ -986,16 +986,7 @@ local function renderBench(o: Office)
 	local pick = findLawyer(list, benchPick)
 	local label, enabled, color = placeAction(o, pick)
 	setButton(placeButton, placeLabel, label, color, enabled)
-	if pick then
-		local copies = copiesOf(list, pick)
-		if pick.Stars >= #Config.Lawyers.StarEarn then
-			setButton(mergeButton, mergeLabel, "MAX STARS", PURPLE, false)
-		else
-			setButton(mergeButton, mergeLabel, string.format("MERGE %d/%d", math.min(copies, Config.Lawyers.MergeCount), Config.Lawyers.MergeCount), PURPLE, copies >= Config.Lawyers.MergeCount)
-		end
-	else
-		setButton(mergeButton, mergeLabel, "MERGE", PURPLE, false)
-	end
+	setButton(bestButton, bestLabel, "EQUIP BEST", GOLD, #list > 0)
 end
 
 
@@ -1021,7 +1012,11 @@ local function renderInfo(o: Office)
 			msg = string.format('<font color="%s">Office %d is free!</font> Pick a client to send to %s.', G, o.index, lawyerName(o.lawyerId :: string, o.stars))
 		end
 	else
-		if o.lawyerId and isBusy(o) then
+		local list = lawyers()
+		local pick = findLawyer(list, benchPick)
+		if pick and pick.Stars < #Config.Lawyers.StarEarn and copiesOf(list, pick) >= Config.Lawyers.MergeCount then
+			msg = string.format('You have %d of these! <font color="%s">Merge them at the Lawyer Merger</font> for +1 star.', copiesOf(list, pick), P)
+		elseif o.lawyerId and isBusy(o) then
 			msg = string.format('<font color="%s">Office %d is on a case.</font> Your pick gets equipped the moment it ends.', O, o.index)
 		elseif o.lawyerId then
 			msg = string.format('Pick a lawyer to equip in <font color="%s">Office %d</font>.', G, o.index)
@@ -1284,19 +1279,22 @@ placeButton.Activated:Connect(function()
 	render()
 end)
 
-mergeButton.Activated:Connect(function()
-	if busy or not benchPick then
+bestButton.Activated:Connect(function()
+	if busy then
 		return
 	end
-	if not mergeButton:GetAttribute("Enabled") then
-		flash(string.format("Need %d of the same lawyer (same stars)", Config.Lawyers.MergeCount), RED)
+	if not bestButton:GetAttribute("Enabled") then
+		flash("No lawyers yet - hatch some eggs!", RED)
 		return
 	end
 	busy = true
-	local ok, info = MergeLawyers:InvokeServer(benchPick)
+	local ok, msg = PlaceLawyer:InvokeServer("best")
 	busy = false
-	flash(if ok then "MERGED! " .. tostring(info) else (info or "Can't merge"), if ok then GOLD else RED)
-	previewKey = nil
+	flash(msg or (if ok then "Done!" else "Can't do that"), if ok then GREEN else RED)
+	if ok then
+		benchPick = nil
+		previewKey = nil
+	end
 	render()
 end)
 

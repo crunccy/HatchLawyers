@@ -2,7 +2,8 @@
 -- Egg machine, client side: the egg's idle bob, the FREE badge and prompt text, the live odds board,
 -- and the cartoony hatch sequence (pop in -> shake -> crack flash -> rarity burst -> LAWYER reveal).
 -- v12: eggs hatch real lawyers. The reveal shows the lawyer, its power and skills, and offers to put
--- it straight into an empty office (Remotes.PlaceLawyer) or open the LAWYERS panel (merge ready).
+-- it straight into an empty office (Remotes.PlaceLawyer) or open the LAWYERS panel. (Merging happens only at the
+-- Lawyer Merger machine since 2026-10-11, so there's no MERGE button here.)
 -- All results come from the server through Remotes.EggHatched; this script only shows them.
 
 local Players = game:GetService("Players")
@@ -1174,12 +1175,11 @@ local function play(result: { [string]: any })
 		end
 	end
 	buffLabel.Text = string.format("Earns x%s%s", tostring(Formulas.lawyerEarn(result.skinId, 1)), if #skillNames > 0 then "  ·  " .. table.concat(skillNames, ", ") else "")
-	local mergeReady = (result.copies or 0) >= Config.Lawyers.MergeCount
 	if result.emptyOffice then
 		equipButton.Text = "PUT IN OFFICE " .. result.emptyOffice
 		equipButton.BackgroundColor3 = GREEN
 	else
-		equipButton.Text = if mergeReady then "MERGE 3!" else "MY LAWYERS"
+		equipButton.Text = "MY LAWYERS"
 		equipButton.BackgroundColor3 = Color3.fromRGB(150, 90, 230)
 	end
 	niceButton.Text = "KEEP"
@@ -1229,7 +1229,7 @@ EggHatched.OnClientEvent:Connect(function(result)
 		if not busy then
 			gui.Enabled = true
 			if result.reason == "full" then
-				showToast("Too many lawyers! Merge some in LAWYERS")
+				showToast("Too many lawyers! Merge some at the Lawyer Merger")
 			else
 				showToast("Need " .. Formulas.formatCoins(result.price or Config.Eggs.Price) .. " coins!")
 			end

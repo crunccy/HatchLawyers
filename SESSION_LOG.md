@@ -35,6 +35,23 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-11 — local session: EQUIP BEST, merging only at the Merger
+- **EQUIP BEST** (user's ask): the gold button in the LAWYERS panel's EQUIP tab, where MERGE was. Server:
+  `LawyerService.equipBest`, reached as `Remotes.PlaceLawyer("best")` (no new Remote). Strongest lawyers
+  (`Formulas.lawyerEarn`, then skill levels) go into the free offices, strongest in the highest-level office.
+  Lawyers on a case stay; a stronger bench lawyer is queued to replace the weakest busy ones after the case
+  (the existing queue). Equal-strength lawyers keep their seat, so a second press changes nothing.
+- **No merging in the LAWYERS panel** (user: "players should go to the merge machine"). MERGE button and its
+  `Remotes.MergeLawyers` call removed. The "3x" tag stays; tapping such a lawyer says "Merge them at the Lawyer
+  Merger". The hatch screen's "MERGE 3!" button is now always "MY LAWYERS"; the inventory-full toast points
+  at the Merger. `Remotes.MergeLawyers` still exists server-side but no client calls it.
+- **Studio:** `Lawyers` and `Eggs` pushed whole. `LawyerService` was PATCHED (equipBest + the PlaceLawyer
+  router only), because Studio's copy is still pre-economy-pass (no TrainLawyer "all"/"max").
+- **Tested in a playtest** (68 lawyers, 18 offices, most busy): EQUIP BEST filled the 5 empty offices
+  strongest-first and queued x4 lawyers for the two x2 offices on a case. One of those cases ended during the
+  test and the swap happened. A second press made no changes. The merge hint shows. No errors.
+- **Not tested:** the hatch screen's new wording (it needs a hatch with no empty office).
+
 ## 2026-10-11 — local session: client remodel v3, less shine, UI restyle continues
 **Clients.** All 44 clients rebuilt (`tools/clients/`): `ClientKit.lua` builds R6-proportioned characters from
 CSG-rounded blocks (Union/Subtract at build time), layered clothing (collars, lapels, ties, belts, aprons, coat

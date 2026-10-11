@@ -8,6 +8,7 @@
 --                              busy with a case, the change is QUEUED (unseat, or a bench lawyer replacing them)
 --                              and happens the moment the case ends (CaseService.releaseDesk). Returns
 --                              ok, message, "queued" when it was queued.
+--   PlaceLawyer("best")        EQUIP BEST: the strongest lawyers into the offices (see equipBest).
 --   CancelLawyerChange(office) drops a queued change.
 --   MergeLawyers(uid)          merges that lawyer with Config.Lawyers.MergeCount - 1 copies of the same
 --                              lawyer at the same stars into one lawyer with +1 star.
@@ -284,6 +285,128 @@ local function skillScore(lawyer: PlayerData.LawyerData): number
 	return n
 end
 
+-- EQUIP BEST (PlaceLawyer("best"), 2026-10-11): your strongest lawyers (Formulas.lawyerEarn, then skill levels) go
+-- into your free offices, the strongest in the highest-level office (a case pays office level x lawyer earn). A
+-- lawyer on a case stays put; a stronger unequipped lawyer left over is queued to take their place after the case.
+-- Lawyers just as strong as the pick for their office keep their seat, so a second press changes nothing.
+local function equipBest(player: Player): (boolean, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	if next(data.Lawyers) == nil then
+		return false, "No lawyers yet - hatch some eggs!"
+	end
+	local function earn(uid: string): number
+		local l = data.Lawyers[uid]
+		return Formulas.lawyerEarn(l.Id, l.Stars)
+	end
+	local free, busy = {}, {}
+	local locked: { [string]: boolean } = {}
+	for i, office in data.Desks do
+		if officeFree(player, i) then
+			table.insert(free, i)
+		else
+			table.insert(busy, i)
+			if office.Lawyer then
+				locked[office.Lawyer] = true
+			end
+		end
+	end
+	local pool = {}
+	for uid in data.Lawyers do
+		if not locked[uid] then
+			table.insert(pool, uid)
+		end
+	end
+	table.sort(pool, function(a, b)
+		local ea, eb = earn(a), earn(b)
+		if ea ~= eb then
+			return ea > eb
+		end
+		local sa, sb = skillScore(data.Lawyers[a]), skillScore(data.Lawyers[b])
+		if sa ~= sb then
+			return sa > sb
+		end
+		return a < b
+	end)
+	table.sort(free, function(a, b)
+		local la, lb = data.Desks[a].Level, data.Desks[b].Level
+		if la ~= lb then
+			return la > lb
+		end
+		return a < b
+	end)
+	-- pool[k] is the pick for free[k]; whoever already sits there keeps the seat if they're picked and as strong
+	for k, i in free do
+		local current = data.Desks[i].Lawyer
+		local pick = pool[k]
+		if current and pick and current ~= pick and earn(current) == earn(pick) then
+			local j = table.find(pool, current)
+			if j and j <= #free then
+				pool[j], pool[k] = pick, current
+			end
+		end
+	end
+	local queued = 0
+	local changed = {}
+	for k, i in free do
+		local uid = pool[k]
+		local office = data.Desks[i]
+		if office.Lawyer ~= uid then
+			if uid and office.Lawyer == nil and PlayerData.officeOf(data, uid) == nil then
+				require(script.Parent.GoalService).track(player, "place")
+			end
+			table.insert(changed, i)
+		end
+	end
+	for k, i in free do
+		data.Desks[i].Lawyer = pool[k]
+	end
+	-- the rest of the pool is now unequipped; the strongest of them queue for the weakest busy offices
+	local spare = {}
+	for k = #free + 1, #pool do
+		table.insert(spare, pool[k])
+	end
+	table.sort(busy, function(a, b)
+		local la, lb = data.Desks[a].Lawyer, data.Desks[b].Lawyer
+		local ea, eb = if la then earn(la) else 0, if lb then earn(lb) else 0
+		if ea ~= eb then
+			return ea < eb
+		end
+		return a < b
+	end)
+	for _, i in busy do
+		local current = data.Desks[i].Lawyer
+		local swap = spare[1]
+		if swap and (not current or earn(swap) > earn(current)) then
+			if CaseService.setQueued(player, i, swap) then
+				table.remove(spare, 1)
+				queued += 1
+			end
+		elseif CaseService.queuedChange(player, i) then
+			CaseService.setQueued(player, i, nil) -- an old unequip / swap would undo the best line-up
+		end
+	end
+	if #changed > 0 then
+		PlayerData.sync(player)
+		for _, i in changed do
+			CaseService.refreshDesk(player, i, data.Desks[i].Lawyer ~= nil)
+		end
+	end
+	if #changed == 0 and queued == 0 then
+		return true, "Your best lawyers are already equipped!"
+	end
+	local msg = if #changed > 0 then "Equipped your best lawyers!" else "Your best lawyers are lined up!"
+	if queued > 0 then
+		msg ..= if queued == 1 then " 1 more joins after a case" else string.format(" %d more join after their cases", queued)
+	end
+	return true, msg
+end
+
 local mergeInto: (Player, PlayerData.Data, string, { string }) -> (boolean, string?)
 
 local function merge(player: Player, uid: unknown): (boolean, string?)
@@ -463,7 +586,12 @@ end
 
 function LawyerService.start()
 	TrainLawyer.OnServerInvoke = upgradeOffice
-	PlaceLawyer.OnServerInvoke = place
+	PlaceLawyer.OnServerInvoke = function(player: Player, index: unknown, uid: unknown): (boolean, string?, string?)
+		if index == "best" then
+			return equipBest(player)
+		end
+		return place(player, index, uid)
+	end
 	CaseService.applyQueued = applyQueued
 	if CancelLawyerChange then
 		CancelLawyerChange.OnServerInvoke = cancelChange
