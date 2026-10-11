@@ -1,4 +1,4 @@
--- IShowSued (Legendary) - block remake 2026-10-10. A GENERIC hype-streamer lawyer (original design - deliberately no
+-- Livestream Litigator (Id IShowSued, Legendary; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC hype-streamer lawyer (original design - deliberately no
 -- real person's likeness): big cartoon head with a shouting open mouth and wide eyes, short dark hair cap, a black
 -- gaming headset with a gold boom mic, a red tracksuit-style jacket with green sleeve stripes, a gold chain, both arms
 -- up celebrating with a gold-trimmed football in one hand, white sneakers with gold soles, a floating red "REC" light.

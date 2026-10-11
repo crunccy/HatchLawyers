@@ -15,6 +15,7 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 | Original design manifesto | [docs/DESIGN.md](docs/DESIGN.md) — read its "Status" table; parts are superseded |
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
+| Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
 | Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
 | Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |
 
@@ -38,6 +39,11 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 ## Art direction — cartoony, locked in
 Bright, chunky, colorful like Pet Simulator X / Steal a Brainrot / Steal an Egg: voxel tropical sim with lime
 grass, orange paths with white dashed edges, wood crates, blocky palms. Look at the references before building.
+- **Characters (2026-10-11): brick style** — studded bricks (`MaterialService.BrickStuds`), square eyes, chibi frame,
+  one kit for lawyers + clients. Rules + rarity ladder: docs/CHARACTER_STYLE.md. Being rolled out (Rookie + Neighbor
+  Dave done); every other character is still its 2026-10-10 version until rebuilt.
+- **Fictional characters only:** no real people's names or likeness (lawyers too — four creator-parody names were
+  renamed 2026-10-11).
 - **Palette (RGB):** world grass 96,196,40 · plot grass 124,222,52 · leaf 70,168,34 · path orange 255,160,24 ·
   wood light 214,140,70 · wood dark 122,70,34 · floor 222,160,96 · wall cream 246,226,180 · sign green 98,205,48.
   UI: white panels, ink 40,40,52, green 98,205,48, orange 255,160,24, gold 255,200,40, red 240,70,70.

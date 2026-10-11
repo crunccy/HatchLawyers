@@ -435,7 +435,7 @@ Config.SkinCatalog = {
 	-- Parody model skins (ReplicatedStorage.SkinModels)
 	{
 		Id = "IShowSued",
-		Name = "IShowSued",
+		Name = "Livestream Litigator", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 4,
 		Model = "IShowSued",
 		Suit = Color3.fromRGB(200, 18, 40),
@@ -457,7 +457,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "KaiSueNat",
-		Name = "Kai Sue-nat",
+		Name = "Selfie Counsel", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 3,
 		Model = "KaiSueNat",
 		Suit = Color3.fromRGB(25, 25, 30),
@@ -467,7 +467,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "KhabyClaim",
-		Name = "Khaby Claim",
+		Name = "Obvious Advocate", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 3,
 		Model = "KhabyClaim",
 		Suit = Color3.fromRGB(120, 124, 132),
@@ -477,7 +477,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "BensonBond",
-		Name = "Benson Bond",
+		Name = "Mic Drop Attorney", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 2,
 		Model = "BensonBond",
 		Suit = Color3.fromRGB(250, 248, 240),

@@ -4,6 +4,8 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] **Brick style rollout** (docs/CHARACTER_STYLE.md): rebuild the other 52 lawyers, 43 clients and the Judge with
+      `tools/brick/BrickKit.lua`. Rookie + Neighbor Dave are done; the rest are their 2026-10-10 versions.
 - [ ] Lawyer panel at phone size: the smallest labels (office-card names, client situations) are tiny at 0.58 scale.
 - [ ] Tell mr.robe: the Hud's bottom office card is gone (user's call) and CaseService/LawyerService changed (queued lawyer changes, rest window).
 - [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
@@ -34,6 +36,26 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-11 — local session: brick character style (benchmark), four lawyers renamed
+- **Character redesign** from the user's new reference recording (a "steal an egg"-style pet game; characters only,
+  style only). Style guide, rules, rarity ladder and example sheets: **docs/CHARACTER_STYLE.md** (user approved
+  the examples; animal/food lawyers stay human-shaped (our call); mouths kept; studs on every face).
+- **`tools/brick/BrickKit.lua`** (Studio: `ServerStorage.BrickKit`): one kit for lawyers + clients. Chibi frame (head
+  ~38%), hard Plastic bricks, square rimmed eyes, brick hair/hats, `installLawyer` / `installClient` keep the old
+  model (`RetiredSkinModels.<Id>_preBrick`, `RetiredClients.<Id>_v3`).
+- **Studs:** Roblox's SurfaceType.Studs are 1 stud wide, so a 2-stud head got two big cheek studs ("eye bags").
+  Fixed with a MaterialVariant `MaterialService.BrickStuds` (normal map `art/materials/stud_normal.png` from
+  `tools/stud_normal.py`, asset 90354792169791, StudsPerTile 0.5): finer studs, nothing added per part.
+- **Built + installed:** Rookie Lawyer (`tools/brick/Rookie.lua`, 40 parts) and Neighbor Dave
+  (`tools/brick/NeighborDave.lua`, 66 parts). Playtested: Rookie works at Desk 2 (equipped via PlaceLawyer), Dave
+  arrived, walked in and sat at Desk 1 at the right height; the Lawyers panel draws the new Rookie; 0 warnings or
+  errors on client and server.
+- **Renamed** (display names only, Ids are saved data): IShowSued → Livestream Litigator, Kai Sue-nat → Selfie
+  Counsel, Khaby Claim → Obvious Advocate, Benson Bond → Mic Drop Attorney. Studio's Config was patched in place
+  (it's still pre-economy-pass, so the repo file wasn't pushed whole).
+- **Not checked:** Dave's walk cycle frame by frame (only that he got from the door to the chair), the hatch screen
+  with a brick lawyer, the courtroom with a brick client.
 
 ## 2026-10-11 — local session: EQUIP BEST, merging only at the Merger
 - **EQUIP BEST** (user's ask): the gold button in the LAWYERS panel's EQUIP tab, where MERGE was. Server:
