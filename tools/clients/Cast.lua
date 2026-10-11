@@ -265,11 +265,16 @@ Cast.CrossingGuardCarol = function(k)
 	k:capHat(NAVY, H("1c2848"))
 	local h = k:hand(-1) -- STOP paddle
 	k:rbox("RightUpperArm", V(0.1, 1.45, 0.1), V(h.X, h.Y + 0.55, -0.45), H("c8ccd6"), 0.04)
-	local sign = k:fuse("RightUpperArm", H("e02a2a"), {
-		{ "block", V(0.95, 0.4, 0.08), V(h.X, h.Y + 1.6, -0.45) },
-		{ "block", V(0.4, 0.95, 0.08), V(h.X, h.Y + 1.6, -0.45) },
-		{ "block", V(0.66, 0.66, 0.08), V(h.X, h.Y + 1.6, -0.45), V(0, 0, 45) },
-	})
+	local cx, cy, cz, r = h.X, h.Y + 1.6, -0.45, 0.48 -- octagon: a square with its four corners cut off
+	local cuts = {}
+	for _, c in { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } } do
+		table.insert(cuts, { V(0.4, 0.4, 0.3), V(cx + c[1] * r, cy + c[2] * r, cz), V(0, 0, 45) })
+	end
+	k:carve("RightUpperArm", V(r * 2 + 0.06, r * 2 + 0.06, 0.07), V(cx, cy, cz + 0.01), WHITE, 0.01, cuts) -- white rim
+	for _, c in cuts do
+		c[2] = V(c[2].X + (if c[2].X > cx then -0.03 else 0.03), c[2].Y + (if c[2].Y > cy then -0.03 else 0.03), cz)
+	end
+	local sign = k:carve("RightUpperArm", V(r * 2, r * 2, 0.08), V(cx, cy, cz - 0.01), H("e02a2a"), 0.01, cuts)
 	local sg = Instance.new("SurfaceGui")
 	sg.Face = Enum.NormalId.Front
 	sg.CanvasSize = Vector2.new(200, 200)
@@ -350,8 +355,8 @@ Cast.RosaTheBaker = function(k)
 	double(k, H("c8ccd6"), SH - 0.35, 3, 0.3)
 	k:fuse("UpperTorso", SCARF, { { "wedge", V(0.7, 0.32, 0.1), V(0, SH - 0.2, k:frontZ(0.05)), V(0, 180, 180) } })
 	k:apron(APRON, { length = 1.15, pocket = SCARF, tie = SCARF })
-	k:hairStyle("bun", H("2a1810"))
-	k:dome("HeadDetail", V(1.62, 1.0, 1.52), V(0, HT - 0.28, 0.03), SCARF) -- headscarf
+	k:hairStyle("short", H("2a1810"), { hat = true })
+	k:dome("HeadDetail", V(1.64, 1.1, 1.54), V(0, HT - 0.3, 0.03), SCARF) -- headscarf
 	k:ell("HeadDetail", V(0.36, 0.3, 0.3), V(0, HT - 0.1, 0.8), SCARF)
 	for _, p in { { -0.4, 0.12, -0.6 }, { 0.3, 0.3, -0.5 }, { 0.6, 0.0, -0.3 }, { -0.1, 0.42, -0.1 } } do
 		k:ell("HeadDetail", V(0.12, 0.08, 0.12), V(p[1], HT - 0.28 + p[2], p[3]), WHITE)
@@ -596,9 +601,9 @@ Cast.MusicianMoe = function(k)
 	-- tuba
 	local T = "LeftUpperArm"
 	k:rbox(T, V(0.75, 1.0, 0.55), V(0.35, 2.55, -0.82), GOLD, 0.2)
-	k:cyl(T, V(0.9, 0.38, 0.38), V(0.75, 3.35, -0.6), GOLD, V(0, 0, 70))
-	k:cyl(T, V(0.38, 1.25, 1.25), V(0.95, 4.0, -0.55), GOLD, V(0, 0, 90))
-	k:cyl(T, V(0.4, 1.0, 1.0), V(0.95, 4.02, -0.55), GOLD_D, V(0, 0, 90))
+	k:cyl(T, V(1.25, 0.38, 0.38), V(1.05, 3.35, -0.35), GOLD, V(0, 0, 55)) -- up past the shoulder
+	k:cyl(T, V(0.38, 1.2, 1.2), V(1.55, 4.15, -0.1), GOLD, V(0, 0, 90)) -- the bell, beside his head
+	k:cyl(T, V(0.4, 0.95, 0.95), V(1.55, 4.17, -0.1), GOLD_D, V(0, 0, 90))
 	k:cyl(T, V(0.6, 0.18, 0.18), V(0.0, 2.95, -0.9), GOLD, V(0, 90, 0))
 	for i = 0, 2 do
 		k:cyl(T, V(0.2, 0.12, 0.12), V(0.1 + i * 0.16, 3.12, -1.08), GOLD_D, V(0, 0, 90))
@@ -750,8 +755,8 @@ Cast.KnightKevin = function(k)
 	local ARMOR, ARMOR_D, TABARD, PLUME = H("c8ccd6"), H("9aa0ae"), H("3a6ad0"), H("e03a3a")
 	k:body({ skin = S2, shirt = ARMOR, pants = ARMOR, sleeves = "long", cuff = ARMOR_D, shoes = ARMOR_D, hands = ARMOR_D })
 	k:rbox("UpperTorso", V(1.15, 2.1, 0.06), V(0, HIP + 0.4, k:frontZ(0.02)), TABARD, 0.04) -- tabard
-	k:rbox("UpperTorso", V(0.18, 1.2, 0.04), V(0, HIP + 0.55, k:frontZ(0.06)), GOLD, 0.02)
-	k:rbox("UpperTorso", V(0.7, 0.18, 0.04), V(0, HIP + 0.85, k:frontZ(0.06)), GOLD, 0.02)
+	k:rbox("UpperTorso", V(0.56, 0.56, 0.04), V(0, HIP + 0.75, k:frontZ(0.06)), GOLD, 0.04, V(0, 0, 45)) -- diamond badge
+	k:rbox("UpperTorso", V(0.3, 0.3, 0.04), V(0, HIP + 0.75, k:frontZ(0.09)), H("e03a3a"), 0.03, V(0, 0, 45))
 	k:belt(H("6b4426"), GOLD)
 	for _, s in { -1, 1 } do
 		k:dome(arm(s), V(D.armW + 0.36, 0.6, D.armD + 0.3), V(s * AX, SH - 0.12, 0), ARMOR_D) -- pauldrons
@@ -765,8 +770,7 @@ Cast.KnightKevin = function(k)
 	k:rbox("HeadDetail", V(0.2, 0.6, 1.2), V(0, HT + 0.35, 0.15), PLUME, 0.1, V(-10, 0, 0))
 	local x = AX + 0.42 -- shield
 	k:rbox("LeftUpperArm", V(0.14, 1.2, 0.95), V(x, 2.6, -0.05), TABARD, 0.12)
-	k:rbox("LeftUpperArm", V(0.16, 1.22, 0.16), V(x + 0.01, 2.6, -0.05), GOLD, 0.04)
-	k:rbox("LeftUpperArm", V(0.16, 0.16, 0.97), V(x + 0.01, 2.75, -0.05), GOLD, 0.04)
+	k:rbox("LeftUpperArm", V(0.16, 1.45, 0.2), V(x + 0.01, 2.6, -0.05), GOLD, 0.04, V(-38, 0, 0)) -- diagonal stripe
 	local h = k:hand(-1) -- sword
 	k:rbox("RightUpperArm", V(0.1, 1.3, 0.04), V(h.X, h.Y + 0.85, -0.48), H("e0e4ea"), 0.03)
 	k:rbox("RightUpperArm", V(0.46, 0.08, 0.12), V(h.X, h.Y + 0.18, -0.48), GOLD, 0.03)
