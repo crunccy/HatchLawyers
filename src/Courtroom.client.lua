@@ -13,6 +13,7 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Formulas = require(ReplicatedStorage.Shared:WaitForChild("Formulas"))
+local Skin = require(ReplicatedStorage.Shared:WaitForChild("Skin")) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local CaseResult = Remotes:WaitForChild("CaseResult") :: RemoteEvent
 local AttendCourt = Remotes:WaitForChild("AttendCourt") :: RemoteFunction
@@ -112,33 +113,38 @@ local panel = make("Frame", {
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.fromScale(0.5, 0.5),
 	Size = UDim2.fromScale(0.94, 0.9),
-	BackgroundColor3 = WALL,
+	BackgroundColor3 = Skin.Panel, -- Shared.Skin look (2026-10-11 UI pass)
 	ClipsDescendants = true,
 	Parent = gui,
-}, { round(0.04), make("UISizeConstraint", { MaxSize = Vector2.new(660, 470) }), make("UIStroke", { Color = BLACK, Thickness = 5 }) })
-
-local title = text({ Position = UDim2.new(0, 58, 0.015, 0), Size = UDim2.fromScale(0.5, 0.08), Text = "Courtroom", TextXAlignment = Enum.TextXAlignment.Left }, 26)
-title.Parent = panel
-local verdictTimer = text({
-	Position = UDim2.fromScale(0.56, 0.025),
-	Size = UDim2.fromScale(0.4, 0.06),
+}, { make("UICorner", { CornerRadius = UDim.new(0, 10) }), make("UISizeConstraint", { MaxSize = Vector2.new(660, 470) }), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }) })
+panel:SetAttribute("NoSkin", true)
+dim:SetAttribute("NoSkin", true)
+dim.BackgroundTransparency = 0.35
+Skin.studs(panel, 0.93, nil, 30)
+local headerSw = Skin.swatch("Purple")
+local headerBar = make("Frame", {
+	Name = "Header", Position = UDim2.new(0, 4, 0, 4), Size = UDim2.new(1, -8, 0.105, -4), BackgroundColor3 = WHITE, Parent = panel,
+}, {
+	make("UICorner", { CornerRadius = UDim.new(0, 7) }),
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, headerSw.light), ColorSequenceKeypoint.new(0.55, headerSw.base), ColorSequenceKeypoint.new(1, headerSw.base:Lerp(headerSw.dark, 0.25)),
+	}) }),
+	make("UIStroke", { Thickness = 3, Color = headerSw.dark, Transparency = 0.1 }),
+})
+Skin.studs(headerBar, 0.86, nil, 22)
+Skin.shineBands(headerBar, 0.84)
+local title = Skin.text({ Position = UDim2.new(0, 14, 0.1, 0), Size = UDim2.new(0.62, 0, 0.8, 0), Text = "Courtroom", FontFace = FONT,
+	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = headerBar }, 26, 3)
+local verdictTimer = Skin.text({
+	Position = UDim2.new(0.64, 0, 0.2, 0),
+	Size = UDim2.new(0.36, -60, 0.6, 0),
 	FontFace = FONT,
-	TextColor3 = Color3.fromRGB(110, 100, 90),
+	TextColor3 = Skin.Palette.Gold.light,
 	TextXAlignment = Enum.TextXAlignment.Right,
-}, 16)
-verdictTimer.Parent = panel
-local closeButton = make("TextButton", {
-	Name = "Close",
-	Position = UDim2.fromOffset(12, 10),
-	Size = UDim2.fromOffset(36, 36),
-	BackgroundColor3 = RED,
-	FontFace = FONT,
-	TextSize = 22,
-	TextColor3 = WHITE,
-	TextStrokeTransparency = 0,
-	Text = "X",
-	Parent = panel,
-}, { round(1), make("UIStroke", { Color = BLACK, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }) })
+	ZIndex = 2,
+	Parent = headerBar,
+}, 18, 2)
+local closeButton = Skin.closeButton(headerBar, 44, 3)
 
 -- Scene: bench and judge at the back, the two sides on the floor
 local scene = make("Frame", {
@@ -284,7 +290,7 @@ local function project(world: Vector3): Vector2?
 end
 
 -- Challenge area
-local question = text({ Position = UDim2.fromScale(0.04, 0.6), Size = UDim2.fromScale(0.92, 0.1), FontFace = BODY, TextWrapped = true }, 20)
+local question = text({ Position = UDim2.fromScale(0.04, 0.6), Size = UDim2.fromScale(0.92, 0.1), FontFace = Skin.Fonts.Heavy, TextColor3 = WHITE, TextWrapped = true }, 22)
 question.Parent = panel
 local cardRow = make("Frame", { Name = "Cards", Position = UDim2.fromScale(0.03, 0.71), Size = UDim2.fromScale(0.94, 0.21), BackgroundTransparency = 1, Parent = panel }, {
 	make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0.02, 0), HorizontalAlignment = Enum.HorizontalAlignment.Center }),
@@ -302,14 +308,20 @@ for i = 1, 3 do
 		LayoutOrder = i,
 		Parent = cardRow,
 	}, {
-		round(0.12),
-		make("UIStroke", { Color = BLACK, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		make("UICorner", { CornerRadius = UDim.new(0, 8) }),
+		make("UIStroke", { Color = Skin.Ink, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
 		make("UITextSizeConstraint", { MaxTextSize = 18 }),
-		make("UIPadding", { PaddingLeft = UDim.new(0.06, 0), PaddingRight = UDim.new(0.06, 0), PaddingTop = UDim.new(0.08, 0), PaddingBottom = UDim.new(0.08, 0) }),
+		make("UIPadding", { PaddingLeft = UDim.new(0.06, 0), PaddingRight = UDim.new(0.06, 0), PaddingTop = UDim.new(0.08, 0), PaddingBottom = UDim.new(0.12, 0) }),
+		-- evidence paper: a soft top-lit fade + a darker bottom edge (multiplies the colour choose() sets)
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, WHITE), ColorSequenceKeypoint.new(0.7, Color3.new(0.97, 0.97, 0.97)), ColorSequenceKeypoint.new(1, Color3.new(0.82, 0.82, 0.82)),
+		}) }),
 	})
+	card:SetAttribute("NoSkin", true)
+	Skin.pressable(card, 1.04)
 	cardButtons[i] = card
 end
-local status = text({ Position = UDim2.fromScale(0.04, 0.72), Size = UDim2.fromScale(0.92, 0.18), FontFace = FONT, TextWrapped = true, Visible = false }, 22)
+local status = Skin.text({ Position = UDim2.fromScale(0.04, 0.72), Size = UDim2.fromScale(0.92, 0.18), FontFace = FONT, TextWrapped = true, Visible = false }, 24, 3)
 status.Parent = panel
 
 -- Tutorial coach banner across the top of the scene (first case only)

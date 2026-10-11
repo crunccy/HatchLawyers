@@ -49,7 +49,17 @@ re-rendered + re-uploaded (new ids in `Shared.ArtAssets`); `Skin` button gloss /
 **UI.** LAWYERS panel and Manager Office moved onto the `Skin` look (glossy colour header + icon + red X, dark
 studded body, Skin buttons whose gradient multiplies their own colour so state recolouring still works). Checked
 in a playtest with live data.
-Left: Merger, Skills, Daily Rewards, Supreme, Courtroom, Goals card, egg hatch screen are still on the older style.
+Later the same day (user: "some of the clients with the hat on, the top of their head protrudes through the hat"):
+`Kit:hatCrown` (head-fitting crown + low dome) for caps / beanie / helmet / headscarf, wider brim-hat crowns, a
+velvet cap inside the King's crown; all 44 reinstalled. Then the rest of the UI ("continue with the ui"):
+- HUD menu (`Shared.HudMenu`): wide reference-style buttons (icon poking out left, big outlined label) instead of
+  square tiles; badge / "!" / timer pill kept.
+- Daily Rewards calendar + reward pop-up, Skills, Merger header, Goals header, Courtroom: all on the `Skin` look.
+- Layering: modal windows at DisplayOrder 32 (Skills 33, opens from LAWYERS), Daily / reward pop-ups 40, so the
+  BigCase "BIG CASES INCOMING" banner (30) no longer draws over them.
+Checked in playtests: Daily opens + X closes, LAWYERS Equip tab, Manager with live costs, Skills with live skills,
+Courtroom answer -> OBJECTION + result line. Supreme screen not touched in Studio (part of the unpushed economy work).
+Left: the egg hatch screen (cinematic, own look) and the in-world egg models.
 
 ## 2026-10-10 — local session: lawyer model remakes, UI design system, Blender shop + egg art
 **Lawyer models.** All 52 hatchable lawyers rebuilt in the block style with their own shapes (was one shared
