@@ -19,6 +19,7 @@ local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
 local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
 local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
+local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local MergeSelected = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("MergeSelected") :: RemoteFunction
 
 local STUDS = "rbxassetid://114488299634202"
@@ -29,7 +30,7 @@ local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
 local PURPLE = Color3.fromRGB(176, 52, 255)
 local PURPLE_DARK = Color3.fromRGB(122, 30, 214)
-local PANEL = Color3.fromRGB(58, 56, 84)
+local PANEL = Skin.Panel
 local SLOT = Color3.fromRGB(40, 39, 58)
 local PIPE = Color3.fromRGB(34, 34, 40)
 local GREEN = Color3.fromRGB(76, 224, 48)
@@ -114,7 +115,7 @@ local function showLawyer(vf: ViewportFrame, id: string, animate: boolean): RBXS
 end
 
 local playerGui = player:WaitForChild("PlayerGui")
-local gui = make("ScreenGui", { Name = "Merger", ResetOnSpawn = false, DisplayOrder = 18, Enabled = false, IgnoreGuiInset = true, Parent = playerGui })
+local gui = make("ScreenGui", { Name = "Merger", ResetOnSpawn = false, DisplayOrder = 32, Enabled = false, IgnoreGuiInset = true, Parent = playerGui })
 local shade = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 1, BorderSizePixel = 0, Parent = gui })
 
 ------------------------------------------------------------------ panel
@@ -124,19 +125,21 @@ local panel = make("Frame", {
 	BackgroundColor3 = PANEL, Parent = gui,
 }, { corner(8), stroke(6), panelScale })
 studs(panel, 0.88)
-local header = make("Frame", { Size = UDim2.new(1, 0, 0, 92), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
-	corner(8), make("UIGradient", { Color = ColorSequence.new(PURPLE, PURPLE_DARK) }),
+-- header in the shared Skin look (2026-10-11 UI pass): purple top-lit strip, studs, shine bands, title, red X tile
+local sw = Skin.swatch("Purple")
+make("Frame", { Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, Parent = panel },
+	{ corner(6), make("UIStroke", { Thickness = 2, Color = Color3.fromHex("4A4D66"), Transparency = 0.2 }) })
+local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 84), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
+	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
+	}) }),
+	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
 })
-make("Frame", { Position = UDim2.new(0, 0, 1, -8), Size = UDim2.new(1, 0, 0, 8), BackgroundColor3 = PURPLE_DARK, BorderSizePixel = 0, ZIndex = 2, Parent = header })
-make("Frame", { Position = UDim2.new(0, 0, 1, 0), Size = UDim2.new(1, 0, 0, 6), BackgroundColor3 = BLACK, BorderSizePixel = 0, ZIndex = 3, Parent = header })
-studs(header, 0.86)
-make("ImageLabel", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Image = SHINE, ImageTransparency = 0.7, ZIndex = 3, Parent = header })
-text({ Position = UDim2.fromOffset(26, 10), Size = UDim2.new(0.7, 0, 0, 68), FontFace = TITLE, Text = "Lawyer Merger", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 62)
-local closeButton = make("TextButton", {
-	AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -16, 0.5, 0), Size = UDim2.fromOffset(70, 64), BackgroundColor3 = RED,
-	Text = "", AutoButtonColor = true, ZIndex = 4, Parent = header,
-}, { corner(6), stroke(4) })
-text({ Size = UDim2.fromScale(1, 1), Text = "X", FontFace = TITLE, ZIndex = 5, Parent = closeButton }, 54)
+make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, ZIndex = 3, Parent = header })
+Skin.studs(header, 0.86, nil, 26)
+Skin.shineBands(header, 0.84)
+Skin.text({ Position = UDim2.fromOffset(24, 8), Size = UDim2.new(0.7, 0, 0, 68), FontFace = Skin.Fonts.Title, Text = "Lawyer Merger", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 60, 5)
+local closeButton = Skin.closeButton(header, 66, 4)
 
 local line1 = text({ Position = UDim2.fromOffset(20, 112), Size = UDim2.new(1, -40, 0, 50), RichText = true,
 	Text = string.format('Bring <font color="#FF3B3B">%d</font> same Lawyers to Merge', NEED), Parent = panel }, 46)
@@ -538,7 +541,7 @@ local function open()
 	toast.Visible = false
 	gui.Enabled = true
 	shade.BackgroundTransparency = 1
-	tween(shade, 0.2, { BackgroundTransparency = 0.45 })
+	tween(shade, 0.2, { BackgroundTransparency = 0.35 })
 	panelScale.Scale = 0.6 * fit()
 	tween(panelScale, 0.3, { Scale = fit() }, Enum.EasingStyle.Back)
 	if not seenHelp then

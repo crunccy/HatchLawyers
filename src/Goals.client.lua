@@ -19,6 +19,8 @@ local PURPLE = Color3.fromRGB(176, 52, 255)
 local PANEL = Color3.fromRGB(46, 44, 66)
 local SOFT = Color3.fromRGB(225, 220, 250)
 local Icons = (require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("HudMenu")) :: any).Icons
+local Skin = require(game:GetService("ReplicatedStorage").Shared:WaitForChild("Skin")) :: any
+PANEL = Skin.Panel
 local FONT = Font.fromEnum(Enum.Font.FredokaOne)
 local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium) -- descriptions / small print (Shared.UIFonts)
 local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy) -- big moments (Shared.UIFonts)
@@ -65,7 +67,7 @@ local card = make("Frame", {
 	Size = UDim2.fromOffset(220, 40 + ROWS * 52),
 	BackgroundColor3 = PANEL,
 	Parent = gui,
-}, { corner(14), stroke(4) })
+}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }) })
 card:SetAttribute("NoSkin", true)
 make("ImageLabel", {
 	Name = "Studs", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Image = "rbxassetid://114488299634202", -- studs (tools/ui_textures.py)
@@ -93,7 +95,14 @@ local header = make("TextButton", {
 	Text = "",
 	AutoButtonColor = true,
 	Parent = card,
-}, { corner(14), stroke(3), make("UIGradient", { Color = ColorSequence.new(PURPLE, Color3.fromRGB(122, 30, 214)) }) })
+}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({ -- the Skin window-header look (2026-10-11 UI pass)
+		ColorSequenceKeypoint.new(0, Skin.Palette.Purple.light), ColorSequenceKeypoint.new(0.55, Skin.Palette.Purple.base),
+		ColorSequenceKeypoint.new(1, Skin.Palette.Purple.base:Lerp(Skin.Palette.Purple.dark, 0.25)),
+	}) }) })
+header.AutoButtonColor = false
+Skin.studs(header, 0.86, nil, 22)
+Skin.shineBands(header, 0.84)
 make("ImageLabel", {
 	Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -6, 0.5, -2), Size = UDim2.fromOffset(46, 46),
 	BackgroundTransparency = 1, Image = Icons.Goals, ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = header,

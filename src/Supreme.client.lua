@@ -81,7 +81,7 @@ end
 local menuEntry = HudMenu.button({ name = "Supreme", label = "SUPREME", icon = "Trophy", color = Color3.fromRGB(255, 160, 30), order = 4 })
 
 ------------------------------------------------------------------ the panel
-local gui = make("ScreenGui", { Name = "Supreme", ResetOnSpawn = false, DisplayOrder = 18, Enabled = false, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") })
+local gui = make("ScreenGui", { Name = "Supreme", ResetOnSpawn = false, DisplayOrder = 32, Enabled = false, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") })
 local shade = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.5, Text = "", AutoButtonColor = false, Parent = gui })
 shade:SetAttribute("NoSkin", true)
 local panelScale = make("UIScale", {})

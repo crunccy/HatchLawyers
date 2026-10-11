@@ -13,23 +13,24 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Formulas = require(ReplicatedStorage.Shared:WaitForChild("Formulas"))
+local Skin = require(ReplicatedStorage.Shared:WaitForChild("Skin")) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local RollSkill = Remotes:WaitForChild("RollSkill") :: RemoteFunction
 local ResolveSkill = Remotes:WaitForChild("ResolveSkill") :: RemoteFunction
 
 local player = Players.LocalPlayer
 
--- Same cartoon palette as the HUD.
+-- Shared.Skin look (2026-10-11 UI pass): sky-blue header, dark studded body, rarity-coloured skill cards.
 local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
-local INK = Color3.fromRGB(40, 40, 52)
-local MUTED = Color3.fromRGB(105, 105, 120)
+local INK = WHITE -- text sits on dark surfaces now
+local MUTED = Skin.TextSoft
 local GREEN = Color3.fromRGB(98, 205, 48)
 local ORANGE = Color3.fromRGB(255, 160, 24)
 local RED = Color3.fromRGB(240, 70, 70)
 local GOLD = Color3.fromRGB(255, 200, 40)
 local GRAY = Color3.fromRGB(170, 170, 182)
-local EMPTY = Color3.fromRGB(225, 225, 232)
+local EMPTY = Color3.fromHex("3A3D55")
 local FONT = Font.fromEnum(Enum.Font.FredokaOne)
 local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium) -- descriptions / small print (Shared.UIFonts)
 local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy) -- big moments (Shared.UIFonts)
@@ -61,21 +62,33 @@ local function text(props: { [string]: any }, maxSize: number): TextLabel
 	props.FontFace = props.FontFace or FONT
 	props.TextScaled = true
 	props.TextColor3 = props.TextColor3 or INK
-	return make("TextLabel", props, { make("UITextSizeConstraint", { MaxTextSize = maxSize }) })
+	local l = make("TextLabel", props, { make("UITextSizeConstraint", { MaxTextSize = maxSize }) })
+	if props.FontFace ~= BODY then
+		make("UIStroke", { Thickness = math.clamp(math.floor(maxSize / 11), 1, 4), Color = Skin.Ink, LineJoinMode = Enum.LineJoinMode.Round, Parent = l })
+	end
+	return l
 end
 
+-- chunky Skin-style button; the gradient multiplies BackgroundColor3 so render() keeps recolouring it
 local function button(props: { [string]: any }, maxSize: number): TextButton
 	props.FontFace = FONT
 	props.TextScaled = true
 	props.TextColor3 = WHITE
 	props.TextStrokeTransparency = 0
-	props.AutoButtonColor = true
-	return make("TextButton", props, {
-		corner(14),
-		stroke(3),
+	props.TextStrokeColor3 = Skin.Ink
+	props.AutoButtonColor = false
+	local b = make("TextButton", props, {
+		corner(8),
+		make("UIStroke", { Color = Skin.Ink, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
 		make("UITextSizeConstraint", { MaxTextSize = maxSize }),
-		make("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4) }),
+		make("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8), PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 8) }),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, WHITE), ColorSequenceKeypoint.new(0.5, Color3.new(0.94, 0.94, 0.94)), ColorSequenceKeypoint.new(1, Color3.new(0.72, 0.72, 0.72)),
+		}) }),
 	})
+	b:SetAttribute("NoSkin", true)
+	Skin.pressable(b)
+	return b
 end
 
 local function rarityOf(def: Config.SkillDef?): (string, Color3)
@@ -111,34 +124,49 @@ local function pendingSkill(): Formulas.OwnedSkill?
 end
 
 ---------------------------------------------------------------- layout (designed at 560x400, scaled to fit)
-local gui = make("ScreenGui", { Name = "Skills", ResetOnSpawn = false, DisplayOrder = 17, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
-local dim = make("TextButton", { Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.45, Text = "", AutoButtonColor = false, Parent = gui })
+local gui = make("ScreenGui", { Name = "Skills", ResetOnSpawn = false, DisplayOrder = 33, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
+local dim = make("TextButton", { Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.35, Text = "", AutoButtonColor = false, Parent = gui })
+dim:SetAttribute("NoSkin", true)
 local panelScale = make("UIScale", {})
 local panel = make("Frame", {
 	Name = "Panel",
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(560, 400),
-	BackgroundColor3 = WHITE,
+	Size = UDim2.fromOffset(580, 470),
+	BackgroundColor3 = Skin.Panel,
 	Parent = gui,
-}, { corner(24), make("UIStroke", { Color = BLACK, Thickness = 5 }), panelScale })
-
-local title = text({ Position = UDim2.fromOffset(24, 14), Size = UDim2.fromOffset(420, 40), TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 34)
-local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 54), Size = UDim2.fromOffset(500, 22), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 18)
-local closeButton = button({ Name = "Close", Position = UDim2.new(1, -62, 0, 14), Size = UDim2.fromOffset(46, 46), BackgroundColor3 = RED, Text = "X", Parent = panel }, 26)
-local closeCorner = closeButton:FindFirstChildOfClass("UICorner") :: UICorner
-closeCorner.CornerRadius = UDim.new(1, 0)
+}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
+panel:SetAttribute("NoSkin", true)
+Skin.studs(panel, 0.93, nil, 30)
+local sw = Skin.swatch("Sky")
+local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 62), BackgroundColor3 = WHITE, Parent = panel }, {
+	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
+	}) }),
+	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
+})
+make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, Parent = header })
+Skin.studs(header, 0.86, nil, 26)
+Skin.shineBands(header, 0.84)
+make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(52, 52), BackgroundTransparency = 1,
+	Image = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons.Star, ScaleType = Enum.ScaleType.Fit, ZIndex = 2, Parent = header })
+local title = text({ Position = UDim2.fromOffset(68, 8), Size = UDim2.new(1, -150, 0, 46), FontFace = Skin.Fonts.Title, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = header }, 36)
+local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 78), Size = UDim2.fromOffset(530, 22), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 18)
+local closeButton = Skin.closeButton(header, 50, 3)
 
 type Card = { frame: Frame, gradient: UIGradient, rarity: TextLabel, name: TextLabel, level: TextLabel, effect: TextLabel, replace: TextButton }
 local cards: { Card } = {}
 for slot = 1, Config.Skills.MaxSlots do
 	local frame = make("Frame", {
 		Name = "Slot" .. slot,
-		Position = UDim2.fromOffset(20 + (slot - 1) * 180, 90),
-		Size = UDim2.fromOffset(160, 180),
-		BackgroundColor3 = WHITE,
+		Position = UDim2.fromOffset(22 + (slot - 1) * 186, 112),
+		Size = UDim2.fromOffset(166, 200),
+		BackgroundColor3 = EMPTY,
 		Parent = panel,
-	}, { corner(18), stroke(4) })
+	}, { corner(8), make("UIStroke", { Color = Skin.Ink, Thickness = 4 }) })
+	Skin.studs(frame, 0.88, nil, 22)
+	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, ZIndex = 2, Parent = frame },
+		{ corner(6), make("UIStroke", { Thickness = 2, Color = WHITE, Transparency = 0.65 }) })
 	local gradient = make("UIGradient", { Rotation = 90, Parent = frame })
 	local card: Card = {
 		frame = frame,
@@ -147,22 +175,24 @@ for slot = 1, Config.Skills.MaxSlots do
 		name = text({ Position = UDim2.fromOffset(8, 30), Size = UDim2.fromOffset(144, 44), TextColor3 = WHITE, TextStrokeTransparency = 0, TextWrapped = true, Parent = frame }, 24),
 		level = text({ Position = UDim2.fromOffset(10, 76), Size = UDim2.fromOffset(140, 24), TextColor3 = GOLD, TextStrokeTransparency = 0, Parent = frame }, 24),
 		effect = text({ FontFace = BODY,
-			Position = UDim2.fromOffset(10, 106),
-			Size = UDim2.fromOffset(140, 62),
-			BackgroundTransparency = 0,
-			BackgroundColor3 = WHITE,
+			Position = UDim2.fromOffset(10, 108),
+			Size = UDim2.fromOffset(146, 70),
+			BackgroundTransparency = 0.25,
+			BackgroundColor3 = Skin.PanelDeep,
+			TextColor3 = WHITE,
 			TextWrapped = true,
+			ZIndex = 3,
 			Parent = frame,
 		}, 17),
-		replace = button({ Name = "Replace", Position = UDim2.fromOffset(20, 164), Size = UDim2.fromOffset(120, 32), BackgroundColor3 = ORANGE, Text = "REPLACE", Visible = false, ZIndex = 3, Parent = frame }, 18),
+		replace = button({ Name = "Replace", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, 0), Size = UDim2.fromOffset(130, 36), BackgroundColor3 = ORANGE, Text = "REPLACE", Visible = false, ZIndex = 4, Parent = frame }, 18),
 	}
 	corner(10).Parent = card.effect
 	make("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4), Parent = card.effect })
 	cards[slot] = card
 end
 
-local rollButton = button({ Name = "RollButton", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 290), Size = UDim2.fromOffset(320, 60), BackgroundColor3 = GREEN, Parent = panel }, 26)
-local odds = text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 356), Size = UDim2.fromOffset(500, 22), TextColor3 = MUTED, Parent = panel }, 16)
+local rollButton = button({ Name = "RollButton", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 340), Size = UDim2.fromOffset(340, 62), BackgroundColor3 = GREEN, Parent = panel }, 28)
+local odds = text({ FontFace = BODY, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 418), Size = UDim2.fromOffset(520, 22), TextColor3 = MUTED, Parent = panel }, 17)
 do
 	local total = 0
 	for _, w in Config.Skills.RarityWeights do
@@ -186,12 +216,13 @@ local reveal = make("Frame", {
 	Visible = false,
 	ZIndex = 10,
 	Parent = panel,
-}, { corner(22), make("UIStroke", { Color = BLACK, Thickness = 5 }), revealScale })
+}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), revealScale })
+Skin.studs(reveal, 0.86, nil, 24)
 local revealGradient = make("UIGradient", { Rotation = 90, Parent = reveal })
 local revealHeadline = text({ FontFace = TITLE, Position = UDim2.fromOffset(10, 12), Size = UDim2.fromOffset(280, 44), TextColor3 = WHITE, TextStrokeTransparency = 0, ZIndex = 11, Parent = reveal }, 38)
 local revealName = text({ Position = UDim2.fromOffset(10, 62), Size = UDim2.fromOffset(280, 46), TextColor3 = WHITE, TextStrokeTransparency = 0, ZIndex = 11, Parent = reveal }, 34)
 local revealStars = text({ Position = UDim2.fromOffset(10, 110), Size = UDim2.fromOffset(280, 30), TextColor3 = GOLD, TextStrokeTransparency = 0, ZIndex = 11, Parent = reveal }, 28)
-local revealEffect = text({ Position = UDim2.fromOffset(16, 148), Size = UDim2.fromOffset(268, 56), BackgroundTransparency = 0, BackgroundColor3 = WHITE, TextWrapped = true, ZIndex = 11, Parent = reveal }, 20)
+local revealEffect = text({ FontFace = BODY, Position = UDim2.fromOffset(16, 148), Size = UDim2.fromOffset(268, 56), BackgroundTransparency = 0.25, BackgroundColor3 = Skin.PanelDeep, TextColor3 = WHITE, TextWrapped = true, ZIndex = 11, Parent = reveal }, 20)
 corner(10).Parent = revealEffect
 
 ---------------------------------------------------------------- rendering
@@ -206,15 +237,17 @@ local function paintCard(card: Card, skill: Formulas.OwnedSkill?)
 		card.rarity.Text = ""
 		card.name.Text = "EMPTY SLOT"
 		card.name.TextColor3 = MUTED
-		card.name.TextStrokeTransparency = 1
 		card.level.Text = ""
 		card.effect.Text = "Roll to learn a skill!"
 		return
 	end
 	local rarityName, color = rarityOf(def)
-	card.frame.BackgroundColor3 = color
+	card.frame.BackgroundColor3 = WHITE
 	card.gradient.Enabled = true
-	card.gradient.Color = ColorSequence.new(color:Lerp(WHITE, 0.45), color)
+	local sw2 = Skin.swatch(color)
+	card.gradient.Color = ColorSequence.new({ -- top-lit rarity fill (the Skin card look)
+		ColorSequenceKeypoint.new(0, sw2.light), ColorSequenceKeypoint.new(0.5, sw2.base), ColorSequenceKeypoint.new(1, sw2.base:Lerp(sw2.dark, 0.4)),
+	})
 	card.rarity.Text = string.upper(rarityName)
 	card.name.Text = def.Name
 	card.name.TextColor3 = WHITE
@@ -297,7 +330,7 @@ local function fit(): number
 	if not camera then
 		return 1
 	end
-	return math.clamp(math.min(camera.ViewportSize.Y / 460, camera.ViewportSize.X / 620), 0.5, 1)
+	return math.clamp(math.min(camera.ViewportSize.Y / 530, camera.ViewportSize.X / 640), 0.45, 1)
 end
 
 local function open()

@@ -125,7 +125,7 @@ local function rewardText(reward: { [string]: any }): string
 end
 
 ---------------------------------------------------------------- left-edge DAILY tile
-local gui = make("ScreenGui", { Name = "Rewards", ResetOnSpawn = false, DisplayOrder = 31, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") }) -- above BigCase (30) banners
+local gui = make("ScreenGui", { Name = "Rewards", ResetOnSpawn = false, DisplayOrder = 40, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") }) -- above BigCase (30) banners and every window (32-33): reward pop-ups show over the Shop
 -- the DAILY tile lives in the shared left-edge menu column (Shared.HudMenu): real gift icon, "!" badge when a
 -- daily reward is waiting, the playtime-gift countdown in a pill under it (UI pass 2026-10-09)
 local HudMenu = require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any

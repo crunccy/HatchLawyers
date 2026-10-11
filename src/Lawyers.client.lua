@@ -398,7 +398,7 @@ end
 
 ------------------------------------------------------------------ layout
 local playerGui = player:WaitForChild("PlayerGui")
-local gui = make("ScreenGui", { Name = "Lawyers", ResetOnSpawn = false, DisplayOrder = 15, IgnoreGuiInset = true, Parent = playerGui })
+local gui = make("ScreenGui", { Name = "Lawyers", ResetOnSpawn = false, DisplayOrder = 32, IgnoreGuiInset = true, Parent = playerGui })
 local shade = make("TextButton", { Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Visible = false, Parent = gui })
 shade:SetAttribute("NoSkin", true)
 

@@ -93,7 +93,7 @@ local function button(props: { [string]: any }, maxSize: number): TextButton
 end
 
 ---------------------------------------------------------------- layout (560x400, scaled to fit)
-local gui = make("ScreenGui", { Name = "Manager", ResetOnSpawn = false, DisplayOrder = 16, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
+local gui = make("ScreenGui", { Name = "Manager", ResetOnSpawn = false, DisplayOrder = 32, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
 local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.35, Text = "", AutoButtonColor = false, Parent = gui })
 dim:SetAttribute("NoSkin", true)
 local panelScale = make("UIScale", {})
