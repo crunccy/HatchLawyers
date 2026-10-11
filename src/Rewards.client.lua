@@ -125,88 +125,105 @@ local function rewardText(reward: { [string]: any }): string
 end
 
 ---------------------------------------------------------------- left-edge DAILY tile
-local gui = make("ScreenGui", { Name = "Rewards", ResetOnSpawn = false, DisplayOrder = 14, Parent = player:WaitForChild("PlayerGui") })
+local gui = make("ScreenGui", { Name = "Rewards", ResetOnSpawn = false, DisplayOrder = 31, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") }) -- above BigCase (30) banners
 -- the DAILY tile lives in the shared left-edge menu column (Shared.HudMenu): real gift icon, "!" badge when a
 -- daily reward is waiting, the playtime-gift countdown in a pill under it (UI pass 2026-10-09)
 local HudMenu = require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any
 local menuEntry = HudMenu.button({ name = "Daily", label = "DAILY", icon = "Gift", color = ORANGE, order = 1 })
 local dailyButton = menuEntry.button
 
----------------------------------------------------------------- calendar panel (560x340, scaled to fit)
+---------------------------------------------------------------- calendar panel (Shared.Skin look, 2026-10-11 UI pass)
+-- Reference (user's recording): glossy header strip + red X over a dark studded body; the 7 days are chunky
+-- tiles in a row (claimed = green, today = gold and bouncing, later = navy), each with a picture of its reward.
+local Skin = require(ReplicatedStorage.Shared:WaitForChild("Skin")) :: any
+local Icons = HudMenu.Icons
+local PW, PH = 680, 420
+local NAVY = Color3.fromHex("3A3D55")
 local overlay = make("Frame", { Name = "Calendar", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Visible = false, Parent = gui })
-local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.45, Text = "", AutoButtonColor = false, Parent = overlay })
+overlay:SetAttribute("NoSkin", true)
+local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.35, Text = "", AutoButtonColor = false, Parent = overlay })
 local panelScale = make("UIScale", {})
 local panel = make("Frame", {
-	Name = "Panel",
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(560, 340),
-	BackgroundColor3 = WHITE,
-	Parent = overlay,
-}, { corner(24), make("UIStroke", { Color = BLACK, Thickness = 5 }), panelScale })
-text({ Position = UDim2.fromOffset(24, 14), Size = UDim2.fromOffset(420, 40), Text = "DAILY REWARDS", TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 34)
-local streakLabel = text({ Position = UDim2.fromOffset(24, 54), Size = UDim2.fromOffset(460, 22), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 18)
-local closeButton = make("TextButton", {
-	Name = "Close",
-	Position = UDim2.new(1, -62, 0, 14),
-	Size = UDim2.fromOffset(46, 46),
-	BackgroundColor3 = RED,
-	FontFace = FONT,
-	TextSize = 26,
-	TextColor3 = WHITE,
-	TextStrokeTransparency = 0,
-	Text = "X",
-	Parent = panel,
-}, { corner(23), stroke(3) })
+	Name = "Panel", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(PW, PH),
+	BackgroundColor3 = Skin.Panel, Parent = overlay,
+}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
+Skin.studs(panel, 0.93, nil, 30)
+make("Frame", { Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, Parent = panel },
+	{ corner(8), make("UIStroke", { Thickness = 2, Color = Color3.fromHex("4A4D66"), Transparency = 0.2 }) })
+local sw = Skin.swatch("Orange")
+local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 66), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
+	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
+	}) }),
+	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
+})
+make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, ZIndex = 3, Parent = header })
+Skin.studs(header, 0.86, nil, 26)
+Skin.shineBands(header, 0.84)
+make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = UDim2.fromOffset(56, 56), BackgroundTransparency = 1,
+	Image = Icons.Gift, ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Parent = header })
+Skin.text({ Position = UDim2.fromOffset(76, 6), Size = UDim2.fromOffset(400, 54), Text = "Daily Rewards", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 50, 5)
+local closeButton = Skin.closeButton(header, 54, 4)
+local streakLabel = Skin.text({ Position = UDim2.fromOffset(24, 80), Size = UDim2.new(1, -48, 0, 28), FontFace = Skin.Fonts.Title, TextColor3 = Skin.Palette.Gold.light, Parent = panel }, 24, 2)
 
-type Tile = { frame: Frame, day: TextLabel, reward: TextLabel, check: TextLabel, scale: UIScale }
+type Tile = { frame: Frame, day: TextLabel, reward: TextLabel, check: TextLabel, scale: UIScale, today: Frame }
 local tiles: { Tile } = {}
+local TW, TG = 86, 8
+local x0 = (PW - (#Config.Rewards.Daily * TW + (#Config.Rewards.Daily - 1) * TG)) / 2
 for i, reward in Config.Rewards.Daily do
 	local scale = make("UIScale", {})
 	local frame = make("Frame", {
-		Name = "Day" .. i,
-		Position = UDim2.fromOffset(17 + (i - 1) * 76, 92),
-		Size = UDim2.fromOffset(70, 124),
-		BackgroundColor3 = WHITE,
-		Parent = panel,
-	}, { corner(14), stroke(3), scale })
-	-- egg rewards show the egg itself (Blender render, Shared.ArtAssets.Eggs); a pair of eggs for multi-egg days
-	local eggArt = if reward.Kind == "RareEgg" then ArtAssets.Eggs.Rare elseif reward.Kind == "Egg" then ArtAssets.Eggs.Briefcase else nil
-	if eggArt then
-		local count = if reward.Kind == "Egg" then math.min(reward.Count or 1, 2) else 1
-		for k = 1, count do
-			make("ImageLabel", {
-				Name = "EggArt", BackgroundTransparency = 1, Image = eggArt, ScaleType = Enum.ScaleType.Fit, ZIndex = 2,
-				AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, if count > 1 then (k - 1.5) * 18 else 0, 0, if count > 1 then 30 + (k - 1) * 4 else 26),
-				Size = UDim2.fromOffset(if count > 1 then 44 else 56, if count > 1 then 44 else 56), Parent = frame,
-			})
-		end
+		Name = "Day" .. i, Position = UDim2.fromOffset(x0 + (i - 1) * (TW + TG), 118), Size = UDim2.fromOffset(TW, 170), BackgroundColor3 = NAVY, Parent = panel,
+	}, {
+		corner(8), make("UIStroke", { Color = Skin.Ink, Thickness = 3 }), scale,
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, WHITE), ColorSequenceKeypoint.new(0.5, Color3.new(0.92, 0.92, 0.92)), ColorSequenceKeypoint.new(1, Color3.new(0.7, 0.7, 0.7)),
+		}) }),
+	})
+	Skin.studs(frame, 0.88, nil, 22)
+	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(2, 2), Size = UDim2.new(1, -4, 1, -4), BackgroundTransparency = 1, Parent = frame },
+		{ corner(6), make("UIStroke", { Thickness = 1.5, Color = WHITE, Transparency = 0.65 }) })
+	-- the reward's picture: coins, the egg (Blender render), a star for a skill roll
+	local art = if reward.Kind == "RareEgg" then ArtAssets.Eggs.Rare elseif reward.Kind == "Egg" then ArtAssets.Eggs.Briefcase
+		elseif reward.Kind == "Coins" then Icons.Coin else Icons.Star
+	local count = if reward.Kind == "Egg" then math.min(reward.Count or 1, 2) else 1
+	for k = 1, count do
+		make("ImageLabel", {
+			Name = "Art", BackgroundTransparency = 1, Image = art, ScaleType = Enum.ScaleType.Fit, ZIndex = 2,
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, if count > 1 then (k - 1.5) * 22 else 0, 0, 80 + (if count > 1 then (k - 1) * 6 else 0)),
+			Size = UDim2.fromOffset(if count > 1 then 52 else 66, if count > 1 then 52 else 66), Parent = frame,
+		})
 	end
+	local today = make("Frame", { Name = "Today", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 0), Size = UDim2.fromOffset(70, 22),
+		BackgroundColor3 = Skin.Palette.Red.base, Visible = false, ZIndex = 5, Parent = frame }, { corner(11), make("UIStroke", { Color = Skin.Ink, Thickness = 2 }) })
+	Skin.text({ Size = UDim2.fromScale(1, 1), Text = "TODAY", FontFace = Skin.Fonts.Number, ZIndex = 6, Parent = today }, 16, 2)
 	tiles[i] = {
 		frame = frame,
 		scale = scale,
-		day = text({ Position = UDim2.fromOffset(4, 6), Size = UDim2.fromOffset(62, 22), Text = "DAY " .. i, Parent = frame }, 18),
-		reward = if eggArt
-			then text({ Position = UDim2.fromOffset(2, 78), Size = UDim2.fromOffset(66, 18), Text = "", ZIndex = 3, Parent = frame }, 16)
-			else text({ Position = UDim2.fromOffset(4, 34), Size = UDim2.fromOffset(62, 60), Text = "", TextWrapped = true, Parent = frame }, 18),
-		check = text({ Position = UDim2.fromOffset(4, 92), Size = UDim2.fromOffset(62, 26), Text = "", TextColor3 = WHITE, TextStrokeTransparency = 0, Parent = frame }, 22),
+		today = today,
+		day = Skin.text({ Position = UDim2.fromOffset(4, 12), Size = UDim2.new(1, -8, 0, 26), Text = "Day " .. i, ZIndex = 3, Parent = frame }, 22, 3),
+		reward = Skin.text({ Position = UDim2.fromOffset(4, 120), Size = UDim2.new(1, -8, 0, 40), Text = "", TextWrapped = true, ZIndex = 3, Parent = frame }, 18, 2),
+		check = Skin.text({ AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(34, 34), Text = "",
+			FontFace = Skin.Fonts.Number, TextColor3 = Skin.Palette.Green.light, ZIndex = 6, Parent = frame }, 34, 3),
 	}
 end
 
+-- claim: a chunky Skin-style button whose gradient multiplies its colour (render() recolours it)
 local claimButton = make("TextButton", {
-	Name = "ClaimButton",
-	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 232),
-	Size = UDim2.fromOffset(320, 56),
-	BackgroundColor3 = GREEN,
-	FontFace = FONT,
-	TextScaled = true,
-	TextColor3 = WHITE,
-	TextStrokeTransparency = 0,
-	AutoButtonColor = true,
-	Parent = panel,
-}, { corner(14), stroke(3), make("UITextSizeConstraint", { MaxTextSize = 26 }), make("UIPadding", { PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }) })
-local giftLine = text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 296), Size = UDim2.fromOffset(500, 24), TextColor3 = MUTED, Parent = panel }, 18)
+	Name = "ClaimButton", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 302), Size = UDim2.fromOffset(360, 60),
+	BackgroundColor3 = GREEN, FontFace = Skin.Fonts.Title, TextScaled = true, TextColor3 = WHITE, TextStrokeTransparency = 0, TextStrokeColor3 = Skin.Ink,
+	AutoButtonColor = false, Parent = panel,
+}, {
+	corner(8), make("UIStroke", { Color = Skin.Ink, Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+	make("UITextSizeConstraint", { MaxTextSize = 28 }),
+	make("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8), PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 10) }),
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, WHITE), ColorSequenceKeypoint.new(0.5, Color3.new(0.94, 0.94, 0.94)), ColorSequenceKeypoint.new(1, Color3.new(0.72, 0.72, 0.72)),
+	}) }),
+})
+Skin.pressable(claimButton)
+local giftLine = Skin.text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 374), Size = UDim2.fromOffset(600, 26), FontFace = Skin.Fonts.Body,
+	TextColor3 = Skin.TextSoft, Parent = panel }, 20, 0)
 
 ---------------------------------------------------------------- reward pop-up
 local toastScale = make("UIScale", { Scale = 0 })
@@ -219,9 +236,19 @@ local toast = make("Frame", {
 	Visible = false,
 	ZIndex = 20,
 	Parent = gui,
-}, { corner(20), stroke(4), toastScale })
-local toastTitle = text({ FontFace = TITLE, Position = UDim2.fromOffset(10, 8), Size = UDim2.fromOffset(320, 44), TextColor3 = WHITE, TextStrokeTransparency = 0, ZIndex = 21, Parent = toast }, 36)
-local toastBody = text({ Position = UDim2.fromOffset(10, 54), Size = UDim2.fromOffset(320, 36), TextColor3 = WHITE, TextStrokeTransparency = 0, ZIndex = 21, Parent = toast }, 26)
+}, {
+	corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 4 }), toastScale,
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Skin.Palette.Gold.light), ColorSequenceKeypoint.new(0.55, Skin.Palette.Gold.base), ColorSequenceKeypoint.new(1, Skin.Palette.Gold.dark),
+	}) }),
+})
+toast.BackgroundColor3 = WHITE -- (the gradient carries the gold)
+toast:SetAttribute("NoSkin", true)
+Skin.studs(toast, 0.86, nil, 24)
+make("Frame", { Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, ZIndex = 20, Parent = toast },
+	{ corner(8), make("UIStroke", { Thickness = 2, Color = WHITE, Transparency = 0.5 }) })
+local toastTitle = Skin.text({ Position = UDim2.fromOffset(10, 8), Size = UDim2.fromOffset(320, 44), FontFace = Skin.Fonts.Title, ZIndex = 21, Parent = toast }, 38, 4)
+local toastBody = Skin.text({ Position = UDim2.fromOffset(10, 54), Size = UDim2.fromOffset(320, 36), FontFace = Skin.Fonts.Title, ZIndex = 21, Parent = toast }, 26, 3)
 local toastToken = 0
 local Effects = require(ReplicatedStorage.Shared:WaitForChild("Effects")) :: any
 
@@ -270,12 +297,9 @@ local function render()
 		local done = i <= ticked
 		local isNext = i == nextIndex
 		tile.reward.Text = rewardText(Config.Rewards.Daily[i])
-		tile.frame.BackgroundColor3 = if done then GREEN elseif isNext then GOLD else WHITE
-		tile.day.TextColor3 = if done or isNext then WHITE else INK
-		tile.day.TextStrokeTransparency = if done or isNext then 0 else 1
-		tile.reward.TextColor3 = if done or isNext then WHITE else INK
-		tile.reward.TextStrokeTransparency = if done or isNext then 0 else 1
-		tile.check.Text = if done then "✓" elseif isNext and canClaim then "TODAY" else ""
+		tile.frame.BackgroundColor3 = if done then Skin.Palette.Green.base elseif isNext then Skin.Palette.Gold.base else NAVY
+		tile.check.Text = if done then "✓" else ""
+		tile.today.Visible = isNext and canClaim
 		tile.scale.Scale = if isNext and canClaim then 1 + math.sin(os.clock() * 5) * 0.05 else 1
 	end
 	if claimMessage then
@@ -305,7 +329,7 @@ local function fit(): number
 	if not camera then
 		return 1
 	end
-	return math.clamp(math.min(camera.ViewportSize.Y / 400, camera.ViewportSize.X / 620), 0.5, 1)
+	return math.clamp(math.min(camera.ViewportSize.Y / (PH + 60), camera.ViewportSize.X / (PW + 60)), 0.45, 1)
 end
 
 local function open()

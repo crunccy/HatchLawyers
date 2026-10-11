@@ -35,8 +35,12 @@ HudMenu.Studs = "rbxassetid://114488299634202" -- tools/ui_textures.py
 
 local BLACK = Color3.new(0, 0, 0)
 local WHITE = Color3.new(1, 1, 1)
-local SIZE = 84
-local GAP = 28 -- room for the timer pill hanging under a button and the "!" over the next one
+local INK = Color3.fromHex("15131C")
+-- 2026-10-11 UI pass (user's reference recording): wide buttons - icon on the left poking out a little, big outlined
+-- label - instead of square tiles; same top-lit gradient / bevel / lip / soft gloss as Shared.Skin buttons.
+local BW, BH = 172, 56
+local GAP = 14
+local TITLE_FONT = Font.new("rbxasset://fonts/families/FredokaOne.json")
 
 export type Entry = {
 	button: TextButton,
@@ -83,7 +87,7 @@ local function getColumn(): Frame
 	local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 	local gui = make("ScreenGui", { Name = "Menu", ResetOnSpawn = false, DisplayOrder = 5, Parent = playerGui })
 	local frame = make("Frame", {
-		Name = "Column", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = UDim2.fromOffset(SIZE + 8, 10),
+		Name = "Column", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 16, 0.5, 0), Size = UDim2.fromOffset(BW + 16, 10),
 		AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = gui,
 	}, {
 		make("UIListLayout", { Padding = UDim.new(0, GAP), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center }),
@@ -113,41 +117,54 @@ function HudMenu.button(opts: { name: string, label: string, icon: string, color
 	end
 	local parent = getColumn()
 	local h, s, v = opts.color:ToHSV()
-	local light = Color3.fromHSV(h, s * 0.55, math.min(1, v * 1.2))
-	local dark = Color3.fromHSV(h, math.min(1, s * 1.1), v * 0.62)
-	local holder = make("Frame", { Name = opts.name, Size = UDim2.fromOffset(SIZE, SIZE), BackgroundTransparency = 1, LayoutOrder = opts.order, Parent = parent })
+	local light = Color3.fromHSV(h, s * 0.55, math.min(1, v * 1.15 + 0.08))
+	local dark = Color3.fromHSV(h, math.min(1, s * 1.1), v * 0.6)
+	local holder = make("Frame", { Name = opts.name, Size = UDim2.fromOffset(BW, BH), BackgroundTransparency = 1, LayoutOrder = opts.order, Parent = parent })
 	local scale = make("UIScale", {})
 	local button = make("TextButton", {
 		Name = opts.name .. "Button", Size = UDim2.fromScale(1, 1), BackgroundColor3 = WHITE, Text = "", AutoButtonColor = false, Parent = holder,
 	}, {
-		make("UICorner", { CornerRadius = UDim.new(0, 18) }),
-		make("UIStroke", { Thickness = 4, Color = dark:Lerp(BLACK, 0.55), ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(light, opts.color) }),
+		make("UICorner", { CornerRadius = UDim.new(0, 10) }),
+		make("UIStroke", { Thickness = 4, Color = INK, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, light), ColorSequenceKeypoint.new(0.5, opts.color), ColorSequenceKeypoint.new(1, opts.color:Lerp(dark, 0.35)),
+		}) }),
 		scale,
 	})
 	button:SetAttribute("NoSkin", true)
 	make("ImageLabel", {
-		Name = "Studs", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Image = HudMenu.Studs, ImageTransparency = 0.82,
-		ScaleType = Enum.ScaleType.Tile, TileSize = UDim2.fromOffset(28, 28), Parent = button,
-	}, { make("UICorner", { CornerRadius = UDim.new(0, 18) }) })
+		Name = "Studs", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Image = HudMenu.Studs, ImageTransparency = 0.86,
+		ScaleType = Enum.ScaleType.Tile, TileSize = UDim2.fromOffset(24, 24), Parent = button,
+	}, { make("UICorner", { CornerRadius = UDim.new(0, 10) }) })
+	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(2, 2), Size = UDim2.new(1, -4, 1, -4), BackgroundTransparency = 1, Parent = button },
+		{ make("UICorner", { CornerRadius = UDim.new(0, 8) }), make("UIStroke", { Thickness = 2, Color = light, Transparency = 0.25 }) })
+	make("Frame", { Name = "Gloss", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 3), Size = UDim2.new(1, -8, 0.45, 0),
+		BackgroundColor3 = WHITE, BorderSizePixel = 0, Parent = button }, {
+		make("UICorner", { CornerRadius = UDim.new(0, 7) }),
+		make("UIGradient", { Rotation = 90, Transparency = NumberSequence.new(0.84, 1) }),
+	})
 	-- bottom lip: the chunky "3D" underside
-	make("Frame", { Name = "Lip", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 10), BackgroundColor3 = dark, BackgroundTransparency = 0.25, BorderSizePixel = 0, Parent = button }, { make("UICorner", { CornerRadius = UDim.new(0, 18) }) })
+	make("Frame", { Name = "Lip", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 9), BackgroundColor3 = dark, BackgroundTransparency = 0.2, BorderSizePixel = 0, Parent = button }, { make("UICorner", { CornerRadius = UDim.new(0, 10) }) })
 	local iconImage = make("ImageLabel", {
-		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 2), Size = UDim2.fromOffset(60, 60),
+		Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -8, 0.5, -2), Size = UDim2.fromOffset(62, 62),
 		BackgroundTransparency = 1, Image = HudMenu.icon(opts.icon), ScaleType = Enum.ScaleType.Fit, ZIndex = 2, Parent = button,
 	})
-	outlinedText({ Name = "Label", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -4), Size = UDim2.new(1, 4, 0, 26), Text = opts.label, FontFace = UIFonts.TitleFace, ZIndex = 3, Parent = button }, 22, 3)
+	local label = outlinedText({ Name = "Label", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 56, 0.5, -2), Size = UDim2.new(1, -62, 0, 36),
+		Text = string.upper(string.sub(opts.label, 1, 1)) .. string.lower(string.sub(opts.label, 2)), FontFace = TITLE_FONT,
+		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = button }, 30, 3)
+	label.TextScaled = true
 	-- badges
-	local badge = make("Frame", { Name = "Badge", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(30, 30), BackgroundColor3 = Color3.fromRGB(235, 40, 40), Visible = false, ZIndex = 5, Parent = holder }, {
+	local badge = make("Frame", { Name = "Badge", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(30, 30), BackgroundColor3 = Color3.fromRGB(235, 40, 40), Visible = false, ZIndex = 5, Parent = holder }, {
 		make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 3, Color = WHITE }),
 	})
-	local badgeText = outlinedText({ Size = UDim2.fromScale(1, 1), Text = "", FontFace = UIFonts.TitleFace, ZIndex = 6, Parent = badge }, 20, 2)
-	local alert = make("Frame", { Name = "Alert", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, 8, 0, 8), Size = UDim2.fromOffset(26, 26), BackgroundColor3 = Color3.fromRGB(255, 205, 40), Visible = false, ZIndex = 5, Parent = holder }, {
-		make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 3, Color = BLACK }),
+	local badgeText = outlinedText({ Size = UDim2.fromScale(1, 1), Text = "", FontFace = TITLE_FONT, ZIndex = 6, Parent = badge }, 20, 2)
+	local alert = make("Frame", { Name = "Alert", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(28, 28), BackgroundColor3 = Color3.fromRGB(255, 205, 40), Visible = false, ZIndex = 5, Parent = holder }, {
+		make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 3, Color = INK }),
 	})
-	outlinedText({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = UIFonts.TitleFace, ZIndex = 6, Parent = alert }, 20, 2)
-	local note = make("Frame", { Name = "Note", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, 0), Size = UDim2.fromOffset(70, 22), BackgroundColor3 = Color3.fromRGB(32, 30, 48), Visible = false, ZIndex = 5, Parent = holder }, {
-		make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 2, Color = BLACK }),
+	outlinedText({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = TITLE_FONT, ZIndex = 6, Parent = alert }, 20, 2)
+	-- timer pill hanging off the bottom-right corner (the DAILY playtime gift countdown)
+	local note = make("Frame", { Name = "Note", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 1, 0), Size = UDim2.fromOffset(66, 22), BackgroundColor3 = Color3.fromRGB(32, 30, 48), Visible = false, ZIndex = 5, Parent = holder }, {
+		make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 2, Color = INK }),
 	})
 	local noteText = outlinedText({ Position = UDim2.fromOffset(4, 1), Size = UDim2.new(1, -8, 1, -2), Text = "", FontFace = UIFonts.PrimaryFace, ZIndex = 6, Parent = note }, 16, 1.5)
 
@@ -179,6 +196,7 @@ function HudMenu.button(opts: { name: string, label: string, icon: string, color
 		end,
 		setAlert = function(on: boolean)
 			alert.Visible = on
+			alert.Position = if badge.Visible then UDim2.new(1, -34, 0, 4) else UDim2.new(1, -4, 0, 4)
 		end,
 		setNote = function(t: string?)
 			note.Visible = t ~= nil
