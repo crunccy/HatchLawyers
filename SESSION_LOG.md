@@ -35,6 +35,22 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-11 — local session: client remodel v3, less shine, UI restyle continues
+**Clients.** All 44 clients rebuilt (`tools/clients/`): `ClientKit.lua` builds R6-proportioned characters from
+CSG-rounded blocks (Union/Subtract at build time), layered clothing (collars, lapels, ties, belts, aprons, coat
+tails, pockets, boots), 12 hair styles, caps/beanies/brim hats/top hats/chef hats/crowns, and a drawn face decal per
+character (`tools/client_faces.py` -> `art/client_faces/`, 44 expressions; ids in `tools/clients/FaceIds.lua`).
+`NeighborDave.lua` is the benchmark; `Cast.lua` has the other 43, each with its own prop (spatula, STOP sign,
+tuba, parrot, trident...). `InstallClients.lua` reinstalls them all; old models in `ServerStorage.RetiredClients
+.<Id>_v2`. Puppet part names unchanged, so walking / desks / courtroom work as before (verified in a playtest; no
+console errors; `ReplicatedStorage.ClientModels` has all 44).
+**Less shine** (user: "everything is a little too shiny"): `tools/shop_icons.py` SHINE = 0.3, all 17 icons
+re-rendered + re-uploaded (new ids in `Shared.ArtAssets`); `Skin` button gloss / header bands / card glow toned down.
+**UI.** LAWYERS panel and Manager Office moved onto the `Skin` look (glossy colour header + icon + red X, dark
+studded body, Skin buttons whose gradient multiplies their own colour so state recolouring still works). Checked
+in a playtest with live data.
+Left: Merger, Skills, Daily Rewards, Supreme, Courtroom, Goals card, egg hatch screen are still on the older style.
+
 ## 2026-10-10 — local session: lawyer model remakes, UI design system, Blender shop + egg art
 **Lawyer models.** All 52 hatchable lawyers rebuilt in the block style with their own shapes (was one shared
 2.1 x 5.5 x 1.1 frame). Builders: `tools/skins/<Id>.lua` on `tools/skins/SkinKit.lua`; `tools/skins/InstallAll.lua`

@@ -36,6 +36,7 @@ local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
 local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
+local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local PlaceLawyer = Remotes:WaitForChild("PlaceLawyer") :: RemoteFunction
 local MergeLawyers = Remotes:WaitForChild("MergeLawyers") :: RemoteFunction
@@ -67,7 +68,7 @@ local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
 local PURPLE = Color3.fromRGB(176, 52, 255)
 local PURPLE_DARK = Color3.fromRGB(122, 30, 214)
-local PANEL = Color3.fromRGB(46, 44, 66)
+local PANEL = Skin.Panel
 local SLOT = Color3.fromRGB(32, 31, 47)
 local CARD = Color3.fromRGB(62, 60, 88)
 local GREEN = Color3.fromRGB(76, 224, 48)
@@ -127,16 +128,25 @@ end
 local function tween(o: Instance, t: number, props: { [string]: any }, style: Enum.EasingStyle?)
 	TweenService:Create(o, TweenInfo.new(t, style or Enum.EasingStyle.Quad, Enum.EasingDirection.Out), props):Play()
 end
--- a chunky button: coloured, outlined, studded, white outlined label; returns the button and its label
+-- a chunky button in the shared Skin look (Shared.Skin, 2026-10-10 UI pass): top-lit gradient over its own
+-- BackgroundColor3 (so setButton's recolouring still works), inner bevel, dark lip, soft gloss, studs, ink outline,
+-- grow on hover / squish on press. Returns the button and its label.
 local function button(props: { [string]: any }, label: string, maxSize: number): (TextButton, TextLabel)
 	props.Text = ""
-	props.AutoButtonColor = true
-	local b = make("TextButton", props, { corner(10), stroke(4) })
-	studs(b, 0.88)
-	local l = text({ Position = UDim2.fromOffset(6, 3), Size = UDim2.new(1, -12, 1, -6), Text = label, ZIndex = b.ZIndex + 1, Parent = b }, maxSize)
-	b.Activated:Connect(function()
-		squish(b)
-	end)
+	props.AutoButtonColor = false
+	local b = make("TextButton", props, { corner(8), stroke(3) })
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(0.5, Color3.new(0.94, 0.94, 0.94)),
+		ColorSequenceKeypoint.new(1, Color3.new(0.74, 0.74, 0.74)),
+	}), Parent = b })
+	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(2, 2), Size = UDim2.new(1, -4, 1, -4), BackgroundTransparency = 1,
+		ZIndex = b.ZIndex, Interactable = false, Parent = b }, { corner(6), make("UIStroke", { Thickness = 1.5, Color = WHITE, Transparency = 0.7 }) })
+	make("Frame", { Name = "Lip", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0.14, 0),
+		BackgroundColor3 = BLACK, BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = b.ZIndex, Interactable = false, Parent = b }, { corner(8) })
+	studs(b, 0.9)
+	Skin.gloss(b, 0.12)
+	local l = text({ Position = UDim2.fromOffset(6, 2), Size = UDim2.new(1, -12, 1, -8), Text = label, ZIndex = b.ZIndex + 1, Parent = b }, maxSize)
+	Skin.pressable(b)
 	return b, l
 end
 local function mmss(seconds: number): string
@@ -405,20 +415,25 @@ local panel = make("Frame", {
 }, { corner(10), stroke(6), panelScale })
 panel:SetAttribute("NoSkin", true)
 studs(panel, 0.9)
-local header = make("Frame", { Name = "Header", Size = UDim2.new(1, 0, 0, 74), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
-	corner(10), make("UIGradient", { Color = ColorSequence.new(PURPLE, PURPLE_DARK) }),
+-- header in the shared Skin look: top-lit colour strip, studs, two shine bands, gavel icon + title, red X tile
+local sw = Skin.swatch("Purple")
+make("Frame", { Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, Parent = panel },
+	{ corner(8), make("UIStroke", { Thickness = 2, Color = Color3.fromHex("4A4D66"), Transparency = 0.2 }) })
+local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 70), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
+	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
+	}) }),
+	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
 })
-make("Frame", { Position = UDim2.new(0, 0, 1, -10), Size = UDim2.new(1, 0, 0, 10), BackgroundColor3 = PURPLE_DARK, BorderSizePixel = 0, ZIndex = 2, Parent = header })
-make("Frame", { Position = UDim2.new(0, 0, 1, 0), Size = UDim2.new(1, 0, 0, 5), BackgroundColor3 = BLACK, BorderSizePixel = 0, ZIndex = 3, Parent = header })
-studs(header, 0.86)
-make("ImageLabel", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Image = SHINE, ImageTransparency = 0.7, ZIndex = 3, Parent = header })
-text({ Position = UDim2.fromOffset(24, 8), Size = UDim2.fromOffset(300, 58), FontFace = TITLE, Text = "Lawyers", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 54)
+make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, ZIndex = 3, Parent = header })
+Skin.studs(header, 0.86, nil, 26)
+Skin.shineBands(header, 0.84)
+make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = UDim2.fromOffset(58, 58), BackgroundTransparency = 1,
+	Image = HudMenu.Icons.Gavel, ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Parent = header })
+Skin.text({ Position = UDim2.fromOffset(80, 6), Size = UDim2.fromOffset(300, 58), FontFace = Skin.Fonts.Title, Text = "Lawyers",
+	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 54, 5)
 local countLabel = text({ Position = UDim2.fromOffset(330, 22), Size = UDim2.new(1, -440, 0, 32), Text = "", TextColor3 = Color3.fromRGB(255, 230, 120), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4, Parent = header }, 24)
-local closeButton = make("TextButton", {
-	AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = UDim2.fromOffset(66, 58), BackgroundColor3 = RED,
-	Text = "", AutoButtonColor = true, ZIndex = 4, Parent = header,
-}, { corner(6), stroke(4) })
-text({ Size = UDim2.fromScale(1, 1), Text = "X", FontFace = TITLE, ZIndex = 5, Parent = closeButton }, 46)
+local closeButton = Skin.closeButton(header, 58, 4)
 
 -- OFFICE SLOTS bar
 text({ Position = UDim2.fromOffset(22, 84), Size = UDim2.fromOffset(200, 22), Text = "YOUR OFFICES", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = panel }, 20)
@@ -1102,7 +1117,7 @@ local function open(opts: any)
 		panel.Visible = true
 		shade.Visible = true
 		shade.BackgroundTransparency = 1
-		tween(shade, 0.2, { BackgroundTransparency = 0.5 })
+		tween(shade, 0.2, { BackgroundTransparency = 0.35 })
 		local s = fit()
 		panelScale.Scale = s * 0.6
 		tween(panelScale, 0.3, { Scale = s }, Enum.EasingStyle.Back)

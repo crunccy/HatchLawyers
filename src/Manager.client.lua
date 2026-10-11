@@ -12,6 +12,7 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Formulas = require(ReplicatedStorage.Shared:WaitForChild("Formulas"))
+local Skin = require(ReplicatedStorage.Shared:WaitForChild("Skin")) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local HireManager = Remotes:WaitForChild("HireManager") :: RemoteFunction
 local BuyManagerUpgrade = Remotes:WaitForChild("BuyManagerUpgrade") :: RemoteFunction
@@ -19,11 +20,13 @@ local PrestigeRemote = Remotes:WaitForChild("Prestige") :: RemoteFunction
 
 local player = Players.LocalPlayer
 
--- Same cartoon palette as the HUD.
+-- Shared.Skin look (2026-10-10 UI pass): gold header strip, dark studded body, dark rows, white outlined text.
 local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
-local INK = Color3.fromRGB(40, 40, 52)
-local MUTED = Color3.fromRGB(105, 105, 120)
+local INK = WHITE -- text sits on dark surfaces now
+local MUTED = Skin.TextSoft
+local ROW = Color3.fromHex("3A3D55")
+local ROW_ALT = Color3.fromHex("34374D")
 local GREEN = Color3.fromRGB(98, 205, 48)
 local RED = Color3.fromRGB(240, 70, 70)
 local GOLD = Color3.fromRGB(255, 200, 40)
@@ -60,38 +63,63 @@ local function text(props: { [string]: any }, maxSize: number): TextLabel
 	props.FontFace = props.FontFace or FONT
 	props.TextScaled = true
 	props.TextColor3 = props.TextColor3 or INK
-	return make("TextLabel", props, { make("UITextSizeConstraint", { MaxTextSize = maxSize }) })
+	local l = make("TextLabel", props, { make("UITextSizeConstraint", { MaxTextSize = maxSize }) })
+	if props.FontFace ~= BODY then -- headline text gets the ink outline
+		make("UIStroke", { Thickness = math.clamp(math.floor(maxSize / 11), 1, 4), Color = Skin.Ink, LineJoinMode = Enum.LineJoinMode.Round, Parent = l })
+	end
+	return l
 end
 
+-- chunky Skin-style button: the gradient multiplies BackgroundColor3, so render() can keep recolouring it
 local function button(props: { [string]: any }, maxSize: number): TextButton
 	props.FontFace = FONT
 	props.TextScaled = true
 	props.TextColor3 = WHITE
 	props.TextStrokeTransparency = 0
-	props.AutoButtonColor = true
-	return make("TextButton", props, {
-		corner(12),
+	props.TextStrokeColor3 = Skin.Ink
+	props.AutoButtonColor = false
+	local b = make("TextButton", props, {
+		corner(8),
 		stroke(3),
 		make("UITextSizeConstraint", { MaxTextSize = maxSize }),
-		make("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4) }),
+		make("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6), PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 7) }),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, WHITE), ColorSequenceKeypoint.new(0.5, Color3.new(0.94, 0.94, 0.94)), ColorSequenceKeypoint.new(1, Color3.new(0.74, 0.74, 0.74)),
+		}) }),
 	})
+	b:SetAttribute("NoSkin", true)
+	Skin.pressable(b)
+	return b
 end
 
 ---------------------------------------------------------------- layout (560x400, scaled to fit)
 local gui = make("ScreenGui", { Name = "Manager", ResetOnSpawn = false, DisplayOrder = 16, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
-local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.45, Text = "", AutoButtonColor = false, Parent = gui })
+local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.35, Text = "", AutoButtonColor = false, Parent = gui })
+dim:SetAttribute("NoSkin", true)
 local panelScale = make("UIScale", {})
 local panel = make("Frame", {
 	Name = "Panel",
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(560, 400),
-	BackgroundColor3 = WHITE,
+	Size = UDim2.fromOffset(560, 470),
+	BackgroundColor3 = Skin.Panel,
 	Parent = gui,
-}, { corner(24), make("UIStroke", { Color = BLACK, Thickness = 5 }), panelScale })
-text({ Position = UDim2.fromOffset(24, 14), Size = UDim2.fromOffset(280, 40), Text = "MANAGER OFFICE", TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 34)
+}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
+panel:SetAttribute("NoSkin", true)
+Skin.studs(panel, 0.93, nil, 30)
+local sw = Skin.swatch("Gold")
+local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 64), BackgroundColor3 = WHITE, ZIndex = 1, Parent = panel }, {
+	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
+	}) }),
+	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
+})
+make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, Parent = header })
+Skin.studs(header, 0.86, nil, 26)
+Skin.shineBands(header, 0.84)
+Skin.text({ Position = UDim2.fromOffset(18, 6), Size = UDim2.fromOffset(300, 52), Text = "Manager Office", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = header }, 44, 4)
 -- Prestige: only shows once the firm is at the top tier
-local supremeButton = button({ Name = "SupremeButton", Position = UDim2.fromOffset(318, 16), Size = UDim2.fromOffset(160, 42), BackgroundColor3 = GOLD, Visible = false, Parent = panel }, 20)
+local supremeButton = button({ Name = "SupremeButton", Position = UDim2.fromOffset(318, 13), Size = UDim2.fromOffset(160, 42), BackgroundColor3 = GOLD, Visible = false, ZIndex = 3, Parent = panel }, 20)
 make("UIGradient", {
 	Color = ColorSequence.new({
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 120, 200)),
@@ -101,13 +129,11 @@ make("UIGradient", {
 	Parent = supremeButton,
 })
 local supremeArmedUntil = 0
-local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 54), Size = UDim2.fromOffset(460, 20), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 17)
-local closeButton = button({ Name = "Close", Position = UDim2.new(1, -62, 0, 14), Size = UDim2.fromOffset(46, 46), BackgroundColor3 = RED, Text = "X", Parent = panel }, 26)
-local closeCorner = closeButton:FindFirstChildOfClass("UICorner") :: UICorner
-closeCorner.CornerRadius = UDim.new(1, 0)
+local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 80), Size = UDim2.fromOffset(500, 20), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 17)
+local closeButton = Skin.closeButton(header, 52, 3)
 
 -- not hired yet
-local hireCard = make("Frame", { Name = "HireCard", Position = UDim2.fromOffset(40, 96), Size = UDim2.fromOffset(480, 270), BackgroundColor3 = Color3.fromRGB(240, 232, 255), Parent = panel }, { corner(18), stroke(3) })
+local hireCard = make("Frame", { Name = "HireCard", Position = UDim2.fromOffset(40, 118), Size = UDim2.fromOffset(480, 300), BackgroundColor3 = ROW, Parent = panel }, { corner(10), stroke(3) })
 text({ Position = UDim2.fromOffset(20, 18), Size = UDim2.fromOffset(440, 44), Text = "Hire a Manager!", Parent = hireCard }, 36)
 text({
 	Position = UDim2.fromOffset(20, 66),
@@ -122,16 +148,18 @@ local hireButton = button({ Name = "HireButton", AnchorPoint = Vector2.new(0.5, 
 -- hired: one row per upgrade
 type Row = { frame: Frame, name: TextLabel, effect: TextLabel, pips: TextLabel, buy: TextButton, id: string }
 local rows: { Row } = {}
-local list = make("Frame", { Name = "Upgrades", Position = UDim2.fromOffset(20, 84), Size = UDim2.fromOffset(520, 300), BackgroundTransparency = 1, Parent = panel })
+local list = make("Frame", { Name = "Upgrades", Position = UDim2.fromOffset(20, 108), Size = UDim2.fromOffset(520, 340), BackgroundTransparency = 1, Parent = panel })
 for i, def in Config.Manager.Upgrades do
-	local frame = make("Frame", { Name = def.Id, Position = UDim2.fromOffset(0, (i - 1) * 60), Size = UDim2.fromOffset(520, 54), BackgroundColor3 = if i % 2 == 0 then Color3.fromRGB(245, 245, 250) else WHITE, Parent = list }, { corner(12), stroke(2) })
+	local frame = make("Frame", { Name = def.Id, Position = UDim2.fromOffset(0, (i - 1) * 68), Size = UDim2.fromOffset(520, 60), BackgroundColor3 = if i % 2 == 0 then ROW_ALT else ROW, Parent = list }, { corner(8), stroke(3) })
+	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(2, 2), Size = UDim2.new(1, -4, 1, -4), BackgroundTransparency = 1, Parent = frame },
+		{ corner(6), make("UIStroke", { Thickness = 1.5, Color = Color3.fromHex("5A5E80"), Transparency = 0.3 }) })
 	rows[i] = {
 		id = def.Id,
 		frame = frame,
 		name = text({ Position = UDim2.fromOffset(12, 4), Size = UDim2.fromOffset(220, 24), TextXAlignment = Enum.TextXAlignment.Left, Text = def.Name, Parent = frame }, 20),
 		effect = text({ FontFace = BODY, Position = UDim2.fromOffset(12, 28), Size = UDim2.fromOffset(250, 20), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = MUTED, Parent = frame }, 15),
-		pips = text({ Position = UDim2.fromOffset(268, 12), Size = UDim2.fromOffset(110, 30), TextColor3 = PURPLE, Parent = frame }, 22),
-		buy = button({ Name = "Buy", Position = UDim2.fromOffset(388, 7), Size = UDim2.fromOffset(122, 40), BackgroundColor3 = GREEN, Parent = frame }, 20),
+		pips = text({ Position = UDim2.fromOffset(268, 14), Size = UDim2.fromOffset(110, 30), TextColor3 = Color3.fromHex("D29BFF"), Parent = frame }, 22),
+		buy = button({ Name = "Buy", Position = UDim2.fromOffset(388, 8), Size = UDim2.fromOffset(122, 44), BackgroundColor3 = GREEN, Parent = frame }, 20),
 	}
 end
 
@@ -208,7 +236,7 @@ local function fit(): number
 	if size.Y < 200 then
 		return 1
 	end
-	return math.clamp(math.min(size.Y / 460, size.X / 620), 0.5, 1)
+	return math.clamp(math.min(size.Y / 540, size.X / 620), 0.5, 1)
 end
 
 local function open()
