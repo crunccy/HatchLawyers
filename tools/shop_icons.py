@@ -32,7 +32,15 @@ def lin(h):
     return tuple((x / 12.92) if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c) + (1.0,)
 
 
+# user 2026-10-10: "everything is a little too shiny" - every material goes through these: a much weaker clear coat,
+# a rougher (softer, wider) highlight, gold a bit less mirror-like. Set SHINE = 1 to get the old glossy look back.
+SHINE = 0.3
+
+
 def mat(name, hexcol, rough=0.38, metal=0.0, coat=0.35, emit=0.0, emit_hex=None, sheen=0.0):
+    coat *= SHINE
+    rough = max(rough, 0.34) if metal > 0.5 else max(rough, 0.5)
+    metal *= 0.8
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     b = next(n for n in m.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
@@ -45,7 +53,8 @@ def mat(name, hexcol, rough=0.38, metal=0.0, coat=0.35, emit=0.0, emit_hex=None,
     s("Roughness", rough)
     s("Metallic", metal)
     s("Coat Weight", coat)
-    s("Coat Roughness", 0.06)
+    s("Coat Roughness", 0.3)
+    s("Specular IOR Level", 0.35)
     if sheen:
         s("Sheen Weight", sheen)
     if emit > 0:

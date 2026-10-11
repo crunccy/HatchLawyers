@@ -251,7 +251,7 @@ function Skin.button(props: { [string]: any }): Button
 	if props.Studs ~= false then
 		Skin.studs(btn, 0.88, nil, 24)
 	end
-	Skin.gloss(btn, 0.32)
+	Skin.gloss(btn, 0.14) -- (user: "a little too shiny": was 0.32)
 	local label = text({
 		Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.46),
 		Size = UDim2.new(1, -12, 0.78, 0), Text = props.Text or "", FontFace = props.Font or Skin.Fonts.Title,
@@ -347,7 +347,7 @@ function Skin.window(opts: { [string]: any }): Window
 		make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
 	})
 	Skin.studs(header, 0.86, nil, 26)
-	Skin.shineBands(header, 0.66)
+	Skin.shineBands(header, 0.84)
 	-- ink divider under the header
 	make("Frame", {
 		Name = "Divider", Position = UDim2.new(0, 0, 0, headerH + 4), Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = Skin.Ink,
@@ -503,12 +503,12 @@ function Skin.card(parent: GuiObject, opts: { [string]: any }): Frame
 	make("ImageLabel", {
 		Name = "Rays", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(glowAt.X, glowAt.Y),
 		Size = UDim2.fromScale(1.6, 1.6), SizeConstraint = Enum.SizeConstraint.RelativeXX, BackgroundTransparency = 1,
-		Image = Skin.Assets.Rays, ImageColor3 = sw.light, ImageTransparency = 0.62, ZIndex = z, Interactable = false, Parent = card,
+		Image = Skin.Assets.Rays, ImageColor3 = sw.light, ImageTransparency = 0.74, ZIndex = z, Interactable = false, Parent = card,
 	})
 	make("ImageLabel", {
 		Name = "Glow", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(glowAt.X, glowAt.Y),
 		Size = UDim2.fromScale(1.05, 1.05), SizeConstraint = Enum.SizeConstraint.RelativeXX, BackgroundTransparency = 1,
-		Image = Skin.Assets.Glow, ImageColor3 = Skin.White, ImageTransparency = 0.45, ZIndex = z, Interactable = false, Parent = card,
+		Image = Skin.Assets.Glow, ImageColor3 = Skin.White, ImageTransparency = 0.66, ZIndex = z, Interactable = false, Parent = card,
 	})
 	Skin.studs(card, 0.9, nil, 26)
 	make("Frame", {
