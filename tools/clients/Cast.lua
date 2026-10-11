@@ -124,7 +124,7 @@ Cast.MailCarrierMo = function(k)
 	k:rbox("UpperTorso", V(0.16, 0.14, 0.05), V(-0.78, HIP + 0.06, -0.6), GOLD, 0.03)
 	k:hairStyle("short", H("1e1410"), { hat = true })
 	k:capHat(NAVY, H("1c2848"))
-	k:rbox("HeadDetail", V(0.4, 0.22, 0.05), V(0, HT - 0.06, -0.73), H("e8c050"), 0.03, V(-20, 0, 0))
+	k:rbox("HeadDetail", V(0.4, 0.22, 0.05), V(0, HT - 0.08, -0.77), H("e8c050"), 0.03)
 	local h = k:hand(1)
 	k:rbox("LeftUpperArm", V(0.62, 0.44, 0.05), V(h.X, h.Y + 0.22, -0.46), H("fffaf0"), 0.02, V(0, 0, -10))
 	k:rbox("LeftUpperArm", V(0.14, 0.16, 0.02), V(h.X + 0.17, h.Y + 0.34, -0.5), H("e04040"), 0.01, V(0, 0, -10))
@@ -356,7 +356,7 @@ Cast.RosaTheBaker = function(k)
 	k:fuse("UpperTorso", SCARF, { { "wedge", V(0.7, 0.32, 0.1), V(0, SH - 0.2, k:frontZ(0.05)), V(0, 180, 180) } })
 	k:apron(APRON, { length = 1.15, pocket = SCARF, tie = SCARF })
 	k:hairStyle("short", H("2a1810"), { hat = true })
-	k:dome("HeadDetail", V(1.64, 1.1, 1.54), V(0, HT - 0.3, 0.03), SCARF) -- headscarf
+	k:hatCrown(SCARF, HT - 0.32, 0.55) -- headscarf
 	k:ell("HeadDetail", V(0.36, 0.3, 0.3), V(0, HT - 0.1, 0.8), SCARF)
 	for _, p in { { -0.4, 0.12, -0.6 }, { 0.3, 0.3, -0.5 }, { 0.6, 0.0, -0.3 }, { -0.1, 0.42, -0.1 } } do
 		k:ell("HeadDetail", V(0.12, 0.08, 0.12), V(p[1], HT - 0.28 + p[2], p[3]), WHITE)
@@ -432,10 +432,10 @@ Cast.FirefighterFaye = function(k)
 	end
 	k:collar(H("c89a20"), 8)
 	k:hairStyle("ponytail", H("3a1a10"), { tie = HELMET, hat = true })
-	k:dome("HeadDetail", V(1.68, 1.15, 1.6), V(0, HT - 0.3, 0.03), HELMET)
+	k:hatCrown(HELMET, HT - 0.32, 0.7, 0.13)
 	k:rbox("HeadDetail", V(1.86, 0.08, 2.0), V(0, HT - 0.26, 0.2), HELMET, 0.04, V(6, 0, 0)) -- brim, longer at the back
-	k:rbox("HeadDetail", V(0.12, 0.36, 1.5), V(0, HT + 0.18, 0.03), H("b81e1e"), 0.05) -- ridge
-	k:rbox("HeadDetail", V(0.5, 0.46, 0.06), V(0, HT - 0.02, -0.82), GOLD, 0.06, V(-15, 0, 0)) -- badge
+	k:rbox("HeadDetail", V(0.14, 0.3, 1.5), V(0, HT + 0.36, 0.03), H("b81e1e"), 0.05) -- ridge
+	k:rbox("HeadDetail", V(0.5, 0.46, 0.06), V(0, HT - 0.02, -0.8), GOLD, 0.06) -- badge
 	local h = k:hand(1) -- extinguisher
 	k:rbox("LeftUpperArm", V(0.48, 0.95, 0.48), V(h.X + 0.05, h.Y - 0.2, -0.52), H("e02a2a"), 0.2)
 	k:rbox("LeftUpperArm", V(0.22, 0.2, 0.22), V(h.X + 0.05, h.Y + 0.35, -0.52), H("c8ccd6"), 0.06)
@@ -1007,7 +1007,7 @@ Cast.KingReginald = function(k)
 	end
 	k:beard(WHITE, 0.4, false)
 	k:hairStyle("tufts", WHITE)
-	k:crown(GOLD, H("e8182e"), 5)
+	k:crown(GOLD, H("e8182e"), 5, H("9a1428"))
 	local h = k:hand(-1) -- sceptre
 	k:rbox("RightUpperArm", V(0.12, 1.6, 0.12), V(h.X, h.Y + 0.55, -0.48), GOLD, 0.05)
 	k:ball("RightUpperArm", 0.32, V(h.X, h.Y + 1.42, -0.48), H("e8182e"))

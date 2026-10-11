@@ -554,19 +554,33 @@ end
 local function hatBase(): number
 	return Kit.headY + D.headH / 2
 end
+-- A soft hat's crown that fits OVER the head. The head is a rounded box, so a plain dome (ellipsoid) lets its top
+-- corners poke through (user 2026-10-11: "the top of their head protrudes through the hat"): the crown is a rounded
+-- box a little bigger than the head from the hat line up past the head's top, with a low dome on top for the round
+-- look. Returns the y of the dome's top.
+function Kit:hatCrown(color: Color3, bottomY: number, domeH: number?, extra: number?): number
+	local e = extra or 0.1
+	local top = hatBase() + 0.12 -- just above the head's flat top
+	local w, d = D.headW + 2 * e, D.headD + 2 * e
+	self:rbox("HeadDetail", V(w, top - bottomY, d), V(0, (top + bottomY) / 2, 0.03), color, 0.3)
+	local dh = domeH or 0.6
+	self:dome("HeadDetail", V(w - 0.08, dh, d - 0.08), V(0, top - 0.12, 0.03), color)
+	return top - 0.12 + dh / 2
+end
 function Kit:capHat(color: Color3, brim: Color3?, backwards: boolean?)
 	local y = hatBase() - 0.3
 	local dz = if backwards then -1 else 1
-	self:dome("HeadDetail", V(1.64, 1.14, 1.52), V(0, y, 0.03), color)
-	self:rbox("HeadDetail", V(1.18, 0.1, 0.72), V(0, y + 0.03, -0.98 * dz), brim or color, 0.045, V(-12 * dz, 0, 0))
-	self:ell("HeadDetail", V(0.16, 0.1, 0.16), V(0, y + 0.56, 0.03), brim or color)
+	local peak = self:hatCrown(color, y, 0.56)
+	self:rbox("HeadDetail", V(1.18, 0.1, 0.72), V(0, y + 0.04, -1.0 * dz), brim or color, 0.045, V(-12 * dz, 0, 0))
+	self:ell("HeadDetail", V(0.16, 0.1, 0.16), V(0, peak - 0.02, 0.03), brim or color)
+	self.capFrontZ = -D.headD / 2 - 0.13 -- where badges on the cap's front go
 end
 function Kit:beanie(color: Color3, cuff: Color3?, pom: Color3?)
-	local y = hatBase() - 0.36
-	self:dome("HeadDetail", V(1.62, 1.3, 1.5), V(0, y, 0.02), color)
-	self:rbox("HeadDetail", V(1.62, 0.28, 1.5), V(0, y + 0.08, 0.02), cuff or color, 0.12)
+	local y = hatBase() - 0.4
+	local peak = self:hatCrown(color, y, 0.8, 0.11)
+	self:rbox("HeadDetail", V(D.headW + 0.3, 0.3, D.headD + 0.3), V(0, y + 0.13, 0.03), cuff or color, 0.14)
 	if pom then
-		self:ell("HeadDetail", V(0.36, 0.36, 0.36), V(0, y + 0.72, 0.02), pom)
+		self:ell("HeadDetail", V(0.38, 0.38, 0.38), V(0, peak + 0.1, 0.03), pom)
 	end
 end
 function Kit:topHat(color: Color3, band: Color3?, height: number?)
@@ -586,12 +600,12 @@ function Kit:brimHat(color: Color3, band: Color3?, brimW: number?, crownH: numbe
 			self:rbox("HeadDetail", V(0.35, 0.1, bw * 0.8), V(s * (bw / 2 - 0.12), y + 0.12, 0.02), color, 0.05, V(0, 0, s * -35))
 		end
 	end
-	self:rbox("HeadDetail", V(1.3, ch, 1.15), V(0, y + ch / 2, 0.02), color, 0.22)
+	self:rbox("HeadDetail", V(D.headW + 0.14, ch, D.headD + 0.14), V(0, y + ch / 2, 0.02), color, 0.22) -- wider than the head
 	if pinch then
 		self:block("HeadDetail", V(0.12, 0.2, 0.7), V(0, y + ch, 0.02), color) -- crease
 	end
 	if band then
-		self:rbox("HeadDetail", V(1.33, 0.14, 1.18), V(0, y + 0.13, 0.02), band, 0.06)
+		self:rbox("HeadDetail", V(D.headW + 0.17, 0.14, D.headD + 0.17), V(0, y + 0.13, 0.02), band, 0.06)
 	end
 end
 function Kit:chefHat(color: Color3, band: Color3?, height: number?)
@@ -604,9 +618,13 @@ function Kit:chefHat(color: Color3, band: Color3?, height: number?)
 		{ "ball", V(0.9, 0.9, 0.9), V(0, y + h + 0.25, -0.15) },
 	})
 end
-function Kit:crown(color: Color3, gem: Color3?, points: number?)
+function Kit:crown(color: Color3, gem: Color3?, points: number?, velvet: Color3?)
 	local y = hatBase() - 0.05
 	local n = points or 5
+	if velvet then -- a velvet cap filling the ring, so the top of the head never shows inside the crown
+		self:rbox("HeadDetail", V(1.14, 0.3, 1.04), V(0, y + 0.18, 0.02), velvet, 0.12)
+		self:dome("HeadDetail", V(1.1, 0.6, 1.0), V(0, y + 0.3, 0.02), velvet)
+	end
 	self:carve("HeadDetail", V(1.3, 0.38, 1.2), V(0, y + 0.12, 0.02), color, 0.08, { { V(1.1, 1, 1.0), V(0, y + 0.5, 0.02) } })
 	for i = 0, n - 1 do
 		local a = math.rad(-90 + i * 360 / n)

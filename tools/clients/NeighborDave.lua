@@ -41,13 +41,11 @@ for _, s in { -1, 1 } do
 	end
 end
 -- short brown hair under a red dad cap (dome + brim + button)
-k:hair({ color = HAIR, top = -0.06, front = 0.26, back = -0.42, sides = 0.42, puff = 0.07 }) -- (stays under the cap)
+k:hair({ color = HAIR, top = -0.06, front = 0.26, back = -0.42, sides = 0.42, puff = 0.07, hat = true }) -- (stays under the cap)
+k:capHat(CAP, CAP_D)
 local capY = Kit.headY + D.headH / 2 - 0.3
-k:dome("HeadDetail", V(1.64, 1.14, 1.52), V(0, capY, 0.03), CAP)
-k:rbox("HeadDetail", V(1.18, 0.1, 0.72), V(0, capY + 0.03, -0.98), CAP_D, 0.045, V(-12, 0, 0))
-k:ell("HeadDetail", V(0.16, 0.1, 0.16), V(0, capY + 0.56, 0.03), CAP_D)
-k:rbox("HeadDetail", V(0.44, 0.22, 0.08), V(0, capY + 0.12, 0.76), H("e8e2d4"), 0.04, V(12, 0, 0)) -- back strap adjuster
-k:rbox("HeadDetail", V(0.52, 0.28, 0.05), V(0, capY + 0.24, -0.71), H("ffffff"), 0.04, V(-20, 0, 0)) -- cap patch
+k:rbox("HeadDetail", V(0.52, 0.28, 0.05), V(0, capY + 0.24, -0.77), H("ffffff"), 0.04) -- cap patch
+k:rbox("HeadDetail", V(0.44, 0.22, 0.08), V(0, capY + 0.12, 0.8), H("e8e2d4"), 0.04) -- back strap adjuster
 k:face("rbxassetid://83719909215242")
 -- BBQ spatula in his right hand (the -X hand), held up
 local hx, hy = -Kit.armX, sh - D.armH + 0.2
