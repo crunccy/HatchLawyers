@@ -35,6 +35,26 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-10 — local session: lawyer model remakes, UI design system, Blender shop + egg art
+**Lawyer models.** All 52 hatchable lawyers rebuilt in the block style with their own shapes (was one shared
+2.1 x 5.5 x 1.1 frame). Builders: `tools/skins/<Id>.lua` on `tools/skins/SkinKit.lua`; `tools/skins/InstallAll.lua`
+reinstalls them all. Legendaries are 1.15-1.45x with gold/Neon trims; Rares get small Neon accents; Commons stay
+simple. Lawyers no longer animate: they float + bob (DeskLife), win = a hop. Models may set `Hover` (SkinLook lifts
+them) and `Sideways` (Puppet). Old models: `ServerStorage.RetiredSkinModels`. Generic, no-likeness versions of the
+real-person parodies (IShowSued, KaiSueNat, KhabyClaim, BensonBond).
+**UI.** New design system `Shared.Skin` (`src/Skin.lua`) after the user's reference recording (an egg-sim Shop):
+glossy colour header + red X, dark studded window, dim backdrop (click to close), sunburst cards, chunky buttons with
+squish/hover, ribbons, a shortcut dock. Skin windows opt out of the old `UISkin` auto-skin (`NoSkin`).
+`Shop.client.lua` rebuilt on it (Featured / Game Passes / Cash / Eggs sections, dock shortcuts). Verified in a
+playtest: open, scroll, shortcuts, X, click-outside close, Robux glyph. Purchases not testable (all Shop Ids are 0).
+**Blender art.** `tools/shop_icons.py` models, lights (3-point + studio world) and renders 17 icons headless in
+Cycles with an ink sticker outline: 7 eggs (Briefcase, Brainrot, Pet, Food, Ocean, Space, Rare), 8 shop items,
+2 dock icons. PNGs + .blend scenes in `art/shop_icons/`; uploaded; ids in `Shared.ArtAssets` (`src/ArtAssets.lua`).
+Used by the Shop cards + dock, the six egg-machine odds boards (egg picture on the left; also fixed "58.0%"), and
+the Daily calendar's egg days. `tools/icon_sheet.py` makes a contact sheet.
+Left: the in-world eggs are still the voxel models (the renders are smoother) - remake them only if the user
+wants; the LAWYERS panel and the other screens are not on `Skin` yet.
+
 ## 2026-10-09 — local session: performance pass ("just optimize the game")
 Measured first (playtest, client + server Stats): server heartbeat 0.08 ms, physics 0.12 ms, 22 moving parts, ~13
 attribute changes/s, ~2 KB/s -> the server and network are fine. A full Puppet pose is 0.012 ms of Lua (BulkMoveTo

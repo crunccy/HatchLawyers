@@ -16,6 +16,7 @@ local Config = require(Shared:WaitForChild("Config") :: ModuleScript)
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript)
 local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript)
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript)
+local ArtAssets = require(Shared:WaitForChild("ArtAssets") :: ModuleScript) :: any
 local FX = Effects.TEXTURES
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local EggHatched = Remotes:WaitForChild("EggHatched") :: RemoteEvent
@@ -137,36 +138,74 @@ player:GetAttributeChangedSignal("FreeEgg"):Connect(refreshPrompt)
 player:GetAttributeChangedSignal("EggPrice"):Connect(refreshPrompt)
 refreshPrompt()
 
-do -- odds board, built from Config so it always matches the real odds
+-- An egg machine's odds sign (6.4 x 5.2 studs, 320 x 260 px): the title across the top, the egg's Blender-rendered
+-- picture (Shared.ArtAssets.Eggs, tools/shop_icons.py) on the left, one row per rarity and a footer on the right.
+-- Built from Config so it always matches the real odds (players must see the real chances).
+local function percentText(weight: number, total: number): string
+	-- one decimal at most, and none when it's a whole number (58/100 * 100 is 58.000000001 in floating point)
+	local shown = string.format("%.1f", weight / total * 100)
+	return (string.gsub(shown, "%.0$", ""))
+end
+local function oddsBoard(surface: SurfaceGui, title: string, weights: { number }, footer: string, footerColor: Color3, image: string?)
+	local root = Instance.new("Frame")
+	root.Name = "Odds"
+	root.BackgroundTransparency = 1
+	root.Size = UDim2.fromScale(1, 1)
+	root.Parent = surface
+	label(root, title, UDim2.fromScale(0.94, 0.17), UDim2.fromScale(0.5, 0.11), WHITE, 4)
+	if image then
+		local img = Instance.new("ImageLabel")
+		img.Name = "EggArt"
+		img.BackgroundTransparency = 1
+		img.Image = image
+		img.ScaleType = Enum.ScaleType.Fit
+		img.Position = UDim2.fromScale(0.02, 0.22)
+		img.Size = UDim2.fromScale(0.38, 0.76)
+		img.Parent = root
+	end
 	local list = Instance.new("Frame")
 	list.BackgroundTransparency = 1
-	list.Size = UDim2.fromScale(1, 1)
-	list.Parent = oddsGui
+	list.Position = if image then UDim2.fromScale(0.41, 0.21) else UDim2.fromScale(0.05, 0.21)
+	list.Size = if image then UDim2.fromScale(0.57, 0.77) else UDim2.fromScale(0.9, 0.77)
+	list.Parent = root
 	local layout = Instance.new("UIListLayout")
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	layout.VerticalAlignment = Enum.VerticalAlignment.Center
-	layout.Padding = UDim.new(0.02, 0)
+	layout.Padding = UDim.new(0.03, 0)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 	layout.Parent = list
 	local function row(text: string, color: Color3, height: number, order: number)
-		local l = label(list, text, UDim2.fromScale(0.9, height), UDim2.new(), color, 4)
+		local l = label(list, text, UDim2.fromScale(1, height), UDim2.new(), color, 4)
 		l.AnchorPoint = Vector2.zero
 		l.LayoutOrder = order
 	end
-	row("BRIEFCASE EGG ODDS", WHITE, 0.18, 0)
-	local rowHeight = math.min(0.15, 0.56 / #Config.Eggs.Skins)
 	local total = 0
-	for _, skin in Config.Eggs.Skins do
-		total += skin.Weight
+	for _, w in weights do
+		total += w
 	end
-	for index, skin in Config.Eggs.Skins do
-		local name, color = rarityInfo(index)
-		-- Exact odds (players must see the real chances), with a decimal only when needed.
-		local percent = skin.Weight / total * 100
-		local shown = if percent == math.floor(percent) then string.format("%d", percent) else string.format("%.1f", percent)
-		row(string.format("%s  %s%%", name, shown), color, rowHeight, index)
+	local shown = 0
+	for _, w in weights do
+		if w > 0 then
+			shown += 1
+		end
 	end
-	row("from " .. Formulas.formatCoins(Config.Eggs.Price) .. " coins", Color3.fromRGB(255, 215, 60), 0.13, 99)
+	local rowHeight = math.min(0.19, 0.74 / math.max(1, shown))
+	for index, w in weights do
+		if w > 0 then
+			local name, color = rarityInfo(index)
+			row(string.format("%s  %s%%", name, percentText(w, total)), color, rowHeight, index)
+		end
+	end
+	row(footer, footerColor, 0.15, 99)
+end
+
+do -- the Briefcase Egg's board
+	local weights = {}
+	for i, skin in Config.Eggs.Skins do
+		weights[i] = skin.Weight
+	end
+	oddsBoard(oddsGui, "BRIEFCASE EGG ODDS", weights, "from " .. Formulas.formatCoins(Config.Eggs.Price) .. " coins",
+		Color3.fromRGB(255, 215, 60), ArtAssets.Eggs.Briefcase)
 end
 
 -- Themed eggs: idle bob, prompt text and their own odds boards
@@ -202,36 +241,7 @@ for n, def in Config.Eggs.Themed do
 	local bGui = board and board:FindFirstChild("SurfaceGui")
 	if bGui then
 		bGui:ClearAllChildren()
-		local list = Instance.new("Frame")
-		list.BackgroundTransparency = 1
-		list.Size = UDim2.fromScale(1, 1)
-		list.Parent = bGui
-		local layout = Instance.new("UIListLayout")
-		layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-		layout.VerticalAlignment = Enum.VerticalAlignment.Center
-		layout.Padding = UDim.new(0.02, 0)
-		layout.SortOrder = Enum.SortOrder.LayoutOrder
-		layout.Parent = list
-		local function row(text: string, color: Color3, height: number, order: number)
-			local l = label(list, text, UDim2.fromScale(0.9, height), UDim2.new(), color, 4)
-			l.AnchorPoint = Vector2.zero
-			l.LayoutOrder = order
-		end
-		row(string.upper(def.Name) .. " ODDS", WHITE, 0.18, 0)
-		local weights = def.Weights
-		local total = 0
-		for _, w in weights do
-			total += w
-		end
-		for index, w in weights do
-			if w > 0 then
-				local name, color = rarityInfo(index)
-				local percent = w / total * 100
-				local shown = if percent == math.floor(percent) then string.format("%d", percent) else string.format("%.1f", percent)
-				row(string.format("%s  %s%%", name, shown), color, 0.15, index)
-			end
-		end
-		row(def.Tagline, Color3.fromRGB(150, 255, 110), 0.13, 99)
+		oddsBoard(bGui :: SurfaceGui, string.upper(def.Name) .. " ODDS", def.Weights, def.Tagline, Color3.fromRGB(150, 255, 110), ArtAssets.Eggs[def.Id])
 	end
 end
 

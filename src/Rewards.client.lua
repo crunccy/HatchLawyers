@@ -10,6 +10,7 @@ local UserInputService = game:GetService("UserInputService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Formulas = require(ReplicatedStorage.Shared:WaitForChild("Formulas"))
+local ArtAssets = require(ReplicatedStorage.Shared:WaitForChild("ArtAssets")) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local ClaimDaily = Remotes:WaitForChild("ClaimDaily") :: RemoteFunction
 local Activity = Remotes:WaitForChild("Activity") :: RemoteEvent
@@ -113,10 +114,10 @@ local function rewardText(reward: { [string]: any }): string
 	if reward.Kind == "Coins" then
 		local perMinute = player:GetAttribute("CoinsPerMinute") or 0
 		return Formulas.formatCoins(math.max(Config.Rewards.MinCoins, perMinute * reward.Minutes)) .. "\nCOINS"
-	elseif reward.Kind == "Egg" then
-		return if reward.Count > 1 then reward.Count .. " FREE\nEGGS" else "FREE\nEGG"
+	elseif reward.Kind == "Egg" then -- (egg days show the egg's picture above one line of text)
+		return if reward.Count > 1 then reward.Count .. " EGGS" else "FREE EGG"
 	elseif reward.Kind == "RareEgg" then
-		return "RARE\nEGG!"
+		return "RARE EGG!"
 	elseif reward.Kind == "SkillRoll" then
 		return "SKILL\nROLL"
 	end
@@ -169,11 +170,25 @@ for i, reward in Config.Rewards.Daily do
 		BackgroundColor3 = WHITE,
 		Parent = panel,
 	}, { corner(14), stroke(3), scale })
+	-- egg rewards show the egg itself (Blender render, Shared.ArtAssets.Eggs); a pair of eggs for multi-egg days
+	local eggArt = if reward.Kind == "RareEgg" then ArtAssets.Eggs.Rare elseif reward.Kind == "Egg" then ArtAssets.Eggs.Briefcase else nil
+	if eggArt then
+		local count = if reward.Kind == "Egg" then math.min(reward.Count or 1, 2) else 1
+		for k = 1, count do
+			make("ImageLabel", {
+				Name = "EggArt", BackgroundTransparency = 1, Image = eggArt, ScaleType = Enum.ScaleType.Fit, ZIndex = 2,
+				AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, if count > 1 then (k - 1.5) * 18 else 0, 0, if count > 1 then 30 + (k - 1) * 4 else 26),
+				Size = UDim2.fromOffset(if count > 1 then 44 else 56, if count > 1 then 44 else 56), Parent = frame,
+			})
+		end
+	end
 	tiles[i] = {
 		frame = frame,
 		scale = scale,
 		day = text({ Position = UDim2.fromOffset(4, 6), Size = UDim2.fromOffset(62, 22), Text = "DAY " .. i, Parent = frame }, 18),
-		reward = text({ Position = UDim2.fromOffset(4, 34), Size = UDim2.fromOffset(62, 60), Text = "", TextWrapped = true, Parent = frame }, 18),
+		reward = if eggArt
+			then text({ Position = UDim2.fromOffset(2, 78), Size = UDim2.fromOffset(66, 18), Text = "", ZIndex = 3, Parent = frame }, 16)
+			else text({ Position = UDim2.fromOffset(4, 34), Size = UDim2.fromOffset(62, 60), Text = "", TextWrapped = true, Parent = frame }, 18),
 		check = text({ Position = UDim2.fromOffset(4, 92), Size = UDim2.fromOffset(62, 26), Text = "", TextColor3 = WHITE, TextStrokeTransparency = 0, Parent = frame }, 22),
 	}
 end

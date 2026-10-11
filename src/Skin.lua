@@ -373,17 +373,27 @@ function Skin.window(opts: { [string]: any }): Window
 		Name = "Body", Position = UDim2.fromOffset(0, headerH + 8), Size = UDim2.new(1, 0, 1, -(headerH + 8)),
 		BackgroundTransparency = 1, ZIndex = 2, Parent = panel,
 	})
+	-- shortcut dock beside the window: its own dark studded panel so whatever HUD sits behind it never shows through
 	local sideRail = make("Frame", {
-		Name = "SideRail", AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(1, 14, 0, headerH + 10),
-		Size = UDim2.new(0, 120, 1, -(headerH + 10)), BackgroundTransparency = 1, ZIndex = 2, Parent = panel,
-	}, { make("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center }) })
+		Name = "SideRail", AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(1, 12, 0, headerH + 10),
+		Size = UDim2.fromOffset(132, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Skin.Panel,
+		Visible = false, ZIndex = 1, Parent = panel,
+	}, { corner(10), stroke(5) })
+	Skin.studs(sideRail, 0.93, nil, 30)
+	make("Frame", {
+		Name = "List", Size = UDim2.fromOffset(132, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1,
+		ZIndex = 2, Parent = sideRail,
+	}, {
+		make("UIListLayout", { Padding = UDim.new(0, 2), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center }),
+		make("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8) }),
+	})
 
 	local function fit(): number
 		local cam = workspace.CurrentCamera
 		if not cam then
 			return 1
 		end
-		local railRoom = if #sideRail:GetChildren() > 1 then 290 else 60
+		local railRoom = if sideRail.Visible then 300 else 60
 		return math.clamp(math.min(cam.ViewportSize.X / (size.X + railRoom), cam.ViewportSize.Y / (size.Y + 90)), 0.38, 1)
 	end
 	local closeHandlers: { () -> () } = {}
@@ -525,12 +535,13 @@ end
 
 -- a shortcut beside the window: big icon + stroked label, no box (the reference's Stars / Featured / Speed / Money)
 function Skin.sideTab(rail: GuiObject, opts: { [string]: any }): TextButton
+	rail.Visible = true
 	local b = make("TextButton", {
 		Name = "Tab_" .. (opts.Label or ""), Size = UDim2.fromOffset(118, 96), BackgroundTransparency = 1, Text = "",
-		LayoutOrder = opts.LayoutOrder, ZIndex = 3, Parent = rail,
+		LayoutOrder = opts.LayoutOrder, ZIndex = 3, Parent = rail:FindFirstChild("List") or rail,
 	})
 	make("ImageLabel", {
-		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Size = UDim2.fromOffset(70, 64),
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -2), Size = UDim2.fromOffset(78, 72),
 		BackgroundTransparency = 1, Image = opts.Icon or "", ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = b,
 	})
 	text({ AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -2), Size = UDim2.new(1, 0, 0, 30),

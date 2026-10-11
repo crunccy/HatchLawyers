@@ -2,8 +2,9 @@
 -- Robux shop UI. Rebuilt 2026-10-10 on Shared.Skin after the user's reference recording (an egg-simulator Shop):
 -- green glossy header with the title + red X, a dark studded body that scrolls through "-- SECTION --" groups
 -- (FEATURED wide card with a BEST VALUE! ribbon, GAME PASSES and CASH as 3-card rows, EGGS as a wide card), every
--- card a bright sunburst tile with a spinning 3D picture, the name over the picture and a chunky green Robux price
--- button; icon shortcuts beside the window jump to each section.
+-- card a bright sunburst tile with its Blender-rendered picture (Shared.ArtAssets, tools/shop_icons.py) floating
+-- gently, the name over the picture and a chunky green Robux price button; icon shortcuts beside the window jump to
+-- each section. Items without artwork fall back to a little spinning block model.
 -- Items, ids and prices: Config.Shop. Server: Server.ShopService. This script only PROMPTS purchases
 -- (MarketplaceService); the server alone grants anything. Opened by the SHOP tile in the HUD's menu column
 -- (Shared.HudMenu) and by the ShopPrompt on Hub.ShopStall.
@@ -19,6 +20,7 @@ local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local HatchShells = require(Shared:WaitForChild("HatchShells") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
+local ArtAssets = require(Shared:WaitForChild("ArtAssets") :: ModuleScript) :: any
 
 local make, text = Skin.make, Skin.text
 local Icons = HudMenu.Icons
@@ -65,46 +67,6 @@ local PICTURES: { [string]: (Model) -> number } = {
 		end
 		return 9.5
 	end,
-	moneybag = function(m) -- a fat money sack tied with gold, bills poking out, a "$" on the front, coins at its foot
-		local SACK, SACK_DARK, BILL = Color3.fromRGB(222, 196, 140), Color3.fromRGB(180, 150, 95), Color3.fromRGB(70, 185, 75)
-		box(m, Vector3.new(3.4, 0.9, 3.0), CFrame.new(0, -2.2, 0), SACK_DARK)
-		box(m, Vector3.new(4.2, 1.4, 3.6), CFrame.new(0, -1.1, 0), SACK)
-		box(m, Vector3.new(3.8, 1.2, 3.3), CFrame.new(0, 0.2, 0), SACK)
-		box(m, Vector3.new(2.4, 0.7, 2.1), CFrame.new(0, 1.1, 0), SACK)
-		box(m, Vector3.new(1.8, 0.4, 1.6), CFrame.new(0, 1.6, 0), Color3.fromRGB(255, 196, 40)) -- gold tie
-		box(m, Vector3.new(2.6, 0.7, 2.3), CFrame.new(0, 2.1, 0), SACK)
-		for k = 0, 2 do
-			box(m, Vector3.new(1.8, 0.15, 1.0), CFrame.new(-0.4 + k * 0.4, 2.6, 0) * CFrame.Angles(math.rad(-30 + k * 25), math.rad(k * 30), math.rad(70)), BILL)
-		end
-		-- "$" on the front (-Z): an S of three bars + a vertical stroke
-		for _, b in { { 0, 0.55, 1.3, 0.25 }, { 0, -0.05, 1.3, 0.25 }, { 0, -0.65, 1.3, 0.25 }, { -0.55, 0.25, 0.25, 0.55 }, { 0.55, -0.35, 0.25, 0.55 }, { 0, -0.05, 0.22, 1.9 } } do
-			box(m, Vector3.new(b[3], b[4], 0.2), CFrame.new(b[1], -0.5 + b[2], -1.85), Color3.fromRGB(45, 140, 55))
-		end
-		for k = 0, 3 do
-			box(m, Vector3.new(0.35, 1.2, 1.2), CFrame.new(2.4, -2.45 + k * 0.36, -0.8) * CFrame.Angles(0, 0, math.pi / 2), Color3.fromRGB(255, 196, 40), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		end
-		return 7
-	end,
-	vault = function(m) -- a steel safe with a gold dial + handle, door open a crack, cash stacked on top and coins spilling
-		local STEEL, STEEL_DARK, BILL = Color3.fromRGB(110, 115, 130), Color3.fromRGB(70, 74, 88), Color3.fromRGB(70, 185, 75)
-		box(m, Vector3.new(5, 5, 4), CFrame.new(0, -0.5, 0), STEEL)
-		box(m, Vector3.new(4.2, 4.2, 0.3), CFrame.new(0, -0.5, -2.1), STEEL_DARK)
-		box(m, Vector3.new(0.3, 1.6, 1.6), CFrame.new(-0.5, -0.3, -2.35) * CFrame.Angles(0, math.pi / 2, 0), Color3.fromRGB(255, 196, 40), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		box(m, Vector3.new(0.3, 0.6, 0.6), CFrame.new(-0.5, -0.3, -2.55) * CFrame.Angles(0, math.pi / 2, 0), STEEL_DARK, Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		box(m, Vector3.new(0.3, 1.4, 0.3), CFrame.new(1.2, -0.5, -2.45), Color3.fromRGB(255, 196, 40))
-		for _, x in { -2.1, 2.1 } do
-			box(m, Vector3.new(0.6, 0.5, 0.6), CFrame.new(x, -3.2, 1.4), STEEL_DARK) -- feet
-			box(m, Vector3.new(0.6, 0.5, 0.6), CFrame.new(x, -3.2, -1.4), STEEL_DARK)
-		end
-		for k = 0, 3 do
-			box(m, Vector3.new(3.2, 0.4, 1.6), CFrame.new(-0.3, 2.25 + k * 0.42, 0.2) * CFrame.Angles(0, math.rad(k * 12 - 10), 0), BILL)
-			box(m, Vector3.new(0.9, 0.42, 1.0), CFrame.new(-0.3, 2.25 + k * 0.42, 0.2) * CFrame.Angles(0, math.rad(k * 12 - 10), 0), Color3.fromRGB(45, 140, 55))
-		end
-		for k = 0, 4 do
-			box(m, Vector3.new(0.35, 1.2, 1.2), CFrame.new(2.9 + (k % 2) * 0.3, -2.8 + k * 0.36, -1.6), Color3.fromRGB(255, 196, 40), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		end
-		return 8
-	end,
 	clock = function(m) -- a stopwatch
 		box(m, Vector3.new(0.9, 5, 5), CFrame.Angles(0, math.pi / 2, 0), Color3.fromRGB(235, 60, 60), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
 		box(m, Vector3.new(0.3, 4, 4), CFrame.new(0, 0, -0.35) * CFrame.Angles(0, math.pi / 2, 0), WHITE, Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
@@ -124,7 +86,17 @@ local PICTURES: { [string]: (Model) -> number } = {
 		return 6
 	end,
 }
-local function picture(parent: GuiObject, kind: string, z: number)
+-- the rendered artwork floats and sways a little (cheap: one sine per card per frame)
+local floaters: { { image: ImageLabel, phase: number } } = {}
+local function picture(parent: GuiObject, kind: string, z: number, art: string?)
+	if art then
+		local img = make("ImageLabel", {
+			Name = "Picture", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1, Image = art, ScaleType = Enum.ScaleType.Fit, ZIndex = z, Parent = parent,
+		})
+		table.insert(floaters, { image = img, phase = #floaters * 1.3 })
+		return
+	end
 	local vf = make("ViewportFrame", {
 		Name = "Picture", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Ambient = Color3.fromRGB(200, 200, 205),
 		LightColor = Color3.fromRGB(255, 250, 240), LightDirection = Vector3.new(-0.5, -1, -0.6), ZIndex = z, Parent = parent,
@@ -192,13 +164,8 @@ local CELL = Vector2.new(296, 300)
 local function smallCard(parent: GuiObject, item: any, kind: string, order: number): Card
 	local frame = Skin.card(parent, { Color = item.Color, LayoutOrder = order, GlowAt = Vector2.new(0.5, 0.34) })
 	local z = frame.ZIndex + 2
-	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(10, 8), Size = UDim2.new(1, -20, 0, 160), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
-	-- cash packs get bigger pictures as they get bigger (pile -> bag -> vault), like the reference's money row
-	local kind = item.Icon
-	if item.Minutes then
-		kind = if item.Minutes >= 300 then "vault" elseif item.Minutes >= 60 then "moneybag" else "cash"
-	end
-	picture(art, kind, z)
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(10, 4), Size = UDim2.new(1, -20, 0, 172), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+	picture(art, item.Icon, z, ArtAssets.Shop[item.Key])
 	text({ Name = "Name", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 150), Size = UDim2.new(1, -16, 0, 42),
 		Text = string.upper(item.Name), ZIndex = z + 1, Parent = frame }, 36, 4)
 	text({ Name = "Info", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 192), Size = UDim2.new(1, -24, 0, 38),
@@ -216,8 +183,8 @@ local function wideCard(parent: GuiObject, item: any, kind: string, order: numbe
 	local frame = Skin.card(parent, { Color = item.Color, Size = UDim2.new(1, -8, 0, 230), LayoutOrder = order, GlowAt = Vector2.new(0.2, 0.5) })
 	frame.ClipsDescendants = false -- the ribbon pokes out over the corner
 	local z = frame.ZIndex + 2
-	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(16, 8), Size = UDim2.new(0.36, 0, 1, -16), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
-	picture(art, item.Icon, z)
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(16, 6), Size = UDim2.new(0.36, 0, 1, -12), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+	picture(art, item.Icon, z, ArtAssets.Shop[item.Key])
 	text({ Name = "Name", Position = UDim2.new(0.39, 0, 0, 22), Size = UDim2.new(0.58, 0, 0, 60), Text = string.upper(item.Name),
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 58, 5)
 	text({ Name = "Perk", Position = UDim2.new(0.39, 0, 0, 84), Size = UDim2.new(0.58, 0, 0, 40), Text = item.Banner,
@@ -259,6 +226,7 @@ local function build()
 	end
 	table.clear(cards)
 	table.clear(spinners)
+	table.clear(floaters)
 	local order = 1
 	-- FEATURED: one pass, big
 	local featured = findItem(Config.Shop.Passes, FEATURED_KEY) or Config.Shop.Passes[1]
@@ -322,7 +290,7 @@ local function jumpTo(key: string)
 	local y = (target.AbsolutePosition.Y - scroller.AbsolutePosition.Y) * unscale + scroller.CanvasPosition.Y
 	Skin.tween(scroller, 0.35, { CanvasPosition = Vector2.new(0, math.max(0, y - 4)) }, Enum.EasingStyle.Quart)
 end
-for i, t in { { "Featured", "Featured", Icons.Star }, { "Passes", "Passes", Icons.Trophy }, { "Cash", "Cash", Icons.MoneyBag }, { "Eggs", "Eggs", Icons.Gift } } do
+for i, t in { { "Featured", "Featured", ArtAssets.Tabs.Featured }, { "Passes", "Passes", ArtAssets.Tabs.Passes }, { "Cash", "Cash", ArtAssets.Tabs.Cash }, { "Eggs", "Eggs", ArtAssets.Tabs.Eggs } } do
 	Skin.sideTab(win.sideRail, { Label = t[2], Icon = t[3], LayoutOrder = i }).Activated:Connect(function()
 		jumpTo(t[1])
 	end)
@@ -380,6 +348,7 @@ local function open()
 end
 win.onClose(function()
 	table.clear(spinners)
+	table.clear(floaters)
 end)
 
 RunService.RenderStepped:Connect(function()
@@ -387,6 +356,10 @@ RunService.RenderStepped:Connect(function()
 		local t = os.clock()
 		for i, s in spinners do
 			s.model:PivotTo(s.base * CFrame.Angles(0, t * 0.8 + i, 0))
+		end
+		for _, f in floaters do
+			f.image.Position = UDim2.new(0.5, 0, 0.5, math.sin(t * 2 + f.phase) * 4)
+			f.image.Rotation = math.sin(t * 1.3 + f.phase) * 2.5
 		end
 	end
 end)
