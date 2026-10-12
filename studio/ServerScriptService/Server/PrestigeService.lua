@@ -48,7 +48,8 @@ local function prestige(player: Player): (boolean, string?)
 
 	data.Prestige = data.Prestige or { Level = 0 }
 	data.Prestige.Level += 1
-	require(script.Parent.BadgeAwards).award(player, "Supreme")
+	-- (spawned: badge calls yield / can throw - a throw here used to leave the new level without the reset)
+	task.spawn(require(script.Parent.BadgeAwards).award, player, "Supreme")
 	data.Coins = 0
 	-- back to the starting firm: its offices at level 1; the lawyers in them stay put
 	local keep = Config.Firm.StartSegments * 2

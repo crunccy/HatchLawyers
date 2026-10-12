@@ -5,7 +5,7 @@
 --     one is bought). Now and then one is GOLDEN (costs PriceMultiplier x, rolls Rare / Legendary more often,
 --     disappears after Lifetime seconds) and the whole server gets an alert.
 --   * BUYING one (its BuyPrompt) costs the egg's price (EggApi "price") and puts it in the player's bag (up to the
---     Carry level's Max). Carried eggs ride over the player's head and are saved (data.Zones.Carried).
+--     Carry level's Max). Carried eggs are held in the arms (drawn by StarterPlayerScripts.CarryPose) and are saved (data.Zones.Carried).
 --   * INCUBATORS in the player's own firm (tag "Incubator", built by FirmBuilder) hatch carried eggs one by one
 --     (EggApi "hatch": the normal hatch screen), or the free first egg / a reward token when the bag is empty.
 --   * UPGRADES at the License Office (UpgradePrompt, attribute Upgrade = "License" | "Carry" | "Speed") and the
@@ -72,7 +72,7 @@ local function note(player: Player, text: string)
 	Remote:FireClient(player, "Note", text)
 end
 
----------------------------------------------------------------- carried eggs over the head
+---------------------------------------------------------------- carried eggs (drawn by StarterPlayerScripts.CarryPose)
 local function eggColor(egg: string, golden: boolean?): Color3
 	if golden then
 		return CFG.EggColors.Golden
@@ -84,48 +84,14 @@ local function eggColor(egg: string, golden: boolean?): Color3
 	return (def and def.Color) or Color3.new(1, 1, 1)
 end
 
+-- The carried eggs are drawn on every client by StarterPlayerScripts.CarryPose (2026-10-12): arms out, oversized eggs
+-- piled in them, read from the "Carried" attribute. This only clears the old over-the-head model if one is left.
 local function refreshCarryVisual(player: Player)
 	local character = player.Character
-	local head = character and character:FindFirstChild("Head") :: BasePart?
-	if not character or not head then
-		return
-	end
-	local old = character:FindFirstChild("CarriedEggs")
+	local old = character and character:FindFirstChild("CarriedEggs")
 	if old then
 		old:Destroy()
 	end
-	local data = PlayerData.get(player)
-	if not data then
-		return
-	end
-	local z = zonesData(data)
-	if #z.Carried == 0 then
-		return
-	end
-	local m = Instance.new("Model")
-	m.Name = "CarriedEggs"
-	for i, item in z.Carried do
-		local p = Instance.new("Part")
-		p.Name = "Egg" .. i
-		p.Size = Vector3.new(1.5, 1.9, 1.5)
-		p.Color = eggColor(item.Egg, item.Golden)
-		p.Material = if item.Golden then Enum.Material.Neon else Enum.Material.SmoothPlastic
-		p.CanCollide = false
-		p.CanQuery = false
-		p.CanTouch = false
-		p.Massless = true
-		p.CastShadow = false
-		local mesh = Instance.new("SpecialMesh")
-		mesh.MeshType = Enum.MeshType.Sphere
-		mesh.Parent = p
-		p.CFrame = head.CFrame * CFrame.new(0, 1.6 + i * 1.75, 0)
-		local weld = Instance.new("WeldConstraint")
-		weld.Part0 = head
-		weld.Part1 = p
-		weld.Parent = p
-		p.Parent = m
-	end
-	m.Parent = character
 end
 
 -- player attributes the client reads (prompt texts, HUD, gates)
@@ -292,7 +258,8 @@ local function buy(player: Player, zone: Zone, spot: BasePart, m: Model)
 		return
 	end
 	local golden = m:GetAttribute("Golden") == true
-	local price = ((eggApi("price", player, zone.def.Egg) :: number?) or math.huge) * (if golden then CFG.Golden.PriceMultiplier else 1)
+	-- (#z.Carried: each egg already in the bag moves the price one step up the ramp, like the machine - audit 2026-10-12)
+	local price = ((eggApi("price", player, zone.def.Egg, #z.Carried) :: number?) or math.huge) * (if golden then CFG.Golden.PriceMultiplier else 1)
 	price = math.floor(price)
 	if not PlayerData.spendCoins(player, price) then
 		note(player, "Need " .. Formulas.formatCoins(price) .. " coins for this egg")
@@ -322,7 +289,7 @@ end
 
 local function hatchAt(player: Player, incubator: Model)
 	local t = os.clock()
-	if lastHatch[player] and t - lastHatch[player] < 1 then
+	if lastHatch[player] and t - lastHatch[player] < 2.5 then -- (EggServer's own cooldown: audit 2026-10-12)
 		return
 	end
 	lastHatch[player] = t
@@ -337,6 +304,9 @@ local function hatchAt(player: Player, incubator: Model)
 		local ok = eggApi("hatch", player, item.Egg, item.Golden == true, at)
 		if not ok then
 			table.insert(z.Carried, 1, item) -- lawyer cap or still hatching: keep the egg
+			if ((eggApi("room", player) :: number?) or 0) > 0 then
+				note(player, "Still hatching... press again in a moment") -- (the lawyer cap has its own toast)
+			end
 		end
 		ZoneService.sync(player)
 		if ok then

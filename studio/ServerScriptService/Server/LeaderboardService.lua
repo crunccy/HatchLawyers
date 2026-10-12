@@ -207,13 +207,19 @@ function LeaderboardService.start()
 	task.spawn(function()
 		local sinceSave = 0
 		while true do
-			refresh()
+			local ok, err = pcall(refresh)
+			if not ok then
+				warn("[LeaderboardService] refresh failed:", err) -- (audit 2026-10-12: one error stopped the boards and saves)
+			end
 			task.wait(REFRESH_INTERVAL)
 			sinceSave += REFRESH_INTERVAL
 			if sinceSave >= SAVE_INTERVAL then
 				sinceSave = 0
 				for _, player in Players:GetPlayers() do
-					save(player)
+					local okSave, errSave = pcall(save, player)
+					if not okSave then
+						warn("[LeaderboardService] save failed:", errSave)
+					end
 				end
 			end
 		end

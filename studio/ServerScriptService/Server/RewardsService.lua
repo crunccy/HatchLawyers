@@ -106,6 +106,8 @@ local function grant(player: Player, data: PlayerData.Data, reward: { [string]: 
 			text = string.format("%d free skill roll%s for %s", reward.Count, if reward.Count > 1 then "s" else "", Formulas.lawyerName(lawyer.Id, lawyer.Stars))
 		else
 			data.Eggs.FreeTokens += 1 -- nobody to give it to: a free egg instead
+			player:SetAttribute("FreeEgg", true) -- (shown right away, like the Egg reward - audit 2026-10-12)
+			player:SetAttribute("EggTokens", data.Eggs.FreeTokens)
 			text = "A free egg"
 		end
 	else
@@ -198,6 +200,14 @@ function RewardsService.start()
 		task.spawn(onPlayerAdded, player)
 	end
 
+	-- Activity pings alone can be scripted: a gift second also needs the character to have really moved within the
+	-- window, as the server sees it (audit 2026-10-12: a script pinging every 80 s farmed a gift every 20 min AFK).
+	local lastPos: { [Player]: Vector3 } = {}
+	local lastMoved: { [Player]: number } = {}
+	Players.PlayerRemoving:Connect(function(player)
+		lastPos[player] = nil
+		lastMoved[player] = nil
+	end)
 	task.spawn(function()
 		local sinceIncome = 0
 		while true do
@@ -205,11 +215,20 @@ function RewardsService.start()
 			sinceIncome += 1
 			local now = os.clock()
 			for _, player in Players:GetPlayers() do
+				local ok, err = pcall(function()
 				local data = PlayerData.get(player)
 				if not data then
-					continue
+					return
 				end
-				if now - (lastActive[player] or -math.huge) <= Config.Rewards.ActiveWindow then
+				local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+				if root then
+					if not lastPos[player] or (root.Position - lastPos[player]).Magnitude > 2 then
+						lastMoved[player] = now
+					end
+					lastPos[player] = root.Position
+				end
+				if now - (lastActive[player] or -math.huge) <= Config.Rewards.ActiveWindow
+					and now - (lastMoved[player] or -math.huge) <= Config.Rewards.ActiveWindow then
 					data.Playtime.Active += 1
 					if data.Playtime.Active >= Config.Rewards.PlaytimeInterval then
 						data.Playtime.Active -= Config.Rewards.PlaytimeInterval
@@ -221,6 +240,10 @@ function RewardsService.start()
 				end
 				if sinceIncome >= INCOME_REFRESH then
 					player:SetAttribute("CoinsPerMinute", RewardsService.incomePerMinute(data))
+				end
+				end)
+				if not ok then
+					warn("[RewardsService] playtime tick failed:", err) -- (one error must not stop gifts for everyone)
 				end
 			end
 			if sinceIncome >= INCOME_REFRESH then

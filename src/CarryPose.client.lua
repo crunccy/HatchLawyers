@@ -83,7 +83,18 @@ local function makeEgg(color: Color3, golden: boolean, size: Vector3): BasePart
 end
 
 ------------------------------------------------------------------ per character
-type Arm = { motor: Motor6D, side: number } -- side: 1 = right, -1 = left
+-- A shoulder is a Motor6D (classic rigs) or an AnimationConstraint (Roblox's newer avatar joints - what Studio gives
+-- R15 characters now, found in the 2026-10-12 playtest). Both have a Transform; the constraint's attachments stand in
+-- for C0 / C1.
+type Arm = { motor: Motor6D | AnimationConstraint, side: number } -- side: 1 = right, -1 = left
+
+local function jointFrames(joint: Motor6D | AnimationConstraint): (CFrame, CFrame)
+	if joint:IsA("Motor6D") then
+		return joint.C0, joint.C1
+	end
+	local a = joint :: AnimationConstraint
+	return (a.Attachment0 :: Attachment).CFrame, (a.Attachment1 :: Attachment).CFrame
+end
 type Carrier = {
 	player: Player,
 	character: Model,
@@ -107,6 +118,8 @@ local function armsOf(character: Model): { Arm }
 		local part = character:FindFirstChild(spec.part)
 		local motor = part and part:FindFirstChild(spec.joint)
 		if motor and motor:IsA("Motor6D") then
+			table.insert(arms, { motor = motor, side = spec.side })
+		elseif motor and motor:IsA("AnimationConstraint") and motor.Attachment0 and motor.Attachment1 then
 			table.insert(arms, { motor = motor, side = spec.side })
 		end
 	end
@@ -190,12 +203,13 @@ end
 ------------------------------------------------------------------ the arms (after the animations, every frame)
 -- The arm's pose is solved from the joint itself: rotate the arm about the shoulder point, in the torso's space, then
 -- turn that into the motor's Transform (Part1 = Part0 * C0 * Transform * C1:Inverse()). Works whatever the rig.
-local function armTransform(motor: Motor6D, side: number, blend: number): CFrame
-	local rest = motor.C0 * motor.C1:Inverse() -- the arm hanging down, in Part0's space
-	local pivot = CFrame.new(motor.C0.Position)
+local function armTransform(motor: Motor6D | AnimationConstraint, side: number, blend: number): CFrame
+	local c0, c1 = jointFrames(motor)
+	local rest = c0 * c1:Inverse() -- the arm hanging down, in Part0's space
+	local pivot = CFrame.new(c0.Position)
 	local turn = CFrame.Angles(0, side * ARM_INWARD * blend, 0) * CFrame.Angles(ARM_PITCH * blend, 0, 0)
 	local wanted = pivot * turn * pivot:Inverse() * rest
-	return motor.C0:Inverse() * wanted * motor.C1
+	return c0:Inverse() * wanted * c1
 end
 
 RunService.Stepped:Connect(function(_, dt)

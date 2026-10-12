@@ -38,6 +38,17 @@ local LawyerService = {}
 
 local rng = Random.new()
 local lastRequest: { [Player]: number } = {}
+-- lawyers that already counted for the "place" goal this session (audit 2026-10-12: place / unseat / place in a loop
+-- finished the goal in under a second)
+local placedForGoal: { [Player]: { [string]: boolean } } = {}
+local function trackPlace(player: Player, uid: string)
+	local seen = placedForGoal[player] or {}
+	placedForGoal[player] = seen
+	if not seen[uid] then
+		seen[uid] = true
+		require(script.Parent.GoalService).track(player, "place")
+	end
+end
 
 local function throttled(player: Player): boolean
 	local t = os.clock()
@@ -117,7 +128,7 @@ local function doPlace(player: Player, data: PlayerData.Data, target: number, ui
 		CaseService.refreshDesk(player, from)
 	end
 	if wasEmpty and not from then
-		require(script.Parent.GoalService).track(player, "place")
+		trackPlace(player, uid)
 	end
 	local def = Formulas.getSkin(data.Lawyers[uid].Id)
 	local rarity = def and Config.Eggs.Skins[def.Rarity]
@@ -290,7 +301,7 @@ local function equipBest(player: Player): (boolean, string?)
 		local office = data.Desks[i]
 		if office.Lawyer ~= uid then
 			if uid and office.Lawyer == nil and PlayerData.officeOf(data, uid) == nil then
-				require(script.Parent.GoalService).track(player, "place")
+				trackPlace(player, uid)
 			end
 			table.insert(changed, i)
 		end
@@ -440,7 +451,8 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 	if type(picks) ~= "table" or #(picks :: { any }) ~= need then
 		return false, string.format("Pick %d lawyers", need)
 	end
-	local uids = picks :: { any }
+	-- only the array part counts (a hand-made table could carry extra keys that would also be merged away)
+	local uids = table.move(picks :: { any }, 1, need, 1, {})
 	local seen: { [string]: boolean } = {}
 	local first: PlayerData.LawyerData? = nil
 	for _, u in uids do
@@ -534,6 +546,7 @@ function LawyerService.start()
 	end
 	Players.PlayerRemoving:Connect(function(player)
 		lastRequest[player] = nil
+		placedForGoal[player] = nil
 	end)
 end
 

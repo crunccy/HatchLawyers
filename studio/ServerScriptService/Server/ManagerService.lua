@@ -193,11 +193,16 @@ function ManagerService.start()
 		while true do
 			task.wait(RETAINER_INTERVAL)
 			for _, player in Players:GetPlayers() do
-				local data = PlayerData.get(player)
-				local share = data and Formulas.managerValue(data.Manager and data.Manager.Levels, "retainer") or 0
-				if data and share > 0 then
-					data.Coins += math.floor(RewardsService.incomePerMinute(data) * share)
-					PlayerData.sync(player)
+				local ok, err = pcall(function()
+					local data = PlayerData.get(player)
+					local share = data and Formulas.managerValue(data.Manager and data.Manager.Levels, "retainer") or 0
+					if data and share > 0 then
+						data.Coins += math.floor(RewardsService.incomePerMinute(data) * share)
+						PlayerData.sync(player)
+					end
+				end)
+				if not ok then
+					warn("[ManagerService] retainer failed:", err) -- (audit 2026-10-12: one error stopped it for everyone)
 				end
 			end
 		end

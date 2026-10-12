@@ -5,26 +5,18 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (evening):** pushing crnuch's audit fixes (the parts that don't
-  depend on the economy pass / 7 rarities) and the egg-carry pose into Studio, then playtesting them.
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
 
 ## Open items
-- [ ] **Push the audit fixes to Studio** (docs/AUDIT_2026-10-12.md; re-export `studio/` first and 3-way merge if a
-      script changed): `PlayerData` (DataStore-outage fallback, rejoin race, NaN coins), `CaseService`
-      (`finishAll`, badge spawn), `DeskService` (expansion pays out running cases), `BigCaseService` (Gavel NaN),
-      `EggServer` (bag price ramp, exact-odds luck), `LawyerService`, `PrestigeService`, `Config` (Stage 6 room
-      costs, LuckRarities). Then the small live-only fixes in the audit's "For a local session" list
-      (ZoneService:295 price, delete PlayerSpeedDouble, pcall the loops, ...). Playtest: expand the firm while
-      cases run → each pays out, the firm rebuilds, new clients come in.
-- [ ] **Push + playtest the egg-carry pose** (2026-10-12): new `StarterPlayerScripts.CarryPose` (src/CarryPose.client.lua)
-      + `Server.ZoneService` (src/ZoneService.lua: a working copy of live with two small changes - no more eggs over
-      the head, and the bag-price fix; **heads-up mr.robe**, it's your zones script: 3-way merge if you changed it).
-      Check: arms go out and hug the egg (R15 and R6 avatars), 2-5 eggs pile up slightly crooked and lean back, the
-      pile sways while walking, other players see it too. Tune the constants at the top of CarryPose (ARM_PITCH,
-      ARM_INWARD, EGG_WIDTH, NEST, LEAN_*, JITTER) by eye.
+- [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
+      the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
+- [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
+      players 9+ get kicked by `Main` and lose their offline earnings (audit, `Main:28`).
+- [ ] Eye-check the carry pose in a real window (the pile's sway and lean run in RenderStepped, which a backgrounded
+      Studio doesn't run) and tune CarryPose's constants by eye; an R6 avatar too. With 3+ eggs the pile covers the face.
+- [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
 - [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
       players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
@@ -102,6 +94,28 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: crnuch's audit fixes + the egg-carry pose are live in Studio
+- **Pushed** (3-way merged commit by commit onto the live scripts, so nothing of the economy pass came along):
+  `PlayerData` (Studio-only memory fallback, live retries / kick, `write` reports failure, rejoin waits for the
+  release, NaN coins refused), `CaseService` (`finishAll`, badges spawned), `DeskService` (expansion pays out running
+  cases first), `BigCaseService` (Gavel NaN, backdating ≤ ping), `LawyerService` (place goal once per lawyer,
+  `mergeSelected` uses picks 1..N), `PrestigeService` + `EggServer` (badges spawned; EggApi `price` takes `ahead`),
+  `Config` (Stage 6 rooms 5e15 / 5e16), `ZoneService` (no eggs over the head, bag price passes `#z.Carried`).
+- **Live-only fixes from the audit list:** `PlayerSpeedDouble` deleted; `ZoneService` incubator throttle 2.5 s like
+  EggServer + "Still hatching..." toast; `RewardsService` playtime counts only while the character really moves
+  (> 2 studs in the activity window) + the free-egg fallback updates `FreeEgg` / `EggTokens`; the `while true`
+  loops in `RewardsService`, `ManagerService`, `LeaderboardService` are pcall'd per iteration.
+- **CarryPose fix:** Studio now gives R15 avatars the new joints (AnimationConstraint + BallSocketConstraint, **no
+  Motor6Ds**), so the arms never moved. `armsOf` now takes either; an AnimationConstraint's attachments stand in for
+  C0 / C1. Checked: both arms come up to ~72° with the hands in front of the chest, 3 eggs built (golden = neon),
+  pile math puts the bottom egg against the chest between the hands, no errors.
+- **Playtested:** no errors on join / in play; expanding the firm with a case running paid it out (5,175 coins),
+  the firm rebuilt and a new client walked in; EggApi price 3990 → 4588 one egg ahead, NaN ahead ignored.
+  Not testable here: pressing E on a zone egg (ProximityPrompts only show while the viewport renders).
+- **Not pushed:** exact-odds luck (needs `Formulas.luckyWeights` from the economy pass), the lawyer renames
+  (`src/Config`), economy pass, 7 rarities. `src/ZoneService.lua` = live now; `studio/` re-exported.
+- **MaxPlayers is 60** with 8 plots: Open items.
 
 ## 2026-10-12 — crnuch, cloud session: zone boss concepts, lawyer names simplified
 - **Egg-carry pose** (user's ask): eggs are carried in outstretched arms instead of over the head - oversized eggs

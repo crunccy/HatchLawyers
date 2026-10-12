@@ -601,8 +601,11 @@ local function onClientEvent(player: Player, kind: any, id: any, value: any)
 			return
 		end
 		-- trust the client's press time a little (it hides their ping), never from the future or long ago
-		local press = if typeof(value) == "number" then value else t
-		if press > t or press < sd.startAt or t - press > 0.6 then
+		-- (audit 2026-10-12: a NaN press passed every check and then beat every score; and 0.6 s of backdating let a
+		-- script pick a perfect press. NaN is now refused and the backdating is limited to the player's real ping.)
+		local press = if typeof(value) == "number" and value == value then value else t
+		local lag = math.min(0.3, player:GetNetworkPing() + 0.1)
+		if press > t or press < sd.startAt or t - press > lag then
 			press = t
 		end
 		sd.stops[player] = press

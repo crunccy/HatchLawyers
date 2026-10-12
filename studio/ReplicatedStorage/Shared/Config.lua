@@ -842,7 +842,8 @@ Config.Shop = {
 -- Effect: "payout" | "caseTime" | "winChance" add to Formulas.combineBuffs (Config.Caps still apply);
 -- "rareClients" adds to the Manager's Referral boost; "lounge" adds Value to payouts while the owner stands in
 -- the Executive Lounge. Bought areas reset on prestige (like the firm). Costs are first guesses: tune with
--- Dev.EconomySimV12 if areas are added to the simulated player.
+-- Dev.EconomySimV12 if areas are added to the simulated player. (Stage 6 was 5e8 / 5e9, a typo cheaper than Stage 2's
+-- room; 5e15 / 5e16 since the 2026-10-12 audit - a guess just above Stage 5, tune it.)
 Config.FirmAreas = {
 	{ Id = "CafeTerrace", Name = "Rooftop Café", Stage = 2, Cost = 1.5e8, Effect = "payout", Value = 0.05, Text = "+5% case payouts" },
 	{ Id = "CoffeeBreak", Name = "Coffee Break Room", Stage = 3, Cost = 1.2e9, Effect = "caseTime", Value = 0.05, Text = "Cases finish 5% faster" },
@@ -851,8 +852,8 @@ Config.FirmAreas = {
 	{ Id = "AtriumCafe", Name = "Atrium Coffee Bar", Stage = 5, Cost = 2e14, Effect = "caseTime", Value = 0.08, Text = "Cases finish 8% faster" },
 	{ Id = "RoofGarden", Name = "Rooftop Garden", Stage = 5, Cost = 4e14, Effect = "payout", Value = 0.10, Text = "+10% case payouts" },
 	{ Id = "ExecLounge", Name = "Executive Lounge", Stage = 5, Cost = 8e14, Effect = "lounge", Value = 0.5, Text = "x1.5 payouts while you're in the lounge" },
-	{ Id = "PartnerSuite", Name = "Penthouse Suite", Stage = 6, Cost = 5e8, Effect = "payout", Value = 0.15, Text = "+15% case payouts" },
-	{ Id = "PrivateCourt", Name = "Private Courtroom", Stage = 6, Cost = 5e9, Effect = "winChance", Value = 0.03, Text = "+3% chance to win" },
+	{ Id = "PartnerSuite", Name = "Penthouse Suite", Stage = 6, Cost = 5e15, Effect = "payout", Value = 0.15, Text = "+15% case payouts" },
+	{ Id = "PrivateCourt", Name = "Private Courtroom", Stage = 6, Cost = 5e16, Effect = "winChance", Value = 0.03, Text = "+3% chance to win" },
 }
 
 -- HUB MINIGAMES (Server.MinigameService + StarterPlayerScripts.Minigames) on the two pads beside the Big Case

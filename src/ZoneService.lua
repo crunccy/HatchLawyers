@@ -289,7 +289,7 @@ end
 
 local function hatchAt(player: Player, incubator: Model)
 	local t = os.clock()
-	if lastHatch[player] and t - lastHatch[player] < 1 then
+	if lastHatch[player] and t - lastHatch[player] < 2.5 then -- (EggServer's own cooldown: audit 2026-10-12)
 		return
 	end
 	lastHatch[player] = t
@@ -304,6 +304,9 @@ local function hatchAt(player: Player, incubator: Model)
 		local ok = eggApi("hatch", player, item.Egg, item.Golden == true, at)
 		if not ok then
 			table.insert(z.Carried, 1, item) -- lawyer cap or still hatching: keep the egg
+			if ((eggApi("room", player) :: number?) or 0) > 0 then
+				note(player, "Still hatching... press again in a moment") -- (the lawyer cap has its own toast)
+			end
 		end
 		ZoneService.sync(player)
 		if ok then

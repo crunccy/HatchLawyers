@@ -177,7 +177,8 @@ function DeskService.dress(player: Player)
 end
 
 -- Expands the firm by one office segment: charges the player, rebuilds the building one segment longer
--- (2 empty offices to hire into) and restarts every desk on it. Cases in progress restart (no coins lost).
+-- (2 empty offices to hire into) and restarts every desk on it. Cases in progress finish first and pay out
+-- (CaseService.finishAll), so expanding never costs a case.
 function DeskService.upgradeFirm(player: Player): (boolean, string?)
 	local t = os.clock()
 	if t - (lastRequest[player] or 0) < COOLDOWN then
@@ -201,8 +202,9 @@ function DeskService.upgradeFirm(player: Player): (boolean, string?)
 		table.insert(data.Desks, PlayerData.newDesk()) -- 2 new empty offices
 	end
 	PlayerData.sync(player)
-	require(script.Parent.BadgeAwards).award(player, "SecondLawyer")
+	task.spawn(require(script.Parent.BadgeAwards).award, player, "SecondLawyer") -- (badge calls can yield / throw)
 
+	CaseService.finishAll(player) -- running cases pay out now instead of vanishing in the rebuild
 	CaseService.stop(player)
 	local firm = PlotService.rebuild(player)
 	if firm then
