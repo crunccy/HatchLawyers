@@ -496,9 +496,10 @@ local function resolveCase(session: Session, desk: DeskState)
 	PlayerData.addCoins(player, payout) -- also syncs the attributes above
 	if outcome == "Win" then
 		local Badges = require(script.Parent.BadgeAwards) :: any
-		Badges.award(player, "FirstWin")
+		-- (spawned: badge calls yield / can throw, and must never hold up or break the case result)
+		task.spawn(Badges.award, player, "FirstWin")
 		if client.Id == "Legendary" then
-			Badges.award(player, "LegendaryWin")
+			task.spawn(Badges.award, player, "LegendaryWin")
 		end
 		if tier >= 4 and not desk.tutorial then
 			-- a big win (Epic / Legendary client): coins and gold sparkles burst out of the office

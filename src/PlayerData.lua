@@ -8,6 +8,7 @@ local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
@@ -332,6 +333,9 @@ local function lockKey(player: Player): string
 	return "Player_" .. player.UserId
 end
 
+-- The DataStore, or nil. Only STUDIO falls back to memory-only for good (API access off). A live server that can't
+-- reach DataStores retries on the next call instead (audit 2026-10-12): giving up there used to hand every player on
+-- that server a brand-new firm that never saved, and let saveNow report success for Robux purchases.
 local function getStore(): DataStore?
 	if store or memoryOnly then
 		return store
@@ -343,9 +347,11 @@ local function getStore(): DataStore?
 	end)
 	if ok then
 		store = result
-	else
+	elseif RunService:IsStudio() then
 		memoryOnly = true
-		warn("[PlayerData] DataStores unavailable, progress will NOT be saved:", result)
+		warn("[PlayerData] DataStores unavailable (Studio), progress will NOT be saved:", result)
+	else
+		warn("[PlayerData] DataStores unavailable right now, will retry:", result)
 	end
 	return store
 end
@@ -378,7 +384,9 @@ end
 local function write(player: Player, session: Session, release: boolean): boolean
 	local dataStore = getStore()
 	if not dataStore then
-		return true
+		-- Studio memory-only: nothing is ever saved, by design. Live: not saved (yet) - say so, so ShopService
+		-- doesn't acknowledge a receipt (Roblox retries it) and the next autosave tries again.
+		return memoryOnly
 	end
 	session.data.LastOnline = os.time()
 	for attempt = 1, SAVE_ATTEMPTS do
@@ -468,6 +476,21 @@ end
 -- Yields. Returns nil (and kicks the player) if the data could not be loaded safely.
 function PlayerData.load(player: Player): Data?
 	local dataStore = getStore()
+	-- live server, DataStores down: retry like a failed load, then ask the player to rejoin - never hand them a
+	-- fresh firm that would never save (their real save is untouched either way)
+	for _ = 2, LOAD_ATTEMPTS do
+		if dataStore or memoryOnly or player.Parent == nil then
+			break
+		end
+		task.wait(LOAD_RETRY_DELAY)
+		dataStore = getStore()
+	end
+	if not dataStore and not memoryOnly then
+		if player.Parent then
+			player:Kick("We couldn't load your law firm. Please rejoin in a minute!")
+		end
+		return nil
+	end
 	local data: Data? = nil
 	if dataStore then
 		local status, saved = "error", nil

@@ -246,7 +246,8 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 			data.Eggs.SinceTop = 0
 		end
 	end
-	require(Server.BadgeAwards).award(player, "FirstEgg")
+	-- (spawned: badge calls yield / can throw, and must never stop the hatch after the coins are spent)
+	task.spawn(require(Server.BadgeAwards).award, player, "FirstEgg")
 	local id = Formulas.rollSkinId(rng, rarity, if themed then themed.Id else nil)
 	local isNew = true
 	for _, lawyer in data.Lawyers do

@@ -510,7 +510,8 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 	if type(picks) ~= "table" or #(picks :: { any }) ~= need then
 		return false, string.format("Pick %d lawyers", need)
 	end
-	local uids = picks :: { any }
+	-- only the array part counts (a hand-made table could carry extra keys that would also be merged away)
+	local uids = table.move(picks :: { any }, 1, need, 1, {})
 	local seen: { [string]: boolean } = {}
 	local first: PlayerData.LawyerData? = nil
 	for _, u in uids do
