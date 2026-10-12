@@ -133,22 +133,15 @@ local function firstEmptyOffice(data: any): number?
 	return nil
 end
 
--- Lucky Eggs (Robux pass, Server.ShopService): the Rare, Epic and Legendary weights are multiplied. Mythic and
--- Supreme are left alone (Supreme stays at most 1 in 2500).
-local function luckyWeights(player: Player, weights: { number }?): { number }?
+-- Lucky Eggs (Robux pass, Server.ShopService) and golden zone eggs: luck x the Rare, Epic and Legendary chances,
+-- taken from Common / Uncommon (Formulas.luckyWeights), so Mythic keeps its odds and Supreme stays exactly 1 in 2500.
+local function luckyWeights(player: Player, weights: { number }?, extraLuck: number?): { number }?
 	local ShopService = require(Server.ShopService) :: any
-	local luck = ShopService.effect(player, "LuckyEggs", 1)
+	local luck = ShopService.effect(player, "LuckyEggs", 1) * (extraLuck or 1)
 	if luck == 1 then
 		return weights
 	end
-	local base = weights or Formulas.skinWeights()
-	local out = table.clone(base)
-	for index, tier in Config.Eggs.Skins do
-		if (tier.Id == "Rare" or tier.Id == "Epic" or tier.Id == "Legendary") and out[index] then
-			out[index] *= luck
-		end
-	end
-	return out
+	return Formulas.luckyWeights(weights or Formulas.skinWeights(), luck)
 end
 
 local function roomFor(player: Player, data: any): number
@@ -219,20 +212,9 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		end
 		data.Eggs.Opened += 1
 		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
-		local weights = luckyWeights(player, if themed then themed.Weights else nil)
-		if o.golden then
-			-- a golden zone egg: the Rare, Epic and Legendary odds are multiplied (Config.Zones.Golden.Luck);
-			-- Mythic and Supreme are left alone, like Lucky Eggs
-			local luck = ((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1
-			local w = table.clone(weights or Formulas.skinWeights())
-			for index, tier in Config.Eggs.Skins do
-				if (tier.Id == "Rare" or tier.Id == "Epic" or tier.Id == "Legendary") and w[index] then
-					w[index] *= luck
-				end
-			end
-			weights = w
-		end
-		rarity = Formulas.rollSkin(rng, weights)
+		-- a golden zone egg stacks its luck (Config.Zones.Golden.Luck) on top of the Lucky Eggs pass
+		local goldenLuck = if o.golden then (((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1) else 1
+		rarity = Formulas.rollSkin(rng, luckyWeights(player, if themed then themed.Weights else nil, goldenLuck))
 	end
 	-- pity: every egg but the tutorial one counts; Config.Eggs.PityRarity (Legendary) or better resets it, and
 	-- hitting the limit upgrades this egg to exactly that rarity - never to Mythic / Supreme (Config.Eggs.PityTop)

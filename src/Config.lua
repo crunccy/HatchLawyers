@@ -323,6 +323,11 @@ Config.Eggs = {
 	-- and every Supreme level makes eggs PrestigePriceScale x pricier - eggs stay a real choice every run instead of
 	-- costing a lifetime-count price right after a reset (Formulas.eggPrice).
 	PrestigePriceScale = 3,
+	-- Luck (Lucky Eggs pass, golden zone eggs): these rarities' chances are multiplied, paid for out of the LuckPaidBy
+	-- rarities, so the total stays 100 and Mythic / Supreme keep their exact odds (Formulas.luckyWeights; Supreme stays
+	-- exactly 1 in 2500 - before 2026-10-12 luck just multiplied, which pushed Supreme to ~1 in 3850 on a golden egg).
+	LuckRarities = { "Rare", "Epic", "Legendary" },
+	LuckPaidBy = { "Common", "Uncommon" },
 	Skins = {
 		-- The Briefcase Egg's odds (Weight, %); themed eggs have their own Weights by these indices.
 		-- 2026-10-12: Epic (between Rare and Legendary), Mythic and Supreme (one and two past Legendary).

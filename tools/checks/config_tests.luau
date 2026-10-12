@@ -105,6 +105,24 @@ check("rolling 200k eggs gives Supreme ~1 in 2500", function()
 	assert(supreme >= 40 and supreme <= 130, "got " .. supreme .. " Supremes in 200000 rolls (expected ~80)")
 end)
 
+check("luck (Lucky Eggs, golden eggs) keeps each egg's total and Mythic / Supreme exact", function()
+	local mythic, supreme, legendary = rarityIndex("Mythic") :: number, rarityIndex("Supreme") :: number, rarityIndex("Legendary") :: number
+	for _, egg in eggs do
+		for _, luck in { 1, 2, 4, 8, 16 } do
+			local w = Formulas.luckyWeights(egg.weights, luck)
+			assert(near(sum(w), sum(egg.weights), 1e-6), egg.name .. " x" .. luck .. ": total changed to " .. sum(w))
+			assert(near(w[supreme], egg.weights[supreme]) and near(w[mythic], egg.weights[mythic]), egg.name .. " x" .. luck .. ": Mythic / Supreme moved")
+			assert(w[legendary] >= egg.weights[legendary] - 1e-9, egg.name .. " x" .. luck .. ": Legendary went down")
+			for i, v in w do
+				assert(v >= -1e-9, egg.name .. " x" .. luck .. ": negative weight at " .. i)
+			end
+		end
+	end
+	-- the Briefcase Egg has plenty of Common / Uncommon to pay for x2: exactly double
+	local rare = rarityIndex("Rare") :: number
+	assert(near(Formulas.luckyWeights(baseWeights, 2)[rare], baseWeights[rare] * 2, 1e-6), "x2 luck should double Rare")
+end)
+
 ------------------------------------------------------------------ the lawyer catalog
 check("catalog ids are unique, rarities and eggs valid, every lawyer has a model name", function()
 	local seen = {}
