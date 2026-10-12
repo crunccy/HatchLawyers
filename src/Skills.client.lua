@@ -134,6 +134,7 @@ local panel = make("Frame", {
 	Position = UDim2.fromScale(0.5, 0.5),
 	Size = UDim2.fromOffset(580, 470),
 	BackgroundColor3 = Skin.Panel,
+	Active = true, -- sinks taps (a tap on empty panel space must not reach the Dim and close it)
 	Parent = gui,
 }, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
 panel:SetAttribute("NoSkin", true)

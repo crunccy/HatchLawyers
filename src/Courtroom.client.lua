@@ -114,6 +114,7 @@ local panel = make("Frame", {
 	Position = UDim2.fromScale(0.5, 0.5),
 	Size = UDim2.fromScale(0.94, 0.9),
 	BackgroundColor3 = Skin.Panel, -- Shared.Skin look (2026-10-11 UI pass)
+	Active = true, -- sinks taps, so a tap between the cards doesn't fall through to the Dim and close the courtroom
 	ClipsDescendants = true,
 	Parent = gui,
 }, { make("UICorner", { CornerRadius = UDim.new(0, 10) }), make("UISizeConstraint", { MaxSize = Vector2.new(660, 470) }), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }) })

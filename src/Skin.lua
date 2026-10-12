@@ -326,6 +326,7 @@ function Skin.window(opts: { [string]: any }): Window
 	local panel = make("Frame", {
 		Name = "Panel", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52),
 		Size = UDim2.fromOffset(size.X, size.Y), BackgroundColor3 = Skin.Panel, ZIndex = 1, Parent = gui,
+		Active = true, -- sinks taps: a tap on empty window space must not fall through to the dim and close it
 	}, { corner(10), stroke(5), scale })
 	panel:SetAttribute("NoSkin", true) -- opt out of StarterPlayerScripts.UISkin (the old auto-skin)
 	dim:SetAttribute("NoSkin", true)

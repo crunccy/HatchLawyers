@@ -145,7 +145,7 @@ local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 
 local panelScale = make("UIScale", {})
 local panel = make("Frame", {
 	Name = "Panel", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(PW, PH),
-	BackgroundColor3 = Skin.Panel, Parent = overlay,
+	BackgroundColor3 = Skin.Panel, Active = true, Parent = overlay, -- Active: taps on the panel don't close it
 }, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
 Skin.studs(panel, 0.93, nil, 30)
 make("Frame", { Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, Parent = panel },
