@@ -5,6 +5,8 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe's local session · since 2026-10-12 (night):** the egg-carry pose "is bugging" (user) → remaking it as a
+  real animation made in Blender (KeyframeSequence, Action priority) instead of CarryPose's per-frame arm Transforms.
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
