@@ -162,8 +162,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   Gavel Bonk / Lucky Briefcase minigames), ZoneTeleports, Palms. `Workspace.Plots.Plot1–8`.
   Front/door = local −Z; plots are rotated to face the street (two rows facing the street along x, z = 0).
 - `Workspace.Zones` (2026-10-12, the lane from docs/ZONES_REFERENCE.md): one walled lane running west from the end
-  of the street. It holds SafeZone, BriefcaseBay, PetPark (each with Floor / Walls / Path / Chevrons / WallDecor /
-  FloorClutter / EggSpots / Arrival), the License gate, NextZoneTeaser and LicenseOffice.
+  of the street (x -264 → -2738). It holds SafeZone, the six zones BriefcaseBay, PetPark, BrainrotBoulevard,
+  FoodCourt, OceanShore, SpaceBase (each with Floor / Walls / Path / Chevrons / WallDecor / FloorClutter / EggSpots /
+  Arrival, + the License gate into the next zone), LaneEnd and LicenseOffice. Hub teleports: `Hub.ZoneTeleports`
+  (one pad per zone). Renders of zones 3-6: `art/zones/` (tools/blender/zone_render.py).
   - **Build:** `tools/zones/BuildLane.lua`; decorations come from `ServerStorage.ZoneDecorLibrary`, which is built
     from Blender (`tools/blender/zone_decor.py` → `tools/zones/BuildDecorLibrary.lua`). Add a zone by adding to
     `ZONES` in the builder and to `Config.Zones.List`.

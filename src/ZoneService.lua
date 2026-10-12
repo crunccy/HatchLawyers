@@ -159,8 +159,12 @@ local function eggModel(egg: string, golden: boolean, floorPos: Vector3): (Model
 	if egg == "Briefcase" then
 		deco("Band", Vector3.new(3.08, 0.7, 3.08) * s, CFrame.new(0, -0.2 * s, 0), if golden then Color3.fromRGB(200, 140, 20) else Color3.fromRGB(150, 88, 44))
 	else
+		-- spots: brown on the Pet egg, a darker shade of its own colour on the other themed eggs (zones 3-6)
+		local spot = if golden then Color3.fromRGB(200, 140, 20)
+			elseif egg == "Pet" then Color3.fromRGB(110, 70, 40)
+			else eggColor(egg, false):Lerp(Color3.new(0, 0, 0), 0.35)
 		for i, o in { { 1.3, 0.3, 0.5 }, { -1.2, 0.8, -0.6 }, { 0.2, -0.6, -1.35 } } do
-			deco("Spot" .. i, Vector3.new(0.8, 0.8, 0.8) * s, CFrame.new(o[1] * s, o[2] * s, o[3] * s), if golden then Color3.fromRGB(200, 140, 20) else Color3.fromRGB(110, 70, 40))
+			deco("Spot" .. i, Vector3.new(0.8, 0.8, 0.8) * s, CFrame.new(o[1] * s, o[2] * s, o[3] * s), spot)
 		end
 	end
 	if golden then

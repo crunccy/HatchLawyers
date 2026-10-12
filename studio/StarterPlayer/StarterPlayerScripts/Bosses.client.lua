@@ -88,6 +88,8 @@ local SOUNDS = {
 	bark = { "rbxassetid://9125574353", 1, 0.45 },
 	hit = { "rbxassetid://9125574353", 0.8, 1.3 },
 	boing = { "rbxasset://sounds/electronicpingshort.wav", 0.5, 0.55 },
+	charge = { "rbxassetid://9125574353", 0.9, 0.85 },
+	pull = { "rbxassetid://9045751375", 0.4, 0.7, 2.0 },
 	land = { "rbxassetid://9125574353", 0.25, 2.2 },
 	grab = { "rbxasset://sounds/electronicpingshort.wav", 0.45, 1.6 },
 }
@@ -146,8 +148,13 @@ type Boss = {
 	walk: number, -- 0 standing .. 1 walking (smoothed)
 	seenState: number, -- StateStart we last reacted to
 	warn: { BasePart }?,
+	warnKind: string?, -- the attack the warning is for
+	stars: { BasePart }?, -- dizzy stars over its head
+	lastRoll: number, -- how far a roll turned it (Big Cheese), unwound in the recover
+	trailAt: number, -- when the last trail puff went out (Line attacks)
 }
 local bosses: { [Configuration]: Boss } = {}
+local ragdolled = false -- (the local player is lying limp: no pulls - see ragdoll below)
 
 local function attr(s: Instance, name: string): any
 	return s:GetAttribute(name)
@@ -207,15 +214,16 @@ local function build(s: Configuration)
 	end)
 	-- (parented only while it's near the camera and posed - see the frame loop)
 	bosses[s] = { state = s, model = m, kind = m.Name, groups = list, yaw = (attr(s, "Yaw") :: number?) or 0,
-		phase = 0, walk = 0, seenState = (attr(s, "StateStart") :: number?) or 0, warn = nil }
+		phase = 0, walk = 0, seenState = (attr(s, "StateStart") :: number?) or 0, warn = nil, warnKind = nil,
+		stars = nil, lastRoll = 0, trailAt = 0 }
 end
 
 local function remove(s: Instance)
 	local b = bosses[s :: Configuration]
 	if b then
 		b.model:Destroy()
-		if b.warn then
-			for _, p in b.warn do
+		for _, list in { b.warn or {}, b.stars or {} } do
+			for _, p in list do
 				p:Destroy()
 			end
 		end
@@ -325,7 +333,141 @@ POSES.BarristerBulldog = function(b, state, a, t, idle)
 	}
 end
 
+-- Judge Martello: every stride is a hop; the Slam is one huge hop onto where you stood, arms up, legs tucked
+POSES.JudgeMartello = function(b, state, a, t, idle)
+	local w, sw = b.walk, math.sin(b.phase)
+	local hop = math.abs(math.sin(b.phase))
+	local rootY = hop * 1.0 * w
+	local legs = -hop * 0.5 * w
+	local arms = math.sin(t * 9) * 0.35 * w
+	local torsoX = math.sin(t * 2) * 0.04 * (1 - w)
+	if state == "windup" then
+		local arc = math.sin(math.pi * math.clamp(a, 0, 1))
+		rootY = arc * ((attr(b.state, "HopHeight") :: number?) or 6)
+		torsoX = -0.35 * arc
+		legs = -0.9 * arc
+		arms = 2.6 * arc
+	elseif state == "attack" then
+		local e = 1 - easeOut(a * 2)
+		rootY = -0.35 * e -- (the squash on landing)
+		legs = 0.5 * e
+		arms = 1.2 * e
+	end
+	return CFrame.new(0, rootY, 0), {
+		LegL = CFrame.Angles(legs + sw * 0.2 * w, 0, 0),
+		LegR = CFrame.Angles(legs - sw * 0.2 * w, 0, 0),
+		ArmL = CFrame.Angles(arms, 0, -0.3),
+		ArmR = CFrame.Angles(arms, 0, 0.3),
+		Torso = CFrame.Angles(torsoX, 0, math.sin(b.phase) * 0.06 * w),
+	}
+end
+
+-- Big Cheese: wobbles along on its edge; to attack it turns side-on, trembles, and ROLLS (it really turns, face and
+-- all), then unwinds
+POSES.BigCheese = function(b, state, a, t, idle)
+	local w = b.walk
+	local s = b.state
+	local rootOff = CFrame.new(0, math.abs(math.sin(b.phase)) * 0.25 * w, 0)
+	local torso = CFrame.Angles(0, 0, math.sin(b.phase) * 0.12 * w + math.sin(t * 1.5) * 0.03)
+	local arm = math.sin(t * 3) * 0.2
+	if state == "windup" then
+		local e = easeOut(a / 0.6)
+		torso = CFrame.Angles(0.12 * e, e * math.pi / 2, 0)
+		if a > 0.6 then
+			rootOff *= CFrame.new(math.sin(t * 60) * 0.05, 0, 0)
+		end
+		arm = 1.4 * e
+	elseif state == "attack" then
+		local from = (attr(s, "From") :: Vector3?) or Vector3.zero
+		local dist = Vector3.new(posAt(s, now()).X - from.X, 0, posAt(s, now()).Z - from.Z).Magnitude
+		b.lastRoll = (dist / (3.2 * ((attr(s, "Scale") :: number?) or 1))) % (math.pi * 2)
+		torso = CFrame.Angles(-b.lastRoll, 0, 0) * CFrame.Angles(0, math.pi / 2, 0)
+		arm = 0
+	elseif state == "recover" then
+		local e = 1 - ease(a)
+		torso = CFrame.Angles(-b.lastRoll * e, 0, 0) * CFrame.Angles(0, math.pi / 2 * e, 0)
+	end
+	return rootOff, {
+		Torso = torso,
+		ArmL = CFrame.Angles(arm, 0, -0.2),
+		ArmR = CFrame.Angles(arm * 0.6 + 0.3, 0, 0.2),
+	}
+end
+
+-- Magistrate Megalodon: stalks, tail swishing; crouches with its fins back, CHARGES leaning into it, then is dizzy
+POSES.Megalodon = function(b, state, a, t, idle)
+	local w, sw = b.walk, math.sin(b.phase)
+	local rootOff = CFrame.new(0, math.abs(math.cos(b.phase)) * 0.2 * w, 0)
+	local torsoX, torsoY, torsoZ = 0, 0, sw * 0.04 * w
+	local fins = sw * 0.3 * w
+	local tail = math.sin(t * 4) * 0.35
+	local legs = 0.5
+	if state == "windup" then
+		local e = easeOut(a / 0.6)
+		torsoX = -0.35 * e
+		rootOff *= CFrame.new(0, -0.3 * e, 0)
+		fins = -0.6 * e
+		tail = math.sin(t * 20) * 0.5
+	elseif state == "attack" then
+		torsoX, fins, legs = -0.5, -0.9, 0.8
+		tail = math.sin(t * 25) * 0.6
+	elseif state == "dizzy" then
+		torsoZ = math.sin(t * 5) * 0.18
+		torsoY = math.sin(t * 3) * 0.25
+		fins = math.sin(t * 7) * 0.5
+	elseif state == "recover" then
+		torsoX = -0.5 * (1 - ease(a))
+	end
+	return rootOff, {
+		LegL = CFrame.Angles(sw * legs * w, 0, 0),
+		LegR = CFrame.Angles(-sw * legs * w, 0, 0),
+		Torso = CFrame.Angles(torsoX, torsoY, torsoZ),
+		Tail = CFrame.Angles(0, tail, 0),
+		ArmL = CFrame.Angles(fins, 0, -0.15),
+		ArmR = CFrame.Angles(-fins, 0, 0.15),
+	}
+end
+
+-- Chief Justice Eclipse: floats, gavels orbiting; Pull = rises with both arms up, then reaches out and drags;
+-- Ring = arms out wide while the gavels spin up, then they whip round
+POSES.Eclipse = function(b, state, a, t, idle)
+	local rootOff = CFrame.new(0, 0.7 + math.sin(t * 1.5) * 0.3, 0)
+	local arms, armsOut, spin = math.sin(t * 1.2) * 0.1, 0, t * 1.6
+	local headX = math.sin(t * 0.9) * 0.08
+	local kind = attr(b.state, "AttackKind")
+	if state == "windup" then
+		local e = easeOut(a / 0.6)
+		if kind == "Pull" then
+			arms = 2.9 * e
+			rootOff *= CFrame.new(0, 1.2 * e, 0)
+		else
+			armsOut = 1.3 * e
+			spin = t * (1.6 + 10 * e)
+		end
+		headX = 0.25 * e
+	elseif state == "attack" then
+		if kind == "Pull" then
+			arms = 1.5 + math.sin(t * 30) * 0.08
+			rootOff *= CFrame.new(0, 1.2, 0)
+		else
+			armsOut = 1.3
+			spin = t * 14
+		end
+	end
+	return rootOff, {
+		ArmL = CFrame.Angles(arms, 0, -armsOut),
+		ArmR = CFrame.Angles(arms, 0, armsOut),
+		Head = CFrame.Angles(headX, math.sin(t * 0.5) * 0.3, 0),
+		Gavels = CFrame.Angles(0, spin, 0),
+		Torso = CFrame.Angles(0, 0, math.sin(t * 0.8) * 0.03),
+	}
+end
+
 ------------------------------------------------------------------ warnings + attack effects
+local function warnKindOf(s: Configuration): string
+	return (attr(s, "AttackKind") :: string?) or (attr(s, "Attack") :: string?) or "Ring"
+end
+
 local function clearWarn(b: Boss)
 	if b.warn then
 		for _, p in b.warn do
@@ -335,50 +477,98 @@ local function clearWarn(b: Boss)
 	end
 end
 
+-- The warning on the floor for this attack, in the boss's colour (each piece sized every frame by poseWarn):
+-- Cone = a fan; Ring / Slam = a disc with an edge (Slam's at the landing spot); Line = a strip to where it'll stop,
+-- with arrows; Pull = a disc, its deadly white middle and a swirl.
 local function makeWarn(b: Boss)
 	clearWarn(b)
 	local s = b.state
+	local kind = warnKindOf(s)
 	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(255, 80, 80)
-	local radius = (attr(s, "Radius") :: number?) or 10
 	local list = {}
-	-- (each piece's width follows the radius in poseWarn - attribute Step = the angle between neighbours - so a
-	-- long-range warning has no gaps)
-	if attr(s, "Attack") == "Cone" then
+	local function add(name: string, props: { [string]: any }, extra: { [string]: any }?)
+		props.Color = props.Color or color
+		props.Material = Enum.Material.Neon
+		local p = part(props)
+		p.Name = name
+		for k, v in extra or {} do
+			p:SetAttribute(k, v)
+		end
+		table.insert(list, p)
+	end
+	if kind == "Cone" then
 		local angle = math.rad((attr(s, "Angle") :: number?) or 80)
-		local n = 17
-		for i = 0, n - 1 do
-			table.insert(list, part({ Name = "WarnRay", Size = Vector3.new(1.7, 0.12, radius), Color = color, Material = Enum.Material.Neon, Transparency = 0.6 }))
-			list[#list]:SetAttribute("Angle", -angle / 2 + angle * i / (n - 1))
-			list[#list]:SetAttribute("Step", angle / (n - 1))
+		for i = 0, 16 do
+			add("WarnRay", { Size = Vector3.new(1.7, 0.12, 1), Transparency = 0.6 }, { Angle = -angle / 2 + angle * i / 16, Step = angle / 16 })
 		end
 		for i = 0, 23 do
-			table.insert(list, part({ Name = "WarnEdge", Size = Vector3.new(1.5, 0.16, 0.8), Color = color, Material = Enum.Material.Neon, Transparency = 0.3 }))
-			list[#list]:SetAttribute("Angle", -angle / 2 + angle * i / 23)
-			list[#list]:SetAttribute("Step", angle / 23)
+			add("WarnEdge", { Size = Vector3.new(1.5, 0.16, 0.8), Transparency = 0.3 }, { Angle = -angle / 2 + angle * i / 23, Step = angle / 23 })
+		end
+	elseif kind == "Line" then
+		add("WarnStrip", { Size = Vector3.new(1, 0.1, 1), Transparency = 0.65 })
+		add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = -1 })
+		add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = 1 })
+		for i = 1, 3 do
+			add("WarnArrow", { Size = Vector3.new(1, 0.14, 1.4), Transparency = 0.25, Color = Color3.new(1, 1, 1) }, { Index = i })
 		end
 	else
-		table.insert(list, part({ Name = "WarnDisc", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, radius * 2, radius * 2), Color = color, Material = Enum.Material.Neon, Transparency = 0.65 }))
+		add("WarnDisc", { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, 2, 2), Transparency = 0.65 })
 		for i = 0, 35 do
-			table.insert(list, part({ Name = "WarnEdge", Size = Vector3.new(1.6, 0.16, 0.8), Color = color, Material = Enum.Material.Neon, Transparency = 0.3 }))
-			list[#list]:SetAttribute("Angle", i / 36 * math.pi * 2)
-			list[#list]:SetAttribute("Step", math.pi * 2 / 36)
+			add("WarnEdge", { Size = Vector3.new(1.6, 0.16, 0.8), Transparency = 0.3 }, { Angle = i / 36 * math.pi * 2, Step = math.pi * 2 / 36 })
+		end
+		if kind == "Pull" then
+			add("WarnInner", { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.14, 2, 2), Transparency = 0.35, Color = Color3.new(1, 1, 1) })
+			for i = 0, 7 do
+				add("WarnSwirl", { Size = Vector3.new(1.2, 0.14, 4), Transparency = 0.35 }, { Angle = i / 8 * math.pi * 2 })
+			end
 		end
 	end
 	for _, p in list do
 		p.Parent = visuals
 	end
 	b.warn = list
+	b.warnKind = kind
 end
 
 -- place the warning on the floor, grown to `grow` of its size, pulsing
-local function poseWarn(b: Boss, origin: Vector3, yaw: number, grow: number, t: number)
+local function poseWarn(b: Boss, pos: Vector3, yaw: number, grow: number, t: number)
 	if not b.warn then
 		return
 	end
 	local s = b.state
-	local radius = ((attr(s, "Radius") :: number?) or 10) * grow
-	local floor = CFrame.new(origin.X, ((attr(s, "FloorY") :: number?) or origin.Y) + 0.09, origin.Z) * CFrame.Angles(0, yaw, 0)
+	local kind = b.warnKind
+	local floorY = ((attr(s, "FloorY") :: number?) or pos.Y) + 0.09
 	local pulse = 0.5 + 0.5 * math.sin(t * 18)
+	if kind == "Line" then
+		local target = (attr(s, "Target") :: Vector3?) or pos
+		local d = Vector3.new(target.X - pos.X, 0, target.Z - pos.Z)
+		local len = math.max(1, d.Magnitude) * grow
+		local width = (attr(s, "Width") :: number?) or 10
+		local dir = if d.Magnitude > 0.1 then d.Unit else Vector3.new(-math.sin(yaw), 0, -math.cos(yaw))
+		local start = Vector3.new(pos.X, floorY, pos.Z)
+		local base = CFrame.lookAt(start, start + dir)
+		for _, p in b.warn do
+			if p.Name == "WarnStrip" then
+				p.Size = Vector3.new(width, 0.1, len)
+				p.CFrame = base * CFrame.new(0, 0, -len / 2)
+				p.Transparency = 0.6 + 0.2 * pulse
+			elseif p.Name == "WarnSide" then
+				p.Size = Vector3.new(0.8, 0.16, len)
+				p.CFrame = base * CFrame.new(((p:GetAttribute("Side") :: number?) or 1) * width / 2, 0.02, -len / 2)
+				p.Transparency = 0.15 + 0.35 * pulse
+			else -- arrows marching toward the end
+				local i = (p:GetAttribute("Index") :: number?) or 1
+				local along = (t * 40 + i * len / 3) % len
+				p.Size = Vector3.new(width * 0.45, 0.14, 1.4)
+				p.CFrame = base * CFrame.new(0, 0.03, -along)
+			end
+		end
+		return
+	end
+	local centre = if kind == "Slam" then ((attr(s, "Target") :: Vector3?) or pos) else pos
+	local radius = ((if kind == "Ring" then attr(s, "RingRadius") else attr(s, "Radius")) :: number? or 10) * grow
+	local inner = (attr(s, "Inner") :: number?) or 0
+	local floor = CFrame.new(centre.X, floorY, centre.Z) * CFrame.Angles(0, yaw, 0)
 	for _, p in b.warn do
 		local a = (p:GetAttribute("Angle") :: number?) or 0
 		local step = (p:GetAttribute("Step") :: number?) or 0.1
@@ -390,6 +580,13 @@ local function poseWarn(b: Boss, origin: Vector3, yaw: number, grow: number, t: 
 			p.Size = Vector3.new(p.Size.X, radius * 2, radius * 2)
 			p.CFrame = floor * CFrame.Angles(0, 0, math.pi / 2)
 			p.Transparency = 0.6 + 0.2 * pulse
+		elseif p.Name == "WarnInner" then
+			p.Size = Vector3.new(p.Size.X, inner * 2, inner * 2)
+			p.CFrame = floor * CFrame.new(0, 0.03, 0) * CFrame.Angles(0, 0, math.pi / 2)
+			p.Transparency = 0.25 + 0.3 * pulse
+		elseif p.Name == "WarnSwirl" then
+			p.Size = Vector3.new(1.2, 0.14, radius * 0.45)
+			p.CFrame = floor * CFrame.Angles(0, a + t * 2.5, 0) * CFrame.new(0, 0.05, -radius * 0.62) * CFrame.Angles(0, 0.7, 0)
 		else
 			p.Size = Vector3.new(math.max(1.5, radius * step * 1.05), p.Size.Y, p.Size.Z)
 			p.CFrame = floor * CFrame.Angles(0, a, 0) * CFrame.new(0, 0.02, -radius)
@@ -446,27 +643,73 @@ end
 
 local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	local s = b.state
+	local kind = warnKindOf(s)
 	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(255, 80, 80)
 	local radius = (attr(s, "Radius") :: number?) or 10
 	local look = Vector3.new(-math.sin(yaw), 0, -math.cos(yaw))
 	local floorY = (attr(s, "FloorY") :: number?) or origin.Y
-	if attr(s, "Attack") == "Cone" then
-		local at = Vector3.new(origin.X, floorY + 1, origin.Z) + look * 4.5 * ((attr(s, "Scale") :: number?) or 1)
+	local at = Vector3.new(origin.X, floorY, origin.Z)
+	local shakeRadius = radius * 1.6
+	if kind == "Cone" then
+		local front = at + Vector3.new(0, 1, 0) + look * 4.5 * ((attr(s, "Scale") :: number?) or 1)
 		task.delay(0.16, function()
-			paperBurst(at + Vector3.new(0, 1, 0), look)
-			sparkBurst(at, color, 18)
-			shockwave(at, radius * 0.55, color, 0)
-			playAt(at, "slam")
+			paperBurst(front + Vector3.new(0, 1, 0), look)
+			sparkBurst(front, color, 18)
+			shockwave(front, radius * 0.55, color, 0)
+			playAt(front, "slam")
 		end)
-	else
-		local at = Vector3.new(origin.X, floorY, origin.Z)
-		shockwave(at, radius, color, 0.05)
-		shockwave(at, radius * 0.75, Color3.new(1, 1, 1), 0.15)
-		playAt(at + Vector3.new(0, 4, 0), "bark")
+	elseif kind == "Slam" then
+		local spot = (attr(s, "Target") :: Vector3?) or origin
+		at = Vector3.new(spot.X, floorY, spot.Z)
+		shockwave(at, radius, color, 0)
+		shockwave(at, radius * 0.7, Color3.new(1, 1, 1), 0.08)
+		sparkBurst(at + Vector3.new(0, 2, 0), color, 30)
+		playAt(at, "slam")
+		shakeRadius = radius * 1.8
+	elseif kind == "Line" then
+		playAt(at + Vector3.new(0, 4, 0), "charge")
+		shakeRadius = ((attr(s, "Width") :: number?) or 10) * 1.5
+	elseif kind == "Pull" then
+		sparkBurst(at + Vector3.new(0, 6, 0), color, 30)
+		playAt(at + Vector3.new(0, 6, 0), "pull")
+	else -- Ring
+		local r = (attr(s, "RingRadius") :: number?) or radius
+		shockwave(at, r, color, 0.05)
+		shockwave(at, r * 0.75, Color3.new(1, 1, 1), 0.15)
+		playAt(at + Vector3.new(0, 4, 0), if b.kind == "BarristerBulldog" then "bark" else "slam")
+		shakeRadius = r * 1.6
 	end
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
-	if root and (root.Position - origin).Magnitude < radius * 1.6 then
-		shake(0.25, 0.35)
+	if root and (root.Position - at).Magnitude < shakeRadius then
+		shake(0.25, if kind == "Slam" then 0.9 else 0.35)
+	end
+end
+
+-- dizzy stars circling over its head (the Megalodon after a charge)
+local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
+	if not on then
+		if b.stars then
+			for _, p in b.stars do
+				p:Destroy()
+			end
+			b.stars = nil
+		end
+		return
+	end
+	local s = b.state
+	local sc = (attr(s, "Scale") :: number?) or 1
+	if not b.stars then
+		b.stars = {}
+		for _ = 1, 3 do
+			local p = part({ Size = Vector3.new(1, 1, 1) * sc * 0.4, Color = Color3.fromRGB(255, 230, 80), Material = Enum.Material.Neon })
+			p.Parent = visuals
+			table.insert(b.stars :: { BasePart }, p)
+		end
+	end
+	local top = pos + Vector3.new(0, ((b.model:GetAttribute("Height") :: number?) or 8) * sc + sc, 0)
+	for i, p in b.stars :: { BasePart } do
+		local a = t * 5 + i * math.pi * 2 / 3
+		p.CFrame = CFrame.new(top + Vector3.new(math.cos(a), 0, math.sin(a)) * sc * 1.2) * CFrame.Angles(t * 4, t * 3, 0)
 	end
 end
 
@@ -475,6 +718,12 @@ RunService.Heartbeat:Connect(function(dt)
 	local t = now()
 	local cam = workspace.CurrentCamera
 	local camPos = if cam then cam.CFrame.Position else Vector3.zero
+	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	-- how far a point is from what the player sees: the camera, or their character (whichever is nearer)
+	local function near(p: Vector3): number
+		local d = (p - camPos).Magnitude
+		return if me then math.min(d, (p - me.Position).Magnitude) else d
+	end
 	local parts, frames = {}, {}
 	for s, b in bosses do
 		if not s.Parent then
@@ -493,15 +742,29 @@ RunService.Heartbeat:Connect(function(dt)
 				makeWarn(b)
 				playAt(pos + Vector3.new(0, 5, 0), "windup")
 			elseif state == "attack" then
-				clearWarn(b)
-				if (pos - camPos).Magnitude < DRAW_DISTANCE then
+				if b.warnKind ~= "Pull" then -- (a Pull's warning stays while it drags)
+					clearWarn(b)
+				end
+				if near(pos) < DRAW_DISTANCE then
 					attackEffects(b, pos, yaw)
 				end
 			else
 				clearWarn(b)
 			end
 		end
-		if (pos - camPos).Magnitude > DRAW_DISTANCE then
+		local kind = warnKindOf(s)
+		-- a Pull drags the local player in (walking straight out escapes: it's slower than walking)
+		if state == "attack" and kind == "Pull" and not ragdolled then
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+			if root then
+				local d = Vector3.new(pos.X - root.Position.X, 0, pos.Z - root.Position.Z)
+				if d.Magnitude <= ((attr(s, "Radius") :: number?) or 0) and d.Magnitude > 0.5 then
+					root.CFrame += d.Unit * ((attr(s, "PullSpeed") :: number?) or 0) * dt
+				end
+			end
+		end
+		if near(pos) > DRAW_DISTANCE then
 			if b.model.Parent then
 				b.model.Parent = nil -- far away: not drawn at all
 			end
@@ -510,10 +773,10 @@ RunService.Heartbeat:Connect(function(dt)
 		if not b.model.Parent then
 			b.model.Parent = visuals
 		end
-		-- walking: the stride follows the real speed
+		-- moving (walking, charging, rolling): the stride follows the real speed
 		local moving = false
 		local m0, m1 = (attr(s, "MoveStart") :: number?) or 0, (attr(s, "MoveEnd") :: number?) or 0
-		if state == "walk" and t < m1 and m1 > m0 then
+		if t < m1 and m1 > m0 and state ~= "windup" then
 			local from, to = attr(s, "From") :: Vector3, attr(s, "To") :: Vector3
 			local speed = (to - from).Magnitude / (m1 - m0)
 			b.phase += dt * speed / (4 * ((attr(s, "Scale") :: number?) or 1)) * math.pi -- (bigger = longer strides)
@@ -523,7 +786,15 @@ RunService.Heartbeat:Connect(function(dt)
 		b.yaw = lerpAngle(b.yaw, yaw, math.min(1, dt * (if state == "windup" then 12 else 6)))
 		if state == "windup" then
 			poseWarn(b, pos, yaw, 0.45 + 0.55 * easeOut(a / 0.4), t)
+		elseif state == "attack" and b.warnKind == "Pull" then
+			poseWarn(b, pos, yaw, 1, t)
 		end
+		-- a roll / charge leaves a trail of puffs in its colour
+		if state == "attack" and kind == "Line" and moving and os.clock() - b.trailAt > 0.07 then
+			b.trailAt = os.clock()
+			sparkBurst(pos + Vector3.new(0, 1.5, 0), (attr(s, "Color") :: Color3?) or Color3.new(1, 1, 1), 5)
+		end
+		poseStars(b, pos, state == "dizzy", t)
 		local pose = POSES[b.kind]
 		local rootOff, rots = CFrame.new(), {}
 		if pose then
@@ -578,7 +849,7 @@ States.ChildRemoved:Connect(remove)
 -- The game's avatars use the new joints (AnimationConstraint + a BallSocketConstraint per joint): switching the
 -- AnimationConstraints off leaves the ball sockets holding the limbs - a ragdoll. Classic Motor6D rigs get a ball
 -- socket per joint for the duration. The Root joint stays on, so the HumanoidRootPart stays with the body.
-local ragdolled = false
+-- (`ragdolled` is declared with the bosses, above.)
 
 local function ragdoll(away: Vector3, power: number, seconds: number)
 	local character = player.Character

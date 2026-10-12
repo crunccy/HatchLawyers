@@ -960,10 +960,19 @@ Config.Zones = {
 		-- one lane running west from the street (tools/zones/BuildLane.lua): Safe Zone, then each zone, a License gate between
 		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -674, -36, -274, 36 } },
 		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1086, -36, -686, 36 } },
+		-- zones 3-6 (2026-10-12, user: "make the other 4 zones and their bosses"); each sells its themed egg
+		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1498, -36, -1098, 36 } },
+		{ Id = "FoodCourt", Name = "Food Court", Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1910, -36, -1510, 36 } },
+		{ Id = "OceanShore", Name = "Ocean Shore", Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -2322, -36, -1922, 36 } },
+		{ Id = "SpaceBase", Name = "Space Base", Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -2734, -36, -2334, 36 } },
 	},
 	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
 	License = { -- level n opens every zone whose License is n or less
 		{ Name = "Bronze License", Cost = 5e6 },
+		{ Name = "Silver License", Cost = 1e8 }, -- (2-5: first guesses, 2026-10-12 - put them in the zones sim run)
+		{ Name = "Gold License", Cost = 2e9 },
+		{ Name = "Platinum License", Cost = 4e10 },
+		{ Name = "Diamond License", Cost = 1e12 },
 	},
 	-- the Carry upgrade = BRIEFCASES (2026-10-12, user's call): eggs you can carry home per trip. Model = the briefcase
 	-- worn on your back (ReplicatedStorage.Briefcases, from tools/blender/briefcases.py; drawn by CarryPose).
@@ -1003,7 +1012,12 @@ Config.Bosses = {
 	Knockback = 75, -- studs/s the hit player is flung away
 	Margin = { X = 40, Z = 10 }, -- studs the boss keeps inside its zone's Bounds
 	-- Scale = drawn this much bigger than the Blender model; Chase = how often a walk heads for a player in the zone;
-	-- Hitbox = its body, in MODEL units (x Scale): HalfWidth, Back, Front (it faces -Z), Height - touching it is a hit
+	-- Hitbox = its body, in MODEL units (x Scale): HalfWidth, Back, Front (it faces -Z), Height - touching it is a hit.
+	-- Attack (one, or a list it takes turns with):
+	--   "Cone"  Radius studs in front, Angle degrees wide          "Ring"  RingRadius (or Radius) studs all round
+	--   "Slam"  hops onto where the target stood when it jumped (HopHeight model units high) and lands: Radius round it
+	--   "Line"  rolls / charges Length studs at the target at LineSpeed: Width studs wide; Dizzy s helpless after
+	--   "Pull"  drags everyone within Radius toward it at PullSpeed for PullTime s; the middle (Inner) is a hit
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
 			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
@@ -1013,6 +1027,22 @@ Config.Bosses = {
 			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
 			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90),
 			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 } },
+		{ Zone = "BrainrotBoulevard", Model = "JudgeMartello", Name = "Judge Martello", Difficulty = "Medium",
+			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 3, Windup = 1.1,
+			Attack = "Slam", Radius = 26, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
+			Hitbox = { HalfWidth = 3.3, Back = 1.6, Front = 1.7, Height = 5.6 } },
+		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
+			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
+			Attack = "Line", Length = 110, Width = 22, LineSpeed = 120, Color = Color3.fromRGB(255, 200, 60),
+			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 } },
+		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
+			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.8, Windup = 1.0,
+			Attack = "Line", Length = 130, Width = 20, LineSpeed = 150, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
+			Hitbox = { HalfWidth = 2.2, Back = 2.4, Front = 1.8, Height = 8 } },
+		{ Zone = "SpaceBase", Model = "Eclipse", Name = "Chief Justice Eclipse", Difficulty = "Extreme",
+			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.5, Windup = 1.4,
+			Attack = { "Pull", "Ring" }, Radius = 44, Inner = 12, PullTime = 2, PullSpeed = 16, RingRadius = 38,
+			Color = Color3.fromRGB(190, 120, 255), Hitbox = { HalfWidth = 2.4, Back = 1.8, Front = 1.8, Height = 10.3 } },
 	},
 }
 

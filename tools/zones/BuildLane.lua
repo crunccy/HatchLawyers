@@ -3,11 +3,11 @@
 -- Run in Studio's Edit mode (Studio MCP execute_luau or the command bar), e.g. by loading this file over HTTP.
 --
 -- Layout (world): the lane starts at the west end of the street (x = X0) and runs west (-X), centred on z = 0.
---   [hub] | SAFE ZONE (red line) | zone 1 | License gate | zone 2 | gate | ... | teaser of the next zone | end wall
+--   [hub] | SAFE ZONE (red line) | zone 1 | License gate | zone 2 | gate | ... | zone 6 | end wall
 -- Each zone: a sunken floor (its own colour, hard edge) between tall terracotta brick walls; the ground on top of
 -- the walls is the zone's colour and packed with its props; an orange path with white dashed edges and a white
 -- chevron trail runs down the middle; small clutter on the floor; invisible EggSpots scattered for ZoneService.
--- To add zones 3-6: add an entry to ZONES (colours + a props/clutter theme) and a Config.Zones.List entry.
+-- All six zones are built (2026-10-12). To add one: an entry in ZONES (colours + a theme) + Config.Zones.List + a License.
 -- Contracts Server.ZoneService / StarterPlayerScripts.Zones rely on (CLAUDE.md "Never rename"):
 --   Workspace.Zones.<Id> (Folder, attribute Zone) > EggSpots (parts) + Arrival (part)
 --   a part tagged LicenseGate (attributes RequiresLicense, Zone) with a LicensePrompt (attribute Upgrade = "License")
@@ -37,7 +37,6 @@ local TOP_W = 30 -- width of the decorated ground on top of each wall
 local SAFE = 10 -- the Safe Zone strip at the start
 local ZONE_LEN = 400 -- one zone, start to gate (~12 s at speed 32, ~25 s at 16)
 local GATE = 12 -- the License gate arch between zones
-local TEASER = 70 -- how much of the next (not built yet) zone shows past the last gate
 local TOP_Y = WALL_H + 0.4
 
 local function rgb(r, g, b)
@@ -54,16 +53,28 @@ local C = {
 	yellow = rgb(255, 214, 60), orange = rgb(255, 140, 40),
 }
 
--- Each zone: floor colours (two shades), the wall-top ground colour, and its theme for props + clutter.
+-- Each zone: floor colours (two shades - two very different ones make a checkerboard), the wall-top ground colour,
+-- the walls' colours (default terracotta) and its theme for props + clutter. All six built 2026-10-12.
 local ZONES = {
 	{ Id = "BriefcaseBay", Name = "Briefcase Bay", License = 0, floor = { rgb(104, 152, 236), rgb(94, 142, 226) },
 		edge = rgb(60, 100, 180), top = { rgb(96, 196, 40), rgb(88, 184, 36) }, theme = "office" },
 	{ Id = "PetPark", Name = "Pet Park", License = 1, floor = { rgb(156, 214, 64), rgb(146, 204, 58) },
 		edge = rgb(104, 160, 40), top = { rgb(124, 200, 52), rgb(116, 190, 48) }, theme = "pets" },
+	{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", License = 2, floor = { rgb(170, 80, 210), rgb(160, 72, 200) },
+		edge = rgb(110, 50, 150), top = { rgb(190, 90, 220), rgb(178, 82, 208) }, walls = { rgb(120, 62, 170), rgb(108, 54, 156) },
+		theme = "brainrot" },
+	{ Id = "FoodCourt", Name = "Food Court", License = 3, floor = { rgb(240, 84, 74), rgb(250, 244, 232) }, -- a picnic cloth
+		edge = rgb(190, 60, 50), top = { rgb(255, 214, 120), rgb(250, 204, 108) }, walls = { rgb(214, 140, 70), rgb(200, 128, 62) },
+		theme = "food", tile = 12 },
+	{ Id = "OceanShore", Name = "Ocean Shore", License = 4, floor = { rgb(240, 220, 160), rgb(232, 210, 150) },
+		edge = rgb(90, 170, 230), top = { rgb(250, 232, 180), rgb(244, 224, 170) }, walls = { rgb(200, 190, 170), rgb(186, 176, 156) },
+		theme = "ocean" },
+	{ Id = "SpaceBase", Name = "Space Base", License = 5, floor = { rgb(64, 62, 86), rgb(56, 54, 78) },
+		edge = rgb(90, 240, 255), top = { rgb(150, 150, 165), rgb(138, 138, 152) }, walls = { rgb(84, 86, 104), rgb(74, 76, 94) },
+		theme = "space" },
 }
--- the zone after the last built one: only its first stretch shows, behind a closed gate
-local TEASER_ZONE = { Name = "Brainrot", LicenseName = "Silver License", floor = { rgb(170, 80, 210), rgb(160, 72, 200) },
-	edge = rgb(110, 50, 150), top = { rgb(190, 90, 220), rgb(178, 82, 208) }, theme = "brainrot" }
+-- the License badge on each gate's arch, by license level
+local BADGE = { rgb(205, 127, 50), rgb(200, 205, 215), rgb(255, 200, 40), rgb(180, 235, 245), rgb(120, 220, 255) }
 
 ------------------------------------------------------------------ building blocks
 local rng = Random.new(20261012)
@@ -293,6 +304,33 @@ end
 function CLUTTER.tuft(m, x, y, z)
 	P(m, "Tuft", Vector3.new(0.8, 0.8, 0.8), at(x, y + 0.4, z, rng:NextInteger(0, 90)), C.leaf3, { nocollide = true })
 end
+-- (zones 3-6)
+function CLUTTER.sprinkle(m, x, y, z)
+	local col = ({ rgb(255, 90, 200), rgb(90, 240, 255), rgb(150, 255, 90), rgb(255, 214, 60) })[rng:NextInteger(1, 4)]
+	P(m, "Sprinkle", Vector3.new(1.4, 0.3, 0.4), at(x, y + 0.15, z, rng:NextInteger(0, 180)), col, { mat = Enum.Material.Neon, nocollide = true })
+end
+function CLUTTER.crumb(m, x, y, z)
+	P(m, "Crumb", Vector3.new(0.7, 0.5, 0.6), at(x, y + 0.25, z, rng:NextInteger(0, 90)), rgb(220, 160, 90), { nocollide = true })
+end
+function CLUTTER.ketchup(m, x, y, z)
+	P(m, "Ketchup", Vector3.new(rng:NextNumber(1.6, 2.6), 0.1, rng:NextNumber(1.2, 2)), at(x, y + 0.05, z, rng:NextInteger(0, 90)), rgb(210, 40, 40), { nocollide = true, smooth = true })
+end
+function CLUTTER.fry(m, x, y, z)
+	P(m, "Fry", Vector3.new(2, 0.4, 0.4), at(x, y + 0.2, z, rng:NextInteger(0, 180)), rgb(255, 210, 80), { nocollide = true })
+end
+function CLUTTER.shell(m, x, y, z)
+	local col = ({ C.white, rgb(255, 200, 210), rgb(255, 230, 200) })[rng:NextInteger(1, 3)]
+	P(m, "Shell", Vector3.new(0.9, 0.5, 0.7), at(x, y + 0.25, z, rng:NextInteger(0, 90)), col, { nocollide = true })
+end
+function CLUTTER.puddle(m, x, y, z)
+	P(m, "Puddle", Vector3.new(rng:NextNumber(2.5, 4.5), 0.08, rng:NextNumber(2, 3.5)), at(x, y + 0.04, z, rng:NextInteger(0, 90)), C.blueWater, { nocollide = true, smooth = true, t = 0.2 })
+end
+function CLUTTER.pebble(m, x, y, z)
+	P(m, "Pebble", Vector3.new(0.9, 0.6, 0.8), at(x, y + 0.3, z, rng:NextInteger(0, 90)), rgb(130, 130, 148), { nocollide = true })
+end
+function CLUTTER.glowPebble(m, x, y, z)
+	P(m, "GlowPebble", Vector3.new(0.5, 0.5, 0.5), at(x, y + 0.25, z, rng:NextInteger(0, 90)), rgb(90, 240, 255), { mat = Enum.Material.Neon, nocollide = true })
+end
 
 -- "lib:<Name>" = a Blender-made model from ServerStorage.ZoneDecorLibrary (tools/blender/zone_decor.py ->
 -- tools/zones/BuildDecorLibrary.lua); plain names = the procedural props above. Repeats = weight.
@@ -305,7 +343,19 @@ local THEMES = {
 		"lib:BushFlowers", "lib:FlowerBed", "lib:DogHouse", "lib:DogHouse", "lib:BonePile", "lib:BonePile", "lib:ToyPile",
 		"lib:ToyPile", "lib:Hydrant", "lib:Rocks" },
 		clutter = { "smallBone", "tennisBall", "dirt", "dirt", "lib:GrassTuft", "lib:GrassTuft" } },
-	brainrot = { props = { "lib:TreeBlossom", "weirdTree", "lib:ToyPile" }, clutter = { "tuft" } },
+	-- (zones 3-6; scale = how much bigger their props are drawn - giant food, giant crystals)
+	brainrot = { props = { "lib:Lollipop", "lib:Lollipop", "lib:Mushroom", "lib:Mushroom", "lib:EyeStalk", "lib:JellyCubes",
+		"lib:StaticTV", "lib:GiantGavel", "lib:TreeBlossom", "weirdTree" },
+		clutter = { "sprinkle", "sprinkle", "sprinkle", "tuft" }, scale = 1.5 },
+	food = { props = { "lib:Donut", "lib:Donut", "lib:Burger", "lib:IceCream", "lib:IceCream", "lib:Fries", "lib:PizzaSlice",
+		"lib:Soda" },
+		clutter = { "crumb", "crumb", "ketchup", "fry", "fry" }, scale = 1.7 },
+	ocean = { props = { "lib:PalmTree", "lib:PalmTree", "lib:PalmTree", "lib:BeachUmbrella", "lib:SandCastle", "lib:Starfish",
+		"lib:Coral", "lib:Coral", "lib:LifeRing", "lib:Rocks" },
+		clutter = { "shell", "shell", "puddle", "shell" }, scale = 1.4 },
+	space = { props = { "lib:Crystals", "lib:Crystals", "lib:SatelliteDish", "lib:Rocket", "lib:AlienPlant", "lib:AlienPlant",
+		"lib:MoonRock", "lib:MoonRock", "lib:Beacon" },
+		clutter = { "pebble", "pebble", "glowPebble" }, scale = 1.5 },
 }
 
 -- places a prop: a clone of a library model (scaled, turned) or a procedural one
@@ -366,14 +416,23 @@ local function clearArea(cf: CFrame, size: Vector3)
 end
 
 ------------------------------------------------------------------ one stretch of lane: floor, walls, wall-top ground
-local function laneStretch(parent: Instance, s0: number, s1: number, floor: { Color3 }, edge: Color3?, top: { Color3 })
+local function laneStretch(parent: Instance, s0: number, s1: number, floor: { Color3 }, edge: Color3?, top: { Color3 }, walls: { Color3 }?, tile: number?)
 	local f = model(parent, "Floor")
-	local i = 0
-	for s = s0, s1 - 1, 20 do
-		local len = math.min(20, s1 - s)
-		for _, zz in { -HALF, 0 } do
-			i += 1
-			box(f, "Ground", sx(s), -1, zz, sx(s + len), 0, zz + HALF, floor[(i + (if zz == 0 then 1 else 0)) % 2 + 1])
+	-- tiles in a checkerboard of the two floor colours: 20 x half-the-width by default (two close shades), or `tile`
+	-- square (Food Court's picnic cloth). (Before 2026-10-12 the index always picked the second colour.)
+	local along = tile or 20
+	local across = tile or HALF
+	local row = 0
+	for s = s0, s1 - 1, along do
+		local len = math.min(along, s1 - s)
+		row += 1
+		local col = 0
+		local zz = -HALF
+		while zz < HALF - 0.01 do
+			col += 1
+			local z1 = math.min(zz + across, HALF)
+			box(f, "Ground", sx(s), -1, zz, sx(s + len), 0, z1, floor[(row + col) % 2 + 1])
+			zz = z1
 		end
 	end
 	if edge then -- the hard border: a darker strip where this colour starts
@@ -386,7 +445,8 @@ local function laneStretch(parent: Instance, s0: number, s1: number, floor: { Co
 		k += 1
 		for _, side in { -1, 1 } do
 			-- terracotta wall (inner face, outer face to the sea) under a slab of the zone's ground
-			box(w, "Wall", sx(s), -1, side * HALF, sx(s + len), WALL_H - 0.4, side * (HALF + TOP_W), if k % 2 == 0 then C.terracotta else C.terracotta2)
+			local wc = walls or { C.terracotta, C.terracotta2 }
+			box(w, "Wall", sx(s), -1, side * HALF, sx(s + len), WALL_H - 0.4, side * (HALF + TOP_W), if k % 2 == 0 then wc[1] else wc[2])
 			box(w, "WallTop", sx(s), WALL_H - 0.4, side * HALF, sx(s + len), TOP_Y, side * (HALF + TOP_W), top[k % 2 + 1])
 		end
 	end
@@ -425,7 +485,7 @@ local function decorate(parent: Instance, s0: number, s1: number, themeName: str
 			for band, range in { { HALF + 4, HALF + 12, 0.9 }, { HALF + 15, HALF + TOP_W - 4, 0.5 } } do
 				if rng:NextNumber() < range[3] then
 					local kind = theme.props[rng:NextInteger(1, #theme.props)]
-					local scale = if string.find(kind, "Tree") then rng:NextNumber(0.9, 1.3) else rng:NextNumber(0.9, 1.25)
+					local scale = (if string.find(kind, "Tree") then rng:NextNumber(0.9, 1.3) else rng:NextNumber(0.9, 1.25)) * (theme.scale or 1)
 					placeProp(props, kind, sx(s) + rng:NextNumber(-2.5, 2.5) + (band - 1) * 4, TOP_Y, side * rng:NextNumber(range[1], range[2]), scale)
 				end
 			end
@@ -437,7 +497,7 @@ local function decorate(parent: Instance, s0: number, s1: number, themeName: str
 			if rng:NextNumber() < 0.6 then
 				local kind = theme.props[rng:NextInteger(1, #theme.props)]
 				if kind ~= "lamp" then
-					placeProp(props, kind, sx(s) + rng:NextNumber(-4, 4), 0, side * rng:NextNumber(HALF - 9, HALF - 4), rng:NextNumber(0.8, 1.05))
+					placeProp(props, kind, sx(s) + rng:NextNumber(-4, 4), 0, side * rng:NextNumber(HALF - 9, HALF - 4), rng:NextNumber(0.8, 1.05) * (theme.scale or 1))
 				end
 			end
 		end
@@ -528,8 +588,9 @@ do
 	letters.CanQuery = false
 	-- (rotated so the text reads correctly for someone walking into the lane)
 	text(letters, Enum.NormalId.Top, { { "SAFE ZONE", C.white, 1, 8 } }, 18)
-	-- everything west of the hub's edge, across the lane's full width
-	clearArea(CFrame.new(X0 - 650, 6, 0), Vector3.new(1300, 40, 2 * (HALF + TOP_W) + 10))
+	-- everything west of the hub's edge, across the lane's full width and length
+	local total = SAFE + #ZONES * ZONE_LEN + (#ZONES - 1) * GATE + 10
+	clearArea(CFrame.new(X0 - total / 2, 6, 0), Vector3.new(total, 40, 2 * (HALF + TOP_W) + 10))
 end
 s = SAFE
 
@@ -537,7 +598,7 @@ for i, z in ZONES do
 	local zf = folder(zonesRoot, z.Id)
 	zf:SetAttribute("Zone", z.Id)
 	local s0, s1 = s, s + ZONE_LEN
-	laneStretch(zf, s0, s1, z.floor, z.edge, z.top)
+	laneStretch(zf, s0, s1, z.floor, z.edge, z.top, z.walls, z.tile)
 	pathStretch(zf, s0, s1)
 	decorate(zf, s0, s1, z.theme)
 	spotsAndClutter(zf, s0, s1, z.theme, 40)
@@ -549,7 +610,7 @@ for i, z in ZONES do
 	if nextZone then
 		local lic = Config.Zones.License[nextZone.License]
 		local price = if lic then formatCoins(lic.Cost) else ""
-		gateArch(gateParent, s, string.upper(nextZone.Name), (if lic then lic.Name else "License") .. "  ·  " .. price, string.upper((lic and lic.Name or "LICENSE"):gsub(" License", "")), C.bronze)
+		gateArch(gateParent, s, string.upper(nextZone.Name), (if lic then lic.Name else "License") .. "  ·  " .. price, string.upper((lic and lic.Name or "LICENSE"):gsub(" License", "")), BADGE[nextZone.License] or C.bronze)
 		local barrier = box(gateParent, "LicenseGate", sx(s + GATE / 2 - 0.4), 0, -HALF, sx(s + GATE / 2 + 0.4), TOP_Y + 6, HALF, C.orange, { mat = Enum.Material.Neon, t = 0.45 })
 		barrier:SetAttribute("RequiresLicense", nextZone.License)
 		barrier:SetAttribute("Zone", nextZone.Id)
@@ -567,16 +628,11 @@ for i, z in ZONES do
 	end
 end
 
--- the next zone, not built yet: a closed gate and the first stretch of its colours, then the end wall
+-- the end of the lane, after the last zone (all six are built: no teaser any more)
 do
-	local t = folder(zonesRoot, "NextZoneTeaser")
-	gateArch(t, s, string.upper(TEASER_ZONE.Name), TEASER_ZONE.LicenseName .. "  ·  COMING SOON", "SILVER", rgb(200, 205, 215))
-	box(t, "ClosedGate", sx(s + GATE / 2 - 0.4), 0, -HALF, sx(s + GATE / 2 + 0.4), TOP_Y + 6, HALF, C.purple, { mat = Enum.Material.Neon, t = 0.35 })
-	s += GATE
-	laneStretch(t, s, s + TEASER, TEASER_ZONE.floor, TEASER_ZONE.edge, TEASER_ZONE.top)
-	decorate(t, s, s + TEASER, TEASER_ZONE.theme)
-	s += TEASER
-	box(t, "EndWall", sx(s), -1, -(HALF + TOP_W), sx(s + 4), TOP_Y + 4, HALF + TOP_W, C.terracotta)
+	local t = model(zonesRoot, "LaneEnd")
+	local last = ZONES[#ZONES]
+	box(t, "EndWall", sx(s), -1, -(HALF + TOP_W), sx(s + 4), TOP_Y + 4, HALF + TOP_W, (last.walls and last.walls[1]) or C.terracotta)
 end
 
 ------------------------------------------------------------------ the License Office, at the lane entrance (hub side)
@@ -640,4 +696,4 @@ do
 	end
 end
 
-return ("built the lane: %d parts, %d studs long (Safe Zone + %d zones + teaser)"):format(parts, s, #ZONES)
+return ("built the lane: %d parts, %d studs long (Safe Zone + %d zones)"):format(parts, s, #ZONES)

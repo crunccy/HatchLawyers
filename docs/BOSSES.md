@@ -2,11 +2,13 @@
 
 One boss per egg zone, roaming the lane like the giants in the reference game (docs/ZONES_REFERENCE.md). **Concepts, not
 specs:** a local session builds the models (brick style, docs/CHARACTER_STYLE.md) and the code.
-**Built (2026-10-12, mr.robe's session): #1 The Senior Partner and #2 Barrister Bulldog** - the two zones that exist.
+**All six are built (2026-10-12, mr.robe's sessions)** - Senior Partner + Bulldog first, then Martello (Slam), Big
+Cheese (Line roll), Megalodon (Line charge + dizzy) and Eclipse (Pull, then Ring) with zones 3-6.
 Models `tools/blender/bosses.py` → `tools/zones/BuildBosses.lua` → `ReplicatedStorage.Bosses`; AI + hits
 `Server.BossService`; loose eggs `Server.ZoneService` (`dropAll`, walk-into grab); drawing / animation / warnings /
-effects `StarterPlayerScripts.Bosses`; numbers `Config.Bosses`. Bosses 3-6 come with their zones: add a model to
-bosses.py (groups + joints), an entry to `Config.Bosses.List`, and a pose function in the Bosses client.
+effects `StarterPlayerScripts.Bosses`; numbers `Config.Bosses`. A new boss: a model in bosses.py (groups + joints),
+an entry in `Config.Bosses.List` (Attack = Cone / Ring / Slam / Line / Pull, or a list) and a pose function in the
+Bosses client.
 Bosses are the only characters whose names carry legal titles (CHARACTER_STYLE.md → Naming rule).
 
 **Later user's calls (2026-10-12, mr.robe's session), these override the rules below where they differ:** bosses are

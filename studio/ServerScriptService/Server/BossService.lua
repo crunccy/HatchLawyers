@@ -4,7 +4,12 @@
 -- now and then (an idle), and when a player comes within TriggerRange (and AttackEvery has passed) it turns to them,
 -- WINDS UP (Windup s: the clients show a warning on the floor and play a sound) and ATTACKS:
 --   "Cone" = Radius studs in front of it, Angle degrees wide (The Senior Partner's briefcase swing)
---   "Ring" = Radius studs all round (Barrister Bulldog's bark).
+--   "Ring" = RingRadius / Radius studs all round (Barrister Bulldog's bark, the Eclipse's gavel orbit)
+--   "Slam" = hops onto where the target stood when it jumped, Radius round the landing (Judge Martello)
+--   "Line" = rolls / charges Length studs at the target, Width wide, then Dizzy s (Big Cheese, the Megalodon)
+--   "Pull" = drags everyone within Radius in for PullTime s; its middle (Inner) is a hit (Chief Justice Eclipse)
+-- A boss whose Attack is a list takes turns. State attributes add AttackKind (this attack) and Target (where a
+-- Slam lands / a Line ends).
 -- Hits are decided HERE, from where everyone stands at that moment (never the client's word). TOUCHING the boss's
 -- body (its Hitbox) is a hit too. A hit RAGDOLLS the player (their client, RagdollTime s, flung away) and knocks
 -- every egg they carry out of their arms (ZoneService.dropAll: loose eggs anyone can grab); then they can't be hit
@@ -12,7 +17,7 @@
 -- The bosses are DRAWN by every client (StarterPlayerScripts.Bosses) from ReplicatedStorage.BossStates.<Model>
 -- (a Configuration whose attributes are the boss's state), so the server never moves any parts:
 --   From / To (Vector3), MoveStart / MoveEnd (server time), Yaw (radians, the way it faces),
---   State ("walk" | "idle" | "windup" | "attack" | "recover"), StateStart / StateEnd, Idle (which idle),
+--   State ("walk" | "idle" | "windup" | "attack" | "dizzy" | "recover"), StateStart / StateEnd, Idle (which idle),
 --   plus its fixed settings (Model, Zone, Attack, Radius, Angle, Windup, Color, Scale = how much bigger than the model).
 -- Remotes.Bosses, server -> all clients: ("Hit", { userId, from, away, eggs = { { egg, golden, at } }, t, ragdoll })
 -- ("Grab", { userId, at, egg, golden }).
@@ -41,6 +46,8 @@ type Boss = {
 	zig: number, -- the Bulldog's zig-zag side (-1 / 1)
 	nextAttack: number,
 	ignore: { [Player]: number }, -- players it leaves alone until then (just hit)
+	attackIndex: number, -- which of its attacks it used last (a list takes turns)
+	airborne: boolean, -- mid-hop (a Slam): its body can't be touched
 }
 
 local rng = Random.new()
@@ -182,6 +189,9 @@ local function touchLoop(b: Boss)
 	local s = b.def.Scale or 1
 	while b.state.Parent do
 		task.wait(0.1)
+		if b.airborne then
+			continue -- (mid-hop, high above everyone)
+		end
 		local pos = posAt(b, now())
 		local frame = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0)
 		local look = frame.LookVector
@@ -195,29 +205,102 @@ local function touchLoop(b: Boss)
 	end
 end
 
-local function attack(b: Boss, here: Vector3, target: BasePart)
-	b.yaw = yawOf(flat(target.Position - here), b.yaw)
-	stand(b, here)
-	setState(b, "windup", b.def.Windup)
-	task.wait(b.def.Windup)
-	setState(b, "attack", 0.45)
+-- which attack this time (a boss with a list takes turns)
+local function nextAttackKind(b: Boss): string
+	local a = b.def.Attack
+	if type(a) == "table" then
+		b.attackIndex = (b.attackIndex % #a) + 1
+		return a[b.attackIndex]
+	end
+	return a
+end
+
+-- everyone standing in a one-moment shape right now: "Cone" (in front) or a circle of `radius` round `centre`
+local function hitShape(b: Boss, kind: string, centre: Vector3, radius: number)
 	local look = Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
 	local cosHalf = math.cos(math.rad((b.def.Angle or 360) / 2))
 	for _, p in playersInZone(b) do
-		local d = flat(p.root.Position - here)
+		local d = flat(p.root.Position - centre)
 		local dist = d.Magnitude
-		local inside = dist <= b.def.Radius
-		if inside and b.def.Attack == "Cone" and dist > 3 * (b.def.Scale or 1) then -- (right under it always counts)
+		local inside = dist <= radius
+		if inside and kind == "Cone" and dist > 3 * (b.def.Scale or 1) then -- (right under it always counts)
 			inside = d.Unit:Dot(look) >= cosHalf
 		end
 		if inside then
-			hit(b, p.player, p.root, here, look)
+			hit(b, p.player, p.root, centre, look)
 		end
 	end
-	task.wait(0.45)
+end
+
+local function attack(b: Boss, here: Vector3, target: BasePart)
+	local def = b.def
+	local kind = nextAttackKind(b)
+	b.yaw = yawOf(flat(target.Position - here), b.yaw)
+	b.state:SetAttribute("AttackKind", kind)
+	b.state:SetAttribute("Target", here)
+	if kind == "Slam" then
+		-- jumps at where the target stands NOW and comes down there at the end of the windup (moving dodges it)
+		local spot = clampToArea(b, target.Position.X, target.Position.Z)
+		b.state:SetAttribute("Target", spot)
+		b.airborne = true
+		setMove(b, here, spot, def.Windup)
+		setState(b, "windup", def.Windup)
+		task.wait(def.Windup)
+		b.airborne = false
+		stand(b, spot)
+		setState(b, "attack", 0.45)
+		hitShape(b, "Ring", spot, def.Radius)
+		task.wait(0.45)
+	elseif kind == "Line" then
+		-- rolls / charges straight at the target, Length studs (shorter at the zone's edge), Width wide
+		local dir = flat(target.Position - here)
+		dir = if dir.Magnitude > 0.1 then dir.Unit else Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
+		local goal = clampToArea(b, here.X + dir.X * def.Length, here.Z + dir.Z * def.Length)
+		b.state:SetAttribute("Target", goal)
+		stand(b, here)
+		setState(b, "windup", def.Windup)
+		task.wait(def.Windup)
+		local duration = math.max(0.25, flat(goal - here).Magnitude / def.LineSpeed)
+		setMove(b, here, goal, duration)
+		setState(b, "attack", duration)
+		local stop = now() + duration
+		while now() < stop do -- the hit sweeps along with it
+			local pos = posAt(b, now())
+			for _, p in playersInZone(b) do
+				if flat(p.root.Position - pos).Magnitude <= def.Width / 2 then
+					hit(b, p.player, p.root, pos, dir)
+				end
+			end
+			task.wait(0.05)
+		end
+		stand(b, goal)
+		if def.Dizzy then
+			setState(b, "dizzy", def.Dizzy) -- (helpless for a moment: a free window to run past)
+			task.wait(def.Dizzy)
+		end
+	elseif kind == "Pull" then
+		-- everyone within Radius is dragged toward it (each client pulls its own character) for PullTime s; the
+		-- middle (Inner) is a hit. Walking straight out escapes it.
+		stand(b, here)
+		setState(b, "windup", def.Windup)
+		task.wait(def.Windup)
+		setState(b, "attack", def.PullTime)
+		local stop = now() + def.PullTime
+		while now() < stop do
+			hitShape(b, "Ring", here, def.Inner)
+			task.wait(0.1)
+		end
+	else -- "Cone" / "Ring"
+		stand(b, here)
+		setState(b, "windup", def.Windup)
+		task.wait(def.Windup)
+		setState(b, "attack", 0.45)
+		hitShape(b, kind, here, if kind == "Ring" then (def.RingRadius or def.Radius) else def.Radius)
+		task.wait(0.45)
+	end
 	setState(b, "recover", 0.6)
 	task.wait(0.6)
-	b.nextAttack = now() + b.def.AttackEvery
+	b.nextAttack = now() + def.AttackEvery
 end
 
 local function run(b: Boss)
@@ -299,15 +382,18 @@ function BossService.start()
 
 		local state = Instance.new("Configuration")
 		state.Name = def.Model
-		for k, v in { Model = def.Model, Zone = def.Zone, Attack = def.Attack, Radius = def.Radius, Angle = def.Angle or 360,
-			Windup = def.Windup, Color = def.Color, FloorY = floorY, Scale = def.Scale or 1 } do
+		local firstAttack = if type(def.Attack) == "table" then def.Attack[1] else def.Attack
+		for k, v in { Model = def.Model, Zone = def.Zone, Attack = firstAttack, AttackKind = firstAttack, Radius = def.Radius or 10,
+			Angle = def.Angle or 360, Windup = def.Windup, Color = def.Color, FloorY = floorY, Scale = def.Scale or 1,
+			RingRadius = def.RingRadius or def.Radius or 10, Length = def.Length or 0, Width = def.Width or 0,
+			Inner = def.Inner or 0, PullSpeed = def.PullSpeed or 0, HopHeight = def.HopHeight or 0 } do
 			state:SetAttribute(k, v)
 		end
 		local start = Vector3.new(cx + rng:NextNumber(-40, 40), floorY, cz)
 		local b: Boss = {
 			def = def, bounds = bounds, area = area, floorY = floorY, state = state,
 			from = start, to = start, moveStart = 0, moveEnd = 0, yaw = math.pi / 2, dirX = -1, zig = 1,
-			nextAttack = now() + 3, ignore = {},
+			nextAttack = now() + 3, ignore = {}, attackIndex = 0, airborne = false,
 		}
 		setMove(b, start, start, 0)
 		setState(b, "idle", 1)

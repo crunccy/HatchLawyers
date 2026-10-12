@@ -5,11 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (late night):** user: "make the other 4 zones and their bosses" →
-  Brainrot Boulevard, Food Court, Ocean Shore, Space Base on the lane (Blender decorations, licenses Silver → Diamond,
-  hub teleports) + Judge Martello, Prosecutor Big Cheese, Magistrate Megalodon, Chief Justice Eclipse (new attack
-  kinds: hop-slam, roll / charge lines, gravity pull). Rebuilds Workspace.Zones (BuildLane); touches Config.Zones,
-  Config.Bosses, BossService, Bosses client.
 
 ## Open items
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
@@ -22,23 +17,22 @@ Claim big work here before starting (who · what · since), push the claim, remo
       **Rule: publish animations (and other assets the game loads) from the place owner's account (crnuch).** If
       the Blender animation changes, re-publish from there and swap the id.
 - [ ] Eye-check the carry animation in a real window (hug loop, the pile's sway while walking).
-- [ ] **Bosses: eye-check in a real window** (walk / idle / windup / slam / bark poses, the floor warnings, the egg
-      flight + bounce, loose-egg glow and blink) and tune `Config.Bosses` (AttackEvery, Windup, Radius, Knockback) by
-      feel. The bark is a low gavel knock - swap in a real licensed bark if one turns up. Bosses 3-6 come with their
-      zones (docs/BOSSES.md says how). Boss Cases: parked (user).
+- [ ] **Bosses: eye-check in a real window** (all six: poses, floor warnings, slam / roll / charge / pull, dizzy
+      stars, the egg flight + bounce, loose-egg glow and blink) and tune `Config.Bosses` by feel. The bark is a low
+      gavel knock - swap in a real licensed bark if one turns up. Boss Cases: parked (user).
+- [ ] **Zones 3-6: eye-check in a real window** (renders of each in `art/zones/`), and price them: Silver 1e8, Gold
+      2e9, Platinum 4e10, Diamond 1e12 are first guesses - put them in the zones sim run.
+- [ ] **Decide: the hub's Brainrot / Food / Ocean / Space egg machines** are still there (the Briefcase + Pet ones
+      were archived when their eggs moved to zones). Keep them (two ways to get those eggs) or archive them too?
+- [ ] `ServerStorage.Old_Zones` holds two archived lanes (islands 05:59, 2-zone lane 22:42) - delete once nobody
+      needs them (they're a few thousand parts each in the place file).
 - [ ] **Briefcase tiers 4-5 costs are guesses** (Golden 2.5e9 → 8 eggs, Diamond 2.5e11 → 12 eggs; x100 per tier like
       before). Put them in the zones economy sim run (item below) and eye-check the briefcases on a few avatars.
 - [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
 - [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
       players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
-- [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
-      session): Briefcase Bay + Pet Park as two islands past the west end of the street, License Office, gate,
-      hub teleports, incubators, golden eggs (entry below). docs/ZONES_REFERENCE.md (crnuch) asks for a different
-      layout: ONE sunken lane of six zones between studded walls, chevron trails, 2-line egg labels. If the lane is
-      rebuilt, keep ZoneService's contracts so the gameplay carries over: `Zones.<Id>.EggSpots` / `Arrival`,
-      `LicenseGate` tag (+ `LicensePrompt`), `UpgradePrompt` (attr `Upgrade`), `UpgradeBoard` tag, hub
-      `TeleportPrompt`, `Config.Zones.List[*].Bounds`. Swap the floating price tags (StarterPlayerScripts.Zones) for
-      the 2-line labels. Bosses: decided, see docs/BOSSES.md.
+- [x] **Egg zones: one design, built** — the walled lane (docs/ZONES_REFERENCE.md), all six zones + bosses, 2026-10-12
+      (entries below; user: "make the other 4 zones and their bosses").
 - [ ] **Egg tiers vs zones overlap** (decide): the economy pass locks themed eggs by lifetime coins
       (`UnlockEarned`, Pet 1e7) and the zones gate them by Law License (Pet Park, `Config.Zones.License` 5e6 coins).
       Merge rule for now (src/EggServer): a zone egg already bought (`o.paid`) hatches even if its tier is locked, so it
@@ -106,6 +100,36 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: zones 3-6 + their bosses - the whole lane is built
+- User: "make the other 4 zones and their bosses" (this also closes the lane review: the lane design stands).
+- **The lane** (`tools/zones/BuildLane.lua`, rebuilt; the old 2-zone lane is archived in `ServerStorage.Old_Zones`):
+  Safe Zone + six 400-stud zones + gates + an end wall, x -264 → -2738. New: **Brainrot Boulevard** (purple, License 2
+  Silver), **Food Court** (red-and-white picnic checkerboard, 12-stud tiles, License 3 Gold), **Ocean Shore** (sand,
+  stone walls, License 4 Platinum), **Space Base** (dark floor, metal walls, License 5 Diamond). Each sells its themed
+  egg (14 at a time). Zones can now set their own wall colours and floor tile size; gate badges take the license's
+  colour (bronze → diamond). Fixed: the floor's two shades never alternated (always the second colour).
+- **Decorations** (Blender, `tools/blender/zone_decor.py`, 24 new models, "neon" blocks supported):
+  Brainrot - lollipops, spotted mushrooms, eyeball stalks, jelly cubes, a static TV, a giant gavel; Food - donuts,
+  burgers, ice creams, fries, pizza slices, sodas (drawn 1.7x); Ocean - palms, beach umbrellas, sand castles, starfish,
+  coral, life rings; Space - crystals, satellite dishes, rockets, alien plants, moon rocks, beacons. New floor clutter
+  per theme (sprinkles, crumbs, ketchup, fries, shells, puddles, pebbles, glow pebbles).
+- **Config.Zones** (live + src): four List entries (Bounds match the builder) and licenses Silver 1e8, Gold 2e9,
+  Platinum 4e10, Diamond 1e12 (guesses). **Hub:** four more teleport pads (x -67 / -51, z ±8), in the zones' colours.
+- **Bosses** (Blender, `tools/blender/bosses.py`; `Config.Bosses`):
+  **Judge Martello** (a walking gavel with a face; hops; "Slam": jumps at where you stood, lands, 26-stud ring),
+  **Prosecutor Big Cheese** (a cheese wheel with a moustache and an olive sword; "Line": turns side-on and ROLLS 110
+  studs, 22 wide), **Magistrate Megalodon** (an upright shark in a robe with a lantern fish; "Line" charge 130 studs,
+  then 2 s dizzy with stars), **Chief Justice Eclipse** (floating, eclipse face with a gold corona, orbiting gavels;
+  takes turns: "Pull" drags everyone within 44 studs in at 16 studs/s for 2 s - the white middle is a hit - and "Ring"
+  38 studs). `BossService` got the new attack kinds (+ AttackKind / Target state, airborne bosses can't be touched);
+  the client got poses, warnings (landing disc, strip with arrows, swirl with a deadly middle), trails and stars.
+- **Fixed after the first test:** the Pull and the dizzy stars only ran within 500 studs of the CAMERA - they now
+  run for the player's character too (Studio's background camera never followed the test character).
+- **Playtested:** all six bosses walk their zones, eggs in all six zones, six teleports, the License board offers
+  "Silver License · opens Brainrot Boulevard · 100M"; Martello flew ~30 studs onto the test spot → hit; Big Cheese
+  rolled 110 studs → hit; Megalodon charged → hit → dizzy (3 stars); Eclipse Pull dragged 30 → 20 studs in 0.6 s, then
+  used Ring next; no errors. mr_blox174's two carried Pet eggs were set aside for the tests and restored.
 
 ## 2026-10-12 — mr.robe, local session: boss hits RAGDOLL, touching a boss is a hit, bosses outrun players
 - User: "they should ragdoll the player as well, and if the player collides with the hitbox of the boss it also

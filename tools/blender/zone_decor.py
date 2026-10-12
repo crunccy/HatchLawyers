@@ -268,6 +268,254 @@ def _(P):
     box(P, "Nozzles", 0, 0, 1.8, 3.0, 0.8, 0.8, PAL["gold"])
     box(P, "Front", 0, -1.0, 1.7, 0.9, 0.6, 0.9, PAL["gold"])
 
+# (zones 3-6, 2026-10-12: tag "neon" = a glowing block, no studs - tools/zones/BuildDecorLibrary.lua)
+NEON_PINK, NEON_CYAN, NEON_LIME, NEON_PURPLE = rgb(255, 90, 200), rgb(90, 240, 255), rgb(150, 255, 90), rgb(190, 110, 255)
+
+def disc(P, name, cx, cy, z0, r, thick, col, axis="y", tag=""):
+    """A blocky disc (rows of blocks) of radius r standing up, facing +-axis ('y' = faces front/back, 'x' = sideways)."""
+    n = max(2, int(r * 2))
+    step = 2 * r / n
+    for i in range(n):
+        u = -r + step * (i + 0.5)
+        h = 2 * math.sqrt(max(0.0, r * r - u * u))
+        if axis == "y":
+            box(P, name, cx + u, cy, z0 + r - h / 2, step + 0.02, thick, h, col, tag=tag)
+        else:
+            box(P, name, cx, cy + u, z0 + r - h / 2, thick, step + 0.02, h, col, tag=tag)
+
+# ------------------------------------------------------------------ Brainrot Boulevard (weird, neon, a bit silly)
+@model("Lollipop", "brainrot")
+def _(P):
+    box(P, "Stick", 0, 0, 0, 0.5, 0.5, 6.0, PAL["white"])
+    disc(P, "Candy", 0, 0, 5.4, 2.4, 0.7, NEON_PINK)
+    disc(P, "Swirl", 0, -0.4, 6.4, 1.4, 0.12, PAL["white"], tag="nocollide")
+    disc(P, "SwirlCore", 0, -0.48, 7.1, 0.7, 0.12, NEON_PURPLE, tag="nocollide")
+
+@model("Mushroom", "brainrot")
+def _(P):
+    r = random.Random(301)
+    box(P, "Stem", 0, 0, 0, 1.6, 1.6, 3.2, PAL["cream"])
+    box(P, "Cap", 0, 0, 3.0, 5.2, 5.2, 1.4, PAL["red"])
+    box(P, "CapTop", 0, 0, 4.4, 3.4, 3.4, 0.8, PAL["red"])
+    for k in range(6):
+        a = k * math.tau / 6 + r.uniform(-0.3, 0.3)
+        box(P, "Spot", math.cos(a) * 2.0, math.sin(a) * 2.0, 4.35, 0.8, 0.8, 0.25, PAL["white"], tag="nocollide")
+    box(P, "SpotTop", 0.4, -0.3, 5.15, 0.9, 0.9, 0.2, PAL["white"], tag="nocollide")
+
+@model("EyeStalk", "brainrot")
+def _(P):
+    r = random.Random(311)
+    for k in range(5):
+        box(P, "Stalk", r.uniform(-0.15, 0.15), r.uniform(-0.15, 0.15), k * 1.1, 0.7, 0.7, 1.15, NEON_LIME if k % 2 else rgb(110, 210, 70), rz=r.uniform(-10, 10))
+    voxel_ball(P, "Eyeball", 0, 0, 5.4, 2.2, PAL["white"])
+    box(P, "Iris", 0, -1.02, 6.2, 0.9, 0.12, 0.9, NEON_CYAN, tag="nocollide")
+    box(P, "Pupil", 0, -1.08, 6.38, 0.45, 0.06, 0.45, PAL["ink"], tag="nocollide")
+
+@model("JellyCubes", "brainrot")
+def _(P):
+    cols = [NEON_PINK, NEON_CYAN, NEON_LIME, NEON_PURPLE]
+    r = random.Random(321)
+    z = 0.0
+    for k in range(3):
+        s = 2.6 - k * 0.5
+        box(P, "Jelly", r.uniform(-0.3, 0.3), r.uniform(-0.3, 0.3), z, s, s, s, cols[k % 4], rz=r.uniform(-20, 20), tag="glass")
+        z += s
+    box(P, "JellyBit", 2.0, 0.6, 0, 1.2, 1.2, 1.2, cols[3], rz=25, tag="glass")
+
+@model("StaticTV", "brainrot")
+def _(P):
+    box(P, "Cabinet", 0, 0, 0, 4.0, 3.0, 3.2, PAL["woodDark"])
+    box(P, "Screen", 0, -1.52, 0.5, 3.0, 0.08, 2.2, rgb(200, 210, 230), tag="neon")
+    for k in range(4):
+        box(P, "Static", -1.0 + k * 0.7, -1.57, 0.7 + (k % 2) * 0.9, 0.5, 0.05, 0.3, PAL["ink"], tag="nocollide")
+    box(P, "AntennaL", -0.6, 0, 3.2, 0.2, 0.2, 2.0, PAL["steel"], ry=-25, tag="nocollide")
+    box(P, "AntennaR", 0.6, 0, 3.2, 0.2, 0.2, 2.0, PAL["steel"], ry=25, tag="nocollide")
+
+@model("GiantGavel", "brainrot")
+def _(P):
+    # a gavel stuck head-down in the ground, handle up at a slant
+    box(P, "Head", 0, 0, 0, 2.4, 2.4, 4.4, PAL["wood"], ry=90)
+    box(P, "HeadBand", 1.5, 0, 0.1, 0.4, 2.5, 2.5, PAL["gold"], ry=90)
+    box(P, "HeadBand", -1.5, 0, 0.1, 0.4, 2.5, 2.5, PAL["gold"], ry=90)
+    box(P, "Handle", 0.6, 0, 2.2, 0.8, 0.8, 6.0, PAL["woodDark"], ry=14)
+
+# ------------------------------------------------------------------ Food Court (a giant picnic)
+@model("Donut", "food")
+def _(P):
+    ring = [(-1.8, -1.8), (0, -2.2), (1.8, -1.8), (2.2, 0), (1.8, 1.8), (0, 2.2), (-1.8, 1.8), (-2.2, 0)]
+    r = random.Random(401)
+    for (x, y) in ring:
+        box(P, "Dough", x, y, 0, 1.9, 1.9, 1.2, rgb(220, 160, 90))
+        box(P, "Icing", x, y, 1.2, 1.8, 1.8, 0.4, rgb(255, 130, 190))
+        box(P, "Sprinkle", x + r.uniform(-0.5, 0.5), y + r.uniform(-0.5, 0.5), 1.6, 0.5, 0.15, 0.12, r.choice([PAL["yellow"], PAL["sky"], PAL["white"], NEON_LIME]), rz=r.uniform(0, 180), tag="nocollide")
+
+@model("Burger", "food")
+def _(P):
+    box(P, "BunBottom", 0, 0, 0, 5.0, 5.0, 1.0, rgb(230, 160, 80))
+    box(P, "Patty", 0, 0, 1.0, 5.2, 5.2, 0.9, rgb(110, 60, 30))
+    box(P, "Cheese", 0, 0, 1.9, 5.4, 5.4, 0.3, rgb(255, 200, 40), rz=45)
+    box(P, "Lettuce", 0, 0, 2.2, 5.4, 5.4, 0.35, rgb(110, 210, 60))
+    box(P, "Tomato", 0, 0, 2.55, 4.6, 4.6, 0.35, rgb(230, 60, 50))
+    box(P, "BunTop", 0, 0, 2.9, 5.0, 5.0, 1.2, rgb(235, 165, 85))
+    box(P, "BunDome", 0, 0, 4.1, 3.6, 3.6, 0.7, rgb(235, 165, 85))
+    r = random.Random(411)
+    for k in range(6):
+        box(P, "Seed", r.uniform(-1.6, 1.6), r.uniform(-1.6, 1.6), 4.8, 0.35, 0.2, 0.12, PAL["cream"], rz=r.uniform(0, 180), tag="nocollide")
+
+@model("IceCream", "food")
+def _(P):
+    for k in range(4):  # the cone, narrowing to the ground
+        s = 0.8 + k * 0.55
+        box(P, "Cone", 0, 0, k * 1.0, s, s, 1.0, rgb(220, 160, 80))
+    box(P, "Scoop", 0, 0, 4.0, 3.0, 3.0, 1.6, rgb(255, 170, 200))
+    box(P, "Scoop2", 0.1, 0, 5.6, 2.4, 2.4, 1.3, rgb(250, 245, 230))
+    box(P, "Scoop3", 0, 0.1, 6.9, 1.6, 1.6, 1.0, rgb(140, 90, 50))
+    box(P, "Cherry", 0, 0, 7.9, 0.7, 0.7, 0.7, PAL["red"])
+
+@model("Fries", "food")
+def _(P):
+    box(P, "Box", 0, 0, 0, 3.0, 2.0, 3.2, PAL["red"])
+    box(P, "Logo", 0, -1.02, 1.0, 1.2, 0.06, 1.2, PAL["yellow"], tag="nocollide")
+    r = random.Random(421)
+    for k in range(9):
+        box(P, "Fry", -1.1 + (k % 5) * 0.55, -0.5 + (k // 5) * 0.8, 2.0, 0.4, 0.4, r.uniform(2.0, 3.2), rgb(255, 210, 80), rx=r.uniform(-12, 12), ry=r.uniform(-12, 12))
+
+@model("PizzaSlice", "food")
+def _(P):
+    # a slice lying on the ground: rows getting narrower toward the tip
+    r = random.Random(431)
+    for k in range(6):
+        w = 5.0 - k * 0.8
+        box(P, "Cheese", 0, -2.5 + k * 0.9, 0, w, 0.95, 0.5, rgb(255, 200, 70))
+    box(P, "Crust", 0, -3.0, 0, 5.2, 0.9, 0.9, rgb(210, 140, 70))
+    for k in range(4):
+        box(P, "Pepperoni", r.uniform(-1.4, 1.4), r.uniform(-2.2, 1.0), 0.5, 0.9, 0.9, 0.15, rgb(200, 50, 40), tag="nocollide")
+
+@model("Soda", "food")
+def _(P):
+    box(P, "Cup", 0, 0, 0, 2.4, 2.4, 4.0, PAL["white"])
+    box(P, "Stripe", 0, 0, 1.4, 2.45, 2.45, 0.8, PAL["red"])
+    box(P, "Lid", 0, 0, 4.0, 2.6, 2.6, 0.3, PAL["white"])
+    box(P, "Straw", 0.4, 0, 4.3, 0.35, 0.35, 2.4, PAL["sky"], ry=12)
+
+# ------------------------------------------------------------------ Ocean Shore (beach)
+SAND, SAND2 = rgb(240, 220, 160), rgb(225, 200, 140)
+
+@model("PalmTree", "ocean")
+def _(P):
+    r = random.Random(501)
+    x = 0.0
+    for k in range(6):  # a leaning segmented trunk
+        box(P, "Trunk", x, 0, k * 1.2, 1.3, 1.3, 1.25, rgb(170, 120, 70) if k % 2 else rgb(150, 100, 60))
+        x += 0.25
+    for k in range(6):  # drooping fronds
+        a = k * 60 + r.uniform(-10, 10)
+        rad = math.radians(a)
+        box(P, "Frond", x + math.cos(rad) * 1.8, math.sin(rad) * 1.8, 7.0, 3.6, 0.9, 0.35, PAL["leaf2"] if k % 2 else PAL["leaf"], rz=a, ry=-18)
+    for k in range(3):
+        box(P, "Coconut", x + r.uniform(-0.5, 0.5), r.uniform(-0.5, 0.5), 6.5, 0.7, 0.7, 0.7, rgb(110, 70, 40))
+
+@model("BeachUmbrella", "ocean")
+def _(P):
+    box(P, "Pole", 0, 0, 0, 0.4, 0.4, 6.0, PAL["white"])
+    for k in range(4):
+        s = 6.0 - k * 1.4
+        box(P, "Canopy", 0, 0, 5.6 + k * 0.45, s, s, 0.45, PAL["red"] if k % 2 == 0 else PAL["white"], rz=45 * k)
+    box(P, "Towel", 2.6, 0, 0, 2.2, 4.0, 0.1, PAL["sky"], tag="nocollide")
+
+@model("SandCastle", "ocean")
+def _(P):
+    box(P, "Base", 0, 0, 0, 6.0, 6.0, 1.6, SAND)
+    for (x, y) in ((-2.2, -2.2), (2.2, -2.2), (-2.2, 2.2), (2.2, 2.2)):
+        box(P, "Tower", x, y, 1.6, 1.6, 1.6, 2.0, SAND2)
+        box(P, "Crenel", x, y, 3.6, 1.0, 1.0, 0.5, SAND)
+    box(P, "Keep", 0, 0, 1.6, 2.6, 2.6, 3.0, SAND2)
+    box(P, "Flag", 0, 0, 4.6, 0.15, 0.15, 1.6, PAL["white"])
+    box(P, "FlagCloth", 0.5, 0, 5.6, 0.9, 0.08, 0.6, PAL["red"], tag="nocollide")
+
+@model("Starfish", "ocean")
+def _(P):
+    for k in range(5):
+        a = k * 72 + 90
+        rad = math.radians(a)
+        box(P, "Arm", math.cos(rad) * 1.3, math.sin(rad) * 1.3, 0, 2.6, 1.0, 0.6, rgb(255, 120, 80), rz=a)
+    box(P, "Middle", 0, 0, 0, 1.6, 1.6, 0.8, rgb(255, 140, 90))
+    for k in range(5):
+        a = math.radians(k * 72 + 90)
+        box(P, "Dot", math.cos(a) * 1.4, math.sin(a) * 1.4, 0.6, 0.3, 0.3, 0.1, PAL["cream"], tag="nocollide")
+
+@model("Coral", "ocean")
+def _(P):
+    r = random.Random(511)
+    col = r.choice([rgb(255, 110, 140), rgb(255, 150, 90), rgb(190, 110, 255)])
+    for k in range(7):
+        h = r.uniform(1.6, 4.2)
+        box(P, "Branch", r.uniform(-1.4, 1.4), r.uniform(-1.4, 1.4), 0, 0.6, 0.6, h, col, rx=r.uniform(-15, 15), ry=r.uniform(-15, 15))
+        box(P, "Tip", r.uniform(-1.4, 1.4), r.uniform(-1.4, 1.4), h - 0.2, 0.8, 0.8, 0.5, col.__class__((min(255, col[0] + 30), min(255, col[1] + 30), min(255, col[2] + 30))), tag="nocollide")
+
+@model("LifeRing", "ocean")
+def _(P):
+    ring = [(-1.4, 0), (-1.0, 1.0), (0, 1.4), (1.0, 1.0), (1.4, 0), (1.0, -1.0), (0, -1.4), (-1.0, -1.0)]
+    for i, (x, y) in enumerate(ring):
+        box(P, "Ring", x, y, 0, 1.2, 1.2, 0.7, PAL["red"] if i % 2 == 0 else PAL["white"])
+
+# ------------------------------------------------------------------ Space Base (moon base)
+MOON, MOON2 = rgb(150, 150, 165), rgb(120, 120, 138)
+
+@model("Crystals", "space")
+def _(P):
+    r = random.Random(601)
+    col = r.choice([NEON_CYAN, NEON_PINK, NEON_PURPLE])
+    for k in range(6):
+        h = r.uniform(2.0, 5.0)
+        box(P, "Crystal", r.uniform(-1.3, 1.3), r.uniform(-1.3, 1.3), 0, 0.9, 0.9, h, col, rx=r.uniform(-20, 20), ry=r.uniform(-20, 20), tag="neon")
+    box(P, "Rock", 0, 0, 0, 3.0, 3.0, 0.8, MOON2)
+
+@model("SatelliteDish", "space")
+def _(P):
+    box(P, "Base", 0, 0, 0, 2.4, 2.4, 1.0, PAL["steel"])
+    box(P, "Mast", 0, 0, 1.0, 0.6, 0.6, 3.0, PAL["white"])
+    for k in range(3):  # the dish, tilted up
+        s = 4.6 - k * 1.2
+        box(P, "Dish", 0, -0.3 * k, 4.0 + k * 0.4, s, s, 0.3, PAL["white"], rx=35)
+    box(P, "Horn", 0, -1.5, 5.6, 0.3, 0.3, 1.6, PAL["steel"], rx=35)
+    box(P, "Light", 0, -2.0, 6.6, 0.4, 0.4, 0.4, PAL["red"], tag="neon")
+
+@model("Rocket", "space")
+def _(P):
+    for k in range(4):
+        box(P, "Body", 0, 0, 1.0 + k * 1.6, 2.2, 2.2, 1.6, PAL["white"] if k != 2 else PAL["red"])
+    box(P, "Nose", 0, 0, 7.4, 1.4, 1.4, 1.0, PAL["red"])
+    box(P, "Tip", 0, 0, 8.4, 0.6, 0.6, 0.6, PAL["red"])
+    box(P, "Window", 0, -1.12, 4.6, 0.9, 0.08, 0.9, NEON_CYAN, tag="neon")
+    for a in (0, 90, 180, 270):
+        rad = math.radians(a)
+        box(P, "Fin", math.cos(rad) * 1.3, math.sin(rad) * 1.3, 0, 1.2, 0.3, 2.0, PAL["red"], rz=a)
+    box(P, "Flame", 0, 0, 0.2, 1.0, 1.0, 0.8, rgb(255, 170, 40), tag="neon")
+
+@model("AlienPlant", "space")
+def _(P):
+    r = random.Random(611)
+    for k in range(4):
+        h = r.uniform(2.0, 3.8)
+        x, y = r.uniform(-1.0, 1.0), r.uniform(-1.0, 1.0)
+        box(P, "Stem", x, y, 0, 0.45, 0.45, h, rgb(90, 60, 140), rx=r.uniform(-12, 12))
+        box(P, "Bulb", x, y, h - 0.2, 1.0, 1.0, 1.0, NEON_LIME if k % 2 else NEON_PINK, tag="neon")
+
+@model("MoonRock", "space")
+def _(P):
+    box(P, "Rock", 0, 0, 0, 4.4, 3.6, 2.2, MOON)
+    box(P, "Rock2", 0.6, 0.4, 2.2, 2.6, 2.2, 1.2, MOON2)
+    for (x, y) in ((-1.0, -1.82), (1.2, -1.82)):
+        box(P, "Crater", x, y, 0.8, 0.9, 0.06, 0.7, MOON2, tag="nocollide")
+
+@model("Beacon", "space")
+def _(P):
+    box(P, "Base", 0, 0, 0, 2.0, 2.0, 0.6, PAL["steel"])
+    box(P, "Pole", 0, 0, 0.6, 0.5, 0.5, 4.6, PAL["white"])
+    box(P, "Lamp", 0, 0, 5.2, 1.0, 1.0, 1.0, NEON_CYAN, tag="neon")
+    box(P, "Stripe", 0, 0, 2.4, 0.6, 0.6, 0.6, rgb(255, 200, 40))
+
 # ------------------------------------------------------------------ build all models in a preview grid
 roots = {}
 col_per_row = 6
@@ -311,7 +559,8 @@ cam = bpy.data.objects.new("ZD_Cam", cam_data)
 coll.objects.link(cam)
 rows = (len(MODELS) + col_per_row - 1) // col_per_row
 cx, cy = (col_per_row - 1) * 16.0 / 2, -(rows - 1) * 18.0 / 2
-cam.location = (cx + 52, cy - 96, 74)
+fit = max(1.0, rows / 4)  # (more rows of models: step back)
+cam.location = (cx + 52 * fit, cy - 96 * fit, 74 * fit)
 dx, dy, dz = cx - cam.location[0], cy - cam.location[1], 2 - cam.location[2]
 cam.rotation_euler = (math.atan2(math.hypot(dx, dy), -dz), 0, math.atan2(dy, dx) - math.pi / 2)
 cam_data.lens = 36

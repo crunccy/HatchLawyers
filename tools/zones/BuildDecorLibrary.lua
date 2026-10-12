@@ -35,11 +35,13 @@ for name, def in data do
 		if b.t == "glass" then
 			p.Material = Enum.Material.Glass
 			p.Transparency = 0.35
+		elseif b.t == "neon" then
+			p.Material = Enum.Material.Neon -- (zones 3-6: crystals, screens, alien bulbs, ...)
 		else
 			p.Material = Enum.Material.Plastic
 			p.MaterialVariant = "BrickStuds"
 		end
-		if b.t == "nocollide" or b.t == "glass" then
+		if b.t == "nocollide" or b.t == "glass" or b.t == "neon" then
 			p.CanCollide = false
 			p.CanTouch = false
 		end

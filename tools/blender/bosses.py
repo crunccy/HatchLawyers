@@ -194,6 +194,175 @@ box("Tail", 0, -3.75, 4.05, 0.6, 0.8, 0.6, FAWN, rx=30)
 MODELS["BarristerBulldog"] = dict(root=P, groups=groups, height=7.4)
 
 
+def disc(name, cx, cy, cz, r, thick, col, tag=""):
+    """A blocky disc of radius r centred at (cx, cy, cz), facing +-y (rows of blocks)."""
+    n = max(3, int(r * 2.5))
+    step = 2 * r / n
+    for i in range(n):
+        u = -r + step * (i + 0.5)
+        h = 2 * math.sqrt(max(0.0, r * r - u * u))
+        box(name, cx + u, cy, cz - h / 2, step + 0.02, thick, h, col, tag=tag)
+
+
+# ======================================================================== Judge Martello (Brainrot Boulevard)
+# a walking giant wooden gavel: the hammer head is the body, a face on its front, a tiny judge's collar, two little
+# arms; the handle splits into two legs in black shoes. Very brainrot. It HOPS.
+WOOD, WOOD2, BLACK = (196, 126, 62), (150, 92, 46), (30, 30, 36)
+P = bpy.data.objects.new("JudgeMartello", None)
+sc.collection.objects.link(P)
+P.location = (15, 0, 0)
+groups = {}
+for side, g in ((-1, "LegL"), (1, "LegR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * 0.6, 0, 2.0), parent="")
+    box("Shoe", side * 0.6, 0.2, 0, 1.0, 1.5, 0.45, BLACK)
+    box("Leg", side * 0.6, 0, 0.45, 0.7, 0.7, 1.6, WOOD2)
+GROUP = "Torso"
+groups["Torso"] = dict(joint=(0, 0, 2.0), parent="")
+box("Handle", 0, 0, 1.9, 1.0, 1.0, 0.7, WOOD2)
+box("Head", 0, 0, 2.5, 6.0, 3.0, 3.0, WOOD)
+for sx in (-1, 1):
+    box("Band", sx * 2.2, 0, 2.45, 0.45, 3.1, 3.1, GOLD)
+    box("EndCap", sx * 2.95, 0, 2.6, 0.2, 2.6, 2.8, WOOD2)
+eyes(0, 1.55, 4.0, 0.55, 0.85)
+for sx in (-1, 1):
+    box("Brow", sx * 0.85, 1.56, 4.75, 0.9, 0.12, 0.22, BLACK, ry=sx * -15, tag="nocollide")  # (inner ends down: cross)
+box("Mouth", 0, 1.56, 3.35, 1.3, 0.1, 0.22, BLACK, tag="nocollide")
+box("Collar", 0, 1.56, 2.5, 1.8, 0.1, 0.35, BLACK, tag="nocollide")
+for sx in (-1, 1):
+    box("Jabot", sx * 0.22, 1.6, 2.0, 0.4, 0.1, 0.7, WHITE, tag="nocollide")
+for side, g in ((-1, "ArmL"), (1, "ArmR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * 3.15, 0, 4.2), parent="Torso")
+    box("Sleeve", side * 3.3, 0, 2.9, 0.65, 0.65, 1.4, BLACK)
+    box("Glove", side * 3.3, 0, 2.35, 0.7, 0.7, 0.6, WHITE)
+MODELS["JudgeMartello"] = dict(root=P, groups=groups, height=5.6)
+
+# ======================================================================== Prosecutor Big Cheese (Food Court)
+# a giant wheel of cheese standing on its edge: holes, a smug face, a twirly moustache, a tiny prosecutor's tie, little
+# arms holding a cocktail-stick sword with an olive on it. It ROLLS.
+CHEESE, RIND, HOLE, OLIVE = (255, 204, 70), (232, 168, 40), (214, 150, 30), (110, 160, 50)
+R = 3.2
+P = bpy.data.objects.new("BigCheese", None)
+sc.collection.objects.link(P)
+P.location = (25, 0, 0)
+groups = {}
+GROUP = "Torso"
+groups["Torso"] = dict(joint=(0, 0, R), parent="")
+disc("Rind", 0, 0, R, R, 1.9, RIND)
+disc("Wheel", 0, 0, R, R - 0.25, 2.3, CHEESE)
+for (x, z, s) in ((-1.9, 4.6, 0.6), (1.7, 1.6, 0.7), (-1.5, 1.4, 0.5), (2.1, 4.4, 0.45), (0.2, 1.0, 0.4), (-2.4, 3.0, 0.4)):
+    for y in (1.16, -1.16):
+        box("Hole", x, y, z, s, 0.06, s, HOLE, tag="nocollide")
+eyes(0, 1.18, 3.85, 0.5, 0.75)
+for sx in (-1, 1):
+    box("Lid", sx * 0.75, 1.2, 4.25, 0.7, 0.08, 0.2, RIND, tag="nocollide")  # smug half-shut eyes
+    box("Moustache", sx * 0.55, 1.22, 3.1, 0.9, 0.1, 0.22, BLACK, ry=sx * -12, tag="nocollide")
+    box("MoustacheCurl", sx * 1.05, 1.22, 3.25, 0.22, 0.1, 0.35, BLACK, tag="nocollide")
+box("Smirk", 0.25, 1.21, 2.7, 0.8, 0.08, 0.15, BLACK, ry=-10, tag="nocollide")
+box("TieKnot", 0, 1.22, 2.15, 0.35, 0.1, 0.3, RED, tag="nocollide")
+box("Tie", 0, 1.22, 1.35, 0.32, 0.1, 0.8, RED, tag="nocollide")
+for side, g in ((-1, "ArmL"), (1, "ArmR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * (R + 0.05), 0.3, R + 0.3), parent="Torso")
+    box("Arm", side * (R + 0.3), 0.3, R - 1.1, 0.5, 0.5, 1.4, BLACK)
+    box("Hand", side * (R + 0.3), 0.3, R - 1.55, 0.55, 0.55, 0.45, WHITE)
+GROUP = "ArmR"
+box("Stick", R + 0.3, 1.3, R - 1.4, 0.15, 2.6, 0.15, (220, 190, 140), rx=20)
+box("Olive", R + 0.3, 2.4, R - 1.1, 0.6, 0.6, 0.6, OLIVE)
+box("Pimento", R + 0.3, 2.72, R - 0.95, 0.25, 0.08, 0.25, RED, tag="nocollide")
+MODELS["BigCheese"] = dict(root=P, groups=groups, height=2 * R)
+
+# ======================================================================== Magistrate Megalodon (Ocean Shore)
+# an enormous shark walking upright on stubby legs in a navy magistrate's robe with a gold chain of office; jagged
+# teeth, little reading glasses, a gavel in one fin, a glowing lantern fish dangling from a badge. It CHARGES.
+SHARK, SHARK2, BELLY, NAVY, GUM = (110, 132, 162), (90, 110, 140), (236, 238, 244), (30, 42, 92), (190, 50, 60)
+P = bpy.data.objects.new("Megalodon", None)
+sc.collection.objects.link(P)
+P.location = (34, 0, 0)
+groups = {}
+for side, g in ((-1, "LegL"), (1, "LegR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * 0.85, 0, 1.6), parent="")
+    box("Foot", side * 0.85, 0.25, 0, 1.3, 1.7, 0.4, SHARK2)
+    box("Leg", side * 0.85, 0, 0.4, 1.0, 1.0, 1.25, SHARK)
+GROUP = "Torso"
+groups["Torso"] = dict(joint=(0, 0, 1.6), parent="")
+box("Body", 0, 0, 1.4, 3.3, 2.9, 5.0, SHARK)
+box("Head", 0, 0.1, 6.4, 2.7, 2.7, 1.1, SHARK)
+box("Crown", 0, 0, 7.5, 1.8, 2.0, 0.5, SHARK)
+box("Belly", 0, 1.46, 1.6, 2.4, 0.12, 3.0, BELLY, tag="nocollide")
+box("Mouth", 0, 1.5, 4.55, 2.4, 0.1, 1.0, GUM, tag="nocollide")
+for i in range(6):
+    x = -1.0 + i * 0.4
+    box("ToothTop", x, 1.56, 5.15, 0.3, 0.1, 0.38, WHITE, ry=45, tag="nocollide")
+    box("ToothBottom", x + 0.2, 1.56, 4.55, 0.26, 0.1, 0.34, WHITE, ry=45, tag="nocollide")
+eyes(0, 1.47, 6.0, 0.45, 0.85)
+for sx in (-1, 1):
+    box("GlassRim", sx * 0.85, 1.52, 5.85, 0.75, 0.08, 0.1, GOLD, tag="nocollide")
+box("DorsalFin", 0, -1.3, 5.6, 0.45, 1.8, 1.8, SHARK2, rx=-35)
+for sx in (-1, 1):
+    box("RobeSide", sx * 1.72, 0, 1.4, 0.2, 3.0, 4.4, NAVY)
+box("RobeBack", 0, -1.52, 1.4, 3.6, 0.2, 4.4, NAVY)
+box("Chain", 0, 1.5, 3.7, 2.6, 0.1, 0.2, GOLD, tag="nocollide")
+box("Medallion", 0, 1.55, 3.05, 0.7, 0.12, 0.7, GOLD, tag="nocollide")
+box("Badge", -0.95, 1.52, 2.6, 0.45, 0.1, 0.45, GOLD, tag="nocollide")
+box("LureStalk", -0.95, 1.7, 1.85, 0.08, 0.08, 0.75, (60, 60, 70), tag="nocollide")
+box("Lure", -0.95, 1.75, 1.45, 0.45, 0.45, 0.45, (120, 220, 255), tag="neon")
+GROUP = "Tail"
+groups["Tail"] = dict(joint=(0, -1.4, 1.8), parent="Torso")
+box("Tail", 0, -2.3, 0.9, 0.4, 1.8, 1.8, SHARK2, rx=30)
+for side, g in ((-1, "ArmL"), (1, "ArmR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * 1.75, 0.2, 5.0), parent="Torso")
+    box("Fin", side * 1.95, 0.2, 3.1, 0.35, 1.3, 2.0, SHARK2, ry=side * 18)
+GROUP = "ArmR"
+box("GavelHandle", 2.15, 0.9, 2.7, 0.25, 1.6, 0.25, (122, 70, 34))
+box("GavelHead", 2.15, 1.7, 2.45, 0.7, 0.7, 1.2, (150, 92, 46))
+MODELS["Megalodon"] = dict(root=P, groups=groups, height=8.0)
+
+# ======================================================================== Chief Justice Eclipse (Space Base)
+# a tall robed judge whose face is an eclipse - a black disc with a blazing gold corona - in a deep purple robe with
+# constellations, three gavels orbiting its head, floating a little off the ground. The coolest boss.
+ROBE1, ROBE2, VOID, CORONA, STAR, GLOVE = (74, 42, 136), (56, 30, 108), (14, 14, 22), (255, 200, 60), (250, 250, 255), (40, 40, 52)
+P = bpy.data.objects.new("Eclipse", None)
+sc.collection.objects.link(P)
+P.location = (44, 0, 0)
+groups = {}
+GROUP = "Torso"
+groups["Torso"] = dict(joint=(0, 0, 3.5), parent="")
+box("Hem", 0, 0, 0.5, 4.6, 3.4, 0.25, CORONA, tag="neon")
+box("RobeLow", 0, 0, 0.6, 4.4, 3.2, 1.3, ROBE2)
+box("RobeMid", 0, 0, 1.9, 3.7, 2.8, 2.0, ROBE1)
+box("RobeTop", 0, 0, 3.9, 3.1, 2.4, 2.1, ROBE1)
+box("Collar", 0, 0, 5.9, 3.3, 2.6, 0.4, WHITE)
+for (x, z) in ((-1.4, 1.0), (-0.6, 2.3), (0.9, 1.6), (1.6, 0.9), (0.3, 3.3), (-1.1, 4.3), (1.0, 4.6), (-0.2, 1.3)):
+    yf = 1.62 if z < 1.9 else (1.42 if z < 3.9 else 1.22)
+    box("Star", x, yf, z, 0.22, 0.06, 0.22, STAR, tag="neon")
+GROUP = "Head"
+groups["Head"] = dict(joint=(0, 0, 6.3), parent="Torso")
+disc("Eclipse", 0, 0.1, 8.0, 1.65, 0.5, VOID)
+for k in range(12):
+    a = k * math.tau / 12
+    box("Corona", math.cos(a) * 2.05, 0.0, 8.0 + math.sin(a) * 2.05 - 0.3, 0.6, 0.3, 0.6, CORONA, ry=-math.degrees(a), tag="neon")
+for sx in (-1, 1):
+    box("EyeGlow", sx * 0.55, 0.38, 8.1, 0.55, 0.06, 0.14, STAR, tag="neon")
+for side, g in ((-1, "ArmL"), (1, "ArmR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * 1.8, 0, 5.6), parent="Torso")
+    box("Sleeve", side * 2.05, 0, 3.3, 1.1, 1.3, 2.5, ROBE2)
+    box("Glove", side * 2.05, 0, 2.75, 0.75, 0.75, 0.6, GLOVE)
+GROUP = "Gavels"
+groups["Gavels"] = dict(joint=(0, 0, 8.0), parent="Torso")
+for k in range(3):
+    a = k * math.tau / 3
+    gx, gy = math.cos(a) * 3.2, math.sin(a) * 3.2
+    box("OrbitHandle", gx, gy, 7.3, 0.22, 0.22, 1.2, (122, 70, 34), tag="nocollide")
+    box("OrbitHead", gx, gy, 8.5, 1.3, 0.65, 0.65, (150, 92, 46), rz=math.degrees(a), tag="nocollide")
+    box("OrbitBand", gx, gy, 8.5, 0.3, 0.7, 0.7, CORONA, rz=math.degrees(a), tag="neon")
+MODELS["Eclipse"] = dict(root=P, groups=groups, height=10.3)
+
+
 # ------------------------------------------------------------------ export (Blender (x, y, z) -> Roblox (x, z, -y))
 def to_rbx_vec(v):
     return [round(v[0], 4), round(v[2], 4), round(-v[1], 4)]
@@ -226,8 +395,8 @@ box("PlayerForScale", 0, 3.5, 0, 2, 1, 5, (98, 205, 48))
 cam_data = bpy.data.cameras.get("BS_Cam") or bpy.data.cameras.new("BS_Cam")
 cam = bpy.data.objects.new("BS_Cam", cam_data)
 sc.collection.objects.link(cam)
-target = (0, 0, 4.5)
-cam.location = (-10, 26, 11)
+target = (19, 0, 4.5)
+cam.location = (12, 68, 18)
 dx, dy, dz = target[0] - cam.location[0], target[1] - cam.location[1], target[2] - cam.location[2]
 cam.rotation_euler = (math.atan2(math.hypot(dx, dy), -dz), 0, math.atan2(dy, dx) - math.pi / 2)
 cam_data.lens = 38
@@ -239,7 +408,7 @@ sc.display.shading.color_type = "OBJECT"
 sc.display.shading.show_cavity = True
 sc.display.shading.show_object_outline = True
 sc.display.shading.show_shadows = True
-sc.render.resolution_x, sc.render.resolution_y = 1400, 900
+sc.render.resolution_x, sc.render.resolution_y = 1800, 800
 sc.world = sc.world or bpy.data.worlds.new("BS_World")
 sc.render.filepath = OUT_PNG
 os.makedirs(os.path.dirname(OUT_PNG), exist_ok=True)

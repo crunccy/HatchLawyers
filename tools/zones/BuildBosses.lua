@@ -45,8 +45,12 @@ for name, def in data do
 		p.Color = Color3.fromRGB(b.c[1], b.c[2], b.c[3])
 		p.TopSurface = Enum.SurfaceType.Smooth
 		p.BottomSurface = Enum.SurfaceType.Smooth
-		p.Material = Enum.Material.Plastic
-		p.MaterialVariant = "BrickStuds"
+		if b.t == "neon" then
+			p.Material = Enum.Material.Neon -- (glowing bits: the Eclipse's corona, the shark's lantern fish)
+		else
+			p.Material = Enum.Material.Plastic
+			p.MaterialVariant = "BrickStuds"
+		end
 		p.CastShadow = p.Size.Magnitude > 1.2
 		p.Parent = groups[b.g] or m
 	end
