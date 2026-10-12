@@ -5,6 +5,10 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe's local session · since 2026-10-12 (night):** building the zone BOSSES (user: "yeah do the bosses",
+  before the lane review) for the two zones that exist: The Senior Partner (Briefcase Bay) + Barrister Bulldog (Pet
+  Park), per docs/BOSSES.md: Blender models, `Config.Bosses`, `Server.BossService`, loose eggs in ZoneService,
+  `StarterPlayerScripts.Bosses`. The other four bosses come with their zones.
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
