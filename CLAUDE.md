@@ -5,6 +5,9 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 open items), then this file.
 **End of every session:** add a dated entry to SESSION_LOG.md, update anything here that changed, re-export the Studio
 snapshot if you touched Studio (below), then commit and push. Small commits; `git pull --rebase` before pushing.
+**Local sessions also push their changes into Studio before ending** (crnuch's rule, 2026-10-11): every script, model
+and Config change goes into the place, not just git — 3-way merged (see "Pushing `src/` → Studio"); say what was
+pushed and what wasn't.
 
 ## One team, one brain (2026-10-12)
 Two people drive Claude on the same game, and **every Claude session works as one entity whose shared memory is this
