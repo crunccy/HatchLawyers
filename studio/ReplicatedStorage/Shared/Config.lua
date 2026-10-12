@@ -930,22 +930,27 @@ Config.Zones = {
 -- Attack = "Cone" (Radius studs in front, Angle degrees wide) | "Ring" (Radius studs all round).
 -- Difficulty is for design only - never shown.
 Config.Bosses = {
+	-- (2026-10-12, user: "make the attacks more frequent, make the models bigger, and make them faster and more
+	-- dangerous", then "the range should be MUCH longer and they should be MUCH larger". The fairness floor stays:
+	-- every windup gives a player at base speed 32 time to get out of the warning (the long ring's windup is longer),
+	-- 3 s safe after a hit, and they walk slower than 32, so you can always get away.)
 	SafeAfterHit = 3, -- seconds a hit player can't be hit again
 	DroppedEggLifetime = 30, -- seconds a loose egg stays (it blinks in its last 5 s)
-	DropScatter = { 4, 10 }, -- studs from the player the eggs land
+	DropScatter = { 6, 14 }, -- studs from the player the eggs land
 	DropStagger = 0.05, -- seconds between eggs leaving the pile
 	GrabbableAfter = 0.9, -- seconds before a loose egg can be grabbed (it's still flying / bouncing)
 	GrabRadius = 4, -- studs (flat) from a loose egg's middle that grab it
-	TriggerRange = 26, -- a player this close (flat studs) makes the boss attack, once AttackEvery has passed
-	Knockback = 38, -- studs/s the hit player is thrown back
-	Margin = { X = 24, Z = 8 }, -- studs the boss keeps inside its zone's Bounds
+	TriggerRange = 60, -- a player this close (flat studs) makes the boss attack, once AttackEvery has passed
+	Knockback = 75, -- studs/s the hit player is thrown back
+	Margin = { X = 40, Z = 10 }, -- studs the boss keeps inside its zone's Bounds
+	-- Scale = drawn this much bigger than the Blender model; Chase = how often a walk heads for a player in the zone
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
-			WalkSpeed = 7, AttackEvery = 8, Windup = 1.2, Attack = "Cone", Radius = 15, Angle = 80, StayNearMiddle = 12,
-			Color = Color3.fromRGB(255, 120, 60) },
+			Scale = 3.5, WalkSpeed = 18, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
+			Attack = "Cone", Radius = 45, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60) },
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
-			WalkSpeed = 8, AttackEvery = 8, Windup = 1.0, Attack = "Ring", Radius = 13,
-			Color = Color3.fromRGB(255, 90, 90) },
+			Scale = 3.5, WalkSpeed = 22, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
+			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90) },
 	},
 }
 

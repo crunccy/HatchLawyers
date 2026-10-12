@@ -105,6 +105,20 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-12 — mr.robe, local session: bosses made MUCH bigger, longer range, faster (user's calls)
+- User: "make the attacks more frequent, make the models bigger, and make them faster and more dangerous", then
+  "the range should be MUCH longer and they should be MUCH larger". `Config.Bosses` (live + src) now:
+  TriggerRange 60, Knockback 75, DropScatter 6-14, Margin X 40 / Z 10; **Partner** Scale 3.5 (45 studs tall with the
+  briefcase up), walk 18, Chase 0.85, every 3.5 s, windup 1.2, Cone **45 studs / 110°**; **Bulldog** Scale 3.5 (26 tall),
+  walk 22, Chase 0.9, every 3 s, windup 1.4, Ring **34** (nearly the lane's width).
+- Kept the fairness floor (docs/BOSSES.md): every windup still lets a player at base speed 32 get out of the warning
+  (the 34-stud ring got the longer 1.4 s windup), 3 s safe after a hit, bosses slower than 32.
+- New knobs: `Scale` (the client draws the Blender model that much bigger: blocks, offsets, joints, strides, bobs),
+  `Chase` (how often a walk heads for a player in the zone; no idling while one is near). Floor warnings size their
+  pieces to the radius (no gaps at 45 studs); bosses are drawn up to 500 studs away; "right under it" counts as a
+  cone hit at 3 x Scale.
+- Playtested: the Partner's slam hit at 39 studs, the Bulldog's bark at 29; no errors.
+
 ## 2026-10-12 — mr.robe, local session: zone bosses - The Senior Partner + Barrister Bulldog are live
 - User's call: "yeah do the bosses" (before the lane review). Built the two whose zones exist, per docs/BOSSES.md.
 - **Models (Blender, `tools/blender/bosses.py`, render `art/bosses/preview.png`):** brick blocks in animation groups

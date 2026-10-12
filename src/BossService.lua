@@ -12,7 +12,7 @@
 -- (a Configuration whose attributes are the boss's state), so the server never moves any parts:
 --   From / To (Vector3), MoveStart / MoveEnd (server time), Yaw (radians, the way it faces),
 --   State ("walk" | "idle" | "windup" | "attack" | "recover"), StateStart / StateEnd, Idle (which idle),
---   plus its fixed settings (Model, Zone, Attack, Radius, Angle, Windup, Color).
+--   plus its fixed settings (Model, Zone, Attack, Radius, Angle, Windup, Color, Scale = how much bigger than the model).
 -- Remotes.Bosses, server -> all clients: ("Hit", { userId, from, away, eggs = { { egg, golden, at } }, t })
 -- ("Grab", { userId, at, egg, golden }).
 
@@ -110,10 +110,10 @@ end
 ------------------------------------------------------------------ moving
 -- the next short leg (at most ~2 s), in the boss's own style
 local function nextLeg(b: Boss, here: Vector3, chase: Vector3?): Vector3
-	if chase and rng:NextNumber() < 0.45 then
-		-- drift toward a player in the zone, stopping a bit short
+	if chase and rng:NextNumber() < (b.def.Chase or 0.45) then
+		-- hunt a player in the zone, stopping just short of them
 		local d = flat(chase - here)
-		local len = math.min(d.Magnitude - 8, b.def.WalkSpeed * 2)
+		local len = math.min(d.Magnitude - 4 * (b.def.Scale or 1), b.def.WalkSpeed * 2)
 		if len > 1 then
 			local p = here + d.Unit * len
 			return clampToArea(b, p.X, p.Z)
@@ -178,7 +178,7 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		local d = flat(p.root.Position - here)
 		local dist = d.Magnitude
 		local inside = dist <= b.def.Radius
-		if inside and b.def.Attack == "Cone" and dist > 3 then
+		if inside and b.def.Attack == "Cone" and dist > 3 * (b.def.Scale or 1) then -- (right under it always counts)
 			inside = d.Unit:Dot(look) >= cosHalf
 		end
 		if inside then
@@ -205,7 +205,8 @@ local function run(b: Boss)
 		end
 		if nearest and nearestD <= CFG.TriggerRange and now() >= b.nextAttack then
 			attack(b, here, nearest)
-		elseif rng:NextNumber() < 0.16 then
+		elseif (not nearest or nearestD > CFG.TriggerRange * 2) and rng:NextNumber() < 0.16 then
+			-- (no dawdling while someone's close)
 			-- an idle: the Senior Partner checks his pocket watch; the Bulldog sniffs the ground or sits to scratch
 			stand(b, here)
 			b.state:SetAttribute("Idle", if b.def.Attack == "Ring" and rng:NextNumber() < 0.5 then "scratch" else "check")
@@ -269,7 +270,7 @@ function BossService.start()
 		local state = Instance.new("Configuration")
 		state.Name = def.Model
 		for k, v in { Model = def.Model, Zone = def.Zone, Attack = def.Attack, Radius = def.Radius, Angle = def.Angle or 360,
-			Windup = def.Windup, Color = def.Color, FloorY = floorY } do
+			Windup = def.Windup, Color = def.Color, FloorY = floorY, Scale = def.Scale or 1 } do
 			state:SetAttribute(k, v)
 		end
 		local start = Vector3.new(cx + rng:NextNumber(-40, 40), floorY, cz)

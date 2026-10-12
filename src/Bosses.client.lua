@@ -42,7 +42,7 @@ local visuals = Instance.new("Folder")
 visuals.Name = "BossVisuals"
 visuals.Parent = workspace
 
-local DRAW_DISTANCE = 340 -- studs from the camera; further bosses aren't drawn (or posed)
+local DRAW_DISTANCE = 500 -- studs from the camera; further bosses aren't drawn (or posed)
 
 ------------------------------------------------------------------ little helpers
 local function now(): number
@@ -171,15 +171,21 @@ local function build(s: Configuration)
 		return
 	end
 	local m = template:Clone()
+	-- Config.Bosses.List[n].Scale: the model is built at 1, drawn this much bigger (blocks, offsets and joints)
+	local scale = (attr(s, "Scale") :: number?) or 1
+	local function scaled(cf: CFrame): CFrame
+		return CFrame.new(cf.Position * scale) * cf.Rotation
+	end
 	local byName: { [string]: Group } = {}
 	for _, g in m:GetChildren() do
 		if g:IsA("Model") then
-			local grp: Group = { name = g.Name, joint = (g:GetAttribute("Joint") :: CFrame?) or CFrame.new(),
+			local grp: Group = { name = g.Name, joint = scaled((g:GetAttribute("Joint") :: CFrame?) or CFrame.new()),
 				parent = (g:GetAttribute("Parent") :: string?) or "", parts = {}, rest = {}, depth = 0 }
 			for _, p in g:GetDescendants() do
 				if p:IsA("BasePart") then
+					p.Size *= scale
 					table.insert(grp.parts, p)
-					table.insert(grp.rest, p.CFrame) -- (the library sits at the origin: CFrames are in boss space)
+					table.insert(grp.rest, scaled(p.CFrame)) -- (the library sits at the origin: CFrames are in boss space)
 				end
 			end
 			byName[g.Name] = grp
@@ -334,22 +340,27 @@ local function makeWarn(b: Boss)
 	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(255, 80, 80)
 	local radius = (attr(s, "Radius") :: number?) or 10
 	local list = {}
+	-- (each piece's width follows the radius in poseWarn - attribute Step = the angle between neighbours - so a
+	-- long-range warning has no gaps)
 	if attr(s, "Attack") == "Cone" then
 		local angle = math.rad((attr(s, "Angle") :: number?) or 80)
-		local n = 13
+		local n = 17
 		for i = 0, n - 1 do
 			table.insert(list, part({ Name = "WarnRay", Size = Vector3.new(1.7, 0.12, radius), Color = color, Material = Enum.Material.Neon, Transparency = 0.6 }))
 			list[#list]:SetAttribute("Angle", -angle / 2 + angle * i / (n - 1))
+			list[#list]:SetAttribute("Step", angle / (n - 1))
 		end
-		for i = 0, 15 do
-			table.insert(list, part({ Name = "WarnEdge", Size = Vector3.new(1.5, 0.16, 0.6), Color = color, Material = Enum.Material.Neon, Transparency = 0.3 }))
-			list[#list]:SetAttribute("Angle", -angle / 2 + angle * i / 15)
+		for i = 0, 23 do
+			table.insert(list, part({ Name = "WarnEdge", Size = Vector3.new(1.5, 0.16, 0.8), Color = color, Material = Enum.Material.Neon, Transparency = 0.3 }))
+			list[#list]:SetAttribute("Angle", -angle / 2 + angle * i / 23)
+			list[#list]:SetAttribute("Step", angle / 23)
 		end
 	else
 		table.insert(list, part({ Name = "WarnDisc", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, radius * 2, radius * 2), Color = color, Material = Enum.Material.Neon, Transparency = 0.65 }))
-		for i = 0, 27 do
-			table.insert(list, part({ Name = "WarnEdge", Size = Vector3.new(1.6, 0.16, 0.6), Color = color, Material = Enum.Material.Neon, Transparency = 0.3 }))
-			list[#list]:SetAttribute("Angle", i / 28 * math.pi * 2)
+		for i = 0, 35 do
+			table.insert(list, part({ Name = "WarnEdge", Size = Vector3.new(1.6, 0.16, 0.8), Color = color, Material = Enum.Material.Neon, Transparency = 0.3 }))
+			list[#list]:SetAttribute("Angle", i / 36 * math.pi * 2)
+			list[#list]:SetAttribute("Step", math.pi * 2 / 36)
 		end
 	end
 	for _, p in list do
@@ -369,8 +380,9 @@ local function poseWarn(b: Boss, origin: Vector3, yaw: number, grow: number, t: 
 	local pulse = 0.5 + 0.5 * math.sin(t * 18)
 	for _, p in b.warn do
 		local a = (p:GetAttribute("Angle") :: number?) or 0
+		local step = (p:GetAttribute("Step") :: number?) or 0.1
 		if p.Name == "WarnRay" then
-			p.Size = Vector3.new(p.Size.X, p.Size.Y, radius)
+			p.Size = Vector3.new(math.max(1.7, radius * step * 0.8), p.Size.Y, radius)
 			p.CFrame = floor * CFrame.Angles(0, a, 0) * CFrame.new(0, 0, -radius / 2)
 			p.Transparency = 0.55 + 0.2 * pulse
 		elseif p.Name == "WarnDisc" then
@@ -378,6 +390,7 @@ local function poseWarn(b: Boss, origin: Vector3, yaw: number, grow: number, t: 
 			p.CFrame = floor * CFrame.Angles(0, 0, math.pi / 2)
 			p.Transparency = 0.6 + 0.2 * pulse
 		else
+			p.Size = Vector3.new(math.max(1.5, radius * step * 1.05), p.Size.Y, p.Size.Z)
 			p.CFrame = floor * CFrame.Angles(0, a, 0) * CFrame.new(0, 0.02, -radius)
 			p.Transparency = 0.15 + 0.35 * pulse
 		end
@@ -437,7 +450,7 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	local look = Vector3.new(-math.sin(yaw), 0, -math.cos(yaw))
 	local floorY = (attr(s, "FloorY") :: number?) or origin.Y
 	if attr(s, "Attack") == "Cone" then
-		local at = Vector3.new(origin.X, floorY + 1, origin.Z) + look * 4.5
+		local at = Vector3.new(origin.X, floorY + 1, origin.Z) + look * 4.5 * ((attr(s, "Scale") :: number?) or 1)
 		task.delay(0.16, function()
 			paperBurst(at + Vector3.new(0, 1, 0), look)
 			sparkBurst(at, color, 18)
@@ -502,7 +515,7 @@ RunService.Heartbeat:Connect(function(dt)
 		if state == "walk" and t < m1 and m1 > m0 then
 			local from, to = attr(s, "From") :: Vector3, attr(s, "To") :: Vector3
 			local speed = (to - from).Magnitude / (m1 - m0)
-			b.phase += dt * speed / 4 * math.pi
+			b.phase += dt * speed / (4 * ((attr(s, "Scale") :: number?) or 1)) * math.pi -- (bigger = longer strides)
 			moving = true
 		end
 		b.walk += ((if moving then 1 else 0) - b.walk) * math.min(1, dt * 6)
@@ -515,7 +528,8 @@ RunService.Heartbeat:Connect(function(dt)
 		if pose then
 			rootOff, rots = pose(b, state, a, t, (attr(s, "Idle") :: string?) or "")
 		end
-		local root = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0) * rootOff
+		local sc = (attr(s, "Scale") :: number?) or 1 -- (bobs and trembles grow with the boss)
+		local root = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0) * CFrame.new(rootOff.Position * sc) * rootOff.Rotation
 		local world: { [string]: CFrame } = {}
 		for _, g in b.groups do
 			local parentCF = if g.parent ~= "" and world[g.parent] then world[g.parent] else root
