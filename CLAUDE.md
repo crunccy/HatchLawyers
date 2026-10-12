@@ -23,6 +23,8 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 - **Local Claude Code (user's PC):** Roblox Studio MCP + blender-mcp → edit the place, build models, playtest.
 - **Cloud session (claude.ai/code):** no Studio, no Blender. Can edit docs, run `tools/economy_sim.py`, and
   write Luau / Blender-Python as files for the user to paste or run. Never claim something was changed in Studio.
+  Syntax-check every edited Luau file with the Luau CLI (`luau-compile --binary <file> > /dev/null`; download
+  `luau-ubuntu.zip` from github.com/luau-lang/luau/releases) — it caught a `Config.lua` that didn't parse.
 
 ## Team & ownership
 - **User (crnuch) + Claude own ALL UI and visuals:** map, builds, lighting, and the *look* of every GUI —

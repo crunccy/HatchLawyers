@@ -4,9 +4,25 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] **Push `src/` to Studio: economy pass + egg tiers + phone LAWYERS panel** (2026-10-12 entry below). Files:
+      `Config`, `Formulas` (Shared); `PlayerData`, `LawyerService`, `PrestigeService`, `EggServer` (server);
+      `Eggs`, `Lawyers`, `Manager`, `Supreme` (StarterPlayerScripts). Re-read each Studio script first (mr.robe may
+      have changed it; `PlayerData` / `CaseService` / `LawyerService` are shared). Then, in a playtest:
+      (1) locked egg: prompt says "Locked / Earn X more coins", pressing it toasts, odds board says "Unlocks at X
+      earned"; with test coins (`Stats.CoinsEarned` ≥ 1e7) the Pet Egg unlocks live and its board says "Pet lawyers
+      earn x1.25!"; (2) a Pet lawyer's "Earns x" in the hatch screen / LAWYERS panel / name tag includes the x1.25;
+      (3) Supreme ladder: cost and office count on the Supreme screen, eggs cheap again after it;
+      (4) UPGRADE MAX / UPGRADE ALL; (5) LAWYERS panel at phone size (Device emulator, landscape phone): office-card
+      names, client situations (2 lines) and the status line readable, nothing spilling out of its box;
+      (6) desktop size unchanged.
+- [ ] **`Server.FirmStages` TowerLevel rule** (economy pass, not in this repo): the front building's top stage, the
+      Supreme Tower, should appear only at `Prestige.Level >= Config.Prestige.TowerLevel` (5). It used to come
+      with the first Supreme, which is now ~1 h in and would skip the other stages every run.
+- [ ] Check `GoalService.track(player, "train", count)`: the economy pass's `LawyerService` passes the number of
+      levels bought; make sure Studio's `GoalService` accepts the count (else goals count one per request).
 - [ ] **Brick style rollout** (docs/CHARACTER_STYLE.md): rebuild the other 52 lawyers, 43 clients and the Judge with
       `tools/brick/BrickKit.lua`. Rookie + Neighbor Dave are done; the rest are their 2026-10-10 versions.
-- [ ] Lawyer panel at phone size: the smallest labels (office-card names, client situations) are tiny at 0.58 scale.
+- [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
 - [ ] Tell mr.robe: the Hud's bottom office card is gone (user's call) and CaseService/LawyerService changed (queued lawyer changes, rest window).
 - [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
 - [ ] Eye-check the Lawyer Merger panel + merge animation in a playtest (window wasn't rendering during the build).
@@ -18,8 +34,8 @@ it is the to-do list for the next session. Move finished items into the dated en
       Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
 - [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
       starting at the firm's lowest office level (`DeskService.upgradeFirm`), or expansions stall. Sim it first.
-- [ ] **Upgrade ×10 / Max** in the LAWYERS panel (review §4) — `LawyerService` + `Lawyers`.
-- [ ] **Egg tiers** (review §2): stretch the merge chase (first Rainbow at 6 min today). Do after the retune.
+- [x] **Upgrade ×N / Max / UPGRADE ALL** — in `src/` (economy pass); not in Studio yet (push item above).
+- [x] **Egg tiers** — in `src/` 2026-10-12 (unlock milestones + EarnMultiplier); not in Studio yet (push item above).
 - [ ] Specialist skill targets 1 of 9 `Config.Clients` entries (review D) — heads-up to mr.robe.
 - [ ] Port this repo's sim model into Studio's `Dev.EconomySim` (stale since v12) or retire it (review E).
 - [ ] Late-game sink beyond office level 100: prestige into the sim, or new content (review B).
@@ -36,6 +52,30 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — cloud session: economy pass finished, egg tiers, phone LAWYERS panel (all in `src/`, not Studio)
+Branch `claude/sharp-dirac-02vssj` from `main`. Nothing was changed in Studio; see the push item in Open items.
+- **Bug fix:** `src/Config.lua` (WIP economy pass) didn't parse — a comment written mid-line in
+  `Config.Firm.ExpandCosts` swallowed segments 7–10 and the closing brace. Found with `luau-compile`. Tip for
+  cloud sessions: download the Luau CLI (`github.com/luau-lang/luau/releases`, `luau-ubuntu.zip`) and run
+  `luau-compile --binary src/<file>.lua > /dev/null` on every edited file — it catches syntax errors (not types).
+- **Egg tiers:** `Config.Eggs.Themed[*].UnlockEarned` (lifetime coins earned: Pet 1e7, Brainrot 1e9, Food 1e11,
+  Ocean 1e15, Space 1e18) and `EarnMultiplier` (×1.25 / 1.5 / 2 / 3 / 4). `Formulas.eggUnlocked`;
+  `Formulas.lawyerEarn` includes the egg's multiplier (so payouts, EQUIP BEST, the Manager and every "Earns x"
+  label follow). `EggServer.onRoll` refuses a locked machine (`reason = "locked"`, `need`); `PlayerData` mirrors
+  `CoinsEarned` (no new saved field, no schema bump); `Eggs` client: locked prompt text + progress, odds-board
+  footer ("Unlocks at X earned" / "Lawyers earn xN!"), locked toast. `Prestige.CostGrowth` 5 → 7.
+- **Sim:** models the real themed eggs (own lawyer pools, shared ramp + pity, unlocks, EarnMultiplier) instead of
+  the old hypothetical `egg-tiers` scenario; new scenarios `pre-egg-tiers`, `briefcase-only`; 5 new tests (26 total).
+  Results (seeds 1–5): first Supreme 40–70 min, 12–13 Supremes/day, eggs keep selling all day; tables in
+  docs/ECONOMY.md and docs/ECONOMY_REVIEW.md. Found: themed eggs at 2–16× price never beat the Briefcase Egg per coin
+  (that's why each tier needs stronger lawyers, not just better odds).
+- **Phone LAWYERS panel** (`src/Lawyers.client.lua`): below panel scale 0.8, office-card names, bench names, client
+  situations and the status line stop shrinking (`TextScaled` made long strings ~5 px on a phone): fixed size of
+  at least 11 real px (capped by the box), truncated with "..." or wrapped (situations, 2 lines; client rows 64 → 76
+  tall). Office-card art 64 → 58 tall to give the name 20 px. Desktop size unchanged. Not eye-checked.
+- **Docs:** ECONOMY.md updated to the economy pass (TrainBase 2000 × 1.37, egg ramp per run, Supreme ladder,
+  pacing targets) + an egg-tier table.
 
 ## 2026-10-11 — local session: brick character style (benchmark), four lawyers renamed
 - **Character redesign** from the user's new reference recording (a "steal an egg"-style pet game; characters only,
