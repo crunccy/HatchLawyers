@@ -143,9 +143,12 @@ refreshPrompt()
 -- picture (Shared.ArtAssets.Eggs, tools/shop_icons.py) on the left, one row per rarity and a footer on the right.
 -- Built from Config so it always matches the real odds (players must see the real chances).
 local function percentText(weight: number, total: number): string
-	-- one decimal at most, and none when it's a whole number (58/100 * 100 is 58.000000001 in floating point)
-	local shown = string.format("%.1f", weight / total * 100)
-	return (string.gsub(shown, "%.0$", ""))
+	-- exact odds (required): one decimal at most, none for whole numbers (58/100 * 100 is 58.000000001 in floating
+	-- point) - but two under 1% so Mythic / Supreme show as 0.16% / 0.04% instead of rounding to 0
+	local pct = weight / total * 100
+	local shown = string.format(if pct < 1 then "%.2f" else "%.1f", pct)
+	shown = string.gsub(shown, "0+$", "")
+	return (string.gsub(shown, "%.$", ""))
 end
 local function oddsBoard(surface: SurfaceGui, title: string, weights: { number }, footer: string, footerColor: Color3, image: string?)
 	local root = Instance.new("Frame")
@@ -640,14 +643,33 @@ local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
 local nameLabel = label(reveal, "", UDim2.fromOffset(500, 60), UDim2.fromOffset(260, 30), WHITE, 5)
 nameLabel.Font = UIFonts.Title -- the hatched lawyer's name: the big reveal
 nameLabel.ZIndex = 6
-local nameShimmer = Instance.new("UIGradient") -- Legendary: a slow gold sweep through the name
-nameShimmer.Color = ColorSequence.new({
+local nameShimmer = Instance.new("UIGradient") -- Legendary+: a slow sweep through the name (gold / crimson / rainbow)
+local SHIMMER_GOLD = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 205, 60)),
 	ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 205, 60)),
 	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 252, 225)),
 	ColorSequenceKeypoint.new(0.55, Color3.fromRGB(255, 205, 60)),
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 205, 60)),
 })
+local SHIMMERS = {
+	gold = SHIMMER_GOLD,
+	crimson = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(240, 60, 60)),
+		ColorSequenceKeypoint.new(0.45, Color3.fromRGB(240, 60, 60)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 225, 225)),
+		ColorSequenceKeypoint.new(0.55, Color3.fromRGB(240, 60, 60)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(240, 60, 60)),
+	}),
+	rainbow = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 190, 60)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(255, 255, 90)),
+		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(90, 255, 120)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(80, 170, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 100, 255)),
+	}),
+}
+nameShimmer.Color = SHIMMER_GOLD
 nameShimmer.Enabled = false
 nameShimmer.Parent = nameLabel
 local newBadge = label(reveal, "NEW!", UDim2.fromOffset(110, 46), UDim2.new(0.5, 215, 0, 6), Color3.fromRGB(255, 215, 60), 4)
@@ -750,7 +772,9 @@ local LOOKS = {
 	Uncommon = { glow = 0.5, glowSize = 1.7, shaft = nil, overshoot = 1.08, clip = "nod", flash = 0.5 },
 	Rare = { glow = 0.38, glowSize = 1.9, shaft = 0.3, overshoot = 1.11, clip = "celebrate", flash = 0.6 },
 	Epic = { glow = 0.3, glowSize = 2.0, shaft = 0.22, overshoot = 1.12, clip = "celebrate", flash = 0.7 },
-	Legendary = { glow = 0.2, glowSize = 2.2, shaft = 0.1, overshoot = 1.15, clip = "celebrate", flash = 0.85, impact = true, motes = true, shimmer = true },
+	Legendary = { glow = 0.2, glowSize = 2.2, shaft = 0.1, overshoot = 1.15, clip = "celebrate", flash = 0.85, impact = true, motes = true, shimmer = "gold" },
+	Mythic = { glow = 0.14, glowSize = 2.4, shaft = 0.06, overshoot = 1.18, clip = "celebrate", flash = 0.95, impact = true, motes = true, shimmer = "crimson" },
+	Supreme = { glow = 0.08, glowSize = 2.7, shaft = 0.02, overshoot = 1.22, clip = "celebrate", flash = 1.1, impact = true, motes = true, shimmer = "rainbow" },
 }
 
 local stageModel: Model? = nil
@@ -981,7 +1005,8 @@ local function startReveal(skinId: string, rarityName: string, accent: Color3)
 		stageShaft.ImageTransparency = 1
 		tween(stageShaft, 0.9, { ImageTransparency = look.shaft })
 	end
-	nameShimmer.Enabled = look.shimmer == true
+	nameShimmer.Enabled = look.shimmer ~= nil
+	nameShimmer.Color = SHIMMERS[look.shimmer or "gold"] or SHIMMER_GOLD
 	-- the character
 	local m = makeCharacter(skinId)
 	if not m then
@@ -1114,8 +1139,9 @@ local function play(result: { [string]: any })
 	toast.Visible = false
 	reveal.Visible = false
 	resetStage()
-	local legendary = rarityName == "Legendary"
-	local rare = rarityName == "Rare"
+	-- Legendary and up (Mythic, Supreme) get the long, dramatic build-up; Rare and Epic the medium one
+	local legendary = (result.rarity or 1) >= (Config.Eggs.PityRarity or 5)
+	local rare = not legendary and (result.rarity or 1) >= 3
 	local fancy = legendary or rare
 	flash.BackgroundTransparency = 1
 	local scale = fit()
@@ -1140,7 +1166,7 @@ local function play(result: { [string]: any })
 
 	-- 2) shake rounds, each harder and faster: with every round more seams split open (real gaps in the shell)
 	--    and the light inside gets stronger, leaking out through them; camera creeps in, heartbeat, room darkens
-	local rounds = if legendary then 4 else 3
+	local rounds = if rarityName == "Supreme" then 6 elseif rarityName == "Mythic" then 5 elseif legendary then 4 else 3
 	for i = 1, rounds do
 		eggFreq = 18 + i * 7
 		tweenValue("amp", 0.1, 5 + i * 5)
@@ -1177,7 +1203,7 @@ local function play(result: { [string]: any })
 	pause(0.45)
 	eggPhase = false
 	shatter()
-	hatchCue:Fire("burst", result.rarity or 1)
+	hatchCue:Fire("burst", result.rarity or 1, rarityName) -- (index changed 2026-10-12: Epic is 4, Legendary 5; use the name)
 	-- 6) one continuous beat: a controlled flash in the rarity light, the stage lights up, the lawyer rises out
 	--    of the light onto the pedestal, then name / rarity / buttons come in below it
 	local accent = if rarityName == "Common" then Color3.fromRGB(235, 235, 245) else rarityColor

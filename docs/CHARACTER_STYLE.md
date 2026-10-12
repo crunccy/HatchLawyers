@@ -68,7 +68,16 @@ Built with `tools/brick/BrickKit.lua` (in Studio as `ServerStorage.BrickKit`). E
 | Shape | plain | + 1 small accessory | + 1 standout feature (hat, hair, prop or oversized head) | + a bigger one | + an oversized signature feature (cape, crown, giant prop) |
 | Bricks | ~35 | ~45 | ~60 | ~70 | ~80 |
 
-Lawyers keep their existing sparkle and gold auras (`Shared.Effects`) and the merge-star Gold and Rainbow auras.
+Past Legendary (lawyers only, 2026-10-12):
+
+| | Mythic | Supreme |
+|---|---|---|
+| Colour | + crimson trim `#E53935` with gold, a few Neon accents | + rainbow trim, glowing (Neon) eyes, Neon where it shines |
+| Shape | + a HUGE signature (wings, a flame mane, a spiral horn, fire breath) | + a halo, a crown or orbiting pieces, the most detail |
+| Bricks | ~85 | ~95 (under 100: Supremes are 1 in 2500, so there are few of them) |
+
+Lawyers keep their existing auras (`Shared.Effects`): Rare ice, Epic energy orb, Legendary fire tornado, Mythic
+crimson inferno, Supreme celestial rainbow with a halo; plus the merge-star Gold and Rainbow auras.
 
 **Roblox build notes**
 - **Custom Models of Parts:** no R15 or Humanoid, no MeshParts, no decal faces. Part names follow Shared.Puppet,
@@ -149,6 +158,20 @@ Lawyers keep their existing sparkle and gold auras (`Shared.Effects`) and the me
 - **Shape:** a wig of rows of small white bricks `#ECE6DA`, robe `#24242C`, collar `#F2EFE8`, skin `#E8B087`.
 - **Face:** two states. Sleepy has the lids half down; awake has the lids up and the mouth open. Reading glasses and
   a wooden gavel `#8A5A32`.
+
+## Epic, Mythic and Supreme (to build, 2026-10-12)
+In `Config.SkinCatalog` already (Ids are saved: never rename); each needs `ReplicatedStorage.SkinModels.<Id>`. Until
+then they show the blocky fallback. These are concepts, not specs: build them however looks best, keeping each
+tier clearly cooler than the last.
+
+| Egg | Epic | Mythic | Supreme |
+|---|---|---|---|
+| Briefcase | **ThunderclapCounsel**: storm-grey coat, lightning tie, his own storm cloud overhead | **PhoenixProsecutor**: crimson suit, flame mane, blazing wings, flaming gavel | **CelestialChiefJustice**: white-and-gold robes, halo, starry cape, Scales of Justice |
+| Pet | **WolfWarden**: wolf head, navy trench coat, moon badge, huge tail | **GryphonGuardian**: eagle head, gold pauldrons, giant wings, lion tail | **CelestialKitsune**: nine-tailed white fox, rainbow foxfire tips, floating foxfire |
+| Brainrot | **CactusinoAvvocatino**: cactus head with its own arms and a flower, tiny suit | **DraghettoSpaghetto**: spaghetti dragon, sauce horns, meatball cheeks, fire breath | **ImperatorePinguino** (Imperatore Pinguino Gelato): emperor penguin, three-scoop gelato crown, royal cape |
+| Food | **ChiliProsecutor** (Chili Pepper Prosecutor): chili head, curly stem, hot sauce | **DragonFruitDuke**: spiky dragon-fruit head, leaf crown, ducal coat, sceptre | **GrandGateauJustice**: three-tier cake head with candles, golden robes, halo |
+| Ocean | **HammerheadAdvocate**: hammerhead shark, eyes on the hammer ends | **NarwhalMagistrate**: narwhal with a glowing spiral horn, magistrate robe | **TidalSovereign**: sea king, coral crown with pearls, trident, wave cape |
+| Space | **CometCounsel**: icy comet head with a trailing tail, white space suit | **NebulaArbiter**: cosmic nebula head, tilted planet ring, constellation robe | **SupernovaSovereign**: blazing star head with corona rays, gold armour, orbiting planets |
 
 ## How the rest of the cast follows
 

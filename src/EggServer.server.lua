@@ -116,7 +116,8 @@ local function firstEmptyOffice(data: any): number?
 	return nil
 end
 
--- Lucky Eggs (Robux pass, Server.ShopService): the Rare and Legendary weights are multiplied.
+-- Lucky Eggs (Robux pass, Server.ShopService): the Rare, Epic and Legendary weights are multiplied. Mythic and
+-- Supreme are left alone (Supreme stays at most 1 in 2500).
 local function luckyWeights(player: Player, weights: { number }?): { number }?
 	local ShopService = require(Server.ShopService) :: any
 	local luck = ShopService.effect(player, "LuckyEggs", 1)
@@ -126,7 +127,7 @@ local function luckyWeights(player: Player, weights: { number }?): { number }?
 	local base = weights or Formulas.skinWeights()
 	local out = table.clone(base)
 	for index, tier in Config.Eggs.Skins do
-		if (tier.Id == "Rare" or tier.Id == "Legendary") and out[index] then
+		if (tier.Id == "Rare" or tier.Id == "Epic" or tier.Id == "Legendary") and out[index] then
 			out[index] *= luck
 		end
 	end
@@ -194,15 +195,15 @@ local function onRoll(player: Player, eggId: string?)
 		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
 		rarity = Formulas.rollSkin(rng, luckyWeights(player, nil))
 	end
-	-- pity: every egg but the tutorial one counts; the rarest tier resets it, and hitting the
-	-- limit upgrades this egg to the rarest tier (Config.Eggs.PityTop)
+	-- pity: every egg but the tutorial one counts; Config.Eggs.PityRarity (Legendary) or better resets it, and
+	-- hitting the limit upgrades this egg to exactly that rarity - never to Mythic / Supreme (Config.Eggs.PityTop)
 	if not free and Config.Eggs.PityTop then
-		local top = #Config.Eggs.Skins
+		local top = Config.Eggs.PityRarity or #Config.Eggs.Skins
 		data.Eggs.SinceTop = (data.Eggs.SinceTop or 0) + 1
-		if rarity ~= top and data.Eggs.SinceTop >= Config.Eggs.PityTop then
+		if rarity < top and data.Eggs.SinceTop >= Config.Eggs.PityTop then
 			rarity = top
 		end
-		if rarity == top then
+		if rarity >= top then
 			data.Eggs.SinceTop = 0
 		end
 	end
@@ -225,14 +226,16 @@ local function onRoll(player: Player, eggId: string?)
 	PlayerData.sync(player)
 	sync(player)
 	require(Server.GoalService).track(player, "hatch") -- short-term goals
-	-- everyone near the machine sees a Rare / Legendary come out, timed with the client's 3D egg shattering
-	-- (StarterPlayerScripts.Eggs, measured in playtest: ~5.1 s for Rare, ~6.5 s for Legendary, unskipped)
+	-- everyone near the machine sees a Rare or better come out, timed with the client's 3D egg shattering
+	-- (StarterPlayerScripts.Eggs, measured in playtest: ~5.1 s for Rare, ~6.5 s for Legendary, unskipped; the
+	-- Legendary+ hatch has the longer build-up)
 	local rarityId = Config.Eggs.Skins[rarity] and Config.Eggs.Skins[rarity].Id
-	if rarityId == "Legendary" or rarityId == "Rare" then
+	local burstKind = Effects.rarityBurst(rarityId)
+	if burstKind then
 		local from = if themed and themedMachines[themed.Id] then themedMachines[themed.Id] else machine
-		task.delay(if rarityId == "Legendary" then 6.5 else 5.1, function()
+		task.delay(if rarity >= (Config.Eggs.PityRarity or 5) then 6.5 else 5.1, function()
 			local box, size = (from :: Model):GetBoundingBox()
-			Effects.burst(box.Position + Vector3.new(0, size.Y / 2 + 2, 0), if rarityId == "Legendary" then "legendary" else "rare")
+			Effects.burst(box.Position + Vector3.new(0, size.Y / 2 + 2, 0), burstKind)
 		end)
 	end
 

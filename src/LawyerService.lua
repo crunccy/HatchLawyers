@@ -23,6 +23,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
+local Effects = require(ReplicatedStorage.Shared.Effects) :: any -- (rarityBurst: which burst a placed lawyer gets)
 local PlayerData = require(script.Parent.PlayerData)
 local CaseService = require(script.Parent.CaseService)
 
@@ -189,8 +190,9 @@ local function doPlace(player: Player, data: PlayerData.Data, target: number, ui
 	end
 	local def = Formulas.getSkin(data.Lawyers[uid].Id)
 	local rarity = def and Config.Eggs.Skins[def.Rarity]
-	if rarity and (rarity.Id == "Legendary" or rarity.Id == "Rare") then
-		CaseService.burst(player, target, if rarity.Id == "Legendary" then "legendary" else "rare")
+	local burstKind = rarity and Effects.rarityBurst(rarity.Id)
+	if burstKind then
+		CaseService.burst(player, target, burstKind)
 	end
 end
 

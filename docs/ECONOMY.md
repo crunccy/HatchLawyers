@@ -10,7 +10,7 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 | --- | --- |
 | Start | 4 segments = 8 offices; 1 **Rookie** lawyer (Common) in office 1; office 1 gets 1 free tutorial level |
 | Case payout | `Payout.Base 1200 × 1.25^(office level) × client multiplier × capped buffs × outcome × lawyer power` |
-| Lawyer power | rarity Earn **×1 / 2 / 4 / 10** (Common / Uncommon / Rare / Legendary) × StarEarn **×1 / 2.5 / 6** × the egg's EarnMultiplier (egg tiers, below) |
+| Lawyer power | rarity Earn **×1 / 2 / 4 / 6 / 10 / 25 / 60** (Common / Uncommon / Rare / Epic / Legendary / Mythic / Supreme) × StarEarn **×1 / 2.5 / 6** × the egg's EarnMultiplier (egg tiers, below) |
 | Merging | 3 copies of the same lawyer at the same stars → one with +1 star (max 3 stars); keeps the best skills |
 | Office upgrade (L → L+1) | `TrainBase 2000 × TrainGrowth 1.37^L` coins (`Config.Lawyer`; the level stays with the office), max L100. UPGRADE ×N / MAX / UPGRADE ALL in the LAWYERS panel (`TrainLawyer(office, count | "max")`, `TrainLawyer("all")`) |
 | Office tiers | +0 / 5 / 10 / 20 % payout at L1 / 10 / 30 / 60 (Basic → Oak → Executive → Partner's Suite; automatic) |
@@ -22,21 +22,25 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 | Arrivals | one client every `max(1, 3.5 × 8 / working lawyers)` s while one of the **10** waiting seats is free |
 | Assigning | the player clicks ASSIGN CLIENT; the **Manager** (5e7) auto-assigns instantly to the best lawyer; before it, a client waiting **12 s** (`Case.SelfAssignAfter`) walks to the first free lawyer by itself (not in the tutorial) |
 | Firm | Expand Firm = +1 segment = 2 **empty** offices: 2e7, 6e8, 3e10, 1.5e12, 8e13, 4e15 (segments 5–10); no hiring |
-| Eggs | **Briefcase Egg** (starter, Pad2) hatches a lawyer: Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 %; even among that rarity's lawyers in the normal egg (3 / 3 / 4 / 3) |
+| Eggs | **Briefcase Egg** (starter, Pad2) hatches a lawyer: Common / Uncommon / Rare / Epic / Legendary / Mythic / Supreme = 55.8 / 26 / 11 / 4.5 / 2.5 / 0.16 / 0.04 %; even among that rarity's lawyers in that egg. **Supreme is 1 in 2500 in every egg**; pity (50 eggs) guarantees Legendary, never Mythic / Supreme; Lucky Eggs doubles Rare / Epic / Legendary only |
 | Themed eggs = **egg tiers** | `Config.Eggs.Themed`, each only its own lawyers, × the Briefcase price; share the opened count and pity; never free. Each machine **unlocks at a lifetime coins earned** milestone (`UnlockEarned`, `Stats.CoinsEarned`: never resets) and its lawyers earn **`EarnMultiplier`** more — see the table below. In the sim since 2026-10-12 |
 | Egg price | `8,000 × 1.22^(eggs opened since your last Supreme) × 3^(Supreme level)` (`Formulas.eggPrice`); first egg free and guaranteed Uncommon; pity: 50th egg without a Legendary is one |
 | Supreme (prestige) | a ladder: Supreme N costs `1e10 × 7^N` coins and `min(20, 10 + 2N)` offices with a lawyer; payouts × (1 + N) forever; resets coins, offices, firm size, Manager and the egg ramp (keeps lawyers) |
 | Lawyer cap | 150 owned (merge to make room) |
 
 ### Egg tiers (2026-10-12)
-| Egg | Price × | Odds C / U / R / L % | Unlocks at (lifetime earned) | Lawyers earn × | Opens in the sim (5 seeds) |
+| Egg | Price × | Odds C / U / R / E / L / M / S % | Unlocks at (lifetime earned) | Lawyers earn × | Opens in the sim (5 seeds) |
 | --- | --- | --- | --- | --- | --- |
-| Briefcase | 1 | 58 / 26.5 / 13 / 2.5 | start | 1 | — |
-| Pet | 2 | 55 / 28 / 14 / 3 | 10M | 1.25 | 11–16 min |
-| Brainrot | 3 | 0 / 60 / 32 / 8 | 1B | 1.5 | 22–43 min |
-| Food | 4 | 45 / 32 / 18 / 5 | 100B | 2 | 64–96 min |
-| Ocean | 8 | 35 / 35 / 22 / 8 | 1Qa | 3 | 3.3–3.8 h |
-| Space | 16 | 25 / 35 / 28 / 12 | 1Qi | 4 | 7.2–8.0 h |
+| Briefcase | 1 | 55.8 / 26 / 11 / 4.5 / 2.5 / 0.16 / 0.04 | start | 1 | — |
+| Pet | 2 | 52.7 / 26 / 12 / 6 / 3 / 0.26 / 0.04 | 10M | 1.25 | 11–16 min |
+| Brainrot | 3 | 0 / 54.6 / 28 / 9 / 8 / 0.36 / 0.04 | 1B | 1.5 | 22–43 min |
+| Food | 4 | 42.5 / 29 / 16 / 7 / 5 / 0.46 / 0.04 | 100B | 2 | 64–96 min |
+| Ocean | 8 | 33.3 / 32 / 19 / 7 / 8 / 0.66 / 0.04 | 1Qa | 3 | 3.3–3.8 h |
+| Space | 16 | 23 / 32 / 23 / 9 / 12 / 0.96 / 0.04 | 1Qi | 4 | 7.2–8.0 h |
+
+**Epic / Mythic / Supreme (2026-10-12), sim seeds 1–5:** first Epic 14–28 min, first Mythic 14 min–2.8 h, a Supreme
+lawyer in 3 of 5 runs (1.7 min, 4.7 h, 7.3 h); first Supreme (prestige) 40–60 min on four seeds, **20 min on the
+seed that hatched a Supreme lawyer in minute 2** (the jackpot: ×60 power); 10 Supremes a day (target 8–14).
 
 Why power and not just odds: per coin, a pricier egg's better odds never beat the Briefcase Egg (a Space Legendary
 earned exactly what a Briefcase Legendary did), so the sim player bought only Brainrot eggs and nobody had a reason to
@@ -87,5 +91,7 @@ moves the targets), `--active 0.2` (courtroom bonus, inside the ×2.5 cap), `--a
 - DESIGN.md's max modifier stack (≈ ×5.85) exceeds its own ×2.5 cap. Live game: buffs capped at ×2.5, but lawyer
   power (up to ×60) and prestige multiply **outside** the cap by design.
 - DESIGN.md's tutorial and rewards text still describe skins / the 1-desk office (eggs now hatch lawyers).
-- "Supreme" is both a rarity tier and a Legendary skill name.
+- "Supreme" is now a live lawyer rarity (2026-10-12) **and** the prestige ("go Supreme", Supreme level) **and** a
+  Legendary skill name in DESIGN.md. Players may mix up "a Supreme lawyer" and "going Supreme" — consider renaming
+  the prestige (e.g. "Supreme Empire" → "Empire") or the rarity.
 - The Specialist skill targets one of 9 `Config.Clients` entries (5 are single Legendary celebrities) — see review D.

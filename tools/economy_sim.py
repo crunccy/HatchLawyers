@@ -76,12 +76,18 @@ CONFIG = {
         # the price by PrestigePriceScale (False / 1 = live: lifetime count, no scale)
         "RampResetsOnPrestige": True, "PrestigePriceScale": 3,
         # rarity: (Weight %, Earn, StartSkills)                                             SYNCED
+        # (7 rarities since 2026-10-12: Epic between Rare and Legendary; Mythic and Supreme past it. Supreme is
+        # 0.04 % = 1 in 2500 in every egg.) Order matters: pity and "Legendary or better" compare positions.
         "Rarities": {
-            "Common": (58, 1, 1),
-            "Uncommon": (26.5, 2, 1),
-            "Rare": (13, 4, 2),
+            "Common": (55.8, 1, 1),
+            "Uncommon": (26, 2, 1),
+            "Rare": (11, 4, 2),
+            "Epic": (4.5, 6, 2),
             "Legendary": (2.5, 10, 2),
+            "Mythic": (0.16, 25, 3),
+            "Supreme": (0.04, 60, 3),
         },
+        "PityRarity": "Legendary",   # SYNCED  Config.Eggs.PityRarity: pity guarantees this, never Mythic / Supreme
         # the Briefcase Egg's pool: lawyer ids per rarity in Config.SkinCatalog without an Egg tag
         # (merges need 3 of the SAME id)                                                    SYNCED
         "Catalog": {
@@ -89,6 +95,7 @@ CONFIG = {
             "Uncommon": ["BowTieBarrister", "NavyPowerSuit", "BensonBond"],
             "Rare": ["GoldenGavel", "NeonLitigator", "KaiSueNat", "KhabyClaim"],
             "Legendary": ["PinstripePartner", "IShowSued", "IceJustice"],
+            "Epic": ["ThunderclapCounsel"], "Mythic": ["PhoenixProsecutor"], "Supreme": ["CelestialChiefJustice"],
         },
         # Config.Eggs.Themed: each hatches ONLY its own lawyers (catalog Egg = Id) with its own rarity weights, at
         # PriceMultiplier x the Briefcase price. All eggs share one opened count (price ramp) and the pity counter
@@ -97,26 +104,31 @@ CONFIG = {
         # lawyers earn (Formulas.lawyerEarn).                                                SYNCED (src/Config.lua)
         "Themed": [
             {"Id": "Pet", "PriceMultiplier": 2, "UnlockEarned": 1e7, "EarnMultiplier": 1.25,
-             "Weights": {"Common": 55, "Uncommon": 28, "Rare": 14, "Legendary": 3},
+             "Weights": {"Common": 52.7, "Uncommon": 26, "Rare": 12, "Epic": 6, "Legendary": 3, "Mythic": 0.26, "Supreme": 0.04},
              "Pool": {"Common": ["PawralegalPup", "HamsterHustle"], "Uncommon": ["WhiskersEsq", "BubblesGoldfish"],
-                      "Rare": ["CorgiCounsel", "ParrotProsecutor"], "Legendary": ["SirFluffington", "HoundOfJustice"]}},
+                      "Rare": ["CorgiCounsel", "ParrotProsecutor"], "Legendary": ["SirFluffington", "HoundOfJustice"],
+                      "Epic": ["WolfWarden"], "Mythic": ["GryphonGuardian"], "Supreme": ["CelestialKitsune"]}},
             {"Id": "Brainrot", "PriceMultiplier": 3, "UnlockEarned": 1e9, "EarnMultiplier": 1.5,
-             "Weights": {"Common": 0, "Uncommon": 60, "Rare": 32, "Legendary": 8},
+             "Weights": {"Common": 0, "Uncommon": 54.6, "Rare": 28, "Epic": 9, "Legendary": 8, "Mythic": 0.36, "Supreme": 0.04},
              "Pool": {"Uncommon": ["ChimpanziniBananini", "BonecaAmbalabu"],
                       "Rare": ["BallerinaCappuccina", "BrrBrrPatapim", "LiriliLarila"],
-                      "Legendary": ["Tralalero", "Bombardiro", "CappuccinoAvvocato"]}},
+                      "Legendary": ["Tralalero", "Bombardiro", "CappuccinoAvvocato"],
+                      "Epic": ["CactusinoAvvocatino"], "Mythic": ["DraghettoSpaghetto"], "Supreme": ["ImperatorePinguino"]}},
             {"Id": "Food", "PriceMultiplier": 4, "UnlockEarned": 1e11, "EarnMultiplier": 2,
-             "Weights": {"Common": 45, "Uncommon": 32, "Rare": 18, "Legendary": 5},
+             "Weights": {"Common": 42.5, "Uncommon": 29, "Rare": 16, "Epic": 7, "Legendary": 5, "Mythic": 0.46, "Supreme": 0.04},
              "Pool": {"Common": ["ToastAttorney", "SunnySideSam"], "Uncommon": ["SushiSolicitor", "TacoTribunal"],
-                      "Rare": ["PizzaProsecutor", "DonutDefender"], "Legendary": ["BurgerBoss", "ScoopJudge"]}},
+                      "Rare": ["PizzaProsecutor", "DonutDefender"], "Legendary": ["BurgerBoss", "ScoopJudge"],
+                      "Epic": ["ChiliProsecutor"], "Mythic": ["DragonFruitDuke"], "Supreme": ["GrandGateauJustice"]}},
             {"Id": "Ocean", "PriceMultiplier": 8, "UnlockEarned": 1e15, "EarnMultiplier": 3,
-             "Weights": {"Common": 35, "Uncommon": 35, "Rare": 22, "Legendary": 8},
+             "Weights": {"Common": 33.3, "Uncommon": 32, "Rare": 19, "Epic": 7, "Legendary": 8, "Mythic": 0.66, "Supreme": 0.04},
              "Pool": {"Common": ["CrabCounsel", "ClownfishClerk"], "Uncommon": ["PufferPartner", "JellyJuror"],
-                      "Rare": ["OctoAttorney", "SeahorseSolicitor"], "Legendary": ["WhaleJudge", "KrakenCounsel"]}},
+                      "Rare": ["OctoAttorney", "SeahorseSolicitor"], "Legendary": ["WhaleJudge", "KrakenCounsel"],
+                      "Epic": ["HammerheadAdvocate"], "Mythic": ["NarwhalMagistrate"], "Supreme": ["TidalSovereign"]}},
             {"Id": "Space", "PriceMultiplier": 16, "UnlockEarned": 1e18, "EarnMultiplier": 4,
-             "Weights": {"Common": 25, "Uncommon": 35, "Rare": 28, "Legendary": 12},
+             "Weights": {"Common": 23, "Uncommon": 32, "Rare": 23, "Epic": 9, "Legendary": 12, "Mythic": 0.96, "Supreme": 0.04},
              "Pool": {"Common": ["MoonRockRookie", "LittleGreenLawyer"], "Uncommon": ["AstroAttorney", "RoboClerk"],
-                      "Rare": ["SaturnSolicitor", "UFOCounsel"], "Legendary": ["StarJudge", "BlackHoleBarrister"]}},
+                      "Rare": ["SaturnSolicitor", "UFOCounsel"], "Legendary": ["StarJudge", "BlackHoleBarrister"],
+                      "Epic": ["CometCounsel"], "Mythic": ["NebulaArbiter"], "Supreme": ["SupernovaSovereign"]}},
         ],
     },
     # Config.Skills (Effect per level, MaxLevel 3, 3 slots, rarity weights 65/27/8)             SYNCED
@@ -629,11 +641,13 @@ class Firm:
         weights = egg["Weights"]
         rarity = forced or roll_rarity(rng, weights)
         if not forced:
-            top = list(CONFIG["Eggs"]["Rarities"])[-1]
+            # EggServer: pity guarantees PityRarity (Legendary), never Mythic / Supreme; that or better resets it
+            order = list(CONFIG["Eggs"]["Rarities"])
+            top = CONFIG["Eggs"].get("PityRarity", order[-1])
             self.since_top += 1
-            if rarity != top and self.since_top >= CONFIG["Eggs"]["PityTop"]:
+            if order.index(rarity) < order.index(top) and self.since_top >= CONFIG["Eggs"]["PityTop"]:
                 rarity = top
-            if rarity == top:
+            if order.index(rarity) >= order.index(top):
                 self.since_top = 0
             self.eggs_opened[egg["Id"]] = self.eggs_opened.get(egg["Id"], 0) + 1
             self.opened += 1
@@ -648,7 +662,7 @@ class Firm:
 # Simulation
 # ----------------------------------------------------------------------------------------
 CHECKPOINTS_MIN = [1, 2, 5, 10, 20, 30, 60, 120, 240, 480, 720, 900, 1200, 1440]
-RARITIES = ["Common", "Uncommon", "Rare", "Legendary"]
+RARITIES = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Supreme"]
 
 
 def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):

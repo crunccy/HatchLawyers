@@ -9,7 +9,7 @@
 | Client Rarity Tiers | ✅ mostly | Roster: [CLIENTS.md](CLIENTS.md). Celebrity-style Legendaries must stay fictional |
 | Firm Expansion (desk tiers 1–6) | ⚠️ superseded | Segments + Expand/Hire, 8 starting lawyers — [../CLAUDE.md](../CLAUDE.md), [ECONOMY.md](ECONOMY.md) |
 | Lawyer Skill Progression | ⚠️ partly | Levels come from **training with coins**, not XP |
-| Egg & Skin System | ⚠️ partly | 4 rarities live (58/26.5/13/2.5 %) — [ECONOMY.md](ECONOMY.md) |
+| Egg & Skin System | ⚠️ partly | Eggs hatch lawyers (not skins); all 7 rarities in `src/` since 2026-10-12, Supreme 1 in 2500 (not 0.1 %), pity only to Legendary — [ECONOMY.md](ECONOMY.md) |
 | Cash System & Scaling | ❌ superseded | [ECONOMY.md](ECONOMY.md) (Base 1200, TrainGrowth 1.336) |
 | Art Direction → Color Palette / "navy, gold, chrome" | ❌ superseded | Cartoony voxel palette in [../CLAUDE.md](../CLAUDE.md) |
 | Monetization, Rewards & Engagement | 🕒 post-MVP | Not built; MVP rules in "MVP Risk Fixes" still apply |

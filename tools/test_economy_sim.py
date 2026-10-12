@@ -158,6 +158,53 @@ class EggTiers(unittest.TestCase):
         self.assertEqual(f.next_egg_price(self.egg("Space")), base * 16)
 
 
+class TopRarities(unittest.TestCase):
+    """Epic / Mythic / Supreme (2026-10-12)."""
+
+    def test_supreme_is_one_in_2500_in_every_egg(self):
+        for egg in sim.egg_tiers():
+            w = egg["Weights"]
+            self.assertAlmostEqual(sum(w.values()), 100, places=6, msg=egg["Id"])
+            self.assertAlmostEqual(w["Supreme"] / sum(w.values()), 1 / 2500, msg=egg["Id"])
+
+    def test_every_rollable_rarity_has_a_lawyer(self):
+        for egg in sim.egg_tiers():
+            for rarity, w in egg["Weights"].items():
+                if w > 0:
+                    self.assertTrue(egg["Pool"].get(rarity), f"{egg['Id']} has no {rarity} lawyer")
+
+    def test_power_climbs_with_rarity(self):
+        earns = [sim.lawyer_earn(r, 1) for r in sim.RARITIES]
+        self.assertEqual(earns, sorted(earns))
+        self.assertEqual(len(set(earns)), len(earns))
+
+    def test_pity_never_gives_mythic_or_supreme(self):
+        f = sim.Firm()
+        rng = random.Random(0)
+        saved = sim.CONFIG["Eggs"]["Themed"]
+        sim.CONFIG["Eggs"]["Themed"] = [{"Id": "x", "PriceMultiplier": 1, "UnlockEarned": None,
+                                         "Weights": {"Common": 1}, "Pool": {"Common": ["Rookie"]}}]
+        try:
+            for _ in range(3):
+                f.since_top = sim.CONFIG["Eggs"]["PityTop"] - 1
+                self.assertEqual(f.open_egg(rng, 1).rarity, sim.CONFIG["Eggs"]["PityRarity"])
+                self.assertEqual(f.since_top, 0)
+        finally:
+            sim.CONFIG["Eggs"]["Themed"] = saved
+
+    def test_mythic_resets_pity(self):
+        f = sim.Firm()
+        f.since_top = 10
+        saved = sim.CONFIG["Eggs"]["Themed"]
+        sim.CONFIG["Eggs"]["Themed"] = [{"Id": "x", "PriceMultiplier": 1, "UnlockEarned": None,
+                                         "Weights": {"Mythic": 1}, "Pool": {"Mythic": ["PhoenixProsecutor"]}}]
+        try:
+            self.assertEqual(f.open_egg(random.Random(0), 1).rarity, "Mythic")
+            self.assertEqual(f.since_top, 0)
+        finally:
+            sim.CONFIG["Eggs"]["Themed"] = saved
+
+
 class Simulation(unittest.TestCase):
     def test_deterministic_per_seed(self):
         a = sim.simulate(1, seed=3)

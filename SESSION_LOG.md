@@ -4,6 +4,14 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] **Build the 18 Epic / Mythic / Supreme lawyer models** (local session; concepts + ladder in
+      docs/CHARACTER_STYLE.md → "Epic, Mythic and Supreme"). Ids are in `Config.SkinCatalog`; each needs
+      `ReplicatedStorage.SkinModels.<Id>`. Do this before pushing the new rarities, or hatches show the blocky fallback.
+- [ ] **Before pushing the 7 rarities to Studio, grep Studio-only scripts for rarity NUMBERS** (Epic is now 4,
+      Legendary 5): `Eggs.Skins[4]`, `Rarity == 4`, `rarity == 4`, `"Legendary"` — in SkinLook, DeskLook, Puppet,
+      Guide, Hud, Goals, BadgeAwards, RewardsService, SkillService, CourtService, DeskService, and whatever listens to
+      `ReplicatedStorage.HatchCue` (it now also gets the rarity NAME as a 3rd argument; switch it to that).
+      Also check the Lawyers panel's white Supreme pill reads well (Config.RarityColors.Supreme is white).
 - [ ] **Push `src/` to Studio: economy pass + egg tiers + phone LAWYERS panel** (2026-10-12 entry below). Files:
       `Config`, `Formulas` (Shared); `PlayerData`, `LawyerService`, `PrestigeService`, `EggServer` (server);
       `Eggs`, `Lawyers`, `Manager`, `Supreme` (StarterPlayerScripts). Re-read each Studio script first (mr.robe may
@@ -52,6 +60,23 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — cloud session: Epic, Mythic and Supreme rarities (in `src/`, not Studio; models still to build)
+- `Config.Eggs.Skins`: 7 rarities (Epic inserted at 4 between Rare and Legendary; Mythic 6, Supreme 7). Earn
+  1 / 2 / 4 / 6 / 10 / 25 / 60, StartSkills 1 / 1 / 2 / 2 / 2 / 3 / 3. **Supreme 0.04 % = 1 in 2500 in every egg**;
+  Mythic 0.16 % (Briefcase) rising to 0.96 % (Space); odds tables in docs/ECONOMY.md. All Legendaries moved 4 → 5.
+  Saves store Ids, not rarity numbers, so nothing saved changes.
+- `Config.Eggs.PityRarity = 5`: pity (50 eggs) guarantees Legendary, never Mythic / Supreme; Legendary+ resets it
+  (EggServer; the old rule "the rarest tier" would have made Supreme a pity drop). Lucky Eggs: Rare / Epic /
+  Legendary only.
+- 18 catalog entries (one Epic / Mythic / Supreme per egg) with names + UI swatch colours; **no models** (user's call:
+  the local session builds them — an attempt here was dropped). Concepts in docs/CHARACTER_STYLE.md.
+- `Shared.Effects`: Mythic aura (crimson inferno) and Supreme aura (rainbow fire + stars + energy + halo); bursts
+  `epic` / `mythic` / `supreme`; `Effects.rarityBurst(id)` (EggServer and LawyerService use it).
+- Hatch screen: Mythic / Supreme reveal looks (crimson / rainbow name shimmer), Legendary+ gets the long build-up
+  (5 shake rounds Mythic, 6 Supreme), odds boards show two decimals under 1 % (0.04 %), HatchCue also sends the name.
+- Sim mirrors it (31 tests). Seeds 1–5: targets hold except one seed that hatched a Supreme lawyer in minute 2
+  (first prestige at 20 min) — the jackpot; ×60 power may want tuning.
 
 ## 2026-10-12 — cloud session: economy pass finished, egg tiers, phone LAWYERS panel (all in `src/`, not Studio)
 Branch `claude/sharp-dirac-02vssj` from `main`. Nothing was changed in Studio; see the push item in Open items.
