@@ -89,6 +89,9 @@ local panel = make("Frame", {
 	AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(W, H), BackgroundColor3 = PANEL, Active = true, Parent = gui,
 }, { corner(10), stroke(6), panelScale })
 panel:SetAttribute("NoSkin", true)
+-- catches taps on empty panel space (Active = true alone doesn't stop them reaching the Shade and closing it);
+-- same as Shared.Skin.blockClicks
+make("TextButton", { Name = "ClickBlocker", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 0, Parent = panel })
 studs(panel, 0.9)
 local header = make("Frame", { Size = UDim2.new(1, 0, 0, 70), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
 	corner(10), make("UIGradient", { Color = ColorSequence.new(PURPLE, PURPLE_DARK) }),

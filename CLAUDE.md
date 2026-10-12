@@ -70,8 +70,11 @@ repo** — local Claude memory is per machine, so anything the other side should
 Bright, chunky, colorful like Pet Simulator X / Steal a Brainrot / Steal an Egg: voxel tropical sim with lime
 grass, orange paths with white dashed edges, wood crates, blocky palms. Look at the references before building.
 - **Characters (2026-10-11): brick style** — studded bricks (`MaterialService.BrickStuds`), square eyes, chibi frame,
-  one kit for lawyers + clients. Rules + rarity ladder: docs/CHARACTER_STYLE.md. Being rolled out (Rookie + Neighbor
-  Dave done); every other character is still its 2026-10-10 version until rebuilt.
+  one kit for lawyers + clients. Rules + rarity ladder: docs/CHARACTER_STYLE.md. Done 2026-10-11 for every lawyer,
+  client, judge and the Manager (builders: tools/brick/). New characters: build them on tools/brick/BrickKit.lua and
+  run them through tools/brick/Run.lua (it checks the arm rig for Shared.Puppet).
+- **Window panels need `Skin.blockClicks(panel)`** (Shared.Skin; Skin.window does it): a Frame doesn't stop a tap,
+  even with Active = true, so a tap on empty panel space reached the click-to-close backdrop and closed the window.
 - **Fictional characters only:** no real people's names or likeness (lawyers too — four creator-parody names were
   renamed 2026-10-11).
 - **Palette (RGB):** world grass 96,196,40 · plot grass 124,222,52 · leaf 70,168,34 · path orange 255,160,24 ·

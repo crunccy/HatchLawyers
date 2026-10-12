@@ -53,8 +53,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
       skip the other stages every run.
 - [ ] Check `GoalService.track(player, "train", count)`: the economy pass's `LawyerService` passes the number of
       levels bought; make sure Studio's `GoalService` accepts the count (else goals count one per request).
-- [ ] **Brick style rollout** (docs/CHARACTER_STYLE.md): rebuild the other 52 lawyers, 43 clients and the Judge with
-      `tools/brick/BrickKit.lua`. Rookie + Neighbor Dave are done; the rest are their 2026-10-10 versions.
+- [x] **Brick style rollout** — done 2026-10-11: every lawyer, client, judge and the Manager (entry below).
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
 - [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
       own Claude on this repo now (2026-10-12). CaseService changed again since: no waiting room (entry below).
@@ -219,6 +218,26 @@ Branch `claude/sharp-dirac-02vssj` from `main`. Nothing was changed in Studio; s
   tall). Office-card art 64 → 58 tall to give the name 20 px. Desktop size unchanged. Not eye-checked.
 - **Docs:** ECONOMY.md updated to the economy pass (TrainBase 2000 × 1.37, egg ramp per run, Supreme ladder,
   pacing targets) + an egg-tier table.
+
+## 2026-10-11 — local session: brick style for the whole cast; windows no longer close on a stray tap
+- **Checked first** (user's condition): a brick lawyer on the egg hatch screen (a fake Rookie hatch, nothing saved) and
+  brick lawyer + client in the courtroom (answering, OBJECTION pose) - 0 errors - so the rollout went ahead.
+- **Every character is brick now** (docs/CHARACTER_STYLE.md):
+  - 9 people lawyers rebuilt on BrickKit (`tools/brick/Lawyers.lua`); Rookie was the benchmark.
+  - 43 creature lawyers converted in place (`tools/brick/ConvertLawyers.lua`: studs material, Metal -> Plastic, shine
+    dots off, eye rims) - they keep their own body plans. The Manager model was converted the same way.
+  - 44 clients (`tools/brick/Clients.lua` + NeighborDave.lua), 5 judges with a GavelArm (`tools/brick/Judges.lua`).
+  - Old models kept: ServerStorage.RetiredSkinModels.<Id>_preBrick, RetiredClients.<Id>_v3, RetiredJudges.<Id>_preBrick.
+  - `tools/brick/Run.lua` builds/installs batches and checks the arm rig: Shared.Puppet puts a shoulder at the top of
+    the arm's highest part (Size.Y, ignoring rotation), so a prop held high would move the joint. Caught and fixed on
+    Selfie Counsel and Livestream Litigator.
+- **Bug fix: windows closed when you tapped empty space inside them** (Shop, Skills, Manager, Daily, Courtroom,
+  Lawyers; Supreme in the repo only). A Frame doesn't stop a click even with Active = true; the click reached the
+  full-screen close backdrop. New `Skin.blockClicks(panel)` puts a transparent button under the content. Verified in a
+  playtest: empty space inside the Shop keeps it open, outside closes it.
+- **Studio changed under this repo:** the place reloaded as "Hatch a Lawyer!" with v16 egg zones (see Open items).
+  Pushes this session were checked line by line; Studio's Lawyers script got only the one-line fix patched in.
+- Playtest on v16 with the brick cast: 15 desks on cases, 21 brick clients, all-brick courtroom; 0 errors either side.
 
 ## 2026-10-11 — local session: brick character style (benchmark), four lawyers renamed
 - **Character redesign** from the user's new reference recording (a "steal an egg"-style pet game; characters only,
