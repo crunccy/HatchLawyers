@@ -76,7 +76,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 - Hatch screen: Mythic / Supreme reveal looks (crimson / rainbow name shimmer), Legendary+ gets the long build-up
   (5 shake rounds Mythic, 6 Supreme), odds boards show two decimals under 1 % (0.04 %), HatchCue also sends the name.
 - Sim mirrors it (31 tests). Seeds 1–5: targets hold except one seed that hatched a Supreme lawyer in minute 2
-  (first prestige at 20 min) — the jackpot; ×60 power may want tuning.
+  (first prestige at 20 min) — the jackpot. **User's call: keep Supreme at ×60**, early luck included.
 
 ## 2026-10-12 — cloud session: economy pass finished, egg tiers, phone LAWYERS panel (all in `src/`, not Studio)
 Branch `claude/sharp-dirac-02vssj` from `main`. Nothing was changed in Studio; see the push item in Open items.

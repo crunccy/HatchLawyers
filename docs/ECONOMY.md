@@ -40,7 +40,7 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 
 **Epic / Mythic / Supreme (2026-10-12), sim seeds 1–5:** first Epic 14–28 min, first Mythic 14 min–2.8 h, a Supreme
 lawyer in 3 of 5 runs (1.7 min, 4.7 h, 7.3 h); first Supreme (prestige) 40–60 min on four seeds, **20 min on the
-seed that hatched a Supreme lawyer in minute 2** (the jackpot: ×60 power); 10 Supremes a day (target 8–14).
+seed that hatched a Supreme lawyer in minute 2** (the jackpot: ×60 power — kept on purpose, user's call 2026-10-12: don't retune it away); 10 Supremes a day (target 8–14).
 
 Why power and not just odds: per coin, a pricier egg's better odds never beat the Briefcase Egg (a Space Legendary
 earned exactly what a Briefcase Legendary did), so the sim player bought only Brainrot eggs and nobody had a reason to
