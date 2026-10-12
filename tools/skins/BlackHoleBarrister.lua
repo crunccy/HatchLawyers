@@ -1,4 +1,4 @@
--- Black Hole Barrister (Legendary, Space egg) - block remake 2026-10-10. A hovering chunky dark orb (rounded cube of
+-- Black Hole Bo (Legendary, Space egg) - block remake 2026-10-10. A hovering chunky dark orb (rounded cube of
 -- blocks) inside a tilted glowing accretion ring (Neon purple -> pink -> orange segments), a white barrister's curly
 -- wig, white collar bands, cartoon eyes with purple pupils + angry brows, floating white gloves holding a gavel,
 -- little glowing stars orbiting. Front-facing, HOVERS. Legendary: Neon glow, 1.2x.

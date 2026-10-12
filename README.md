@@ -17,5 +17,7 @@ the working notes for Claude, and offline tools.
 | [docs/ECONOMY_REVIEW.md](docs/ECONOMY_REVIEW.md) | Sim analysis: what needs attention, ranked |
 | [docs/CLIENTS.md](docs/CLIENTS.md) | Client roster and bios |
 | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) | Plan for remaking models in Blender |
+| [docs/BOSSES.md](docs/BOSSES.md) | Zone boss concepts and the egg-drop rule |
 | [tools/economy_sim.py](tools/economy_sim.py) | Offline economy simulator: `python3 tools/economy_sim.py --report` |
 | [tools/test_economy_sim.py](tools/test_economy_sim.py) | Sim tests: `python3 -m unittest discover tools` |
+| [tools/checks/run_checks.py](tools/checks/run_checks.py) | All checks (Luau compiles, Config rules, sim tests); GitHub runs them on every push |

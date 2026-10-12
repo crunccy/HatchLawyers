@@ -1,4 +1,4 @@
--- Rookie Lawyer (Common, the starting lawyer) - brick style benchmark 2026-10-11 (docs/CHARACTER_STYLE.md).
+-- Rookie (Common, the starting lawyer) - brick style benchmark 2026-10-11 (docs/CHARACTER_STYLE.md).
 -- A first-day lawyer in a hand-me-down navy suit one size too big: the jacket hangs past the hip and the sleeves
 -- cover half the hand, a white shirt V with a red tie, side-parted brown hair with one cowlick brick sticking up,
 -- a nervous-eager face (pupils up and in, brows raised, small straight mouth), a briefcase with a gold clasp.

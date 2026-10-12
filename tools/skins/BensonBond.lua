@@ -1,4 +1,4 @@
--- Mic Drop Attorney (Id BensonBond, Uncommon; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC showman lawyer (original design - deliberately no real
+-- Mic Drop (Id BensonBond, Uncommon; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC showman lawyer (original design - deliberately no real
 -- person's likeness): a cream-white suit with a gold tie and gold buttons, one arm flung up in a big finish, the
 -- other holding a gold microphone, short neat hair, a big grin. Front-facing. Uncommon: 1 prop, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

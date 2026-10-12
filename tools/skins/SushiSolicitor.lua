@@ -1,4 +1,4 @@
--- Sushi Solicitor (Uncommon, Food egg) - block remake 2026-10-10. A walking maki roll: a dark-green nori-wrapped
+-- Sushi Sue (Uncommon, Food egg) - block remake 2026-10-10. A walking maki roll: a dark-green nori-wrapped
 -- body with white rice showing at the top ring and a salmon + cucumber centre on top, face on the nori, little black
 -- legs, thin arms, a pair of wooden chopsticks held like a pointer. Front-facing. Uncommon: 1 prop, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

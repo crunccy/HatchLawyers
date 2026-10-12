@@ -1,4 +1,4 @@
--- Hound of Justice (Legendary) - block remake 2026-10-10. A four-legged bloodhound standing side-on (body along X)
+-- Thunder Hound (Legendary) - block remake 2026-10-10. A four-legged bloodhound standing side-on (body along X)
 -- with its head turned to the viewer: tan coat with a dark saddle, long droopy ears, saggy jowls, sad-wise eyes,
 -- a brown checked detective cap, a red collar with a big gold star badge, a short red cape. Legendary: gold badge +
 -- cape clasp/hem, 1.45x. Sideways.

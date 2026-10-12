@@ -1,5 +1,5 @@
--- Saturn Solicitor (Rare, Space egg) - block remake 2026-10-10. A lawyer whose whole head IS the planet Saturn: a
--- big cream/tan banded planet head with a tilted solid ring around it (deliberately unlike the Black Hole Barrister's
+-- Saturn Sam (Rare, Space egg) - block remake 2026-10-10. A lawyer whose whole head IS the planet Saturn: a
+-- big cream/tan banded planet head with a tilted solid ring around it (deliberately unlike the Black Hole Bo's
 -- hovering orb - this one stands on legs in a purple suit), face on the planet, two tiny orbiting moons, a gold
 -- star tie pin. Front-facing. Rare: small Neon moons, 1.05x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

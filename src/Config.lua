@@ -323,6 +323,11 @@ Config.Eggs = {
 	-- and every Supreme level makes eggs PrestigePriceScale x pricier - eggs stay a real choice every run instead of
 	-- costing a lifetime-count price right after a reset (Formulas.eggPrice).
 	PrestigePriceScale = 3,
+	-- Luck (Lucky Eggs pass, golden zone eggs): these rarities' chances are multiplied, paid for out of the LuckPaidBy
+	-- rarities, so the total stays 100 and Mythic / Supreme keep their exact odds (Formulas.luckyWeights; Supreme stays
+	-- exactly 1 in 2500 - before 2026-10-12 luck just multiplied, which pushed Supreme to ~1 in 3850 on a golden egg).
+	LuckRarities = { "Rare", "Epic", "Legendary" },
+	LuckPaidBy = { "Common", "Uncommon" },
 	Skins = {
 		-- The Briefcase Egg's odds (Weight, %); themed eggs have their own Weights by these indices.
 		-- 2026-10-12: Epic (between Rare and Legendary), Mythic and Supreme (one and two past Legendary).
@@ -361,7 +366,7 @@ Config.Eggs = {
 Config.SkinCatalog = {
 	{
 		Id = "Rookie", -- the starting lawyer (also hatchable)
-		Name = "Rookie Lawyer",
+		Name = "Rookie",
 		Rarity = 1,
 		Model = "Rookie",
 		Suit = Color3.fromRGB(44, 62, 96),
@@ -390,7 +395,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "BowTieBarrister",
-		Name = "Bow Tie Barrister",
+		Name = "Bow Tie Benny",
 		Rarity = 2,
 		Model = "BowTieBarrister",
 		Suit = Color3.fromRGB(130, 70, 200),
@@ -435,7 +440,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "NeonLitigator",
-		Name = "Neon Litigator",
+		Name = "Neon Nate",
 		Rarity = 3,
 		Model = "NeonLitigator",
 		Suit = Color3.fromRGB(35, 35, 48),
@@ -448,7 +453,7 @@ Config.SkinCatalog = {
 	-- Parody model skins (ReplicatedStorage.SkinModels)
 	{
 		Id = "IShowSued",
-		Name = "Livestream Litigator", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
+		Name = "Livestreamer", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 5,
 		Model = "IShowSued",
 		Suit = Color3.fromRGB(200, 18, 40),
@@ -459,7 +464,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "IceJustice",
-		Name = "Ice Justice",
+		Name = "Ice Cold",
 		Rarity = 5,
 		Model = "IceJustice",
 		Suit = Color3.fromRGB(170, 216, 245),
@@ -470,7 +475,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "KaiSueNat",
-		Name = "Selfie Counsel", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
+		Name = "Selfie Star", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 3,
 		Model = "KaiSueNat",
 		Suit = Color3.fromRGB(25, 25, 30),
@@ -480,7 +485,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "KhabyClaim",
-		Name = "Obvious Advocate", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
+		Name = "Obvious Ollie", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 3,
 		Model = "KhabyClaim",
 		Suit = Color3.fromRGB(120, 124, 132),
@@ -490,7 +495,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "BensonBond",
-		Name = "Mic Drop Attorney", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
+		Name = "Mic Drop", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
 		Rarity = 2,
 		Model = "BensonBond",
 		Suit = Color3.fromRGB(250, 248, 240),
@@ -757,54 +762,54 @@ for _, r in {
 	{ "HamsterHustle", "Hamster Hustle", 1, "Pet", "a03c3c", "803030", "a03c3c", "e6aa64" },
 	{ "WhiskersEsq", "Whiskers, Esq.", 2, "Pet", "282832", "202028", "282832", "f0963c" },
 	{ "BubblesGoldfish", "Bubbles the Goldfish", 2, "Pet", "3c8cc8", "3070a0", "3c8cc8", "aae1ff" },
-	{ "CorgiCounsel", "Corgi Counsel", 3, "Pet", "faf5eb", "e68c3c", "faf5eb", "e68c3c" },
-	{ "ParrotProsecutor", "Parrot Prosecutor", 3, "Pet", "e62828", "3c3c46", "286ee6", "e62828" },
+	{ "CorgiCounsel", "Corgi Cooper", 3, "Pet", "faf5eb", "e68c3c", "faf5eb", "e68c3c" },
+	{ "ParrotProsecutor", "Polly Parrot", 3, "Pet", "e62828", "3c3c46", "286ee6", "e62828" },
 	{ "SirFluffington", "Sir Fluffington", 5, "Pet", "7828a0", "5a1e78", "7828a0", "fafafc" },
-	{ "HoundOfJustice", "Hound of Justice", 5, "Pet", "967850", "503c32", "967850", "aa6e3c" },
-	{ "ToastAttorney", "Toast Attorney", 1, "Food", "5a7850", "486040", "5a7850", "a05a23" },
+	{ "HoundOfJustice", "Thunder Hound", 5, "Pet", "967850", "503c32", "967850", "aa6e3c" },
+	{ "ToastAttorney", "Toasty", 1, "Food", "5a7850", "486040", "5a7850", "a05a23" },
 	{ "SunnySideSam", "Sunny-Side Sam", 1, "Food", "e6e6ec", "b8b8bc", "e6e6ec", "fcfcf8" },
-	{ "SushiSolicitor", "Sushi Solicitor", 2, "Food", "1e3228", "182820", "1e3228", "1e3c28" },
-	{ "TacoTribunal", "Taco Tribunal", 2, "Food", "c87828", "a06020", "c87828", "f0be50" },
-	{ "PizzaProsecutor", "Pizza Prosecutor", 3, "Food", "3c783c", "306030", "3c783c", "ffd250" },
-	{ "DonutDefender", "Donut Defender", 3, "Food", "ff8cbe", "cc7098", "ff8cbe", "dca05a" },
+	{ "SushiSolicitor", "Sushi Sue", 2, "Food", "1e3228", "182820", "1e3228", "1e3c28" },
+	{ "TacoTribunal", "Taco Tico", 2, "Food", "c87828", "a06020", "c87828", "f0be50" },
+	{ "PizzaProsecutor", "Pizza Pete", 3, "Food", "3c783c", "306030", "3c783c", "ffd250" },
+	{ "DonutDefender", "Donut Dee", 3, "Food", "ff8cbe", "cc7098", "ff8cbe", "dca05a" },
 	{ "BurgerBoss", "Burger Boss", 5, "Food", "1e1e24", "18181c", "1e1e24", "dc963c" },
-	{ "ScoopJudge", "Judge Scoop", 5, "Food", "1e1e28", "1e1e28", "1e1e28", "fff0dc" },
-	{ "CrabCounsel", "Crab Counsel", 1, "Ocean", "283c78", "e14632", "283c78", "e14632" },
-	{ "ClownfishClerk", "Clownfish Clerk", 1, "Ocean", "ff821e", "282832", "ff821e", "ff821e" },
-	{ "PufferPartner", "Puffer Partner", 2, "Ocean", "3c78b4", "306090", "3c78b4", "f0d25a" },
-	{ "JellyJuror", "Jelly Juror", 2, "Ocean", "463c78", "dc8cff", "463c78", "dc8cff" },
-	{ "OctoAttorney", "Octo-Attorney", 3, "Ocean", "28283c", "aa50be", "28283c", "aa50be" },
-	{ "SeahorseSolicitor", "Seahorse Solicitor", 3, "Ocean", "e6783c", "b86030", "e6783c", "3cc8be" },
-	{ "WhaleJudge", "Whale Judge", 5, "Ocean", "1e1e28", "1e1e28", "1e1e28", "3c64aa" },
-	{ "KrakenCounsel", "Kraken Counsel", 5, "Ocean", "14141a", "14141a", "14141a", "aa2832" },
+	{ "ScoopJudge", "Scoops", 5, "Food", "1e1e28", "1e1e28", "1e1e28", "fff0dc" },
+	{ "CrabCounsel", "Crabby", 1, "Ocean", "283c78", "e14632", "283c78", "e14632" },
+	{ "ClownfishClerk", "Coco Clownfish", 1, "Ocean", "ff821e", "282832", "ff821e", "ff821e" },
+	{ "PufferPartner", "Puffy", 2, "Ocean", "3c78b4", "306090", "3c78b4", "f0d25a" },
+	{ "JellyJuror", "Wobbly Jelly", 2, "Ocean", "463c78", "dc8cff", "463c78", "dc8cff" },
+	{ "OctoAttorney", "Octo Otto", 3, "Ocean", "28283c", "aa50be", "28283c", "aa50be" },
+	{ "SeahorseSolicitor", "Sandy Seahorse", 3, "Ocean", "e6783c", "b86030", "e6783c", "3cc8be" },
+	{ "WhaleJudge", "Big Blue", 5, "Ocean", "1e1e28", "1e1e28", "1e1e28", "3c64aa" },
+	{ "KrakenCounsel", "Inky the Kraken", 5, "Ocean", "14141a", "14141a", "14141a", "aa2832" },
 	{ "MoonRockRookie", "Moon Rock Rookie", 1, "Space", "3c4664", "303850", "3c4664", "aaaaaf" },
-	{ "LittleGreenLawyer", "Little Green Lawyer", 1, "Space", "282832", "202028", "282832", "6edc5a" },
-	{ "AstroAttorney", "Astro-Attorney", 2, "Space", "f0f0f5", "f0f0f5", "f0f0f5", "b4dcff" },
-	{ "RoboClerk", "Robo-Clerk", 2, "Space", "bec8d7", "bec8d7", "bec8d7", "bec8d7" },
-	{ "SaturnSolicitor", "Saturn Solicitor", 3, "Space", "3c286e", "302058", "3c286e", "f0c878" },
-	{ "UFOCounsel", "UFO Counsel", 3, "Space", "5a5a6e", "484858", "5a5a6e", "78e664" },
-	{ "StarJudge", "Star Judge", 5, "Space", "141432", "141432", "141432", "ffe150" },
-	{ "BlackHoleBarrister", "Black Hole Barrister", 5, "Space", "1e143c", "1e143c", "1e143c", "140a23" },
+	{ "LittleGreenLawyer", "Little Green Zip", 1, "Space", "282832", "202028", "282832", "6edc5a" },
+	{ "AstroAttorney", "Astro", 2, "Space", "f0f0f5", "f0f0f5", "f0f0f5", "b4dcff" },
+	{ "RoboClerk", "Robo Rex", 2, "Space", "bec8d7", "bec8d7", "bec8d7", "bec8d7" },
+	{ "SaturnSolicitor", "Saturn Sam", 3, "Space", "3c286e", "302058", "3c286e", "f0c878" },
+	{ "UFOCounsel", "Ziggy UFO", 3, "Space", "5a5a6e", "484858", "5a5a6e", "78e664" },
+	{ "StarJudge", "Starla", 5, "Space", "141432", "141432", "141432", "ffe150" },
+	{ "BlackHoleBarrister", "Black Hole Bo", 5, "Space", "1e143c", "1e143c", "1e143c", "140a23" },
 	-- Epic (4) / Mythic (6) / Supreme (7) for every egg (2026-10-12). Their SkinModels are still to be built
 	-- (local session; concepts in docs/CHARACTER_STYLE.md "Epic, Mythic and Supreme"). Until a model exists the
 	-- lawyer shows the blocky fallback in these colours.
-	{ "ThunderclapCounsel", "Thunderclap Counsel", 4, "", "3c3f58", "23242f", "ffd23c", "e8b087" },
-	{ "PhoenixProsecutor", "Phoenix Prosecutor", 6, "", "c62828", "3a1010", "ff8c1e", "c68a5e" },
-	{ "CelestialChiefJustice", "Celestial Chief Justice", 7, "", "f2efe8", "dcd6c8", "ffc828", "8d5a3b" },
+	{ "ThunderclapCounsel", "Thunderclap", 4, "", "3c3f58", "23242f", "ffd23c", "e8b087" },
+	{ "PhoenixProsecutor", "Phoenix", 6, "", "c62828", "3a1010", "ff8c1e", "c68a5e" },
+	{ "CelestialChiefJustice", "Celestial", 7, "", "f2efe8", "dcd6c8", "ffc828", "8d5a3b" },
 	{ "WolfWarden", "Wolf Warden", 4, "Pet", "23305a", "1c2440", "b45aff", "8c8c96" },
 	{ "GryphonGuardian", "Gryphon Guardian", 6, "Pet", "c8963c", "8e6428", "e53935", "f2efe8" },
 	{ "CelestialKitsune", "Celestial Kitsune", 7, "Pet", "f2efe8", "d8d2c8", "ff7ab4", "f8f6f0" },
 	{ "CactusinoAvvocatino", "Cactusino Avvocatino", 4, "Brainrot", "5a2e96", "37235a", "b45aff", "4caf50" },
 	{ "DraghettoSpaghetto", "Draghetto Spaghetto", 6, "Brainrot", "2e5a2e", "1e3c1e", "c8281e", "f0d282" },
 	{ "ImperatorePinguino", "Imperatore Pinguino Gelato", 7, "Brainrot", "1c1c24", "1c1c24", "ff50aa", "1c1c24" },
-	{ "ChiliProsecutor", "Chili Pepper Prosecutor", 4, "Food", "24242c", "1a1a20", "ff8c1e", "e53927" },
+	{ "ChiliProsecutor", "Chili Pepper", 4, "Food", "24242c", "1a1a20", "ff8c1e", "e53927" },
 	{ "DragonFruitDuke", "Dragon Fruit Duke", 6, "Food", "1e5a3c", "143c28", "e53935", "ff3c96" },
-	{ "GrandGateauJustice", "Grand Gateau Justice", 7, "Food", "ffc828", "d99a10", "ff9ac8", "f6d8a8" },
-	{ "HammerheadAdvocate", "Hammerhead Advocate", 4, "Ocean", "1e2a4a", "141c34", "b45aff", "7896aa" },
-	{ "NarwhalMagistrate", "Narwhal Magistrate", 6, "Ocean", "1c1c26", "1c1c26", "e53935", "6e8caa" },
+	{ "GrandGateauJustice", "Grand Gâteau", 7, "Food", "ffc828", "d99a10", "ff9ac8", "f6d8a8" },
+	{ "HammerheadAdvocate", "Hammerhead", 4, "Ocean", "1e2a4a", "141c34", "b45aff", "7896aa" },
+	{ "NarwhalMagistrate", "Narwhal", 6, "Ocean", "1c1c26", "1c1c26", "e53935", "6e8caa" },
 	{ "TidalSovereign", "Tidal Sovereign", 7, "Ocean", "1e64c8", "164a96", "ffc828", "5ac8be" },
-	{ "CometCounsel", "Comet Counsel", 4, "Space", "eef0f8", "b4b8cc", "b45aff", "a8d8ff" },
-	{ "NebulaArbiter", "Nebula Arbiter", 6, "Space", "141432", "141432", "e53935", "3c1e6e" },
+	{ "CometCounsel", "Comet", 4, "Space", "eef0f8", "b4b8cc", "b45aff", "a8d8ff" },
+	{ "NebulaArbiter", "Nebula", 6, "Space", "141432", "141432", "e53935", "3c1e6e" },
 	{ "SupernovaSovereign", "Supernova Sovereign", 7, "Space", "ffc828", "d99a10", "ff50aa", "ffd23c" },
 } do
 	table.insert(Config.SkinCatalog, {
@@ -894,7 +899,8 @@ Config.Shop = {
 -- Effect: "payout" | "caseTime" | "winChance" add to Formulas.combineBuffs (Config.Caps still apply);
 -- "rareClients" adds to the Manager's Referral boost; "lounge" adds Value to payouts while the owner stands in
 -- the Executive Lounge. Bought areas reset on prestige (like the firm). Costs are first guesses: tune with
--- Dev.EconomySimV12 if areas are added to the simulated player.
+-- Dev.EconomySimV12 if areas are added to the simulated player. (Stage 6 was 5e8 / 5e9, a typo cheaper than Stage 2's
+-- room; 5e15 / 5e16 since the 2026-10-12 audit - a guess just above Stage 5, tune it.)
 Config.FirmAreas = {
 	{ Id = "CafeTerrace", Name = "Rooftop Café", Stage = 2, Cost = 1.5e8, Effect = "payout", Value = 0.05, Text = "+5% case payouts" },
 	{ Id = "CoffeeBreak", Name = "Coffee Break Room", Stage = 3, Cost = 1.2e9, Effect = "caseTime", Value = 0.05, Text = "Cases finish 5% faster" },
@@ -903,8 +909,8 @@ Config.FirmAreas = {
 	{ Id = "AtriumCafe", Name = "Atrium Coffee Bar", Stage = 5, Cost = 2e14, Effect = "caseTime", Value = 0.08, Text = "Cases finish 8% faster" },
 	{ Id = "RoofGarden", Name = "Rooftop Garden", Stage = 5, Cost = 4e14, Effect = "payout", Value = 0.10, Text = "+10% case payouts" },
 	{ Id = "ExecLounge", Name = "Executive Lounge", Stage = 5, Cost = 8e14, Effect = "lounge", Value = 0.5, Text = "x1.5 payouts while you're in the lounge" },
-	{ Id = "PartnerSuite", Name = "Penthouse Suite", Stage = 6, Cost = 5e8, Effect = "payout", Value = 0.15, Text = "+15% case payouts" },
-	{ Id = "PrivateCourt", Name = "Private Courtroom", Stage = 6, Cost = 5e9, Effect = "winChance", Value = 0.03, Text = "+3% chance to win" },
+	{ Id = "PartnerSuite", Name = "Penthouse Suite", Stage = 6, Cost = 5e15, Effect = "payout", Value = 0.15, Text = "+15% case payouts" },
+	{ Id = "PrivateCourt", Name = "Private Courtroom", Stage = 6, Cost = 5e16, Effect = "winChance", Value = 0.03, Text = "+3% chance to win" },
 }
 
 -- HUB MINIGAMES (Server.MinigameService + StarterPlayerScripts.Minigames) on the two pads beside the Big Case

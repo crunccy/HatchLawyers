@@ -10,6 +10,21 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
 
 ## Open items
+- [ ] **Push the audit fixes to Studio** (docs/AUDIT_2026-10-12.md; re-export `studio/` first and 3-way merge if a
+      script changed): `PlayerData` (DataStore-outage fallback, rejoin race, NaN coins), `CaseService`
+      (`finishAll`, badge spawn), `DeskService` (expansion pays out running cases), `BigCaseService` (Gavel NaN),
+      `EggServer` (bag price ramp, exact-odds luck), `LawyerService`, `PrestigeService`, `Config` (Stage 6 room
+      costs, LuckRarities). Then the small live-only fixes in the audit's "For a local session" list
+      (ZoneService:295 price, delete PlayerSpeedDouble, pcall the loops, ...). Playtest: expand the firm while
+      cases run → each pays out, the firm rebuilds, new clients come in.
+- [ ] **Push + playtest the egg-carry pose** (2026-10-12): new `StarterPlayerScripts.CarryPose` (src/CarryPose.client.lua)
+      + `Server.ZoneService` (src/ZoneService.lua: a working copy of live with two small changes - no more eggs over
+      the head, and the bag-price fix; **heads-up mr.robe**, it's your zones script: 3-way merge if you changed it).
+      Check: arms go out and hug the egg (R15 and R6 avatars), 2-5 eggs pile up slightly crooked and lean back, the
+      pile sways while walking, other players see it too. Tune the constants at the top of CarryPose (ARM_PITCH,
+      ARM_INWARD, EGG_WIDTH, NEST, LEAN_*, JITTER) by eye.
+- [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
+      players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
       session): Briefcase Bay + Pet Park as two islands past the west end of the street, License Office, gate,
       hub teleports, incubators, golden eggs (entry below). docs/ZONES_REFERENCE.md (crnuch) asks for a different
@@ -17,7 +32,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
       rebuilt, keep ZoneService's contracts so the gameplay carries over: `Zones.<Id>.EggSpots` / `Arrival`,
       `LicenseGate` tag (+ `LicensePrompt`), `UpgradePrompt` (attr `Upgrade`), `UpgradeBoard` tag, hub
       `TeleportPrompt`, `Config.Zones.List[*].Bounds`. Swap the floating price tags (StarterPlayerScripts.Zones) for
-      the 2-line labels. Decide on the "Opposing Counsel" bosses first.
+      the 2-line labels. Bosses: decided, see docs/BOSSES.md.
 - [ ] **Egg tiers vs zones overlap** (decide): the economy pass locks themed eggs by lifetime coins
       (`UnlockEarned`, Pet 1e7) and the zones gate them by Law License (Pet Park, `Config.Zones.License` 5e6 coins).
       Merge rule for now (src/EggServer): a zone egg already bought (`o.paid`) hatches even if its tier is locked, so it
@@ -85,6 +100,42 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — crnuch, cloud session: zone boss concepts, lawyer names simplified
+- **Egg-carry pose** (user's ask): eggs are carried in outstretched arms instead of over the head - oversized eggs
+  that pile up "not perfectly" (each nests into the one below, a bit off to the side and tilted, the pile leaning back
+  against the chest, swaying more at the top while walking). Procedural (arm Motor6D.Transform after the animations),
+  so no Animation asset has to be made or published; every client draws it for every carrying player. Files above.
+- **User's calls:** (1) legal titles (Counsel, Partner, Prosecutor, Attorney, Barrister, Solicitor, Litigator,
+  Advocate, Judge, Justice, Magistrate, Arbiter) are for **bosses only**; lawyers get short fun names. (2) Any boss hit
+  drops ALL your eggs, animated (they fly out of your arms, bounce, wobble), with **no on-screen text** (no boss name or difficulty tag either), and **a
+  dropped egg is free game** for anyone. (3) Boss Cases: parked for later.
+- **41 lawyers renamed** (display `Name` only; Ids unchanged, so saves are fine), e.g. Corgi Counsel → Corgi Cooper,
+  Sushi Solicitor → Sushi Sue, Star Judge → Starla, Kraken Counsel → Inky the Kraken. Rule + table in
+  docs/CHARACTER_STYLE.md; `src/Config.lua` changed, comments in `tools/skins`, `tools/brick` follow.
+- **docs/BOSSES.md:** The Senior Partner (Briefcase Bay), Barrister Bulldog (Pet Park), Judge Martello (Brainrot),
+  Prosecutor Big Cheese (Food), Magistrate Megalodon (Ocean), Chief Justice Eclipse (Space): look, moves, one
+  telegraphed attack each, lines, build notes, Config numbers, how it plugs into ZoneService.
+- Open: push `Config` to Studio for the names (with the audit push); build the bosses (local session, Senior Partner
+  first) once the lane review is in.
+
+## 2026-10-12 — crnuch, cloud session: CI checks, bug / exploit audit (src + live scripts), exact-odds luck
+- **CI** (`.github/workflows/checks.yml`, `tools/checks/run_checks.py`): every push compiles every Luau file (src/,
+  studio/, tools/), runs 35 checks on the real Config + Formulas (odds, Supreme 1 in 2500 in every egg and under
+  luck, every egg has a lawyer per rarity, ids, climbing costs incl. firm areas, growth ratio) and the sim tests.
+  All runs green on GitHub.
+- **Audit** (docs/AUDIT_2026-10-12.md): `src/` and, after the snapshot landed, every live server script. Biggest
+  fixes: a live DataStore blip made the whole server memory-only (fresh never-saving firms, Robux receipts
+  acknowledged unsaved); expanding the firm threw running cases away unpaid (now they finish and pay first - waiting
+  for no cases isn't possible with auto-assign, user); a NaN Gavel press won every Big Case Gavel round; zone bags
+  bought at one price (~26% off); badge calls that could leave a prestige half done; Stage 6 rooms priced 5e8.
+  New `src/` working copies: `BigCaseService`, `DeskService` (only lived in Studio).
+- **Luck keeps Supreme exact:** Lucky Eggs and golden zone eggs multiplied Rare/Epic/Legendary without taking the
+  chance from anywhere, so Supreme fell to ~1 in 3850 on a golden egg (~1 in 5650 with the pass).
+  `Formulas.luckyWeights` takes it from Common/Uncommon instead (`Config.Eggs.LuckRarities / LuckPaidBy`).
+- **Dropped:** a blind zones system written before this session saw mr.robe's live zones + claim (it duplicated
+  ZoneService). Nothing of it was kept but the luck formula. Lesson recorded in CLAUDE.md already: `git pull` first.
+- Nothing pushed to Studio.
 
 ## 2026-10-12 — mr.robe, local session: egg zones rebuilt as the walled lane (rough, 2 zones) + Blender decorations
 **User's call:** the lane design from docs/ZONES_REFERENCE.md replaces the two islands (archived:

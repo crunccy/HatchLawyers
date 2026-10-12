@@ -496,9 +496,10 @@ local function resolveCase(session: Session, desk: DeskState)
 	PlayerData.addCoins(player, payout) -- also syncs the attributes above
 	if outcome == "Win" then
 		local Badges = require(script.Parent.BadgeAwards) :: any
-		Badges.award(player, "FirstWin")
+		-- (spawned: badge calls yield / can throw, and must never hold up or break the case result)
+		task.spawn(Badges.award, player, "FirstWin")
 		if client.Id == "Legendary" then
-			Badges.award(player, "LegendaryWin")
+			task.spawn(Badges.award, player, "LegendaryWin")
 		end
 		if tier >= 4 and not desk.tutorial then
 			-- a big win (Epic / Legendary client): coins and gold sparkles burst out of the office
@@ -758,6 +759,27 @@ end
 function CaseService.queuedChange(player: Player, index: number): string?
 	local desk = CaseService.getDesk(player, index)
 	return desk and desk.queued
+end
+
+-- Finishes every running case right now, as if its time were up: it pays out (or settles / mistrials) as usual and
+-- any lawyer change queued on it is applied. Firm expansion calls this before rebuilding (audit 2026-10-12: the
+-- rebuild used to throw running cases away unpaid, and with auto-assign there's never a moment with none running).
+-- Clients still walking in just leave (nothing earned yet). A mistrial reruns as usual and the rebuild then drops it.
+function CaseService.finishAll(player: Player)
+	local session = sessions[player]
+	if not session then
+		return
+	end
+	for _, desk in session.desks do
+		if desk.phase == "Case" then
+			desk.model:SetAttribute("AwaitingCourt", nil)
+			local ok, err = pcall(resolveCase, session, desk)
+			if not ok then
+				warn("[CaseService] finishAll failed:", err)
+				releaseDesk(session, desk)
+			end
+		end
+	end
 end
 
 function CaseService.stop(player: Player)
