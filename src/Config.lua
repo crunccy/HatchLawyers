@@ -196,7 +196,8 @@ Config.Firm = {
 	StartSegments = 4, -- 8 offices; only office 1 starts with a lawyer (Config.Lawyers.StartId)
 	MaxSegments = 10,
 	StartLawyers = 8, -- clientInterval reference size (a firm of this many lawyers gets ClientInterval)
-	ExpandCosts = { [5] = 2e7, [6] = 6e8, -- [5] was 7e7: the first Supreme needs 10 offices (economy pass 2026-10-09) [7] = 3e10, [8] = 1.5e12, [9] = 8e13, [10] = 4e15 },
+	-- [5] was 7e7: the first Supreme needs 10 offices (economy pass 2026-10-09)
+	ExpandCosts = { [5] = 2e7, [6] = 6e8, [7] = 3e10, [8] = 1.5e12, [9] = 8e13, [10] = 4e15 },
 	-- Seconds between clients walking in for a firm of StartLawyers lawyers. A bigger firm draws
 	-- more clients: the gap shrinks in proportion to the lawyer count (never below MinInterval).
 	ClientInterval = 3.5,
