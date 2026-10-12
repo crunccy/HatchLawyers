@@ -5,8 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (night):** the egg-carry pose "is bugging" (user) → remaking it as a
-  real animation made in Blender (KeyframeSequence, Action priority) instead of CarryPose's per-frame arm Transforms.
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
@@ -16,8 +14,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
 - [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
       players 9+ get kicked by `Main` and lose their offline earnings (audit, `Main:28`).
-- [ ] Eye-check the carry pose in a real window (the pile's sway and lean run in RenderStepped, which a backgrounded
-      Studio doesn't run) and tune CarryPose's constants by eye; an R6 avatar too. With 3+ eggs the pile covers the face.
+- [ ] **Publish the carry animation (user only):** in Studio, ReplicatedStorage › Animations › CarryEggs › right-click
+      `Source` › Save to Roblox (or open it in the Animation Editor › Publish), then paste the id into
+      `CarryEggs.AnimationId` (`rbxassetid://<id>`). Until then the arms only pose in Studio playtests; live servers
+      show the eggs but no arm pose. Publish it under the account / group that owns the place, or it won't load.
+- [ ] Eye-check the carry animation in a real window (hug loop, the pile's sway while walking).
 - [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
 - [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
       players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
@@ -96,6 +97,26 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: the egg-carry pose is a real animation now (made in Blender)
+- User: the carry pose "is bugging". The first CarryPose wrote the arm joints every frame on top of the Animator, and
+  moved anchored eggs in RenderStepped. Now:
+- **Blender** (`tools/blender/carry_anim.py`): Roblox's default R15 rig rebuilt from Studio's joint data
+  (`tools/blender/r15_rig.json`; each bone's rest = its joint frame, so a bone's local rotation IS the Roblox Transform).
+  A solver puts the hands on the bottom egg's sides (shoulder 24° forward / 24° in, elbow 36°, waist leans back 5°),
+  then a 2 s hug / breathe loop, keyed every 6 frames. Renders: `art/carry/carry_{front,side,three_quarter}.png`.
+  Exported as joint Transforms: `tools/blender/carry_anim.json`.
+- **Studio:** `tools/zones/BuildCarryAnimation.lua` → `ReplicatedStorage.Animations.CarryEggs` (Animation; child
+  `Source` = KeyframeSequence, Action priority, looped; HumanoidRootPart / LowerTorso are Weight-0 pass-throughs, so
+  the walk keeps the legs and hips). **Not published yet** (Open items): until then it plays only in Studio.
+- **CarryPose rewritten:** each client plays CarryEggs on its own character while carrying (replicates to everyone);
+  every client welds the egg pile to each carrier's chest (massless, no collisions) and only nudges the welds for
+  the sway. Eggs are smaller (0.68 x torso width) and sit at the belly, so the pile covers less of the face. R6
+  avatars carry the eggs without the arm pose.
+- **Playtested:** Action track plays; while walking the hips swing 6–72° and the shoulders stay at 31–37° (hug);
+  the eggs stay put on the chest through the walk; emptying the bag stops the track and removes the eggs; no errors.
+  On mr_blox174's avatar (shorter arms than the default rig) the hands hold the bottom egg ~0.3 higher than in
+  Blender - still on its sides.
 
 ## 2026-10-12 — mr.robe, local session: crnuch's audit fixes + the egg-carry pose are live in Studio
 - **Pushed** (3-way merged commit by commit onto the live scripts, so nothing of the economy pass came along):

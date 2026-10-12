@@ -132,6 +132,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   expectedIncomePerSecond, rollSkin/rollSkinId, skinPayoutBonus, formatCoins). Rolls take a `Random`.
 - `ReplicatedStorage.Shared.SkinLook` — dresses an NPC in a skin; `showInViewport` for previews.
 - `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`).
+- `ReplicatedStorage.Animations.CarryEggs` — the egg-carry arm pose (made in Blender: `tools/blender/carry_anim.py`
+  → `tools/zones/BuildCarryAnimation.lua`; child `Source` = the KeyframeSequence). Played by
+  `StarterPlayerScripts.CarryPose`; needs a published `AnimationId` to play outside Studio.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
   Ours: EggHatched, MarkSkinsSeen, AssignClient, PlaceLawyer, MergeLawyers, MergeSelected, CancelLawyerChange,
   OpenLawyerPicker. Local bindables: `LawyersUI` (open the LAWYERS panel), `SkillsUI` (open Skills).
