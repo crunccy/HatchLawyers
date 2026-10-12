@@ -1,4 +1,4 @@
--- Donut Defender (Rare, Food egg) - block remake 2026-10-10. A big upright ring donut (hole in the middle!): golden
+-- Donut Dee (Rare, Food egg) - block remake 2026-10-10. A big upright ring donut (hole in the middle!): golden
 -- dough, pink frosting on the front with drips and rainbow sprinkles, eyes on the upper ring, a grin on the lower
 -- ring, little legs and arms, and a round knight's shield (with a donut emblem) - the "defender". Front-facing.
 -- Rare: Neon pink shield rim, 1.05x.

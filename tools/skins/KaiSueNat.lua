@@ -1,4 +1,4 @@
--- Selfie Counsel (Id KaiSueNat, Rare; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC hype vlogger lawyer (original design - deliberately no real
+-- Selfie Star (Id KaiSueNat, Rare; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC hype vlogger lawyer (original design - deliberately no real
 -- person's likeness; no hairstyle, no signature outfit): a black hoodie with a red stripe and a red tie peeking out,
 -- a backwards red cap, chunky headphones around the neck, a phone held up on a selfie stick, an excited face.
 -- Front-facing. Rare: Neon "live" dot on the phone, 1.05x. Colours follow the catalog entry.

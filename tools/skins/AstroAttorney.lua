@@ -1,4 +1,4 @@
--- Astro-Attorney (Uncommon, Space egg) - block remake 2026-10-10. A chunky astronaut lawyer: puffy white space suit
+-- Astro (Uncommon, Space egg) - block remake 2026-10-10. A chunky astronaut lawyer: puffy white space suit
 -- with grey joint bands, a big round helmet with a see-through light-blue visor (face visible inside), a chest control
 -- panel, a backpack, moon boots, and a silver briefcase. Front-facing. Uncommon: 1 prop, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

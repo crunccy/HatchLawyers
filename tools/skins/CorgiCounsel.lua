@@ -1,4 +1,4 @@
--- Corgi Counsel (Rare, Pet egg) - block remake 2026-10-10. A short, chunky corgi standing upright: orange and white
+-- Corgi Cooper (Rare, Pet egg) - block remake 2026-10-10. A short, chunky corgi standing upright: orange and white
 -- coat, huge pointy ears (pink inside), white muzzle + blaze, black nose, tongue out, a navy vest over a white shirt
 -- with a red bow tie, stubby legs, a fluffy white butt-floof, a little brown briefcase. Front-facing.
 -- Rare: small Neon dog tag, 1.0x (corgis are short).

@@ -1,4 +1,4 @@
--- Robo-Clerk (Uncommon, Space egg) - block remake 2026-10-10. A boxy silver robot clerk: a square head with a dark
+-- Robo Rex (Uncommon, Space egg) - block remake 2026-10-10. A boxy silver robot clerk: a square head with a dark
 -- screen face (glowing green eyes + a pixel smile), an antenna, bolt "ears", a box body with a dial + buttons, stubby
 -- piston arms with claw hands holding a clipboard, and a single wheel base instead of legs. Front-facing.
 -- Uncommon: 1 prop, tiny Neon eyes, 1.0x.

@@ -1,4 +1,4 @@
--- Star Judge (Legendary) - block remake 2026-10-10. A chunky hovering five-point star: golden-yellow block arms
+-- Starla (Legendary) - block remake 2026-10-10. A chunky hovering five-point star: golden-yellow block arms
 -- tapering to glowing tips, a face in the middle (big eyes, rosy cheeks, smile), a white judge's jabot, a tiny black
 -- mortarboard with a gold tassel on the top point, white gloves on the side points (one waving, one holding a gold
 -- gavel), Neon sparkles around. Front-facing, HOVERS. Legendary: Neon glow + gold, 1.2x.

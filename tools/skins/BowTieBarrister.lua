@@ -1,4 +1,4 @@
--- Bow Tie Barrister (Uncommon) - block remake 2026-10-10. A short, round, dapper gentleman: a chubby purple tailcoat
+-- Bow Tie Benny (Uncommon) - block remake 2026-10-10. A short, round, dapper gentleman: a chubby purple tailcoat
 -- body on short legs, a HUGE pink bow tie, a tall dark top hat with a pink band, a curly moustache, a monocle, and a
 -- cane with a gold knob. Front-facing. Uncommon: 1 prop (cane), 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

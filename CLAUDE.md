@@ -43,6 +43,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
 | Zones map: reference breakdown + rules (lane of zones, walls, decoration, scattered eggs) | [docs/ZONES_REFERENCE.md](docs/ZONES_REFERENCE.md), shots in `references/zones-ref-*.webp` |
+| Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
 | Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
 | Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |
@@ -58,6 +59,23 @@ repo** — local Claude memory is per machine, so anything the other side should
 - **End every local session by pushing its changes into Studio** (crnuch's rule, 2026-10-11): every script, model
   and Config change made that session goes into the place, not just git — via "Pushing `src/` → Studio" below (3-way
   merge, never paste over someone else's Studio changes). Report what was pushed and what wasn't.
+- **Every session, before pushing:** `python3 tools/checks/run_checks.py --luau-dir <folder with luau>` — compiles
+  every Luau file, checks the real Config + Formulas (odds sum to 100, Supreme 1 in 2500, every egg has a lawyer per
+  rarity, unique ids, climbing costs, the growth ratio) and runs the sim tests. GitHub runs the same on every push
+  (`.github/workflows/checks.yml`): a red X on a commit means fix it before merging. New Config rules → add a
+  check to `tools/checks/config_tests.luau`.
+
+### Working efficiently (user's call 2026-10-12: save usage, never at the cost of quality)
+- **One task per session.** Finish it, log it, push, stop. Long sessions re-read everything on every message.
+- **Read narrowly:** grep / search first, then read only the lines you need. Use `studio/` (the snapshot) to read
+  live scripts instead of pulling them through the Studio MCP. Don't re-read a file you just edited.
+- **Screenshots only to check something visual** (a build, a UI layout, an effect), at most a few per task. Get UI
+  positions from `execute_luau` (AbsolutePosition), not from images. Prefer one batched `execute_luau` that
+  checks many things and prints a short summary over many small calls.
+- **Plan before big work:** one short plan, then build. Don't build twice: claim it in SESSION_LOG first.
+- **Quality is not optional:** still run `tools/checks/run_checks.py`, still playtest what you changed, still 3-way
+  merge instead of pasting over Studio. Save tokens on *how* you work, never by skipping a check.
+- **Short outputs:** short status messages; the SESSION_LOG entry is the record, not the chat.
 
 ## Team & ownership
 - Since 2026-10-12 both users drive Claude and want one shared Claude: **any session may work on anything**, UI or
@@ -167,7 +185,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
   `MIGRATIONS` entry.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
-- MVP: no Robux for coins, eggs or power. Fictional clients only — no real people or brands.
+- Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,
+  Bigger Firm) and products (coin packs, 3 Rare Eggs) are allowed. Anything paid that's random must show its exact
+  odds (Lucky Eggs: the boosted odds). Fictional clients only — no real people or brands.
 - All numbers come from `Config`; never hard-code a tunable in a script. Retune → see docs/ECONOMY.md.
   Never change `Payout.Growth` / `Training.Growth` without running the sim — their ratio sets the whole curve.
 

@@ -21,7 +21,8 @@
 --   EggApi:Invoke("hatch", player, eggId?, golden?, at?)  an egg already paid for (eggId nil = Briefcase);
 --                                                         golden multiplies the Rare + Legendary odds
 --   EggApi:Invoke("free", player, at?)                     the free first egg / a reward token, if the player has one
---   EggApi:Invoke("price", player, eggId?) -> number       what that egg costs this player right now
+--   EggApi:Invoke("price", player, eggId?, ahead?) -> number  what that egg costs this player right now (ahead: eggs
+--                                                         already in their bag, each a step further up the ramp)
 --   EggApi:Invoke("room", player) -> number                how many more lawyers the player can own
 -- "hatch" / "free" return true when an egg hatched (false: lawyer cap, cooldown, nothing to hatch).
 -- Themed machines still on the hub keep working exactly as before.
@@ -133,22 +134,15 @@ local function firstEmptyOffice(data: any): number?
 	return nil
 end
 
--- Lucky Eggs (Robux pass, Server.ShopService): the Rare, Epic and Legendary weights are multiplied. Mythic and
--- Supreme are left alone (Supreme stays at most 1 in 2500).
-local function luckyWeights(player: Player, weights: { number }?): { number }?
+-- Lucky Eggs (Robux pass, Server.ShopService) and golden zone eggs: luck x the Rare, Epic and Legendary chances,
+-- taken from Common / Uncommon (Formulas.luckyWeights), so Mythic keeps its odds and Supreme stays exactly 1 in 2500.
+local function luckyWeights(player: Player, weights: { number }?, extraLuck: number?): { number }?
 	local ShopService = require(Server.ShopService) :: any
-	local luck = ShopService.effect(player, "LuckyEggs", 1)
+	local luck = ShopService.effect(player, "LuckyEggs", 1) * (extraLuck or 1)
 	if luck == 1 then
 		return weights
 	end
-	local base = weights or Formulas.skinWeights()
-	local out = table.clone(base)
-	for index, tier in Config.Eggs.Skins do
-		if (tier.Id == "Rare" or tier.Id == "Epic" or tier.Id == "Legendary") and out[index] then
-			out[index] *= luck
-		end
-	end
-	return out
+	return Formulas.luckyWeights(weights or Formulas.skinWeights(), luck)
 end
 
 local function roomFor(player: Player, data: any): number
@@ -219,20 +213,9 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		end
 		data.Eggs.Opened += 1
 		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
-		local weights = luckyWeights(player, if themed then themed.Weights else nil)
-		if o.golden then
-			-- a golden zone egg: the Rare, Epic and Legendary odds are multiplied (Config.Zones.Golden.Luck);
-			-- Mythic and Supreme are left alone, like Lucky Eggs
-			local luck = ((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1
-			local w = table.clone(weights or Formulas.skinWeights())
-			for index, tier in Config.Eggs.Skins do
-				if (tier.Id == "Rare" or tier.Id == "Epic" or tier.Id == "Legendary") and w[index] then
-					w[index] *= luck
-				end
-			end
-			weights = w
-		end
-		rarity = Formulas.rollSkin(rng, weights)
+		-- a golden zone egg stacks its luck (Config.Zones.Golden.Luck) on top of the Lucky Eggs pass
+		local goldenLuck = if o.golden then (((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1) else 1
+		rarity = Formulas.rollSkin(rng, luckyWeights(player, if themed then themed.Weights else nil, goldenLuck))
 	end
 	-- pity: every egg but the tutorial one counts; Config.Eggs.PityRarity (Legendary) or better resets it, and
 	-- hitting the limit upgrades this egg to exactly that rarity - never to Mythic / Supreme (Config.Eggs.PityTop)
@@ -246,7 +229,8 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 			data.Eggs.SinceTop = 0
 		end
 	end
-	require(Server.BadgeAwards).award(player, "FirstEgg")
+	-- (spawned: badge calls yield / can throw, and must never stop the hatch after the coins are spent)
+	task.spawn(require(Server.BadgeAwards).award, player, "FirstEgg")
 	local id = Formulas.rollSkinId(rng, rarity, if themed then themed.Id else nil)
 	local isNew = true
 	for _, lawyer in data.Lawyers do
@@ -345,7 +329,11 @@ end
 		if not data then
 			return math.huge
 		end
-		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, priceCount(data), prestigeLevel(data)) else Formulas.eggPrice(priceCount(data), prestigeLevel(data))
+		-- args[2]: eggs already bought but not hatched yet (a zone bag), so each one in a bag costs the next step of
+		-- the ramp like the machine would (audit 2026-10-12: a full bag was bought at one price, ~26% off for 5)
+		local ahead = if typeof(args[2]) == "number" and args[2] == args[2] then math.clamp(math.floor(args[2]), 0, 100) else 0
+		local count = priceCount(data) + ahead
+		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, count, prestigeLevel(data)) else Formulas.eggPrice(count, prestigeLevel(data))
 	elseif action == "room" then
 		local data = PlayerData.get(player)
 		return if data then roomFor(player, data) else 0

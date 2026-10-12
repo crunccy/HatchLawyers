@@ -53,7 +53,8 @@ local function prestige(player: Player): (boolean, string?)
 	end
 
 	data.Prestige.Level += 1
-	require(script.Parent.BadgeAwards).award(player, "Supreme")
+	-- (spawned: badge calls yield / can throw - a throw here used to leave the new level without the reset)
+	task.spawn(require(script.Parent.BadgeAwards).award, player, "Supreme")
 	data.Coins = 0
 	data.Eggs.RunOpened = 0 -- eggs start cheap again (x Config.Eggs.PrestigePriceScale per level)
 	-- back to the starting firm: its offices at level 1; the lawyers in them stay put

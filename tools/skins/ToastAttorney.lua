@@ -1,4 +1,4 @@
--- Toast Attorney (Common, Food egg) - block remake 2026-10-10. A walking slice of toast: a golden bread slice with a
+-- Toasty (Common, Food egg) - block remake 2026-10-10. A walking slice of toast: a golden bread slice with a
 -- darker crust edge and a bumpy rounded top, a melting pat of butter on its head, a face in the middle, a green tie,
 -- stick legs and arms. Front-facing. Common: simple, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

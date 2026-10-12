@@ -1,4 +1,4 @@
--- Ice Justice (Legendary) - block remake 2026-10-10. A big chunky ice golem judge: stacked pale-blue ice blocks
+-- Ice Cold (Legendary) - block remake 2026-10-10. A big chunky ice golem judge: stacked pale-blue ice blocks
 -- (a few slightly see-through shards), jagged crystal shoulders, glowing cyan eyes, a white judge's jabot, a navy
 -- frost robe hanging open over the ice chest with a white frosted hem, a gold crown ringed with glowing icicles, and
 -- a huge ice gavel held up. Front-facing. Legendary: Neon ice glints + gold, 1.25x.

@@ -1,4 +1,4 @@
--- Puffer Partner (Uncommon, Ocean egg) - block remake 2026-10-10. A puffed-up pufferfish, hovering: a round body
+-- Puffy (Uncommon, Ocean egg) - block remake 2026-10-10. A puffed-up pufferfish, hovering: a round body
 -- (crossed slabs) with a blue back and pale-yellow belly, little spikes poking out all over, puffed cheeks, a tiny
 -- pursed mouth, side fins, a tail fin, and a small blue tie. Front-facing, HOVERS. Uncommon: 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

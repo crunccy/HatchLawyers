@@ -1,0 +1,23 @@
+# Runs on every push and pull request: every Luau file compiles, the Config / Formulas checks pass on the real
+# src/ files, and the economy sim's tests pass. Same as running `python3 tools/checks/run_checks.py` locally.
+name: checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the Luau CLI
+        run: |
+          curl -sSL -o luau.zip https://github.com/luau-lang/luau/releases/download/0.650/luau-ubuntu.zip
+          mkdir -p "$HOME/luau" && unzip -q luau.zip -d "$HOME/luau"
+          chmod +x "$HOME/luau/"*
+      - name: Run the checks
+        run: python3 tools/checks/run_checks.py --luau-dir "$HOME/luau"

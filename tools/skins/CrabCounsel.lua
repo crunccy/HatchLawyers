@@ -1,4 +1,4 @@
--- Crab Counsel (Common, Ocean egg) - block remake 2026-10-10. A wide red crab standing upright-ish: a flat wide shell
+-- Crabby (Common, Ocean egg) - block remake 2026-10-10. A wide red crab standing upright-ish: a flat wide shell
 -- body, eyes up on stalks, two big claws raised, little pointy legs either side, and a navy tie on its front.
 -- Front-facing. Common: simple, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

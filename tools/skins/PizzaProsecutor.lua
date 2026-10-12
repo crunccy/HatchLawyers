@@ -1,4 +1,4 @@
--- Pizza Prosecutor (Rare, Food egg) - block remake 2026-10-10. A walking pizza slice, crust up and point down: a
+-- Pizza Pete (Rare, Food egg) - block remake 2026-10-10. A walking pizza slice, crust up and point down: a
 -- stepped cheesy triangle with red sauce showing at the edges, pepperoni, cheese drips, a thick golden crust on top,
 -- a stern face, a green tie, thin legs at the point, one arm pointing an accusing finger ("You did it!"), the other on
 -- its hip. Front-facing. Rare: Neon steam wisps off the hot slice, 1.05x.

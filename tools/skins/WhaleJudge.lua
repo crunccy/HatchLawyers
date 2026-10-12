@@ -1,4 +1,4 @@
--- Whale Judge (Legendary) - block remake 2026-10-10. A big blue whale hovering side-on (body along X, head at +X,
+-- Big Blue (Legendary) - block remake 2026-10-10. A big blue whale hovering side-on (body along X, head at +X,
 -- the face side toward the viewer at -Z): chunky stepped body, pale grooved belly, tapering tail with flukes, a white
 -- curly barrister's wig on top, a gold monocle (+ chain) over the eye, a happy wide mouth, a glowing water spout from
 -- the blowhole, a front flipper holding a gold gavel. HOVERS. Sideways. Legendary: gold monocle/gavel, Neon spout, 1.05x (it is long).
