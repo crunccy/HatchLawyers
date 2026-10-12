@@ -893,9 +893,9 @@ Config.Minigames = {
 
 -- EGG ZONES (Server.ZoneService + StarterPlayerScripts.Zones; map: Workspace.Zones, built by the zone builder).
 -- The firm is the idle part of the game, the zones the active part: eggs keep popping up on spots around each
--- zone; the player buys one with coins, carries it home over their head and hatches it at an incubator in their
+-- zone; the player buys one with coins, carries it home in their arms and hatches it at an incubator in their
 -- firm (the free first egg and reward eggs hatch there too). Each zone sells one egg. A Law License opens the
--- next zone's gate; prestige takes the License away (the bag and shoes stay). Egg prices are the old machine
+-- next zone's gate; prestige takes the License away (the briefcase and shoes stay). Egg prices are the old machine
 -- prices (Formulas.eggPrice / themedEggPrice); a golden egg costs more and rolls Rare / Legendary more often.
 -- The License Office by the Briefcase Bay entrance sells all three upgrades. Bounds = the zone's land (x0, z0, x1, z1).
 Config.Zones = {
@@ -908,7 +908,15 @@ Config.Zones = {
 	License = { -- level n opens every zone whose License is n or less
 		{ Name = "Bronze License", Cost = 5e6 },
 	},
-	Carry = { { Max = 1 }, { Max = 3, Cost = 2.5e5 }, { Max = 5, Cost = 2.5e7 } }, -- eggs the bag holds
+	-- the Carry upgrade = BRIEFCASES (2026-10-12, user's call): eggs you can carry home per trip. Model = the briefcase
+	-- worn on your back (ReplicatedStorage.Briefcases, from tools/blender/briefcases.py; drawn by CarryPose).
+	Carry = {
+		{ Max = 1, Name = "Empty Hands" },
+		{ Max = 3, Cost = 2.5e5, Name = "Briefcase", Model = "Briefcase" },
+		{ Max = 5, Cost = 2.5e7, Name = "Big Briefcase", Model = "BigBriefcase" },
+		{ Max = 8, Cost = 2.5e9, Name = "Golden Briefcase", Model = "GoldenBriefcase" },
+		{ Max = 12, Cost = 2.5e11, Name = "Diamond Briefcase", Model = "DiamondBriefcase" },
+	},
 	Speed = { { WalkSpeed = 32 }, { WalkSpeed = 36, Cost = 1e6 }, { WalkSpeed = 40, Cost = 1e8 } }, -- (32 = the game's base speed)
 	EggColors = { Briefcase = Color3.fromRGB(245, 200, 70), Golden = Color3.fromRGB(255, 205, 40) },
 }

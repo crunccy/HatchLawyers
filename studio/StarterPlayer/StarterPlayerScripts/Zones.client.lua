@@ -4,7 +4,7 @@
 --     attributes, x Golden.PriceMultiplier for a golden one)
 --   * a License gate is see-through and walkable on your screen once your License is high enough
 --   * the License Office boards / prompts, the hub teleport pads and your incubators say what they'd do for you
---   * the bag counter (bottom centre), a green line home to your incubator while you carry eggs, the zone's name
+--   * the carried-eggs counter (bottom centre, "Bag"; its size is the Briefcase upgrade), a green line home to your incubator while you carry eggs, the zone's name
 --     when you walk in, golden-egg alerts, and the server's short notes
 -- Map pieces are found by tag (ZoneEgg / LicenseGate / UpgradeBoard / Incubator) because the map streams.
 
@@ -318,7 +318,7 @@ refreshGates()
 ------------------------------------------------------------------ License Office boards + prompts
 local UPGRADE = {
 	License = { title = "LAW LICENSE", color = GOLD },
-	Carry = { title = "BIGGER BAG", color = Color3.fromRGB(255, 140, 40) },
+	Carry = { title = "BRIEFCASE", color = Color3.fromRGB(255, 140, 40) }, -- (the Carry upgrade, 2026-10-12)
 	Speed = { title = "FASTER SHOES", color = Color3.fromRGB(80, 200, 255) },
 }
 
@@ -337,9 +337,10 @@ local function upgradeInfo(kind: string): (string, string?, number?)
 		return cur, nxt and (nxt.Name .. (if opens then " · opens " .. opens else "")), nxt and nxt.Cost
 	elseif kind == "Carry" then
 		local level = (attr("ZoneCarry") :: number?) or 1
-		local cur = "Carry " .. CFG.Carry[level].Max .. " egg" .. (if CFG.Carry[level].Max > 1 then "s" else "")
+		local def = CFG.Carry[level] or CFG.Carry[1]
+		local cur = (def.Name or "Carry") .. " (" .. def.Max .. " egg" .. (if def.Max > 1 then "s" else "") .. ")"
 		local nxt = CFG.Carry[level + 1]
-		return cur, nxt and ("Carry " .. nxt.Max .. " eggs"), nxt and nxt.Cost
+		return cur, nxt and ((nxt.Name or "Carry") .. " (" .. nxt.Max .. " eggs)"), nxt and nxt.Cost
 	else
 		local level = (attr("ZoneSpeed") :: number?) or 1
 		local cur = "Speed " .. CFG.Speed[level].WalkSpeed
@@ -461,7 +462,7 @@ local function refreshIncubator(v: IncView)
 		text = "HATCH! (" .. #list .. ")"
 		if prompt then
 			prompt.ActionText = "Hatch " .. (if list[1].golden then "GOLDEN " else "") .. eggName(list[1].egg)
-			prompt.ObjectText = #list .. " egg" .. (if #list > 1 then "s" else "") .. " in your bag"
+			prompt.ObjectText = "Carrying " .. #list .. " egg" .. (if #list > 1 then "s" else "")
 		end
 	elseif free then
 		text = "FREE EGG!"
@@ -678,7 +679,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		SND.buy:Play()
 		boughtCount += 1
 		local full = info.count >= info.max
-		local text = if full then "Bag full! Take your eggs home to your INCUBATOR" elseif boughtCount <= 3 then "Egg in your bag! Carry it home to your INCUBATOR" else "Bag " .. info.count .. "/" .. info.max
+		local text = if full then "Arms full! Take your eggs home to your INCUBATOR" elseif boughtCount <= 3 then "Got an egg! Carry it home to your INCUBATOR" else "Carrying " .. info.count .. "/" .. info.max
 		toast(text, if info.golden then Color3.fromRGB(230, 170, 20) else GREEN, if boughtCount <= 3 or full then 3 else 1.4)
 	elseif kind == "Upgraded" then
 		SND.upgrade:Play()

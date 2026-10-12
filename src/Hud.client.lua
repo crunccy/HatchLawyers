@@ -2,8 +2,11 @@
 -- HUD: coin counter, tutorial hints and the case results. (The office card that sat at the bottom is gone:
 -- offices, lawyers and assigning clients all live in the LAWYERS panel now - StarterPlayerScripts.Lawyers,
 -- lawyer-management overhaul 2026-10-09, user's call.) Case results show as small coloured numbers
--- floating up beside the coin counter (green WIN / orange SETTLED / blue MISTRIAL; a legend explains them
--- during the tutorial). Everything shown comes from server-set attributes.
+-- drifting beside the coin counter (green WIN / orange SETTLED / blue MISTRIAL; the words say which).
+-- Everything shown comes from server-set attributes.
+-- 2026-10-12 (mr.robe, user's call): the coin counter sits in the top bar strip (IgnoreGuiInset; Roblox's own
+-- buttons are at its left / right ends) and the hints right under it, so they block less of the view; the
+-- "Case coins float up by your money" legend is gone.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -47,7 +50,9 @@ local function corner(radius: number): UICorner
 	return make("UICorner", { CornerRadius = UDim.new(0, radius) })
 end
 
-local gui = make("ScreenGui", { Name = "Hud", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling })
+local gui = make("ScreenGui", { Name = "Hud", ResetOnSpawn = false, IgnoreGuiInset = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling })
+local PILL_TOP = 4 -- in the top bar strip, between Roblox's buttons
+local PILL_MID = PILL_TOP + 27
 
 -- Coin counter: dark pill with a gold rim, the real coin image (Shared.HudMenu.Icons) hanging off its left end,
 -- big white outlined money (UI pass 2026-10-09; opted out of UISkin so it keeps this look)
@@ -69,7 +74,7 @@ local coinLabel = make("TextLabel", {
 local coinPill = make("Frame", {
 	Name = "Coins",
 	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 10),
+	Position = UDim2.new(0.5, 0, 0, PILL_TOP),
 	Size = UDim2.fromOffset(240, 54),
 	BackgroundColor3 = WHITE, -- (the gradient below carries the colour)
 	Parent = gui,
@@ -95,7 +100,7 @@ coinPill:SetAttribute("NoSkin", true)
 -- (RichText: tutorial hints start with a gold "STEP n/5"; long hints shrink to fit instead of spilling out)
 local hint = make("TextLabel", {
 	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 74),
+	Position = UDim2.new(0.5, 0, 0, PILL_TOP + 62),
 	Size = UDim2.new(0.92, 0, 0, 44),
 	BackgroundColor3 = INK,
 	BackgroundTransparency = 0.1,
@@ -133,15 +138,16 @@ local function tutorialDesk(firm: Instance?): Instance?
 	return nil
 end
 
--- Case results: small labeled numbers that fade in, float up beside the coin counter and fade out
--- (no big pop-up). Colour = how the case ended; the tutorial shows a legend for the colours.
+-- Case results: small labeled numbers that fade in beside the coin counter, drift down and fade out
+-- (no big pop-up). Colour = how the case ended.
 local RESULT_STYLE = {
 	Win = { label = "WIN", color = Color3.fromRGB(110, 230, 90), hex = "#6EE65A" },
 	Settlement = { label = "SETTLED", color = Color3.fromRGB(255, 175, 50), hex = "#FFAF32" },
 	Mistrial = { label = "MISTRIAL", color = Color3.fromRGB(120, 180, 255), hex = "#78B4FF" },
 }
--- A little feed: the newest number starts level with the coin pill (right of it) and pushes older ones up,
--- so numbers arriving together never overlap. Each fades in, drifts up and fades out (FLOAT_LIFE s).
+-- A little feed: the newest number starts level with the coin pill (right of it) and pushes older ones down
+-- (the pill is at the top edge now), so numbers arriving together never overlap. Each fades in, drifts down
+-- and fades out (FLOAT_LIFE s).
 local FLOAT_LIFE, FLOAT_GAP, FLOAT_MAX = 2.2, 26, 6
 type Floater = { label: TextLabel, stroke: UIStroke, born: number, offset: number }
 local floaters: { Floater } = {}
@@ -156,12 +162,12 @@ RunService.RenderStepped:Connect(function(dt)
 			table.remove(floaters, i)
 			continue
 		end
-		-- slot i-1 above the newest; ease toward it
+		-- slot i-1 below the newest; ease toward it
 		f.offset += ((i - 1) * FLOAT_GAP - f.offset) * math.min(1, dt * 12)
 		local alpha = if age < 0.2 then 1 - age / 0.2 elseif age > FLOAT_LIFE - 0.6 then (age - (FLOAT_LIFE - 0.6)) / 0.6 else 0
 		f.label.TextTransparency = alpha
 		f.stroke.Transparency = alpha
-		f.label.Position = UDim2.new(0.5, 126, 0, 50 - age * 14 - f.offset)
+		f.label.Position = UDim2.new(0.5, 126, 0, PILL_MID + age * 10 + f.offset)
 	end
 end)
 
@@ -171,7 +177,7 @@ local function floatResult(outcome: string, payout: number, big: boolean)
 	local l = make("TextLabel", {
 		Name = "ResultNumber",
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0.5, 126, 0, 50), -- right of the coin pill, level with it
+		Position = UDim2.new(0.5, 126, 0, PILL_MID), -- right of the coin pill, level with it
 		Size = UDim2.fromOffset(260, if big then 30 else 24),
 		BackgroundTransparency = 1,
 		FontFace = FONT,
@@ -190,33 +196,6 @@ local function floatResult(outcome: string, payout: number, big: boolean)
 		oldest.label:Destroy()
 	end
 end
-
--- Tutorial legend for those colours, under the STEP banner while the tutorial runs
-local legend = make("TextLabel", {
-	Name = "ResultLegend",
-	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 122),
-	Size = UDim2.new(0.92, 0, 0, 32),
-	BackgroundColor3 = INK,
-	BackgroundTransparency = 0.1,
-	FontFace = FONT,
-	TextScaled = true,
-	RichText = true,
-	TextColor3 = WHITE,
-	Text = string.format(
-		'Case coins float up by your money:  <font color="%s">GREEN = WIN</font>  <font color="%s">ORANGE = SETTLED</font>  <font color="%s">BLUE = MISTRIAL</font>',
-		RESULT_STYLE.Win.hex,
-		RESULT_STYLE.Settlement.hex,
-		RESULT_STYLE.Mistrial.hex
-	),
-	Visible = false,
-	Parent = gui,
-}, {
-	corner(10),
-	make("UISizeConstraint", { MaxSize = Vector2.new(560, 32) }),
-	make("UITextSizeConstraint", { MaxTextSize = 18 }),
-	make("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 3) }),
-})
 
 gui.Parent = player:WaitForChild("PlayerGui")
 
@@ -244,7 +223,6 @@ local tutorialDoneUntil = 0 -- show the "tutorial complete" line until this os.c
 local function refresh()
 	if not player:GetAttribute("Desk1Level") then
 		hint.Visible = false
-		legend.Visible = false
 		return
 	end
 	local coins = player:GetAttribute("Coins") or 0
@@ -312,7 +290,6 @@ local function refresh()
 	end
 	hint.Text = hintText or ""
 	hint.Visible = hintText ~= nil
-	legend.Visible = hintText ~= nil and string.find(hintText, "STEP ", 1, true) ~= nil
 end
 
 -- hints only change a few times a second: no need to rebuild them every frame (perf 2026-10-09)

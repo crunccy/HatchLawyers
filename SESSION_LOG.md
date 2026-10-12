@@ -5,10 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (night):** (1) HUD: coin counter + hints moved up, the "Case coins
-  float up by your money" legend removed (src/Hud ready, waiting for Edit mode); (2) the zones' Carry upgrade becomes
-  BRIEFCASES (user's call): tiers named Briefcase / Big / Golden / Diamond (+2 tiers, max 12), a brick briefcase
-  model (Blender) on every player's back, "bag" wording → briefcase/arms. Touches `Config.Zones.Carry` (live + src).
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
@@ -24,6 +20,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
       **Rule: publish animations (and other assets the game loads) from the place owner's account (crnuch).** If
       the Blender animation changes, re-publish from there and swap the id.
 - [ ] Eye-check the carry animation in a real window (hug loop, the pile's sway while walking).
+- [ ] **Briefcase tiers 4-5 costs are guesses** (Golden 2.5e9 → 8 eggs, Diamond 2.5e11 → 12 eggs; x100 per tier like
+      before). Put them in the zones economy sim run (item below) and eye-check the briefcases on a few avatars.
 - [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
 - [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
       players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
@@ -102,6 +100,28 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: HUD moved up; the Carry upgrade is BRIEFCASES now
+- **HUD** (user: "get rid of the 'case coins float up by your money' … move up the money and the text below"):
+  `Hud` ScreenGui uses IgnoreGuiInset; the coin pill sits 4 px from the top inside Roblox's top-bar strip (checked:
+  the strip's free area is x 260..1255 on a 1255-wide window, the pill x 507..747), hint banners right under it
+  (66 px). The "Case coins float up by your money: GREEN = WIN …" legend is gone. The small "+1.72K WIN" numbers
+  still appear right of the pill but drift DOWN now (they'd leave the screen going up).
+- **Briefcases** (user's call: "an upgrade that means you can carry more eggs, like a briefcase"): the License
+  Office's Carry upgrade got names, models and two more tiers - `Config.Zones.Carry` (live + src):
+  Empty Hands 1 · Briefcase 3 (2.5e5) · Big Briefcase 5 (2.5e7) · **Golden Briefcase 8 (2.5e9)** ·
+  **Diamond Briefcase 12 (2.5e11)**. Same save field (`Zones.Carry` = level), no schema change.
+  - Models made in Blender (`tools/blender/briefcases.py`, render `art/briefcases/preview.png`): brown leather → red
+    with gold corners → gold with a glowing star → sky-blue with a glowing diamond; studded blocks →
+    `tools/zones/BuildBriefcases.lua` → `ReplicatedStorage.Briefcases`.
+  - `CarryPose` hangs your tier's briefcase on every player's back (welded, slightly crooked, every client draws it;
+    removed on respawn). The License Office's Carry counter shows a Big Briefcase instead of the orange ball
+    (BuildLane does it too). Board / prompt: "BRIEFCASE · Big Briefcase (5 eggs) · 25.00M".
+  - Wording: "bag" → arms / carrying ("Your arms are full!", "Carrying 2/3", "Big Briefcase! You can carry 5 eggs").
+- **Playtested:** levels 1-5 swap the model live (none / 8 / 12 / 14 / 13 parts, all welded, neon on 4-5), it sits
+  centred on the back and stays put while walking; board + prompt texts right; HUD pill at the top, legend gone, a
+  real case result showed beside the pill; no errors. (Measuring note: a welded Model's GetBoundingBox / GetPivot
+  don't follow physics moves - measure a part.)
 
 ## 2026-10-12 — mr.robe, local session: the egg-carry pose is a real animation now (made in Blender)
 - User: the carry pose "is bugging". The first CarryPose wrote the arm joints every frame on top of the Animator, and

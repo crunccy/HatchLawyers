@@ -12,6 +12,9 @@
 --     they move with the body: about two thirds of the torso wide, the bottom egg at the belly between the hands, each
 --     egg above it nesting into the one below a bit off to one side and tilted, the pile leaning back. It sways a
 --     little while walking, more at the top. The numbers match the Blender scene.
+--   * THE BRIEFCASE (the Carry upgrade, 2026-10-12): every client hangs each player's briefcase on their back - the
+--     model named by Config.Zones.Carry[ZoneCarry].Model (ReplicatedStorage.Briefcases, tools/blender/briefcases.py),
+--     slung a little crooked. Level 1 (no briefcase yet) shows nothing.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -246,23 +249,92 @@ local function track(player: Player)
 	end
 end
 
+------------------------------------------------------------------ the briefcase on the back
+local BRIEFCASE_TILT = math.rad(-8) -- slung on a little crooked
+local BRIEFCASE_DROP = 0.55 -- its bottom sits this share of its own height below the torso's middle
+local briefcases = ReplicatedStorage:WaitForChild("Briefcases", 10)
+type Worn = { model: Model, character: Model, name: string }
+local worn: { [Player]: Worn } = {}
+
+local function removeBriefcase(player: Player)
+	local w = worn[player]
+	if w then
+		w.model:Destroy()
+		worn[player] = nil
+	end
+end
+
+local function wearBriefcase(player: Player)
+	local character = player.Character
+	local torso = character and (character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
+	local level = player:GetAttribute("ZoneCarry")
+	local def = if typeof(level) == "number" then Config.Zones.Carry[level] else nil
+	local name: string = (def and def.Model) or ""
+	local w = worn[player]
+	if w and w.character == character and w.name == name and w.model.Parent then
+		return
+	end
+	removeBriefcase(player)
+	local template = briefcases and name ~= "" and briefcases:FindFirstChild(name)
+	if not character or not torso or not torso:IsA("BasePart") or not template then
+		return
+	end
+	local m = (template :: Model):Clone()
+	local height = (m:GetAttribute("Height") :: number?) or 1
+	-- (the model's origin is the bottom edge of the side that touches the back; the library sits at the origin, so
+	-- each part's CFrame is already relative to it)
+	local attach = CFrame.new(0, -height * BRIEFCASE_DROP, torso.Size.Z * 0.5) * CFrame.Angles(0, 0, BRIEFCASE_TILT)
+	for _, p in m:GetDescendants() do
+		if p:IsA("BasePart") then
+			local weld = Instance.new("Weld")
+			weld.Part0 = torso
+			weld.Part1 = p
+			weld.C0 = attach * p.CFrame
+			p.Anchored = false
+			p.Massless = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+			p.CFrame = torso.CFrame * weld.C0
+			weld.Parent = p
+		end
+	end
+	m.Name = "Briefcase_" .. player.Name
+	m.Parent = visuals
+	worn[player] = { model = m, character = character, name = name }
+end
+
 local function watch(player: Player)
 	player:GetAttributeChangedSignal("Carried"):Connect(function()
 		track(player)
 	end)
+	player:GetAttributeChangedSignal("ZoneCarry"):Connect(function()
+		wearBriefcase(player)
+	end)
 	player.CharacterAdded:Connect(function(character)
 		drop(player)
+		removeBriefcase(player)
 		character:WaitForChild("HumanoidRootPart", 10)
 		character:WaitForChild("Humanoid", 10)
 		task.wait() -- (let the rig's parts arrive)
 		track(player)
+		wearBriefcase(player)
+	end)
+	player.CharacterRemoving:Connect(function()
+		removeBriefcase(player) -- (its welds would break and it would fall)
 	end)
 	if player.Character then
-		task.spawn(track, player)
+		task.spawn(function()
+			track(player)
+			wearBriefcase(player)
+		end)
 	end
 end
 Players.PlayerAdded:Connect(watch)
-Players.PlayerRemoving:Connect(drop)
+Players.PlayerRemoving:Connect(function(player)
+	drop(player)
+	removeBriefcase(player)
+end)
 for _, p in Players:GetPlayers() do
 	watch(p)
 end

@@ -598,7 +598,7 @@ do
 	end
 	local counters = {
 		{ id = "License", dx = -5, color = C.gold, title = "LAW LICENSE" },
-		{ id = "Carry", dx = 0, color = C.orange, title = "BIGGER BAG" },
+		{ id = "Carry", dx = 0, color = C.orange, title = "BRIEFCASE" },
 		{ id = "Speed", dx = 5, color = C.sky, title = "FASTER SHOES" },
 	}
 	for _, k in counters do
@@ -607,12 +607,24 @@ do
 		box(m, "Desk", x - 2, 0.5, z0 + 6, x + 2, 3.6, z0 + 8.5, C.white)
 		box(m, "DeskFront", x - 2.05, 0.7, z0 + 5.9, x + 2.05, 3.4, z0 + 6.0, k.color, { smooth = true, nocollide = true })
 		local top = box(m, "DeskTop", x - 2.2, 3.6, z0 + 5.8, x + 2.2, 3.9, z0 + 8.7, C.ink)
-		local icon = P(m, "Icon", Vector3.new(1.4, 1.4, 1.4), CFrame.new(x, 4.6, z0 + 7.2), k.color, { mat = Enum.Material.Neon, shape = Enum.PartType.Ball, nocollide = true })
-		local l = Instance.new("PointLight")
-		l.Range = 8
-		l.Brightness = 0.8
-		l.Color = k.color
-		l.Parent = icon
+		-- the Briefcase counter shows a Big Briefcase (ReplicatedStorage.Briefcases, tools/zones/BuildBriefcases.lua),
+		-- clasps toward the customer; the others a glowing ball
+		local briefcases = game:GetService("ReplicatedStorage"):FindFirstChild("Briefcases")
+		local caseTemplate = k.id == "Carry" and briefcases and briefcases:FindFirstChild("BigBriefcase")
+		if caseTemplate then
+			local case = caseTemplate:Clone()
+			case.Name = "Icon"
+			case:ScaleTo(1.6)
+			case:PivotTo(CFrame.new(x, 3.9, z0 + 7.6) * CFrame.Angles(0, math.pi, 0))
+			case.Parent = m
+		else
+			local icon = P(m, "Icon", Vector3.new(1.4, 1.4, 1.4), CFrame.new(x, 4.6, z0 + 7.2), k.color, { mat = Enum.Material.Neon, shape = Enum.PartType.Ball, nocollide = true })
+			local l = Instance.new("PointLight")
+			l.Range = 8
+			l.Brightness = 0.8
+			l.Color = k.color
+			l.Parent = icon
+		end
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.Name = "UpgradePrompt"
 		prompt.ActionText = "Buy"

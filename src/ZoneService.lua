@@ -4,10 +4,10 @@
 --   * EGGS keep popping up on each zone's EggSpots (up to MaxEggs at once, one more every Respawn seconds after
 --     one is bought). Now and then one is GOLDEN (costs PriceMultiplier x, rolls Rare / Legendary more often,
 --     disappears after Lifetime seconds) and the whole server gets an alert.
---   * BUYING one (its BuyPrompt) costs the egg's price (EggApi "price") and puts it in the player's bag (up to the
---     Carry level's Max). Carried eggs are held in the arms (drawn by StarterPlayerScripts.CarryPose) and are saved (data.Zones.Carried).
+--   * BUYING one (its BuyPrompt) costs the egg's price (EggApi "price") and puts it in the player's arms (up to the
+--     Carry level's Max - the briefcase upgrade). Carried eggs are held in the arms (drawn by StarterPlayerScripts.CarryPose) and are saved (data.Zones.Carried).
 --   * INCUBATORS in the player's own firm (tag "Incubator", built by FirmBuilder) hatch carried eggs one by one
---     (EggApi "hatch": the normal hatch screen), or the free first egg / a reward token when the bag is empty.
+--     (EggApi "hatch": the normal hatch screen), or the free first egg / a reward token when they carry none.
 --   * UPGRADES at the License Office (UpgradePrompt, attribute Upgrade = "License" | "Carry" | "Speed") and the
 --     gate's LicensePrompt. The License opens the next zone (its gate turns see-through on that player's screen;
 --     the server also refuses to sell eggs in a zone the player has no License for). Prestige resets the License.
@@ -249,7 +249,7 @@ local function buy(player: Player, zone: Zone, spot: BasePart, m: Model)
 		return
 	end
 	if #z.Carried >= carryMax(z) then
-		note(player, "Your bag is full! Take your eggs home to your INCUBATOR")
+		note(player, "Your arms are full! Take your eggs home to your INCUBATOR")
 		return
 	end
 	local room = (eggApi("room", player) :: number?) or 0
@@ -317,7 +317,7 @@ local function hatchAt(player: Player, incubator: Model)
 	if player:GetAttribute("FreeEgg") == true and eggApi("free", player, at) then
 		return
 	end
-	note(player, "Your bag is empty! Buy eggs in Briefcase Bay and bring them here")
+	note(player, "You're not carrying any eggs! Buy eggs in Briefcase Bay and bring them here")
 end
 
 local function hookIncubator(incubator: Instance)
@@ -375,7 +375,7 @@ local function buyUpgrade(player: Player, kind: string)
 		text = def.Name .. "! " .. (if #opened > 0 then table.concat(opened, ", ") .. " is open!" else "")
 	elseif kind == "Carry" then
 		z.Carry = level
-		text = "Bigger bag! You can carry " .. def.Max .. " eggs"
+		text = (def.Name or "Bigger briefcase") .. "! You can carry " .. def.Max .. " eggs"
 	else
 		z.Speed = level
 		text = "Faster shoes! Speed " .. def.WalkSpeed
