@@ -5,6 +5,11 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe's local session · since 2026-10-12 (night):** user's calls: remove the hub's egg store (terrace + 4
+  machines) and MOVE THE LANE there - it starts at the plaza's south edge (x 0) and runs south between the two halves
+  of the south row of firms; License Office beside the new entrance. Then (waiting on the user's screenshots) new
+  looks for the zone eggs on the ground + the egg opening animation. Touches BuildLane, Config.Zones Bounds,
+  BossService (lane axis), ZoneService, Workspace.Hub.
 
 ## Open items
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
