@@ -23,11 +23,18 @@ local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local EggHatched = Remotes:WaitForChild("EggHatched") :: RemoteEvent
 local PlaceLawyer = Remotes:WaitForChild("PlaceLawyer") :: RemoteFunction
 
-local machine = workspace:WaitForChild("Hub"):WaitForChild("EggMachine")
-local eggModel = machine:WaitForChild("Egg") :: Model
-local shell = eggModel:WaitForChild("Shell") :: BasePart
-local rollPrompt = machine:WaitForChild("StandTop"):WaitForChild("RollPrompt") :: ProximityPrompt
-local oddsGui = machine:WaitForChild("OddsBoard"):WaitForChild("SurfaceGui") :: SurfaceGui
+-- v16 (egg zones): the Briefcase Egg is bought in Briefcase Bay and hatched at the firm's incubator, so the hub
+-- machine is gone (ServerStorage.Old_HubEggMachines). Unparented stand-ins keep the machine code below harmless;
+-- the hatch screen itself doesn't care where an egg hatched.
+local machine = workspace:WaitForChild("Hub"):FindFirstChild("EggMachine")
+local eggModel = (if machine then machine:WaitForChild("Egg") else Instance.new("Model")) :: Model
+local shell = (if machine then eggModel:WaitForChild("Shell") else nil) :: BasePart
+local rollPrompt = (if machine then machine:WaitForChild("StandTop"):WaitForChild("RollPrompt") else Instance.new("ProximityPrompt")) :: ProximityPrompt
+local oddsGui = (if machine then machine:WaitForChild("OddsBoard"):WaitForChild("SurfaceGui") else Instance.new("SurfaceGui")) :: SurfaceGui
+local zoneEggs = {} -- eggs sold in a zone (Config.Zones), not by a hub machine
+for _, z in (Config :: any).Zones and (Config :: any).Zones.List or {} do
+	zoneEggs[z.Egg] = true
+end
 -- Themed egg machines (Config.Eggs.Themed: Brainrot / Pet / Food / Ocean / Space). Same hatch screen; the
 -- egg there takes the themed egg's Color.
 local themedPrompts: { ProximityPrompt } = {}
@@ -214,7 +221,7 @@ end
 
 -- Themed eggs: idle bob, prompt text and their own odds boards
 for n, def in Config.Eggs.Themed do
-	local tMachine = workspace.Hub:WaitForChild(def.Machine, 10)
+	local tMachine = if zoneEggs[def.Id] then nil else workspace.Hub:WaitForChild(def.Machine, 10)
 	if not tMachine then
 		continue
 	end

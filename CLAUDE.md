@@ -1,8 +1,35 @@
 # Hatch a Lawyer & Get Rich! — Claude's guide
 
 Roblox idle/gacha law-firm tycoon for a young audience.
-**Start of every session:** read [SESSION_LOG.md](SESSION_LOG.md) (current state, open items), then this file.
-**End of every session:** add a dated entry to SESSION_LOG.md and update anything here that changed.
+**Start of every session:** `git pull` on `main`, then read [SESSION_LOG.md](SESSION_LOG.md) (current state, **In progress**,
+open items), then this file.
+**End of every session:** add a dated entry to SESSION_LOG.md, update anything here that changed, re-export the Studio
+snapshot if you touched Studio (below), then commit and push. Small commits; `git pull --rebase` before pushing.
+
+## One team, one brain (2026-10-12)
+Two people drive Claude on the same game, and **every Claude session works as one entity whose shared memory is this
+repo** — local Claude memory is per machine, so anything the other side should know goes in here, not just in chat.
+| Person | GitHub | Roblox | Machine |
+| --- | --- | --- | --- |
+| **crnuch** | `crunccy` (repo owner) | — | Mac: local Claude Code (Studio MCP + Blender) and cloud sessions |
+| **mr.robe** | `ss-rob` | `mr_blox174` | Windows PC: local Claude Code (Studio MCP), repo at `Documents\HatchLawyers` |
+- Sign every SESSION_LOG entry with who drove it: `## <date> — <crnuch|mr.robe>, <local|cloud> session: <topic>`.
+- **Claim big work before starting it** under SESSION_LOG → **In progress** (who, what, since when) and push the claim,
+  so two Claudes never rebuild the same thing (it happened with the egg zones: two different designs on 2026-10-12).
+  Remove the claim when done. Both edit the same live Team Create place.
+- Decisions either user makes are binding for both sides: write them into this file or the log as "user's call".
+
+### Studio ↔ repo (studio/ snapshot + src/)
+- **`studio/` = read-only snapshot of every script in the live place**, by Studio path (`studio/MANIFEST.json` lists
+  Studio path, class, Enabled). Refresh it after any Studio edit: run `tools/studio_sync/receive_snapshot.ps1` (or any
+  local receiver that writes POST bodies under `studio/`), then `tools/studio_sync/ExportSnapshot.lua` in Studio
+  (Edit mode). Never hand-edit `studio/`; it is what's live.
+- **`src/` = working copies**: scripts with changes not in Studio yet (cloud sessions write here), plus older mirrors.
+  A `src/` file identical to its `studio/` twin is in sync.
+- **Pushing `src/` → Studio:** re-export the snapshot first; if the Studio script changed since your `src/` work
+  started, 3-way merge (base = the last commit where `src/` matched Studio; `git merge-file`) — never paste over it.
+- **Editing Studio directly (local sessions):** re-export the snapshot and copy the new version over any `src/` twin
+  that has no pending work; merge into `src/` files that do.
 
 ## Where things live
 | What | Where |
@@ -19,6 +46,8 @@ Roblox idle/gacha law-firm tycoon for a young audience.
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
 | Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
 | Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |
+| What's live in Studio right now | `studio/` (read-only snapshot, see "Studio ↔ repo") — export tool in `tools/studio_sync/` |
+| Studio's own in-game notes (mr.robe's machine sessions kept these) | `ServerScriptService.README` (snapshot: `studio/ServerScriptService/README.lua`) |
 
 ### What each kind of session can do
 - **Local Claude Code (user's PC):** Roblox Studio MCP + blender-mcp → edit the place, build models, playtest.
@@ -28,16 +57,14 @@ Roblox idle/gacha law-firm tycoon for a young audience.
   `luau-ubuntu.zip` from github.com/luau-lang/luau/releases) — it caught a `Config.lua` that didn't parse.
 
 ## Team & ownership
-- **User (crnuch) + Claude own ALL UI and visuals:** map, builds, lighting, and the *look* of every GUI —
-  including mr.robe's `Hud` and `Courtroom` scripts (colors/fonts only, never their gameplay).
-- **Claude also owns the firm redesign end to end, including its gameplay** (user's call, 2026-10-08):
-  `FirmBuilder`, `DeskService`, the CaseService client queue, `ClientWalk`, `AssignClients`, and the v12
-  hatched-lawyer system the user specified (`LawyerService`, `EggServer`, the `Lawyers` panel).
-- **mr.robe** (always "mr.robe"; Roblox account `mr_blox174`) owns the rest of the server gameplay:
-  `ServerScriptService.Server.*` (PlayerData, PlotService, CaseService, LawyerService, CourtService,
-  EvidenceCards, Main). Edit only with a heads-up, and only for clear bugs/integration.
-- Both edit live in Team Create: re-read a script right before a big edit, and don't edit one they're in.
-  A multi_edit whose old_string no longer matches means they changed it.
+- Since 2026-10-12 both users drive Claude and want one shared Claude: **any session may work on anything**, UI or
+  gameplay. Original authorship, for context: crnuch's sessions built the UI/visuals, the firm redesign and the v12
+  hatched-lawyer system; mr.robe wrote the core server gameplay (`ServerScriptService.Server.*`: PlayerData,
+  PlotService, CaseService, LawyerService, CourtService, EvidenceCards, Main), and mr.robe's sessions built the firm
+  stages, hub minigames, egg zones, incubators and the no-waiting-room flow (2026-10-12 entry).
+- Changes to save data (`PlayerData`) or the core loop (`CaseService`) go in the log with a clear heads-up line.
+- Both edit live in Team Create: re-read a script right before a big edit, and don't edit one someone is in.
+  A multi_edit whose old_string no longer matches means someone changed it.
 
 ## Art direction — cartoony, locked in
 Bright, chunky, colorful like Pet Simulator X / Steal a Brainrot / Steal an Egg: voxel tropical sim with lime
@@ -99,13 +126,23 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
-- `Workspace.Hub` — Street, Plaza, EggMachine (persistent streaming), Palms. `Workspace.Plots.Plot1–8`.
-  Front/door = local −Z; plots are rotated to face the street.
+- `Workspace.Hub` — Street, Plaza, themed egg machines (Brainrot/Food/Ocean/Space; the Briefcase + Pet machines are
+  archived in `ServerStorage.Old_HubEggMachines` since their eggs moved to zones), BigCaseBelt, SpecialSpots (the
+  Gavel Bonk / Lucky Briefcase minigames), ZoneTeleports, Palms. `Workspace.Plots.Plot1–8`.
+  Front/door = local −Z; plots are rotated to face the street (two rows facing the street along x, z = 0).
+- `Workspace.Zones` (2026-10-12, mr.robe's session): BriefcaseBay (zone 1, past the west end of the street) and
+  PetPark (zone 2, behind the License gate), Bridges, ZoneGate. Built by a re-runnable Edit-time builder
+  (`ServerScriptService.README` says where); `Server.ZoneService` + `StarterPlayerScripts.Zones` run them.
+  **Superseded design:** docs/ZONES_REFERENCE.md describes the lane-of-six-zones rebuild crnuch wants — see Open items.
+- Firm: `Server.FirmStages` (6 front buildings by size/prestige, rooms sold on the lawn by `Server.FirmFeatures`),
+  two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was; **no waiting room** —
+  clients walk from the street straight to a free lawyer (`FirmBuilder.routeToDesk`).
 
 ### Never rename (scripts look these up)
 `Firm`, `SpawnPoint`, `Sign` › `Label`, `DeskN` (tag `Desk`, attr `DeskIndex`), `HireSlotN`, `LawyerSpot`,
-`ClientSpot` (NPCs stand on the spot's bottom face), `WaitSeats`, `ManagerSpot`, `UpgradeSpot`, `TakeCase` prompt,
-`Hub.EggMachine.StandTop.RollPrompt`, `Egg`/`Shell`, `Sign` (egg machine), `OddsBoard.SurfaceGui`,
+`ClientSpot` (NPCs stand on the spot's bottom face), `ManagerSpot`, `UpgradeSpot`, `TakeCase` prompt,
+`Incubators` / `IncubatorPrompt`, `Zones.<Id>.EggSpots` / `Arrival`, `LicenseGate`, `UpgradePrompt`, `TeleportPrompt`,
+`<Machine>.StandTop.RollPrompt`, `Egg`/`Shell`, `Sign` (egg machine), `OddsBoard.SurfaceGui`,
 character parts `Head`/`Torso`/`Left Arm`/`Right Arm`/`Left Leg`/`Right Leg`/`HumanoidRootPart`,
 client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 
@@ -113,8 +150,12 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema is **v12** (`PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`). Before adding any saved field: bump `SCHEMA_VERSION` and add a
+- Save schema: **live Studio is v16** (v14 firm areas, v15 minigames, v16 egg zones); **`src/` is v17** (+ the economy
+  pass's `Eggs.RunOpened`, renumbered from its old "v14" when merged — real saves were already at v16). Never reuse a
+  migration number that has shipped. `PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`,
+  `Zones = { License, Carry, Speed, Carried }`. Before adding any saved field: bump `SCHEMA_VERSION` and add a
   `MIGRATIONS` entry.
+- DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - MVP: no Robux for coins, eggs or power. Fictional clients only — no real people or brands.
 - All numbers come from `Config`; never hard-code a tunable in a script. Retune → see docs/ECONOMY.md.
@@ -125,7 +166,12 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Keep screenshots few; heavy screenshot timeouts have dropped the MCP connection.
 - Screenshots are upscaled (~1920×1000 vs real ~1274×664): get click targets from `AbsolutePosition` via
   client `execute_luau`, not from the image.
-- DataStores are off in Studio ("Studio access to APIs") — saving can't be tested there; expected warning.
+- DataStores: Studio API access is ON for this place (2026-10-12) — playtests read and write REAL saves of the
+  test accounts. Back up a save before resetting it (mr.robe's was backed up as `Backup_Player_11776753629_<time>`).
+- Edit-session `require` caches failures; test module changes in a playtest or require a fresh clone.
+- The Studio MCP's own `execute_luau` runs in a separate VM: during a playtest, `require(PlayerData).get(player)` from
+  it returns nil. Parent a temporary Script in the Server datamodel instead (it shares the game's modules).
+- Stopping a playtest from MCP sometimes doesn't take; ask the user to press Stop.
 - Test coins/skins: during play, parent a temporary Script in the *Server* datamodel (it shares PlayerData).
   Never leave test scripts in the edit place.
 - Wrap world edits in ChangeHistoryService recordings so they're one undo step.

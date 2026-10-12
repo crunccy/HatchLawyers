@@ -455,6 +455,7 @@ local panel = make("Frame", {
 	BackgroundColor3 = PANEL, Visible = false, Active = true, Parent = gui,
 }, { corner(10), stroke(6), panelScale })
 panel:SetAttribute("NoSkin", true)
+Skin.blockClicks(panel) -- (Active = true alone doesn't stop a tap on empty space reaching the Shade and closing it)
 studs(panel, 0.9)
 -- header in the shared Skin look: top-lit colour strip, studs, two shine bands, gavel icon + title, red X tile
 local sw = Skin.swatch("Purple")
@@ -530,6 +531,12 @@ for i, name in { "Clients", "Bench" } do
 	tabButtons[name] = b
 	tabLabels[name] = l
 end
+if tabButtons.Clients then
+	tabButtons.Clients.Visible = false
+end
+if tabButtons.Bench then
+	tabButtons.Bench.Position = UDim2.fromOffset(0, 0)
+end
 local infoBar = make("Frame", { Position = UDim2.fromOffset(0, 50), Size = UDim2.new(1, 0, 0, 36), BackgroundColor3 = CARD, Parent = right }, { corner(6), stroke(3) })
 local infoText = text({ Position = UDim2.fromOffset(10, 3), Size = UDim2.new(1, -20, 1, -6), FontFace = BODY, Text = "", RichText = true, TextXAlignment = Enum.TextXAlignment.Left, Parent = infoBar }, 18, 0)
 local CONTENT_Y = 94
@@ -560,7 +567,7 @@ local toast = text({ Position = UDim2.fromOffset(16, 4), Size = UDim2.new(1, -32
 
 ------------------------------------------------------------------ rendering
 local selectedOffice = 1
-local tab = "Clients"
+local tab = "Bench" -- (v16: no waiting room, so the CLIENTS tab is hidden)
 local benchPick: string? = nil
 local focusClient: number? = nil -- highlighted after an [E] Assign Client prompt
 local busy = false
@@ -1148,6 +1155,9 @@ local function open(opts: any)
 		selectOffice(if typeof(selected) == "number" then selected else selectedOffice)
 	end
 	tab = o.tab or (if o.client then "Clients" elseif not office(selectedOffice).lawyerId then "Bench" else tab)
+	if tab == "Clients" then
+		tab = "Bench" -- (no waiting room since v16)
+	end
 	setTextMode(fit()) -- before render(), so new labels start in the right text mode
 	previewKey = nil
 	toastPill.Visible = false

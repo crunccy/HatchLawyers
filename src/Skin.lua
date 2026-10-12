@@ -165,6 +165,16 @@ end
 
 ------------------------------------------------------------------ motion
 -- grow on hover, squish on press, spring back on release. Returns the UIScale it drives.
+-- Makes a window panel catch taps on its empty space. A Frame doesn't stop a click, even with Active = true: the
+-- click still reaches the full-screen click-to-close backdrop behind it, so a tap between two buttons closed the
+-- window (found 2026-10-11). A transparent full-size button under the panel's content catches those taps instead.
+function Skin.blockClicks(panel: GuiObject): TextButton
+	return make("TextButton", {
+		Name = "ClickBlocker", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "",
+		AutoButtonColor = false, Selectable = false, ZIndex = 0, Parent = panel,
+	})
+end
+
 function Skin.pressable(button: GuiButton, hoverScale: number?): UIScale
 	local scale = button:FindFirstChild("PressScale") :: UIScale?
 	if not scale then
@@ -326,8 +336,8 @@ function Skin.window(opts: { [string]: any }): Window
 	local panel = make("Frame", {
 		Name = "Panel", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52),
 		Size = UDim2.fromOffset(size.X, size.Y), BackgroundColor3 = Skin.Panel, ZIndex = 1, Parent = gui,
-		Active = true, -- sinks taps: a tap on empty window space must not fall through to the dim and close it
 	}, { corner(10), stroke(5), scale })
+	Skin.blockClicks(panel) -- a tap on empty window space must not fall through to the dim and close it
 	panel:SetAttribute("NoSkin", true) -- opt out of StarterPlayerScripts.UISkin (the old auto-skin)
 	dim:SetAttribute("NoSkin", true)
 	Skin.studs(panel, 0.93, nil, 30)

@@ -14,6 +14,17 @@
 -- Saved in PlayerData: Lawyers, Eggs.{Opened, FreeUsed, Seen, FreeTokens, RareTokens, SinceTop}.
 -- Mirrored attributes: FreeEgg, EggTokens, RareEggTokens, EggsOpened, EggPity, EggPrice,
 -- SkinsUnseen (hatches not yet looked at in the LAWYERS panel; Remotes.MarkSkinsSeen clears it).
+--
+-- v16 (egg zones, Config.Zones): the Briefcase and Pet eggs are no longer sold by hub machines (those machines
+-- are archived in ServerStorage.Old_HubEggMachines). They are bought in Briefcase Bay / Pet Park and hatched at
+-- an incubator in the player's firm by Server.ZoneService, which calls the ServerStorage.EggApi bindable:
+--   EggApi:Invoke("hatch", player, eggId?, golden?, at?)  an egg already paid for (eggId nil = Briefcase);
+--                                                         golden multiplies the Rare + Legendary odds
+--   EggApi:Invoke("free", player, at?)                     the free first egg / a reward token, if the player has one
+--   EggApi:Invoke("price", player, eggId?) -> number       what that egg costs this player right now
+--   EggApi:Invoke("room", player) -> number                how many more lawyers the player can own
+-- "hatch" / "free" return true when an egg hatched (false: lawyer cap, cooldown, nothing to hatch).
+-- Themed machines still on the hub keep working exactly as before.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -31,15 +42,21 @@ local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local EggHatched = Remotes:WaitForChild("EggHatched") :: RemoteEvent
 local MarkSkinsSeen = Remotes:WaitForChild("MarkSkinsSeen") :: RemoteEvent
 
-local machine = workspace:WaitForChild("Hub"):WaitForChild("EggMachine")
-local rollPrompt = machine:FindFirstChild("RollPrompt", true) :: ProximityPrompt
+local hub = workspace:WaitForChild("Hub")
+-- eggs sold in a zone instead of by a hub machine (Config.Zones)
+local zoneEggs: { [string]: boolean } = {}
+for _, z in (Config :: any).Zones and (Config :: any).Zones.List or {} do
+	zoneEggs[z.Egg] = true
+end
+local machine = if zoneEggs.Briefcase then hub:FindFirstChild("EggMachine") else hub:WaitForChild("EggMachine")
+local rollPrompt = machine and machine:FindFirstChild("RollPrompt", true) :: ProximityPrompt?
 -- themed egg Id -> its machine model
 local themedMachines: { [string]: Instance } = {}
 for _, def in Config.Eggs.Themed do
-	local m = workspace.Hub:WaitForChild(def.Machine, 10)
+	local m = if zoneEggs[def.Id] then hub:FindFirstChild(def.Machine) else hub:WaitForChild(def.Machine, 10)
 	if m then
 		themedMachines[def.Id] = m
-	else
+	elseif not zoneEggs[def.Id] then
 		warn("[EggServer] no machine for the", def.Name, "in workspace.Hub")
 	end
 end
@@ -60,7 +77,7 @@ for _, m in (themedMachines :: { [string]: Instance }) do
 	end
 end
 do
-	local egg = machine:FindFirstChild("Egg")
+	local egg = machine and machine:FindFirstChild("Egg")
 	if egg and egg:IsA("Model") then
 		egg.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
 		egg:SetAttribute("Home", egg:GetPivot())
@@ -134,37 +151,50 @@ local function luckyWeights(player: Player, weights: { number }?): { number }?
 	return out
 end
 
-local function onRoll(player: Player, eggId: string?)
+local function roomFor(player: Player, data: any): number
+	local ShopService = require(Server.ShopService) :: any
+	return Config.Lawyers.MaxOwned + ShopService.effect(player, "BigFirm", 0) - PlayerData.lawyerCount(data)
+end
+
+-- opts.paid: the egg was already bought (in a zone) - no price, no free egg / token; opts.golden: a golden zone
+-- egg (better odds); opts.tokensOnly: only hatch if it's the free first egg or a reward token (never charge);
+-- opts.at: where the egg hatched (for the Rare / Legendary burst). Returns whether an egg hatched.
+type RollOpts = { paid: boolean?, golden: boolean?, tokensOnly: boolean?, at: Vector3? }
+local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
+	local o: RollOpts = opts or {}
 	local themed = Formulas.themedEgg(eggId)
 	local data = PlayerData.get(player)
 	if not data then
-		return
+		return false
 	end
 	local t = os.clock()
 	if lastRoll[player] and t - lastRoll[player] < ROLL_COOLDOWN then
-		return
+		return false
 	end
-	-- egg tiers: a themed machine only works once the player has earned its UnlockEarned (lifetime)
-	if themed and not Formulas.eggUnlocked(themed.Id, data.Stats and data.Stats.CoinsEarned) then
+	-- egg tiers: a themed machine only works once the player has earned its UnlockEarned (lifetime). A zone egg
+	-- that was already bought (o.paid) hatches anyway: its zone's Law License is the gate there (Config.Zones).
+	if themed and not o.paid and not Formulas.eggUnlocked(themed.Id, data.Stats and data.Stats.CoinsEarned) then
 		EggHatched:FireClient(player, { ok = false, reason = "locked", egg = themed.Id, need = themed.UnlockEarned })
-		return
+		return false
 	end
-	local ShopService = require(Server.ShopService) :: any
-	if PlayerData.lawyerCount(data) >= Config.Lawyers.MaxOwned + ShopService.effect(player, "BigFirm", 0) then
+	if roomFor(player, data) <= 0 then
 		EggHatched:FireClient(player, { ok = false, reason = "full" })
-		return
+		return false
 	end
 
 	-- the free egg and reward tokens only work on the Briefcase Egg
-	local free = not themed and Config.Eggs.FreeFirstEgg and not data.Eggs.FreeUsed
+	local free = not o.paid and not themed and Config.Eggs.FreeFirstEgg and not data.Eggs.FreeUsed
 	-- Reward tokens: a Rare token always hatches Rare; a free token rolls normally. Both skip the price.
-	local rareToken = not themed and not free and (data.Eggs.RareTokens or 0) > 0
-	local freeToken = not themed and not free and not rareToken and (data.Eggs.FreeTokens or 0) > 0
+	local rareToken = not o.paid and not themed and not free and (data.Eggs.RareTokens or 0) > 0
+	local freeToken = not o.paid and not themed and not free and not rareToken and (data.Eggs.FreeTokens or 0) > 0
+	if o.tokensOnly and not (free or rareToken or freeToken) then
+		return false
+	end
 	local price = if themed then Formulas.themedEggPrice(themed.Id, priceCount(data), prestigeLevel(data))
 		else Formulas.eggPrice(priceCount(data), prestigeLevel(data))
-	if not free and not rareToken and not freeToken and not PlayerData.spendCoins(player, price) then
+	if not o.paid and not free and not rareToken and not freeToken and not PlayerData.spendCoins(player, price) then
 		EggHatched:FireClient(player, { ok = false, reason = "coins", price = price, egg = if themed then themed.Id else nil })
-		return
+		return false
 	end
 	lastRoll[player] = t
 
@@ -183,17 +213,26 @@ local function onRoll(player: Player, eggId: string?)
 				rarity = index
 			end
 		end
-	elseif themed then
-		data.Eggs.Opened += 1
-		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
-		rarity = Formulas.rollSkin(rng, luckyWeights(player, themed.Weights))
 	else
 		if freeToken then
 			data.Eggs.FreeTokens -= 1
 		end
 		data.Eggs.Opened += 1
 		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
-		rarity = Formulas.rollSkin(rng, luckyWeights(player, nil))
+		local weights = luckyWeights(player, if themed then themed.Weights else nil)
+		if o.golden then
+			-- a golden zone egg: the Rare, Epic and Legendary odds are multiplied (Config.Zones.Golden.Luck);
+			-- Mythic and Supreme are left alone, like Lucky Eggs
+			local luck = ((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1
+			local w = table.clone(weights or Formulas.skinWeights())
+			for index, tier in Config.Eggs.Skins do
+				if (tier.Id == "Rare" or tier.Id == "Epic" or tier.Id == "Legendary") and w[index] then
+					w[index] *= luck
+				end
+			end
+			weights = w
+		end
+		rarity = Formulas.rollSkin(rng, weights)
 	end
 	-- pity: every egg but the tutorial one counts; Config.Eggs.PityRarity (Legendary) or better resets it, and
 	-- hitting the limit upgrades this egg to exactly that rarity - never to Mythic / Supreme (Config.Eggs.PityTop)
@@ -234,8 +273,14 @@ local function onRoll(player: Player, eggId: string?)
 	if burstKind then
 		local from = if themed and themedMachines[themed.Id] then themedMachines[themed.Id] else machine
 		task.delay(if rarity >= (Config.Eggs.PityRarity or 5) then 6.5 else 5.1, function()
-			local box, size = (from :: Model):GetBoundingBox()
-			Effects.burst(box.Position + Vector3.new(0, size.Y / 2 + 2, 0), burstKind)
+			local at = o.at -- an incubator passes where the egg hatched; a hub machine bursts over itself
+			if not at and from and from.Parent then
+				local box, size = (from :: Model):GetBoundingBox()
+				at = box.Position + Vector3.new(0, size.Y / 2 + 2, 0)
+			end
+			if at then
+				Effects.burst(at, burstKind)
+			end
 		end)
 	end
 
@@ -252,6 +297,7 @@ local function onRoll(player: Player, eggId: string?)
 		copies = copies,
 		emptyOffice = firstEmptyOffice(data),
 	})
+	return true
 end
 
 local function onPlayerAdded(player: Player)
@@ -264,9 +310,11 @@ local function onPlayerAdded(player: Player)
 	end
 end
 
-rollPrompt.Triggered:Connect(function(player)
-	onRoll(player, nil)
-end)
+if rollPrompt then
+	rollPrompt.Triggered:Connect(function(player)
+		onRoll(player, nil)
+	end)
+end
 for id, m in themedMachines do
 	local prompt = m:FindFirstChild("RollPrompt", true) :: ProximityPrompt?
 	if prompt then
@@ -275,6 +323,36 @@ for id, m in themedMachines do
 		end)
 	end
 end
+-- the incubators (Server.ZoneService) hatch zone eggs through this
+local ServerStorage = game:GetService("ServerStorage")
+local api = ServerStorage:FindFirstChild("EggApi") :: BindableFunction?
+if not api then
+	local b = Instance.new("BindableFunction")
+	b.Name = "EggApi"
+	b.Parent = ServerStorage
+	api = b
+end
+(api :: BindableFunction).OnInvoke = function(action: string, player: Player, ...): any
+	local args = { ... }
+	if action == "hatch" then
+		local eggId = args[1]
+		return onRoll(player, if eggId == "Briefcase" then nil else eggId, { paid = true, golden = args[2] == true, at = args[3] })
+	elseif action == "free" then
+		return onRoll(player, nil, { tokensOnly = true, at = args[1] })
+	elseif action == "price" then
+		local data = PlayerData.get(player)
+		local eggId = args[1]
+		if not data then
+			return math.huge
+		end
+		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, priceCount(data), prestigeLevel(data)) else Formulas.eggPrice(priceCount(data), prestigeLevel(data))
+	elseif action == "room" then
+		local data = PlayerData.get(player)
+		return if data then roomFor(player, data) else 0
+	end
+	return nil
+end
+api:SetAttribute("Ready", true)
 MarkSkinsSeen.OnServerEvent:Connect(function(player)
 	local data = PlayerData.get(player)
 	if data then

@@ -9,7 +9,9 @@ the working notes for Claude, and offline tools.
 | File | What it's for |
 | --- | --- |
 | [CLAUDE.md](CLAUDE.md) | Rules, ownership, Studio layout, art direction — read by Claude every session |
-| [SESSION_LOG.md](SESSION_LOG.md) | Current state, open items, history |
+| [SESSION_LOG.md](SESSION_LOG.md) | Current state, work in progress, open items, history |
+| [studio/](studio/README.md) | Read-only snapshot of every script live in Studio (re-export with `tools/studio_sync/`) |
+| `src/` | Working copies of scripts, incl. changes not pushed to Studio yet |
 | [docs/DESIGN.md](docs/DESIGN.md) | Original design manifesto (with a status table of what's superseded) |
 | [docs/ECONOMY.md](docs/ECONOMY.md) | Economy rules, pacing targets, how to retune |
 | [docs/ECONOMY_REVIEW.md](docs/ECONOMY_REVIEW.md) | Sim analysis: what needs attention, ranked |

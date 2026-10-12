@@ -275,8 +275,8 @@ Config.Case = {
 Config.Lawyer = {
 	StartLevel = 1,
 	MaxLevel = 100,
-	TrainBase = 2000, -- economy pass 2026-10-09 (was 800: an upgrade cost ~1 s of income, 370 buys in 15 min)
-	TrainGrowth = 1.37, -- v12 tune (EconomySimV12). Keep the TrainGrowth / Payout.Growth ratio (docs/ECONOMY.md)
+	TrainBase = 800,
+	TrainGrowth = 1.37, -- v12 tune (EconomySimV12): 1T/s around 12-15 h
 }
 
 -- HATCHED LAWYERS. Eggs give real lawyers (one of Config.SkinCatalog, which is now the lawyer
@@ -309,10 +309,8 @@ Config.Eggs = {
 	-- The starter egg (workspace.Hub.EggMachine, Pad2): the Briefcase Egg. Hatches every catalog lawyer without
 	-- an Egg tag (the 13 regular lawyers); gives the free tutorial egg and takes reward egg tokens.
 	Name = "Briefcase Egg",
-	-- economy pass 2026-10-09: eggs are a real sink like other hatch games (were ~1 s of income each, so Gold came at
-	-- 1 min and Rainbow at 4-6 min); now first Rare ~6 min, Legendary ~25 min, Rainbow ~30 min (sim)
-	Price = 8000, -- the first paid egg (was 1500); each egg opened since your last Supreme costs PriceGrowth x more
-	PriceGrowth = 1.22, -- (was 1.15)
+	Price = 1500, -- the first paid egg (= the tutorial case's payout, so it's affordable ~1 min in); each egg opened after that costs PriceGrowth x more
+	PriceGrowth = 1.15,
 	FreeFirstEgg = true,
 	FirstEggRarity = 2, -- index into Skins: guaranteed Uncommon, does not touch pity
 	-- Pity: after this many eggs in a row without the rarest skin, the next one is guaranteed it.
@@ -745,14 +743,11 @@ Config.Tutorial = {
 -- v12 targets are checked by Dev.EconomySimV12 (FirstEgg = first PAID egg, after the free tutorial one).
 -- NextDesk is only used by the legacy pre-v12 sim (Dev.EconomySim).
 Config.Pacing = {
-	FirstEgg = { 0, 120 },
-	FirstExpand = { 12 * 60, 30 * 60 },
+	FirstEgg = { 0, 60 },
+	FirstExpand = { 20 * 60, 30 * 60 },
 	IncomeAtFirstEgg = { 100, 500 }, -- coins per second
-	NextDesk = { 12 * 60, 30 * 60 },
-	-- economy pass 2026-10-09: rebirth-game norms (first reset ~30-60 min, then a ladder) replace "1T coins/s at 10-20 h"
-	FirstSupreme = { 40 * 60, 80 * 60 },
-	SupremesPerDay = { 8, 14 },
-	TrillionPerSecond = { 10 * 3600, 20 * 3600 }, -- (legacy: Dev.EconomySimV12 still reads it; not a target any more)
+	NextDesk = { 20 * 60, 30 * 60 },
+	TrillionPerSecond = { 10 * 3600, 20 * 3600 },
 }
 
 -- Themed egg lawyers (Pet / Food / Ocean / Space; models built by tools/themed_cast.py into ReplicatedStorage.
@@ -892,6 +887,80 @@ Config.Shop = {
 		{ Key = "RareEggs", Id = 0, Price = 149, Name = "3 Rare Eggs", Text = "3 Briefcase Eggs that always hatch Rare", Banner = "3x Rare", Color = Color3.fromRGB(255, 120, 40), Icon = "egg", RareTokens = 3 },
 	},
 	Effects = { DoubleCash = 2, SpeedyCases = 0.75, LuckyEggs = 2, BigFirm = 100 },
+}
+
+-- Firm areas (Server.FirmFeatures, building: Server.FirmStages). Rooms bought from the glowing pads in front of
+-- the firm once it has reached Stage (1 Dingy Shack .. 6 Supreme Tower); the room then appears in the building.
+-- Effect: "payout" | "caseTime" | "winChance" add to Formulas.combineBuffs (Config.Caps still apply);
+-- "rareClients" adds to the Manager's Referral boost; "lounge" adds Value to payouts while the owner stands in
+-- the Executive Lounge. Bought areas reset on prestige (like the firm). Costs are first guesses: tune with
+-- Dev.EconomySimV12 if areas are added to the simulated player.
+Config.FirmAreas = {
+	{ Id = "CafeTerrace", Name = "Rooftop Café", Stage = 2, Cost = 1.5e8, Effect = "payout", Value = 0.05, Text = "+5% case payouts" },
+	{ Id = "CoffeeBreak", Name = "Coffee Break Room", Stage = 3, Cost = 1.2e9, Effect = "caseTime", Value = 0.05, Text = "Cases finish 5% faster" },
+	{ Id = "LawLibrary", Name = "Law Library", Stage = 4, Cost = 6e10, Effect = "winChance", Value = 0.02, Text = "+2% chance to win" },
+	{ Id = "ConferenceRoom", Name = "Conference Room", Stage = 4, Cost = 1.2e11, Effect = "rareClients", Value = 0.15, Text = "Rare clients visit 15% more often" },
+	{ Id = "AtriumCafe", Name = "Atrium Coffee Bar", Stage = 5, Cost = 2e14, Effect = "caseTime", Value = 0.08, Text = "Cases finish 8% faster" },
+	{ Id = "RoofGarden", Name = "Rooftop Garden", Stage = 5, Cost = 4e14, Effect = "payout", Value = 0.10, Text = "+10% case payouts" },
+	{ Id = "ExecLounge", Name = "Executive Lounge", Stage = 5, Cost = 8e14, Effect = "lounge", Value = 0.5, Text = "x1.5 payouts while you're in the lounge" },
+	{ Id = "PartnerSuite", Name = "Penthouse Suite", Stage = 6, Cost = 5e8, Effect = "payout", Value = 0.15, Text = "+15% case payouts" },
+	{ Id = "PrivateCourt", Name = "Private Courtroom", Stage = 6, Cost = 5e9, Effect = "winChance", Value = 0.03, Text = "+3% chance to win" },
+}
+
+-- HUB MINIGAMES (Server.MinigameService + StarterPlayerScripts.Minigames) on the two pads beside the Big Case
+-- belt (Workspace.Hub.SpecialSpots). Solo, tap-only, no reading needed (made for young players). Rewards are
+-- minutes of the player's own income (Kind/Minutes/Count as in Config.Rewards); Cooldown is per player and saved.
+-- Pacing: played every time they're ready, both together add roughly 20-25% on top of idle income.
+Config.Minigames = {
+	IntroTime = 2.2, -- "READY... GO!" before a round
+	GavelBonk = {
+		Name = "Gavel Bonk",
+		Cooldown = 5 * 60, -- seconds
+		Duration = 20, -- seconds a round
+		Holes = 9, -- 3 x 3
+		PopEvery = { 0.8, 0.45 }, -- seconds between pop-ups at the start / end of the round
+		StayUp = { 1.4, 0.85 }, -- how long one stays up at the start / end of the round
+		JudgeChance = 0.16, -- the friendly judge pops up instead of a robber
+		JudgePenalty = 3, -- points lost for bonking the judge (the score never goes below 0)
+		FullScore = 0.75, -- bonking this share of the robbers earns the full reward
+		MinMinutes = 0.25, -- reward at 0 points ...
+		MaxMinutes = 1.25, -- ... and at FullScore or better
+	},
+	LuckyBriefcase = {
+		Name = "Lucky Briefcase",
+		Cooldown = 6 * 60,
+		ShowTime = 2.2, -- the cases open to show which one holds the BIG prize
+		CloseTime = 0.5,
+		Swaps = 6, -- shuffle moves
+		SwapTime = 0.6, -- seconds per move
+		PickTimeout = 15, -- no pick by then: a random case is opened (still a prize)
+		Small = { Name = "COINS", Kind = "Coins", Minutes = 0.5 },
+		Big = { -- the star case; weighted
+			{ Name = "BIG PRIZE", Weight = 80, Kind = "Coins", Minutes = 1.5 },
+			{ Name = "FREE EGG", Weight = 20, Kind = "Egg", Count = 1 },
+		},
+	},
+}
+
+-- EGG ZONES (Server.ZoneService + StarterPlayerScripts.Zones; map: Workspace.Zones, built by the zone builder).
+-- The firm is the idle part of the game, the zones the active part: eggs keep popping up on spots around each
+-- zone; the player buys one with coins, carries it home over their head and hatches it at an incubator in their
+-- firm (the free first egg and reward eggs hatch there too). Each zone sells one egg. A Law License opens the
+-- next zone's gate; prestige takes the License away (the bag and shoes stay). Egg prices are the old machine
+-- prices (Formulas.eggPrice / themedEggPrice); a golden egg costs more and rolls Rare / Legendary more often.
+-- The License Office by the Briefcase Bay entrance sells all three upgrades. Bounds = the zone's land (x0, z0, x1, z1).
+Config.Zones = {
+	List = {
+		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 7, Respawn = { 4, 9 }, Bounds = { -460, -80, -300, 80 } },
+		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 7, Respawn = { 5, 10 }, Bounds = { -620, -70, -480, 70 } },
+	},
+	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
+	License = { -- level n opens every zone whose License is n or less
+		{ Name = "Bronze License", Cost = 5e6 },
+	},
+	Carry = { { Max = 1 }, { Max = 3, Cost = 2.5e5 }, { Max = 5, Cost = 2.5e7 } }, -- eggs the bag holds
+	Speed = { { WalkSpeed = 32 }, { WalkSpeed = 36, Cost = 1e6 }, { WalkSpeed = 40, Cost = 1e8 } }, -- (32 = the game's base speed)
+	EggColors = { Briefcase = Color3.fromRGB(245, 200, 70), Golden = Color3.fromRGB(255, 205, 40) },
 }
 
 local function deepFreeze(t: { [any]: any })

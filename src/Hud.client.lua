@@ -272,9 +272,7 @@ local function refresh()
 		elseif tPhase == "Case" then
 			hintText = step(2, "Your lawyer is wrapping up Dave's case...")
 		elseif tPhase == "Walking" then
-			hintText = step(1, "Nice! Dave is walking to your lawyer's office...")
-		elseif waiting > 0 then
-			hintText = step(1, "Neighbor Dave needs a lawyer! Walk up to Dave and press E to Assign Client")
+			hintText = step(1, "Neighbor Dave is walking straight to your lawyer!")
 		else
 			hintText = step(1, "Your first client is on the way...")
 		end
@@ -287,14 +285,14 @@ local function refresh()
 	local working = (player:GetAttribute("LawyerCount") or 0) :: number
 	local hasEmpty = working < deskCount
 	if not hintText and firstDone and player:GetAttribute("FreeEgg") == true and owned <= 1 then
-		hintText = step(4, "Follow the green line and hatch your FREE Briefcase Egg!")
+		hintText = step(4, "Follow the green line to your INCUBATOR and hatch your FREE egg!")
 	elseif not hintText and owned > working and hasEmpty and owned <= 2 then
 		hintText = step(5, "Walk to a glowing EMPTY OFFICE to equip your new lawyer")
 		onLastStep = true
 	elseif not hintText and owned > working and hasEmpty then
 		hintText = "A lawyer is waiting for a desk! Open LAWYERS to equip them"
 	elseif not hintText and hasEmpty and coins >= ((player:GetAttribute("EggPrice") or math.huge) :: number) then
-		hintText = "Hatch an egg at the hub to fill your empty offices!"
+		hintText = "Buy eggs in Briefcase Bay (west) and hatch them at your incubator!"
 	end
 	local segments = (player:GetAttribute("FirmSegments") :: number?) or Config.Firm.StartSegments
 	local expandCost = Config.Firm.ExpandCosts[segments + 1]

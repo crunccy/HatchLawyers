@@ -67,7 +67,12 @@ local function prestige(player: Player): (boolean, string?)
 	data.Desks = offices
 	data.Firm = { Segments = Config.Firm.StartSegments }
 	data.Manager = { Hired = false, Levels = {} }
+	-- the Law License goes with the firm (user's call); the bag, the shoes and any carried eggs stay
+	if data.Zones then
+		data.Zones.License = 0
+	end
 	PlayerData.sync(player)
+	require(script.Parent.ZoneService).sync(player)
 
 	CaseService.stop(player)
 	local firm = PlotService.rebuild(player)

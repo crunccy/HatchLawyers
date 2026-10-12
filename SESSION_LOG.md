@@ -3,9 +3,27 @@
 Newest first. Each entry: what changed, where, and what's left. Keep the **Open items** list current —
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
+## In progress
+Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- (nothing claimed)
+
 ## Open items
-- [ ] **Rebuild the egg-zone map after the reference** (docs/ZONES_REFERENCE.md; shots in `references/zones-ref-*.webp`,
-      before shots `references/map-before-2026-10-11-*.webp`). Decide on the "Opposing Counsel" bosses first.
+- [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
+      session): Briefcase Bay + Pet Park as two islands past the west end of the street, License Office, gate,
+      hub teleports, incubators, golden eggs (entry below). docs/ZONES_REFERENCE.md (crnuch) asks for a different
+      layout: ONE sunken lane of six zones between studded walls, chevron trails, 2-line egg labels. If the lane is
+      rebuilt, keep ZoneService's contracts so the gameplay carries over: `Zones.<Id>.EggSpots` / `Arrival`,
+      `LicenseGate` tag (+ `LicensePrompt`), `UpgradePrompt` (attr `Upgrade`), `UpgradeBoard` tag, hub
+      `TeleportPrompt`, `Config.Zones.List[*].Bounds`. Swap the floating price tags (StarterPlayerScripts.Zones) for
+      the 2-line labels. Decide on the "Opposing Counsel" bosses first.
+- [ ] **Egg tiers vs zones overlap** (decide): the economy pass locks themed eggs by lifetime coins
+      (`UnlockEarned`, Pet 1e7) and the zones gate them by Law License (Pet Park, `Config.Zones.License` 5e6 coins).
+      Merge rule for now (src/EggServer): a zone egg already bought (`o.paid`) hatches even if its tier is locked, so it
+      can't get stuck in the bag; hub machines still check `UnlockEarned`. Probably one gate is enough.
+- [ ] **crnuch: set the GitHub default branch back to `main`** (Settings → General → Default branch; it was
+      `claude/sharp-dirac-02vssj`, so new cloud sessions may start from that old branch). `ss-rob` isn't an admin.
+- [ ] **Re-run the economy sim for the zones** (carry 1/3/5 per trip instead of spamming the machine, golden eggs,
+      License/Bag/Shoes costs, minigame rewards — all first guesses in `Config.Zones` / `Config.Minigames`).
 - [ ] **Build the 18 Epic / Mythic / Supreme lawyer models** (local session; concepts + ladder in
       docs/CHARACTER_STYLE.md → "Epic, Mythic and Supreme"). Ids are in `Config.SkinCatalog`; each needs
       `ReplicatedStorage.SkinModels.<Id>`. Do this before pushing the new rarities, or hatches show the blocky fallback.
@@ -14,10 +32,12 @@ it is the to-do list for the next session. Move finished items into the dated en
       Guide, Hud, Goals, BadgeAwards, RewardsService, SkillService, CourtService, DeskService, and whatever listens to
       `ReplicatedStorage.HatchCue` (it now also gets the rarity NAME as a 3rd argument; switch it to that).
       Also check the Lawyers panel's white Supreme pill reads well (Config.RarityColors.Supreme is white).
-- [ ] **Push `src/` to Studio: economy pass + egg tiers + phone LAWYERS panel** (2026-10-12 entry below). Files:
-      `Config`, `Formulas` (Shared); `PlayerData`, `LawyerService`, `PrestigeService`, `EggServer` (server);
-      `Eggs`, `Lawyers`, `Manager`, `Supreme` (StarterPlayerScripts). Re-read each Studio script first (mr.robe may
-      have changed it; `PlayerData` / `CaseService` / `LawyerService` are shared). Then, in a playtest:
+- [ ] **Push `src/` to Studio: economy pass + egg tiers + 7 rarities + phone LAWYERS panel** (2026-10-12 entries
+      below). Since the 2026-10-12 sync these `src/` files already contain every live Studio change too (3-way
+      merged), so pushing them no longer wipes the zones/incubators: `Config`, `Formulas` (Shared); `PlayerData`
+      (**schema v17**), `LawyerService`, `PrestigeService`, `EggServer` (server); `Eggs`, `Lawyers`, `Supreme` (new,
+      not in Studio yet) (StarterPlayerScripts); `Effects` (Shared). Re-export `studio/` first and diff each file
+      against its twin — anything changed in Studio since 2026-10-12 needs merging. Then, in a playtest:
       (1) locked egg: prompt says "Locked / Earn X more coins", pressing it toasts, odds board says "Unlocks at X
       earned"; with test coins (`Stats.CoinsEarned` ≥ 1e7) the Pet Egg unlocks live and its board says "Pet lawyers
       earn x1.25!"; (2) a Pet lawyer's "Earns x" in the hatch screen / LAWYERS panel / name tag includes the x1.25;
@@ -25,15 +45,17 @@ it is the to-do list for the next session. Move finished items into the dated en
       (4) UPGRADE MAX / UPGRADE ALL; (5) LAWYERS panel at phone size (Device emulator, landscape phone): office-card
       names, client situations (2 lines) and the status line readable, nothing spilling out of its box;
       (6) desktop size unchanged.
-- [ ] **`Server.FirmStages` TowerLevel rule** (economy pass, not in this repo): the front building's top stage, the
-      Supreme Tower, should appear only at `Prestige.Level >= Config.Prestige.TowerLevel` (5). It used to come
-      with the first Supreme, which is now ~1 h in and would skip the other stages every run.
+- [ ] **`Server.FirmStages` TowerLevel rule** (push together with the economy pass): `FirmStages.stageFor(segments,
+      prestige)` returns 6 (Supreme Tower) for ANY prestige > 0 — see `studio/ServerScriptService/Server/FirmStages.lua`.
+      Make it `prestige >= Config.Prestige.TowerLevel` (5); the first Supreme is now ~1 h in and would otherwise
+      skip the other stages every run.
 - [ ] Check `GoalService.track(player, "train", count)`: the economy pass's `LawyerService` passes the number of
       levels bought; make sure Studio's `GoalService` accepts the count (else goals count one per request).
 - [ ] **Brick style rollout** (docs/CHARACTER_STYLE.md): rebuild the other 52 lawyers, 43 clients and the Judge with
       `tools/brick/BrickKit.lua`. Rookie + Neighbor Dave are done; the rest are their 2026-10-10 versions.
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
-- [ ] Tell mr.robe: the Hud's bottom office card is gone (user's call) and CaseService/LawyerService changed (queued lawyer changes, rest window).
+- [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
+      own Claude on this repo now (2026-10-12). CaseService changed again since: no waiting room (entry below).
 - [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
 - [ ] Eye-check the Lawyer Merger panel + merge animation in a playtest (window wasn't rendering during the build).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
@@ -62,6 +84,56 @@ it is the to-do list for the next session. Move finished items into the dated en
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: repo becomes the shared brain; Studio snapshot; src merged with live Studio
+- GitHub connected on mr.robe's PC (Git + GitHub CLI via winget, signed in as `ss-rob`, push access); repo cloned to
+  `Documents\HatchLawyers`. **PR #1 merged** (economy pass fix, egg tiers, 7 rarities, phone panel).
+- **`studio/`**: first read-only snapshot of all 77 scripts in the live place + `MANIFEST.json`, exported with the new
+  `tools/studio_sync/` (receiver + `ExportSnapshot.lua`). Scripts that only ever lived in Studio (FirmBuilder,
+  FirmStages, FirmFeatures, ZoneService, MinigameService, BigCaseService, PlotService, Main, ...) are now visible here.
+- **`src/` merged with live Studio** (3-way, base = each file's last pre-WIP commit): Config, EggServer, Eggs,
+  Lawyers, LawyerService, PlayerData, Effects. Conflicts resolved: PlayerData schema → **v17** (the economy pass's
+  RunOpened migration renumbered 13 → 16, because live saves are already at v16); Config keeps the economy pass
+  values + the two Legendary renumbers; EggServer combines the egg tiers / price ramp / rarity bursts with the
+  incubator API (zone eggs skip the tier lock, golden eggs boost Rare/Epic/Legendary only). Studio was newer and
+  `src/` had nothing pending for CaseService, Hud, Skin (+ `Skin.blockClicks` users Courtroom, Manager, Skills,
+  Rewards) → copied from Studio. PrestigeService: economy-pass ladder + Studio's License reset. All 16 changed
+  files compile (Studio `loadstring`). Lesson: Windows PowerShell 5.1 reads files/`git show` output as ANSI and
+  garbles ★ · — — read and write with explicit UTF-8 (`[IO.File]::ReadAllText(p, [Text.Encoding]::UTF8)`).
+- CLAUDE.md: "One team, one brain" (who's who, claim-before-big-work, Studio ↔ repo rules), team/ownership,
+  layout, schema, MCP gotchas updated. **Nothing was pushed to Studio in this step.**
+
+## 2026-10-09 → 10-12 — mr.robe, local sessions (Studio only until now; summarised here when the repo was connected)
+All of this is live in Studio (see `studio/`); details of each system are also in `ServerScriptService.README`.
+- **Hub:** Big Case conveyor rebuilt as a ground-level treadmill in the plaza centre with glowing in/out portals (spawn
+  pad removed); hub revamp: egg terrace at the top, Shop + Lawyer Merger spots in the middle, Big Case belt and two
+  SpecialSpots at the bottom.
+- **UI:** a Figma UI kit ("Hatch a Lawyer – UI Kit") turned into `Shared.UIKit` + `StarterPlayerScripts.UISkin`
+  (auto-skins older screens: chunky glossy buttons, panels, pop-ins).
+- **Firm stages** (`Server.FirmStages` + `Server.FirmFeatures`): six front buildings by firm size — Dingy Shack (kept),
+  Storefront Practice, Main Street Firm, Glass Office, Corporate HQ, Supreme Tower (prestige) — with a floor-by-floor
+  build animation + "FIRM UPGRADED!" banner (`FirmStageUp`). Rooms (`Config.FirmAreas`: café, library, conference,
+  lounge, roof garden, ...) give bonuses (CaseService `deskBuffs` / rare clients) and are sold by ONE lawn pad that
+  offers the cheapest room left (user: "simplify the upgrades"). Showcase gallery of your best lawyers behind the
+  street windows, rooftop hologram (HQ/Tower), elevators between floors, Executive Lounge bonus while you stand in it.
+  Removed at the user's request: the pergola "fencing" over the hall and the Hatch Lab egg. Old buildings kept in
+  `ServerStorage.Old_Firms`.
+- **Hub minigames** (`Server.MinigameService`, `StarterPlayerScripts.Minigames`, `Config.Minigames`, schema v15): Gavel
+  Bonk (20 s whack-a-mole: bonk robbers, not the judge) and Lucky Briefcase (shell game, every case pays) on the
+  SpecialSpots; 5 / 6 min per-player saved cooldowns; rewards = minutes of the player's own income.
+- **Egg zones** (`Server.ZoneService`, `StarterPlayerScripts.Zones`, `Config.Zones`, schema v16): Briefcase Bay (zone 1,
+  over a bridge past the west end of the street; law-office theme on royal-blue paving) and Pet Park (zone 2, behind a
+  License gate; dog-park theme on lime grass). 7 eggs per zone on EggSpots, golden eggs (6 %, 5x price, 4x
+  Rare/Legendary, server alert), buy → carry over your head (saved) → hatch at one of two **incubators** in the firm
+  lobby. License Office: Law License (opens Pet Park, **reset by prestige** — user's call), Bigger Bag 1/3/5, Faster
+  Shoes 32/36/40 (replaces the old `PlayerSpeedDouble` script, now disabled). Hub teleport pads west of the plaza.
+  The hub's Briefcase + Pet machines are archived (`ServerStorage.Old_HubEggMachines`). Playtested end to end.
+- **No waiting room** (user's call): clients walk from the street straight to a free lawyer (Manager picks the best);
+  the lobby furniture is stripped and the incubators stand there; the LAWYERS panel's CLIENTS tab is hidden; tutorial
+  step 1 is automatic and step 4 points at the incubator. CaseService's main loop is now guarded so one bad tick can't
+  stop it for every player.
+- Test save of `mr_blox174` reset to a fresh player with 90 Qi coins (old save backed up as
+  `Backup_Player_11776753629_<time>`).
 
 ## 2026-10-12 — cloud session: Epic, Mythic and Supreme rarities (in `src/`, not Studio; models still to build)
 - `Config.Eggs.Skins`: 7 rarities (Epic inserted at 4 between Rare and Legendary; Mythic 6, Supreme 7). Earn
