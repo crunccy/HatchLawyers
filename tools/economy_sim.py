@@ -82,16 +82,42 @@ CONFIG = {
             "Rare": (13, 4, 2),
             "Legendary": (2.5, 10, 2),
         },
-        # lawyer ids per rarity in Config.SkinCatalog (merges need 3 of the SAME id)          SYNCED
+        # the Briefcase Egg's pool: lawyer ids per rarity in Config.SkinCatalog without an Egg tag
+        # (merges need 3 of the SAME id)                                                    SYNCED
         "Catalog": {
             "Common": ["Rookie", "InternSuit", "CasualFriday"],
-            # the normal egg's pool; brainrot lawyers (Egg = "Brainrot") only come from the Brainrot Egg,
-            # which the sim doesn't model (3x price for 60/32/8 % U/R/L: worse power per coin than the normal egg)
             "Uncommon": ["BowTieBarrister", "NavyPowerSuit", "BensonBond"],
             "Rare": ["GoldenGavel", "NeonLitigator", "KaiSueNat", "KhabyClaim"],
             "Legendary": ["PinstripePartner", "IShowSued", "IceJustice"],
         },
-        "Tiers": None,     # scenario "egg-tiers": list of extra egg machines (None = the one live egg)
+        # Config.Eggs.Themed: each hatches ONLY its own lawyers (catalog Egg = Id) with its own rarity weights, at
+        # PriceMultiplier x the Briefcase price. All eggs share one opened count (price ramp) and the pity counter
+        # (EggServer). Egg tiers (2026-10-12): UnlockEarned = lifetime coins earned (Stats.CoinsEarned, kept through
+        # Supremes) before the machine works (None = open from the start); EarnMultiplier = how much more its
+        # lawyers earn (Formulas.lawyerEarn).                                                SYNCED (src/Config.lua)
+        "Themed": [
+            {"Id": "Pet", "PriceMultiplier": 2, "UnlockEarned": 1e7, "EarnMultiplier": 1.25,
+             "Weights": {"Common": 55, "Uncommon": 28, "Rare": 14, "Legendary": 3},
+             "Pool": {"Common": ["PawralegalPup", "HamsterHustle"], "Uncommon": ["WhiskersEsq", "BubblesGoldfish"],
+                      "Rare": ["CorgiCounsel", "ParrotProsecutor"], "Legendary": ["SirFluffington", "HoundOfJustice"]}},
+            {"Id": "Brainrot", "PriceMultiplier": 3, "UnlockEarned": 1e9, "EarnMultiplier": 1.5,
+             "Weights": {"Common": 0, "Uncommon": 60, "Rare": 32, "Legendary": 8},
+             "Pool": {"Uncommon": ["ChimpanziniBananini", "BonecaAmbalabu"],
+                      "Rare": ["BallerinaCappuccina", "BrrBrrPatapim", "LiriliLarila"],
+                      "Legendary": ["Tralalero", "Bombardiro", "CappuccinoAvvocato"]}},
+            {"Id": "Food", "PriceMultiplier": 4, "UnlockEarned": 1e11, "EarnMultiplier": 2,
+             "Weights": {"Common": 45, "Uncommon": 32, "Rare": 18, "Legendary": 5},
+             "Pool": {"Common": ["ToastAttorney", "SunnySideSam"], "Uncommon": ["SushiSolicitor", "TacoTribunal"],
+                      "Rare": ["PizzaProsecutor", "DonutDefender"], "Legendary": ["BurgerBoss", "ScoopJudge"]}},
+            {"Id": "Ocean", "PriceMultiplier": 8, "UnlockEarned": 1e15, "EarnMultiplier": 3,
+             "Weights": {"Common": 35, "Uncommon": 35, "Rare": 22, "Legendary": 8},
+             "Pool": {"Common": ["CrabCounsel", "ClownfishClerk"], "Uncommon": ["PufferPartner", "JellyJuror"],
+                      "Rare": ["OctoAttorney", "SeahorseSolicitor"], "Legendary": ["WhaleJudge", "KrakenCounsel"]}},
+            {"Id": "Space", "PriceMultiplier": 16, "UnlockEarned": 1e18, "EarnMultiplier": 4,
+             "Weights": {"Common": 25, "Uncommon": 35, "Rare": 28, "Legendary": 12},
+             "Pool": {"Common": ["MoonRockRookie", "LittleGreenLawyer"], "Uncommon": ["AstroAttorney", "RoboClerk"],
+                      "Rare": ["SaturnSolicitor", "UFOCounsel"], "Legendary": ["StarJudge", "BlackHoleBarrister"]}},
+        ],
     },
     # Config.Skills (Effect per level, MaxLevel 3, 3 slots, rarity weights 65/27/8)             SYNCED
     "Skills": {
@@ -113,7 +139,7 @@ CONFIG = {
     # CostGrowth / OfficesBase / OfficesPerLevel) are the proposed rule: prestige N costs CostBase x CostGrowth^N coins
     # and needs min(20, OfficesBase + OfficesPerLevel x N) working offices. CostBase None = the live rule.
     "Prestige": {"RequiredDesks": 20, "PayoutBonusPerLevel": 1.0,   # SYNCED 2026-10-09 economy pass (the ladder)
-                 "CostBase": 1e10, "CostGrowth": 5, "OfficesBase": 10, "OfficesPerLevel": 2},
+                 "CostBase": 1e10, "CostGrowth": 7, "OfficesBase": 10, "OfficesPerLevel": 2},  # CostGrowth 5 -> 7 with egg tiers
     # Config.Case.SelfAssignAfter: before the Manager, a client waiting this long walks to a free lawyer
     # by itself (CaseService.autoAssign), so an AFK firm still earns. None = the old behaviour (nobody).
     "Case": {"SelfAssignAfter": 12},                                 # SYNCED
@@ -149,15 +175,13 @@ SCENARIOS = {
     "multi-hatch": {("ASSUMPTIONS", "MultiHatch"): 3},
     "egg-ramp-10": {("CONFIG", "Eggs", "PriceGrowth"): 1.10},
     "egg-ramp-20": {("CONFIG", "Eggs", "PriceGrowth"): 1.20},
-    # hub egg machines unlocked by income, each with its own price ramp and better odds
-    "egg-tiers": {("CONFIG", "Eggs", "Tiers"): [
-        {"Name": "Starter", "UnlockIncome": 0, "Price": 7500,
-         "Weights": {"Common": 58, "Uncommon": 26.5, "Rare": 13, "Legendary": 2.5}},
-        {"Name": "Office", "UnlockIncome": 1e5, "Price": 2e7,
-         "Weights": {"Common": 30, "Uncommon": 40, "Rare": 24, "Legendary": 6}},
-        {"Name": "Courthouse", "UnlockIncome": 1e8, "Price": 2e10,
-         "Weights": {"Common": 0, "Uncommon": 45, "Rare": 43, "Legendary": 12}},
-    ]},
+    # before egg tiers (2026-10-12): all five themed eggs open from the start, their lawyers earn like Briefcase
+    # ones, and Supremes cost x5 more each
+    "pre-egg-tiers": {**{("CONFIG", "Eggs", "Themed", i, "UnlockEarned"): None for i in range(5)},
+                      **{("CONFIG", "Eggs", "Themed", i, "EarnMultiplier"): 1 for i in range(5)},
+                      ("CONFIG", "Prestige", "CostGrowth"): 5},
+    # the sim before 2026-10-12: only the Briefcase Egg
+    "briefcase-only": {("CONFIG", "Eggs", "Themed"): []},
 }
 
 
@@ -274,21 +298,34 @@ def client_table(level, win_bonus, rare_boost):
     return tuple(rows)
 
 
+@lru_cache(maxsize=None)
+def egg_earn(lawyer_id):
+    """The EarnMultiplier of the egg a lawyer hatches from (Formulas.lawyerEarn; Briefcase lawyers 1)."""
+    for egg in CONFIG["Eggs"]["Themed"]:
+        for ids in egg["Pool"].values():
+            if lawyer_id in ids:
+                return egg.get("EarnMultiplier", 1)
+    return 1
+
+
 def clear_caches():
     client_table.cache_clear()
+    egg_earn.cache_clear()
 
 
 # ----------------------------------------------------------------------------------------
 # Lawyers and skills
 # ----------------------------------------------------------------------------------------
 class Lawyer:
-    __slots__ = ("id", "rarity", "stars", "skills")
+    __slots__ = ("id", "rarity", "stars", "skills", "mult")
 
-    def __init__(self, lawyer_id, rarity, stars=1, skills=()):
+    def __init__(self, lawyer_id, rarity, stars=1, skills=(), mult=None):
         self.id, self.rarity, self.stars, self.skills = lawyer_id, rarity, stars, list(skills)
+        # egg tier power (EarnMultiplier); a "?" stand-in for an expected hatch passes its egg's value
+        self.mult = egg_earn(lawyer_id) if mult is None else mult
 
     def earn(self):
-        return lawyer_earn(self.rarity, self.stars)
+        return lawyer_earn(self.rarity, self.stars) * self.mult
 
     def buffs(self):
         """(payout, caseTime, winChance, rareClients, specialist (entry index, value) or None) - uncapped."""
@@ -361,11 +398,17 @@ def hatch(rng, lawyer_id, rarity):
 
 
 def egg_tiers():
+    """Every egg machine: the Briefcase Egg (index 0), then Config.Eggs.Themed in order."""
     e = CONFIG["Eggs"]
-    if e["Tiers"]:
-        return e["Tiers"]
-    return [{"Name": "Egg", "UnlockIncome": 0, "Price": e["Price"],
-             "Weights": {r: v[0] for r, v in e["Rarities"].items()}}]
+    briefcase = {"Id": "Briefcase", "PriceMultiplier": 1, "UnlockEarned": None,
+                 "Weights": {r: v[0] for r, v in e["Rarities"].items()}, "Pool": e["Catalog"]}
+    return [briefcase] + list(e["Themed"])
+
+
+def egg_unlocked(egg, earned):
+    """Formulas.eggUnlocked: the machine works once lifetime coins earned reach UnlockEarned."""
+    need = egg.get("UnlockEarned")
+    return need is None or earned >= need
 
 
 def roll_rarity(rng, weights):
@@ -389,8 +432,10 @@ class Firm:
         start = CONFIG["Lawyers"]["StartId"]
         self.lawyers = [Lawyer(start, self._rarity_of(start))]     # the Rookie
         self.coins = 0.0
-        self.eggs_opened = {}      # egg tier -> eggs opened (price ramp)
-        self.run_eggs = {}         # egg tier -> eggs opened since the last prestige
+        self.eggs_opened = {}      # egg Id -> eggs opened (for reports)
+        self.opened = 0            # eggs opened, all machines (Eggs.Opened: the shared price ramp)
+        self.run_opened = 0        # ... since the last prestige (Eggs.RunOpened)
+        self.earned = 0.0          # lifetime coins earned (Stats.CoinsEarned: egg unlocks; never reset)
         self.since_top = 0         # pity counter
         self.manager = False
         self.merges = 0
@@ -398,9 +443,10 @@ class Firm:
 
     @staticmethod
     def _rarity_of(lawyer_id):
-        for rarity, ids in CONFIG["Eggs"]["Catalog"].items():
-            if lawyer_id in ids:
-                return rarity
+        for egg in egg_tiers():
+            for rarity, ids in egg["Pool"].items():
+                if lawyer_id in ids:
+                    return rarity
         return "Common"
 
     # --- placement + income -------------------------------------------------------------
@@ -459,7 +505,7 @@ class Firm:
         self.segments = CONFIG["Firm"]["StartSegments"]
         self.offices = [CONFIG["Lawyer"]["StartLevel"]] * (self.segments * 2)
         self.manager = False
-        self.run_eggs = {}
+        self.run_opened = 0
 
     # --- merging --------------------------------------------------------------------------
     def merge_all(self, **kw):
@@ -491,13 +537,33 @@ class Firm:
                 return n
 
     # --- actions: (name, cost, income gain, apply) ----------------------------------------
-    def egg_tier(self, inc):
-        return max(i for i, t in enumerate(egg_tiers()) if t["UnlockIncome"] <= inc)
-
     def next_egg_price(self, tier):
+        """Formulas.eggPrice / themedEggPrice: one shared ramp, x PrestigePriceScale per Supreme, x the egg's multiplier."""
         e = CONFIG["Eggs"]
-        count = self.run_eggs.get(tier, 0) if e.get("RampResetsOnPrestige") else self.eggs_opened.get(tier, 0)
-        return egg_price(count, egg_tiers()[tier]["Price"]) * e.get("PrestigePriceScale", 1) ** self.prestige
+        count = self.run_opened if e.get("RampResetsOnPrestige") else self.opened
+        base = math.floor(egg_price(count) * e.get("PrestigePriceScale", 1) ** self.prestige)
+        return math.floor(base * egg_tiers()[tier]["PriceMultiplier"])
+
+    def egg_gain(self, tier, inc, counts, **kw):
+        """Expected income gain of one egg from machine `tier`: a new lawyer (+ the chance it completes a merge)."""
+        egg = egg_tiers()[tier]
+        weights = egg["Weights"]
+        total_w = sum(weights.values())
+        gain = 0.0
+        for rarity, w in weights.items():
+            if w <= 0:
+                continue
+            avg = Lawyer("?", rarity, 1, [], egg.get("EarnMultiplier", 1))
+            g = self.income(lawyers=self.lawyers + [avg], **kw) - inc
+            ids = egg["Pool"][rarity]
+            for lid in ids:
+                if counts.get((lid, 1), 0) == CONFIG["Lawyers"]["MergeCount"] - 1:
+                    star = Lawyer(lid, rarity, 2, [])
+                    rest = [l for l in self.lawyers if not (l.id == lid and l.stars == 1)]
+                    g = max(g, (self.income(lawyers=rest + [star], **kw) - inc) / len(ids)
+                            + g * (len(ids) - 1) / len(ids))
+            gain += w / total_w * max(g, 0)
+        return gain
 
     def actions(self, **kw):
         inc = self.income(**kw)
@@ -512,29 +578,16 @@ class Firm:
             offices[offices.index(level)] += 1
             out.append(("office", train_cost(level), self.income(offices=offices, **kw) - inc,
                         lambda level=level: self._upgrade(level)))
-        # egg: expected gain of one new lawyer (+ the chance it completes a merge)
-        tier = self.egg_tier(inc)
-        weights = egg_tiers()[tier]["Weights"]
-        total_w = sum(weights.values())
-        gain = 0.0
+        # eggs: every unlocked machine is its own candidate (the player walks to the best one)
         counts = {}
         for l in self.lawyers:
             counts[(l.id, l.stars)] = counts.get((l.id, l.stars), 0) + 1
-        for rarity, w in weights.items():
-            if w <= 0:
-                continue
-            avg = Lawyer("?", rarity, 1, [])
-            g = self.income(lawyers=self.lawyers + [avg], **kw) - inc
-            ids = CONFIG["Eggs"]["Catalog"][rarity]
-            for lid in ids:
-                if counts.get((lid, 1), 0) == CONFIG["Lawyers"]["MergeCount"] - 1:
-                    star = Lawyer(lid, rarity, 2, [])
-                    rest = [l for l in self.lawyers if not (l.id == lid and l.stars == 1)]
-                    g = max(g, (self.income(lawyers=rest + [star], **kw) - inc) / len(ids)
-                            + g * (len(ids) - 1) / len(ids))
-            gain += w / total_w * max(g, 0)
         if len(self.lawyers) < CONFIG["Lawyers"]["MaxOwned"]:
-            out.append(("egg", self.next_egg_price(tier), gain, tier))
+            for tier, egg in enumerate(egg_tiers()):
+                if egg_unlocked(egg, self.earned):
+                    out.append(("egg", self.next_egg_price(tier), self.egg_gain(tier, inc, counts, **kw), tier))
+        tier = 0  # Expand's bundle fills its new offices from the Briefcase Egg (the cheapest)
+        weights = egg_tiers()[0]["Weights"]
         # expand: judged as a bundle - 2 more offices, filled by spare lawyers or (expected) new ones from
         # eggs, and upgraded to the firm's median office level (a level-1 office next to level-50 ones is
         # worth ~nothing, so a one-step greedy player would otherwise never expand)
@@ -572,7 +625,8 @@ class Firm:
 
     def open_egg(self, rng, tier=0, forced=None):
         """EggServer.onRoll: rarity by the egg's weights (+ pity), id even within the rarity, then hatch."""
-        weights = egg_tiers()[tier]["Weights"]
+        egg = egg_tiers()[tier]
+        weights = egg["Weights"]
         rarity = forced or roll_rarity(rng, weights)
         if not forced:
             top = list(CONFIG["Eggs"]["Rarities"])[-1]
@@ -581,9 +635,11 @@ class Firm:
                 rarity = top
             if rarity == top:
                 self.since_top = 0
-            self.eggs_opened[tier] = self.eggs_opened.get(tier, 0) + 1
-            self.run_eggs[tier] = self.run_eggs.get(tier, 0) + 1
-        lawyer = hatch(rng, rng.choice(CONFIG["Eggs"]["Catalog"][rarity]), rarity)
+            self.eggs_opened[egg["Id"]] = self.eggs_opened.get(egg["Id"], 0) + 1
+            self.opened += 1
+            self.run_opened += 1
+        pool = egg["Pool"].get(rarity) or CONFIG["Eggs"]["Catalog"][rarity]
+        lawyer = hatch(rng, rng.choice(pool), rarity)
         self.lawyers.append(lawyer)
         return lawyer
 
@@ -605,7 +661,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
     end = hours * 3600
     res = {"rows": [], "events": [], "first_egg": None, "trillion_at": None, "rarity_first": {},
            "stars_first": {}, "manager_at": None, "first_expand": None, "full_at": None,
-           "runaway_at": None, "hours": hours, "stuck_at": None, "prestiges": []}
+           "runaway_at": None, "hours": hours, "stuck_at": None, "prestiges": [], "unlocks": {}}
     checkpoints = [m * 60 for m in CHECKPOINTS_MIN if m * 60 <= end]
 
     def note():
@@ -627,6 +683,9 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
         note()
 
     while t < end:
+        for egg in egg_tiers()[1:]:
+            if egg["Id"] not in res["unlocks"] and egg_unlocked(egg, firm.earned):
+                res["unlocks"][egg["Id"]] = t
         inc = firm.income(**kw)
         rush = ASSUMPTIONS["RushFirstPaid"] and res["first_egg"] is None
         if res["trillion_at"] is None and inc >= 1e12:
@@ -671,6 +730,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
         _, wait, name, cost, apply = best
         while checkpoints and checkpoints[0] <= t + wait:
             firm.coins += inc * (checkpoints[0] - t)
+            firm.earned += inc * (checkpoints[0] - t)
             wait -= checkpoints[0] - t
             t = checkpoints.pop(0)
             snapshot(t)
@@ -678,12 +738,14 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
         if t >= end:
             break
         firm.coins = max(0.0, firm.coins + inc * wait - cost)
+        firm.earned += inc * wait
         if name == "egg":
             if res["first_egg"] is None:
                 res["first_egg"] = (t, inc)
             firm.open_egg(rng, apply)
             dt = ASSUMPTIONS["HatchSeconds"] / ASSUMPTIONS["MultiHatch"]
             firm.coins += inc * dt
+            firm.earned += inc * dt
             t += dt
         else:
             apply()
@@ -707,7 +769,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
         snapshot(c)
     res["final"] = {"offices": list(firm.offices), "lawyers": len(firm.lawyers),
                     "working": len(firm.placed()), "merges": firm.merges,
-                    "eggs": sum(firm.eggs_opened.values()),
+                    "eggs": sum(firm.eggs_opened.values()), "eggs_by": dict(firm.eggs_opened),
                     "power": sorted((l.earn() for l in firm.lawyers), reverse=True)[:len(firm.offices)]}
     return res
 
@@ -798,6 +860,12 @@ def print_report(res):
           + (f"; all 20 offices at {fmt_time(res['full_at'])}" if res["full_at"] else ""))
     f = res["final"]
     pr = res["prestiges"]
+    themed = egg_tiers()[1:]
+    if themed:
+        by = f["eggs_by"]
+        print("  egg machines: " + ", ".join(
+            f"{e['Id']} {by.get(e['Id'], 0)} (open {fmt_time(res['unlocks'].get(e['Id']))})" for e in themed)
+            + f"; Briefcase {by.get('Briefcase', 0)}")
     print(f"  prestiges: {len(pr)}" + (" (" + ", ".join(fmt_time(x[0]) for x in pr[:12]) + (" ..." if len(pr) > 12 else "") + ")" if pr else ""))
     print(f"  final: {f['eggs']} eggs opened, {f['lawyers']} lawyers owned, {f['working']} working, "
           f"{f['merges']} merges; office levels min {min(f['offices'])} max {max(f['offices'])}")

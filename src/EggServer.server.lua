@@ -7,7 +7,9 @@
 -- LAWYERS panel. The price grows with every egg opened (Formulas.eggPrice).
 -- Themed eggs (Config.Eggs.Themed: Brainrot / Pet / Food / Ocean / Space, each workspace.Hub.<Machine>)
 -- hatch only their own lawyers (catalog Egg = Id), with their own odds, at PriceMultiplier x the price
--- (never free). Attribute <Id>EggPrice (e.g. PetEggPrice) per themed egg.
+-- (never free). Attribute <Id>EggPrice (e.g. PetEggPrice) per themed egg. Egg tiers (2026-10-12): each
+-- themed machine refuses to roll (reason "locked") until the player's lifetime Stats.CoinsEarned reaches
+-- its UnlockEarned (Formulas.eggUnlocked).
 --
 -- Saved in PlayerData: Lawyers, Eggs.{Opened, FreeUsed, Seen, FreeTokens, RareTokens, SinceTop}.
 -- Mirrored attributes: FreeEgg, EggTokens, RareEggTokens, EggsOpened, EggPity, EggPrice,
@@ -139,6 +141,11 @@ local function onRoll(player: Player, eggId: string?)
 	end
 	local t = os.clock()
 	if lastRoll[player] and t - lastRoll[player] < ROLL_COOLDOWN then
+		return
+	end
+	-- egg tiers: a themed machine only works once the player has earned its UnlockEarned (lifetime)
+	if themed and not Formulas.eggUnlocked(themed.Id, data.Stats and data.Stats.CoinsEarned) then
+		EggHatched:FireClient(player, { ok = false, reason = "locked", egg = themed.Id, need = themed.UnlockEarned })
 		return
 	end
 	local ShopService = require(Server.ShopService) :: any

@@ -333,12 +333,16 @@ Config.Eggs = {
 	-- whose Egg = its Id, with its own rarity Weights (by rarity index), at PriceMultiplier x the Briefcase
 	-- Egg's current price. They share the opened count (all prices climb together) and the pity counter, and
 	-- are never free (the free egg and reward tokens are for the Briefcase Egg). Color = the hatch-screen egg.
+	-- EGG TIERS (2026-10-12): each themed machine opens once the player has EARNED UnlockEarned coins in their
+	-- lifetime (Stats.CoinsEarned - kept through Supremes, so an egg never locks again), and its lawyers earn
+	-- EarnMultiplier x more (Formulas.lawyerEarn), so every new machine hatches stronger lawyers than the last.
+	-- Opens (tools/economy_sim.py, 5 seeds): Pet 11-16 min, Brainrot 22-43 min, Food 64-96 min, Ocean 3.3-3.8 h, Space 7-8 h.
 	Themed = {
-		{ Id = "Brainrot", Name = "Brainrot Egg", Machine = "BrainrotEggMachine", PriceMultiplier = 3, Weights = { 0, 60, 32, 8 }, Color = Color3.fromRGB(165, 95, 255), Tagline = "Brainrot lawyers only!" },
-		{ Id = "Pet", Name = "Pet Egg", Machine = "PetEggMachine", PriceMultiplier = 2, Weights = { 55, 28, 14, 3 }, Color = Color3.fromRGB(255, 180, 110), Tagline = "Pet lawyers only!" },
-		{ Id = "Food", Name = "Food Egg", Machine = "FoodEggMachine", PriceMultiplier = 4, Weights = { 45, 32, 18, 5 }, Color = Color3.fromRGB(255, 120, 100), Tagline = "Food lawyers only!" },
-		{ Id = "Ocean", Name = "Ocean Egg", Machine = "OceanEggMachine", PriceMultiplier = 8, Weights = { 35, 35, 22, 8 }, Color = Color3.fromRGB(60, 170, 230), Tagline = "Ocean lawyers only!" },
-		{ Id = "Space", Name = "Space Egg", Machine = "SpaceEggMachine", PriceMultiplier = 16, Weights = { 25, 35, 28, 12 }, Color = Color3.fromRGB(110, 70, 220), Tagline = "Space lawyers only!" },
+		{ Id = "Brainrot", Name = "Brainrot Egg", Machine = "BrainrotEggMachine", PriceMultiplier = 3, UnlockEarned = 1e9, EarnMultiplier = 1.5, Weights = { 0, 60, 32, 8 }, Color = Color3.fromRGB(165, 95, 255), Tagline = "Brainrot lawyers only!" },
+		{ Id = "Pet", Name = "Pet Egg", Machine = "PetEggMachine", PriceMultiplier = 2, UnlockEarned = 1e7, EarnMultiplier = 1.25, Weights = { 55, 28, 14, 3 }, Color = Color3.fromRGB(255, 180, 110), Tagline = "Pet lawyers only!" },
+		{ Id = "Food", Name = "Food Egg", Machine = "FoodEggMachine", PriceMultiplier = 4, UnlockEarned = 1e11, EarnMultiplier = 2, Weights = { 45, 32, 18, 5 }, Color = Color3.fromRGB(255, 120, 100), Tagline = "Food lawyers only!" },
+		{ Id = "Ocean", Name = "Ocean Egg", Machine = "OceanEggMachine", PriceMultiplier = 8, UnlockEarned = 1e15, EarnMultiplier = 3, Weights = { 35, 35, 22, 8 }, Color = Color3.fromRGB(60, 170, 230), Tagline = "Ocean lawyers only!" },
+		{ Id = "Space", Name = "Space Egg", Machine = "SpaceEggMachine", PriceMultiplier = 16, UnlockEarned = 1e18, EarnMultiplier = 4, Weights = { 25, 35, 28, 12 }, Color = Color3.fromRGB(110, 70, 220), Tagline = "Space lawyers only!" },
 	},
 }
 
@@ -674,8 +678,8 @@ Config.Prestige = {
 	-- Steal a Brainrot / Pet Sim - the first one ~45 min in, each later one costs more and pays more. Going Supreme
 	-- from level N costs CostBase x CostGrowth^N coins and needs min(20, OfficesBase + OfficesPerLevel x N) offices
 	-- with a lawyer in them (Formulas.prestigeRequirement). Tuned with tools/economy_sim.py (docs/ECONOMY.md).
-	CostBase = 1e10, -- the first Supreme: ~45-75 min in (sim, 5 seeds)
-	CostGrowth = 5, -- each next one costs 5x more; ~11 Supremes in the first 24 h, then slower and slower
+	CostBase = 1e10, -- the first Supreme: ~40-70 min in (sim, 5 seeds, with egg tiers)
+	CostGrowth = 7, -- each next one costs 7x more; ~12-13 Supremes in the first 24 h (was 5 before egg tiers made lawyers stronger)
 	OfficesBase = 10,
 	OfficesPerLevel = 2,
 	RequiredDesks = 20, -- the most offices any level asks for (a fully expanded firm)

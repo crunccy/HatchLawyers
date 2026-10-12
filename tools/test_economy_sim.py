@@ -104,11 +104,58 @@ class Firm(unittest.TestCase):
         f = sim.Firm()
         rng = random.Random(0)
         f.since_top = sim.CONFIG["Eggs"]["PityTop"] - 1
-        sim.CONFIG["Eggs"]["Tiers"] = [{"Name": "x", "UnlockIncome": 0, "Price": 1, "Weights": {"Common": 1}}]
+        saved = sim.CONFIG["Eggs"]["Themed"]
+        # an egg that only ever rolls Common: the 50th egg without a Legendary must still be one
+        sim.CONFIG["Eggs"]["Themed"] = [{"Id": "x", "PriceMultiplier": 1, "UnlockEarned": None,
+                                         "Weights": {"Common": 1}, "Pool": {"Common": ["Rookie"]}}]
         try:
-            self.assertEqual(f.open_egg(rng).rarity, "Legendary")
+            self.assertEqual(f.open_egg(rng, 1).rarity, "Legendary")
         finally:
-            sim.CONFIG["Eggs"]["Tiers"] = None
+            sim.CONFIG["Eggs"]["Themed"] = saved
+
+
+class EggTiers(unittest.TestCase):
+    def egg(self, egg_id):
+        return next(i for i, e in enumerate(sim.egg_tiers()) if e["Id"] == egg_id)
+
+    def test_briefcase_always_open_themed_gated(self):
+        eggs = sim.egg_tiers()
+        self.assertEqual(eggs[0]["Id"], "Briefcase")
+        self.assertTrue(sim.egg_unlocked(eggs[0], 0))
+        pet = eggs[self.egg("Pet")]
+        self.assertFalse(sim.egg_unlocked(pet, pet["UnlockEarned"] - 1))
+        self.assertTrue(sim.egg_unlocked(pet, pet["UnlockEarned"]))
+
+    def test_gates_and_power_climb_with_price(self):
+        themed = sorted(sim.CONFIG["Eggs"]["Themed"], key=lambda e: e["PriceMultiplier"])
+        gates = [e["UnlockEarned"] for e in themed]
+        power = [e["EarnMultiplier"] for e in themed]
+        self.assertEqual(gates, sorted(gates))
+        self.assertEqual(power, sorted(power))
+
+    def test_locked_eggs_are_not_offered(self):
+        f = sim.Firm()
+        offered = {a[3] for a in f.actions() if a[0] == "egg"}
+        self.assertEqual(offered, {0})
+        f.earned = 1e30
+        offered = {a[3] for a in f.actions() if a[0] == "egg"}
+        self.assertEqual(offered, set(range(len(sim.egg_tiers()))))
+
+    def test_themed_egg_hatches_its_own_stronger_lawyers(self):
+        space = self.egg("Space")
+        egg = sim.egg_tiers()[space]
+        f = sim.Firm()
+        lawyer = f.open_egg(random.Random(1), space)
+        self.assertIn(lawyer.id, egg["Pool"][lawyer.rarity])
+        self.assertEqual(lawyer.earn(), sim.lawyer_earn(lawyer.rarity, 1) * egg["EarnMultiplier"])
+        self.assertEqual(sim.Lawyer("Rookie", "Common").earn(), 1)
+
+    def test_eggs_share_one_price_ramp(self):
+        f = sim.Firm()
+        f.open_egg(random.Random(1), self.egg("Pet"))
+        base = sim.egg_price(1)
+        self.assertEqual(f.next_egg_price(0), base)
+        self.assertEqual(f.next_egg_price(self.egg("Space")), base * 16)
 
 
 class Simulation(unittest.TestCase):

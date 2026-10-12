@@ -5,14 +5,14 @@ this file summarizes them, and `tools/economy_sim.py` mirrors them (synced with 
 v12 "hatch real lawyers"). Overrides docs/DESIGN.md's "Cash System & Scaling" section (that was the original
 pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 
-## The loop in numbers (all synced 2026-10-08)
+## The loop in numbers (synced 2026-10-08; economy pass 2026-10-09 + egg tiers 2026-10-12 are in `src/`, not yet in Studio)
 | Piece | Rule |
 | --- | --- |
 | Start | 4 segments = 8 offices; 1 **Rookie** lawyer (Common) in office 1; office 1 gets 1 free tutorial level |
 | Case payout | `Payout.Base 1200 × 1.25^(office level) × client multiplier × capped buffs × outcome × lawyer power` |
-| Lawyer power | rarity Earn **×1 / 2 / 4 / 10** (Common / Uncommon / Rare / Legendary) × StarEarn **×1 / 2.5 / 6** |
+| Lawyer power | rarity Earn **×1 / 2 / 4 / 10** (Common / Uncommon / Rare / Legendary) × StarEarn **×1 / 2.5 / 6** × the egg's EarnMultiplier (egg tiers, below) |
 | Merging | 3 copies of the same lawyer at the same stars → one with +1 star (max 3 stars); keeps the best skills |
-| Office upgrade (L → L+1) | `TrainBase 800 × TrainGrowth 1.336^L` coins (`Config.Lawyer`; the level stays with the office), max L100 |
+| Office upgrade (L → L+1) | `TrainBase 2000 × TrainGrowth 1.37^L` coins (`Config.Lawyer`; the level stays with the office), max L100. UPGRADE ×N / MAX / UPGRADE ALL in the LAWYERS panel (`TrainLawyer(office, count | "max")`, `TrainLawyer("all")`) |
 | Office tiers | +0 / 5 / 10 / 20 % payout at L1 / 10 / 30 / 60 (Basic → Oak → Executive → Partner's Suite; automatic) |
 | Buff caps | payout ×2.5, win +12 pp, case time −30 % (`Config.Caps`, enforced in `Formulas.combineBuffs`) |
 | Skills | each hatched lawyer rolls 1 (Common/Uncommon) or 2 (Rare/Legendary) skills: Fast Talker −6 % time, Organized +5 %, Charming rare clients +25 %, Specialist +20 % vs one client, Silver Tongue +3 pp win, Shark +12 % (per level, max 3) |
@@ -21,22 +21,40 @@ pitch: XP-based upgrades, `10 × 1.25^L`, `100 × 2^L`).
 | Clients | Common ×1 (70, diff 0, 30 s), Uncommon ×3 (25, 10, 60 s), Rare ×8 (5, 25, 120 s), Epic ×20 (1, 45, 180 s), 5 Legendary celebrities ×50 (0.06 each, 70, 240 s) |
 | Arrivals | one client every `max(1, 3.5 × 8 / working lawyers)` s while one of the **10** waiting seats is free |
 | Assigning | the player clicks ASSIGN CLIENT; the **Manager** (5e7) auto-assigns instantly to the best lawyer; before it, a client waiting **12 s** (`Case.SelfAssignAfter`) walks to the first free lawyer by itself (not in the tutorial) |
-| Firm | Expand Firm = +1 segment = 2 **empty** offices: 3e7, 6e8, 3e10, 1.5e12, 8e13, 4e15 (segments 5–10); no hiring |
+| Firm | Expand Firm = +1 segment = 2 **empty** offices: 2e7, 6e8, 3e10, 1.5e12, 8e13, 4e15 (segments 5–10); no hiring |
 | Eggs | **Briefcase Egg** (starter, Pad2) hatches a lawyer: Common / Uncommon / Rare / Legendary = 58 / 26.5 / 13 / 2.5 %; even among that rarity's lawyers in the normal egg (3 / 3 / 4 / 3) |
-| Themed eggs | `Config.Eggs.Themed`, each only its own 8 lawyers, × the Briefcase price: Brainrot ×3 (U/R/L 60/32/8), Pet ×2 (C/U/R/L 55/28/14/3), Food ×4 (45/32/18/5), Ocean ×8 (35/35/22/8), Space ×16 (25/35/28/12); share the opened count and pity; never free. Not in the sim |
-| Egg price | `7,500 × 1.15^(eggs opened)`; first egg free and guaranteed Uncommon; pity: 50th egg without a Legendary is one |
+| Themed eggs = **egg tiers** | `Config.Eggs.Themed`, each only its own lawyers, × the Briefcase price; share the opened count and pity; never free. Each machine **unlocks at a lifetime coins earned** milestone (`UnlockEarned`, `Stats.CoinsEarned`: never resets) and its lawyers earn **`EarnMultiplier`** more — see the table below. In the sim since 2026-10-12 |
+| Egg price | `8,000 × 1.22^(eggs opened since your last Supreme) × 3^(Supreme level)` (`Formulas.eggPrice`); first egg free and guaranteed Uncommon; pity: 50th egg without a Legendary is one |
+| Supreme (prestige) | a ladder: Supreme N costs `1e10 × 7^N` coins and `min(20, 10 + 2N)` offices with a lawyer; payouts × (1 + N) forever; resets coins, offices, firm size, Manager and the egg ramp (keeps lawyers) |
 | Lawyer cap | 150 owned (merge to make room) |
 
-## Pacing targets (`Config.Pacing`)
-- First paid egg within **~2 min**, earning **~100–500 coins/s** then.
-- First Expand Firm (the old "next desk") around **20–30 min**.
-- **Trillions of coins/s** after **10–20 h** of play.
+### Egg tiers (2026-10-12)
+| Egg | Price × | Odds C / U / R / L % | Unlocks at (lifetime earned) | Lawyers earn × | Opens in the sim (5 seeds) |
+| --- | --- | --- | --- | --- | --- |
+| Briefcase | 1 | 58 / 26.5 / 13 / 2.5 | start | 1 | — |
+| Pet | 2 | 55 / 28 / 14 / 3 | 10M | 1.25 | 11–16 min |
+| Brainrot | 3 | 0 / 60 / 32 / 8 | 1B | 1.5 | 22–43 min |
+| Food | 4 | 45 / 32 / 18 / 5 | 100B | 2 | 64–96 min |
+| Ocean | 8 | 35 / 35 / 22 / 8 | 1Qa | 3 | 3.3–3.8 h |
+| Space | 16 | 25 / 35 / 28 / 12 | 1Qi | 4 | 7.2–8.0 h |
 
-**Current status (sim, live Config):** first egg 40 s at 188/s — OK; first Expand 16 min — slightly early;
-1T/s at **68–88 min — far too fast**, then a hard wall at office level 100 around 4 h.
-See [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md) for the analysis and the fixes (TrainBase ~10–12K + new offices not
-starting at level 1). Pre-Manager self-assign is live since 2026-10-08: an AFK starting firm earns ~53/s
-vs ~64/s active (it used to earn 0).
+Why power and not just odds: per coin, a pricier egg's better odds never beat the Briefcase Egg (a Space Legendary
+earned exactly what a Briefcase Legendary did), so the sim player bought only Brainrot eggs and nobody had a reason to
+use Food / Ocean / Space. With `EarnMultiplier` each machine hatches lawyers better than the ones already in your
+offices, and the unlocks spread new goals across a day. Because lawyers get stronger, `Prestige.CostGrowth` went
+5 → 7 to keep ~12–13 Supremes a day.
+
+## Pacing targets (`Config.Pacing`, economy pass 2026-10-09)
+- First paid egg within **~2 min**, earning **~100–500 coins/s** then.
+- First Expand Firm around **12–30 min**.
+- First **Supreme** at **40–80 min**, then **8–14 Supremes** in the first 24 h (rebirth-game norms; replaced
+  "1T coins/s at 10–20 h").
+
+**Current status (sim, `src/Config.lua` with egg tiers, seeds 1–5):** first paid egg 43 s at 188/s — OK; first
+Expand ~19 min — OK; first Supreme **40–70 min** — OK; **12–13 Supremes** a day — OK; eggs keep selling all day
+(44–90 eggs in hours 8–24; before egg tiers 0–2 on four of five seeds). The live Studio game is still the pre-pass
+economy (1T/s at ~1.1–1.5 h, then a wall at office level 100 — see [ECONOMY_REVIEW.md](ECONOMY_REVIEW.md)) until
+`src/` is pushed. Pre-Manager self-assign is live since 2026-10-08.
 
 ## How to retune
 0. **Never change `Payout.Growth` or `Lawyer.TrainGrowth` casually** — their ratio (1.0688) sets the whole curve.
@@ -48,7 +66,8 @@ vs ~64/s active (it used to earn 0).
 
 Flags: `--report` (purchases, gaps and prices per window, milestones), `--sweep [factor]` (how much each tunable
 moves the targets), `--active 0.2` (courtroom bonus, inside the ×2.5 cap), `--afk` (nobody clicks Assign; clients self-assign),
-`--scenario busy-lawyers,no-self-assign,multi-hatch,egg-ramp-10,egg-ramp-20,egg-tiers` (proposed changes, not live),
+`--scenario busy-lawyers,no-self-assign,multi-hatch,egg-ramp-10,egg-ramp-20,pre-egg-tiers,briefcase-only`
+(comparisons, not live),
 `--log` (every purchase), `--hours`, `--seed`. Tests: `python3 -m unittest discover tools`.
 
 ### What the Python mirror assumes (not Config values; printed on every run)
@@ -58,7 +77,10 @@ moves the targets), `--active 0.2` (courtroom bonus, inside the ×2.5 cap), `--a
 - Greedy player: always buys the action with the shortest payback (save-up time + cost ÷ income gained) — upgrade an
   office, roll an egg, Expand (judged as a bundle: expand + fill + level the new offices to the firm's median), or the
   Manager. Merges happen when they raise income. Best lawyers sit in the best offices.
-- Not modelled: paid skill rolls, Manager upgrades, daily/playtime/offline rewards, prestige.
+- The player only buys an egg when that one hatch raises income right away (plus the chance it completes a
+  merge). Real players roll for the collection and for merges several copies away, so the sim **undercounts late
+  eggs** — read its egg numbers as a floor.
+- Not modelled: paid skill rolls, Manager upgrades, daily/playtime/offline rewards.
 
 ## Known inconsistencies (decide, then fix the doc that's wrong)
 - DESIGN.md's payout table doesn't match its own formula `10 × 1.25^L`. Moot for the live game (Base 1200).

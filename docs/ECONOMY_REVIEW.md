@@ -11,8 +11,28 @@ offices; eggs hatch real lawyers (rarity Earn ×1/2/4/10, merge stars ×1/2.5/6,
 was rewritten to match, not just its numbers — see "What was different" below.
 
 Reproduce: `python3 tools/economy_sim.py --report`, `--sweep 1.25`, `--afk`, `--active 0.2`,
-`--scenario <name>` (list: `busy-lawyers`, `auto-assign`, `multi-hatch`, `egg-ramp-10`, `egg-ramp-20`, `egg-tiers`).
+`--scenario <name>` (list: `busy-lawyers`, `no-self-assign`, `multi-hatch`, `egg-ramp-10`, `egg-ramp-20`, `pre-egg-tiers`, `briefcase-only`; the old hypothetical `egg-tiers` was replaced by the real themed eggs on 2026-10-12).
 Results below are seed 1 unless a range over seeds 1–5 is given.
+
+## Update 2026-10-12 (cloud session): economy pass finished in `src/`, egg tiers
+- **The WIP economy pass's `Config.lua` didn't parse.** A comment added mid-line in `Config.Firm.ExpandCosts`
+  swallowed segments 7–10 *and* the table's closing brace (`luau-compile`: "Expected '}' (to close '{' at line
+  195)"). Pushed to Studio as it was, `Shared.Config` would fail to load and take every script that requires it
+  down. Fixed; every `src/*.lua` now compiles. Check other Luau edits the same way (see SESSION_LOG.md).
+- **Egg tiers (§2's recommendation), built:** the five themed eggs already had better odds at 2–16× the price, but
+  per coin none beat the Briefcase Egg, so the sim bought only Brainrot eggs and nothing after ~8 h. Now each machine
+  unlocks at a lifetime-coins-earned milestone and hatches stronger lawyers (`EarnMultiplier` ×1.25 … ×4); table in
+  [ECONOMY.md](ECONOMY.md). `Prestige.CostGrowth` 5 → 7 keeps the Supreme ladder on target.
+
+| Seeds 1–5, 24 h | before egg tiers (`--scenario pre-egg-tiers`) | with egg tiers (`src/Config.lua`) |
+| --- | --- | --- |
+| First Supreme | 47–74 min | 40–70 min (target 40–80) |
+| Supremes in 24 h | 11–14 | 12–13 (target 8–14) |
+| Eggs in hours 8–24 | 0–2 on four seeds (60 on one) | 44–90 |
+| Machines used | Briefcase + Brainrot | all six (Pet lightly: Brainrot opens soon after) |
+
+- **Caveat:** the sim player buys an egg only when that one hatch raises income right away, so it undercounts late
+  eggs (real players roll for the collection and for merges several copies away). Its egg numbers are a floor.
 
 ## Summary
 | # | Finding | Status after sync | Confidence | Owner |

@@ -229,21 +229,44 @@ for n, def in Config.Eggs.Themed do
 		bEgg:PivotTo(home * CFrame.new(0, math.sin(t * 2) * 0.35, 0) * CFrame.Angles(0, t * 0.6, math.sin(t * 1.3) * 0.06))
 	end)
 	local attr = def.Id .. "EggPrice"
+	local board = tMachine:FindFirstChild("OddsBoard")
+	local bGui = board and board:FindFirstChild("SurfaceGui")
+	-- egg tiers: locked until lifetime coins earned (player attribute CoinsEarned) reach def.UnlockEarned
+	local wasUnlocked: boolean? = nil
+	local function drawBoard(unlocked: boolean)
+		if not bGui then
+			return
+		end
+		bGui:ClearAllChildren()
+		local footer, footerColor = def.Tagline, Color3.fromRGB(150, 255, 110)
+		if not unlocked then
+			footer, footerColor = "Unlocks at " .. Formulas.formatCoins(def.UnlockEarned) .. " earned", Color3.fromRGB(255, 120, 120)
+		elseif def.EarnMultiplier and def.EarnMultiplier ~= 1 then
+			footer = def.Id .. " lawyers earn x" .. tostring(def.EarnMultiplier) .. "!" -- e.g. "Pet lawyers earn x1.25!"
+		end
+		oddsBoard(bGui :: SurfaceGui, string.upper(def.Name) .. " ODDS", def.Weights, footer, footerColor, ArtAssets.Eggs[def.Id])
+	end
 	local function refreshThemed()
+		local earned = (player:GetAttribute("CoinsEarned") :: number?) or 0
+		local unlocked = Formulas.eggUnlocked(def.Id, earned)
 		if tPrompt then
-			tPrompt.ActionText = "Hatch a " .. def.Id .. " Lawyer"
-			local price = (player:GetAttribute(attr) :: number?) or Config.Eggs.Price * def.PriceMultiplier
-			tPrompt.ObjectText = Formulas.formatCoins(price) .. " coins"
+			if unlocked then
+				tPrompt.ActionText = "Hatch a " .. def.Id .. " Lawyer"
+				local price = (player:GetAttribute(attr) :: number?) or Config.Eggs.Price * def.PriceMultiplier
+				tPrompt.ObjectText = Formulas.formatCoins(price) .. " coins"
+			else
+				tPrompt.ActionText = "Locked"
+				tPrompt.ObjectText = "Earn " .. Formulas.formatCoins(def.UnlockEarned - earned) .. " more coins"
+			end
+		end
+		if unlocked ~= wasUnlocked then
+			wasUnlocked = unlocked
+			drawBoard(unlocked)
 		end
 	end
 	player:GetAttributeChangedSignal(attr):Connect(refreshThemed)
+	player:GetAttributeChangedSignal("CoinsEarned"):Connect(refreshThemed)
 	refreshThemed()
-	local board = tMachine:FindFirstChild("OddsBoard")
-	local bGui = board and board:FindFirstChild("SurfaceGui")
-	if bGui then
-		bGui:ClearAllChildren()
-		oddsBoard(bGui :: SurfaceGui, string.upper(def.Name) .. " ODDS", def.Weights, def.Tagline, Color3.fromRGB(150, 255, 110), ArtAssets.Eggs[def.Id])
-	end
 end
 
 -------------------------------------------------------------------------------
@@ -1230,6 +1253,11 @@ EggHatched.OnClientEvent:Connect(function(result)
 			gui.Enabled = true
 			if result.reason == "full" then
 				showToast("Too many lawyers! Merge some at the Lawyer Merger")
+			elseif result.reason == "locked" then
+				local def = Formulas.themedEgg(result.egg)
+				local earned = (player:GetAttribute("CoinsEarned") :: number?) or 0
+				local need = (result.need or (def and def.UnlockEarned) or 0) - earned
+				showToast("Earn " .. Formulas.formatCoins(math.max(need, 0)) .. " more coins to unlock!") -- short: one scaled line
 			else
 				showToast("Need " .. Formulas.formatCoins(result.price or Config.Eggs.Price) .. " coins!")
 			end
