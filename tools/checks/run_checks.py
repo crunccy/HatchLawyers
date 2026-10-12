@@ -1,0 +1,97 @@
+"""
+The repo's automatic checks (run on every push by .github/workflows/checks.yml; run them yourself before pushing):
+
+  1. every tracked .lua / .luau file compiles (luau-compile: syntax errors, like the 2026-10-12 Config.lua that
+     didn't parse),
+  2. tools/checks/config_tests.luau against the REAL src/Config.lua + src/Formulas.lua (odds, pools, ids, costs),
+  3. the economy sim's tests (python3 -m unittest discover tools).
+
+    python3 tools/checks/run_checks.py [--luau-dir DIR] [--skip-sim]
+
+Needs the Luau CLI (luau + luau-compile) on PATH or in --luau-dir: github.com/luau-lang/luau/releases,
+luau-ubuntu.zip / luau-macos.zip.
+"""
+
+import argparse
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def tool(name, luau_dir):
+    path = os.path.join(luau_dir, name) if luau_dir else shutil.which(name)
+    if not path or not os.path.exists(path):
+        sys.exit(f"{name} not found: put the Luau CLI on PATH or pass --luau-dir")
+    return path
+
+
+def compile_all(luau_compile):
+    files = subprocess.run(["git", "ls-files", "*.lua", "*.luau"], cwd=ROOT, capture_output=True, text=True,
+                           check=True).stdout.split()
+    bad = []
+    for f in files:
+        # (--binary prints bytecode: throw stdout away, keep the error text)
+        out = subprocess.run([luau_compile, "--binary", f], cwd=ROOT, stdout=subprocess.DEVNULL,
+                             stderr=subprocess.PIPE, text=True, errors="replace")
+        if out.returncode != 0:
+            bad.append(f"{f}: {(out.stderr.strip().splitlines() or ['error'])[0]}")
+    print(f"compile: {len(files) - len(bad)}/{len(files)} Luau files OK")
+    for b in bad:
+        print("  FAIL " + b)
+    return not bad
+
+
+def module_body(path):
+    """A ModuleScript's source as a function body: `export type` is only legal at the top of a chunk."""
+    return re.sub(r"(?m)^export type ", "type ", open(path).read())
+
+
+def config_tests(luau):
+    bundle = "\n".join([
+        open(os.path.join(HERE, "stubs.luau")).read(),
+        "local Config = (function()\n" + module_body(os.path.join(ROOT, "src", "Config.lua")) + "\nend)()",
+        # Formulas does require(script.Parent.Config)
+        "local Formulas = (function(require, script)\n" + module_body(os.path.join(ROOT, "src", "Formulas.lua"))
+        + "\nend)(function() return Config end, { Parent = {} })",
+        open(os.path.join(HERE, "config_tests.luau")).read(),
+    ])
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "config_tests_bundle.luau")
+        open(path, "w").write(bundle)
+        out = subprocess.run([luau, path], capture_output=True, text=True)
+    print("config: " + (out.stdout.strip() or "(no output)"))
+    if out.returncode != 0:
+        print(out.stderr.strip())
+    return out.returncode == 0
+
+
+def sim_tests():
+    out = subprocess.run([sys.executable, "-m", "unittest", "discover", "tools"], cwd=ROOT, capture_output=True, text=True)
+    last = (out.stderr.strip().splitlines() or ["?"])
+    print("sim: " + " ".join(l for l in last[-3:] if l.strip()))
+    if out.returncode != 0:
+        print(out.stderr[-3000:])
+    return out.returncode == 0
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Run the repo's checks")
+    ap.add_argument("--luau-dir", help="folder with luau and luau-compile")
+    ap.add_argument("--skip-sim", action="store_true", help="skip the (slower) economy sim tests")
+    args = ap.parse_args()
+    ok = compile_all(tool("luau-compile", args.luau_dir))
+    ok = config_tests(tool("luau", args.luau_dir)) and ok
+    if not args.skip_sim:
+        ok = sim_tests() and ok
+    print("ALL CHECKS PASSED" if ok else "CHECKS FAILED")
+    sys.exit(0 if ok else 1)
+
+
+if __name__ == "__main__":
+    main()

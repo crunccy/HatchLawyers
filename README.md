@@ -19,3 +19,4 @@ the working notes for Claude, and offline tools.
 | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) | Plan for remaking models in Blender |
 | [tools/economy_sim.py](tools/economy_sim.py) | Offline economy simulator: `python3 tools/economy_sim.py --report` |
 | [tools/test_economy_sim.py](tools/test_economy_sim.py) | Sim tests: `python3 -m unittest discover tools` |
+| [tools/checks/run_checks.py](tools/checks/run_checks.py) | All checks (Luau compiles, Config rules, sim tests); GitHub runs them on every push |

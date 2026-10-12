@@ -55,6 +55,11 @@ repo** — local Claude memory is per machine, so anything the other side should
   write Luau / Blender-Python as files for the user to paste or run. Never claim something was changed in Studio.
   Syntax-check every edited Luau file with the Luau CLI (`luau-compile --binary <file> > /dev/null`; download
   `luau-ubuntu.zip` from github.com/luau-lang/luau/releases) — it caught a `Config.lua` that didn't parse.
+- **Every session, before pushing:** `python3 tools/checks/run_checks.py --luau-dir <folder with luau>` — compiles
+  every Luau file, checks the real Config + Formulas (odds sum to 100, Supreme 1 in 2500, every egg has a lawyer per
+  rarity, unique ids, climbing costs, the growth ratio) and runs the sim tests. GitHub runs the same on every push
+  (`.github/workflows/checks.yml`): a red X on a commit means fix it before merging. New Config rules → add a
+  check to `tools/checks/config_tests.luau`.
 
 ## Team & ownership
 - Since 2026-10-12 both users drive Claude and want one shared Claude: **any session may work on anything**, UI or
