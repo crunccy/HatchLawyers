@@ -5,9 +5,11 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
-  Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
-  `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
+- **mr.robe's local session · since 2026-10-12 (late night):** user: "make the other 4 zones and their bosses" →
+  Brainrot Boulevard, Food Court, Ocean Shore, Space Base on the lane (Blender decorations, licenses Silver → Diamond,
+  hub teleports) + Judge Martello, Prosecutor Big Cheese, Magistrate Megalodon, Chief Justice Eclipse (new attack
+  kinds: hop-slam, roll / charge lines, gravity pull). Rebuilds Workspace.Zones (BuildLane); touches Config.Zones,
+  Config.Bosses, BossService, Bosses client.
 
 ## Open items
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
