@@ -157,12 +157,13 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
-- `Workspace.Hub` — Street, Plaza, themed egg machines (Brainrot/Food/Ocean/Space; the Briefcase + Pet machines are
-  archived in `ServerStorage.Old_HubEggMachines` since their eggs moved to zones), BigCaseBelt, SpecialSpots (the
+- `Workspace.Hub` — Street, Plaza (the lane's entrance on its south edge), no egg machines any more (all six eggs
+  are sold in the zones; the machines + egg terrace are in `ServerStorage.Old_HubEggMachines`), BigCaseBelt, SpecialSpots (the
   Gavel Bonk / Lucky Briefcase minigames), ZoneTeleports, Palms. `Workspace.Plots.Plot1–8`.
   Front/door = local −Z; plots are rotated to face the street (two rows facing the street along x, z = 0).
-- `Workspace.Zones` (2026-10-12, the lane from docs/ZONES_REFERENCE.md): one walled lane running west from the end
-  of the street (x -264 → -2738). It holds SafeZone, the six zones BriefcaseBay, PetPark, BrainrotBoulevard,
+- `Workspace.Zones` (2026-10-12, the lane from docs/ZONES_REFERENCE.md): one walled lane starting at the plaza's
+  south edge (0, 0, -80) and running south to z -2554, between the halves of the south row of firms (it replaced the
+  hub's egg store; BuildLane builds along -X and turns it into place with `PLACE`). It holds SafeZone, the six zones BriefcaseBay, PetPark, BrainrotBoulevard,
   FoodCourt, OceanShore, SpaceBase (each with Floor / Walls / Path / Chevrons / WallDecor / FloorClutter / EggSpots /
   Arrival, + the License gate into the next zone), LaneEnd and LicenseOffice. Hub teleports: `Hub.ZoneTeleports`
   (one pad per zone). Renders of zones 3-6: `art/zones/` (tools/blender/zone_render.py).

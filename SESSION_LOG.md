@@ -5,11 +5,11 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (night):** user's calls: remove the hub's egg store (terrace + 4
-  machines) and MOVE THE LANE there - it starts at the plaza's south edge (x 0) and runs south between the two halves
-  of the south row of firms; License Office beside the new entrance. Then (waiting on the user's screenshots) new
-  looks for the zone eggs on the ground + the egg opening animation. Touches BuildLane, Config.Zones Bounds,
-  BossService (lane axis), ZoneService, Workspace.Hub.
+- **mr.robe's local session · since 2026-10-12 (night):** (lane move: done, entry below) new detailed egg designs
+  (Blender, cartoony) for the eggs on the ground + a new egg opening animation from the user's reference video:
+  Common-Epic = the basic hatch (radial backdrop, pedestal, 3 taps, shard burst, silhouette, reveal), Legendary /
+  Mythic / Supreme = the fancy one (the egg falls from the sky onto your incubator in the world). Touches
+  ZoneService (egg model), StarterPlayerScripts.Eggs (hatch screen), EggServer (hatch event data).
 
 ## Open items
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
@@ -105,6 +105,25 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: the egg store is gone; the lane starts there and runs south
+- User's calls: "remove the egg zone [the hub's egg store] and move the lane to where the egg store currently is so
+  it's centered between the 2 sides of the firm"; License Office beside the new entrance.
+- **Removed (kept in `ServerStorage.Old_HubEggMachines`):** Hub.EggTerrace, Hub.EggPads, the Brainrot / Food / Ocean /
+  Space machines, Hub.ZoneSigns (old signposts that would stand in Briefcase Bay), 1 tree, and the grass tile under
+  the lane's start (same height as the lane floor: it flickered). Every egg is sold in a zone now, so the egg
+  scripts already treat a missing machine as normal. The hub's south gate stays as the lane's entrance arch (its
+  sign "EGGS" → "EGG ZONES").
+- **The lane** (`tools/zones/BuildLane.lua`): still built along -X, then turned into place by `PLACE` - it starts at
+  the plaza's south edge (0, 0, -80) and runs south to z -2554, between the two halves of the south row of firms.
+  The License Office is on the plaza west of the entrance, facing the lane. Scenery an earlier lane had hidden comes
+  back first (HiddenDecor, HiddenBy = "ZoneLane"). The duplicate archive of the old position was dropped.
+- **Config.Zones.List Bounds** (live + src) now {-36, z0, 36, z1} per zone (Briefcase Bay -490..-90 ... Space Base
+  -2550..-2150). **BossService** works in lane terms (u along / v across, from the zone's longer side), so bosses walk
+  either way; **ZoneService** teleports face down the lane (from the Arrival part's turn).
+- **Playtested:** bosses walk at their new spots (Senior Partner z -130 ... Eclipse z -2287), arrivals face (0,0,-1),
+  License Office prompts there, the walk from the plaza into the lane is clear, no errors. Render:
+  `art/zones/Entrance.png`.
 
 ## 2026-10-12 — mr.robe, local session: zones 3-6 + their bosses - the whole lane is built
 - User: "make the other 4 zones and their bosses" (this also closes the lane review: the lane design stands).

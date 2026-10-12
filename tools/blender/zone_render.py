@@ -70,6 +70,10 @@ for path in sorted(glob.glob(os.path.join(EXPORT_DIR, "zone_*.json"))):
     sc.collection.objects.link(cam)
     cam.location = (x1 + 6, -12, 22)
     target = Vector((x0 + 30, 4, 2))
+    if "cam" in data:  # (optional, Roblox coords: any view, e.g. the lane's entrance from the plaza)
+        c, tg = data["cam"], data["target"]
+        cam.location = (c[0], -c[2], c[1])
+        target = Vector((tg[0], -tg[2], tg[1]))
     cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
     sc.camera = cam
     sc.render.engine = "BLENDER_WORKBENCH"

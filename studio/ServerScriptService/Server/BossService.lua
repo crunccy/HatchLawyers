@@ -42,6 +42,8 @@ type Boss = {
 	moveStart: number,
 	moveEnd: number,
 	yaw: number,
+	alongX: boolean, -- the lane runs along X (else along Z)
+	areaUV: { number }, -- `area` in lane terms: uMin, vMin, uMax, vMax
 	dirX: number, -- which way along the lane it's heading (-1 / 1)
 	zig: number, -- the Bulldog's zig-zag side (-1 / 1)
 	nextAttack: number,
@@ -99,6 +101,21 @@ local function clampToArea(b: Boss, x: number, z: number): Vector3
 	return Vector3.new(math.clamp(x, b.area[1], b.area[3]), b.floorY, math.clamp(z, b.area[2], b.area[4]))
 end
 
+-- a point in lane terms: u = along the lane, v = across it (the zone's longer side is "along")
+local function uv(b: Boss, p: Vector3): (number, number)
+	if b.alongX then
+		return p.X, p.Z
+	end
+	return p.Z, p.X
+end
+
+local function fromUV(b: Boss, u: number, v: number): Vector3
+	if b.alongX then
+		return clampToArea(b, u, v)
+	end
+	return clampToArea(b, v, u)
+end
+
 -- players standing in this boss's zone (alive, with a character)
 local function playersInZone(b: Boss): { { player: Player, root: BasePart } }
 	local list = {}
@@ -130,25 +147,26 @@ local function nextLeg(b: Boss, here: Vector3, chase: Vector3?): Vector3
 			return clampToArea(b, p.X, p.Z)
 		end
 	end
-	if here.X <= b.area[1] + 2 then
+	-- (u = along the lane, v = across it: the lane may run along X or along Z - it runs south since 2026-10-12)
+	local u, v = uv(b, here)
+	local uMin, vMin, uMax, vMax = table.unpack(b.areaUV)
+	if u <= uMin + 2 then
 		b.dirX = 1
-	elseif here.X >= b.area[3] - 2 then
+	elseif u >= uMax - 2 then
 		b.dirX = -1
 	elseif rng:NextNumber() < 0.12 then
 		b.dirX = -b.dirX
 	end
 	local step = b.def.WalkSpeed * rng:NextNumber(1.2, 2)
+	local mid = (vMin + vMax) / 2
 	if b.def.Attack == "Ring" then
 		-- the Bulldog waddles in zig-zags across the lane
 		b.zig = -b.zig
-		local zz = b.zig * rng:NextNumber(4, math.max(5, (b.area[4] - b.area[2]) / 2))
-		return clampToArea(b, here.X + b.dirX * step * 0.8, (b.area[2] + b.area[4]) / 2 + zz)
+		return fromUV(b, u + b.dirX * step * 0.8, mid + b.zig * rng:NextNumber(4, math.max(5, (vMax - vMin) / 2)))
 	end
 	-- the Senior Partner strolls the middle of the lane
-	local mid = (b.area[2] + b.area[4]) / 2
 	local band = b.def.StayNearMiddle or 12
-	local zz = math.clamp(here.Z + rng:NextNumber(-4, 4), mid - band, mid + band)
-	return clampToArea(b, here.X + b.dirX * step, zz)
+	return fromUV(b, u + b.dirX * step, math.clamp(v + rng:NextNumber(-4, 4), mid - band, mid + band))
 end
 
 local function walkTo(b: Boss, here: Vector3, goal: Vector3): number
@@ -371,7 +389,14 @@ function BossService.start()
 		end
 		local bb = zoneDef.Bounds
 		local bounds = { math.min(bb[1], bb[3]), math.min(bb[2], bb[4]), math.max(bb[1], bb[3]), math.max(bb[2], bb[4]) }
-		local area = { bounds[1] + CFG.Margin.X, bounds[2] + CFG.Margin.Z, bounds[3] - CFG.Margin.X, bounds[4] - CFG.Margin.Z }
+		-- Margin.X keeps it off the zone's ends (along the lane), Margin.Z off the walls (across) - named from when the
+		-- lane ran along X; the zone's longer side is "along"
+		local alongX = (bounds[3] - bounds[1]) >= (bounds[4] - bounds[2])
+		local mAlong, mAcross = CFG.Margin.X, CFG.Margin.Z
+		local area = if alongX
+			then { bounds[1] + mAlong, bounds[2] + mAcross, bounds[3] - mAlong, bounds[4] - mAcross }
+			else { bounds[1] + mAcross, bounds[2] + mAlong, bounds[3] - mAcross, bounds[4] - mAlong }
+		local areaUV = if alongX then { area[1], area[2], area[3], area[4] } else { area[2], area[1], area[4], area[3] }
 		-- the floor height in the middle of the zone
 		local params = RaycastParams.new()
 		params.FilterType = Enum.RaycastFilterType.Include
@@ -389,9 +414,10 @@ function BossService.start()
 			Inner = def.Inner or 0, PullSpeed = def.PullSpeed or 0, HopHeight = def.HopHeight or 0 } do
 			state:SetAttribute(k, v)
 		end
-		local start = Vector3.new(cx + rng:NextNumber(-40, 40), floorY, cz)
+		local shift = rng:NextNumber(-40, 40) -- (somewhere along the middle of the lane)
+		local start = if alongX then Vector3.new(cx + shift, floorY, cz) else Vector3.new(cx, floorY, cz + shift)
 		local b: Boss = {
-			def = def, bounds = bounds, area = area, floorY = floorY, state = state,
+			def = def, bounds = bounds, area = area, alongX = alongX, areaUV = areaUV, floorY = floorY, state = state,
 			from = start, to = start, moveStart = 0, moveEnd = 0, yaw = math.pi / 2, dirX = -1, zig = 1,
 			nextAttack = now() + 3, ignore = {}, attackIndex = 0, airborne = false,
 		}

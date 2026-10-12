@@ -957,14 +957,14 @@ Config.Minigames = {
 -- The License Office by the Briefcase Bay entrance sells all three upgrades. Bounds = the zone's land (x0, z0, x1, z1).
 Config.Zones = {
 	List = {
-		-- one lane running west from the street (tools/zones/BuildLane.lua): Safe Zone, then each zone, a License gate between
-		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -674, -36, -274, 36 } },
-		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1086, -36, -686, 36 } },
+		-- one lane running south from the plaza's south edge (tools/zones/BuildLane.lua): Safe Zone, then each zone, a gate between
+		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -490, 36, -90 } },
+		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -902, 36, -502 } },
 		-- zones 3-6 (2026-10-12, user: "make the other 4 zones and their bosses"); each sells its themed egg
-		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1498, -36, -1098, 36 } },
-		{ Id = "FoodCourt", Name = "Food Court", Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1910, -36, -1510, 36 } },
-		{ Id = "OceanShore", Name = "Ocean Shore", Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -2322, -36, -1922, 36 } },
-		{ Id = "SpaceBase", Name = "Space Base", Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -2734, -36, -2334, 36 } },
+		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1314, 36, -914 } },
+		{ Id = "FoodCourt", Name = "Food Court", Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1726, 36, -1326 } },
+		{ Id = "OceanShore", Name = "Ocean Shore", Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2138, 36, -1738 } },
+		{ Id = "SpaceBase", Name = "Space Base", Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2550, 36, -2150 } },
 	},
 	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
 	License = { -- level n opens every zone whose License is n or less

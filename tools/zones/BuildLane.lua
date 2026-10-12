@@ -2,7 +2,8 @@
 -- archives whatever is in Workspace.Zones (to ServerStorage.Old_Zones) and builds the lane fresh.
 -- Run in Studio's Edit mode (Studio MCP execute_luau or the command bar), e.g. by loading this file over HTTP.
 --
--- Layout (world): the lane starts at the west end of the street (x = X0) and runs west (-X), centred on z = 0.
+-- Layout: built along -X from X0 (centred on z = 0), then turned into place by PLACE (see X0): since 2026-10-12 it
+-- starts at the plaza's south edge (0, 0, -80) and runs south, between the firms.
 --   [hub] | SAFE ZONE (red line) | zone 1 | License gate | zone 2 | gate | ... | zone 6 | end wall
 -- Each zone: a sunken floor (its own colour, hard edge) between tall terracotta brick walls; the ground on top of
 -- the walls is the zone's colour and packed with its props; an orange path with white dashed edges and a white
@@ -30,7 +31,13 @@ local function formatCoins(n: number): string
 end
 
 ------------------------------------------------------------------ the lane's measurements (studs)
-local X0 = -264 -- where the hub ends and the lane begins
+local X0 = -264 -- where the lane begins, in the BUILD frame (everything below is built along -X from here) ...
+-- ... and where it really sits: PLACE turns and moves the finished lane. 2026-10-12 (user's call): it starts at the
+-- plaza's south edge, where the egg store was, and runs SOUTH between the two halves of the south row of firms.
+-- PLACE maps the build frame's (X0, 0, 0) to LANE_START and its -X (down the lane) to -Z; the build frame's +Z
+-- side ends up west.
+local LANE_START = Vector3.new(0, 0, -80)
+local PLACE = CFrame.new(LANE_START) * CFrame.Angles(0, -math.pi / 2, 0) * CFrame.new(-X0, 0, 0)
 local HALF = 36 -- half the floor width: 72 wide, like the reference's roomy lane (40 felt narrow - mr.robe)
 local WALL_H = 14 -- wall height (about 3 characters)
 local TOP_W = 30 -- width of the decorated ground on top of each wall
@@ -389,9 +396,24 @@ if existing then
 end
 local zonesRoot = folder(workspace, "Zones")
 
+-- scenery an earlier lane tucked away comes back first (clearArea below hides whatever is in THIS lane's way)
+do
+	local hiddenStore = ServerStorage:FindFirstChild("HiddenDecor")
+	if hiddenStore then
+		for _, m in hiddenStore:GetChildren() do
+			local home = workspace:FindFirstChild((m:GetAttribute("DecorFolder") :: string?) or "")
+			if m:GetAttribute("HiddenBy") == "ZoneLane" and home then
+				m:SetAttribute("HiddenBy", nil)
+				m.Parent = home
+			end
+		end
+	end
+end
+
 -- island scenery in the way of the lane / office is tucked away (kept), like FirmBuilder.clearDecor does
 local hidden = ServerStorage:FindFirstChild("HiddenDecor") or folder(ServerStorage, "HiddenDecor")
 local function clearArea(cf: CFrame, size: Vector3)
+	cf = PLACE * cf -- (given in the build frame, like everything else)
 	local params = OverlapParams.new()
 	params.FilterType = Enum.RaycastFilterType.Include
 	local folders = {}
@@ -639,8 +661,8 @@ end
 do
 	local office = model(zonesRoot, "LicenseOffice")
 	office.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
-	local ox = -246 -- centre x, between the last plots and the lane
-	local z0 = 19
+	local ox = -246 -- (build frame) 18 studs back from the lane's start, toward the hub ...
+	local z0 = 42 -- ... and off to the side (after PLACE: on the plaza, west of the entrance, facing the lane's axis)
 	clearArea(CFrame.new(ox, 6, z0 + 9), Vector3.new(26, 20, 22))
 	box(office, "Floor", ox - 10, 0, z0, ox + 10, 0.5, z0 + 16, C.white)
 	box(office, "BackWall", ox - 10, 0.5, z0 + 14, ox + 10, 10, z0 + 16, C.terracotta)
@@ -696,4 +718,17 @@ do
 	end
 end
 
-return ("built the lane: %d parts, %d studs long (Safe Zone + %d zones)"):format(parts, s, #ZONES)
+------------------------------------------------------------------ put it where it really goes (PLACE, see the top)
+for _, d in zonesRoot:GetDescendants() do
+	if d:IsA("BasePart") then
+		d.CFrame = PLACE * d.CFrame
+	elseif d:IsA("Model") and not d.PrimaryPart then
+		d.WorldPivot = PLACE * d.WorldPivot
+	end
+	local home = d:GetAttribute("Home") -- (chevrons remember where they point)
+	if typeof(home) == "CFrame" then
+		d:SetAttribute("Home", PLACE * home)
+	end
+end
+
+return ("built the lane: %d parts, %d studs long (Safe Zone + %d zones), starting at %s"):format(parts, s, #ZONES, tostring(LANE_START))

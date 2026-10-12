@@ -590,7 +590,8 @@ local function hookPrompts()
 					end
 					local arrival = zone.folder:FindFirstChild("Arrival") :: BasePart?
 					if arrival then
-						character:PivotTo(CFrame.new(arrival.Position + Vector3.new(0, 3, 0)) * CFrame.Angles(0, math.rad(-90), 0))
+						-- facing down the lane (the Arrival spot is turned with the lane; its -X is down the lane)
+						character:PivotTo(CFrame.new(arrival.Position + Vector3.new(0, 3, 0)) * arrival.CFrame.Rotation * CFrame.Angles(0, math.rad(90), 0))
 					end
 				end)
 			end
