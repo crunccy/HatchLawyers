@@ -17,6 +17,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
       costs, LuckRarities). Then the small live-only fixes in the audit's "For a local session" list
       (ZoneService:295 price, delete PlayerSpeedDouble, pcall the loops, ...). Playtest: expand the firm while
       cases run → each pays out, the firm rebuilds, new clients come in.
+- [ ] **Push + playtest the egg-carry pose** (2026-10-12): new `StarterPlayerScripts.CarryPose` (src/CarryPose.client.lua)
+      + `Server.ZoneService` (src/ZoneService.lua: a working copy of live with two small changes - no more eggs over
+      the head, and the bag-price fix; **heads-up mr.robe**, it's your zones script: 3-way merge if you changed it).
+      Check: arms go out and hug the egg (R15 and R6 avatars), 2-5 eggs pile up slightly crooked and lean back, the
+      pile sways while walking, other players see it too. Tune the constants at the top of CarryPose (ARM_PITCH,
+      ARM_INWARD, EGG_WIDTH, NEST, LEAN_*, JITTER) by eye.
 - [ ] **Decide: Robux coin packs / "3 Rare Eggs" in `Config.Shop`** vs the CLAUDE.md MVP rule "no Robux for coins,
       eggs or power" (audit). Either the rule changed (update CLAUDE.md) or switch those products off before launch.
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
@@ -97,6 +103,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
 ## 2026-10-12 — crnuch, cloud session: zone boss concepts, lawyer names simplified
+- **Egg-carry pose** (user's ask): eggs are carried in outstretched arms instead of over the head - oversized eggs
+  that pile up "not perfectly" (each nests into the one below, a bit off to the side and tilted, the pile leaning back
+  against the chest, swaying more at the top while walking). Procedural (arm Motor6D.Transform after the animations),
+  so no Animation asset has to be made or published; every client draws it for every carrying player. Files above.
 - **User's calls:** (1) legal titles (Counsel, Partner, Prosecutor, Attorney, Barrister, Solicitor, Litigator,
   Advocate, Judge, Justice, Magistrate, Arbiter) are for **bosses only**; lawyers get short fun names. (2) A boss hit
   knocks your eggs loose and **a dropped egg is free game** for anyone. (3) Boss Cases: parked for later.
