@@ -223,8 +223,10 @@ player:GetAttributeChangedSignal("Carried"):Connect(refreshBag)
 player:GetAttributeChangedSignal("ZoneCarryMax"):Connect(refreshBag)
 refreshBag()
 
------------------------------------------------------------------- zone eggs: bob + this player's price
-type EggView = { model: Model, home: CFrame, phase: number, tag: TextLabel?, prompt: ProximityPrompt? }
+------------------------------------------------------------------ zone eggs: a small 2-line label + this player's price on the prompt
+-- (docs/ZONES_REFERENCE.md: name, then rarity in its colour; no loose floating price text - the price is only in
+-- the [E] prompt)
+type EggView = { model: Model, home: CFrame, phase: number, height: number, tag: TextLabel?, prompt: ProximityPrompt? }
 local eggs: { [Model]: EggView } = {}
 
 local function refreshEggText(v: EggView)
@@ -232,10 +234,7 @@ local function refreshEggText(v: EggView)
 	local golden = v.model:GetAttribute("Golden") == true
 	local price = Formulas.formatCoins(priceOf(egg, golden))
 	if v.prompt then
-		v.prompt.ObjectText = (if golden then "GOLDEN " else "") .. eggName(egg) .. "  ·  " .. price
-	end
-	if v.tag then
-		v.tag.Text = price
+		v.prompt.ObjectText = (if golden then "Golden " else "") .. eggName(egg) .. "  ·  " .. price
 	end
 end
 
@@ -249,19 +248,19 @@ local function addEgg(m: Instance)
 		return
 	end
 	local golden = m:GetAttribute("Golden") == true
+	local egg = m:GetAttribute("Egg") :: string? or "Briefcase"
+	local rarity = m:GetAttribute("Rarity") :: string? or "Common"
 	local bb = Instance.new("BillboardGui")
-	bb.Name = "PriceTag"
+	bb.Name = "EggLabel"
 	bb.Adornee = shell
-	bb.Size = UDim2.fromOffset(150, 46)
-	bb.StudsOffsetWorldSpace = Vector3.new(0, if golden then 4.2 else 3.4, 0)
-	bb.MaxDistance = 70
+	bb.Size = UDim2.fromOffset(120, 34)
+	bb.StudsOffsetWorldSpace = Vector3.new(0, shell.Size.Y / 2 + 1.2, 0)
+	bb.MaxDistance = 55
 	bb.LightInfluence = 0
 	bb.Parent = boards
-	local tag = label(bb, "", UDim2.fromScale(0.5, 0.5), UDim2.fromScale(1, 1), if golden then GOLD else WHITE, 3)
-	if golden then
-		label(bb, "GOLDEN!", UDim2.new(0.5, 0, 0, -10), UDim2.fromScale(0.8, 0.6), GOLD, 3)
-	end
-	local v: EggView = { model = m, home = home, phase = math.random() * 6, tag = tag, prompt = m:FindFirstChild("BuyPrompt", true) :: ProximityPrompt? }
+	local tag = label(bb, (if golden then "Golden " else "") .. eggName(egg), UDim2.fromScale(0.5, 0.28), UDim2.fromScale(1, 0.56), WHITE, 2)
+	label(bb, rarity, UDim2.fromScale(0.5, 0.78), UDim2.fromScale(0.8, 0.44), Config.RarityColors[rarity] or WHITE, 2)
+	local v: EggView = { model = m, home = home, phase = math.random() * 6, height = shell.Size.Y, tag = tag, prompt = m:FindFirstChild("BuyPrompt", true) :: ProximityPrompt? }
 	eggs[m] = v
 	refreshEggText(v)
 	m.AncestryChanged:Connect(function()
@@ -587,16 +586,84 @@ task.spawn(function()
 	end
 end)
 
------------------------------------------------------------------- eggs bob (local only)
+------------------------------------------------------------------ eggs wobble on the floor (local only; they never leave the ground)
 RunService.RenderStepped:Connect(function()
 	local t = os.clock()
 	local cam = workspace.CurrentCamera
 	for m, v in eggs do
 		if m.PrimaryPart and (v.home.Position - cam.CFrame.Position).Magnitude < 150 then
-			m:PivotTo(v.home * CFrame.new(0, math.sin(t * 2 + v.phase) * 0.4, 0) * CFrame.Angles(0, t * 0.8 + v.phase, 0))
+			local tilt = math.sin(t * 2.2 + v.phase) * 0.07
+			local base = v.home * CFrame.new(0, -v.height / 2, 0) -- rock around the bottom of the egg
+			m:PivotTo(base * CFrame.Angles(tilt, 0, tilt * 0.6) * CFrame.new(0, v.height / 2, 0))
 		end
 	end
 end)
+
+------------------------------------------------------------------ chevrons: down the lane normally, back home while you carry eggs
+local HOME_COLOR = Color3.fromRGB(255, 220, 90)
+local function pointChevrons()
+	local home = #carried() > 0
+	for _, c in CollectionService:GetTagged("ZoneChevron") do
+		local tip = c:GetAttribute("Home")
+		if c:IsA("Model") and typeof(tip) == "CFrame" then
+			-- the chevron is built pointing -X (to the next zone); flip it around its own centre to point home
+			local centre = tip * CFrame.new(1.3, 0, 0)
+			c:PivotTo(if home then centre * CFrame.Angles(0, math.pi, 0) * CFrame.new(-1.3, 0, 0) else tip)
+			for _, p in c:GetChildren() do
+				if p:IsA("BasePart") then
+					p.Color = if home then HOME_COLOR else Color3.fromRGB(248, 248, 248)
+				end
+			end
+		end
+	end
+end
+player:GetAttributeChangedSignal("Carried"):Connect(pointChevrons)
+CollectionService:GetInstanceAddedSignal("ZoneChevron"):Connect(function()
+	task.defer(pointChevrons)
+end)
+task.defer(pointChevrons)
+
+------------------------------------------------------------------ "YOUR FIRM" marker over your own firm (seen from the lane)
+do
+	local marker = Instance.new("BillboardGui")
+	marker.Name = "YourFirmMarker"
+	marker.Size = UDim2.fromOffset(110, 92)
+	marker.AlwaysOnTop = true
+	marker.MaxDistance = 2000
+	marker.LightInfluence = 0
+	marker.StudsOffsetWorldSpace = Vector3.new(0, 26, 0)
+	marker.Parent = boards
+	local roof = Instance.new("Frame")
+	roof.AnchorPoint = Vector2.new(0.5, 0.5)
+	roof.Position = UDim2.fromScale(0.5, 0.3)
+	roof.Size = UDim2.fromOffset(40, 40)
+	roof.Rotation = 45
+	roof.BackgroundColor3 = Color3.fromRGB(80, 160, 255)
+	roof.Parent = marker
+	local body = Instance.new("Frame")
+	body.AnchorPoint = Vector2.new(0.5, 0)
+	body.Position = UDim2.fromScale(0.5, 0.3)
+	body.Size = UDim2.fromOffset(40, 26)
+	body.BackgroundColor3 = Color3.fromRGB(80, 160, 255)
+	body.BorderSizePixel = 0
+	body.Parent = marker
+	for _, f in { roof, body } do
+		local s = Instance.new("UIStroke")
+		s.Color = INK
+		s.Thickness = 3
+		s.Parent = f
+	end
+	label(marker, "YOUR FIRM", UDim2.fromScale(0.5, 0.86), UDim2.fromScale(1, 0.26), WHITE, 2.5)
+	task.spawn(function()
+		while true do
+			local firm = myFirm()
+			local spawnPart = firm and firm:FindFirstChild("SpawnPoint")
+			marker.Adornee = if spawnPart and spawnPart:IsA("BasePart") then spawnPart else nil
+			marker.Enabled = marker.Adornee ~= nil
+			task.wait(2)
+		end
+	end)
+end
 
 ------------------------------------------------------------------ server messages
 local boughtCount = 0

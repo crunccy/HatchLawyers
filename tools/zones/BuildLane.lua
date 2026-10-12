@@ -56,8 +56,8 @@ local C = {
 
 -- Each zone: floor colours (two shades), the wall-top ground colour, and its theme for props + clutter.
 local ZONES = {
-	{ Id = "BriefcaseBay", Name = "Briefcase Bay", License = 0, floor = { rgb(104, 124, 168), rgb(96, 116, 158) },
-		edge = rgb(70, 86, 120), top = { rgb(96, 196, 40), rgb(88, 184, 36) }, theme = "office" },
+	{ Id = "BriefcaseBay", Name = "Briefcase Bay", License = 0, floor = { rgb(104, 152, 236), rgb(94, 142, 226) },
+		edge = rgb(60, 100, 180), top = { rgb(96, 196, 40), rgb(88, 184, 36) }, theme = "office" },
 	{ Id = "PetPark", Name = "Pet Park", License = 1, floor = { rgb(156, 214, 64), rgb(146, 204, 58) },
 		edge = rgb(104, 160, 40), top = { rgb(124, 200, 52), rgb(116, 190, 48) }, theme = "pets" },
 }
@@ -294,13 +294,41 @@ function CLUTTER.tuft(m, x, y, z)
 	P(m, "Tuft", Vector3.new(0.8, 0.8, 0.8), at(x, y + 0.4, z, rng:NextInteger(0, 90)), C.leaf3, { nocollide = true })
 end
 
+-- "lib:<Name>" = a Blender-made model from ServerStorage.ZoneDecorLibrary (tools/blender/zone_decor.py ->
+-- tools/zones/BuildDecorLibrary.lua); plain names = the procedural props above. Repeats = weight.
 local THEMES = {
-	office = { props = { "tree", "tree", "hedge", "fileBoxes", "waterCooler", "briefcase", "cabinet", "books", "lamp" },
-		clutter = { "paper", "paper", "box", "cup", "pencil" } },
-	pets = { props = { "tree", "tree", "doghouse", "bigBone", "ballPile", "hydrant", "foodBowl", "hedge" },
-		clutter = { "smallBone", "tennisBall", "dirt", "dirt", "tuft" } },
-	brainrot = { props = { "weirdTree", "weirdTree", "ballPile" }, clutter = { "tuft" } },
+	office = { props = { "lib:TreeS", "lib:TreeM", "lib:TreeL", "lib:TreeXL", "lib:TreeBlossom", "lib:Bush", "lib:BushFlowers",
+		"lib:BushFlowers", "lib:FlowerHedge", "lib:FlowerHedge", "lib:OfficePlant", "lib:OfficePlant", "lib:FileBoxes",
+		"lib:FileBoxes", "lib:WaterCooler", "lib:ParkBench", "lib:FlowerBed", "lib:Rocks", "briefcase", "cabinet", "lamp" },
+		clutter = { "paper", "paper", "box", "cup", "pencil", "lib:GrassTuft" } },
+	pets = { props = { "lib:TreeS", "lib:TreeM", "lib:TreeL", "lib:TreeXL", "lib:TreeBlossom", "lib:Bush", "lib:BushFlowers",
+		"lib:BushFlowers", "lib:FlowerBed", "lib:DogHouse", "lib:DogHouse", "lib:BonePile", "lib:BonePile", "lib:ToyPile",
+		"lib:ToyPile", "lib:Hydrant", "lib:Rocks" },
+		clutter = { "smallBone", "tennisBall", "dirt", "dirt", "lib:GrassTuft", "lib:GrassTuft" } },
+	brainrot = { props = { "lib:TreeBlossom", "weirdTree", "lib:ToyPile" }, clutter = { "tuft" } },
 }
+
+-- places a prop: a clone of a library model (scaled, turned) or a procedural one
+local LIB = ServerStorage:FindFirstChild("ZoneDecorLibrary")
+local function placeProp(parent: Instance, kind: string, x: number, y: number, z: number, s: number)
+	local libName = string.match(kind, "^lib:(.+)$")
+	if libName then
+		local src = LIB and LIB:FindFirstChild(libName)
+		if not src then
+			return
+		end
+		local m = src:Clone()
+		if math.abs(s - 1) > 0.01 then
+			(m :: Model):ScaleTo(s)
+		end
+		(m :: Model):PivotTo(CFrame.new(x, y, z) * CFrame.Angles(0, math.rad(rng:NextInteger(0, 359)), 0))
+		m.Parent = parent
+		parts += #m:GetChildren()
+	else
+		local m = model(parent, kind)
+		PROPS[kind](m, x, y, z, s)
+	end
+end
 
 ------------------------------------------------------------------ archive the old zones, start fresh
 local oldStore = ServerStorage:FindFirstChild("Old_Zones") or folder(ServerStorage, "Old_Zones")
@@ -391,23 +419,27 @@ local function decorate(parent: Instance, s0: number, s1: number, themeName: str
 	local theme = THEMES[themeName]
 	local props = model(parent, "WallDecor")
 	props.ModelStreamingMode = Enum.ModelStreamingMode.Default
-	for s = s0 + 4, s1 - 4, 8 do
+	-- two bands per wall top: one along the lane's edge (what you see from the floor), one further back
+	for s = s0 + 4, s1 - 4, 12 do
 		for _, side in { -1, 1 } do
-			if rng:NextNumber() < 0.85 then
-				local kind = theme.props[rng:NextInteger(1, #theme.props)]
-				local zz = side * rng:NextNumber(HALF + 4, HALF + TOP_W - 4)
-				local m = model(props, kind)
-				PROPS[kind](m, sx(s) + rng:NextNumber(-2, 2), TOP_Y, zz, rng:NextNumber(0.8, 1.5))
+			for band, range in { { HALF + 4, HALF + 12, 0.9 }, { HALF + 15, HALF + TOP_W - 4, 0.5 } } do
+				if rng:NextNumber() < range[3] then
+					local kind = theme.props[rng:NextInteger(1, #theme.props)]
+					local scale = if string.find(kind, "Tree") then rng:NextNumber(0.9, 1.3) else rng:NextNumber(0.9, 1.25)
+					placeProp(props, kind, sx(s) + rng:NextNumber(-2.5, 2.5) + (band - 1) * 4, TOP_Y, side * rng:NextNumber(range[1], range[2]), scale)
+				end
 			end
 		end
 	end
-	-- a few props down in the lane too, against the walls (never on the path)
-	for s = s0 + 30, s1 - 30, 55 do
-		local side = if rng:NextNumber() < 0.5 then -1 else 1
-		local kind = theme.props[rng:NextInteger(1, #theme.props)]
-		if kind ~= "tree" and kind ~= "weirdTree" and kind ~= "lamp" then
-			local m = model(props, kind)
-			PROPS[kind](m, sx(s), 0, side * (HALF - 4), rng:NextNumber(0.7, 1))
+	-- props down in the lane too, along both walls (trees included, like the reference; never on the path)
+	for s = s0 + 20, s1 - 20, 22 do
+		for _, side in { -1, 1 } do
+			if rng:NextNumber() < 0.6 then
+				local kind = theme.props[rng:NextInteger(1, #theme.props)]
+				if kind ~= "lamp" then
+					placeProp(props, kind, sx(s) + rng:NextNumber(-4, 4), 0, side * rng:NextNumber(HALF - 9, HALF - 4), rng:NextNumber(0.8, 1.05))
+				end
+			end
 		end
 	end
 	return props
@@ -449,7 +481,11 @@ local function spotsAndClutter(zoneFolder: Instance, s0: number, s1: number, the
 		if ok then
 			n += 1
 			local kind = theme.clutter[rng:NextInteger(1, #theme.clutter)]
-			CLUTTER[kind](clutter, p.X, 0, p.Z)
+			if string.match(kind, "^lib:") then
+				placeProp(clutter, kind, p.X, 0, p.Z, rng:NextNumber(0.8, 1.3))
+			else
+				CLUTTER[kind](clutter, p.X, 0, p.Z)
+			end
 		end
 	end
 end
