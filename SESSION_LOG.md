@@ -23,8 +23,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
       Check: arms go out and hug the egg (R15 and R6 avatars), 2-5 eggs pile up slightly crooked and lean back, the
       pile sways while walking, other players see it too. Tune the constants at the top of CarryPose (ARM_PITCH,
       ARM_INWARD, EGG_WIDTH, NEST, LEAN_*, JITTER) by eye.
-- [ ] **Decide: Robux coin packs / "3 Rare Eggs" in `Config.Shop`** vs the CLAUDE.md MVP rule "no Robux for coins,
-      eggs or power" (audit). Either the rule changed (update CLAUDE.md) or switch those products off before launch.
+- [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
+      players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
       session): Briefcase Bay + Pet Park as two islands past the west end of the street, License Office, gate,
       hub teleports, incubators, golden eggs (entry below). docs/ZONES_REFERENCE.md (crnuch) asks for a different

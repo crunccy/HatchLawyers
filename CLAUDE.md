@@ -167,7 +167,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
   `MIGRATIONS` entry.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
-- MVP: no Robux for coins, eggs or power. Fictional clients only — no real people or brands.
+- Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,
+  Bigger Firm) and products (coin packs, 3 Rare Eggs) are allowed. Anything paid that's random must show its exact
+  odds (Lucky Eggs: the boosted odds). Fictional clients only — no real people or brands.
 - All numbers come from `Config`; never hard-code a tunable in a script. Retune → see docs/ECONOMY.md.
   Never change `Payout.Growth` / `Training.Growth` without running the sim — their ratio sets the whole curve.
 
