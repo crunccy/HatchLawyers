@@ -225,6 +225,8 @@ local PlayerData = {}
 local sessions: { [Player]: Session } = {}
 local store: DataStore? = nil
 local memoryOnly = false
+-- UserIds whose session is writing its last save right now (PlayerData.release)
+local releasingIds: { [number]: boolean } = {}
 
 -- A new, empty office. Use this anywhere an office is added so every field exists.
 function PlayerData.newDesk(): DeskData
@@ -475,6 +477,13 @@ end
 
 -- Yields. Returns nil (and kicks the player) if the data could not be loaded safely.
 function PlayerData.load(player: Player): Data?
+	-- a quick rejoin to the SAME server: wait for the old session's last save first (audit 2026-10-12: the lock is ours
+	-- either way, so the new load read the last autosave, then the old save landed on top and cleared the lock -
+	-- a rollback waiting to happen)
+	local waitUntil = os.clock() + 30
+	while releasingIds[player.UserId] and player.Parent and os.clock() < waitUntil do
+		task.wait(0.25)
+	end
 	local dataStore = getStore()
 	-- live server, DataStores down: retry like a failed load, then ask the player to rejoin - never hand them a
 	-- fresh firm that would never save (their real save is untouched either way)
@@ -591,7 +600,9 @@ function PlayerData.release(player: Player)
 		return
 	end
 	session.releasing = true
+	releasingIds[player.UserId] = true
 	write(player, session, true)
+	releasingIds[player.UserId] = nil
 	sessions[player] = nil
 	lastLawyersJson[player] = nil
 end

@@ -761,6 +761,27 @@ function CaseService.queuedChange(player: Player, index: number): string?
 	return desk and desk.queued
 end
 
+-- Finishes every running case right now, as if its time were up: it pays out (or settles / mistrials) as usual and
+-- any lawyer change queued on it is applied. Firm expansion calls this before rebuilding (audit 2026-10-12: the
+-- rebuild used to throw running cases away unpaid, and with auto-assign there's never a moment with none running).
+-- Clients still walking in just leave (nothing earned yet). A mistrial reruns as usual and the rebuild then drops it.
+function CaseService.finishAll(player: Player)
+	local session = sessions[player]
+	if not session then
+		return
+	end
+	for _, desk in session.desks do
+		if desk.phase == "Case" then
+			desk.model:SetAttribute("AwaitingCourt", nil)
+			local ok, err = pcall(resolveCase, session, desk)
+			if not ok then
+				warn("[CaseService] finishAll failed:", err)
+				releaseDesk(session, desk)
+			end
+		end
+	end
+end
+
 function CaseService.stop(player: Player)
 	sessions[player] = nil
 end

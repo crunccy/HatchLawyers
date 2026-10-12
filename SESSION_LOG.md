@@ -10,6 +10,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
 
 ## Open items
+- [ ] **Push the audit fixes to Studio** (docs/AUDIT_2026-10-12.md; re-export `studio/` first and 3-way merge if a
+      script changed): `PlayerData` (DataStore-outage fallback, rejoin race, NaN coins), `CaseService`
+      (`finishAll`, badge spawn), `DeskService` (expansion pays out running cases), `BigCaseService` (Gavel NaN),
+      `EggServer` (bag price ramp, exact-odds luck), `LawyerService`, `PrestigeService`, `Config` (Stage 6 room
+      costs, LuckRarities). Then the small live-only fixes in the audit's "For a local session" list
+      (ZoneService:295 price, delete PlayerSpeedDouble, pcall the loops, ...). Playtest: expand the firm while
+      cases run → each pays out, the firm rebuilds, new clients come in.
+- [ ] **Decide: Robux coin packs / "3 Rare Eggs" in `Config.Shop`** vs the CLAUDE.md MVP rule "no Robux for coins,
+      eggs or power" (audit). Either the rule changed (update CLAUDE.md) or switch those products off before launch.
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
       session): Briefcase Bay + Pet Park as two islands past the west end of the street, License Office, gate,
       hub teleports, incubators, golden eggs (entry below). docs/ZONES_REFERENCE.md (crnuch) asks for a different
@@ -86,6 +95,24 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — crnuch, cloud session: CI checks, bug / exploit audit (src + live scripts), exact-odds luck
+- **CI** (`.github/workflows/checks.yml`, `tools/checks/run_checks.py`): every push compiles every Luau file (src/,
+  studio/, tools/), runs 35 checks on the real Config + Formulas (odds, Supreme 1 in 2500 in every egg and under
+  luck, every egg has a lawyer per rarity, ids, climbing costs incl. firm areas, growth ratio) and the sim tests.
+  All runs green on GitHub.
+- **Audit** (docs/AUDIT_2026-10-12.md): `src/` and, after the snapshot landed, every live server script. Biggest
+  fixes: a live DataStore blip made the whole server memory-only (fresh never-saving firms, Robux receipts
+  acknowledged unsaved); expanding the firm threw running cases away unpaid (now they finish and pay first - waiting
+  for no cases isn't possible with auto-assign, user); a NaN Gavel press won every Big Case Gavel round; zone bags
+  bought at one price (~26% off); badge calls that could leave a prestige half done; Stage 6 rooms priced 5e8.
+  New `src/` working copies: `BigCaseService`, `DeskService` (only lived in Studio).
+- **Luck keeps Supreme exact:** Lucky Eggs and golden zone eggs multiplied Rare/Epic/Legendary without taking the
+  chance from anywhere, so Supreme fell to ~1 in 3850 on a golden egg (~1 in 5650 with the pass).
+  `Formulas.luckyWeights` takes it from Common/Uncommon instead (`Config.Eggs.LuckRarities / LuckPaidBy`).
+- **Dropped:** a blind zones system written before this session saw mr.robe's live zones + claim (it duplicated
+  ZoneService). Nothing of it was kept but the luck formula. Lesson recorded in CLAUDE.md already: `git pull` first.
+- Nothing pushed to Studio.
 
 ## 2026-10-12 — mr.robe, local session: egg zones rebuilt as the walled lane (rough, 2 zones) + Blender decorations
 **User's call:** the lane design from docs/ZONES_REFERENCE.md replaces the two islands (archived:
