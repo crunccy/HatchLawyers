@@ -217,11 +217,15 @@ L.KaiSueNat = function(k)
 	k:brows(HAIR, { raise = 0.08, tilt = -6 })
 	k:nose()
 	k:mouth("grin", { w = 0.62 })
-	-- selfie stick + phone in his right hand, a Neon "live" dot on the back
-	k:held(-1, V(0.08, 1.7, 0.08), V(0, 0.82, -0.32), H("9aa0aa"), V(-20, 0, 0), true)
-	k:held(-1, V(0.46, 0.8, 0.07), V(0, 1.68, -0.66), PHONE, V(-20, 0, 0), true)
-	k:glow("RightUpperArm", V(0.12, 0.12, 0.03), k:hand(-1) + V(0.12, 1.92, -0.73), H("ff2e3e"), V(-20, 0, 0))
-	k:poseArm(-1, V(30, 0, 0))
+	-- selfie stick + phone in his right hand, angled out in front of him (the whole prop stays below the shoulder:
+	-- Puppet puts the shoulder at the top of the arm's highest part), a Neon "live" dot on the phone's back
+	-- (the stick lies along its Z axis: Puppet reads a part's height from Size.Y without the rotation, so a tilted
+	-- 1.6-tall stick would count as reaching above the shoulder)
+	local hand, tip = k:hand(-1), k:hand(-1) + V(0.55, 0.92, -1.27)
+	k:plate("RightUpperArm", V(0.08, 0.08, (tip - hand).Magnitude), CFrame.lookAt((hand + tip) / 2, tip), H("9aa0aa"))
+	k:held(-1, V(0.5, 0.6, 0.07), V(0.55, 0.92, -1.27), PHONE, V(-8, -10, 0), true)
+	k:plate("RightUpperArm", V(0.42, 0.5, 0.03), k:hand(-1) + V(0.55, 0.92, -1.23), H("4fb6ff"), V(-8, -10, 0)) -- the screen, facing him
+	k:glow("RightUpperArm", V(0.12, 0.12, 0.03), k:hand(-1) + V(0.68, 1.1, -1.31), H("ff2e3e"), V(-8, -10, 0))
 end
 
 -- Obvious Advocate (Id KhabyClaim, Rare; renamed 2026-10-11): an original deadpan "it's that simple" lawyer - grey
@@ -257,7 +261,8 @@ L.IShowSued = function(k)
 	k:plate("UpperTorso", V(0.08, 1.35, 0.04), V(0, HIP + 0.72, fz - 0.03), WHITE) -- zip
 	k:brick("UpperTorso", V(1.3, 0.2, 1.15), V(0, SH + 0.04, 0), JACKET_D) -- collar
 	for _, s in { -1, 1 } do
-		k:plate(Kit.armName(s), V(0.06, D.armH - D.handH, 0.18), V(s * (AX + D.armW / 2 + 0.02), SH - (D.armH - D.handH) / 2, 0), STRIPE)
+		-- (starts below the sleeve top: an arm part as tall as the sleeve would become Puppet's shoulder once posed)
+		k:plate(Kit.armName(s), V(0.06, 0.78, 0.18), V(s * (AX + D.armW / 2 + 0.02), SH - 0.2 - 0.39, 0), STRIPE)
 		k:plate(Kit.legName(s), V(0.05, 0.95, 0.14), V(s * (LX + D.legW / 2 + 0.02), HIP - 0.5, 0), STRIPE)
 	end
 	-- gold chain + medallion
@@ -292,8 +297,8 @@ L.IShowSued = function(k)
 	for _, dx in { -0.28, 0.28 } do
 		k:held(-1, V(0.06, 0.44, 0.44), V(dx, 0.05, -0.48), GOLD, nil, true)
 	end
-	k:poseArm(-1, V(30, 0, -40))
-	k:poseArm(1, V(30, 0, 40))
+	k:poseArm(-1, V(30, 0, -28))
+	k:poseArm(1, V(30, 0, 28))
 end
 
 return L

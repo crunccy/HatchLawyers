@@ -161,7 +161,7 @@ function Kit:body(o: { [string]: any })
 		elseif (o.legs or "long") == "long" then
 			self:brick(leg, V(D.legW, hipY - footTop, D.legD), V(x, footTop + (hipY - footTop) / 2, 0), pants)
 		else
-			local shortsH = 0.55
+			local shortsH = o.shortsH or 0.42 -- (short chibi legs: 0.42 leaves a bit of knee showing)
 			self:brick(leg, V(D.legW + 0.04, shortsH, D.legD + 0.04), V(x, hipY - shortsH / 2, 0), pants)
 			local sockH = if o.socks then (o.sockH or 0.45) else 0
 			local bare = hipY - shortsH - footTop - sockH
@@ -516,8 +516,30 @@ function Kit:helmet(color: Color3, o: { [string]: any }?)
 	return HT + 0.35
 end
 
+-- a barrister's wig: a top slab, rows of curl bricks down both sides and across the back, a little tail
+function Kit:wig(color: Color3, o: { [string]: any }?)
+	local opt = o or {}
+	local HT, hw, BZ = Kit.headTop, D.headW / 2, D.headD / 2
+	self:brick("HeadDetail", V(D.headW + 0.16, 0.42, D.headD + 0.16), V(0, HT + 0.03, 0.02), color)
+	local rows = opt.rows or 3
+	for row = 0, rows - 1 do
+		local y = HT - 0.32 - row * 0.4
+		for _, s in { -1, 1 } do
+			for _, z in { -0.25, 0.25, 0.75 } do
+				self:brick("HeadDetail", V(0.42, 0.38, 0.44), V(s * (hw + 0.16), y, z), color)
+			end
+		end
+		for _, x in { -0.6, 0, 0.6 } do
+			self:brick("HeadDetail", V(0.5, 0.38, 0.36), V(x, y, BZ + 0.16), color)
+		end
+	end
+	self:brick("HeadDetail", V(0.3, 0.5, 0.24), V(0, HT - 0.4 - rows * 0.4, BZ + 0.16), color) -- the tail
+	return HT + 0.24
+end
+
 function Kit:headband(color: Color3, y: number?)
-	self:brick("HeadDetail", V(D.headW + 0.06, 0.22, D.headD + 0.06), V(0, Kit.headTop - (y or 0.42), 0), color)
+	-- (wider than the hair cap, headW + 0.12, so it shows over hair)
+	self:brick("HeadDetail", V(D.headW + 0.18, 0.22, D.headD + 0.18), V(0, Kit.headTop - (y or 0.42), 0), color)
 end
 
 ------------------------------------------------------------------ face extras (HeadDetail, in front of the eyes)
@@ -786,6 +808,30 @@ function Kit:held(side: number, size: Vector3, offset: Vector3, color: Color3, r
 	return self:brick(Kit.armName(side), size, at, color, rot)
 end
 
+-- a JUDGE's gavel arm: a gavel in the +X hand, and every part of that arm moved into a Model named GavelArm with
+-- its pivot at the shoulder - the courtroom (Courtroom.client spawnJudge) makes it the puppet's right arm and slams it
+function Kit:gavelArm(wood: Color3?, band: Color3?)
+	local w = wood or H("8a5a32")
+	self:held(1, V(0.12, 0.9, 0.12), V(0, 0.4, -0.32), w).Name = "GavelHandle"
+	self:held(1, V(0.34, 0.34, 0.7), V(0, 0.9, -0.32), w).Name = "GavelHead"
+	if band then
+		for _, dz in { -0.2, 0.2 } do
+			self:held(1, V(0.38, 0.38, 0.06), V(0, 0.9, -0.32 + dz), band, nil, true)
+		end
+	end
+	local arm = Instance.new("Model")
+	arm.Name = "GavelArm"
+	for _, p in self.model:GetChildren() do
+		-- (the gavel's band plates are named after the arm too - held() does that - so they move with it)
+		if p:IsA("BasePart") and (p.Name == "LeftUpperArm" or p.Name == "GavelHandle" or p.Name == "GavelHead") then
+			p.Parent = arm
+		end
+	end
+	arm.WorldPivot = CFrame.new(self.origin + V(Kit.armX, Kit.shoulderY - D.armW / 2, 0))
+	arm.Parent = self.model
+	return arm
+end
+
 ------------------------------------------------------------------ install
 local function retire(folderName: string, model: Instance, newName: string)
 	local ss = game:GetService("ServerStorage")
@@ -824,6 +870,25 @@ function Kit:installLawyer(note: string, sideways: boolean?): Model
 		m:SetAttribute("Sideways", true)
 	end
 	m.Parent = skins
+	return m
+end
+
+-- a JUDGE: becomes ReplicatedStorage.JudgeModels.<Id> (DisplayName shows over the bench), pivot at the feet;
+-- the model it replaces is kept as ServerStorage.RetiredJudges.<Id>_preBrick
+function Kit:installJudge(displayName: string): Model
+	local folder = game:GetService("ReplicatedStorage").JudgeModels
+	local old = folder:FindFirstChild(self.id)
+	if old then
+		retire("RetiredJudges", old, self.id .. "_preBrick")
+	end
+	local m = self.model
+	m.Name = self.id
+	m.WorldPivot = CFrame.new(self.origin)
+	m:PivotTo(CFrame.new())
+	m:SetAttribute("DisplayName", displayName)
+	m:SetAttribute("Style", "Brick")
+	m:SetAttribute("Remade", "2026-10-11 brick style")
+	m.Parent = folder
 	return m
 end
 
