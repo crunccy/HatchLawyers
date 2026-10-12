@@ -899,8 +899,9 @@ Config.Minigames = {
 -- The License Office by the Briefcase Bay entrance sells all three upgrades. Bounds = the zone's land (x0, z0, x1, z1).
 Config.Zones = {
 	List = {
-		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 7, Respawn = { 4, 9 }, Bounds = { -460, -80, -300, 80 } },
-		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 7, Respawn = { 5, 10 }, Bounds = { -620, -70, -480, 70 } },
+		-- one lane running west from the street (tools/zones/BuildLane.lua): Safe Zone, then each zone, a License gate between
+		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -674, -36, -274, 36 } },
+		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -1086, -36, -686, 36 } },
 	},
 	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
 	License = { -- level n opens every zone whose License is n or less

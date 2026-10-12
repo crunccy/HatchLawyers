@@ -5,9 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12:** rebuilding the egg zones as the walled lane from
-  docs/ZONES_REFERENCE.md — rough Briefcase Bay + Pet Park first, screenshots for review before the other four.
-  (User's call: the lane design replaces the two islands; gameplay/ZoneService contracts kept.)
+- **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
+  Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
+  `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
 
 ## Open items
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
@@ -86,6 +86,48 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: egg zones rebuilt as the walled lane (rough, 2 zones) + Blender decorations
+**User's call:** the lane design from docs/ZONES_REFERENCE.md replaces the two islands (archived:
+`ServerStorage.Old_Zones`). Only Briefcase Bay + Pet Park, rough, for review; no bosses.
+- **Build tools (re-runnable, in the repo):** `tools/zones/BuildLane.lua` (the lane) and
+  `tools/zones/BuildDecorLibrary.lua` (decorations). Run them in Studio's Edit mode with
+  `tools/studio_sync/serve_files.ps1 -Root tools/zones` serving the files; the library goes first.
+- **Layout:** the lane runs west from the end of the street (x = -264, z = 0). It has a 10-stud Safe Zone (red neon
+  line + "SAFE ZONE" lettering), then Briefcase Bay (x -274..-674), a Bronze License gate arch (badge + "PET PARK ·
+  Bronze License · 5M", barrier tagged `LicenseGate`), Pet Park (x -686..-1086), a closed "BRAINROT · Silver License ·
+  COMING SOON" gate with 70 studs of purple teaser, and an end wall.
+  - **Floor and walls:** 72 studs wide (40 felt narrow; user), between terracotta walls 14 tall. Each wall top is
+    30 studs of the zone's ground colour. Everything uses `MaterialVariant = BrickStuds`, the characters'
+    material, so it's studded on every face.
+  - **Floor colours:** Briefcase Bay is cornflower-blue carpet; Pet Park is lime. Each zone starts with a darker
+    border strip.
+  - **Path:** orange, 8 wide, with white dashed edges. White chevrons every 16 studs, tagged `ZoneChevron`; the
+    client turns them gold and flips them to point home while you carry eggs.
+  - **Eggs:** 40 invisible EggSpots per zone, `MaxEggs` 14.
+  - **License Office:** moved to the lane entrance (x ≈ -246, z 19–35, beside the street).
+  - **Config:** `Config.Zones.List` bounds were moved to the lane, in Studio and in `src/`.
+  - **Size:** about 5,500 parts in total, roughly 2,300 for Briefcase Bay and 2,700 for Pet Park.
+- **Blender decorations (user: "use blender ... more lively, same art style"):** `tools/blender/zone_decor.py` builds
+  19 block models: forked brick trees in 4 sizes plus a blossom tree, bushes, flower beds, rocks and grass tufts, an
+  office plant, leaning file boxes, a water cooler, a park bench, a flower hedge, a dog house, a bone pile, a toy
+  pile and a hydrant. It exports them to `tools/zones/decor_library.json`, which becomes
+  `ServerStorage.ZoneDecorLibrary`: studded Parts, no mesh imports. Preview: `art/zone_decor/preview.png`.
+  - **No MCP needed:** the blender MCP server timed out at session start, so `tools/blender/send.ps1` talks to the
+    BlenderMCP add-on's socket (port 9876) directly. It needs Blender open with the add-on's server started.
+  - **Gotcha:** objects made through the API in a scene that's never evaluated keep an identity `matrix_local`, so
+    read `location` / `rotation_euler` instead. The first export put every block at the origin.
+- **Gameplay changes (live in Studio; see `studio/`):** zone eggs are knee-high and sit on the floor with a small
+  wobble, never floating. Each has a 2-line label, the egg's name then its rarity in its colour (normal = Common,
+  golden = Rare). The price only appears in the [E] prompt. A "YOUR FIRM" marker floats over your own firm.
+  Playtested: buying works and the chevrons flip home.
+- **Review shots:** Studio's viewport can't be captured while its window is in the background, so the real lane
+  geometry was exported (Edit `execute_luau` → local receiver) and rendered in Blender (`tools/blender/lane_preview.py`)
+  next to each reference shot: `art/zone_decor/compare_{safezone,lane,gate,base}.png`. Blender's light is flatter
+  than Roblox's.
+- **Open after review:** the zones may want to be shorter or denser (the reference packs more eggs and props per
+  stretch), plus more floor props, the remaining four zones, the bosses, and the hub teleport pads' arrival points
+  (they use each zone's `Arrival`, so nothing to change).
 
 ## 2026-10-12 — mr.robe, local session: repo becomes the shared brain; Studio snapshot; src merged with live Studio
 - GitHub connected on mr.robe's PC (Git + GitHub CLI via winget, signed in as `ss-rob`, push access); repo cloned to

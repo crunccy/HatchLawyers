@@ -130,10 +130,14 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   archived in `ServerStorage.Old_HubEggMachines` since their eggs moved to zones), BigCaseBelt, SpecialSpots (the
   Gavel Bonk / Lucky Briefcase minigames), ZoneTeleports, Palms. `Workspace.Plots.Plot1–8`.
   Front/door = local −Z; plots are rotated to face the street (two rows facing the street along x, z = 0).
-- `Workspace.Zones` (2026-10-12, mr.robe's session): BriefcaseBay (zone 1, past the west end of the street) and
-  PetPark (zone 2, behind the License gate), Bridges, ZoneGate. Built by a re-runnable Edit-time builder
-  (`ServerScriptService.README` says where); `Server.ZoneService` + `StarterPlayerScripts.Zones` run them.
-  **Superseded design:** docs/ZONES_REFERENCE.md describes the lane-of-six-zones rebuild crnuch wants — see Open items.
+- `Workspace.Zones` (2026-10-12, the lane from docs/ZONES_REFERENCE.md): one walled lane running west from the end
+  of the street. It holds SafeZone, BriefcaseBay, PetPark (each with Floor / Walls / Path / Chevrons / WallDecor /
+  FloorClutter / EggSpots / Arrival), the License gate, NextZoneTeaser and LicenseOffice.
+  - **Build:** `tools/zones/BuildLane.lua`; decorations come from `ServerStorage.ZoneDecorLibrary`, which is built
+    from Blender (`tools/blender/zone_decor.py` → `tools/zones/BuildDecorLibrary.lua`). Add a zone by adding to
+    `ZONES` in the builder and to `Config.Zones.List`.
+  - **Runtime:** `Server.ZoneService` + `StarterPlayerScripts.Zones`. The old islands are archived in
+    `ServerStorage.Old_Zones`.
 - Firm: `Server.FirmStages` (6 front buildings by size/prestige, rooms sold on the lawn by `Server.FirmFeatures`),
   two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was; **no waiting room** —
   clients walk from the street straight to a free lawyer (`FirmBuilder.routeToDesk`).

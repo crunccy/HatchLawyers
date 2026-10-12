@@ -160,13 +160,18 @@ local function buildEgg(zone: Zone, spot: BasePart, golden: boolean): Model
 	m:SetAttribute("Zone", zone.def.Id)
 	m:SetAttribute("Egg", egg)
 	m:SetAttribute("Golden", golden)
+	-- the label's second line (StarterPlayerScripts.Zones shows "<egg name>" then this, in its rarity colour)
+	m:SetAttribute("Rarity", if golden then "Rare" else "Common")
 	m.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
-	local home = CFrame.new(spot.Position.X, 2.6, spot.Position.Z)
+	-- knee-high and sitting ON the lane floor (docs/ZONES_REFERENCE.md: nothing floats)
+	local size = if golden then Vector3.new(2.8, 3.5, 2.8) else Vector3.new(2.3, 2.9, 2.3)
+	local floorY = spot.Position.Y - spot.Size.Y / 2
+	local home = CFrame.new(spot.Position.X, floorY + size.Y / 2, spot.Position.Z)
 	local shell = Instance.new("Part")
 	shell.Name = "Shell"
 	shell.Anchored = true
 	shell.CanCollide = false
-	shell.Size = if golden then Vector3.new(3.6, 4.6, 3.6) else Vector3.new(3, 3.8, 3)
+	shell.Size = size
 	shell.CFrame = home
 	shell.Color = eggColor(egg, golden)
 	shell.Material = if golden then Enum.Material.Neon else Enum.Material.SmoothPlastic
@@ -190,7 +195,7 @@ local function buildEgg(zone: Zone, spot: BasePart, golden: boolean): Model
 		mm.Parent = p
 		p.Parent = m
 	end
-	local s = if golden then 1.2 else 1
+	local s = size.X / 3 -- the markings were drawn for a 3-wide egg
 	if egg == "Briefcase" then
 		deco("Band", Vector3.new(3.08, 0.7, 3.08) * s, CFrame.new(0, -0.2 * s, 0), if golden then Color3.fromRGB(200, 140, 20) else Color3.fromRGB(150, 88, 44))
 	else
