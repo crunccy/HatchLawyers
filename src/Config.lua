@@ -1,7 +1,7 @@
 --!strict
 -- Every tunable number for Hatch Lawyers & Get Rich lives here.
 -- Live server code and the economy simulator (ServerScriptService.Dev.EconomySim) both read it,
--- so tune here and re-run the sim. Values are MVP (v0.3) scope: 3 client tiers, 4 skin rarities.
+-- so tune here and re-run the sim. 7 lawyer rarities since 2026-10-12 (Common .. Legendary, Mythic, Supreme).
 
 export type ClientTier = {
 	Id: string,
@@ -196,7 +196,8 @@ Config.Firm = {
 	StartSegments = 4, -- 8 offices; only office 1 starts with a lawyer (Config.Lawyers.StartId)
 	MaxSegments = 10,
 	StartLawyers = 8, -- clientInterval reference size (a firm of this many lawyers gets ClientInterval)
-	ExpandCosts = { [5] = 2e7, [6] = 6e8, -- [5] was 7e7: the first Supreme needs 10 offices (economy pass 2026-10-09) [7] = 3e10, [8] = 1.5e12, [9] = 8e13, [10] = 4e15 },
+	-- [5] was 7e7: the first Supreme needs 10 offices (economy pass 2026-10-09)
+	ExpandCosts = { [5] = 2e7, [6] = 6e8, [7] = 3e10, [8] = 1.5e12, [9] = 8e13, [10] = 4e15 },
 	-- Seconds between clients walking in for a firm of StartLawyers lawyers. A bigger firm draws
 	-- more clients: the gap shrinks in proportion to the lawyer count (never below MinInterval).
 	ClientInterval = 3.5,
@@ -317,27 +318,41 @@ Config.Eggs = {
 	-- Pity: after this many eggs in a row without the rarest skin, the next one is guaranteed it.
 	-- Counts every egg except the free tutorial one (reward tokens count). Shown via EggPity.
 	PityTop = 50,
+	-- the rarity pity guarantees (index into Skins): Legendary. Mythic and Supreme are never guaranteed (Supreme
+	-- stays 1 in 2500); rolling Legendary or better resets the count.
+	PityRarity = 5,
 	-- Economy pass 2026-10-09: the x PriceGrowth ramp counts eggs opened since your last Supreme (Eggs.RunOpened),
 	-- and every Supreme level makes eggs PrestigePriceScale x pricier - eggs stay a real choice every run instead of
 	-- costing a lifetime-count price right after a reset (Formulas.eggPrice).
 	PrestigePriceScale = 3,
 	Skins = {
-		-- SellValue: coins for selling one duplicate (10% / 20% / 50% / 200% of the egg price).
-		{ Id = "Common", Weight = 58, PayoutBonus = 0.01, SellValue = 750, Earn = 1, StartSkills = 1 },
-		{ Id = "Uncommon", Weight = 26.5, PayoutBonus = 0.02, SellValue = 1500, Earn = 2, StartSkills = 1 },
-		{ Id = "Rare", Weight = 13, PayoutBonus = 0.05, SellValue = 3750, Earn = 4, StartSkills = 2 },
+		-- The Briefcase Egg's odds (Weight, %); themed eggs have their own Weights by these indices.
+		-- 2026-10-12: Epic (between Rare and Legendary), Mythic and Supreme (one and two past Legendary).
+		-- Supreme is exactly 1 in 2500 (0.04 %) in EVERY egg; Mythic rises with the egg tier.
+		-- Saves store lawyer Ids, never rarity numbers, so inserting Epic at 4 moved nothing saved.
+		-- SellValue / PayoutBonus: the old skin system (unused).
+		{ Id = "Common", Weight = 55.8, PayoutBonus = 0.01, SellValue = 750, Earn = 1, StartSkills = 1 },
+		{ Id = "Uncommon", Weight = 26, PayoutBonus = 0.02, SellValue = 1500, Earn = 2, StartSkills = 1 },
+		{ Id = "Rare", Weight = 11, PayoutBonus = 0.05, SellValue = 3750, Earn = 4, StartSkills = 2 },
+		{ Id = "Epic", Weight = 4.5, PayoutBonus = 0.10, SellValue = 7500, Earn = 6, StartSkills = 2 },
 		{ Id = "Legendary", Weight = 2.5, PayoutBonus = 0.20, SellValue = 15000, Earn = 10, StartSkills = 2 },
+		{ Id = "Mythic", Weight = 0.16, PayoutBonus = 0.35, SellValue = 37500, Earn = 25, StartSkills = 3 },
+		{ Id = "Supreme", Weight = 0.04, PayoutBonus = 0.50, SellValue = 150000, Earn = 60, StartSkills = 3 },
 	} :: { SkinRarity },
 	-- Themed eggs (workspace.Hub.<Machine>, on the plaza's egg pads): each hatches ONLY the catalog lawyers
 	-- whose Egg = its Id, with its own rarity Weights (by rarity index), at PriceMultiplier x the Briefcase
 	-- Egg's current price. They share the opened count (all prices climb together) and the pity counter, and
 	-- are never free (the free egg and reward tokens are for the Briefcase Egg). Color = the hatch-screen egg.
+	-- EGG TIERS (2026-10-12): each themed machine opens once the player has EARNED UnlockEarned coins in their
+	-- lifetime (Stats.CoinsEarned - kept through Supremes, so an egg never locks again), and its lawyers earn
+	-- EarnMultiplier x more (Formulas.lawyerEarn), so every new machine hatches stronger lawyers than the last.
+	-- Opens (tools/economy_sim.py, 5 seeds): Pet 11-16 min, Brainrot 22-43 min, Food 64-96 min, Ocean 3.3-3.8 h, Space 7-8 h.
 	Themed = {
-		{ Id = "Brainrot", Name = "Brainrot Egg", Machine = "BrainrotEggMachine", PriceMultiplier = 3, Weights = { 0, 60, 32, 8 }, Color = Color3.fromRGB(165, 95, 255), Tagline = "Brainrot lawyers only!" },
-		{ Id = "Pet", Name = "Pet Egg", Machine = "PetEggMachine", PriceMultiplier = 2, Weights = { 55, 28, 14, 3 }, Color = Color3.fromRGB(255, 180, 110), Tagline = "Pet lawyers only!" },
-		{ Id = "Food", Name = "Food Egg", Machine = "FoodEggMachine", PriceMultiplier = 4, Weights = { 45, 32, 18, 5 }, Color = Color3.fromRGB(255, 120, 100), Tagline = "Food lawyers only!" },
-		{ Id = "Ocean", Name = "Ocean Egg", Machine = "OceanEggMachine", PriceMultiplier = 8, Weights = { 35, 35, 22, 8 }, Color = Color3.fromRGB(60, 170, 230), Tagline = "Ocean lawyers only!" },
-		{ Id = "Space", Name = "Space Egg", Machine = "SpaceEggMachine", PriceMultiplier = 16, Weights = { 25, 35, 28, 12 }, Color = Color3.fromRGB(110, 70, 220), Tagline = "Space lawyers only!" },
+		{ Id = "Brainrot", Name = "Brainrot Egg", Machine = "BrainrotEggMachine", PriceMultiplier = 3, UnlockEarned = 1e9, EarnMultiplier = 1.5, Weights = { 0, 54.6, 28, 9, 8, 0.36, 0.04 }, Color = Color3.fromRGB(165, 95, 255), Tagline = "Brainrot lawyers only!" },
+		{ Id = "Pet", Name = "Pet Egg", Machine = "PetEggMachine", PriceMultiplier = 2, UnlockEarned = 1e7, EarnMultiplier = 1.25, Weights = { 52.7, 26, 12, 6, 3, 0.26, 0.04 }, Color = Color3.fromRGB(255, 180, 110), Tagline = "Pet lawyers only!" },
+		{ Id = "Food", Name = "Food Egg", Machine = "FoodEggMachine", PriceMultiplier = 4, UnlockEarned = 1e11, EarnMultiplier = 2, Weights = { 42.5, 29, 16, 7, 5, 0.46, 0.04 }, Color = Color3.fromRGB(255, 120, 100), Tagline = "Food lawyers only!" },
+		{ Id = "Ocean", Name = "Ocean Egg", Machine = "OceanEggMachine", PriceMultiplier = 8, UnlockEarned = 1e15, EarnMultiplier = 3, Weights = { 33.3, 32, 19, 7, 8, 0.66, 0.04 }, Color = Color3.fromRGB(60, 170, 230), Tagline = "Ocean lawyers only!" },
+		{ Id = "Space", Name = "Space Egg", Machine = "SpaceEggMachine", PriceMultiplier = 16, UnlockEarned = 1e18, EarnMultiplier = 4, Weights = { 23, 32, 23, 9, 12, 0.96, 0.04 }, Color = Color3.fromRGB(110, 70, 220), Tagline = "Space lawyers only!" },
 	},
 }
 
@@ -412,7 +427,7 @@ Config.SkinCatalog = {
 	{
 		Id = "PinstripePartner", -- id kept (saves reference it); renamed by the user 2026-10-09
 		Name = "Tung Tung Tung Sahur",
-		Rarity = 4,
+		Rarity = 5,
 		Model = "TungTungSahur", -- block remake 2026-10-10 (mr.robe's mesh LawyerSkin_Legendary is kept in SkinModels)
 		Suit = Color3.fromRGB(35, 45, 95),
 		Pants = Color3.fromRGB(30, 38, 80),
@@ -436,7 +451,7 @@ Config.SkinCatalog = {
 	{
 		Id = "IShowSued",
 		Name = "Livestream Litigator", -- renamed 2026-10-11 (was a real-creator parody; Id kept: saved)
-		Rarity = 4,
+		Rarity = 5,
 		Model = "IShowSued",
 		Suit = Color3.fromRGB(200, 18, 40),
 		Pants = Color3.fromRGB(30, 30, 34),
@@ -447,7 +462,7 @@ Config.SkinCatalog = {
 	{
 		Id = "IceJustice",
 		Name = "Ice Justice",
-		Rarity = 4,
+		Rarity = 5,
 		Model = "IceJustice",
 		Suit = Color3.fromRGB(170, 216, 245),
 		Pants = Color3.fromRGB(240, 248, 255),
@@ -545,7 +560,7 @@ Config.SkinCatalog = {
 	{
 		Id = "Tralalero",
 		Name = "Tralalero Tralala",
-		Rarity = 4,
+		Rarity = 5,
 		Model = "Tralalero",
 		Egg = "Brainrot",
 		Suit = Color3.fromRGB(96, 140, 186),
@@ -557,7 +572,7 @@ Config.SkinCatalog = {
 	{
 		Id = "Bombardiro",
 		Name = "Bombardiro Crocodilo",
-		Rarity = 4,
+		Rarity = 5,
 		Model = "Bombardiro",
 		Egg = "Brainrot",
 		Suit = Color3.fromRGB(110, 120, 70),
@@ -569,7 +584,7 @@ Config.SkinCatalog = {
 	{
 		Id = "CappuccinoAvvocato", -- id/model kept (saves reference it); renamed by the user 2026-10-09
 		Name = "Cappuccino Assassino",
-		Rarity = 4,
+		Rarity = 5,
 		Model = "CappuccinoAvvocato",
 		Egg = "Brainrot",
 		Suit = Color3.fromRGB(28, 28, 34),
@@ -673,8 +688,8 @@ Config.Prestige = {
 	-- Steal a Brainrot / Pet Sim - the first one ~45 min in, each later one costs more and pays more. Going Supreme
 	-- from level N costs CostBase x CostGrowth^N coins and needs min(20, OfficesBase + OfficesPerLevel x N) offices
 	-- with a lawyer in them (Formulas.prestigeRequirement). Tuned with tools/economy_sim.py (docs/ECONOMY.md).
-	CostBase = 1e10, -- the first Supreme: ~45-75 min in (sim, 5 seeds)
-	CostGrowth = 5, -- each next one costs 5x more; ~11 Supremes in the first 24 h, then slower and slower
+	CostBase = 1e10, -- the first Supreme: ~40-70 min in (sim, 5 seeds, with egg tiers)
+	CostGrowth = 7, -- each next one costs 7x more; ~12-13 Supremes in the first 24 h (was 5 before egg tiers made lawyers stronger)
 	OfficesBase = 10,
 	OfficesPerLevel = 2,
 	RequiredDesks = 20, -- the most offices any level asks for (a fully expanded firm)
@@ -749,44 +764,65 @@ for _, r in {
 	{ "BubblesGoldfish", "Bubbles the Goldfish", 2, "Pet", "3c8cc8", "3070a0", "3c8cc8", "aae1ff" },
 	{ "CorgiCounsel", "Corgi Counsel", 3, "Pet", "faf5eb", "e68c3c", "faf5eb", "e68c3c" },
 	{ "ParrotProsecutor", "Parrot Prosecutor", 3, "Pet", "e62828", "3c3c46", "286ee6", "e62828" },
-	{ "SirFluffington", "Sir Fluffington", 4, "Pet", "7828a0", "5a1e78", "7828a0", "fafafc" },
-	{ "HoundOfJustice", "Hound of Justice", 4, "Pet", "967850", "503c32", "967850", "aa6e3c" },
+	{ "SirFluffington", "Sir Fluffington", 5, "Pet", "7828a0", "5a1e78", "7828a0", "fafafc" },
+	{ "HoundOfJustice", "Hound of Justice", 5, "Pet", "967850", "503c32", "967850", "aa6e3c" },
 	{ "ToastAttorney", "Toast Attorney", 1, "Food", "5a7850", "486040", "5a7850", "a05a23" },
 	{ "SunnySideSam", "Sunny-Side Sam", 1, "Food", "e6e6ec", "b8b8bc", "e6e6ec", "fcfcf8" },
 	{ "SushiSolicitor", "Sushi Solicitor", 2, "Food", "1e3228", "182820", "1e3228", "1e3c28" },
 	{ "TacoTribunal", "Taco Tribunal", 2, "Food", "c87828", "a06020", "c87828", "f0be50" },
 	{ "PizzaProsecutor", "Pizza Prosecutor", 3, "Food", "3c783c", "306030", "3c783c", "ffd250" },
 	{ "DonutDefender", "Donut Defender", 3, "Food", "ff8cbe", "cc7098", "ff8cbe", "dca05a" },
-	{ "BurgerBoss", "Burger Boss", 4, "Food", "1e1e24", "18181c", "1e1e24", "dc963c" },
-	{ "ScoopJudge", "Judge Scoop", 4, "Food", "1e1e28", "1e1e28", "1e1e28", "fff0dc" },
+	{ "BurgerBoss", "Burger Boss", 5, "Food", "1e1e24", "18181c", "1e1e24", "dc963c" },
+	{ "ScoopJudge", "Judge Scoop", 5, "Food", "1e1e28", "1e1e28", "1e1e28", "fff0dc" },
 	{ "CrabCounsel", "Crab Counsel", 1, "Ocean", "283c78", "e14632", "283c78", "e14632" },
 	{ "ClownfishClerk", "Clownfish Clerk", 1, "Ocean", "ff821e", "282832", "ff821e", "ff821e" },
 	{ "PufferPartner", "Puffer Partner", 2, "Ocean", "3c78b4", "306090", "3c78b4", "f0d25a" },
 	{ "JellyJuror", "Jelly Juror", 2, "Ocean", "463c78", "dc8cff", "463c78", "dc8cff" },
 	{ "OctoAttorney", "Octo-Attorney", 3, "Ocean", "28283c", "aa50be", "28283c", "aa50be" },
 	{ "SeahorseSolicitor", "Seahorse Solicitor", 3, "Ocean", "e6783c", "b86030", "e6783c", "3cc8be" },
-	{ "WhaleJudge", "Whale Judge", 4, "Ocean", "1e1e28", "1e1e28", "1e1e28", "3c64aa" },
-	{ "KrakenCounsel", "Kraken Counsel", 4, "Ocean", "14141a", "14141a", "14141a", "aa2832" },
+	{ "WhaleJudge", "Whale Judge", 5, "Ocean", "1e1e28", "1e1e28", "1e1e28", "3c64aa" },
+	{ "KrakenCounsel", "Kraken Counsel", 5, "Ocean", "14141a", "14141a", "14141a", "aa2832" },
 	{ "MoonRockRookie", "Moon Rock Rookie", 1, "Space", "3c4664", "303850", "3c4664", "aaaaaf" },
 	{ "LittleGreenLawyer", "Little Green Lawyer", 1, "Space", "282832", "202028", "282832", "6edc5a" },
 	{ "AstroAttorney", "Astro-Attorney", 2, "Space", "f0f0f5", "f0f0f5", "f0f0f5", "b4dcff" },
 	{ "RoboClerk", "Robo-Clerk", 2, "Space", "bec8d7", "bec8d7", "bec8d7", "bec8d7" },
 	{ "SaturnSolicitor", "Saturn Solicitor", 3, "Space", "3c286e", "302058", "3c286e", "f0c878" },
 	{ "UFOCounsel", "UFO Counsel", 3, "Space", "5a5a6e", "484858", "5a5a6e", "78e664" },
-	{ "StarJudge", "Star Judge", 4, "Space", "141432", "141432", "141432", "ffe150" },
-	{ "BlackHoleBarrister", "Black Hole Barrister", 4, "Space", "1e143c", "1e143c", "1e143c", "140a23" },
+	{ "StarJudge", "Star Judge", 5, "Space", "141432", "141432", "141432", "ffe150" },
+	{ "BlackHoleBarrister", "Black Hole Barrister", 5, "Space", "1e143c", "1e143c", "1e143c", "140a23" },
+	-- Epic (4) / Mythic (6) / Supreme (7) for every egg (2026-10-12). Their SkinModels are still to be built
+	-- (local session; concepts in docs/CHARACTER_STYLE.md "Epic, Mythic and Supreme"). Until a model exists the
+	-- lawyer shows the blocky fallback in these colours.
+	{ "ThunderclapCounsel", "Thunderclap Counsel", 4, "", "3c3f58", "23242f", "ffd23c", "e8b087" },
+	{ "PhoenixProsecutor", "Phoenix Prosecutor", 6, "", "c62828", "3a1010", "ff8c1e", "c68a5e" },
+	{ "CelestialChiefJustice", "Celestial Chief Justice", 7, "", "f2efe8", "dcd6c8", "ffc828", "8d5a3b" },
+	{ "WolfWarden", "Wolf Warden", 4, "Pet", "23305a", "1c2440", "b45aff", "8c8c96" },
+	{ "GryphonGuardian", "Gryphon Guardian", 6, "Pet", "c8963c", "8e6428", "e53935", "f2efe8" },
+	{ "CelestialKitsune", "Celestial Kitsune", 7, "Pet", "f2efe8", "d8d2c8", "ff7ab4", "f8f6f0" },
+	{ "CactusinoAvvocatino", "Cactusino Avvocatino", 4, "Brainrot", "5a2e96", "37235a", "b45aff", "4caf50" },
+	{ "DraghettoSpaghetto", "Draghetto Spaghetto", 6, "Brainrot", "2e5a2e", "1e3c1e", "c8281e", "f0d282" },
+	{ "ImperatorePinguino", "Imperatore Pinguino Gelato", 7, "Brainrot", "1c1c24", "1c1c24", "ff50aa", "1c1c24" },
+	{ "ChiliProsecutor", "Chili Pepper Prosecutor", 4, "Food", "24242c", "1a1a20", "ff8c1e", "e53927" },
+	{ "DragonFruitDuke", "Dragon Fruit Duke", 6, "Food", "1e5a3c", "143c28", "e53935", "ff3c96" },
+	{ "GrandGateauJustice", "Grand Gateau Justice", 7, "Food", "ffc828", "d99a10", "ff9ac8", "f6d8a8" },
+	{ "HammerheadAdvocate", "Hammerhead Advocate", 4, "Ocean", "1e2a4a", "141c34", "b45aff", "7896aa" },
+	{ "NarwhalMagistrate", "Narwhal Magistrate", 6, "Ocean", "1c1c26", "1c1c26", "e53935", "6e8caa" },
+	{ "TidalSovereign", "Tidal Sovereign", 7, "Ocean", "1e64c8", "164a96", "ffc828", "5ac8be" },
+	{ "CometCounsel", "Comet Counsel", 4, "Space", "eef0f8", "b4b8cc", "b45aff", "a8d8ff" },
+	{ "NebulaArbiter", "Nebula Arbiter", 6, "Space", "141432", "141432", "e53935", "3c1e6e" },
+	{ "SupernovaSovereign", "Supernova Sovereign", 7, "Space", "ffc828", "d99a10", "ff50aa", "ffd23c" },
 } do
 	table.insert(Config.SkinCatalog, {
 		Id = r[1],
 		Name = r[2],
 		Rarity = r[3],
-		Egg = r[4],
+		Egg = if r[4] == "" then nil else r[4], -- "" = the Briefcase Egg
 		Model = r[1],
 		Suit = Color3.fromHex(r[5]),
 		Pants = Color3.fromHex(r[6]),
 		Tie = Color3.fromHex(r[7]),
 		Head = Color3.fromHex(r[8]),
-		Neon = r[3] == 4 or nil,
+		Neon = r[3] >= 5 or nil, -- Legendary and up
 	})
 end
 
@@ -845,7 +881,7 @@ Config.BigCase = {
 Config.Shop = {
 	Passes = {
 		{ Key = "DoubleCash", Id = 0, Price = 199, Name = "2x Cash", Text = "Every case pays double. Forever!", Banner = "x2 Cash", Color = Color3.fromRGB(70, 210, 60), Icon = "cash" },
-		{ Key = "LuckyEggs", Id = 0, Price = 299, Name = "Lucky Eggs", Text = "2x chance of Rare + Legendary lawyers", Banner = "x2 Luck", Color = Color3.fromRGB(255, 190, 30), Icon = "egg" },
+		{ Key = "LuckyEggs", Id = 0, Price = 299, Name = "Lucky Eggs", Text = "2x chance of Rare, Epic + Legendary lawyers", Banner = "x2 Luck", Color = Color3.fromRGB(255, 190, 30), Icon = "egg" },
 		{ Key = "SpeedyCases", Id = 0, Price = 149, Name = "Speedy Cases", Text = "Every case finishes 25% faster", Banner = "-25% Time", Color = Color3.fromRGB(60, 160, 255), Icon = "clock" },
 		{ Key = "BigFirm", Id = 0, Price = 99, Name = "Bigger Firm", Text = "Keep 100 more lawyers", Banner = "+100 Lawyers", Color = Color3.fromRGB(175, 90, 255), Icon = "briefcase" },
 	},

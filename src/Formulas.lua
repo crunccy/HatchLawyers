@@ -96,6 +96,13 @@ function Formulas.themedEgg(id: string?): any
 	return nil
 end
 
+-- Egg tiers: a themed egg's machine works once the player's lifetime coins earned (Stats.CoinsEarned) reach its
+-- UnlockEarned. The Briefcase Egg (id nil) and eggs without UnlockEarned are always open.
+function Formulas.eggUnlocked(id: string?, earned: number?): boolean
+	local def = Formulas.themedEgg(id)
+	return def == nil or def.UnlockEarned == nil or (earned or 0) >= def.UnlockEarned
+end
+
 -- Themed egg price: its PriceMultiplier x the Briefcase Egg's price at the same opened count.
 function Formulas.themedEggPrice(id: string, opened: number, prestige: number?): number
 	local def = Formulas.themedEgg(id)
@@ -110,12 +117,15 @@ end
 
 -- Hatched lawyers ------------------------------------------------------------------
 
--- A lawyer's earning power: rarity Earn x star multiplier (multiplies every case payout).
+-- A lawyer's earning power: rarity Earn x star multiplier x the EarnMultiplier of the egg that hatches it (egg
+-- tiers: later themed eggs hatch stronger lawyers; Briefcase lawyers x1). Multiplies every case payout.
 function Formulas.lawyerEarn(id: string?, stars: number?): number
 	local def = Formulas.getSkin(id)
 	local rarity = def and Config.Eggs.Skins[def.Rarity]
 	local starEarn = Config.Lawyers.StarEarn[math.clamp(stars or 1, 1, #Config.Lawyers.StarEarn)]
-	return (if rarity then rarity.Earn else 1) * starEarn
+	local egg = def and Formulas.themedEgg(def.Egg)
+	local eggEarn = if egg and egg.EarnMultiplier then egg.EarnMultiplier else 1
+	return (if rarity then rarity.Earn else 1) * starEarn * eggEarn
 end
 
 -- "Gold Bow Tie Barrister" etc.

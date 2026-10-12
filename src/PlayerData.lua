@@ -386,6 +386,8 @@ local lastLawyersJson: { [Player]: string } = {}
 
 local function syncAttributes(player: Player, data: Data)
 	player:SetAttribute("Coins", data.Coins)
+	-- lifetime coins earned: egg tiers unlock by it (Formulas.eggUnlocked; StarterPlayerScripts.Eggs shows progress)
+	player:SetAttribute("CoinsEarned", if data.Stats then data.Stats.CoinsEarned else 0)
 	player:SetAttribute("FreeLevelUps", data.Tutorial.FreeLevelUps)
 	player:SetAttribute("FirstCaseDone", data.Tutorial.FirstCaseDone)
 	player:SetAttribute("DeskCount", #data.Desks) -- offices
