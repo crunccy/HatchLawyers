@@ -14,10 +14,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
 - [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
       players 9+ get kicked by `Main` and lose their offline earnings (audit, `Main:28`).
-- [ ] **Publish the carry animation (user only):** in Studio, ReplicatedStorage › Animations › CarryEggs › right-click
-      `Source` › Save to Roblox (or open it in the Animation Editor › Publish), then paste the id into
-      `CarryEggs.AnimationId` (`rbxassetid://<id>`). Until then the arms only pose in Studio playtests; live servers
-      show the eggs but no arm pose. Publish it under the account / group that owns the place, or it won't load.
+- [ ] **Carry animation: give the game access (user only).** mr.robe published it as **85314818445255** (from
+      mr_blox174) and `CarryEggs.AnimationId` is set, but the place is owned by user **2234491534** (crnuch?), so it
+      fails: "The experience doesn't have access permission to use asset id 85314818445255". Fix: share the asset
+      with the experience (Output's "Click to share access" in a playtest, or Creator Dashboard › the animation ›
+      Permissions), or crnuch re-publishes `Source` from the owner account and the id is swapped. Re-test after.
+      Until then: eggs show, no arm pose.
 - [ ] Eye-check the carry animation in a real window (hug loop, the pile's sway while walking).
 - [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
 - [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
