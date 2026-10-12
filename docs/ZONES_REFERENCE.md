@@ -73,7 +73,7 @@ creatures shown inside, so you see other players' collections on the way out.
 - **The first zone is next to spawn** and the first egg is free (the tutorial target: first egg within 2 minutes).
 
 ## Bosses: idea for the user to decide
-**Decided 2026-10-12 → [BOSSES.md](BOSSES.md):** any boss hit drops ALL your eggs (animated, no on-screen text) and
+**Decided 2026-10-12 → [BOSSES.md](BOSSES.md):** any boss hit drops ALL your eggs (animated, no on-screen text, no tags over the bosses) and
 dropped eggs are free game for anyone;
 Boss Cases parked for later. Boss names: The Senior Partner, Barrister Bulldog, Judge Martello, Prosecutor Big Cheese,
 Magistrate Megalodon, Chief Justice Eclipse.

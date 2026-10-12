@@ -17,7 +17,7 @@ Bosses are the only characters whose names carry legal titles (CHARACTER_STYLE.m
 - **Dropped eggs** keep their zone and Golden status, glow so they're easy to spot, and vanish after ~30 s if nobody
   takes them (a tunable).
 - **No on-screen text for any of it** (user): no messages, no pop-up words. The hit, the drop and the scramble are
-  told entirely through animation, effects and sound. (The only text near a boss is its small difficulty tag.)
+  told entirely through animation, effects and sound. Bosses have **no text at all**: no name, no difficulty tag.
 - **Boss Cases** (a boss stops, the whole server fights it in a courtroom minigame for a rarer egg): **parked for
   later** (user). The bosses below are designed so each could get one without a redesign.
 
@@ -41,10 +41,10 @@ plays the flight from where CarryPose had each egg to its spot. The server makes
 ~0.9 s, when they've landed. Grabbing goes through the normal carry checks (bag space, lawyer room).
 
 ## The six bosses
-Each is 2-3x a player, brick style (studded parts, square eyes), with a small difficulty tag above its head
-(the only text a boss has; its voice is sound effects - grumbles, barks, boings - never speech bubbles)
-("EASY" / "MEDIUM" / "HARD" / "EXTREME" in green / yellow / orange / purple, FredokaOne with a thick black outline -
-no emoji). They get cooler down the lane, like the rarity ladder: plain → bigger silhouettes → glowing parts → Space.
+Each is 2-3x a player, brick style (studded parts, square eyes), with **no text over it** (user: no name, no
+difficulty tag) - its voice is sound effects (grumbles, barks, boings), never speech bubbles. The difficulty in each
+heading is for design only (how often and how wide it attacks); players read it from the boss itself: bigger, faster
+and flashier down the lane, like the rarity ladder - plain → bigger silhouettes → glowing parts → Space.
 
 ### 1. Briefcase Bay: **The Senior Partner** (EASY)
 - **Look:** a towering, grumpy old lawyer, 2x a player. Charcoal three-piece suit, a white walrus moustache, half-moon
@@ -105,7 +105,7 @@ no emoji). They get cooler down the lane, like the rarity ladder: plain → bigg
 
 ## Numbers to put in Config (when it's built)
 One `Config.Bosses` entry per zone, so a sim or a playtest can tune them without touching code:
-`Zone`, `Name`, `Difficulty`, `WalkSpeed`, `AttackEvery` (s), `Windup` (s), `Radius` / `Length` (studs),
+`Zone`, `Name`, `Difficulty` (design only, never shown), `WalkSpeed`, `AttackEvery` (s), `Windup` (s), `Radius` / `Length` (studs),
 plus shared `SafeAfterHit` (3 s), `DroppedEggLifetime` (30 s), `DropScatter` (min / max studs, 4 / 10),
 `DropStagger` (0.05 s per egg), `GrabbableAfter` (0.9 s).
 Starting guesses: Easy bosses attack every ~8 s, Medium ~6 s, Hard ~5 s, Extreme ~4 s.
@@ -118,5 +118,5 @@ Starting guesses: Easy bosses attack every ~8 s, Medium ~6 s, Hard ~5 s, Extreme
 - A dropped egg is a zone egg with price 0 and an owner-free pickup; picking it up goes through the same carry checks
   (bag space, lawyer room) as a normal zone egg.
 - The hit check, the 3 s safe window and the drop all happen server-side; the client only shows warnings, effects,
-  the difficulty tag and the drop animation. No text.
+  and the drop animation. No text anywhere.
 - Phones: warnings must be readable from the default camera distance, and nothing should cover the jump button.

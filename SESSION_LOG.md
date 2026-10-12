@@ -109,7 +109,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   so no Animation asset has to be made or published; every client draws it for every carrying player. Files above.
 - **User's calls:** (1) legal titles (Counsel, Partner, Prosecutor, Attorney, Barrister, Solicitor, Litigator,
   Advocate, Judge, Justice, Magistrate, Arbiter) are for **bosses only**; lawyers get short fun names. (2) Any boss hit
-  drops ALL your eggs, animated (they fly out of your arms, bounce, wobble), with **no on-screen text**, and **a
+  drops ALL your eggs, animated (they fly out of your arms, bounce, wobble), with **no on-screen text** (no boss name or difficulty tag either), and **a
   dropped egg is free game** for anyone. (3) Boss Cases: parked for later.
 - **41 lawyers renamed** (display `Name` only; Ids unchanged, so saves are fine), e.g. Corgi Counsel → Corgi Cooper,
   Sushi Solicitor → Sushi Sue, Star Judge → Starla, Kraken Counsel → Inky the Kraken. Rule + table in
