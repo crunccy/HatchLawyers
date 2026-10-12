@@ -62,6 +62,18 @@ repo** — local Claude memory is per machine, so anything the other side should
   (`.github/workflows/checks.yml`): a red X on a commit means fix it before merging. New Config rules → add a
   check to `tools/checks/config_tests.luau`.
 
+### Working efficiently (user's call 2026-10-12: save usage, never at the cost of quality)
+- **One task per session.** Finish it, log it, push, stop. Long sessions re-read everything on every message.
+- **Read narrowly:** grep / search first, then read only the lines you need. Use `studio/` (the snapshot) to read
+  live scripts instead of pulling them through the Studio MCP. Don't re-read a file you just edited.
+- **Screenshots only to check something visual** (a build, a UI layout, an effect), at most a few per task. Get UI
+  positions from `execute_luau` (AbsolutePosition), not from images. Prefer one batched `execute_luau` that
+  checks many things and prints a short summary over many small calls.
+- **Plan before big work:** one short plan, then build. Don't build twice: claim it in SESSION_LOG first.
+- **Quality is not optional:** still run `tools/checks/run_checks.py`, still playtest what you changed, still 3-way
+  merge instead of pasting over Studio. Save tokens on *how* you work, never by skipping a check.
+- **Short outputs:** short status messages; the SESSION_LOG entry is the record, not the chat.
+
 ## Team & ownership
 - Since 2026-10-12 both users drive Claude and want one shared Claude: **any session may work on anything**, UI or
   gameplay. Original authorship, for context: crnuch's sessions built the UI/visuals, the firm redesign and the v12
