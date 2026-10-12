@@ -55,6 +55,9 @@ repo** — local Claude memory is per machine, so anything the other side should
   write Luau / Blender-Python as files for the user to paste or run. Never claim something was changed in Studio.
   Syntax-check every edited Luau file with the Luau CLI (`luau-compile --binary <file> > /dev/null`; download
   `luau-ubuntu.zip` from github.com/luau-lang/luau/releases) — it caught a `Config.lua` that didn't parse.
+- **End every local session by pushing its changes into Studio** (crnuch's rule, 2026-10-11): every script, model
+  and Config change made that session goes into the place, not just git — via "Pushing `src/` → Studio" below (3-way
+  merge, never paste over someone else's Studio changes). Report what was pushed and what wasn't.
 
 ## Team & ownership
 - Since 2026-10-12 both users drive Claude and want one shared Claude: **any session may work on anything**, UI or
