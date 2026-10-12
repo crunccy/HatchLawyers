@@ -5,6 +5,10 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe's local session · since 2026-10-12 (night):** (1) HUD: coin counter + hints moved up, the "Case coins
+  float up by your money" legend removed (src/Hud ready, waiting for Edit mode); (2) the zones' Carry upgrade becomes
+  BRIEFCASES (user's call): tiers named Briefcase / Big / Golden / Diamond (+2 tiers, max 12), a brick briefcase
+  model (Blender) on every player's back, "bag" wording → briefcase/arms. Touches `Config.Zones.Carry` (live + src).
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
