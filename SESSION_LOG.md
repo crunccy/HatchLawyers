@@ -5,7 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- (nothing claimed)
+- **mr.robe's local session · since 2026-10-12:** rebuilding the egg zones as the walled lane from
+  docs/ZONES_REFERENCE.md — rough Briefcase Bay + Pet Park first, screenshots for review before the other four.
+  (User's call: the lane design replaces the two islands; gameplay/ZoneService contracts kept.)
 
 ## Open items
 - [ ] **Egg zones: pick one design, then build it** (both users decide). Live in Studio since 2026-10-12 (mr.robe's
