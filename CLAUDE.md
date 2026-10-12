@@ -134,7 +134,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`).
 - `ReplicatedStorage.Animations.CarryEggs` — the egg-carry arm pose (made in Blender: `tools/blender/carry_anim.py`
   → `tools/zones/BuildCarryAnimation.lua`; child `Source` = the KeyframeSequence). Played by
-  `StarterPlayerScripts.CarryPose`; needs a published `AnimationId` to play outside Studio.
+  `StarterPlayerScripts.CarryPose`. Published by crnuch as `rbxassetid://86324090376520`. **Animations must be
+  published from the place owner's account (crnuch, user 2234491534)** — an upload from mr_blox174 fails to load.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
   Ours: EggHatched, MarkSkinsSeen, AssignClient, PlaceLawyer, MergeLawyers, MergeSelected, CancelLawyerChange,
   OpenLawyerPicker. Local bindables: `LawyersUI` (open the LAWYERS panel), `SkillsUI` (open Skills).
