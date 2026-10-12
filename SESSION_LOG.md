@@ -5,11 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (night):** (lane move: done, entry below) new detailed egg designs
-  (Blender, cartoony) for the eggs on the ground + a new egg opening animation from the user's reference video:
-  Common-Epic = the basic hatch (radial backdrop, pedestal, 3 taps, shard burst, silhouette, reveal), Legendary /
-  Mythic / Supreme = the fancy one (the egg falls from the sky onto your incubator in the world). Touches
-  ZoneService (egg model), StarterPlayerScripts.Eggs (hatch screen), EggServer (hatch event data).
 
 ## Open items
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
@@ -25,6 +20,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] **Bosses: eye-check in a real window** (all six: poses, floor warnings, slam / roll / charge / pull, dizzy
       stars, the egg flight + bounce, loose-egg glow and blink) and tune `Config.Bosses` by feel. The bark is a low
       gavel knock - swap in a real licensed bark if one turns up. Boss Cases: parked (user).
+- [ ] **Eye-check the new eggs + both hatches in a real window** (only checked by numbers / renders): tap feel,
+      the rings / pedestal on a phone, the fancy camera at a few incubators, golden eggs' 126 parts (lattice) - if
+      zones feel heavy, make golden zone eggs "simple" too.
 - [ ] **Zones 3-6: eye-check in a real window** (renders of each in `art/zones/`), and price them: Silver 1e8, Gold
       2e9, Platinum 4e10, Diamond 1e12 are first guesses - put them in the zones sim run.
 - [ ] **Decide: the hub's Brainrot / Food / Ocean / Space egg machines** are still there (the Briefcase + Pet ones
@@ -105,6 +103,40 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: detailed eggs + a new hatch (basic / fancy) from the user's video
+- User (with a screen recording of a reference game): eggs "more detailed, like the video, keeping the cartoonish
+  look"; "supreme, mythic and legendary hatches should look like the more complicated animation while the other
+  ones can look like the basic animation". Their calls: 3 taps to crack; the fancy hatch falls onto YOUR INCUBATOR;
+  keep the stats / PLACE / KEEP after the reveal; Claude designs the eggs.
+- **The eggs** (Blender, `tools/blender/eggs.py`, render `art/eggs/preview.png` → `tools/zones/BuildEggs.lua` →
+  `ReplicatedStorage.EggModels`): smooth glossy shapes (no studs), an egg-shaped shell of two ellipsoids. Briefcase =
+  leather, stitched belt, gold clasp, handle on top; Pet = cream with calico patches, a paw print, red collar + gold
+  tag; Brainrot = purple, neon-pink blobs, googly eyes, antenna; Food = biscuit + pink frosting with drips,
+  sprinkles and a cherry; Ocean = deep blue / sky blue, foam wave, starfish, bubbles; Space = starry dark shell,
+  glowing nebula, tilted neon ring, a moon. Golden = gold shell + the GoldenKit (Fabergé lattice, jewelled band, gold
+  base ring, crown with a spire).
+- **`Shared.EggLook`** (new, src + live) builds them: `EggLook.build(egg, golden, height, simple)`; unknown eggs get
+  the Briefcase shape in their colour. Used by **ZoneService** (zone eggs 3.4 tall, golden 4.0; loose eggs keep
+  their glass bubbles see-through) and **CarryPose** (the "simple" egg - no tiny bits - its Shell welded to the
+  chest, the rest hanging off the Shell, so the sway is one weld per egg).
+- **The hatch v4** (`StarterPlayerScripts.Eggs`, live + src - the same new section in both, src keeps its economy-pass
+  bits): "Tap to crack!" / "Again!" / "One more!" (3 dots; each tap swells, shakes and brightens the egg; cracks by
+  itself after 3.5 s) → cube-shard burst → the lawyer as a black silhouette in the rarity's light → colour: name +
+  "RARITY · x% chance" → "Tap to continue" → the old panel (Earns xN, skills, PLACE / KEEP).
+  BASIC (Common-Epic): a full-screen 3D stage - rings in the egg's colour, the egg's name on top, a glowing round
+  pedestal. FANCY (Legendary / Mythic / Supreme, when the hatch came from an incubator): in the world - the camera
+  looks up, the egg falls from the sky onto the incubator, impact rings, cracked there, a big lawyer appears there in
+  an aura; the camera comes back on close. Nearby players see a short version (`Remotes.HatchShow`). The old voxel
+  shell (Shared.HatchShells) is no longer used by the hatch. The section's loops run on Heartbeat (RenderStepped
+  doesn't tick in a background Studio, so it couldn't be tested otherwise).
+- **EggServer** (live + src): the hatch result adds `at` (the incubator), `golden`, `chance` (the % that rarity had
+  in the odds it was rolled with, luck included); `Remotes.HatchShow` (new) fires for Legendary+ from an incubator;
+  the old delayed burst stays for Rare (and for Legendary+ without an incubator).
+- **Playtested** (results sent straight to the client, so no save changed): basic Common hatch → shards, silhouette,
+  "COMMON · 61.5% chance", Tap to continue, the panel; fancy golden Legendary → scripted camera, "LEGENDARY EGG",
+  the egg fell y 94 → 4 onto the incubator, impact, the three cracks, 48 shards, the lawyer, "LEGENDARY · 0.8%
+  chance", the panel; a HatchShow from "another player" played nearby; zone eggs built in all six zones; no errors.
 
 ## 2026-10-12 — mr.robe, local session: the egg store is gone; the lane starts there and runs south
 - User's calls: "remove the egg zone [the hub's egg store] and move the lane to where the egg store currently is so

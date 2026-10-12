@@ -41,6 +41,23 @@ local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript)
 
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local EggHatched = Remotes:WaitForChild("EggHatched") :: RemoteEvent
+-- (2026-10-12) everyone else nearby sees a Legendary+ egg fall onto the incubator it hatched at (StarterPlayerScripts.Eggs)
+local HatchShow = Remotes:FindFirstChild("HatchShow") :: RemoteEvent?
+if not HatchShow then
+	local r = Instance.new("RemoteEvent")
+	r.Name = "HatchShow"
+	r.Parent = Remotes
+	HatchShow = r
+end
+-- the share (%) a rarity had in the odds an egg was rolled with (for the reveal's "x% chance")
+local function weightShare(weights: { number }?, index: number): number?
+	local w = weights or Formulas.skinWeights()
+	local total = 0
+	for _, v in w do
+		total += v
+	end
+	return if total > 0 then (w[index] or 0) / total * 100 else nil
+end
 local MarkSkinsSeen = Remotes:WaitForChild("MarkSkinsSeen") :: RemoteEvent
 
 local hub = workspace:WaitForChild("Hub")
@@ -193,6 +210,7 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	lastRoll[player] = t
 
 	local rarity
+	local chance: number? = nil -- (the odds this egg had of rolling that rarity)
 	if free then
 		-- The tutorial egg is scripted and doesn't count as a roll.
 		data.Eggs.FreeUsed = true
@@ -215,7 +233,9 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
 		-- a golden zone egg stacks its luck (Config.Zones.Golden.Luck) on top of the Lucky Eggs pass
 		local goldenLuck = if o.golden then (((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1) else 1
-		rarity = Formulas.rollSkin(rng, luckyWeights(player, if themed then themed.Weights else nil, goldenLuck))
+		local w = luckyWeights(player, if themed then themed.Weights else nil, goldenLuck)
+		rarity = Formulas.rollSkin(rng, w)
+		chance = weightShare(w, rarity)
 	end
 	-- pity: every egg but the tutorial one counts; Config.Eggs.PityRarity (Legendary) or better resets it, and
 	-- hitting the limit upgrades this egg to exactly that rarity - never to Mythic / Supreme (Config.Eggs.PityTop)
@@ -254,7 +274,8 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	-- Legendary+ hatch has the longer build-up)
 	local rarityId = Config.Eggs.Skins[rarity] and Config.Eggs.Skins[rarity].Id
 	local burstKind = Effects.rarityBurst(rarityId)
-	if burstKind then
+	local fancy = rarityId == "Legendary" or rarityId == "Mythic" or rarityId == "Supreme"
+	if burstKind and not (fancy and o.at) then -- (an incubator's Legendary+ has its own show: HatchShow below)
 		local from = if themed and themedMachines[themed.Id] then themedMachines[themed.Id] else machine
 		task.delay(if rarity >= (Config.Eggs.PityRarity or 5) then 6.5 else 5.1, function()
 			local at = o.at -- an incubator passes where the egg hatched; a hub machine bursts over itself
@@ -280,7 +301,13 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		isNew = isNew,
 		copies = copies,
 		emptyOffice = firstEmptyOffice(data),
+		at = o.at, -- where it hatched (the incubator): a Legendary+ hatch plays out there, in the world
+		golden = o.golden == true,
+		chance = chance,
 	})
+	if fancy and o.at and HatchShow then
+		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id })
+	end
 	return true
 end
 

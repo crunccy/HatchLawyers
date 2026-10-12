@@ -23,6 +23,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
+local EggLook = require(Shared:WaitForChild("EggLook") :: ModuleScript) :: any -- (the detailed eggs, 2026-10-12)
 
 local localPlayer = Players.LocalPlayer
 
@@ -143,7 +144,9 @@ local function parseCarried(value: any): { { egg: string, golden: boolean } }
 	return list
 end
 
-type Egg = { part: BasePart, weld: Weld }
+-- a carried egg: the detailed egg (Shared.EggLook, "simple" - no tiny bits) whose Shell is welded to the chest; its
+-- other parts hang off the Shell. rel = where the Shell sits from the egg's middle.
+type Egg = { part: Instance, weld: Weld, rel: CFrame }
 type Carrier = {
 	player: Player,
 	character: Model,
@@ -170,30 +173,36 @@ local function eggOffset(c: Carrier, i: number, moving: number): CFrame
 	return CFrame.new(x, y, z) * CFrame.Angles(tilt, math.rad(j[3]), math.rad(j[2]) + sway)
 end
 
-local function makeEgg(c: Carrier, i: number, color: Color3, golden: boolean): Egg
+local function makeEgg(c: Carrier, i: number, egg: string, golden: boolean): Egg
 	local w = c.torso.Size.X * EGG_WIDTH
-	local p = Instance.new("Part")
-	p.Name = "CarriedEgg"
-	p.Size = Vector3.new(w, w * EGG_TALL, w)
-	p.Color = color
-	p.Material = if golden then Enum.Material.Neon else Enum.Material.SmoothPlastic
-	p.Anchored = false
-	p.Massless = true
-	p.CanCollide = false
-	p.CanQuery = false
-	p.CanTouch = false
-	p.CastShadow = true
-	local mesh = Instance.new("SpecialMesh")
-	mesh.MeshType = Enum.MeshType.Sphere
-	mesh.Parent = p
+	local h = w * 3.8 / 3 -- (the egg models are 3 wide, 3.8 tall)
+	local m = EggLook.build(egg, golden, h, true)
+	m.Name = "CarriedEgg"
+	local shell = m.PrimaryPart :: BasePart
+	local rel = CFrame.new(0, -h / 2, 0) * shell.CFrame -- (built at the origin: the Shell's place from the egg's bottom)
+	m:PivotTo(c.torso.CFrame * eggOffset(c, i, 0) * CFrame.new(0, -h / 2, 0))
+	for _, p in m:GetDescendants() do
+		if p:IsA("BasePart") then
+			p.Anchored = false
+			p.Massless = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+			if p ~= shell then
+				local wc = Instance.new("WeldConstraint")
+				wc.Part0 = shell
+				wc.Part1 = p
+				wc.Parent = p
+			end
+		end
+	end
 	local weld = Instance.new("Weld")
 	weld.Part0 = c.torso
-	weld.Part1 = p
-	weld.C0 = eggOffset(c, i, 0)
-	weld.Parent = p
-	p.CFrame = c.torso.CFrame * weld.C0
-	p.Parent = visuals
-	return { part = p, weld = weld }
+	weld.Part1 = shell
+	weld.C0 = eggOffset(c, i, 0) * rel
+	weld.Parent = shell
+	m.Parent = visuals
+	return { part = m, weld = weld, rel = rel }
 end
 
 local function clearEggs(c: Carrier)
@@ -207,7 +216,7 @@ local function rebuildEggs(c: Carrier, value: any)
 	clearEggs(c)
 	c.key = if typeof(value) == "string" then value else ""
 	for i, item in parseCarried(value) do
-		table.insert(c.eggs, makeEgg(c, i, eggColor(item.egg, item.golden), item.golden))
+		table.insert(c.eggs, makeEgg(c, i, item.egg, item.golden))
 	end
 end
 
@@ -353,7 +362,7 @@ RunService.Heartbeat:Connect(function(dt)
 		local moving = math.clamp(Vector3.new(v.X, 0, v.Z).Magnitude / 16, 0, 1)
 		c.phase += dt * (3 + 6 * moving)
 		for i, e in c.eggs do
-			e.weld.C0 = eggOffset(c, i, moving)
+			e.weld.C0 = eggOffset(c, i, moving) * e.rel
 		end
 	end
 end)

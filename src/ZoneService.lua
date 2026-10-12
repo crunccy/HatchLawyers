@@ -27,6 +27,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local Config = require(ReplicatedStorage.Shared.Config) :: any
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
 local PlayerData = require(script.Parent.PlayerData)
+local EggLook = require(ReplicatedStorage.Shared:WaitForChild("EggLook")) :: any
 
 local Remote = ReplicatedStorage.Remotes:WaitForChild("Zones") :: RemoteEvent
 local CFG = Config.Zones
@@ -121,52 +122,18 @@ function ZoneService.sync(player: Player)
 end
 
 ---------------------------------------------------------------- zone eggs
--- The egg itself (a zone egg or a loose one): the shell, its markings and, if golden, its glow - knee-high and
--- standing ON the floor at `floorPos` (docs/ZONES_REFERENCE.md: nothing floats). Returns (model, shell, home).
+-- The egg itself (a zone egg or a loose one): the detailed egg from Shared.EggLook (2026-10-12: made in Blender,
+-- tools/blender/eggs.py - a leather Briefcase egg, a calico Pet egg, a googly-eyed Brainrot egg, a frosted Food
+-- egg, a wavy Ocean egg, a ringed Space egg; golden = gold + crown + jewels), knee-high and standing ON the floor at
+-- `floorPos` (docs/ZONES_REFERENCE.md: nothing floats). Returns (model, shell, home): the shell is its PrimaryPart
+-- and the model's pivot is the shell's centre (StarterPlayerScripts.Zones rocks the egg around its bottom from there).
+local EGG_HEIGHT, GOLDEN_HEIGHT = 3.4, 4.0
 local function eggModel(egg: string, golden: boolean, floorPos: Vector3): (Model, BasePart, CFrame)
-	local m = Instance.new("Model")
-	local size = if golden then Vector3.new(2.8, 3.5, 2.8) else Vector3.new(2.3, 2.9, 2.3)
-	local home = CFrame.new(floorPos.X, floorPos.Y + size.Y / 2, floorPos.Z)
-	local shell = Instance.new("Part")
-	shell.Name = "Shell"
-	shell.Anchored = true
-	shell.CanCollide = false
-	shell.Size = size
-	shell.CFrame = home
-	shell.Color = eggColor(egg, golden)
-	shell.Material = if golden then Enum.Material.Neon else Enum.Material.SmoothPlastic
-	local mesh = Instance.new("SpecialMesh")
-	mesh.MeshType = Enum.MeshType.Sphere
-	mesh.Parent = shell
-	shell.Parent = m
-	-- the egg's own markings: a leather band on the Briefcase egg, brown spots on the Pet egg
-	local function deco(name: string, size: Vector3, offset: CFrame, color: Color3)
-		local p = Instance.new("Part")
-		p.Name = name
-		p.Anchored = true
-		p.CanCollide = false
-		p.CanQuery = false
-		p.Size = size
-		p.CFrame = home * offset
-		p.Color = color
-		p.Material = Enum.Material.SmoothPlastic
-		local mm = Instance.new("SpecialMesh")
-		mm.MeshType = Enum.MeshType.Sphere
-		mm.Parent = p
-		p.Parent = m
-	end
-	local s = size.X / 3 -- the markings were drawn for a 3-wide egg
-	if egg == "Briefcase" then
-		deco("Band", Vector3.new(3.08, 0.7, 3.08) * s, CFrame.new(0, -0.2 * s, 0), if golden then Color3.fromRGB(200, 140, 20) else Color3.fromRGB(150, 88, 44))
-	else
-		-- spots: brown on the Pet egg, a darker shade of its own colour on the other themed eggs (zones 3-6)
-		local spot = if golden then Color3.fromRGB(200, 140, 20)
-			elseif egg == "Pet" then Color3.fromRGB(110, 70, 40)
-			else eggColor(egg, false):Lerp(Color3.new(0, 0, 0), 0.35)
-		for i, o in { { 1.3, 0.3, 0.5 }, { -1.2, 0.8, -0.6 }, { 0.2, -0.6, -1.35 } } do
-			deco("Spot" .. i, Vector3.new(0.8, 0.8, 0.8) * s, CFrame.new(o[1] * s, o[2] * s, o[3] * s), spot)
-		end
-	end
+	local m = EggLook.build(egg, golden, if golden then GOLDEN_HEIGHT else EGG_HEIGHT)
+	m:PivotTo(CFrame.new(floorPos) * CFrame.Angles(0, rng:NextNumber(-0.6, 0.6), 0)) -- (its front roughly toward the path)
+	local shell = m.PrimaryPart :: BasePart
+	shell.PivotOffset = CFrame.new() -- pivot = the shell's centre from here on
+	local home = shell.CFrame
 	if golden then
 		local light = Instance.new("PointLight")
 		light.Color = CFG.EggColors.Golden
@@ -183,7 +150,6 @@ local function eggModel(egg: string, golden: boolean, floorPos: Vector3): (Model
 		sparkle.Size = NumberSequence.new(0.6, 0)
 		sparkle.Parent = shell
 	end
-	m.PrimaryPart = shell
 	return m, shell, home
 end
 
@@ -352,6 +318,7 @@ function ZoneService.dropAll(player: Player, zoneId: string, from: Vector3): { {
 		local parts = {}
 		for _, p in m:GetDescendants() do
 			if p:IsA("BasePart") then
+				p:SetAttribute("ShownTransparency", p.Transparency) -- (glass bubbles stay see-through)
 				p.Transparency = 1 -- (shown once it has landed)
 				p.CanQuery = false
 				table.insert(parts, p)
@@ -422,7 +389,7 @@ local function looseLoop()
 			if not l.shown then
 				l.shown = true
 				for _, p in l.parts do
-					p.Transparency = 0
+					p.Transparency = (p:GetAttribute("ShownTransparency") :: number?) or 0
 				end
 				for _, e in l.model:GetDescendants() do
 					if e:IsA("PointLight") or e:IsA("ParticleEmitter") then
