@@ -1,4 +1,4 @@
--- Kraken Counsel (Legendary) - block remake 2026-10-10. A big red kraken: tall stepped mantle head with darker spots,
+-- Inky the Kraken (Legendary) - block remake 2026-10-10. A big red kraken: tall stepped mantle head with darker spots,
 -- huge eyes and a toothy grin, a navy-and-white sea captain's hat with a gold anchor badge, four curling tentacle legs
 -- (pale sucker dots) and two tentacle arms raised - one holding a big gold anchor, one a rolled legal scroll.
 -- Front-facing, HOVERS a little so the tentacles dangle. Legendary: gold anchor + trims, 1.25x.

@@ -168,7 +168,7 @@ function Formulas.lawyerEarn(id: string?, stars: number?): number
 	return (if rarity then rarity.Earn else 1) * starEarn * eggEarn
 end
 
--- "Gold Bow Tie Barrister" etc.
+-- "Gold Bow Tie Benny" etc.
 function Formulas.lawyerName(id: string?, stars: number?): string
 	local def = Formulas.getSkin(id)
 	local prefix = Config.Lawyers.StarNames[stars or 1] or ""

@@ -1,4 +1,4 @@
--- Neon Litigator (Rare) - block remake 2026-10-10. A tall, lean cyberpunk lawyer: dark suit with glowing cyan trim
+-- Neon Nate (Rare) - block remake 2026-10-10. A tall, lean cyberpunk lawyer: dark suit with glowing cyan trim
 -- (lapels, cuffs, hem), a wraparound Neon visor instead of shades, spiky slicked-up black hair with a cyan streak,
 -- a confident smirk, a glowing see-through holo-briefcase, sneakers with glowing soles. Front-facing.
 -- Rare: Neon is the theme here, 1.05x.

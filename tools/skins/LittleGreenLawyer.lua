@@ -1,6 +1,6 @@
--- Little Green Lawyer (Common, Space egg) - block remake 2026-10-10. A classic little green alien in a black suit: a
+-- Little Green Zip (Common, Space egg) - block remake 2026-10-10. A classic little green alien in a black suit: a
 -- big wide head with huge glossy black eyes, two antennae, a small body in a black suit + green tie, a tiny briefcase.
--- (Full-bodied + suited, unlike the UFO Counsel's pilot.) Front-facing. Common: simple, 1.0x.
+-- (Full-bodied + suited, unlike the Ziggy UFO's pilot.) Front-facing. Common: simple, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any
 local b = Kit.new("LittleGreenLawyer")
 local V = Vector3.new

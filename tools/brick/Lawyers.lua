@@ -72,7 +72,7 @@ L.CasualFriday = function(k)
 	k:held(-1, V(0.07, 0.42, 0.07), V(0.08, 0.62, -0.5), H("5cdb4a"), V(0, 0, -12), true)
 end
 
--- Bow Tie Barrister (Uncommon): a short, round, dapper gentleman - a chubby purple tailcoat, a HUGE pink bow tie,
+-- Bow Tie Benny (Uncommon): a short, round, dapper gentleman - a chubby purple tailcoat, a HUGE pink bow tie,
 -- a tall top hat with a pink band, a curly moustache, a monocle, a cane with a gold knob.
 L.BowTieBarrister = function(k)
 	local SUIT, SUIT_D, PANTS, BOW, BOW_D = H("8246c8"), H("5e3296"), H("37235a"), H("ff50aa"), H("d8408e")
@@ -134,7 +134,7 @@ L.NavyPowerSuit = function(k)
 	k:poseArm(-1, V(30, 0, 0))
 end
 
--- Mic Drop Attorney (Id BensonBond, Uncommon; renamed 2026-10-11): an original showman lawyer - cream-white suit,
+-- Mic Drop (Id BensonBond, Uncommon; renamed 2026-10-11): an original showman lawyer - cream-white suit,
 -- gold tie + buttons, dark shirt, one arm flung out for the big finish, a gold microphone, a big grin.
 L.BensonBond = function(k)
 	local SUIT, SUIT_S, TIE, SKIN, HAIR, SHIRT = H("faf8f0"), H("e2ddcc"), H("ffcd78"), H("f0c4a8"), H("6b4426"), H("1c1c20")
@@ -154,7 +154,7 @@ L.BensonBond = function(k)
 	k:poseArm(1, V(0, 0, 48))
 end
 
--- Neon Litigator (Rare): a lean cyberpunk lawyer - dark suit with glowing cyan trim, a wraparound Neon visor, spiky
+-- Neon Nate (Rare): a lean cyberpunk lawyer - dark suit with glowing cyan trim, a wraparound Neon visor, spiky
 -- black hair with a cyan streak, a smirk, a see-through glowing holo-briefcase, sneakers with glowing soles.
 L.NeonLitigator = function(k)
 	local SUIT, SUIT_D, SKIN, HAIR, CYAN, CYAN_D, MAG = H("23232f"), H("16161e"), H("e8b48a"), H("141418"), H("00ffc8"), H("00c8a0"), H("ff3cc8")
@@ -188,7 +188,7 @@ L.NeonLitigator = function(k)
 	case.Transparency = 0.45
 end
 
--- Selfie Counsel (Id KaiSueNat, Rare; renamed 2026-10-11): an original vlogger lawyer - black hoodie with a red stripe
+-- Selfie Star (Id KaiSueNat, Rare; renamed 2026-10-11): an original vlogger lawyer - black hoodie with a red stripe
 -- and a red tie peeking out, joggers, a backwards red cap, headphones round the neck, a phone on a selfie stick.
 L.KaiSueNat = function(k)
 	local HOOD, HOOD_D, RED, RED_D = H("19191e"), H("121216"), H("d21e28"), H("a8141e")
@@ -228,7 +228,7 @@ L.KaiSueNat = function(k)
 	k:glow("RightUpperArm", V(0.12, 0.12, 0.03), k:hand(-1) + V(0.68, 1.1, -1.31), H("ff2e3e"), V(-8, -10, 0))
 end
 
--- Obvious Advocate (Id KhabyClaim, Rare; renamed 2026-10-11): an original deadpan "it's that simple" lawyer - grey
+-- Obvious Ollie (Id KhabyClaim, Rare; renamed 2026-10-11): an original deadpan "it's that simple" lawyer - grey
 -- suit, dark tie, arms out in an open-palms shrug, a flat unimpressed face with raised brows, a glowing idea bulb.
 L.KhabyClaim = function(k)
 	local SUIT, SUIT_D, TIE, SKIN, HAIR = H("787c84"), H("3c3e46"), H("1e1e22"), H("6c4630"), H("1c1c20")
@@ -249,7 +249,7 @@ L.KhabyClaim = function(k)
 	end
 end
 
--- Livestream Litigator (Id IShowSued, Legendary; renamed 2026-10-11): an original hype-streamer lawyer - wide eyes,
+-- Livestreamer (Id IShowSued, Legendary; renamed 2026-10-11): an original hype-streamer lawyer - wide eyes,
 -- a shouting open mouth, a gaming headset with a gold boom mic, a red tracksuit with green sleeve stripes, a gold
 -- chain, arms out celebrating with a gold-trimmed football, white sneakers with gold soles, a floating Neon REC light.
 L.IShowSued = function(k)

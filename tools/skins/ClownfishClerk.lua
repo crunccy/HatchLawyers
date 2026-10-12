@@ -1,4 +1,4 @@
--- Clownfish Clerk (Common, Ocean egg) - block remake 2026-10-10. A hovering orange clownfish facing you: a round
+-- Coco Clownfish (Common, Ocean egg) - block remake 2026-10-10. A hovering orange clownfish facing you: a round
 -- orange body with three white bands edged in black, black-tipped fins, a little tail, big eyes, a tiny pencil
 -- behind one fin. Front-facing, HOVERS. Common: simple, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

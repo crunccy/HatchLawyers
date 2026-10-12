@@ -26,7 +26,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
       rebuilt, keep ZoneService's contracts so the gameplay carries over: `Zones.<Id>.EggSpots` / `Arrival`,
       `LicenseGate` tag (+ `LicensePrompt`), `UpgradePrompt` (attr `Upgrade`), `UpgradeBoard` tag, hub
       `TeleportPrompt`, `Config.Zones.List[*].Bounds`. Swap the floating price tags (StarterPlayerScripts.Zones) for
-      the 2-line labels. Decide on the "Opposing Counsel" bosses first.
+      the 2-line labels. Bosses: decided, see docs/BOSSES.md.
 - [ ] **Egg tiers vs zones overlap** (decide): the economy pass locks themed eggs by lifetime coins
       (`UnlockEarned`, Pet 1e7) and the zones gate them by Law License (Pet Park, `Config.Zones.License` 5e6 coins).
       Merge rule for now (src/EggServer): a zone egg already bought (`o.paid`) hatches even if its tier is locked, so it
@@ -95,6 +95,19 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — crnuch, cloud session: zone boss concepts, lawyer names simplified
+- **User's calls:** (1) legal titles (Counsel, Partner, Prosecutor, Attorney, Barrister, Solicitor, Litigator,
+  Advocate, Judge, Justice, Magistrate, Arbiter) are for **bosses only**; lawyers get short fun names. (2) A boss hit
+  knocks your eggs loose and **a dropped egg is free game** for anyone. (3) Boss Cases: parked for later.
+- **41 lawyers renamed** (display `Name` only; Ids unchanged, so saves are fine), e.g. Corgi Counsel → Corgi Cooper,
+  Sushi Solicitor → Sushi Sue, Star Judge → Starla, Kraken Counsel → Inky the Kraken. Rule + table in
+  docs/CHARACTER_STYLE.md; `src/Config.lua` changed, comments in `tools/skins`, `tools/brick` follow.
+- **docs/BOSSES.md:** The Senior Partner (Briefcase Bay), Barrister Bulldog (Pet Park), Judge Martello (Brainrot),
+  Prosecutor Big Cheese (Food), Magistrate Megalodon (Ocean), Chief Justice Eclipse (Space): look, moves, one
+  telegraphed attack each, lines, build notes, Config numbers, how it plugs into ZoneService.
+- Open: push `Config` to Studio for the names (with the audit push); build the bosses (local session, Senior Partner
+  first) once the lane review is in.
 
 ## 2026-10-12 — crnuch, cloud session: CI checks, bug / exploit audit (src + live scripts), exact-odds luck
 - **CI** (`.github/workflows/checks.yml`, `tools/checks/run_checks.py`): every push compiles every Luau file (src/,

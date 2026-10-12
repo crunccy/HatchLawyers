@@ -1,4 +1,4 @@
--- Jelly Juror (Uncommon, Ocean egg) - block remake 2026-10-10. A hovering jellyfish: a see-through pink bell (stepped
+-- Wobbly Jelly (Uncommon, Ocean egg) - block remake 2026-10-10. A hovering jellyfish: a see-through pink bell (stepped
 -- dome) with a frilly rim, a cute face on the bell, wavy tentacles of different lengths hanging below, and a little
 -- white juror number card held by one tentacle. Front-facing, HOVERS. Uncommon: 1 prop, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

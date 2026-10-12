@@ -2,7 +2,7 @@
 
 The look for every character: lawyers, clients and the Judge. It's taken from the characters in the user's
 reference recording of a "steal an egg"-style pet game, copying the **style only**: none of its characters, names
-or branding. Approved by the user on 2026-10-11, with Rookie Lawyer and Neighbor Dave as the test characters.
+or branding. Approved by the user on 2026-10-11, with Rookie and Neighbor Dave as the test characters.
 
 Built with `tools/brick/BrickKit.lua` (in Studio as `ServerStorage.BrickKit`). Each character has a builder in
 `tools/brick/<Id>.lua`.
@@ -96,7 +96,7 @@ crimson inferno, Supreme celestial rainbow with a halo; plus the merge-star Gold
 - **Part budget:** under 80 parts per character. A phone may show 20 offices plus a waiting room.
 
 ## Character sheets (approved examples)
-**Rookie Lawyer** — the starting lawyer (Common, Briefcase). **Built.**
+**Rookie** — the starting lawyer (Common, Briefcase). **Built.**
 - **Concept:** a first-day lawyer in a hand-me-down suit one size too big.
 - **Colours:**
 
@@ -120,20 +120,20 @@ crimson inferno, Supreme celestial rainbow with a halo; plus the merge-star Gold
 - **Colours:** fur `#E6AA64`, muzzle `#F5E6C8`, inner ear `#F29AA0`, suit `#A03C3C`, pants `#803030`.
 - **Face:** rimmed eyes centred, a black nose, two tooth plates and no mouth. A pencil behind the ear.
 
-**Bow Tie Barrister** — Uncommon, Briefcase.
+**Bow Tie Benny** — Uncommon, Briefcase.
 - **Concept:** a showman who argues like it's a stage show.
 - **Shape:** a top hat (+1.1 tall), coat tails and a big wedge bow tie.
 - **Colours:** suit `#8246C8`, lapels `#5A2E96`, pants `#37235A`, bow tie, hat band and pocket square `#FF50AA`
   (the accent), hat `#2D233C`, skin `#C68A5E`.
 - **Face:** one brow up and a smirk.
 
-**Donut Defender** — Rare, Food. The template for food-head lawyers.
+**Donut Dee** — Rare, Food. The template for food-head lawyers.
 - **Shape:** the head is an upright stepped ring 2.6 wide with a real hole through it.
 - **Colours:** dough `#DCA05A`, icing and suit `#FF8CBE`, pants `#CC7098`, 8–10 sprinkles
   (`#3CC8FF` / `#FFE150` / `#5CDB4A`).
 - **Face:** sly sideways pupils and a small open smile. Blue cuff trim plus the sparkle aura.
 
-**Star Judge** — Legendary, Space.
+**Starla** — Legendary, Space.
 - **Shape:** a five-point stepped-brick star head 3 wide, and a robe that widens in steps.
 - **Colours:** star `#FFE150` with `#E0B420` step edges, robe `#141432`, gold hem `#FFC828`, collar `#F2EFE8`, two
   Neon star tips `#FFF4A0`.
@@ -164,14 +164,25 @@ In `Config.SkinCatalog` already (Ids are saved: never rename); each needs `Repli
 then they show the blocky fallback. These are concepts, not specs: build them however looks best, keeping each
 tier clearly cooler than the last.
 
+Display name first, saved Id in brackets.
+
 | Egg | Epic | Mythic | Supreme |
 |---|---|---|---|
-| Briefcase | **ThunderclapCounsel**: storm-grey coat, lightning tie, his own storm cloud overhead | **PhoenixProsecutor**: crimson suit, flame mane, blazing wings, flaming gavel | **CelestialChiefJustice**: white-and-gold robes, halo, starry cape, Scales of Justice |
-| Pet | **WolfWarden**: wolf head, navy trench coat, moon badge, huge tail | **GryphonGuardian**: eagle head, gold pauldrons, giant wings, lion tail | **CelestialKitsune**: nine-tailed white fox, rainbow foxfire tips, floating foxfire |
-| Brainrot | **CactusinoAvvocatino**: cactus head with its own arms and a flower, tiny suit | **DraghettoSpaghetto**: spaghetti dragon, sauce horns, meatball cheeks, fire breath | **ImperatorePinguino** (Imperatore Pinguino Gelato): emperor penguin, three-scoop gelato crown, royal cape |
-| Food | **ChiliProsecutor** (Chili Pepper Prosecutor): chili head, curly stem, hot sauce | **DragonFruitDuke**: spiky dragon-fruit head, leaf crown, ducal coat, sceptre | **GrandGateauJustice**: three-tier cake head with candles, golden robes, halo |
-| Ocean | **HammerheadAdvocate**: hammerhead shark, eyes on the hammer ends | **NarwhalMagistrate**: narwhal with a glowing spiral horn, magistrate robe | **TidalSovereign**: sea king, coral crown with pearls, trident, wave cape |
-| Space | **CometCounsel**: icy comet head with a trailing tail, white space suit | **NebulaArbiter**: cosmic nebula head, tilted planet ring, constellation robe | **SupernovaSovereign**: blazing star head with corona rays, gold armour, orbiting planets |
+| Briefcase | **Thunderclap** (`ThunderclapCounsel`): storm-grey coat, lightning tie, a little storm cloud overhead | **Phoenix** (`PhoenixProsecutor`): crimson suit, flame mane, blazing wings, flaming gavel | **Celestial** (`CelestialChiefJustice`): white-and-gold robes, halo, starry cape, Scales of Justice |
+| Pet | **Wolf Warden** (`WolfWarden`): wolf head, navy trench coat, moon badge, huge tail | **Gryphon Guardian** (`GryphonGuardian`): eagle head, gold pauldrons, giant wings, lion tail | **Celestial Kitsune** (`CelestialKitsune`): nine-tailed white fox, rainbow foxfire tips, floating foxfire |
+| Brainrot | **Cactusino Avvocatino** (`CactusinoAvvocatino`): cactus head with its own arms and a flower, tiny suit | **Draghetto Spaghetto** (`DraghettoSpaghetto`): spaghetti dragon, sauce horns, meatball cheeks, fire breath | **Imperatore Pinguino Gelato** (`ImperatorePinguino`): emperor penguin, three-scoop gelato crown, royal cape |
+| Food | **Chili Pepper** (`ChiliProsecutor`): chili head, curly stem, hot sauce | **Dragon Fruit Duke** (`DragonFruitDuke`): spiky dragon-fruit head, leaf crown, ducal coat, sceptre | **Grand Gâteau** (`GrandGateauJustice`): three-tier cake head with candles, golden robes, halo |
+| Ocean | **Hammerhead** (`HammerheadAdvocate`): hammerhead shark, eyes on the hammer ends | **Narwhal** (`NarwhalMagistrate`): narwhal with a glowing spiral horn, a long robe | **Tidal Sovereign** (`TidalSovereign`): sea king, coral crown with pearls, trident, wave cape |
+| Space | **Comet** (`CometCounsel`): icy comet head with a trailing tail, white space suit | **Nebula** (`NebulaArbiter`): cosmic nebula head, tilted planet ring, constellation robe | **Supernova Sovereign** (`SupernovaSovereign`): blazing star head with corona rays, gold armour, orbiting planets |
+
+## Naming rule (user's call, 2026-10-12)
+- **Lawyers get short, fun names:** a creature / food / vibe + a personality ("Sir Fluffington", "Hamster Hustle",
+  "Burger Boss", "Sushi Sue"). Puns are fine ("Paw-ralegal Pup", "Whiskers, Esq."); royal / guardian words are fine
+  for the top tiers ("Tidal Sovereign", "Gryphon Guardian").
+- **Legal titles are reserved for the zone bosses** (docs/BOSSES.md): Counsel, Partner, Prosecutor, Attorney,
+  Barrister, Solicitor, Litigator, Advocate, Judge, Justice, Magistrate, Arbiter. No lawyer's display name uses one.
+- Only display names (`Name`) change; **Ids are saved and never change** - so an Id like `CorgiCounsel` keeps its
+  old title, that's fine (players never see Ids). 41 lawyers were renamed this way on 2026-10-12.
 
 ## How the rest of the cast follows
 
@@ -184,13 +195,14 @@ tier clearly cooler than the last.
 | Space | 8 | Helmets, robot heads and aliens. Neon only on Legendary accents. |
 | Clients | 44 | The body frame. One big prop or hat tells the job; the ladder by tier. |
 
-The four lawyers that riffed on real creators were renamed on 2026-10-11, keeping their saved Ids:
+The four lawyers that riffed on real creators were renamed on 2026-10-11, keeping their saved Ids (and renamed
+again on 2026-10-12 by the naming rule; the table shows today's names):
 
 | Id | Old name | New name |
 |---|---|---|
-| IShowSued | IShowSued | Livestream Litigator |
-| KaiSueNat | Kai Sue-nat | Selfie Counsel |
-| KhabyClaim | Khaby Claim | Obvious Advocate |
-| BensonBond | Benson Bond | Mic Drop Attorney |
+| IShowSued | IShowSued | Livestreamer |
+| KaiSueNat | Kai Sue-nat | Selfie Star |
+| KhabyClaim | Khaby Claim | Obvious Ollie |
+| BensonBond | Benson Bond | Mic Drop |
 
 Their designs stay original, with no likeness.

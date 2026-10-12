@@ -1,4 +1,4 @@
--- Taco Tribunal (Uncommon, Food egg) - block remake 2026-10-10. A walking taco seen side-on: a golden U-shaped shell
+-- Taco Tico (Uncommon, Food egg) - block remake 2026-10-10. A walking taco seen side-on: a golden U-shaped shell
 -- (blocks around the bottom half of a circle) stuffed with frilly lettuce, tomato and cheese poking out of the top,
 -- a face on the shell, short legs, little arms, a tiny gavel. Front-facing. Uncommon: 1 prop, 1.0x.
 local Kit = require(game.ServerStorage.SkinKit:Clone()) :: any

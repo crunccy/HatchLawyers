@@ -1,4 +1,4 @@
--- UFO Counsel (Rare, Space egg) - block remake 2026-10-10. A hovering flying saucer piloted by a little green alien:
+-- Ziggy UFO (Rare, Space egg) - block remake 2026-10-10. A hovering flying saucer piloted by a little green alien:
 -- a wide grey disc (octagonal, darker rim) with a ring of glowing green lights, a see-through glass dome, inside it a
 -- green alien with big glossy eyes, two antennae poking out through the top, a tiny red tie; a glowing green
 -- beam emitter underneath. Front-facing, HOVERS. Rare: Neon lights, 1.25x.

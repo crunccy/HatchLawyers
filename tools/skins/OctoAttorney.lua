@@ -1,4 +1,4 @@
--- Octo-Attorney (Rare, Ocean egg) - block remake 2026-10-10. A small purple octopus in a dark suit (deliberately
+-- Octo Otto (Rare, Ocean egg) - block remake 2026-10-10. A small purple octopus in a dark suit (deliberately
 -- unlike the Kraken: smaller, purple, office-y): round dome head with spots, big eyes behind square black glasses,
 -- a dark jacket with a white shirt + purple tie, six curling tentacles below the jacket hem, two tentacle arms - one
 -- with a briefcase, one with a fountain pen. Front-facing. Rare: Neon purple lapel pin, 1.0x.

@@ -141,6 +141,16 @@ check("catalog ids are unique, rarities and eggs valid, every lawyer has a model
 	assert(seen[Config.Lawyers.StartId], "the starting lawyer " .. tostring(Config.Lawyers.StartId) .. " isn't in the catalog")
 end)
 
+check("lawyer names don't use boss titles (docs/CHARACTER_STYLE.md: Naming rule)", function()
+	local titles = { "Counsel", "Partner", "Prosecutor", "Attorney", "Barrister", "Solicitor", "Litigator", "Advocate",
+		"Judge", "Justice", "Magistrate", "Arbiter" }
+	for _, skin in Config.SkinCatalog do
+		for _, title in titles do
+			assert(not string.find(skin.Name, title, 1, true), skin.Id .. ' is called "' .. skin.Name .. '" - ' .. title .. " is a boss title")
+		end
+	end
+end)
+
 ------------------------------------------------------------------ egg tiers
 check("themed eggs: unlock milestones and power climb with price", function()
 	local list = table.clone(Config.Eggs.Themed)

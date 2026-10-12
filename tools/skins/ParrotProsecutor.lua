@@ -1,4 +1,4 @@
--- Parrot Prosecutor (Rare, Pet egg) - block remake 2026-10-10. A tall scarlet macaw standing upright: red body and
+-- Polly Parrot (Rare, Pet egg) - block remake 2026-10-10. A tall scarlet macaw standing upright: red body and
 -- head, white face patch, a big hooked beak (pale top, black bottom), blue + yellow layered wings at the sides, long
 -- red/blue tail feathers behind, grey grippy feet, a white shirt collar with a blue tie, and an "OBJECTION!" speech
 -- bubble (white bubble, red "!") floating by its head. Front-facing. Rare: Neon-yellow wing tips, 1.05x.

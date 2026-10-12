@@ -1,4 +1,4 @@
--- Obvious Advocate (Id KhabyClaim, Rare; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC deadpan "it's that simple" lawyer (original design -
+-- Obvious Ollie (Id KhabyClaim, Rare; renamed 2026-10-11) - block remake 2026-10-10. A GENERIC deadpan "it's that simple" lawyer (original design -
 -- deliberately no real person's likeness): a grey suit with a dark tie, both arms out in an open-palms shrug, a flat
 -- unimpressed face with raised brows, and a little glowing lightbulb idea floating overhead. Front-facing.
 -- Rare: Neon bulb, 1.05x. Colours follow the catalog entry.

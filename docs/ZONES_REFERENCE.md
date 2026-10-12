@@ -73,6 +73,10 @@ creatures shown inside, so you see other players' collections on the way out.
 - **The first zone is next to spawn** and the first egg is free (the tutorial target: first egg within 2 minutes).
 
 ## Bosses: idea for the user to decide
+**Decided 2026-10-12 → [BOSSES.md](BOSSES.md):** the simple version, but a dropped egg is free game for anyone;
+Boss Cases parked for later. Boss names: The Senior Partner, Barrister Bulldog, Judge Martello, Prosecutor Big Cheese,
+Magistrate Megalodon, Chief Justice Eclipse.
+
 In the reference, giants roam the zones. Our version could be **"Opposing Counsel"**: a giant rival lawyer per zone
 (a briefcase-swinging partner in Briefcase Bay, a huge bulldog attorney in Pet Park, and so on) walking the lane.
 - **Simple version:** if it bumps you while you carry an egg, you drop the egg ("OBJECTION!") and it rolls back.

@@ -1,4 +1,4 @@
--- Seahorse Solicitor (Rare, Ocean egg) - block remake 2026-10-10. An upright orange seahorse, gently hovering:
+-- Sandy Seahorse (Rare, Ocean egg) - block remake 2026-10-10. An upright orange seahorse, gently hovering:
 -- stacked body with a pale ridged belly, head turned toward the viewer with a long tube snout, a little coronet on
 -- top, a teal fin down the back, a tail curling under, tiny fins as "hands" holding a rolled scroll, a teal bow tie.
 -- Front-facing, HOVERS. Rare: Neon bubbles, 1.05x.
