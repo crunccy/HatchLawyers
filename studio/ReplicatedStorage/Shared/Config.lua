@@ -921,6 +921,34 @@ Config.Zones = {
 	EggColors = { Briefcase = Color3.fromRGB(245, 200, 70), Golden = Color3.fromRGB(255, 205, 40) },
 }
 
+
+-- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from
+-- tools/blender/bosses.py). One boss roams each zone; it winds up (a warning on the floor + a sound, at least 1 s) and
+-- attacks. A hit knocks ALL your carried eggs out around you; a loose egg is free for anyone to grab (walk into it)
+-- until it vanishes. No on-screen text for any of it (user's call). Bosses stay Margin studs inside their zone's
+-- Bounds, so they never reach the Safe Zone, a gate, the firms or the incubators.
+-- Attack = "Cone" (Radius studs in front, Angle degrees wide) | "Ring" (Radius studs all round).
+-- Difficulty is for design only - never shown.
+Config.Bosses = {
+	SafeAfterHit = 3, -- seconds a hit player can't be hit again
+	DroppedEggLifetime = 30, -- seconds a loose egg stays (it blinks in its last 5 s)
+	DropScatter = { 4, 10 }, -- studs from the player the eggs land
+	DropStagger = 0.05, -- seconds between eggs leaving the pile
+	GrabbableAfter = 0.9, -- seconds before a loose egg can be grabbed (it's still flying / bouncing)
+	GrabRadius = 4, -- studs (flat) from a loose egg's middle that grab it
+	TriggerRange = 26, -- a player this close (flat studs) makes the boss attack, once AttackEvery has passed
+	Knockback = 38, -- studs/s the hit player is thrown back
+	Margin = { X = 24, Z = 8 }, -- studs the boss keeps inside its zone's Bounds
+	List = {
+		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
+			WalkSpeed = 7, AttackEvery = 8, Windup = 1.2, Attack = "Cone", Radius = 15, Angle = 80, StayNearMiddle = 12,
+			Color = Color3.fromRGB(255, 120, 60) },
+		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
+			WalkSpeed = 8, AttackEvery = 8, Windup = 1.0, Attack = "Ring", Radius = 13,
+			Color = Color3.fromRGB(255, 90, 90) },
+	},
+}
+
 local function deepFreeze(t: { [any]: any })
 	for _, v in t do
 		if type(v) == "table" and not table.isfrozen(v) then

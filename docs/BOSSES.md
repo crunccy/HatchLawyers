@@ -1,7 +1,12 @@
 # Zone bosses: "Opposing Counsel" (concepts, 2026-10-12)
 
 One boss per egg zone, roaming the lane like the giants in the reference game (docs/ZONES_REFERENCE.md). **Concepts, not
-specs:** a local session builds the models (brick style, docs/CHARACTER_STYLE.md) and the code. Nothing here is built.
+specs:** a local session builds the models (brick style, docs/CHARACTER_STYLE.md) and the code.
+**Built (2026-10-12, mr.robe's session): #1 The Senior Partner and #2 Barrister Bulldog** - the two zones that exist.
+Models `tools/blender/bosses.py` → `tools/zones/BuildBosses.lua` → `ReplicatedStorage.Bosses`; AI + hits
+`Server.BossService`; loose eggs `Server.ZoneService` (`dropAll`, walk-into grab); drawing / animation / warnings /
+effects `StarterPlayerScripts.Bosses`; numbers `Config.Bosses`. Bosses 3-6 come with their zones: add a model to
+bosses.py (groups + joints), an entry to `Config.Bosses.List`, and a pose function in the Bosses client.
 Bosses are the only characters whose names carry legal titles (CHARACTER_STYLE.md → Naming rule).
 
 ## What a boss does (user's calls, 2026-10-12)

@@ -136,6 +136,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   → `tools/zones/BuildCarryAnimation.lua`; child `Source` = the KeyframeSequence). Played by
   `StarterPlayerScripts.CarryPose`. Published by crnuch as `rbxassetid://86324090376520`. **Animations must be
   published from the place owner's account (crnuch, user 2234491534)** — an upload from mr_blox174 fails to load.
+- `ReplicatedStorage.Bosses` — the zone boss models (animation groups with Joint / Parent attributes; Blender:
+  `tools/blender/bosses.py` → `tools/zones/BuildBosses.lua`). `Server.BossService` runs them (state in
+  `ReplicatedStorage.BossStates`, `Remotes.Bosses`), `StarterPlayerScripts.Bosses` draws them; `Config.Bosses`.
+  Sounds: `rbxasset://sounds/swoosh.wav` is NOT approved for this place - use the game's licensed ids.
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.

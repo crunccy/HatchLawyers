@@ -13,6 +13,8 @@
 --     the server also refuses to sell eggs in a zone the player has no License for). Prestige resets the License.
 --   * TELEPORT pads at the hub (TeleportPrompt, attribute Zone) go to a zone's Arrival spot (if licensed).
 --   * WALK SPEED comes from the Speed level (Config.Zones.Speed, base 32 = the game's doubled speed).
+--   * LOOSE EGGS: a zone boss's hit (Server.BossService) knocks every carried egg out (ZoneService.dropAll); anyone
+--     who walks into a loose egg takes it for free (docs/BOSSES.md).
 -- Mirrored player attributes: ZoneLicense, ZoneCarry, ZoneCarryMax, ZoneSpeed, Carried ("Briefcase,Pet*,..."
 -- where * = golden). Remotes.Zones (RemoteEvent), server -> client: ("Note", text) ("Alert", { text, zone })
 -- ("Bought", { egg, golden, count, max }) ("Upgraded", { kind, level, text }) ("Hatched", { left }).
@@ -119,20 +121,12 @@ function ZoneService.sync(player: Player)
 end
 
 ---------------------------------------------------------------- zone eggs
-local function buildEgg(zone: Zone, spot: BasePart, golden: boolean): Model
-	local egg = zone.def.Egg
+-- The egg itself (a zone egg or a loose one): the shell, its markings and, if golden, its glow - knee-high and
+-- standing ON the floor at `floorPos` (docs/ZONES_REFERENCE.md: nothing floats). Returns (model, shell, home).
+local function eggModel(egg: string, golden: boolean, floorPos: Vector3): (Model, BasePart, CFrame)
 	local m = Instance.new("Model")
-	m.Name = "ZoneEgg"
-	m:SetAttribute("Zone", zone.def.Id)
-	m:SetAttribute("Egg", egg)
-	m:SetAttribute("Golden", golden)
-	-- the label's second line (StarterPlayerScripts.Zones shows "<egg name>" then this, in its rarity colour)
-	m:SetAttribute("Rarity", if golden then "Rare" else "Common")
-	m.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
-	-- knee-high and sitting ON the lane floor (docs/ZONES_REFERENCE.md: nothing floats)
 	local size = if golden then Vector3.new(2.8, 3.5, 2.8) else Vector3.new(2.3, 2.9, 2.3)
-	local floorY = spot.Position.Y - spot.Size.Y / 2
-	local home = CFrame.new(spot.Position.X, floorY + size.Y / 2, spot.Position.Z)
+	local home = CFrame.new(floorPos.X, floorPos.Y + size.Y / 2, floorPos.Z)
 	local shell = Instance.new("Part")
 	shell.Name = "Shell"
 	shell.Anchored = true
@@ -186,6 +180,20 @@ local function buildEgg(zone: Zone, spot: BasePart, golden: boolean): Model
 		sparkle.Parent = shell
 	end
 	m.PrimaryPart = shell
+	return m, shell, home
+end
+
+local function buildEgg(zone: Zone, spot: BasePart, golden: boolean): Model
+	local egg = zone.def.Egg
+	local floorY = spot.Position.Y - spot.Size.Y / 2
+	local m, shell, home = eggModel(egg, golden, Vector3.new(spot.Position.X, floorY, spot.Position.Z))
+	m.Name = "ZoneEgg"
+	m:SetAttribute("Zone", zone.def.Id)
+	m:SetAttribute("Egg", egg)
+	m:SetAttribute("Golden", golden)
+	-- the label's second line (StarterPlayerScripts.Zones shows "<egg name>" then this, in its rarity colour)
+	m:SetAttribute("Rarity", if golden then "Rare" else "Common")
+	m.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
 	m:SetAttribute("Home", home)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.Name = "BuyPrompt"
@@ -272,6 +280,166 @@ local function buy(player: Player, zone: Zone, spot: BasePart, m: Model)
 	PlayerData.sync(player)
 	ZoneService.sync(player)
 	Remote:FireClient(player, "Bought", { egg = zone.def.Egg, golden = golden, count = #z.Carried, max = carryMax(z) })
+end
+
+---------------------------------------------------------------- loose eggs (knocked out of a player's arms by a boss)
+-- Server.BossService calls ZoneService.dropAll on a hit: EVERY carried egg comes out and lands on the lane floor around
+-- the player as a LooseEgg (tag "LooseEgg"; attributes Zone, Egg, Golden, GrabbableAt and ExpiresAt in
+-- workspace:GetServerTimeNow() time). It stays hidden while it flies (each client flies its own copy there:
+-- StarterPlayerScripts.Bosses), then ANYONE who walks into it takes it for free - it was already paid for (user's call,
+-- docs/BOSSES.md) - through the normal carry checks (arms full, lawyer room). Unclaimed, it vanishes. No text.
+local BCFG = Config.Bosses
+type Loose = { model: Model, parts: { BasePart }, zone: Zone, egg: string, golden: boolean, grabbableAt: number, expiresAt: number, shown: boolean }
+local loose: { Loose } = {}
+ZoneService.onGrab = nil :: ((player: Player, at: Vector3, egg: string, golden: boolean) -> ())?
+
+local function floorAt(zone: Zone, x: number, z: number): number
+	local include = {}
+	for _, name in { "Floor", "Path" } do
+		local f = zone.folder:FindFirstChild(name)
+		if f then
+			table.insert(include, f)
+		end
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = include
+	local hit = workspace:Raycast(Vector3.new(x, 60, z), Vector3.new(0, -120, 0), params)
+	return if hit then hit.Position.Y else 0
+end
+
+-- Knocks every carried egg out of `player`'s arms around `from` (a point in `zoneId`). Returns where each lands, for
+-- the clients' flight animation: { { egg, golden, at } } (empty when they carried nothing).
+function ZoneService.dropAll(player: Player, zoneId: string, from: Vector3): { { egg: string, golden: boolean, at: Vector3 } }
+	local data = PlayerData.get(player)
+	local zone = zoneById[zoneId]
+	if not data or not zone or not BCFG then
+		return {}
+	end
+	local z = zonesData(data)
+	local items = z.Carried
+	if #items == 0 then
+		return {}
+	end
+	z.Carried = {}
+	ZoneService.sync(player)
+	local b = zone.def.Bounds
+	local minX, maxX = math.min(b[1], b[3]) + 4, math.max(b[1], b[3]) - 4
+	local minZ, maxZ = math.min(b[2], b[4]) + 4, math.max(b[2], b[4]) - 4
+	local now = workspace:GetServerTimeNow()
+	local out = {}
+	local spin = rng:NextNumber(0, math.pi * 2)
+	for i, item in items do
+		-- each egg its own way round the player; taller piles spray wider
+		local a = spin + (i / #items) * math.pi * 2 + rng:NextNumber(-0.35, 0.35)
+		local r = rng:NextNumber(BCFG.DropScatter[1], BCFG.DropScatter[2]) * (1 + 0.04 * #items)
+		local x = math.clamp(from.X + math.cos(a) * r, minX, maxX)
+		local zz = math.clamp(from.Z + math.sin(a) * r, minZ, maxZ)
+		local at = Vector3.new(x, floorAt(zone, x, zz), zz)
+		local golden = item.Golden == true
+		local m, _, _ = eggModel(item.Egg, golden, at)
+		m.Name = "LooseEgg"
+		local grabbableAt = now + BCFG.GrabbableAfter + (i - 1) * BCFG.DropStagger
+		m:SetAttribute("Zone", zone.def.Id)
+		m:SetAttribute("Egg", item.Egg)
+		m:SetAttribute("Golden", golden)
+		m:SetAttribute("GrabbableAt", grabbableAt)
+		m:SetAttribute("ExpiresAt", grabbableAt + BCFG.DroppedEggLifetime)
+		local parts = {}
+		for _, p in m:GetDescendants() do
+			if p:IsA("BasePart") then
+				p.Transparency = 1 -- (shown once it has landed)
+				p.CanQuery = false
+				table.insert(parts, p)
+			elseif p:IsA("PointLight") or p:IsA("ParticleEmitter") then
+				p.Enabled = false
+			end
+		end
+		local folder = zone.folder:FindFirstChild("LooseEggs")
+		if not folder then
+			folder = Instance.new("Folder")
+			folder.Name = "LooseEggs"
+			folder.Parent = zone.folder
+		end
+		CollectionService:AddTag(m, "LooseEgg")
+		m.Parent = folder
+		table.insert(loose, { model = m, parts = parts, zone = zone, egg = item.Egg, golden = golden,
+			grabbableAt = grabbableAt, expiresAt = grabbableAt + BCFG.DroppedEggLifetime, shown = false })
+		table.insert(out, { egg = item.Egg, golden = golden, at = at })
+	end
+	return out
+end
+
+-- free, but only into arms with room, and only while the player has lawyer room for it
+local function tryGrab(player: Player, l: Loose): boolean
+	local data = PlayerData.get(player)
+	if not data then
+		return false
+	end
+	local z = zonesData(data)
+	if #z.Carried >= carryMax(z) then
+		return false
+	end
+	local room = (eggApi("room", player) :: number?) or 0
+	if room - #z.Carried <= 0 then
+		return false
+	end
+	table.insert(z.Carried, { Egg = l.egg, Golden = l.golden })
+	ZoneService.sync(player)
+	return true
+end
+
+local function looseLoop()
+	while true do
+		task.wait(0.15)
+		if #loose == 0 then
+			continue
+		end
+		local now = workspace:GetServerTimeNow()
+		local roots = {}
+		for _, player in Players:GetPlayers() do
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if root and humanoid and humanoid.Health > 0 then
+				table.insert(roots, { player = player, root = root })
+			end
+		end
+		for i = #loose, 1, -1 do
+			local l = loose[i]
+			if now >= l.expiresAt or not l.model.Parent then
+				l.model:Destroy()
+				table.remove(loose, i)
+				continue
+			end
+			if now < l.grabbableAt then
+				continue
+			end
+			if not l.shown then
+				l.shown = true
+				for _, p in l.parts do
+					p.Transparency = 0
+				end
+				for _, e in l.model:GetDescendants() do
+					if e:IsA("PointLight") or e:IsA("ParticleEmitter") then
+						e.Enabled = true
+					end
+				end
+			end
+			local at = (l.model.PrimaryPart :: BasePart).Position
+			for _, r in roots do
+				local d = Vector3.new(r.root.Position.X - at.X, 0, r.root.Position.Z - at.Z).Magnitude
+				if d <= BCFG.GrabRadius and math.abs(r.root.Position.Y - at.Y) < 8 and tryGrab(r.player, l) then
+					l.model:Destroy()
+					table.remove(loose, i)
+					if ZoneService.onGrab then
+						ZoneService.onGrab(r.player, at, l.egg, l.golden)
+					end
+					break
+				end
+			end
+		end
+	end
 end
 
 ---------------------------------------------------------------- incubators
@@ -479,6 +647,10 @@ function ZoneService.start()
 	CollectionService:GetInstanceAddedSignal("Incubator"):Connect(hookIncubator)
 	for _, inc in CollectionService:GetTagged("Incubator") do
 		hookIncubator(inc)
+	end
+
+	if BCFG then
+		task.spawn(looseLoop)
 	end
 
 	-- fill every zone right away, then keep topping them up

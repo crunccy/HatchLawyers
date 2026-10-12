@@ -5,10 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe's local session · since 2026-10-12 (night):** building the zone BOSSES (user: "yeah do the bosses",
-  before the lane review) for the two zones that exist: The Senior Partner (Briefcase Bay) + Barrister Bulldog (Pet
-  Park), per docs/BOSSES.md: Blender models, `Config.Bosses`, `Server.BossService`, loose eggs in ZoneService,
-  `StarterPlayerScripts.Bosses`. The other four bosses come with their zones.
 - **mr.robe's local session · since 2026-10-12:** egg zones as the walled lane (docs/ZONES_REFERENCE.md). Rough
   Briefcase Bay + Pet Park are LIVE in Studio and waiting for the users' review (comparisons in
   `art/zone_decor/compare_*.png`); the other four zones are NOT started — don't build them until the review is in.
@@ -24,6 +20,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
       **Rule: publish animations (and other assets the game loads) from the place owner's account (crnuch).** If
       the Blender animation changes, re-publish from there and swap the id.
 - [ ] Eye-check the carry animation in a real window (hug loop, the pile's sway while walking).
+- [ ] **Bosses: eye-check in a real window** (walk / idle / windup / slam / bark poses, the floor warnings, the egg
+      flight + bounce, loose-egg glow and blink) and tune `Config.Bosses` (AttackEvery, Windup, Radius, Knockback) by
+      feel. The bark is a low gavel knock - swap in a real licensed bark if one turns up. Bosses 3-6 come with their
+      zones (docs/BOSSES.md says how). Boss Cases: parked (user).
 - [ ] **Briefcase tiers 4-5 costs are guesses** (Golden 2.5e9 → 8 eggs, Diamond 2.5e11 → 12 eggs; x100 per tier like
       before). Put them in the zones economy sim run (item below) and eye-check the briefcases on a few avatars.
 - [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
@@ -104,6 +104,39 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-12 — mr.robe, local session: zone bosses - The Senior Partner + Barrister Bulldog are live
+- User's call: "yeah do the bosses" (before the lane review). Built the two whose zones exist, per docs/BOSSES.md.
+- **Models (Blender, `tools/blender/bosses.py`, render `art/bosses/preview.png`):** brick blocks in animation groups
+  with joints. The Senior Partner, 2x a player: charcoal three-piece suit, red tie, gold watch chain, white walrus
+  moustache, half-moon glasses, grey comb-over, grumpy brows, a huge battered briefcase in one hand, pocket watch in
+  the other, papers swirling round his ankles (68 blocks). Barrister Bulldog: squat fawn bulldog, black robe, curly
+  white wig, barrister's bands + red bow tie, jowls, underbite, drool (77 blocks). → `tools/zones/BuildBosses.lua` →
+  `ReplicatedStorage.Bosses`.
+- **`Config.Bosses`** (live + src): shared SafeAfterHit 3, DroppedEggLifetime 30, DropScatter 4-10, DropStagger 0.05,
+  GrabbableAfter 0.9, GrabRadius 4, TriggerRange 26, Knockback 38, Margin X 24 / Z 8; Partner: walk 7, every 8 s,
+  windup 1.2, Cone 15 studs / 80°; Bulldog: walk 8, every 8 s, windup 1.0, Ring 13.
+- **`Server.BossService`** (new, started from Main): each boss walks short legs inside its zone (Partner strolls the
+  middle, Bulldog zig-zags; never the Safe Zone / gates), idles (watch check / sniff / sit-and-scratch), and attacks
+  the nearest player in range: windup, then the hit is decided on the server from where everyone stands. Hit = every
+  carried egg knocked out (`ZoneService.dropAll`) + 3 s safe; carrying nothing = a bump. The server moves no parts:
+  `ReplicatedStorage.BossStates.<Model>` attributes (From/To/MoveStart/MoveEnd/Yaw/State/StateStart/StateEnd/Idle);
+  `Remotes.Bosses` ("Hit", "Grab").
+- **`Server.ZoneService`:** the egg model is shared (`eggModel`) so loose eggs look like zone eggs. `dropAll` lands
+  each egg around the player inside the zone (hidden until it has landed); a loop shows them, lets anyone who walks
+  into one take it free through the normal carry checks (arms full / lawyer room), and removes them after 30 s.
+- **`StarterPlayerScripts.Bosses`** (new): draws each boss near the camera (≤340 studs; further ones are hidden) and
+  poses its groups every frame: walk cycles, watch check, briefcase lifted overhead with a tremble then slammed in
+  front; waddle, wag, sniff, sit-and-scratch, puff-up then bark. Windup = a pulsing warning on the floor in the boss's
+  colour (a fan for the cone, a disc for the ring) + the alert sound cut short; attack = paper burst / shockwave rings
+  + a gavel thump + camera shake nearby; hit = sparks, knockback, the eggs pop out top-down, arc, squash, bounce twice;
+  loose eggs bob, spin, glow (Highlight) and blink in their last 5 s; grab = the egg hops into the grabber's arms.
+  No text anywhere.
+- **Playtested:** both bosses spawn and walk; Partner: windup 1.2 s with the floor warning + briefcase above his head
+  (y 11.9 vs head 9.1) → slam → Hit, 3 eggs out; loose eggs landed on the floor (golden kept), shown after landing,
+  grabbed by walking into them; a second hit 8 s later. Bulldog: windup disc → bark shockwave → Hit, player thrown
+  ~6 studs. No errors (after swapping rbxasset swoosh.wav, "not approved for this place", for the alert sound).
+  mr_blox174's two carried Briefcase eggs were knocked out during testing and restored.
 
 ## 2026-10-12 — mr.robe, local session: HUD moved up; the Carry upgrade is BRIEFCASES now
 - **HUD** (user: "get rid of the 'case coins float up by your money' … move up the money and the text below"):
