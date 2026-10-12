@@ -103,10 +103,10 @@ local panel = make("Frame", {
 	Position = UDim2.fromScale(0.5, 0.5),
 	Size = UDim2.fromOffset(560, 470),
 	BackgroundColor3 = Skin.Panel,
-	Active = true, -- sinks taps (a tap on empty panel space must not reach the Dim and close it)
 	Parent = gui,
 }, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
 panel:SetAttribute("NoSkin", true)
+Skin.blockClicks(panel) -- a tap on empty panel space must not reach the dim and close it
 Skin.studs(panel, 0.93, nil, 30)
 local sw = Skin.swatch("Gold")
 local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 64), BackgroundColor3 = WHITE, ZIndex = 1, Parent = panel }, {

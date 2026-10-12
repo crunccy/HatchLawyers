@@ -1,19 +1,19 @@
 --!strict
--- The core loop, fully server-side. Clients walk in through the firm's entrance every
--- Formulas.clientInterval(lawyers) seconds (while a waiting-room seat is free) and wait. The player assigns
--- a waiting client to a free lawyer (Remotes.AssignClient; the Manager does it automatically once
--- hired); the client walks to that desk, the case runs on a timer, the server rolls the outcome and
--- pays out, and the client walks out. Clients only watch attributes:
+-- The core loop, fully server-side. v16 (egg zones): there is no waiting room any more. Whenever a lawyer is
+-- free (and at most every Formulas.clientInterval(lawyers) seconds) a client walks in from the street straight to
+-- that lawyer's desk (the Manager sends them to the best-earning free lawyer, otherwise the first free one); the
+-- case runs on a timer, the server rolls the outcome and pays out, and the client walks out. Remotes.AssignClient
+-- only answers that clients find their lawyer by themselves now. Clients only watch attributes:
 -- v12: every office is a desk; an office with no lawyer is "Empty" (shows its EmptyOffice pad and
 -- Place Lawyer prompt) and gets no clients. The lawyer sitting in an office is dressed as who they are
 -- (Shared.SkinLook) and multiplies the payout (Formulas.lawyerEarn); the office level sets the base.
 --   desk model: Phase "Empty" | "Idle" | "Walking" | "Case", ClientTier (index into Config.Clients),
 --               CaseStart / CaseEnd (workspace:GetServerTimeNow() timestamps)
---   client NPC (tag FirmClient): WaitingId, OwnerUserId, Tier, Waiting (shows Assign), Seated,
+--   client NPC (tag FirmClient): OwnerUserId, Tier, AssignedDesk, Seated,
 --               Walking + WalkPath / WalkStart / WalkSpeed (animated by StarterPlayerScripts.ClientWalk)
 -- The LAWYERS panel reads player attributes instead (desk models stream out when the player is far away):
---   Desk<N>Phase / CaseStart / CaseEnd / ClientName / ClientTier / RestUntil / Queued, and WaitingClients (JSON
---   list of { Id, Tier, Name, Situation, Seated }).
+--   Desk<N>Phase / CaseStart / CaseEnd / ClientName / ClientTier / RestUntil / Queued, and WaitingClients (always
+--   an empty JSON list now, kept for the LAWYERS panel).
 -- Lawyer changes on a busy office are QUEUED (2026-10-09 lawyer-management overhaul): "unseat" or a bench
 -- lawyer's uid waits in desk.queued and is applied the moment the case ends (before anything can give that
 -- lawyer a new client). After every case the desk RESTS for Config.Case.RestAfterCase seconds, during which the
@@ -29,6 +29,7 @@ local Formulas = require(ReplicatedStorage.Shared.Formulas)
 local SkinLook = require(ReplicatedStorage.Shared.SkinLook)
 local Effects = require(ReplicatedStorage.Shared.Effects)
 local PlayerData = require(script.Parent.PlayerData)
+local FirmFeatures = require(script.Parent.FirmFeatures) -- bonuses from bought firm areas
 local FirmBuilder = require(script.Parent.FirmBuilder)
 local DeskLook = require(script.Parent.DeskLook)
 
@@ -58,22 +59,18 @@ export type DeskState = {
 	queued: string?, -- "unseat" or a bench lawyer's uid: applied as soon as the current case ends
 }
 
--- A client in the waiting room (walking to a seat, or seated waiting to be assigned).
-type Waiting = { id: number, tier: number, seat: number, model: Model, state: "walking" | "seated", seatedAt: number? }
-
 type Session = {
 	player: Player,
 	desks: { DeskState },
 	rng: Random,
 	firm: Model,
-	waiting: { [number]: Waiting },
+	waiting: { [number]: any }, -- always empty (no waiting room since v16); mirrored for the LAWYERS panel
 	nextId: number,
 	nextArrival: number,
-	lastAuto: number,
 }
 
 local TICK = 0.2
-local AUTO_INTERVAL = 0.8 -- the Manager assigns at most one client per this many seconds
+local ARRIVAL_RETRY = 1 -- nobody free: look for a free lawyer again this soon
 
 local CaseService = {}
 
@@ -357,22 +354,9 @@ local function setPhase(desk: DeskState, phase: "Empty" | "Idle" | "Walking" | "
 	mirror(desk)
 end
 
--- The waiting room, for the LAWYERS panel's client list.
+-- The LAWYERS panel's client list: empty since clients walk straight to their lawyer (v16).
 local function mirrorWaiting(session: Session)
-	local list = {}
-	for _, w in session.waiting do
-		table.insert(list, {
-			Id = w.id,
-			Tier = w.tier,
-			Name = w.model:GetAttribute("ClientName"),
-			Situation = w.model:GetAttribute("Situation"),
-			Seated = w.state == "seated",
-		})
-	end
-	table.sort(list, function(a, b)
-		return a.Id < b.Id
-	end)
-	session.player:SetAttribute("WaitingClients", HttpService:JSONEncode(list))
+	session.player:SetAttribute("WaitingClients", HttpService:JSONEncode({}))
 end
 
 -- Every bonus source for one desk's case: office tier, the lawyer's skills, the Manager, plus extras.
@@ -387,6 +371,9 @@ local function deskBuffs(data: PlayerData.Data, index: number, clientTier: numbe
 		table.insert(sources, source)
 	end
 	for _, source in Formulas.managerSources(data.Manager and data.Manager.Levels) do
+		table.insert(sources, source)
+	end
+	for _, source in FirmFeatures.sourcesFor(data) do -- bought firm areas (Config.FirmAreas)
 		table.insert(sources, source)
 	end
 	for _, source in extra or {} do
@@ -550,20 +537,7 @@ local function resolveCase(session: Session, desk: DeskState)
 	end
 end
 
-------------------------------------------------------------------------------------------- waiting room
-
-local function freeSeat(session: Session): number?
-	local taken = {}
-	for _, w in session.waiting do
-		taken[w.seat] = true
-	end
-	for i = 1, #FirmBuilder.SEATS do
-		if not taken[i] then
-			return i
-		end
-	end
-	return nil
-end
+------------------------------------------------------------------------------------------- arrivals
 
 -- The skills of the lawyer in the highest-level office (Charming makes rare clients walk in more often).
 local function bestSkills(data: PlayerData.Data): { Formulas.OwnedSkill }?
@@ -587,136 +561,72 @@ local function workingLawyers(session: Session): number
 	return n
 end
 
--- A new client walks in through the entrance and takes a free seat.
-local function spawnArrival(session: Session)
-	local data = PlayerData.get(session.player)
-	local seat = freeSeat(session)
-	if not data or not seat then
-		return
-	end
-	local tutorial = not data.Tutorial.FirstCaseDone
-	if tutorial and next(session.waiting) then
-		return -- the tutorial starts with a single client: Neighbor Dave
-	end
-	local tier, forceId = 1, "NeighborDave"
-	if not tutorial then
-		local referral = Formulas.managerValue(data.Manager and data.Manager.Levels, "rareClients")
-		tier = Formulas.rollClient(session.rng, Formulas.clientWeightsFor(bestSkills(data), referral))
-		forceId = nil
-	end
-	session.nextId += 1
-	local id = session.nextId
-	local npc = makeClientModel(tier, session.rng, forceId)
-	npc:SetAttribute("WaitingId", id)
-	npc:SetAttribute("OwnerUserId", session.player.UserId)
-	CollectionService:AddTag(npc, "FirmClient")
-	npc.Parent = clientsFolder(session)
-	local entry: Waiting = { id = id, tier = tier, seat = seat, model = npc, state = "walking" }
-	session.waiting[id] = entry
-	mirrorWaiting(session)
-	local seatDef = FirmBuilder.SEATS[seat]
-	local face = session.firm.WorldPivot:VectorToWorldSpace(seatDef.face)
-	walk(npc, toWorld(session, FirmBuilder.routeToSeat(seat)), face, function()
-		if session.waiting[id] == entry then
-			entry.state = "seated"
-			entry.seatedAt = now()
-			npc:SetAttribute("Seated", seatDef.sit)
-			npc:SetAttribute("Waiting", true) -- shows the Assign to Lawyer button
-			mirrorWaiting(session)
-		end
-	end)
-end
-
--- Sends a seated client to a free lawyer. Used by the Assign button and the Manager.
-local function assign(session: Session, id: number, index: number): (boolean, string?)
-	local entry = session.waiting[id]
-	if not entry or entry.state ~= "seated" then
-		return false, "That client isn't ready yet"
-	end
-	local desk = nil
-	for _, d in session.desks do
-		if d.index == index then
-			desk = d
-		end
-	end
-	if not desk or desk.phase == "Empty" then
-		return false, "Nobody works in that office yet"
-	end
-	if desk.phase ~= "Idle" then
-		return false, "That lawyer is already on a case"
-	end
-	local data = PlayerData.get(session.player)
-	if not data then
-		return false, "Still loading"
-	end
-	session.waiting[id] = nil
-	mirrorWaiting(session)
-	local npc = entry.model
-	npc:SetAttribute("Waiting", false)
-	npc:SetAttribute("AssignedDesk", index)
-	desk.client = entry.tier
-	desk.clientName = npc:GetAttribute("ClientName") :: string?
-	desk.model:SetAttribute("ClientTier", entry.tier)
-	setPhase(desk, "Walking")
-	local tutorial = not data.Tutorial.FirstCaseDone and Config.Tutorial.FirstCaseGuaranteedWin
-	local spot = desk.model:FindFirstChild("ClientSpot") :: BasePart
-	walk(npc, toWorld(session, FirmBuilder.routeSeatToDesk(entry.seat, index)), spot.CFrame.LookVector, function()
-		if sessions[session.player] ~= session or not desk.model.Parent then
-			npc:Destroy()
-			return
-		end
-		npc.Parent = desk.model
-		desk.clientModel = npc
-		startCase(session, desk, entry.tier, tutorial)
-	end)
-	return true, nil
-end
-
--- The Manager: rarest waiting client first, to the best free lawyer, one at a time.
--- Without a Manager, clients self-assign after Config.Case.SelfAssignAfter seconds of waiting (longest wait
--- first, to the first free lawyer) so an AFK firm still earns; never during the tutorial's first case.
-local function autoAssign(session: Session, t: number)
-	local data = PlayerData.get(session.player)
-	if not data or t - session.lastAuto < AUTO_INTERVAL then
-		return
-	end
+-- The free lawyer a new client walks to: with a Manager, the office that earns the most per case (office level and
+-- lawyer power); without one, the first free office. A desk that is resting after a case is skipped until `t`
+-- passes its restUntil, so the player can always catch a lawyer free to swap them.
+local function freeDesk(session: Session, data: PlayerData.Data, t: number): DeskState?
 	local managed = data.Manager and data.Manager.Hired
-	if not managed and not data.Tutorial.FirstCaseDone then
-		return
-	end
-	local pick: Waiting? = nil
-	for _, w in session.waiting do
-		if w.state ~= "seated" then
-			continue
-		end
-		if managed then
-			if not pick or w.tier > pick.tier then
-				pick = w
-			end
-		elseif t - (w.seatedAt or t) >= Config.Case.SelfAssignAfter and (not pick or (w.seatedAt or t) < (pick.seatedAt or t)) then
-			pick = w
-		end
-	end
-	if not pick then
-		return
-	end
-	-- the Manager picks the free lawyer that earns the most per case (office level and lawyer power);
-	-- a self-assigning client just takes the first free office
 	local best, bestScore = nil, -math.huge
 	for _, desk in session.desks do
 		local d = data.Desks[desk.index]
 		local lawyer = PlayerData.lawyerAt(data, desk.index)
-		if desk.phase == "Idle" and d and lawyer and t >= desk.restUntil then
+		if desk.phase == "Idle" and d and lawyer and t >= desk.restUntil and desk.model.Parent and desk.model:FindFirstChild("ClientSpot") then
 			local score = if managed then Formulas.basePayout(d.Level) * Formulas.lawyerEarn(lawyer.Id, lawyer.Stars) else -desk.index
 			if score > bestScore then
 				best, bestScore = desk, score
 			end
 		end
 	end
-	if best then
-		session.lastAuto = t
-		assign(session, pick.id, best.index)
+	return best
+end
+
+-- A new client walks in from the street straight to a free lawyer's desk. Returns whether one came.
+-- The tutorial starts with a single client (Neighbor Dave), who doesn't wait for the new lawyer's rest.
+local function spawnArrival(session: Session): boolean
+	local data = PlayerData.get(session.player)
+	if not data then
+		return false
 	end
+	local tutorial = not data.Tutorial.FirstCaseDone
+	if tutorial then
+		for _, d in session.desks do
+			if d.phase == "Walking" or d.phase == "Case" then
+				return false
+			end
+		end
+	end
+	local desk = freeDesk(session, data, if tutorial then math.huge else now())
+	if not desk then
+		return false
+	end
+	local tier, forceId = 1, "NeighborDave"
+	if not tutorial then
+		local referral = Formulas.managerValue(data.Manager and data.Manager.Levels, "rareClients") + FirmFeatures.rareClients(data)
+		tier = Formulas.rollClient(session.rng, Formulas.clientWeightsFor(bestSkills(data), referral))
+		forceId = nil
+	end
+	session.nextId += 1
+	local npc = makeClientModel(tier, session.rng, forceId)
+	npc:SetAttribute("OwnerUserId", session.player.UserId)
+	npc:SetAttribute("AssignedDesk", desk.index)
+	CollectionService:AddTag(npc, "FirmClient")
+	npc.Parent = clientsFolder(session)
+	desk.client = tier
+	desk.clientName = npc:GetAttribute("ClientName") :: string?
+	desk.model:SetAttribute("ClientTier", tier)
+	setPhase(desk, "Walking")
+	local spot = desk.model:FindFirstChild("ClientSpot") :: BasePart
+	local tutorialCase = tutorial and Config.Tutorial.FirstCaseGuaranteedWin
+	walk(npc, toWorld(session, FirmBuilder.routeToDesk(desk.index)), spot.CFrame.LookVector, function()
+		if sessions[session.player] ~= session or not desk.model.Parent or desk.phase ~= "Walking" then
+			npc:Destroy()
+			return
+		end
+		npc.Parent = desk.model
+		desk.clientModel = npc
+		startCase(session, desk, tier, tutorialCase)
+	end)
+	return true
 end
 
 -- Sets up an office's desk model: its lawyer (if any), its look, and the Place Lawyer prompt.
@@ -759,7 +669,6 @@ function CaseService.start(player: Player, firm: Model)
 		waiting = {},
 		nextId = 0,
 		nextArrival = now() + 1.5,
-		lastAuto = 0,
 	}
 	if not firm:FindFirstChild("WaitingClients") then
 		local folder = Instance.new("Folder")
@@ -856,15 +765,9 @@ function CaseService.stop(player: Player)
 end
 
 function CaseService.run()
-	AssignClient.OnServerInvoke = function(player: Player, id: unknown, index: unknown): (boolean, string?)
-		if type(id) ~= "number" or type(index) ~= "number" or index ~= index // 1 then
-			return false, "Bad request"
-		end
-		local session = sessions[player]
-		if not session then
-			return false, "Still loading"
-		end
-		return assign(session, id, index)
+	-- (no waiting room since v16: clients walk straight to a free lawyer)
+	AssignClient.OnServerInvoke = function(): (boolean, string?)
+		return false, "Clients walk straight to a free lawyer now"
 	end
 	task.spawn(function()
 		while true do
@@ -872,13 +775,13 @@ function CaseService.run()
 			local t = now()
 			for _, session in sessions do
 				if t >= session.nextArrival then
-					session.nextArrival = t + Formulas.clientInterval(workingLawyers(session))
-					local ok, err = pcall(spawnArrival, session)
+					local ok, came = pcall(spawnArrival, session)
 					if not ok then
-						warn("[CaseService] arrival failed:", err)
+						warn("[CaseService] arrival failed:", came)
 					end
+					-- one client per clientInterval while a lawyer is free; nobody free: check again soon
+					session.nextArrival = t + (if ok and came then Formulas.clientInterval(workingLawyers(session)) else ARRIVAL_RETRY)
 				end
-				autoAssign(session, t)
 				for _, desk in session.desks do
 					if desk.phase ~= "Case" or t < desk.endsAt then
 						continue

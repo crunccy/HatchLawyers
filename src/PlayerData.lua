@@ -57,15 +57,20 @@ export type Data = {
 	-- Level: how many times the player has gone Supreme (each adds a permanent payout bonus).
 	Prestige: { Level: number },
 	-- Segments: office segments the firm building has (2 lawyer offices each; Config.Firm).
-	Firm: { Segments: number },
+	Firm: { Segments: number, Areas: { [string]: boolean }? },
 	-- Developer-product receipts already granted: PurchaseId -> os.time(). ShopService checks this before
 	-- granting, so a receipt Roblox re-sends is never granted twice. Pruned to the newest 200.
 	Purchases: { [string]: number },
+	-- Hub minigames: game id -> os.time() it can be played again (MinigameService).
+	Minigames: { [string]: number },
+	-- Egg zones (ZoneService): License level (0 = none; prestige resets it), Carry / Speed upgrade levels (1 = start),
+	-- Carried = eggs bought but not hatched yet ({ Egg = "Briefcase" | themed id, Golden }), hatched at an incubator.
+	Zones: { License: number, Carry: number, Speed: number, Carried: { { Egg: string, Golden: boolean? } } },
 }
 
 type Session = { data: Data, releasing: boolean }
 
-local SCHEMA_VERSION = 14
+local SCHEMA_VERSION = 17
 local STORE_NAME = "PlayerData"
 local AUTOSAVE_INTERVAL = 60
 local LOCK_EXPIRY = 5 * 60 -- a lock this old belongs to a crashed server and can be taken over
@@ -75,6 +80,22 @@ local SAVE_ATTEMPTS = 3
 
 -- MIGRATIONS[n] upgrades a version-n record to version n + 1.
 local MIGRATIONS: { [number]: (any) -> any } = {
+	-- v16: egg zones (Config.Zones). No License, the starting bag and shoes, nothing carried.
+	[15] = function(data)
+		data.Zones = data.Zones or { License = 0, Carry = 1, Speed = 1, Carried = {} }
+		return data
+	end,
+	-- v15: hub minigames (Config.Minigames). Every game is ready.
+	[14] = function(data)
+		data.Minigames = data.Minigames or {}
+		return data
+	end,
+	-- v14: firm areas (Config.FirmAreas). Nobody owns any yet.
+	[13] = function(data)
+		data.Firm = data.Firm or { Segments = Config.Firm.StartSegments }
+		data.Firm.Areas = data.Firm.Areas or {}
+		return data
+	end,
 	-- v13: the Robux shop. No receipts granted yet.
 	[12] = function(data)
 		data.Purchases = data.Purchases or {}
@@ -188,9 +209,10 @@ local MIGRATIONS: { [number]: (any) -> any } = {
 		end
 		return data
 	end,
-	-- v14 (economy pass 2026-10-09): eggs' price ramp counts eggs opened since the last Supreme. Existing players
-	-- keep today's prices (RunOpened = everything opened so far) until they go Supreme.
-	[13] = function(data)
+	-- v17 (economy pass 2026-10-09; numbered after Studio's v14-v16 when merged 2026-10-12): eggs' price ramp counts
+	-- eggs opened since the last Supreme. Existing players keep today's prices (RunOpened = everything opened so far)
+	-- until they go Supreme.
+	[16] = function(data)
 		data.Eggs = data.Eggs or { Opened = 0, FreeUsed = false }
 		data.Eggs.RunOpened = data.Eggs.Opened or 0
 		return data
@@ -269,8 +291,10 @@ local function template(): Data
 		Goals = { Active = {}, Completed = 0 },
 		Manager = { Hired = false, Levels = {} },
 		Prestige = { Level = 0 },
-		Firm = { Segments = Config.Firm.StartSegments },
+		Firm = { Segments = Config.Firm.StartSegments, Areas = {} },
 		Purchases = {},
+		Minigames = {},
+		Zones = { License = 0, Carry = 1, Speed = 1, Carried = {} },
 	}
 end
 
