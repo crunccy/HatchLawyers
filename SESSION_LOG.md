@@ -4,6 +4,8 @@ Newest first. Each entry: what changed, where, and what's left. Keep the **Open 
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
 ## Open items
+- [ ] **Rebuild the egg-zone map after the reference** (docs/ZONES_REFERENCE.md; shots in `references/zones-ref-*.webp`,
+      before shots `references/map-before-2026-10-11-*.webp`). Decide on the "Opposing Counsel" bosses first.
 - [ ] **Build the 18 Epic / Mythic / Supreme lawyer models** (local session; concepts + ladder in
       docs/CHARACTER_STYLE.md → "Epic, Mythic and Supreme"). Ids are in `Config.SkinCatalog`; each needs
       `ReplicatedStorage.SkinModels.<Id>`. Do this before pushing the new rarities, or hatches show the blocky fallback.
