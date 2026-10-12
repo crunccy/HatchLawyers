@@ -9,7 +9,8 @@
 --   * WINDUP: a warning on the floor in the boss's colour (a fan in front for a Cone attack, a disc for a Ring) that
 --     grows and pulses, plus a sound - always at least a second to get out of the way.
 --   * ATTACK: a paper burst / a shockwave ring, a thump, a small camera shake nearby.
---   * HIT (Remotes.Bosses "Hit"): a burst on the player; the hit player is thrown back; their eggs pop out of the
+--   * HIT (Remotes.Bosses "Hit" - an attack, or touching the boss's body): a burst on the player; the hit player
+--     RAGDOLLS (limp, flung away tumbling, up again after RagdollTime s); their eggs pop out of the
 --     pile one by one, arc out, land with a squash, bounce and wait where the server put them (the server's own
 --     LooseEgg appears there once it has landed). Nothing carried: a bump and a boing.
 --   * LOOSE EGGS (tag "LooseEgg"): bob, spin slowly and glow so they read as "grab me"; blink in their last 5 s.
@@ -572,15 +573,78 @@ end)
 States.ChildRemoved:Connect(remove)
 
 ------------------------------------------------------------------ hits: knockback, and the eggs flying out
-local function knockback(away: Vector3, power: number)
+-- RAGDOLL (user's call 2026-10-12): the hit player goes limp, is flung away tumbling, and gets back up after
+-- `seconds`. Done by the player's own client (it owns its character's physics; everyone sees it replicate).
+-- The game's avatars use the new joints (AnimationConstraint + a BallSocketConstraint per joint): switching the
+-- AnimationConstraints off leaves the ball sockets holding the limbs - a ragdoll. Classic Motor6D rigs get a ball
+-- socket per joint for the duration. The Root joint stays on, so the HumanoidRootPart stays with the body.
+local ragdolled = false
+
+local function ragdoll(away: Vector3, power: number, seconds: number)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	if not root or not humanoid then
+	if not character or not root or not humanoid or humanoid.Health <= 0 then
 		return
 	end
-	humanoid:ChangeState(Enum.HumanoidStateType.Jumping) -- (in the air the push carries)
-	root.AssemblyLinearVelocity = away * power + Vector3.new(0, 24, 0)
+	local fling = away * power + Vector3.new(0, 32, 0)
+	if ragdolled or seconds <= 0 then
+		root.AssemblyLinearVelocity = fling
+		return
+	end
+	ragdolled = true
+	local undo: { () -> () } = {}
+	for _, d in character:GetDescendants() do
+		if d:IsA("AnimationConstraint") and d.Enabled and d.Name ~= "Root" then
+			d.Enabled = false
+			table.insert(undo, function()
+				d.Enabled = true
+			end)
+		elseif d:IsA("Motor6D") and d.Enabled and d.Part0 and d.Part1 and d.Name ~= "Root" and d.Name ~= "RootJoint" then
+			local a0 = Instance.new("Attachment")
+			a0.CFrame = d.C0
+			a0.Parent = d.Part0
+			local a1 = Instance.new("Attachment")
+			a1.CFrame = d.C1
+			a1.Parent = d.Part1
+			local socket = Instance.new("BallSocketConstraint")
+			socket.Attachment0, socket.Attachment1 = a0, a1
+			socket.LimitsEnabled = true
+			socket.UpperAngle = 70
+			socket.Parent = d.Parent
+			d.Enabled = false
+			table.insert(undo, function()
+				d.Enabled = true
+				socket:Destroy()
+				a0:Destroy()
+				a1:Destroy()
+			end)
+		elseif d:IsA("BasePart") and d ~= root and not d.CanCollide and d.Parent == character then
+			d.CanCollide = true -- (limbs land on the floor instead of sinking through it)
+			table.insert(undo, function()
+				d.CanCollide = false
+			end)
+		end
+	end
+	humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
+	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+	root.AssemblyLinearVelocity = fling
+	root.AssemblyAngularVelocity = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * 14
+	task.delay(seconds, function()
+		for _, f in undo do
+			pcall(f)
+		end
+		ragdolled = false
+		if player.Character ~= character or humanoid.Health <= 0 then
+			return
+		end
+		-- back on its feet, upright, facing the way it was flung
+		humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, true)
+		local p = root.Position
+		root.AssemblyAngularVelocity = Vector3.zero
+		root.CFrame = CFrame.lookAt(p + Vector3.new(0, 1.5, 0), p + Vector3.new(0, 1.5, 0) + Vector3.new(away.X, 0, away.Z) + Vector3.new(0, 0, 0.001))
+		humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+	end)
 end
 
 local function looseSize(golden: boolean): Vector3
@@ -650,7 +714,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		sparkBurst(at, Color3.fromRGB(255, 230, 120), 26)
 		playAt(at, if #info.eggs > 0 then "hit" else "boing")
 		if who == player then
-			knockback(info.away, if #info.eggs > 0 then CFG.Knockback else CFG.Knockback * 0.7)
+			ragdoll(info.away, CFG.Knockback, info.ragdoll or CFG.RagdollTime or 0)
 			shake(0.35, 0.7)
 		end
 		local base = os.clock()

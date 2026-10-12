@@ -5,15 +5,16 @@
 -- WINDS UP (Windup s: the clients show a warning on the floor and play a sound) and ATTACKS:
 --   "Cone" = Radius studs in front of it, Angle degrees wide (The Senior Partner's briefcase swing)
 --   "Ring" = Radius studs all round (Barrister Bulldog's bark).
--- Hits are decided HERE, from where everyone stands at that moment (never the client's word). A hit knocks every
--- egg the player carries out of their arms (ZoneService.dropAll: loose eggs anyone can grab), then the player can't be
--- hit for SafeAfterHit s. A player carrying nothing just gets bumped. No text anywhere (user's call).
+-- Hits are decided HERE, from where everyone stands at that moment (never the client's word). TOUCHING the boss's
+-- body (its Hitbox) is a hit too. A hit RAGDOLLS the player (their client, RagdollTime s, flung away) and knocks
+-- every egg they carry out of their arms (ZoneService.dropAll: loose eggs anyone can grab); then they can't be hit
+-- for SafeAfterHit s and this boss leaves them alone for IgnoreAfterHit s. No text anywhere (user's call).
 -- The bosses are DRAWN by every client (StarterPlayerScripts.Bosses) from ReplicatedStorage.BossStates.<Model>
 -- (a Configuration whose attributes are the boss's state), so the server never moves any parts:
 --   From / To (Vector3), MoveStart / MoveEnd (server time), Yaw (radians, the way it faces),
 --   State ("walk" | "idle" | "windup" | "attack" | "recover"), StateStart / StateEnd, Idle (which idle),
 --   plus its fixed settings (Model, Zone, Attack, Radius, Angle, Windup, Color, Scale = how much bigger than the model).
--- Remotes.Bosses, server -> all clients: ("Hit", { userId, from, away, eggs = { { egg, golden, at } }, t })
+-- Remotes.Bosses, server -> all clients: ("Hit", { userId, from, away, eggs = { { egg, golden, at } }, t, ragdoll })
 -- ("Grab", { userId, at, egg, golden }).
 
 local Players = game:GetService("Players")
@@ -39,6 +40,7 @@ type Boss = {
 	dirX: number, -- which way along the lane it's heading (-1 / 1)
 	zig: number, -- the Bulldog's zig-zag side (-1 / 1)
 	nextAttack: number,
+	ignore: { [Player]: number }, -- players it leaves alone until then (just hit)
 }
 
 local rng = Random.new()
@@ -111,9 +113,11 @@ end
 -- the next short leg (at most ~2 s), in the boss's own style
 local function nextLeg(b: Boss, here: Vector3, chase: Vector3?): Vector3
 	if chase and rng:NextNumber() < (b.def.Chase or 0.45) then
-		-- hunt a player in the zone, stopping just short of them
+		-- hunt a player in the zone, stopping just short of them (its front a few studs off them; walking INTO a
+		-- player is a hit - the touch check below - but it doesn't aim to trample)
 		local d = flat(chase - here)
-		local len = math.min(d.Magnitude - 4 * (b.def.Scale or 1), b.def.WalkSpeed * 2)
+		local front = ((b.def.Hitbox and b.def.Hitbox.Front) or 1) * (b.def.Scale or 1)
+		local len = math.min(d.Magnitude - front - 6, b.def.WalkSpeed * 2)
 		if len > 1 then
 			local p = here + d.Unit * len
 			return clampToArea(b, p.X, p.Z)
@@ -160,10 +164,35 @@ local function hit(b: Boss, player: Player, root: BasePart, from: Vector3, look:
 		return
 	end
 	safeUntil[player] = t + CFG.SafeAfterHit
+	b.ignore[player] = t + (CFG.IgnoreAfterHit or 0)
 	local eggs = ZoneService.dropAll(player, b.def.Zone, root.Position)
 	local away = flat(root.Position - from)
 	away = if away.Magnitude > 0.1 then away.Unit else look
-	Remote:FireAllClients("Hit", { userId = player.UserId, from = from, away = away, eggs = eggs, t = t })
+	-- (the hit player's own client ragdolls them for RagdollTime s and flings them away)
+	Remote:FireAllClients("Hit", { userId = player.UserId, from = from, away = away, eggs = eggs, t = t, ragdoll = CFG.RagdollTime or 0 })
+end
+
+-- Touching the boss's body (Config.Bosses.List[n].Hitbox, in model units x Scale: HalfWidth, Back, Front - the boss
+-- faces -Z) is a hit too: running into it, or it walking over you, ragdolls you and knocks your eggs out.
+local function touchLoop(b: Boss)
+	local hb = b.def.Hitbox
+	if not hb then
+		return
+	end
+	local s = b.def.Scale or 1
+	while b.state.Parent do
+		task.wait(0.1)
+		local pos = posAt(b, now())
+		local frame = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0)
+		local look = frame.LookVector
+		for _, p in playersInZone(b) do
+			local rel = frame:PointToObjectSpace(p.root.Position)
+			if math.abs(rel.X) <= hb.HalfWidth * s + 1.5 and rel.Z >= -(hb.Front * s + 1.5) and rel.Z <= hb.Back * s + 1.5
+				and rel.Y < (hb.Height or 10) * s then
+				hit(b, p.player, p.root, pos, look)
+			end
+		end
+	end
 end
 
 local function attack(b: Boss, here: Vector3, target: BasePart)
@@ -197,9 +226,10 @@ local function run(b: Boss)
 		local targets = playersInZone(b)
 		local nearest: BasePart? = nil
 		local nearestD = math.huge
+		local t = now()
 		for _, p in targets do
 			local d = flat(p.root.Position - here).Magnitude
-			if d < nearestD then
+			if d < nearestD and (b.ignore[p.player] or 0) <= t then -- (a player it just hit gets a head start)
 				nearest, nearestD = p.root, d
 			end
 		end
@@ -277,12 +307,21 @@ function BossService.start()
 		local b: Boss = {
 			def = def, bounds = bounds, area = area, floorY = floorY, state = state,
 			from = start, to = start, moveStart = 0, moveEnd = 0, yaw = math.pi / 2, dirX = -1, zig = 1,
-			nextAttack = now() + 3,
+			nextAttack = now() + 3, ignore = {},
 		}
 		setMove(b, start, start, 0)
 		setState(b, "idle", 1)
 		state:SetAttribute("Idle", "check")
 		state.Parent = folder
+		task.spawn(function()
+			while state.Parent do
+				local ok, err = pcall(touchLoop, b)
+				if not ok then
+					warn("[BossService] " .. def.Model .. " touch check tripped (restarting):", err)
+				end
+				task.wait(1)
+			end
+		end)
 		task.spawn(function()
 			while state.Parent do
 				local ok, err = pcall(run, b)

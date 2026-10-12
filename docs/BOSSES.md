@@ -9,6 +9,12 @@ effects `StarterPlayerScripts.Bosses`; numbers `Config.Bosses`. Bosses 3-6 come 
 bosses.py (groups + joints), an entry to `Config.Bosses.List`, and a pose function in the Bosses client.
 Bosses are the only characters whose names carry legal titles (CHARACTER_STYLE.md → Naming rule).
 
+**Later user's calls (2026-10-12, mr.robe's session), these override the rules below where they differ:** bosses are
+3.5x their model (the Senior Partner ~45 studs tall), reach far (45-stud cone / 34-stud ring), attack every 3-3.5 s,
+**walk faster than players** (38 / 44 vs 32), **ragdoll** the player on every hit, and **touching a boss's body is a
+hit** too. The windups still give time to get out of the warning, and a hit player gets 4 s safe + 5 s ignored by
+that boss. Numbers: `Config.Bosses`.
+
 ## What a boss does (user's calls, 2026-10-12)
 - **Any boss hit drops ALL your eggs.** Every boss, every attack: the whole pile goes flying.
 - **A dropped egg is free game.** Anyone can grab it, the player who dropped it included, at no price (it was

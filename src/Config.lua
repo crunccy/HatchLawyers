@@ -987,26 +987,32 @@ Config.Zones = {
 -- Difficulty is for design only - never shown.
 Config.Bosses = {
 	-- (2026-10-12, user: "make the attacks more frequent, make the models bigger, and make them faster and more
-	-- dangerous", then "the range should be MUCH longer and they should be MUCH larger". The fairness floor stays:
-	-- every windup gives a player at base speed 32 time to get out of the warning (the long ring's windup is longer),
-	-- 3 s safe after a hit, and they walk slower than 32, so you can always get away.)
-	SafeAfterHit = 3, -- seconds a hit player can't be hit again
+	-- dangerous", "the range should be MUCH longer and they should be MUCH larger", then "they should ragdoll the
+	-- player, touching the boss's hitbox ragdolls them too, and they should be faster than the player" - so they
+	-- outrun players now (base speed 32, max 40). Still fair: every windup lets a player at base speed get out of the
+	-- warning, and a player who was just hit is safe for SafeAfterHit s and left alone by that boss for IgnoreAfterHit s.)
+	SafeAfterHit = 4, -- seconds a hit player can't be hit again (they're ragdolled for RagdollTime of it)
+	IgnoreAfterHit = 5, -- seconds the boss that hit you won't chase or target you
+	RagdollTime = 2.2, -- seconds a hit player lies limp before getting up
 	DroppedEggLifetime = 30, -- seconds a loose egg stays (it blinks in its last 5 s)
 	DropScatter = { 6, 14 }, -- studs from the player the eggs land
 	DropStagger = 0.05, -- seconds between eggs leaving the pile
 	GrabbableAfter = 0.9, -- seconds before a loose egg can be grabbed (it's still flying / bouncing)
 	GrabRadius = 4, -- studs (flat) from a loose egg's middle that grab it
 	TriggerRange = 60, -- a player this close (flat studs) makes the boss attack, once AttackEvery has passed
-	Knockback = 75, -- studs/s the hit player is thrown back
+	Knockback = 75, -- studs/s the hit player is flung away
 	Margin = { X = 40, Z = 10 }, -- studs the boss keeps inside its zone's Bounds
-	-- Scale = drawn this much bigger than the Blender model; Chase = how often a walk heads for a player in the zone
+	-- Scale = drawn this much bigger than the Blender model; Chase = how often a walk heads for a player in the zone;
+	-- Hitbox = its body, in MODEL units (x Scale): HalfWidth, Back, Front (it faces -Z), Height - touching it is a hit
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 18, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
-			Attack = "Cone", Radius = 45, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60) },
+			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
+			Attack = "Cone", Radius = 45, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
+			Hitbox = { HalfWidth = 3.3, Back = 1.4, Front = 1.8, Height = 11.5 } },
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 22, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
-			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90) },
+			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
+			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90),
+			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 } },
 	},
 }
 

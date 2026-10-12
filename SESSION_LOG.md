@@ -105,6 +105,23 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-12 — mr.robe, local session: boss hits RAGDOLL, touching a boss is a hit, bosses outrun players
+- User: "they should ragdoll the player as well, and if the player collides with the hitbox of the boss it also
+  ragdolls them. They should also be faster than the player."
+- **Ragdoll** (`StarterPlayerScripts.Bosses`, the hit player's own client): Physics state, every AnimationConstraint
+  but Root switched off so the rig's BallSocketConstraints hold the limbs (Motor6D rigs get temporary ball sockets),
+  limbs collide, flung away (Knockback 75 + up) tumbling; after `RagdollTime` 2.2 s everything is switched back and
+  the player gets up facing the way they flew.
+- **Touch hits** (`Server.BossService.touchLoop`, every 0.1 s): `Config.Bosses.List[n].Hitbox` (model units x Scale:
+  HalfWidth / Back / Front / Height) - standing in it is a hit (ragdoll + all eggs out), same as an attack.
+- **Faster than players:** Partner walks 38, Bulldog 44 (players 32, max 40 with shoes). User's call - overrides
+  docs/BOSSES.md's "you can always outrun it". Kept fair with: windups unchanged (a player at base speed can still
+  leave the warning), `SafeAfterHit` 4 s (was 3) and new `IgnoreAfterHit` 5 s (the boss that hit you won't chase or
+  target you), and the chase stops with its front ~6 studs short of the player instead of trampling.
+- **Playtested:** walking into the Bulldog → Hit, Physics state, 14/15 joints off, torso tumbling (69°), back up and
+  Running after 2.2 s with every joint back on; the Partner's slam → ragdoll → up; walk legs measured 38 / 44
+  studs/s; no errors.
+
 ## 2026-10-12 — mr.robe, local session: bosses made MUCH bigger, longer range, faster (user's calls)
 - User: "make the attacks more frequent, make the models bigger, and make them faster and more dangerous", then
   "the range should be MUCH longer and they should be MUCH larger". `Config.Bosses` (live + src) now:
