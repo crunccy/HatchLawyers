@@ -113,6 +113,47 @@ local function text(props: { [string]: any }, maxSize: number, outline: number?)
 	end
 	return l
 end
+-- Phone readability (2026-10-12). The panel is laid out at W x H and shrunk with a UIScale (fit(): ~0.58 on a
+-- landscape phone), and TextScaled squeezes long strings further, so a long lawyer name or client situation
+-- ended up ~5 px on screen. Labels registered with small() switch to COMPACT mode while the panel is drawn below
+-- COMPACT_BELOW: a fixed TextSize of at least MIN_SCREEN_PX real pixels (capped by the box's height per line),
+-- truncated with "..." or wrapped onto two lines, instead of shrinking. Above it they scale as before.
+local COMPACT_BELOW = 0.8
+local MIN_SCREEN_PX = 11
+local compact, currentScale = false, 1
+type SmallInfo = { max: number, wrap: boolean, truncate: Enum.TextTruncate }
+local smallLabels: { [TextLabel]: SmallInfo } = setmetatable({}, { __mode = "k" }) :: any
+local function applySmall(l: TextLabel, info: SmallInfo)
+	l.TextWrapped = info.wrap
+	if compact then
+		local lines = if info.wrap then 2.3 else 1 -- two lines plus line spacing
+		local cap = math.max(math.floor(l.Size.Y.Offset / lines), info.max)
+		l.TextScaled = false
+		l.TextSize = math.min(math.max(info.max, math.ceil(MIN_SCREEN_PX / currentScale)), cap)
+		l.TextTruncate = Enum.TextTruncate.AtEnd
+	else
+		l.TextScaled = true
+		l.TextTruncate = info.truncate
+	end
+end
+local function small(l: TextLabel, wrap: boolean?): TextLabel
+	local c = l:FindFirstChildOfClass("UITextSizeConstraint")
+	local info = { max = if c then c.MaxTextSize else 14, wrap = wrap == true, truncate = l.TextTruncate }
+	smallLabels[l] = info
+	applySmall(l, info)
+	return l
+end
+-- called with the panel's target scale whenever it's fitted to the screen
+local function setTextMode(scale: number)
+	local nowCompact = scale < COMPACT_BELOW
+	if nowCompact ~= compact or (nowCompact and scale ~= currentScale) then
+		compact, currentScale = nowCompact, scale
+		for l, info in smallLabels do
+			applySmall(l, info)
+		end
+	end
+	currentScale = scale
+end
 local function studs(parent: GuiObject, transparency: number)
 	local c = parent:FindFirstChildOfClass("UICorner")
 	make("ImageLabel", {
@@ -465,7 +506,7 @@ local nameLabel = text({ Position = UDim2.fromOffset(10, 128), Size = UDim2.new(
 local rarityPill = make("Frame", { Position = UDim2.fromOffset(10, 162), Size = UDim2.fromOffset(104, 22), BackgroundColor3 = GRAY, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
 local rarityText = text({ Size = UDim2.fromScale(1, 1), Text = "", Parent = rarityPill }, 16)
 local earnLabel = text({ Position = UDim2.fromOffset(122, 162), Size = UDim2.new(1, -132, 0, 22), Text = "", TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Left, Parent = left }, 20)
-local statusLabel = text({ Position = UDim2.fromOffset(10, 190), Size = UDim2.new(1, -20, 0, 22), FontFace = BODY, Text = "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, Parent = left }, 18, 0)
+local statusLabel = small(text({ Position = UDim2.fromOffset(10, 190), Size = UDim2.new(1, -20, 0, 22), FontFace = BODY, Text = "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, Parent = left }, 18, 0))
 local statusBar = make("Frame", { Position = UDim2.fromOffset(10, 214), Size = UDim2.new(1, -20, 0, 10), BackgroundColor3 = Color3.fromRGB(20, 20, 30), Visible = false, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
 local statusFill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = ORANGE, BorderSizePixel = 0, Parent = statusBar }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
 local upgradeButton, upgradeLabel = button({ Position = UDim2.fromOffset(10, 232), Size = UDim2.new(0.62, -14, 0, 50), BackgroundColor3 = GREEN, Parent = left }, "UPGRADE", 20)
@@ -624,17 +665,18 @@ local function renderSlots()
 			if o.lawyerId then
 				local _, rColor = rarityOf(o.lawyerId)
 				make("UIGradient", { Rotation = 90, Color = ColorSequence.new(rColor:Lerp(CARD, 0.35), CARD), Parent = card })
-				local art = make("Frame", { Position = UDim2.fromOffset(4, 14), Size = UDim2.new(1, -8, 0, 64), BackgroundTransparency = 1, Parent = content })
-				if not lawyerViewport(art, o.lawyerId, 104 / 64) then
-					drawIcon(content, o.lawyerId, 0.56, 22)
+				-- (art 58 tall, name 20: room for a readable name at phone size, see small())
+				local art = make("Frame", { Position = UDim2.fromOffset(4, 14), Size = UDim2.new(1, -8, 0, 58), BackgroundTransparency = 1, Parent = content })
+				if not lawyerViewport(art, o.lawyerId, 104 / 58) then
+					drawIcon(content, o.lawyerId, 0.52, 18)
 				end
-				text({ Position = UDim2.fromOffset(4, 76), Size = UDim2.new(1, -8, 0, 16), Text = lawyerName(o.lawyerId, 1), ZIndex = 2, Parent = content }, 15)
+				small(text({ Position = UDim2.fromOffset(4, 72), Size = UDim2.new(1, -8, 0, 20), Text = lawyerName(o.lawyerId, 1), ZIndex = 2, Parent = content }, 15))
 				if o.stars > 1 then
 					text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 3), Size = UDim2.fromOffset(40, 18), Text = string.rep("★", o.stars - 1), TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 3, Parent = content }, 15)
 				end
 			else
 				text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 22), Size = UDim2.fromOffset(60, 52), Text = "+", FontFace = TITLE, TextColor3 = GRAY, Parent = content }, 52)
-				text({ Position = UDim2.fromOffset(4, 76), Size = UDim2.new(1, -8, 0, 16), Text = "Equip a lawyer", TextColor3 = SOFT, Parent = content }, 14)
+				small(text({ Position = UDim2.fromOffset(4, 72), Size = UDim2.new(1, -8, 0, 20), Text = "Equip a lawyer", TextColor3 = SOFT, Parent = content }, 14))
 			end
 			if o.skillsReady then
 				local bang = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -6, 0, 26), Size = UDim2.fromOffset(20, 20), BackgroundColor3 = RED, ZIndex = 5, Parent = content }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2, WHITE) })
@@ -843,11 +885,12 @@ local function renderClients(o: Office)
 		local def = Config.Clients[c.Tier]
 		local color = clientColor(c.Tier)
 		local focused = c.Id == focusClient
-		local row = make("Frame", { Size = UDim2.new(1, 0, 0, 64), BackgroundColor3 = CARD, LayoutOrder = order, Parent = clientList }, { corner(6) })
+		local row = make("Frame", { Size = UDim2.new(1, 0, 0, 76), BackgroundColor3 = CARD, LayoutOrder = order, Parent = clientList }, { corner(6) })
 		stroke(if focused then 4 else 3, if focused then GOLD else BLACK).Parent = row
 		make("Frame", { Size = UDim2.new(0, 10, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, Parent = row }, { corner(6) })
 		text({ Position = UDim2.fromOffset(20, 6), Size = UDim2.new(1, -250, 0, 26), Text = c.Name or (def and def.Name) or "Client", TextXAlignment = Enum.TextXAlignment.Left, Parent = row }, 22)
-		text({ Position = UDim2.fromOffset(20, 34), Size = UDim2.new(1, -250, 0, 22), FontFace = BODY, Text = c.Situation or "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = row }, 16, 0)
+		-- the situation wraps onto two lines (it used to shrink to fit one); small() keeps it readable on phones
+		small(text({ Position = UDim2.fromOffset(20, 32), Size = UDim2.new(1, -250, 0, 40), FontFace = BODY, Text = c.Situation or "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextTruncate = Enum.TextTruncate.AtEnd, Parent = row }, 16, 0), true)
 		-- rarity + what the selected lawyer's chances look like
 		local chip = make("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -128, 0, 8), Size = UDim2.fromOffset(100, 22), BackgroundColor3 = color, Parent = row }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
 		text({ Size = UDim2.fromScale(1, 1), Text = string.upper(def and def.Id or "Client"), Parent = chip }, 14)
@@ -970,7 +1013,7 @@ local function renderBench(o: Office)
 			entry.key = key
 			local overlay = entry.overlay
 			overlay:ClearAllChildren()
-			text({ Position = UDim2.fromOffset(4, 78), Size = UDim2.new(1, -8, 0, 18), Text = lawyerName(l.Id, 1), ZIndex = 2, Parent = overlay }, 15)
+			small(text({ Position = UDim2.fromOffset(4, 78), Size = UDim2.new(1, -8, 0, 18), Text = lawyerName(l.Id, 1), ZIndex = 2, Parent = overlay }, 15))
 			text({ Position = UDim2.fromOffset(4, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = string.rep("★", l.Stars), TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = overlay }, 16)
 			text({ Position = UDim2.new(0.5, 0, 0, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = "x" .. tostring(Formulas.lawyerEarn(l.Id, l.Stars)), TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 2, Parent = overlay }, 16)
 			if l.Office then -- equipped: which office (orange while it's on a case)
@@ -1105,6 +1148,7 @@ local function open(opts: any)
 		selectOffice(if typeof(selected) == "number" then selected else selectedOffice)
 	end
 	tab = o.tab or (if o.client then "Clients" elseif not office(selectedOffice).lawyerId then "Bench" else tab)
+	setTextMode(fit()) -- before render(), so new labels start in the right text mode
 	previewKey = nil
 	toastPill.Visible = false
 	render()
@@ -1354,6 +1398,7 @@ local function watchCamera()
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
 			if panel.Visible then
 				panelScale.Scale = fit()
+				setTextMode(panelScale.Scale)
 			end
 		end)
 	end
