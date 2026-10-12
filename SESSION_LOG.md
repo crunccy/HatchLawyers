@@ -101,6 +101,20 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-12 — crnuch, local session: step 0 (setup) — main + claude branch merged, snapshot re-exported
+- **main:** rebased the 2 local-only commits (Skin.blockClicks fix for Supreme + notes; the "push to Studio every session"
+  rule) onto origin/main. Conflicts in SESSION_LOG / CLAUDE.md resolved by keeping both sides.
+- **claude/sharp-dirac-02vssj → main:** merged on branch `merge/sharp-dirac-into-main` (11 commits: CI checks, audit
+  fixes, bosses, carry pose, working-efficiently rules). Only conflict: CLAUDE.md, kept both rule blocks.
+- **Snapshot re-exported** (77 scripts + MANIFEST): identical to the committed `studio/` — Studio hasn't changed since
+  a989131. New Mac/Linux receiver `tools/studio_sync/receive_snapshot.py` (`--fresh`, `--port`; port 8767 was held by a
+  stale Oct 10 receiver on this Mac, so the export ran on 8768 with ExportSnapshot's PORT swapped at load).
+- **Checks:** `run_checks.py` ALL PASSED (184 Luau files compile, 36 config checks, 31 sim tests). Luau CLI from the
+  official luau-macos.zip release, kept outside the repo.
+- **Not done here:** pushing to GitHub and opening/merging the PR need crnuch's OK (Claude Code's auto mode blocked the
+  push; `gh` isn't installed on this Mac). Nothing pushed to Studio this session: no src/ or Studio changes were made.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
+
 ## 2026-10-12 — crnuch, cloud session: zone boss concepts, lawyer names simplified
 - **Egg-carry pose** (user's ask): eggs are carried in outstretched arms instead of over the head - oversized eggs
   that pile up "not perfectly" (each nests into the one below, a bit off to the side and tilted, the pile leaning back

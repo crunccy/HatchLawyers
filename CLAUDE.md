@@ -21,8 +21,8 @@ repo** — local Claude memory is per machine, so anything the other side should
 
 ### Studio ↔ repo (studio/ snapshot + src/)
 - **`studio/` = read-only snapshot of every script in the live place**, by Studio path (`studio/MANIFEST.json` lists
-  Studio path, class, Enabled). Refresh it after any Studio edit: run `tools/studio_sync/receive_snapshot.ps1` (or any
-  local receiver that writes POST bodies under `studio/`), then `tools/studio_sync/ExportSnapshot.lua` in Studio
+  Studio path, class, Enabled). Refresh it after any Studio edit: run `tools/studio_sync/receive_snapshot.ps1` (Windows) or
+  `python3 tools/studio_sync/receive_snapshot.py --fresh` (Mac/Linux; `--port` if 8767 is taken), then `tools/studio_sync/ExportSnapshot.lua` in Studio
   (Edit mode). Never hand-edit `studio/`; it is what's live.
 - **`src/` = working copies**: scripts with changes not in Studio yet (cloud sessions write here), plus older mirrors.
   A `src/` file identical to its `studio/` twin is in sync.
