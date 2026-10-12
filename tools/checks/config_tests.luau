@@ -216,6 +216,23 @@ check("TrainGrowth / Payout.Growth ratio is where the sim tuned it (CLAUDE.md: r
 	assert(ratio > 1.05 and ratio < 1.12, string.format("ratio %.4f: rerun tools/economy_sim.py and update this range", ratio))
 end)
 
+check("firm areas: every room of a stage costs more than every room of the stage before", function()
+	local byStage: { [number]: { min: number, max: number } } = {}
+	for _, area in Config.FirmAreas or {} do
+		local s = byStage[area.Stage] or { min = math.huge, max = 0 }
+		s.min, s.max = math.min(s.min, area.Cost), math.max(s.max, area.Cost)
+		byStage[area.Stage] = s
+	end
+	local lastMax, lastStage = 0, 0
+	for stage = 1, 10 do
+		local s = byStage[stage]
+		if s then
+			assert(s.min > lastMax, string.format("a Stage %d room (%g) is cheaper than a Stage %d room (%g)", stage, s.min, lastStage, lastMax))
+			lastMax, lastStage = s.max, stage
+		end
+	end
+end)
+
 check("client tiers have positive weights and case lengths", function()
 	for i, c in Config.Clients do
 		assert(c.Weight > 0 and c.Duration > 0 and c.Multiplier > 0, "Config.Clients[" .. i .. "]")

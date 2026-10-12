@@ -547,7 +547,7 @@ end
 
 function PlayerData.addCoins(player: Player, amount: number)
 	local data = PlayerData.get(player)
-	if not data or amount <= 0 then
+	if not data or not (amount > 0) or amount == math.huge then -- (also refuses NaN: a NaN would be saved for good)
 		return
 	end
 	data.Coins += amount
@@ -558,7 +558,7 @@ end
 -- Returns false (and changes nothing) if the player can't afford it.
 function PlayerData.spendCoins(player: Player, amount: number): boolean
 	local data = PlayerData.get(player)
-	if not data or amount < 0 or data.Coins < amount then
+	if not data or not (amount >= 0) or data.Coins < amount then -- (not (>= 0) also refuses NaN)
 		return false
 	end
 	data.Coins -= amount

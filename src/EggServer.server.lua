@@ -21,7 +21,8 @@
 --   EggApi:Invoke("hatch", player, eggId?, golden?, at?)  an egg already paid for (eggId nil = Briefcase);
 --                                                         golden multiplies the Rare + Legendary odds
 --   EggApi:Invoke("free", player, at?)                     the free first egg / a reward token, if the player has one
---   EggApi:Invoke("price", player, eggId?) -> number       what that egg costs this player right now
+--   EggApi:Invoke("price", player, eggId?, ahead?) -> number  what that egg costs this player right now (ahead: eggs
+--                                                         already in their bag, each a step further up the ramp)
 --   EggApi:Invoke("room", player) -> number                how many more lawyers the player can own
 -- "hatch" / "free" return true when an egg hatched (false: lawyer cap, cooldown, nothing to hatch).
 -- Themed machines still on the hub keep working exactly as before.
@@ -328,7 +329,11 @@ end
 		if not data then
 			return math.huge
 		end
-		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, priceCount(data), prestigeLevel(data)) else Formulas.eggPrice(priceCount(data), prestigeLevel(data))
+		-- args[2]: eggs already bought but not hatched yet (a zone bag), so each one in a bag costs the next step of
+		-- the ramp like the machine would (audit 2026-10-12: a full bag was bought at one price, ~26% off for 5)
+		local ahead = if typeof(args[2]) == "number" and args[2] == args[2] then math.clamp(math.floor(args[2]), 0, 100) else 0
+		local count = priceCount(data) + ahead
+		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, count, prestigeLevel(data)) else Formulas.eggPrice(count, prestigeLevel(data))
 	elseif action == "room" then
 		local data = PlayerData.get(player)
 		return if data then roomFor(player, data) else 0
