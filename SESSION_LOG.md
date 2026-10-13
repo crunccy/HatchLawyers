@@ -8,6 +8,17 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - (nothing claimed)
 
 ## Open items
+- [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
+      (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
+      each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
+      camera ignores them, 60 studs tall) on both edges of every wall top, the hub-side ends and the end wall -
+      players were jumping from props onto the wall tops and walking past locked gates. Decorations land exactly
+      where they are now (seeded rng, untouched). Before re-running: anything hand-edited in Workspace.Zones since
+      the last build gets archived to ServerStorage.Old_Zones - check first. Playtest: walk the gate sides, try to
+      jump onto walls from the tallest props in every zone, camera close to a wall doesn't snap.
+- [ ] **Teleports look bad (user):** options A (one portal + travel map + TRAVEL HUD tile), B (six themed mini-gates),
+      C (polish the pads) - waiting on the user's pick; plus a whoosh transition, a Home button in each zone, and
+      maybe no teleporting while carrying eggs (it would skip the walk home past the bosses).
 - [ ] **Proposal: dynamic Supreme screen crack + mutated eggs (Diamond / Rainbow / Cosmic)** -
       docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (crnuch, 2026-10-13; not built, decide + claim first). Note in it:
       Golden's luck x4 is already capped on Food / Ocean / Brainrot / Space eggs (x2.2-3.6), so higher mutations
