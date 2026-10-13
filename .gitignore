@@ -4,3 +4,5 @@ __pycache__/
 # Blender autosaves/backups
 *.blend1
 *.blend2
+
+_egg_export/

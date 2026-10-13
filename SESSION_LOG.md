@@ -5,9 +5,11 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-12 late:** egg remake v5: new egg models (Blender), the hatch (crack + reveal, basic and fancy) and the incubator, remade with Blender animations + maxed VFX ladder. Don't touch EggModels / EggLook / the Eggs client hatch / incubator code until this is removed.
+- **mr.robe (local), since 2026-10-12 late:** eggs v5 (docs/EGGS_V5.md) - built and tested, **waiting for crnuch's one-time upload**, then the install. Don't touch EggModels / EggLook / the Eggs client hatch / FirmBuilder incubators / ServerStorage.EggV5Data until this is removed.
 
 ## Open items
+- [ ] **crnuch: upload the eggs v5 meshes + textures** (about 5 min, his own Studio; steps in docs/EGGS_V5.md -> "crnuch: the one-time upload").
+      The game only loads assets its owner uploaded, so mr_blox174's uploads can't be used. Then any local session installs the scripts (same doc).
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
 - [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
@@ -104,6 +106,37 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-12 — mr.robe, local session: eggs v5 - eggs, hatch + incubator remade in Blender (waiting for crnuch's upload)
+- **The user's asks:**
+  - "remake the animations everything to do with the eggs through blender and add vfx, use examples in github and make them 10000x cooler and more detailled ask me details";
+  - "recreate the eggs itself also", "make the eggs cooler";
+  - "i dont like the little balls that protrude out of the eggs".
+- **The user's answers:**
+  - scope = the hatch (crack + reveal) + the incubator (+ the eggs);
+  - VFX = the current ladder, maxed;
+  - GitHub = learn from open repos, write our own (spr springs + RbxCameraShaker noise shake, both MIT);
+  - effects scale with rarity;
+  - the last tap reveals the rarity colour;
+  - incubator: every egg floats in + dome spins shut, Rare+ cook, Legendary+ overload + launch;
+  - meshes via the CreateAssetAsync Beta Feature.
+- **Built** (full write-up in docs/EGGS_V5.md):
+  - `tools/blender/eggs_v5.py`: one lathe shell; 12 painted 1024² textures (6 eggs + golden, painted per pixel from 3D patterns); flush relief layers; smooth pieces with no beads; the hatch shell cut into 12 chunks + 3 crack stages.
+  - `tools/blender/incubator.py`: a 22-part machine + 4 keyframed clips: Open, Close, Cook, Overload.
+  - `tools/blender/egg_break.py`: a Blender rigid-body sim of the chunks, three takes: pop, burst, blast.
+  - `tools/blender/meshkit.py`: the shared mesh helpers.
+  - `tools/zones/BuildEggsV5.lua`: EditableMesh -> CreateAssetAsync -> MeshParts -> `ReplicatedStorage.EggModels` (v5), `IncubatorAnims`, `ServerStorage.Templates.IncubatorV5`.
+  - Runtime: `src/EggLook.lua` (v5, same `build()` API + `buildHatch`), `src/HatchFx.lua` (springs, shake, post FX, rings, god rays, pillars, bursts, the rarity ladder, the break player), `src/Incubator.lua` (the clip player).
+  - The hatch v5 in the Eggs client (`src/` + `tools/zones/eggs_v5_live/`): it plays in the world at the incubator. Other players watch every incubator hatch (EggServer change). FirmBuilder clones the v5 incubator.
+- **Checked in Studio Edit mode:**
+  - local, unsaved EditableMesh parts: all six eggs + golden, the incubator, the Overload clip, the cracked egg, the blast break;
+  - every edited script compiles.
+- **BLOCKER: the game only loads assets its OWNER uploaded.**
+  - Verified: crnuch's texture renders; mr_blox174's 12 textures and 56 meshes (uploaded fine) don't load: "Failed to load mesh asset".
+  - So crnuch uploads (user's call). The mesh data is stored IN the place (`ServerStorage.EggV5Data`, 6.5 MB, chunked JSON) so his Studio needs no files. Textures: `art/eggs/textures/`. The builder refuses to build until his texture ids are set, and uploads in ~90 s slices.
+- **Nothing live changed yet:**
+  - no scripts installed; `studio/` is unchanged;
+  - added `ServerStorage.EggV5Data` and `ServerStorage.EggV5Assets` (upload cache, per uploader).
+- **Heads-up:** when installed, the hatch moves from the full-screen stage into the world at the incubator. The old ViewportFrame stage objects stay in the GUI, unused.
 ## 2026-10-12 — mr.robe, local session: odds board in every zone (exact + Lucky Eggs odds), PlotService leak
 - User: "keep going add some more features that mr.blox wanted". Picked from the open items.
 - **Zone odds boards:** the hub machines' odds boards left with the egg store, so each zone now has one beside its

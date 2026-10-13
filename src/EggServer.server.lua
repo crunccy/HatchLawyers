@@ -275,7 +275,7 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	local rarityId = Config.Eggs.Skins[rarity] and Config.Eggs.Skins[rarity].Id
 	local burstKind = Effects.rarityBurst(rarityId)
 	local fancy = rarityId == "Legendary" or rarityId == "Mythic" or rarityId == "Supreme"
-	if burstKind and not (fancy and o.at) then -- (an incubator's Legendary+ has its own show: HatchShow below)
+	if burstKind and not o.at then -- (every incubator hatch has its own show since v5: HatchShow below)
 		local from = if themed and themedMachines[themed.Id] then themedMachines[themed.Id] else machine
 		task.delay(if rarity >= (Config.Eggs.PityRarity or 5) then 6.5 else 5.1, function()
 			local at = o.at -- an incubator passes where the egg hatched; a hub machine bursts over itself
@@ -305,7 +305,7 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		golden = o.golden == true,
 		chance = chance,
 	})
-	if fancy and o.at and HatchShow then
+	if o.at and HatchShow then -- (v5: everyone near the incubator watches every hatch there, StarterPlayerScripts.Eggs)
 		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id })
 	end
 	return true

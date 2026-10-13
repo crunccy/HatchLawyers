@@ -44,6 +44,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
 | Zones map: reference breakdown + rules (lane of zones, walls, decoration, scattered eggs) | [docs/ZONES_REFERENCE.md](docs/ZONES_REFERENCE.md), shots in `references/zones-ref-*.webp` |
 | Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
+| Eggs v5: Blender eggs, hatch, incubator (pipeline, upload, install) | [docs/EGGS_V5.md](docs/EGGS_V5.md) |
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
 | Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
 | Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |
@@ -136,6 +137,7 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   → `tools/zones/BuildCarryAnimation.lua`; child `Source` = the KeyframeSequence). Played by
   `StarterPlayerScripts.CarryPose`. Published by crnuch as `rbxassetid://86324090376520`. **Animations must be
   published from the place owner's account (crnuch, user 2234491534)** — an upload from mr_blox174 fails to load.
+  **The same goes for meshes and images (checked 2026-10-12):** anything the game loads must be uploaded by crnuch.
 - `ReplicatedStorage.Bosses` — the zone boss models (animation groups with Joint / Parent attributes; Blender:
   `tools/blender/bosses.py` → `tools/zones/BuildBosses.lua`). `Server.BossService` runs them (state in
   `ReplicatedStorage.BossStates`, `Remotes.Bosses`), `StarterPlayerScripts.Bosses` draws them; `Config.Bosses`.
