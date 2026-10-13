@@ -5,7 +5,8 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- (nothing claimed)
+- crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
+  "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
 ## Open items
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
