@@ -25,15 +25,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
       zones feel heavy, make golden zone eggs "simple" too.
 - [ ] **Zones 3-6: eye-check in a real window** (renders of each in `art/zones/`), and price them: Silver 1e8, Gold
       2e9, Platinum 4e10, Diamond 1e12 are first guesses - put them in the zones sim run.
-- [ ] **Decide: the hub's Brainrot / Food / Ocean / Space egg machines** are still there (the Briefcase + Pet ones
-      were archived when their eggs moved to zones). Keep them (two ways to get those eggs) or archive them too?
+- [x] **Hub egg machines decided** - user's call 2026-10-12: the egg store is gone, every egg lives in the zones
+      (machines archived in `ServerStorage.Old_HubEggMachines`). Each zone has its own odds board now.
 - [ ] `ServerStorage.Old_Zones` holds two archived lanes (islands 05:59, 2-zone lane 22:42) - delete once nobody
       needs them (they're a few thousand parts each in the place file).
 - [ ] **Briefcase tiers 4-5 costs are guesses** (Golden 2.5e9 → 8 eggs, Diamond 2.5e11 → 12 eggs; x100 per tier like
       before). Put them in the zones economy sim run (item below) and eye-check the briefcases on a few avatars.
-- [ ] `PlotService:105`: per-player CharacterAdded connection never disconnected (small leak, audit; not fixed).
-- [ ] **Odds boards for Lucky Eggs owners:** show the boosted odds (`Formulas.luckyWeights` with the pass's luck) to
-      players who own the pass - paid random items must show exact odds. (User kept the Robux products, 2026-10-12.)
+- [x] `PlotService` CharacterAdded leak - fixed 2026-10-12 (entry below).
+- [x] **Odds boards for Lucky Eggs owners** - done 2026-10-12: each zone's board shows the boosted odds to pass
+      owners (entry below). When the 7 rarities ship, check the board's Rare + Legendary boost matches EggServer's.
 - [x] **Egg zones: one design, built** — the walled lane (docs/ZONES_REFERENCE.md), all six zones + bosses, 2026-10-12
       (entries below; user: "make the other 4 zones and their bosses").
 - [ ] **Egg tiers vs zones overlap** (decide): the economy pass locks themed eggs by lifetime coins
@@ -69,8 +69,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
       prestige)` returns 6 (Supreme Tower) for ANY prestige > 0 — see `studio/ServerScriptService/Server/FirmStages.lua`.
       Make it `prestige >= Config.Prestige.TowerLevel` (5); the first Supreme is now ~1 h in and would otherwise
       skip the other stages every run.
-- [ ] Check `GoalService.track(player, "train", count)`: the economy pass's `LawyerService` passes the number of
-      levels bought; make sure Studio's `GoalService` accepts the count (else goals count one per request).
+- [x] `GoalService.track(player, "train", count)` - checked 2026-10-12: Studio's GoalService adds `amount or 1`.
 - [x] **Brick style rollout** — done 2026-10-11: every lawyer, client, judge and the Manager (entry below).
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
 - [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
@@ -80,7 +79,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
 - [ ] Eye-check a merged lawyer's Gold / Rainbow tag line (LawyerTags).
 - [ ] Eye-check the hatch screen's Rare/Legendary VFX (star flare + slash ring) on a real rare roll.
-- [ ] Egg-machine floor rings sit under the pedestals. Raise `FxRing` in `ServerStorage.EggMachineFx` or drop it.
+- [x] Egg-machine floor rings - obsolete 2026-10-12 (the hub egg machines are archived).
 - [x] **Pre-Manager auto-assign** — DONE 2026-10-08 (`Case.SelfAssignAfter` 12 s). (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
       Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
 - [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
@@ -104,6 +103,21 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-12 — mr.robe, local session: odds board in every zone (exact + Lucky Eggs odds), PlotService leak
+- User: "keep going add some more features that mr.blox wanted". Picked from the open items.
+- **Zone odds boards:** the hub machines' odds boards left with the egg store, so each zone now has one beside its
+  arrival spot (part `Zones.<Id>.OddsBoard`, tag `ZoneOddsBoard`, attribute `Zone`, on two posts; built by
+  `tools/zones/BuildLane.lua`, and placed in the live lane at the same spot without a rebuild). Drawn by
+  `StarterPlayerScripts.Zones` (new section at the end): "<EGG> ODDS", EGG and GOLDEN columns for every
+  `Config.Eggs.Skins` tier, exact odds with EggServer's maths (golden = Rare + Legendary x `Zones.Golden.Luck`).
+  **Lucky Eggs owners** (player attribute `PassLuckyEggs`, set by ShopService) see THEIR boosted odds (Rare +
+  Legendary x `Config.Shop.Effects.LuckyEggs`) and a green "LUCKY EGGS ... (yours!)" footer; it redraws when the
+  pass is bought. Playtested: Briefcase Egg 58 / 26.5 / 13 / 2.5 %, golden 39.6 / 18.1 / 35.5 / 6.8 %; with the
+  pass 50.2 / 22.9 / 22.5 / 4.3 %. Pity isn't shown (it's a guarantee, not odds).
+- **PlotService:** the per-visit `CharacterAdded` hook (teleport to your firm on respawn) is kept in
+  `respawnHooks[player]`, replaced on re-assign and disconnected in `release` (audit leak).
+- Tidied open items: hub machines decided, floor rings obsolete, GoalService count checked.
+- No Python / Luau CLI on this PC: checks ran on GitHub CI only.
 ## 2026-10-12 — mr.robe, local session: detailed eggs + a new hatch (basic / fancy) from the user's video
 - User (with a screen recording of a reference game): eggs "more detailed, like the video, keeping the cartoonish
   look"; "supreme, mythic and legendary hatches should look like the more complicated animation while the other

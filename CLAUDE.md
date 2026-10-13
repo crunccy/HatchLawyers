@@ -174,7 +174,7 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   - **Build:** `tools/zones/BuildLane.lua`; decorations come from `ServerStorage.ZoneDecorLibrary`, which is built
     from Blender (`tools/blender/zone_decor.py` → `tools/zones/BuildDecorLibrary.lua`). Add a zone by adding to
     `ZONES` in the builder and to `Config.Zones.List`.
-  - **Runtime:** `Server.ZoneService` + `StarterPlayerScripts.Zones`. The old islands are archived in
+  - **Runtime:** `Server.ZoneService` + `StarterPlayerScripts.Zones`. Each zone's `OddsBoard` (tag `ZoneOddsBoard`, attr `Zone`) is drawn by the Zones client: exact odds, golden odds, and the Lucky Eggs odds for pass owners. The old islands are archived in
     `ServerStorage.Old_Zones`.
 - Firm: `Server.FirmStages` (6 front buildings by size/prestige, rooms sold on the lawn by `Server.FirmFeatures`),
   two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was; **no waiting room** —

@@ -625,6 +625,14 @@ for i, z in ZONES do
 	decorate(zf, s0, s1, z.theme)
 	spotsAndClutter(zf, s0, s1, z.theme, 40)
 	P(zf, "Arrival", Vector3.new(4, 1, 4), CFrame.new(sx(s0 + 14), 0.5, 0), C.white, { invisible = true })
+	-- the zone's odds board (StarterPlayerScripts.Zones draws the exact odds on its front, which faces the path):
+	-- at the side, just past the arrival spot. (2026-10-12: the egg machines and their boards left the hub.)
+	local odds = P(zf, "OddsBoard", Vector3.new(14, 9, 0.6), CFrame.new(sx(s0 + 22), 6.5, HALF - 6), C.ink, { smooth = true })
+	odds:SetAttribute("Zone", z.Id)
+	CollectionService:AddTag(odds, "ZoneOddsBoard")
+	for _, dx in { -5, 5 } do
+		P(zf, "OddsPost", Vector3.new(0.8, 2.2, 0.8), CFrame.new(sx(s0 + 22) + dx, 1.1, HALF - 6), C.woodDark)
+	end
 	s = s1
 	-- the gate into the NEXT zone
 	local nextZone = ZONES[i + 1]

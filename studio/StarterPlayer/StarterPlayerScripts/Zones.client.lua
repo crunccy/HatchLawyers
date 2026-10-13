@@ -686,3 +686,119 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		banner(string.upper(UPGRADE[info.kind] and UPGRADE[info.kind].title or "UPGRADE"), info.text, GREEN, 3)
 	end
 end)
+
+------------------------------------------------------------------ odds boards (one at the start of each zone)
+-- 2026-10-12: the egg machines (and their odds boards) left the hub when every egg moved into the zones, so each
+-- zone has an odds board (a part tagged ZoneOddsBoard, attribute Zone; built by tools/zones/BuildLane.lua). Exact
+-- odds, drawn from Config with the same maths as Eggs.EggServer: the zone's egg and its golden version (Rare +
+-- Legendary x Config.Zones.Golden.Luck) - and, for a player who owns the Lucky Eggs pass (attribute PassLuckyEggs),
+-- the odds THEY get (Rare + Legendary x Config.Shop.Effects.LuckyEggs). Paid random things must show exact odds.
+local function eggWeights(egg: string): { number }
+	local def = Formulas.themedEgg(egg)
+	return table.clone(if def and def.Weights then def.Weights else Formulas.skinWeights())
+end
+
+local function boosted(weights: { number }, factor: number): { number }
+	local out = table.clone(weights)
+	for index, tier in Config.Eggs.Skins do
+		if (tier.Id == "Rare" or tier.Id == "Legendary") and out[index] then
+			out[index] *= factor
+		end
+	end
+	return out
+end
+
+local function pct(weights: { number }, index: number): string
+	local total = 0
+	for _, w in weights do
+		total += w
+	end
+	if total <= 0 or (weights[index] or 0) <= 0 then
+		return "-"
+	end
+	local p = weights[index] / total * 100
+	local s = string.format(if p < 1 then "%.2f" else "%.1f", p)
+	s = string.gsub(s, "0+$", "")
+	s = string.gsub(s, "%.$", "")
+	return s .. "%"
+end
+
+type OddsBoard = { part: BasePart, zone: any, gui: SurfaceGui }
+local oddsBoards: { [Instance]: OddsBoard } = {}
+
+local function drawOdds(b: OddsBoard)
+	local gui = b.gui
+	gui:ClearAllChildren()
+	local zone = b.zone
+	local egg = zone.Egg
+	local lucky = player:GetAttribute("PassLuckyEggs") == true
+	local luckFactor = if lucky then ((Config.Shop and Config.Shop.Effects and Config.Shop.Effects.LuckyEggs) or 1) else 1
+	local base = boosted(eggWeights(egg), luckFactor)
+	local golden = boosted(base, (CFG.Golden and CFG.Golden.Luck) or 1)
+	local panel = Instance.new("Frame")
+	panel.Size = UDim2.fromScale(1, 1)
+	panel.BackgroundColor3 = Color3.fromRGB(34, 28, 56)
+	panel.Parent = gui
+	UIKit.corner(panel, 18)
+	UIKit.outline(panel, 6)
+	local eggDef = Formulas.themedEgg(egg)
+	local eggName = if eggDef then eggDef.Name else "Briefcase Egg"
+	label(panel, string.upper(eggName) .. " ODDS", UDim2.fromScale(0.5, 0.1), UDim2.fromScale(0.92, 0.14), GOLD, 3)
+	label(panel, "EGG", UDim2.fromScale(0.62, 0.24), UDim2.fromScale(0.2, 0.08), WHITE, 2)
+	label(panel, "GOLDEN", UDim2.fromScale(0.85, 0.24), UDim2.fromScale(0.24, 0.08), Color3.fromRGB(255, 205, 40), 2)
+	local rows = #Config.Eggs.Skins
+	local rowH = 0.5 / math.max(rows, 1)
+	for index, tier in Config.Eggs.Skins do
+		local y = 0.32 + (index - 0.5) * rowH
+		local color = (Config.RarityColors and Config.RarityColors[tier.Id]) or WHITE
+		label(panel, string.upper(tier.Id), UDim2.fromScale(0.24, y), UDim2.fromScale(0.36, rowH * 0.8), color, 2)
+		label(panel, pct(base, index), UDim2.fromScale(0.62, y), UDim2.fromScale(0.2, rowH * 0.8), WHITE, 2)
+		label(panel, pct(golden, index), UDim2.fromScale(0.85, y), UDim2.fromScale(0.24, rowH * 0.8), Color3.fromRGB(255, 225, 120), 2)
+	end
+	local foot = if lucky
+		then string.format("LUCKY EGGS: Rare + Legendary x%s (yours!)", tostring(luckFactor))
+		else string.format("Golden eggs: Rare + Legendary x%s", tostring((CFG.Golden and CFG.Golden.Luck) or 1))
+	label(panel, foot, UDim2.fromScale(0.5, 0.9), UDim2.fromScale(0.92, 0.09), if lucky then Color3.fromRGB(150, 255, 110) else Color3.fromRGB(200, 200, 220), 2)
+end
+
+local function addOddsBoard(part: Instance)
+	if not part:IsA("BasePart") or oddsBoards[part] then
+		return
+	end
+	local zoneId = part:GetAttribute("Zone")
+	local zone = nil
+	for _, z in CFG.List do
+		if z.Id == zoneId then
+			zone = z
+		end
+	end
+	if not zone then
+		return
+	end
+	local gui = Instance.new("SurfaceGui")
+	gui.Face = Enum.NormalId.Front
+	gui.Adornee = part
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = 40
+	gui.LightInfluence = 0
+	gui.MaxDistance = 120
+	gui.Parent = boards
+	local b: OddsBoard = { part = part, zone = zone, gui = gui }
+	oddsBoards[part] = b
+	drawOdds(b)
+	part.AncestryChanged:Connect(function()
+		if not part:IsDescendantOf(workspace) then
+			oddsBoards[part] = nil
+			gui:Destroy()
+		end
+	end)
+end
+CollectionService:GetInstanceAddedSignal("ZoneOddsBoard"):Connect(addOddsBoard)
+for _, p in CollectionService:GetTagged("ZoneOddsBoard") do
+	addOddsBoard(p)
+end
+player:GetAttributeChangedSignal("PassLuckyEggs"):Connect(function()
+	for _, b in oddsBoards do
+		drawOdds(b)
+	end
+end)

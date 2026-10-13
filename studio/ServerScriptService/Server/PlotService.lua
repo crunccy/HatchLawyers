@@ -21,6 +21,7 @@ local PlotService = {}
 
 local owners: { [Model]: Player } = {}
 local firms: { [Player]: Model } = {}
+local respawnHooks: { [Player]: RBXScriptConnection } = {} -- (moveToFirm on every respawn; dropped on release - audit 2026-10-12)
 
 local function sortedPlots(): { Model }
 	local list = {}
@@ -102,7 +103,10 @@ function PlotService.assign(player: Player): Model?
 			player:SetAttribute("Plot", plot.Name)
 
 			moveToFirm(player)
-			player.CharacterAdded:Connect(function()
+			if respawnHooks[player] then
+				respawnHooks[player]:Disconnect()
+			end
+			respawnHooks[player] = player.CharacterAdded:Connect(function()
 				task.defer(moveToFirm, player)
 			end)
 			return firm
@@ -131,6 +135,10 @@ function PlotService.rebuild(player: Player): Model?
 end
 
 function PlotService.release(player: Player)
+	if respawnHooks[player] then
+		respawnHooks[player]:Disconnect()
+		respawnHooks[player] = nil
+	end
 	local firm = firms[player]
 	if not firm then
 		return
