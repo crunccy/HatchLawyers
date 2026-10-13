@@ -429,7 +429,7 @@ Config.SkinCatalog = {
 	},
 	{
 		Id = "PinstripePartner", -- id kept (saves reference it); renamed by the user 2026-10-09
-		Name = "Bonk Bonk Barrister", -- (was "Tung Tung Tung Sahur", a real meme name: renamed 2026-10-13, user's call; id + model unchanged)
+		Name = "Bonk Bonk Timber", -- (was "Tung Tung Tung Sahur", a real meme name: renamed 2026-10-13, user's call; id + model unchanged)
 		Rarity = 5,
 		Model = "TungTungSahur", -- block remake 2026-10-10 (mr.robe's mesh LawyerSkin_Legendary is kept in SkinModels)
 		Suit = Color3.fromRGB(35, 45, 95),

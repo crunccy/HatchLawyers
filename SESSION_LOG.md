@@ -111,7 +111,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   - `/eggs <count> [egg] [golden]`: real eggs in your arms (up to 30, past the carry limit).
   - `/coins <amount>` (5m / 2b / 1qd ...), `/help`.
   - Tested in a playtest: `;hatch legendary space golden`, `;eggs`.
-- **Lawyer rename:** the Legendary `PinstripePartner` is now **"Bonk Bonk Barrister"** (was "Tung Tung Tung Sahur", a real meme name; user's call). The id and model are unchanged. Config live + `src/`.
+- **Lawyer rename:** the Legendary `PinstripePartner` is now **"Bonk Bonk Timber"** (was "Tung Tung Tung Sahur", a real meme name; user's call). The id and model are unchanged. Config live + `src/`.
 - **Zone floor flicker** (user: "the floor is glitching at the beginning of the zones"): z-fighting.
   - The lane floors sit at y = 0 on the world grass, and the License Office floor sat on the plaza floor.
   - The lower one of each coplanar pair with different colours dropped 0.03 (11 grass tiles, 6 gate-arch pieces, the License Office floor).
