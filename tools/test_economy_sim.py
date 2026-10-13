@@ -91,14 +91,32 @@ class Firm(unittest.TestCase):
         f.lawyers += [sim.Lawyer("BowTieBarrister", "Uncommon") for _ in range(3)]
         self.assertEqual(f.merge_all(), 0)
 
-    def test_three_copies_merge_into_gold(self):
+    class _Roll:
+        """A stand-in rng whose random() always returns `value` (forces a mutation to work or to fizzle)."""
+        def __init__(self, value):
+            self.value = value
+
+        def random(self):
+            return self.value
+
+    def test_three_copies_mutate_into_shiny(self):
+        # (2026-10-13: merging became mutating - a success makes one Shiny lawyer, x2.5)
         f = sim.Firm()
         f.offices = [5, 5]
         f.lawyers += [sim.Lawyer("BowTieBarrister", "Uncommon") for _ in range(3)]
-        f.merge_all()
-        golds = [l for l in f.lawyers if l.stars == 2]
-        self.assertEqual(len(golds), 1)
-        self.assertEqual(golds[0].earn(), 5)
+        f.merge_all(rng=self._Roll(0.0))
+        shinies = [l for l in f.lawyers if l.stars == 2]
+        self.assertEqual(len(shinies), 1)
+        self.assertEqual(shinies[0].earn(), 5)
+
+    def test_a_fizzled_mutation_takes_all_three(self):
+        f = sim.Firm()
+        f.offices = [5, 5]
+        f.lawyers += [sim.Lawyer("BowTieBarrister", "Uncommon") for _ in range(3)]
+        before = len(f.lawyers)
+        f.merge_all(rng=self._Roll(0.99))
+        self.assertEqual(len(f.lawyers), before - 3)
+        self.assertFalse(any(l.stars > 1 for l in f.lawyers))
 
     def test_pity_gives_legendary(self):
         f = sim.Firm()

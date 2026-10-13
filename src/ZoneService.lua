@@ -232,7 +232,7 @@ local function buy(player: Player, zone: Zone, spot: BasePart, m: Model)
 	end
 	local room = (eggApi("room", player) :: number?) or 0
 	if room - #z.Carried <= 0 then
-		note(player, "Too many lawyers! Merge some at the Lawyer Merger first")
+		note(player, "Too many lawyers! Sell or mutate some in LAWYERS first")
 		return
 	end
 	local golden = m:GetAttribute("Golden") == true

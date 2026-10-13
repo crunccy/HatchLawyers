@@ -8,9 +8,15 @@
 --                       embers, a scrolling light column, a floor swirl, star glints.
 --   INFERNO (Mythic)    the fire tornado in crimson, plus a crimson energy orb with dark specks.
 --   CELESTIAL (Supreme) a rainbow fire tornado, rainbow star glints, a rainbow energy orb and a spinning halo.
---   STAR   (merged)     2 stars: gold star glints + a gold ring. 3 stars: rainbow, plus a rainbow energy orb.
+--   STAR   (merged)     (old) 2 stars: gold star glints + a gold ring. 3 stars: rainbow, plus a rainbow energy orb.
+--   MUTATIONS (2026-10-13, Effects.mutationAura - on top of the recolour, Shared.MutationLook):
+--     SHINY    gold glints popping all over, quick gold shine streaks, gold dust rising.
+--     DIAMOND  ice crystals popping out, white-cyan twinkles, frost motes drifting down, a slow ice ring at the chest.
+--     COSMIC   stars drifting off the body, a tilted ring of stars orbiting, dark specks, a faint cosmic orb behind.
 -- API (server calls these so every player sees them; particles replicate):
 --   Effects.aura(model, rarityId, stars)    lasting aura on a desk lawyer (replaces any earlier one)
+--   Effects.mutationAura(model, tier)       lasting mutation effects (tier 2 Shiny / 3 Diamond / 4 Cosmic; 1 = none).
+--                                           Tagged FxMutation, so Effects.aura (rarity) and it never clear each other.
 --   Effects.rarityBurst(rarityId)           which burst a hatched / placed lawyer of that rarity gets (nil = none)
 --   Effects.burst(where, kind, color?)      one-shot: "rare" (ice), "epic" (energy + star burst),
 --                                           "legendary" (star burst + fire + coins), "mythic" (crimson inferno),
@@ -376,6 +382,106 @@ function Effects.aura(model: Model, rarity: string?, stars: number?)
 	light.Shadows = false
 	tag(light)
 	light.Parent = body
+end
+
+-- ---------------------------------------------------------------------------------------------- mutations
+-- (2026-10-13, user: "special effects ... slightly more frequent and cooler") - a lasting layer on mutated lawyers,
+-- on top of their recolour. Its own tag, FxMutation: Effects.aura clears FxAura only, so rarity + mutation stack.
+function Effects.clearMutationAura(model: Model)
+	for _, d in model:GetDescendants() do
+		if d:GetAttribute("FxMutation") then
+			d:Destroy()
+		end
+	end
+end
+
+function Effects.mutationAura(model: Model, tier: number?)
+	Effects.clearMutationAura(model)
+	local t = tier or 1
+	if t < 2 then
+		return
+	end
+	local body = bodyOf(model)
+	if not body then
+		return
+	end
+	local box, size = model:GetBoundingBox()
+	local h = size.Y
+	local feetY = box.Position.Y - h / 2
+	local function tag(i: Instance)
+		i:SetAttribute("FxMutation", true)
+	end
+	-- three points up the body (feet / chest / head), so the particles cover the whole lawyer, not one spot
+	local function point(name: string, frac: number): Attachment
+		local a = attach(body, name, CFrame.new(), "FxMutation")
+		a.WorldCFrame = CFrame.new(body.Position.X, feetY + h * frac, body.Position.Z)
+		return a
+	end
+	local low, mid, high = point("FxMutLow", 0.2), point("FxMutMid", 0.5), point("FxMutHigh", 0.82)
+	local s = math.max(h / 5, 0.6) -- (a 5-stud lawyer = 1; Mythic / Supreme lawyers are bigger)
+
+	if t == 2 then -- SHINY: gold
+		local gold = grad(Color3.fromRGB(255, 250, 210), Color3.fromRGB(255, 205, 50), Color3.fromRGB(255, 150, 20))
+		for _, at in { low, mid, high } do
+			tag(emitter(at, "ShinyGlints", {
+				Texture = T.star, Color = gold, Rate = 2.4, Lifetime = NumberRange.new(0.35, 0.6), Speed = NumberRange.new(1.2 * s, 2.6 * s),
+				SpreadAngle = Vector2.new(180, 180), Rotation = NumberRange.new(0, 90), Size = seq({ { 0, 0 }, { 0.3, 2.4 * s }, { 1, 0 } }),
+				LightEmission = 0.3, Brightness = 2,
+			}))
+		end
+		tag(emitter(mid, "ShinySweep", { -- quick diagonal shine streaks across the body
+			Texture = T.slashArc, Color = gold, Rate = 1.4, Lifetime = NumberRange.new(0.3), Speed = NumberRange.new(0.01),
+			Rotation = NumberRange.new(30, 60), RotSpeed = NumberRange.new(-240), Size = seq({ { 0, 2.5 * s }, { 1, 4.5 * s } }),
+			Transparency = seq({ { 0, 1 }, { 0.25, 0.15 }, { 1, 1 } }), LightEmission = 0.25, Brightness = 2,
+		}))
+		tag(emitter(low, "ShinyDust", {
+			Texture = T.ember, Color = gold, Rate = 18, Lifetime = NumberRange.new(1, 1.6), Speed = NumberRange.new(0.4, 1.2),
+			SpreadAngle = Vector2.new(70, 70), EmissionDirection = Enum.NormalId.Top, Acceleration = Vector3.new(0, 2, 0),
+			Size = seq({ { 0, 0 }, { 0.3, 0.38 * s }, { 1, 0 } }), LightEmission = 0.25, Brightness = 2,
+		}))
+	elseif t == 3 then -- DIAMOND: ice
+		local ice = grad(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 235, 255), Color3.fromRGB(70, 160, 255))
+		for _, at in { low, mid, high } do
+			tag(emitter(at, "DiamondCrystals", {
+				Texture = T.crystal, Color = ice, Rate = 1.3, Lifetime = NumberRange.new(0.6, 0.9), Speed = NumberRange.new(1.5 * s, 3 * s),
+				SpreadAngle = Vector2.new(180, 180), Rotation = NumberRange.new(0, 360), RotSpeed = NumberRange.new(-60, 60),
+				Size = seq({ { 0, 0 }, { 0.25, 1.4 * s }, { 1, 0 } }), LightEmission = 0.25, Brightness = 2,
+			}))
+			tag(emitter(at, "DiamondTwinkles", {
+				Texture = T.star, Color = ice, Rate = 3, Lifetime = NumberRange.new(0.3, 0.5), Speed = NumberRange.new(0.5 * s, 1.5 * s),
+				SpreadAngle = Vector2.new(180, 180), Size = seq({ { 0, 0 }, { 0.4, 1.5 * s }, { 1, 0 } }), LightEmission = 0.3, Brightness = 2,
+			}))
+		end
+		tag(emitter(high, "DiamondFrost", { -- frost motes drifting down around the lawyer
+			Texture = T.dot, Color = ice, Rate = 12, Lifetime = NumberRange.new(1.4, 2.2), Speed = NumberRange.new(0.6, 1.4),
+			SpreadAngle = Vector2.new(180, 180), Acceleration = Vector3.new(0, -1.4, 0), Drag = 1,
+			Size = seq({ { 0, 0 }, { 0.2, 0.3 * s }, { 1, 0 } }), LightEmission = 0.25, Brightness = 1.8,
+		}))
+		tag(spinRing(mid, "DiamondRing", h * 0.9, ice, 70, 0.7, 2))
+	else -- COSMIC: purple / pink / starlight
+		local cosmic = grad(Color3.fromRGB(255, 220, 255), Color3.fromRGB(200, 120, 255), Color3.fromRGB(110, 60, 255))
+		for _, at in { low, mid, high } do
+			tag(emitter(at, "CosmicStars", { -- stars drifting off the body, slowly turning
+				Texture = T.star, Color = cosmic, Rate = 3, Lifetime = NumberRange.new(1.6, 2.6), Speed = NumberRange.new(0.5 * s, 1.3 * s),
+				SpreadAngle = Vector2.new(180, 180), Acceleration = Vector3.new(0, 0.6, 0), Rotation = NumberRange.new(0, 360),
+				RotSpeed = NumberRange.new(-50, 50), Size = seq({ { 0, 0 }, { 0.2, 1.3 * s }, { 0.8, 1 * s }, { 1, 0 } }),
+				LightEmission = 0.3, Brightness = 2,
+			}))
+		end
+		-- a ring of stars orbiting the chest, tilted like a planet's ring
+		local orbit = attach(body, "FxMutOrbit", CFrame.new(), "FxMutation")
+		orbit.WorldCFrame = CFrame.new(body.Position.X, feetY + h * 0.55, body.Position.Z) * CFrame.Angles(math.rad(18), 0, math.rad(12))
+		tag(spinRing(orbit, "CosmicOrbit", h * 1.1, cosmic, 55, 0.9, 2.4))
+		tag(spinRing(orbit, "CosmicOrbitStars", h * 1.15, cosmic, -40, 0.5, 2.6, T.twinkle))
+		tag(emitter(mid, "CosmicSpecks", {
+			Texture = T.speck, Color = ColorSequence.new(Color3.fromRGB(30, 10, 60)), Rate = 6, Lifetime = NumberRange.new(0.8, 1.3),
+			Speed = NumberRange.new(1, 2), SpreadAngle = Vector2.new(180, 180), Size = seq({ { 0, 0.3 * s }, { 1, 0 } }), LightEmission = 0, Brightness = 1,
+		}))
+		tag(emitter(mid, "CosmicOrb", flip({ -- a faint cosmic orb churning behind the lawyer
+			Texture = T.energyFlip, Color = cosmic, Rate = 0.5, Lifetime = NumberRange.new(1.8), Size = NumberSequence.new(h * 0.75),
+			Transparency = seq({ { 0, 1 }, { 0.3, 0.6 }, { 0.7, 0.6 }, { 1, 1 } }), LightEmission = 0.2, Brightness = 1.6, ZOffset = -2,
+		}, Enum.ParticleFlipbookMode.Loop, 16)))
+	end
 end
 
 -- ---------------------------------------------------------------------------------------------- bursts

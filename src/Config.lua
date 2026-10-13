@@ -283,12 +283,41 @@ Config.Lawyer = {
 -- catalog). A lawyer's power = rarity Earn (Config.Eggs.Skins) x StarEarn[stars]. MergeCount copies
 -- of the same lawyer at the same stars merge into one with +1 star (up to #StarEarn). New players
 -- start with one StartId lawyer in office 1; every other office starts empty.
+-- MUTATIONS (2026-10-13, user's calls): merging became MUTATING. A lawyer's saved `Stars` (1-4) is its mutation tier:
+-- 1 Normal, 2 Shiny, 3 Diamond, 4 Cosmic (old Gold lawyers are Shiny now, Rainbow ones Diamond - same power).
+-- The Mutation Machine (the old Lawyer Merger) takes MergeCount copies of the same lawyer at the same tier and TRIES
+-- to make one of the next tier: Mutations[next].Chance; if it fizzles, ALL of them are gone (user's call - the odds are
+-- always shown first). A mutated lawyer is recoloured along its Ramp (Shared.MutationLook, previewed with
+-- tools/blender/mutation_preview.py) instead of extra effects. Hatches can roll a mutation too (HatchMutation).
 Config.Lawyers = {
 	StartId = "Rookie",
 	MergeCount = 3,
-	StarEarn = { 1, 2.5, 6 },
-	StarNames = { "", "Gold", "Rainbow" },
-	MaxOwned = 150, -- inventory cap (merge or wait for space)
+	StarEarn = { 1, 2.5, 6, 15 }, -- earn x by mutation tier (Normal, Shiny, Diamond, Cosmic)
+	StarNames = { "", "Shiny", "Diamond", "Cosmic" },
+	MaxOwned = 150, -- inventory cap (sell, mutate, or wait for space)
+	Mutations = {
+		-- [tier] = what reaching it takes and how it looks. Chance: the Mutation Machine's success chance from the tier
+		-- below. Ramp: dark -> light colours the lawyer is recoloured along. Color: its name tag / UI colour.
+		[2] = { Id = "Shiny", Chance = 0.7, Color = Color3.fromRGB(255, 200, 40),
+			Ramp = { Color3.fromRGB(110, 62, 8), Color3.fromRGB(205, 135, 18), Color3.fromRGB(250, 188, 36), Color3.fromRGB(255, 222, 88), Color3.fromRGB(255, 248, 200) } },
+		[3] = { Id = "Diamond", Chance = 0.45, Color = Color3.fromRGB(120, 210, 255),
+			Ramp = { Color3.fromRGB(18, 40, 95), Color3.fromRGB(40, 110, 200), Color3.fromRGB(90, 180, 240), Color3.fromRGB(170, 230, 255), Color3.fromRGB(240, 252, 255) } },
+		[4] = { Id = "Cosmic", Chance = 0.25, Color = Color3.fromRGB(190, 110, 255),
+			Ramp = { Color3.fromRGB(18, 8, 40), Color3.fromRGB(70, 25, 130), Color3.fromRGB(140, 60, 220), Color3.fromRGB(210, 120, 255), Color3.fromRGB(255, 200, 250) } },
+	},
+	-- the chance a hatch comes out already mutated, by tier (2 Shiny, 3 Diamond, 4 Cosmic): a normal egg and a golden
+	-- zone egg. Rolled on its own, after the rarity - the rarity odds (Supreme 1 in 2500) never change. First guesses.
+	HatchMutation = {
+		Normal = { [2] = 0.02, [3] = 0.003, [4] = 0.0002 },
+		Golden = { [2] = 0.25, [3] = 0.03, [4] = 0.002 },
+	},
+	-- SELLING lawyers (LAWYERS panel): price = the lawyer's egg's current price (the player's own ramp) x Share[rarity]
+	-- x the mutation's StarEarn. Never a lawyer in an office, a locked one, or your last one. ConfirmFrom: rarities from
+	-- this index (Epic) ask "Are you sure?" first.
+	Sell = {
+		Share = { 0.1, 0.2, 0.4, 0.8, 1.5, 4, 10 }, -- Common .. Supreme (Config.Eggs.Skins order)
+		ConfirmFrom = 4,
+	},
 }
 
 Config.Desks = {
@@ -654,7 +683,7 @@ Config.Goals = {
 		{ Id = "WinMore", Kind = "win", Target = 25, Minutes = 1.25, Text = "Win %d cases" },
 		{ Id = "RareWin", Kind = "rareWin", Target = 1, Minutes = 1.25, Text = "Win a case for a Rare or better client" },
 		{ Id = "Train", Kind = "train", Target = 3, Minutes = 0.5, Text = "Upgrade your offices %d times" },
-		{ Id = "Merge", Kind = "merge", Target = 1, Minutes = 1.5, Text = "Merge 3 lawyers into a star lawyer" },
+		{ Id = "Merge", Kind = "merge", Target = 1, Minutes = 1.5, Text = "Try a mutation at the Mutation Machine" }, -- (Id kept: it's saved)
 		{ Id = "Place", Kind = "place", Target = 1, Minutes = 0.5, Text = "Put a new lawyer in an office" },
 		{ Id = "Evidence", Kind = "courtCorrect", Target = 2, Minutes = 1, Text = "Pick the right evidence %d times" },
 		{ Id = "Objection", Kind = "objection", Target = 1, Minutes = 1, Text = "Shout OBJECTION! in court" },
@@ -958,13 +987,13 @@ Config.Minigames = {
 Config.Zones = {
 	List = {
 		-- one lane running south from the plaza's south edge (tools/zones/BuildLane.lua): Safe Zone, then each zone, a gate between
-		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -490, 36, -90 } },
-		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -902, 36, -502 } },
+		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Color = Color3.fromRGB(104, 152, 236), Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -490, 36, -90 } },
+		{ Id = "PetPark", Name = "Pet Park", Color = Color3.fromRGB(120, 196, 50), Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -902, 36, -502 } },
 		-- zones 3-6 (2026-10-12, user: "make the other 4 zones and their bosses"); each sells its themed egg
-		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1314, 36, -914 } },
-		{ Id = "FoodCourt", Name = "Food Court", Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1726, 36, -1326 } },
-		{ Id = "OceanShore", Name = "Ocean Shore", Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2138, 36, -1738 } },
-		{ Id = "SpaceBase", Name = "Space Base", Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2550, 36, -2150 } },
+		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Color = Color3.fromRGB(170, 80, 210), Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1314, 36, -914 } },
+		{ Id = "FoodCourt", Name = "Food Court", Color = Color3.fromRGB(240, 84, 74), Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1726, 36, -1326 } },
+		{ Id = "OceanShore", Name = "Ocean Shore", Color = Color3.fromRGB(70, 160, 225), Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2138, 36, -1738 } },
+		{ Id = "SpaceBase", Name = "Space Base", Color = Color3.fromRGB(80, 70, 160), Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2550, 36, -2150 } },
 	},
 	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
 	License = { -- level n opens every zone whose License is n or less
@@ -985,6 +1014,10 @@ Config.Zones = {
 	},
 	Speed = { { WalkSpeed = 32 }, { WalkSpeed = 36, Cost = 1e6 }, { WalkSpeed = 40, Cost = 1e8 } }, -- (32 = the game's base speed)
 	EggColors = { Briefcase = Color3.fromRGB(245, 200, 70), Golden = Color3.fromRGB(255, 205, 40) },
+	-- TRAVEL (2026-10-13, user's pick: one Travel Portal at the hub + a travel map, ServerScriptService.TravelServer /
+	-- StarterPlayerScripts.Travel; replaced the six hub teleport pads). Cooldown: seconds between trips.
+	-- BlockWhileCarrying: no travel (zones or home) while you carry eggs - the walk home past the bosses is the game.
+	Travel = { Cooldown = 3, BlockWhileCarrying = true },
 }
 
 -- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from

@@ -158,6 +158,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   Supreme = celestial sanctum (time-stop, screen crack, rainbow pillars, a giant halo, stars + aurora), then a
   "MYTHIC!" / "SUPREME!" title card with the odds. `Remotes.HatchAnnounce` (EggServer) puts a banner on everyone
   else's screen for a Mythic / Supreme. Preview any of it with the admin `/hatch mythic food` etc.
+- `Workspace.Hub.TravelPortal` (tag `TravelPortal`, from Blender: `tools/blender/travel_portal.py` →
+  `tools/zones/BuildTravelPortal.lua`) + `ServerScriptService.TravelServer` (`Remotes.Travel`) + `StarterPlayerScripts.Travel`
+  (the TRAVEL tile + travel map): zone travel since 2026-10-13; replaced the six `Hub.ZoneTeleports` pads (archived in
+  `ServerStorage.Old_ZoneTeleports`). No travel while carrying eggs (`Config.Zones.Travel`).
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
@@ -208,11 +212,20 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema: **v17, live in Studio and `src/`** since 2026-10-13 (v14 firm areas, v15 minigames, v16 egg zones,
-  v17 the economy pass's `Eggs.RunOpened`, renumbered from its old "v14" when merged). Never reuse a
+- Save schema: **v17 live in Studio; `src/` is v18** (2026-10-13: lawyer mutations + selling - `Stars` now means the
+  MUTATION tier, 1 Normal / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`).
+  (v14 firm areas, v15 minigames, v16 egg zones, v17 the economy pass's `Eggs.RunOpened`.) Never reuse a
   migration number that has shipped. `PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`,
   `Zones = { License, Carry, Speed, Carried }`. Before adding any saved field: bump `SCHEMA_VERSION` and add a
   `MIGRATIONS` entry.
+- **Mutations replaced merging (user's calls 2026-10-13):** the Mutation Machine (`Hub.MergeMachine`, the old Lawyer
+  Merger; `Remotes.MergeSelected`) takes 3 of the same lawyer + tier and TRIES for the next tier
+  (`Config.Lawyers.Mutations[t].Chance`, shown first); a fizzle takes all 3 (never leaves you with no lawyers).
+  Hatches can roll a mutation (`HatchMutation`, golden eggs more). A mutation is shown by RECOLOURING the whole lawyer
+  (`Shared.MutationLook`, called by `SkinLook.dress(model, id, stars)`; preview: `tools/blender/mutation_preview.py`),
+  plus a lasting effect layer per tier (`Effects.mutationAura`, tag `FxMutation`: Shiny = gold glints + a sweep,
+  Diamond = crystals + frost + a ring, Cosmic = a tilted orbit + stars + a dark-matter haze). Selling + locking:
+  `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`; a locked lawyer can't be sold OR mutated.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,
@@ -248,3 +261,9 @@ blender-mcp: `claude mcp add blender -s user -- ~/.local/bin/uvx blender-mcp` (B
 the user clicks "Connect to Claude" in the N-panel). Use it for smooth/organic meshes. Export `.fbx`; **the user
 imports** into Studio (Studio MCP can't upload local files), then Claude swaps parts into templates.
 1 Blender m = 1 stud, transforms applied, characters face −Z. Full rules: docs/BLENDER_BRIEF.md.
+- **Every model is made in Blender** (user's call 2026-10-13): props, buildings, characters, portals, icons' art —
+  no more hand-placed Studio parts or procedural Luau builders for new models. Pipeline: a `tools/blender/*.py`
+  script builds it (brick blocks) → JSON in `tools/zones/` → a `tools/zones/Build*.lua` makes studded Parts in
+  Studio (or `.fbx` / meshes uploaded by crnuch). Cloud sessions can run Blender too: `pip install bpy==5.2.2` in a
+  venv (Python 3.13) + `apt-get install libegl1 libgl1 libegl-mesa0 libgl1-mesa-dri libgbm1`, then render with
+  `EGL_PLATFORM=surfaceless` (Workbench, Cycles and EEVEE all work headless).

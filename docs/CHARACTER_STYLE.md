@@ -193,6 +193,20 @@ Display name first, saved Id in brackets.
 - Only display names (`Name`) change; **Ids are saved and never change** - so an Id like `CorgiCounsel` keeps its
   old title, that's fine (players never see Ids). 41 lawyers were renamed this way on 2026-10-12.
 
+## Mutations: the whole lawyer recoloured (user's call, 2026-10-13)
+Shiny / Diamond / Cosmic lawyers aren't new models: `Shared.MutationLook` recolours any lawyer along the mutation's
+ramp (`Config.Lawyers.Mutations[t].Ramp`, dark → light). The head keeps its face colours (eye whites, pupils, mouth,
+teeth, tongue, ink brows / nose); every other colour is ranked darkest → lightest and spread along the ramp, so parts
+that were different stay different; Neon parts take the bright end. Preview any change first with
+`tools/blender/mutation_preview.py` → `art/mutations/preview.png` (Normal / Shiny / Diamond / Cosmic, side by side).
+On top of the colours each tier wears its own lasting particles (`Effects.mutationAura`, called by
+`MutationLook.apply`; tag `FxMutation`, scaled to the model's height): **Shiny** gold glints at three heights, a
+light sweep and rising gold dust; **Diamond** spinning ice crystals, twinkles, falling frost and a turning ring;
+**Cosmic** a tilted orbit ring with stars riding it, drifting stars, dark specks and a faint galaxy haze. They sit
+beside the rarity aura (`FxAura`), not instead of it.
+**New characters:** keep the kit's face colours exact (they're how the recolour finds the face), and give the body
+at least 3-4 clearly different shades so a mutation still reads.
+
 ## How the rest of the cast follows
 
 | Group | How many | Template |

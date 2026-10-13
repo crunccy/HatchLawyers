@@ -151,6 +151,66 @@ check("lawyer names don't use boss titles (docs/CHARACTER_STYLE.md: Naming rule)
 	end
 end)
 
+------------------------------------------------------------------ mutations + selling (2026-10-13)
+check("mutations: one per tier past Normal, names match, power climbs, chances valid, ramps dark -> light", function()
+	local L = Config.Lawyers
+	assert(#L.StarEarn == #L.StarNames, "StarEarn and StarNames need one entry per tier")
+	assert(L.StarNames[1] == "" and L.StarEarn[1] == 1, "tier 1 is plain Normal (x1, no name)")
+	for t = 2, #L.StarEarn do
+		assert(L.StarEarn[t] > L.StarEarn[t - 1], "tier " .. t .. " must earn more than tier " .. (t - 1))
+		local m = L.Mutations[t]
+		assert(m, "Config.Lawyers.Mutations[" .. t .. "] missing")
+		assert(m.Id == L.StarNames[t], "Mutations[" .. t .. "].Id should be " .. L.StarNames[t])
+		assert(m.Chance > 0 and m.Chance <= 1, m.Id .. ".Chance must be in (0, 1]")
+		assert(near(Formulas.mutateChance(t - 1), m.Chance), "mutateChance(" .. (t - 1) .. ")")
+		assert(#m.Ramp >= 2, m.Id .. " needs a ramp of 2+ colours")
+		local function lum(c)
+			return 0.299 * c.R + 0.587 * c.G + 0.114 * c.B
+		end
+		for i = 2, #m.Ramp do
+			assert(lum(m.Ramp[i]) > lum(m.Ramp[i - 1]), m.Id .. " ramp must go dark -> light (stop " .. i .. ")")
+		end
+	end
+	assert(Formulas.mutateChance(#L.StarEarn) == 0, "the top tier can't mutate further")
+end)
+
+check("hatch mutations: odds add up to less than 1, golden eggs at least as lucky, rolls stay in range", function()
+	local H = Config.Lawyers.HatchMutation
+	for _, kind in { "Normal", "Golden" } do
+		local total = 0
+		for t = 2, #Config.Lawyers.StarEarn do
+			total += H[kind][t] or 0
+		end
+		assert(total < 1, kind .. " hatch mutation odds add up to " .. total)
+	end
+	for t = 2, #Config.Lawyers.StarEarn do
+		assert((H.Golden[t] or 0) >= (H.Normal[t] or 0), "a golden egg should mutate at least as often (tier " .. t .. ")")
+	end
+	local rng, shiny = Random.new(7), 0
+	for _ = 1, 20000 do
+		local tier = Formulas.rollHatchMutation(rng, true)
+		assert(tier >= 1 and tier <= #Config.Lawyers.StarEarn, "rolled tier " .. tier)
+		if tier == 2 then
+			shiny += 1
+		end
+	end
+	local want = H.Golden[2] * 20000
+	assert(math.abs(shiny - want) < want * 0.15, "golden Shiny rolls " .. shiny .. ", expected ~" .. want)
+end)
+
+check("selling: a share per rarity, climbing; a normal Common sells for less than its egg", function()
+	local S = Config.Lawyers.Sell
+	assert(#S.Share == #Skins, "Sell.Share needs one entry per rarity")
+	for i = 2, #S.Share do
+		assert(S.Share[i] > S.Share[i - 1], "Sell.Share must climb with rarity (" .. i .. ")")
+	end
+	assert(S.Share[1] < 1, "selling a fresh Common must pay less than the egg cost")
+	assert(Skins[S.ConfirmFrom], "Sell.ConfirmFrom must be a rarity index")
+	local price = Formulas.eggPrice(10, 0)
+	assert(Formulas.sellPrice(Config.Lawyers.StartId, 1, 10, 0) == math.floor(price * S.Share[1]), "sellPrice of a Common")
+	assert(Formulas.sellPrice(Config.Lawyers.StartId, 2, 10, 0) == math.floor(price * S.Share[1] * Config.Lawyers.StarEarn[2]), "sellPrice x mutation")
+end)
+
 ------------------------------------------------------------------ egg tiers
 check("themed eggs: unlock milestones and power climb with price", function()
 	local list = table.clone(Config.Eggs.Themed)

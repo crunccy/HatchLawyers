@@ -16,6 +16,9 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript)
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript)
 local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript)
+-- 2026-10-13: a hatch can come out MUTATED (result.stars 2-4: Shiny / Diamond / Cosmic); the lawyer wears its colours
+local MutationLook = require(Shared:WaitForChild("MutationLook") :: ModuleScript) :: any
+local hatchStars = 1 -- the mutation of the hatch playing right now (makeCharacter dresses the lawyer in it)
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript)
 local ArtAssets = require(Shared:WaitForChild("ArtAssets") :: ModuleScript) :: any
 local FX = Effects.TEXTURES
@@ -693,13 +696,16 @@ local function makeCharacter(skinId: string): Model?
 	local m: Model? = nil
 	if source and source:IsA("Model") then
 		m = Puppet.cloneAtRest(source)
-		SkinLook.dress(m :: Model, skinId)
+		;(SkinLook :: any).dress(m :: Model, skinId, hatchStars)
 	else
 		local skin = Formulas.getSkin(skinId)
 		local folder = ReplicatedStorage:FindFirstChild("SkinModels")
 		local t = skin and skin.Model and folder and folder:FindFirstChild(skin.Model)
 		if t then
 			m = t:Clone()
+			if hatchStars > 1 then
+				MutationLook.apply(m, hatchStars)
+			end
 		end
 	end
 	if not m then
@@ -1752,8 +1758,8 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 			end
 		end
 	end
-	topName.Text = skin.Name
-	topName.TextColor3 = WHITE
+	topName.Text = Formulas.lawyerName(result.skinId, hatchStars)
+	topName.TextColor3 = (select(2, MutationLook.info(hatchStars)) :: Color3?) or WHITE
 	topName.Visible = true
 	topSub.Text = chanceText(result, rarityName)
 	topSub.TextColor3 = rarityColor
@@ -1872,6 +1878,7 @@ local function playShow(info: { [string]: any })
 	if typeof(info.at) ~= "Vector3" then
 		return
 	end
+	hatchStars = if typeof(info.stars) == "number" then info.stars else 1
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
 	if not root or (root.Position - info.at).Magnitude > 160 then
@@ -1976,6 +1983,7 @@ end
 
 local function play(result: { [string]: any })
 	busy = true
+	hatchStars = if typeof(result.stars) == "number" then result.stars else 1
 	rollPrompt.Enabled = false
 	local skin = Formulas.getSkin(result.skinId)
 	if not skin then
@@ -2008,7 +2016,7 @@ local function play(result: { [string]: any })
 		warn("[Eggs] hatch animation:", err) -- (the lawyer is hatched anyway: show the panel)
 	end
 	-- the reveal panel: name, rarity, earnings + skills, PLACE / KEEP
-	nameLabel.Text = skin.Name
+	nameLabel.Text = Formulas.lawyerName(result.skinId, hatchStars)
 	nameShimmer.Enabled = SHIMMERS[rarityName] ~= nil
 	if SHIMMERS[rarityName] then
 		nameShimmer.Color = SHIMMERS[rarityName]
@@ -2022,7 +2030,7 @@ local function play(result: { [string]: any })
 			table.insert(skillNames, sdef.Name)
 		end
 	end
-	buffLabel.Text = string.format("Earns x%s%s", tostring(Formulas.lawyerEarn(result.skinId, 1)), if #skillNames > 0 then "  ·  " .. table.concat(skillNames, ", ") else "")
+	buffLabel.Text = string.format("Earns x%s%s", tostring(Formulas.lawyerEarn(result.skinId, hatchStars)), if #skillNames > 0 then "  ·  " .. table.concat(skillNames, ", ") else "")
 	if result.emptyOffice then
 		equipButton.Text = "PUT IN OFFICE " .. result.emptyOffice
 		equipButton.BackgroundColor3 = GREEN
@@ -2084,7 +2092,7 @@ EggHatched.OnClientEvent:Connect(function(result)
 		if not busy then
 			gui.Enabled = true
 			if result.reason == "full" then
-				showToast("Too many lawyers! Merge some at the Lawyer Merger")
+				showToast("Too many lawyers! Sell or mutate some in LAWYERS")
 			elseif result.reason == "locked" then
 				local def = Formulas.themedEgg(result.egg)
 				local earned = (player:GetAttribute("CoinsEarned") :: number?) or 0

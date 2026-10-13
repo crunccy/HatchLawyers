@@ -10,13 +10,18 @@
 --                              ok, message, "queued" when it was queued.
 --   PlaceLawyer("best")        EQUIP BEST: the strongest lawyers into the offices (see equipBest).
 --   CancelLawyerChange(office) drops a queued change.
---   MergeLawyers(uid)          merges that lawyer with Config.Lawyers.MergeCount - 1 copies of the same
---                              lawyer at the same stars into one lawyer with +1 star.
---   MergeSelected({uids})      the Lawyer Merger machine (Hub.MergeMachine): the player picks exactly
---                              MergeCount lawyers. Same rule, but the server merges exactly those, after
---                              checking every one (owned, distinct, same lawyer + stars, not max, not busy).
---                              The first pick (or the one in an office) keeps its uid/office and gets +1 star.
--- LawyerService.hatch() makes a new lawyer for EggServer (rolls its starting skills).
+--   MergeLawyers(uid)          MUTATES that lawyer with Config.Lawyers.MergeCount - 1 copies of the same
+--                              lawyer at the same tier (see below).
+--   MergeSelected({uids})      the MUTATION MACHINE (Hub.MergeMachine, the old Lawyer Merger): the player picks
+--                              exactly MergeCount lawyers, the server checks every one (owned, distinct, same lawyer
+--                              + tier, not max, not busy, not queued for an office) and rolls.
+--   MUTATING (2026-10-13, user's calls): `Stars` is the mutation tier (1 Normal, 2 Shiny, 3 Diamond, 4 Cosmic,
+--   Config.Lawyers.Mutations). Success (Formulas.mutateChance): the first pick (or the one in an office) keeps its
+--   uid/office and goes up a tier. A FIZZLE takes all of them. It's refused if it would leave you with no lawyers.
+--   SellLawyers({uids}) -> (ok, coins | reason, count)   sells bench lawyers for Formulas.sellPrice (never one in an
+--                              office or queued for one, a locked one, or your last one). Coins don't count as earned.
+--   LockLawyer(uid, locked)    a locked lawyer is never sold (saved: Lawyers[uid].Locked).
+-- LawyerService.hatch() makes a new lawyer for EggServer (rolls its starting skills; `stars` = a hatch mutation).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -32,6 +37,18 @@ local TrainLawyer = Remotes.TrainLawyer :: RemoteFunction
 local PlaceLawyer = Remotes.PlaceLawyer :: RemoteFunction
 local MergeLawyers = Remotes.MergeLawyers :: RemoteFunction
 local MergeSelected = Remotes:FindFirstChild("MergeSelected") :: RemoteFunction
+-- (2026-10-13: made here if the place doesn't have them yet)
+local function remoteFunction(name: string): RemoteFunction
+	local r = Remotes:FindFirstChild(name)
+	if not r then
+		r = Instance.new("RemoteFunction")
+		r.Name = name
+		r.Parent = Remotes
+	end
+	return r :: RemoteFunction
+end
+local SellLawyers = remoteFunction("SellLawyers")
+local LockLawyer = remoteFunction("LockLawyer")
 local CancelLawyerChange = Remotes:FindFirstChild("CancelLawyerChange") :: RemoteFunction
 
 local COOLDOWN = 0.15
@@ -66,6 +83,16 @@ local function isIndex(n: unknown): boolean
 end
 
 -- An office's lawyer can only move while it isn't walking a client in or working a case.
+-- true if a lawyer is waiting to be put into an office when its case ends (a queued swap)
+local function queuedForOffice(player: Player, data: PlayerData.Data, uid: string): boolean
+	for index in data.Desks do
+		if CaseService.queuedChange(player, index) == uid then
+			return true
+		end
+	end
+	return false
+end
+
 local function officeFree(player: Player, index: number): boolean
 	local desk = CaseService.getDesk(player, index)
 	return not desk or desk.phase == "Idle" or desk.phase == "Empty"
@@ -420,7 +447,7 @@ local function equipBest(player: Player): (boolean, string?)
 	return true, msg
 end
 
-local mergeInto: (Player, PlayerData.Data, string, { string }) -> (boolean, string?)
+local mergeInto: (Player, PlayerData.Data, string, { string }) -> (boolean, string?, string?)
 
 local function merge(player: Player, uid: unknown): (boolean, string?)
 	if throttled(player) then
@@ -435,27 +462,22 @@ local function merge(player: Player, uid: unknown): (boolean, string?)
 	end
 	local base = data.Lawyers[uid]
 	if base.Stars >= #Config.Lawyers.StarEarn then
-		return false, "Already max stars!"
+		return false, "Already Cosmic!"
 	end
-	-- the copies to use up: inventory ones first, then ones in offices that aren't busy
-	local spare, working = {}, {}
-	for otherUid, other in data.Lawyers do
-		if otherUid ~= uid and other.Id == base.Id and other.Stars == base.Stars then
-			local at = PlayerData.officeOf(data, otherUid)
-			if not at then
-				table.insert(spare, otherUid)
-			elseif officeFree(player, at) then
-				table.insert(working, otherUid)
-			end
-		end
+	if base.Locked then
+		return false, "Unlock it first"
 	end
-	local need = Config.Lawyers.MergeCount - 1
+	if queuedForOffice(player, data, uid) then
+		return false, "It's about to go into an office!"
+	end
+	-- the copies to use up: since a fizzle takes all of them, only unlocked BENCH copies the player isn't using
+	-- (never one sitting in an office, never a locked one) - the Mutation Machine (MergeSelected) is the real path
 	local used = {}
-	for _, list in { spare, working } do
-		for _, otherUid in list do
-			if #used < need then
-				table.insert(used, otherUid)
-			end
+	local need = Config.Lawyers.MergeCount - 1
+	for otherUid, other in data.Lawyers do
+		if #used < need and otherUid ~= uid and other.Id == base.Id and other.Stars == base.Stars and not other.Locked
+			and not PlayerData.officeOf(data, otherUid) and not queuedForOffice(player, data, otherUid) then
+			table.insert(used, otherUid)
 		end
 	end
 	if #used < need then
@@ -468,11 +490,39 @@ local function merge(player: Player, uid: unknown): (boolean, string?)
 	return mergeInto(player, data, uid, used)
 end
 
--- The merge itself, shared by MergeLawyers and MergeSelected. Everything is already validated; nothing in
--- here yields, so two requests can never interleave and consume the same lawyers.
-function mergeInto(player: Player, data: PlayerData.Data, uid: string, used: { string }): (boolean, string?)
+-- The mutation itself, shared by MergeLawyers and MergeSelected. Everything is already validated; nothing in
+-- here yields, so two requests can never interleave and consume the same lawyers. Returns ok, the name it was
+-- going for (or why it refused), and "mutated" | "fizzled".
+function mergeInto(player: Player, data: PlayerData.Data, uid: string, used: { string }): (boolean, string?, string?)
 	local base = data.Lawyers[uid]
 	local at = PlayerData.officeOf(data, uid)
+	local chance = Formulas.mutateChance(base.Stars)
+	if chance <= 0 then
+		return false, "Already Cosmic!"
+	end
+	if PlayerData.lawyerCount(data) <= #used + 1 then
+		-- a fizzle would leave the player with no lawyers at all (no income, maybe no coins for an egg)
+		return false, "Keep at least one other lawyer first!"
+	end
+	local goal = Formulas.lawyerName(base.Id, base.Stars + 1)
+	if rng:NextNumber() >= chance then
+		-- FIZZLED (user's call): all of them are gone
+		local refresh = {}
+		for _, gone in { uid, table.unpack(used) } do
+			local goneAt = PlayerData.officeOf(data, gone)
+			if goneAt then
+				data.Desks[goneAt].Lawyer = nil
+				table.insert(refresh, goneAt)
+			end
+			data.Lawyers[gone] = nil
+		end
+		PlayerData.sync(player)
+		for _, i in refresh do
+			CaseService.refreshDesk(player, i)
+		end
+		require(script.Parent.GoalService).track(player, "merge") -- (a try counts for the goal either way)
+		return true, goal, "fizzled"
+	end
 	-- the merged lawyer keeps the best skills of the three and every free roll / case count
 	local best = base
 	local refresh = {}
@@ -504,12 +554,12 @@ function mergeInto(player: Player, data: PlayerData.Data, uid: string, used: { s
 		CaseService.burst(player, at, if base.Stars >= 3 then "rainbow" else "merge")
 	end
 	require(script.Parent.GoalService).track(player, "merge")
-	return true, Formulas.lawyerName(base.Id, base.Stars)
+	return true, Formulas.lawyerName(base.Id, base.Stars), "mutated"
 end
 
--- The Lawyer Merger: exactly the lawyers the player picked. Returns ok, the merged lawyer's name (or the
--- reason it failed) and its uid.
-local function mergeSelected(player: Player, picks: unknown): (boolean, string?, string?)
+-- The Mutation Machine: exactly the lawyers the player picked. Returns ok, the lawyer's name it went for (or the
+-- reason it refused), the mutated lawyer's uid (nil if it fizzled) and "mutated" | "fizzled".
+local function mergeSelected(player: Player, picks: unknown): (boolean, string?, string?, string?)
 	if throttled(player) then
 		return false, "Slow down!"
 	end
@@ -538,13 +588,19 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 			return false, "They must be the same lawyer"
 		end
 		first = first or lawyer
+		if lawyer.Locked then
+			return false, "Unlock it first" -- a lock keeps a lawyer safe from selling AND from a fizzle
+		end
 		local at = PlayerData.officeOf(data, u)
 		if at and not officeFree(player, at) then
 			return false, "One of them is busy with a case!"
 		end
+		if queuedForOffice(player, data, u) then
+			return false, "One of them is about to go into an office!"
+		end
 	end
 	if (first :: PlayerData.LawyerData).Stars >= #Config.Lawyers.StarEarn then
-		return false, "Already max stars!"
+		return false, "Already Cosmic!"
 	end
 	-- keep the one sitting in an office (it stays at its desk), else the first pick
 	local keep = uids[1] :: string
@@ -560,24 +616,92 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 			table.insert(used, u :: string)
 		end
 	end
-	local ok, name = mergeInto(player, data, keep, used)
+	local ok, name, result = mergeInto(player, data, keep, used)
 	if ok then
 		local machine = workspace:FindFirstChild("Hub") and workspace.Hub:FindFirstChild("MergeMachine")
-		if machine and machine:IsA("Model") then -- everyone near the machine sees it go off
-			local Effects = require(ReplicatedStorage.Shared.Effects) :: any
+		if machine and machine:IsA("Model") then -- everyone near the machine sees it go off (or fizzle: a grey puff)
 			local box, size = machine:GetBoundingBox()
-			task.delay(1.2, Effects.burst, box.Position + Vector3.new(0, size.Y / 2, 0), if data.Lawyers[keep].Stars >= 3 then "rainbow" else "merge")
+			local top = box.Position + Vector3.new(0, size.Y / 2, 0)
+			if result == "mutated" then
+				task.delay(1.2, Effects.burst, top, if data.Lawyers[keep].Stars >= 3 then "rainbow" else "merge")
+			else
+				task.delay(1.2, Effects.burst, top, "merge", Color3.fromRGB(150, 150, 165))
+			end
 		end
 	end
-	return ok, name, if ok then keep else nil
+	return ok, name, if ok and result == "mutated" then keep else nil, result
+end
+
+------------------------------------------------------------------ selling + locking
+local function sell(player: Player, picks: unknown): (boolean, (string | number)?, number?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	if type(picks) ~= "table" then
+		return false, "Pick lawyers to sell"
+	end
+	local n = math.min(#(picks :: { any }), Config.Lawyers.MaxOwned + 200)
+	local uids: { string } = {}
+	local seen: { [string]: boolean } = {}
+	for i = 1, n do
+		local u = (picks :: { any })[i]
+		if type(u) == "string" and not seen[u] then
+			seen[u] = true
+			local lawyer = data.Lawyers[u]
+			if not lawyer then
+				return false, "You don't have that lawyer"
+			elseif lawyer.Locked then
+				return false, "That lawyer is locked"
+			elseif PlayerData.officeOf(data, u) or queuedForOffice(player, data, u) then
+				return false, "Take them out of their office first"
+			end
+			table.insert(uids, u)
+		end
+	end
+	if #uids == 0 then
+		return false, "Pick lawyers to sell"
+	end
+	if PlayerData.lawyerCount(data) - #uids < 1 then
+		return false, "Keep at least one lawyer!"
+	end
+	local opened = data.Eggs.RunOpened or data.Eggs.Opened
+	local prestige = if data.Prestige then data.Prestige.Level else 0
+	local total = 0
+	for _, u in uids do
+		local lawyer = data.Lawyers[u]
+		total += Formulas.sellPrice(lawyer.Id, lawyer.Stars, opened, prestige)
+		data.Lawyers[u] = nil
+	end
+	-- (straight to Coins, not PlayerData.addCoins: selling isn't EARNING - lifetime earned unlocks egg tiers / licenses)
+	data.Coins += total
+	PlayerData.sync(player)
+	return true, total, #uids
+end
+
+local function lock(player: Player, uid: unknown, locked: unknown): (boolean, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	local lawyer = data and type(uid) == "string" and data.Lawyers[uid]
+	if not lawyer then
+		return false, "You don't have that lawyer"
+	end
+	lawyer.Locked = if locked == true then true else nil
+	PlayerData.sync(player :: Player)
+	return true, nil
 end
 
 -- A freshly hatched lawyer of this catalog id: rolls its starting skills (Config.Eggs.Skins
 -- StartSkills) and adds it to the player's lawyers. Returns its uid and record.
-function LawyerService.hatch(data: PlayerData.Data, id: string): (string, PlayerData.LawyerData)
+function LawyerService.hatch(data: PlayerData.Data, id: string, stars: number?): (string, PlayerData.LawyerData)
 	local def = Formulas.getSkin(id)
 	local rarity = def and Config.Eggs.Skins[def.Rarity]
-	local lawyer = PlayerData.newLawyer(id, 1)
+	local lawyer = PlayerData.newLawyer(id, math.clamp(stars or 1, 1, #Config.Lawyers.StarEarn))
 	for _ = 1, if rarity then rarity.StartSkills else 1 do
 		local skillId, param = Formulas.rollSkill(rng, lawyer.Skills)
 		if not skillId then
@@ -614,6 +738,8 @@ function LawyerService.start()
 	if MergeSelected then
 		MergeSelected.OnServerInvoke = mergeSelected
 	end
+	SellLawyers.OnServerInvoke = sell
+	LockLawyer.OnServerInvoke = lock
 	Players.PlayerRemoving:Connect(function(player)
 		lastRequest[player] = nil
 		placedForGoal[player] = nil

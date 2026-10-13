@@ -437,6 +437,23 @@ local function clearArea(cf: CFrame, size: Vector3)
 	end
 end
 
+-- Invisible walls standing on both edges of the wall tops (the lane side and the outside, where the firms are), from
+-- the wall top up to CLIMB_BLOCK above it (2026-10-13: players jumped from props by the walls onto the wall tops,
+-- walked along them and past locked gates).
+-- It collides but can't be hit by raycasts (CanQuery off), so the camera never bumps into it and nothing clicks it.
+local CLIMB_BLOCK = 60
+local function climbBlock(parent: Instance, s0: number, s1: number)
+	for _, side in { -1, 1 } do
+		for _, edge in { { HALF, HALF + 1 }, { HALF + TOP_W - 1, HALF + TOP_W } } do
+			local b = box(parent, "ClimbBlock", sx(s0), WALL_H - 2, side * edge[1], sx(s1), TOP_Y + CLIMB_BLOCK, side * edge[2], C.white)
+			b.Transparency = 1
+			b.CanQuery = false
+			b.CanTouch = false
+			b.CastShadow = false
+		end
+	end
+end
+
 ------------------------------------------------------------------ one stretch of lane: floor, walls, wall-top ground
 local function laneStretch(parent: Instance, s0: number, s1: number, floor: { Color3 }, edge: Color3?, top: { Color3 }, walls: { Color3 }?, tile: number?)
 	local f = model(parent, "Floor")
@@ -472,6 +489,7 @@ local function laneStretch(parent: Instance, s0: number, s1: number, floor: { Co
 			box(w, "WallTop", sx(s), WALL_H - 0.4, side * HALF, sx(s + len), TOP_Y, side * (HALF + TOP_W), top[k % 2 + 1])
 		end
 	end
+	climbBlock(w, s0, s1)
 end
 
 -- orange path with white dashed edges + white chevrons pointing down the lane (-X)
@@ -610,6 +628,14 @@ do
 	letters.CanQuery = false
 	-- (rotated so the text reads correctly for someone walking into the lane)
 	text(letters, Enum.NormalId.Top, { { "SAFE ZONE", C.white, 1, 8 } }, 18)
+	-- the wall tops' hub-side ends: an invisible cap so nobody climbs onto them from the plaza either
+	for _, side in { -1, 1 } do
+		local cap = box(safe, "ClimbBlock", sx(0), WALL_H - 2, side * HALF, sx(1), TOP_Y + CLIMB_BLOCK, side * (HALF + TOP_W), C.white)
+		cap.Transparency = 1
+		cap.CanQuery = false
+		cap.CanTouch = false
+		cap.CastShadow = false
+	end
 	-- everything west of the hub's edge, across the lane's full width and length
 	local total = SAFE + #ZONES * ZONE_LEN + (#ZONES - 1) * GATE + 10
 	clearArea(CFrame.new(X0 - total / 2, 6, 0), Vector3.new(total, 40, 2 * (HALF + TOP_W) + 10))
@@ -654,6 +680,15 @@ for i, z in ZONES do
 		prompt:SetAttribute("Upgrade", "License")
 		prompt.Parent = barrier
 		CollectionService:AddTag(barrier, "LicenseGate")
+		-- the side walls carry on under the gate (2026-10-13: there was a 12-stud opening on both sides of every gate,
+		-- where players walked out of the lane), with the same wall top and climb block as the zones
+		local gw = model(gateParent, "GateWalls")
+		local wc = z.walls or { C.terracotta, C.terracotta2 }
+		for _, side in { -1, 1 } do
+			box(gw, "Wall", sx(s), -1, side * HALF, sx(s + GATE), WALL_H - 0.4, side * (HALF + TOP_W), wc[1])
+			box(gw, "WallTop", sx(s), WALL_H - 0.4, side * HALF, sx(s + GATE), TOP_Y, side * (HALF + TOP_W), z.top[1])
+		end
+		climbBlock(gw, s, s + GATE)
 		s += GATE
 	end
 end
@@ -663,6 +698,11 @@ do
 	local t = model(zonesRoot, "LaneEnd")
 	local last = ZONES[#ZONES]
 	box(t, "EndWall", sx(s), -1, -(HALF + TOP_W), sx(s + 4), TOP_Y + 4, HALF + TOP_W, (last.walls and last.walls[1]) or C.terracotta)
+	local cap = box(t, "ClimbBlock", sx(s), TOP_Y + 4, -(HALF + TOP_W), sx(s + 1), TOP_Y + CLIMB_BLOCK, HALF + TOP_W, C.white)
+	cap.Transparency = 1
+	cap.CanQuery = false
+	cap.CanTouch = false
+	cap.CastShadow = false
 end
 
 ------------------------------------------------------------------ the License Office, at the lane entrance (hub side)

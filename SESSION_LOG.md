@@ -9,6 +9,44 @@ Claim big work here before starting (who · what · since), push the claim, remo
   MAX / UPGRADE ALL, biggest when an office hits max level). Touches `StarterPlayerScripts.Lawyers` only.
 
 ## Open items
+- [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
+      LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
+      3-way merge anything that changed since. Files: NEW `Shared.MutationLook` (src/MutationLook.lua); `Shared.SkinLook`
+      (src/SkinLook.lua, new working copy), `Shared.Config`, `Shared.Formulas`; server `PlayerData`, `LawyerService`,
+      `CaseService`, `EggServer`, `ZoneService`, `FirmFeatures` (new working copy); clients `Lawyers`, `Merger`, `Eggs`,
+      `LawyerTags`. In Studio also: rename the hub machine's sign "LAWYER MERGER" → "MUTATION MACHINE" and its
+      `MergePrompt` ActionText → "Mutate". Playtest: (1) old Gold / Rainbow lawyers show as Shiny / Diamond with the
+      same "Earns x"; (2) Mutation Machine shows the % on the button, a success recolours the lawyer everywhere (desk,
+      tag, LAWYERS card, hatch screen), a fizzle shakes + "FIZZLED!" and all 3 are gone; refuses if it would leave you
+      with no lawyers; (3) SELL on a bench lawyer (price matches), Epic+ asks twice, office / locked / last lawyer can't
+      be sold, LOCK toggles the padlock, SELL ALL picker sells the ticked rarities; (4) golden zone eggs sometimes hatch
+      Shiny; (5) the mutation colours look right on brick lawyers AND the older models (judge by eye, tune ramps);
+      (6) the mutation effects (`Effects.mutationAura`) read at a high graphics level on a desk, the hatch reveal and
+      a big Mythic/Supreme (they scale with height) - not too busy next to the rarity aura; (7) a LOCKED lawyer
+      is hidden in the Mutation Machine picker. Also push `src/Effects.lua`.
+- [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
+      (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
+      each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
+      camera ignores them, 60 studs tall) on both edges of every wall top, the hub-side ends and the end wall -
+      players were jumping from props onto the wall tops and walking past locked gates. Decorations land exactly
+      where they are now (seeded rng, untouched). Before re-running: anything hand-edited in Workspace.Zones since
+      the last build gets archived to ServerStorage.Old_Zones - check first. Playtest: walk the gate sides, try to
+      jump onto walls from the tallest props in every zone, camera close to a wall doesn't snap.
+- [ ] **Push + playtest ZONE TRAVEL** (user's pick "A", built 2026-10-13 in a cloud session, not in Studio yet):
+      1. serve `tools/zones` (tools/studio_sync/serve_files.ps1 -Root tools/zones), run `tools/zones/BuildTravelPortal.lua`
+         in Edit mode: builds `Workspace.Hub.TravelPortal` where the six `Hub.ZoneTeleports` pads were (facing the
+         plaza; set PLACE_AT if it lands badly) and archives the pads to `ServerStorage.Old_ZoneTeleports`.
+      2. new Script `ServerScriptService.TravelServer` (src/TravelServer.server.lua), new LocalScript
+         `StarterPlayerScripts.Travel` (src/Travel.client.lua); `Config` (zone `Color`s + `Config.Zones.Travel`).
+      3. push `Shared.HudMenu` too: `HudMenu.Icons.Travel = rbxassetid://136144875676517` (crnuch uploaded
+         `art/icons/travel.png` 2026-10-13); the TRAVEL tile uses it (Star until it's in).
+      Playtest: walk into the portal → the map opens; GO to an owned zone (circle wipe, land facing down the lane,
+      a burst both ends); locked zones grey with a padlock + license; carrying an egg greys every GO + the orange
+      strip; HOME lands at your firm; the arms spin, particles on the face, gems lit only for your zones; phone size.
+- [ ] **Proposal: dynamic Supreme screen crack + mutated eggs (Diamond / Rainbow / Cosmic)** -
+      docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (crnuch, 2026-10-13; not built, decide + claim first). Note in it:
+      Golden's luck x4 is already capped on Food / Ocean / Brainrot / Space eggs (x2.2-3.6), so higher mutations
+      use rarity floors instead of more luck.
 - [ ] **Eye-check the economy-pass push in a playtest** (pushed 2026-10-13, only "loads with no errors" + hatches
       checked): (1) locked egg prompt "Locked / Earn X more coins", toast, odds board "Unlocks at X earned"; (2) a Pet
       lawyer's "Earns x" includes the x1.25 (hatch screen, LAWYERS panel, name tag); (3) the Supreme screen's cost +
@@ -91,6 +129,37 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — crnuch, cloud session: lawyer MUTATIONS (merging → mutating), selling + locking
+- **User's calls:** merging is replaced by mutating (Normal → Shiny → Diamond → Cosmic); it isn't guaranteed and a
+  fizzle takes all 3 lawyers; old Gold → Shiny, Rainbow → Diamond; a mutation recolours the whole lawyer (body parts
+  must stay distinct), no extra effects; a SELL feature to clear the inventory (price = a share of the egg's
+  current price - my pick, approved) + a lock.
+- **How:** `Stars` keeps its numbers and now means the mutation tier, so saves aren't rewritten (v18 only adds the
+  optional `Locked`). Earn x1 / 2.5 / 6 / 15; machine chances 70% / 45% / 25%; hatch mutation odds 2% / 0.3% / 0.02%
+  (golden eggs 25% / 3% / 0.2%); sell shares 10%..1000% by rarity x the mutation. All first guesses; the sim's pacing
+  targets all still pass (`tools/economy_sim.py` now mutates with chances + fizzles).
+- **Look:** `Shared.MutationLook` (src/MutationLook.lua) + its Blender twin `tools/blender/mutation_preview.py`
+  (render `art/mutations/preview.png`, real lawyers from lawyers_top.json).
+- **Mutation effects (user's later call: "slightly more frequent and cooler"):** `Effects.mutationAura(model, tier)` /
+  `clearMutationAura` (src/Effects.lua), added / cleared by `MutationLook.apply`: Shiny glints + sweep + gold dust,
+  Diamond crystals + twinkles + frost + ring, Cosmic tilted orbit + stars + specks + galaxy haze; tagged `FxMutation`.
+- **Review fixes (roblox-reviewer):** a locked lawyer can't go into the Mutation Machine (server refuses, the picker
+  hides it); the old auto-pick `MergeLawyers(uid)` remote only takes unlocked bench copies now (it used to pull idle
+  office lawyers too, which a fizzle would delete) and refuses a locked / office-queued main lawyer.
+- **Checks:** 39 Config checks (mutations, hatch odds, selling) + 32 sim tests pass. Nothing pushed to Studio.
+
+## 2026-10-13 — crnuch, cloud session: zone travel (portal + map), lane gaps + wall climbing, Blender in the cloud
+- **User's calls:** travel option A (one portal + a map); every model is made in Blender from now on (CLAUDE.md →
+  Blender); the portal face slightly see-through, with particles, a full circle; no travel while carrying eggs
+  (my default - the walk home past the bosses is the game; `Config.Zones.Travel.BlockWhileCarrying` turns it off).
+- **Blender runs in cloud sessions now** (`pip install bpy==5.2.2` + Mesa, recipe in CLAUDE.md): the portal was built
+  and rendered here - `tools/blender/travel_portal.py` → `tools/zones/travel_portal.json` (116 blocks), review
+  render `art/travel/portal.png`, HUD icon `art/icons/travel.png`.
+- **Code:** `tools/zones/BuildTravelPortal.lua`, `src/TravelServer.server.lua` (Remotes.Travel, validated server-side),
+  `src/Travel.client.lua` (TRAVEL tile + map + wipe + portal spin / particles / gems), Config zone colours + Travel.
+- **Lane fixes** (`tools/zones/BuildLane.lua`): walls under every gate, invisible climb blocks on the wall tops.
+- Also: docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (a suggestion, not built). Nothing pushed to Studio.
 
 ## 2026-10-13 — mr.robe, local session: the 18 Epic / Mythic / Supreme lawyers (Blender), Mythic + Supreme hatch cinematics, the 7-rarity push
 User: "add the supreme, mythic, and epic [lawyers] ... described in the github by crnuch. the mythic and supreme should

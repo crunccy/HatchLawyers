@@ -7,7 +7,7 @@
 --     It floats above the client's case progress bar (CaseService.caseBar); every other waiting client sits a
 --     bit higher so neighbours on the sofas don't collide; shorter draw distance than lawyer tags.
 --   Name tag (every lawyer in every firm):
---       Gold / Rainbow        merge tier, only for 2-3 star lawyers (Rainbow is an animated rainbow)
+--       Shiny / Diamond / Cosmic   the lawyer's MUTATION (2026-10-13; was the Gold / Rainbow merge tier), in its colour
 --       Tralalero Tralala     the lawyer's name, white
 --       Legendary             rarity, in Config.RarityColors (Legendary gets a slow gold shimmer)
 --       Earns x10             earning multiplier (Formulas.lawyerEarn), yellow
@@ -177,7 +177,9 @@ local function buildTag(model: Model, desk: Instance, id: string, stars: number)
 	local tierName = Config.Lawyers.StarNames[stars] or ""
 	local rows: { Row } = {}
 	if tierName ~= "" then
-		table.insert(rows, { text = tierName, color = GOLD, font = UIFonts.TitleFace, gradient = if stars >= 3 then RAINBOW else nil })
+		-- the MUTATION (2026-10-13, was the merge tier): its name in its own colour (Config.Lawyers.Mutations)
+		local mut = Config.Lawyers.Mutations and Config.Lawyers.Mutations[stars]
+		table.insert(rows, { text = tierName, color = if mut then mut.Color else GOLD, font = UIFonts.TitleFace })
 	end
 	table.insert(rows, { text = def.Name, color = WHITE, size = 1.35 })
 	table.insert(rows, rarityRow(if rarity then rarity.Id else "Common"))
