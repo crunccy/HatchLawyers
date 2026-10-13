@@ -739,4 +739,65 @@ for _, d in zonesRoot:GetDescendants() do
 	end
 end
 
+------------------------------------------------------------------ no z-fighting (2026-10-13: the floor flickered at the start)
+-- The lane's floors sit at y = 0 like the world grass and the plaza: wherever two differently coloured flat tops meet
+-- at the same height, the lower-ranked one drops 0.03 (grass under the lane, the lane under the plaza, floors under
+-- paths, earlier zones under later ones).
+do
+	local function aligned(p: BasePart): boolean
+		local r = p.CFrame.Rotation
+		return (math.abs(r.XVector.X) > 0.999 or math.abs(r.XVector.Z) > 0.999) and math.abs(r.YVector.Y) > 0.999
+	end
+	local function box(p: BasePart): (Vector3, Vector3)
+		local r, sz, c = p.CFrame.Rotation, p.Size, p.Position
+		local sx = if math.abs(r.XVector.X) > 0.999 then sz.X else sz.Z
+		local sw = if math.abs(r.XVector.X) > 0.999 then sz.Z else sz.X
+		return Vector3.new(c.X - sx / 2, c.Y - sz.Y / 2, c.Z - sw / 2), Vector3.new(c.X + sx / 2, c.Y + sz.Y / 2, c.Z + sw / 2)
+	end
+	local order: { [string]: number } = { SafeZone = 0 }
+	for i, z in ZONES do
+		order[z.id or z.Id or ""] = i
+	end
+	local function rank(p: BasePart): number
+		if not p:IsDescendantOf(zonesRoot) then
+			return if p:IsDescendantOf(workspace:FindFirstChild("Hub") or zonesRoot) then 100 else 0
+		end
+		local zone: Instance = p
+		while zone.Parent and zone.Parent ~= zonesRoot do
+			zone = zone.Parent
+		end
+		local base = if p.Parent and p.Parent.Name == "Floor" then 10 elseif p.Parent and p.Parent.Name == "Path" then 30 else 50
+		return base + (order[zone.Name] or 9)
+	end
+	local cand: { BasePart } = {}
+	for _, root in { zonesRoot, workspace:FindFirstChild("Ground"), workspace:FindFirstChild("Hub") } do
+		if root then
+			for _, p in root:GetDescendants() do
+				if p:IsA("BasePart") and p.Transparency < 1 and aligned(p) and p.Size.X * p.Size.Z > 1 then
+					table.insert(cand, p)
+				end
+			end
+		end
+	end
+	local moved = {}
+	for i = 1, #cand do
+		local a = cand[i]
+		local alo, ahi = box(a)
+		for j = i + 1, #cand do
+			local b = cand[j]
+			if (a.Color == b.Color and a.Material == b.Material) or not (a:IsDescendantOf(zonesRoot) or b:IsDescendantOf(zonesRoot)) then
+				continue
+			end
+			local blo, bhi = box(b)
+			if math.abs(ahi.Y - bhi.Y) < 0.01 and math.min(ahi.X, bhi.X) - math.max(alo.X, blo.X) > 0.05 and math.min(ahi.Z, bhi.Z) - math.max(alo.Z, blo.Z) > 0.05 then
+				local victim = if rank(a) <= rank(b) then a else b
+				if not moved[victim] then
+					moved[victim] = true
+					victim.CFrame -= Vector3.new(0, 0.03, 0)
+				end
+			end
+		end
+	end
+end
+
 return ("built the lane: %d parts, %d studs long (Safe Zone + %d zones), starting at %s"):format(parts, s, #ZONES, tostring(LANE_START))

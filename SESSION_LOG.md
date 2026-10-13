@@ -8,7 +8,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
 
 ## Open items
 - [ ] **Eggs v5: eye-check in a real window.** Watch a few real hatches (all rarities, golden), check a phone-sized window, have a second player watch one. Delete `ServerStorage.Old_EggModels_v4` once happy.
-      "Tung Tung Tung Sahur" (a Legendary lawyer's name) is a real meme name: rename it? (CLAUDE.md: fictional only.)
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
 - [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
@@ -105,6 +104,19 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-13 — mr.robe, local session: admin commands, lawyer rename, zone floor flicker, carried eggs hidden in the hatch
+- **Admin commands** (user: "if i want to see a legendary egg hatching i should be able to will it into existence"):
+  - `ServerScriptService.AdminCommands` (src twin `src/AdminCommands.server.lua`), for crnuch + mr_blox174 and anyone in a Studio playtest. Type in chat with `/` (TextChatCommands, hidden from chat) or `;` (Player.Chatted).
+  - `/hatch <rarity> [egg] [golden]`: a **preview** hatch at your incubator (full animation, nothing saved, labelled "RARITY · PREVIEW").
+  - `/eggs <count> [egg] [golden]`: real eggs in your arms (up to 30, past the carry limit).
+  - `/coins <amount>` (5m / 2b / 1qd ...), `/help`.
+  - Tested in a playtest: `;hatch legendary space golden`, `;eggs`.
+- **Lawyer rename:** the Legendary `PinstripePartner` is now **"Bonk Bonk Barrister"** (was "Tung Tung Tung Sahur", a real meme name; user's call). The id and model are unchanged. Config live + `src/`.
+- **Zone floor flicker** (user: "the floor is glitching at the beginning of the zones"): z-fighting.
+  - The lane floors sit at y = 0 on the world grass, and the License Office floor sat on the plaza floor.
+  - The lower one of each coplanar pair with different colours dropped 0.03 (11 grass tiles, 6 gate-arch pieces, the License Office floor).
+  - `tools/zones/BuildLane.lua` now does this pass itself at the end of a rebuild.
+- **Carried eggs hidden during a hatch** (user): the hatch re-hides the eggs in your arms every frame (CarryPose rebuilds the pile when the count drops, which brought them back). Tested with a rebuild mid-hatch: 24/24 parts hidden.
 ## 2026-10-13 — mr.robe, local session: eggs v5 INSTALLED (crnuch uploaded)
 - crnuch ran `ServerStorage.EggV5Upload` from his Studio: 12 textures + 56 meshes uploaded from the owner's account (ids: `tools/zones/egg_assets.json`, live in `ServerStorage.EggV5Assets`). The build was complete.
 - **Installed:**

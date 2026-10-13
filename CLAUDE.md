@@ -157,6 +157,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   - `Server.*` — mr.robe's gameplay (above) + ours: `FirmBuilder`, `DeskService`.
   - `Eggs.EggServer` — egg rolls, equip, sell duplicates, NEW-badge count.
   - `Dev.EconomySim` (+ disabled `RunEconomySim`) — authoritative 24 h economy sim.
+  - `AdminCommands` — chat commands for crnuch + mr_blox174 (and anyone in a Studio playtest): `/hatch <rarity> [egg] [golden]`
+    (a preview hatch, nothing saved), `/eggs <count> [egg] [golden]`, `/coins <amount>`, `/help` (`;` works too).
 - `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (THE lawyer screen since
   2026-10-09: office slots bar, office card with upgrade/skills/unseat, CLIENTS tab to assign, BENCH tab to place/
   swap/merge; `SkinInventory` is disabled), `ClientWalk`, `AssignClients` (only the [E] prompts now), `Guide`.

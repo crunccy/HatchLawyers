@@ -765,6 +765,9 @@ local function standLawyer(m: Model, floor: Vector3, height: number, facing: Vec
 end
 
 local function chanceText(result: { [string]: any }, rarityName: string): string
+	if result.preview then -- (an admin's /hatch preview: nothing was saved)
+		return string.upper(rarityName) .. "  ·  PREVIEW"
+	end
 	local c = result.chance
 	if typeof(c) ~= "number" then
 		return string.upper(rarityName)
@@ -917,6 +920,17 @@ local function camBegin()
 	camCur, camGoal = cam.CFrame, cam.CFrame
 	camConn = RunService.RenderStepped:Connect(function(dt)
 		camCur = camCur:Lerp(camGoal, 1 - math.exp(-dt * camRate))
+		-- (the eggs in your arms are rebuilt when the carried count drops, so they're re-found every frame)
+		local carried = workspace:FindFirstChild("CarryVisuals")
+		local ch = player.Character
+		local root = ch and ch:FindFirstChild("HumanoidRootPart") :: BasePart?
+		if carried and root then
+			for _, d in carried:GetDescendants() do
+				if d:IsA("BasePart") and not hiddenParts[d] and (d.Position - root.Position).Magnitude < 9 then
+					hiddenParts[d] = true
+				end
+			end
+		end
 		for d in hiddenParts do
 			(d :: any).LocalTransparencyModifier = 1
 		end
