@@ -5,6 +5,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe (local), since 2026-10-12 late:** egg remake v5: new egg models (Blender), the hatch (crack + reveal, basic and fancy) and the incubator, remade with Blender animations + maxed VFX ladder. Don't touch EggModels / EggLook / the Eggs client hatch / incubator code until this is removed.
 
 ## Open items
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
