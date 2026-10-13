@@ -22,7 +22,7 @@ The user's choices:
 - The upload pipeline works.
 - The animations were checked in Studio Edit mode: the incubator clips, the cracked egg and the blast break.
 
-**Blocked on the place owner.** Assets uploaded by mr_blox174 don't load in crnuch's place (verified: crnuch's texture renders, ours doesn't; our meshes give "Failed to load mesh asset"). So **crnuch must upload** (below).
+**Blocked on the place owner.** Assets uploaded by mr_blox174 don't load in crnuch's place (verified: crnuch's texture renders, ours doesn't; our meshes give "Failed to load mesh asset"). So **crnuch must upload**: one setting and one command-bar line, all data already in the place (below).
 
 **Ready to install afterwards.** The scripts are in `src/` and `tools/zones/eggs_v5_live/`.
 
@@ -100,7 +100,7 @@ Everyone near the incubator sees the same thing, without the camera or the words
 | Incubator + clips (+ the FxRing VFX torus) | `tools/blender/incubator.py` → `_egg_export/`, `tools/zones/incubator.json` |
 | Shell break takes | `tools/blender/egg_break.py` → `tools/zones/egg_break.json` |
 | Shared mesh helpers | `tools/blender/meshkit.py` |
-| Upload + build in Studio | `tools/zones/BuildEggsV5.lua` (data from `ServerStorage.EggV5Data`) |
+| Upload + build in Studio | `tools/zones/BuildEggsV5.lua` + `tools/zones/PngDecode.lua`, installed as `ServerStorage.EggV5Upload` (data from `ServerStorage.EggV5Data`; built pieces go to `ServerStorage.EggV5Built`) |
 | Runtime | `src/EggLook.lua` (v5), `src/HatchFx.lua`, `src/Incubator.lua` |
 | Live installs (v5 only, no economy pass) | `tools/zones/eggs_v5_live/` (Eggs client, EggServer, FirmBuilder) |
 | `src/` twins with v5 merged in | `src/Eggs.client.lua`, `src/EggServer.server.lua` (+ the pending economy pass) |
@@ -110,25 +110,36 @@ Regenerate everything:
 1. Run `eggs_v5.py`, then `incubator.py`, then `egg_break.py` (in that order: `eggs_v5.py` rewrites the manifest).
 2. Copy `egg_break.json` and `incubator.json` into `_egg_export/`.
 3. Reload `ServerStorage.EggV5Data` from `_egg_export/`.
-4. Delete the `ServerStorage.EggV5Assets` attributes of the meshes that changed, then rerun the builder.
+4. Add the base64 textures (`tex_<Egg>[_Golden].txt`) to `ServerStorage.EggV5Data`.
+5. Reinstall `ServerStorage.EggV5Upload`.
+6. Delete the `ServerStorage.EggV5Assets` attributes of the meshes that changed, then rerun the upload.
 
-## crnuch: the one-time upload (about 5 minutes)
+## crnuch: the one-time upload (about 5 minutes, no Claude needed)
 
-Do this in crnuch's own Studio, in Edit mode. His local Claude can do steps 3 and 4.
-1. `git pull`.
-2. Studio: **File → Beta Features → tick "CreateAssetAsync Luau API"** → Save → close and reopen Studio and the place.
-3. **Textures:**
-   - Serve `art/eggs/textures/` locally (`python3 -m http.server 8766 --directory art/eggs/textures`).
-   - Upload the 12 PNGs with the Studio MCP's `upload_image` (`http://localhost:8766/<Name>.png`).
-   - On `ServerStorage.EggV5Data`, set the string attributes `Texture_<Egg>` = `"rbxassetid://<id of <Egg>.png>"` and `Golden_<Egg>` = `"rbxassetid://<id of <Egg>_Golden.png>"`, for Briefcase, Pet, Brainrot, Food, Ocean and Space.
-4. Run `tools/zones/BuildEggsV5.lua`. Through the MCP: put its source in a ModuleScript as `return function() … end`, require it and call it.
-   - It uploads for about 90 s per run. Rerun it until it no longer says "run this again".
-   - The last run builds everything and should end with "library swapped in | incubator template ready".
-5. Push a SESSION_LOG line saying it's done. Then any local session installs the scripts (next section).
+Everything needed is already inside the place:
+- the mesh + texture data in `ServerStorage.EggV5Data`;
+- the script `ServerStorage.EggV5Upload`, which is `tools/zones/BuildEggsV5.lua` + its child `PngDecode`.
 
+In crnuch's own Studio:
+1. **File → Beta Features → tick "CreateAssetAsync Luau API"** → Save → close Studio and open the place again.
+2. Stay in Edit mode (not Play). Open **View → Command Bar**, paste this line and press Enter:
+   `require(game.ServerStorage.EggV5Upload)()`
+3. Wait for the Output window to say **`[EggsV5] DONE`**. It takes a few minutes: 12 textures + 56 meshes are uploaded from his account, then everything is built into `ServerStorage.EggV5Built`.
+   - If it says "run this again" or "built with problems", run the same line again. Uploads are remembered, so it only does what's missing.
+4. Tell mr.robe. Nothing in the live game changes until a session installs it (next section).
+
+Tested 2026-10-12 from mr.robe's Studio:
+- `("dry")`: every mesh + texture decodes from the place data (6.5 s);
+- `("local")`: the full build path with unsaved parts gives a complete library and incubator, and the generated clip modules load;
+- a real upload from mr_blox174's account succeeds. Only loading his uploads in this game fails, which is the reason crnuch runs it.
 ## Installing the scripts (after step 4)
 
-Re-export `studio/` first, then install:
+Re-export `studio/` first, then:
+- **Move the built pieces** out of `ServerStorage.EggV5Built` (check its `Complete` attribute and that `Uploader` is crnuch, 2234491534):
+  - `EggModels` → `ReplicatedStorage.EggModels` (the v4 one → `ServerStorage.Old_EggModels_v4`);
+  - `IncubatorAnims` → `ReplicatedStorage`;
+  - `IncubatorV5` → `ServerStorage.Templates`.
+- Then install:
 - **New modules:** `Shared.HatchFx` ← `src/HatchFx.lua`, `Shared.Incubator` ← `src/Incubator.lua`.
 - **`Shared.EggLook` ← `src/EggLook.lua`.** It's a straight replace: the live copy is v4, unchanged since this snapshot. Check with a diff against `studio/`.
 - **`StarterPlayerScripts.Eggs`, `Eggs.EggServer`, `Server.FirmBuilder`** ← `tools/zones/eggs_v5_live/*`.

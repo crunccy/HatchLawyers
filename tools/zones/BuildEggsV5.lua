@@ -1,42 +1,43 @@
--- tools/zones/BuildEggsV5.lua - builds the eggs v5 + the new incubator in the open place (2026-10-12, mr.robe's
--- session; docs/EGGS_V5.md). Run in EDIT mode (Studio MCP execute_luau: put the source in a ModuleScript as
--- "return function() <source> end" and require + call it; or paste into the command bar). Needs Studio's beta feature
--- "CreateAssetAsync Luau API" (File > Beta Features): each Blender mesh is rebuilt as an EditableMesh and uploaded as
--- a Mesh asset. THE PLACE OWNER (crnuch) MUST RUN IT: the game only loads assets its owner uploaded (mr_blox174's
--- uploads of these meshes and textures don't load - same as the carry animation).
--- Data: ServerStorage.EggV5Data (the JSON exported by tools/blender/eggs_v5.py -> incubator.py -> egg_break.py, stored
--- in the place as chunked StringValues), else a local file server on :8766 serving _egg_export/. Textures: set
--- ServerStorage.EggV5Data attributes Texture_<Egg> / Golden_<Egg> to the owner's uploaded image ids first.
--- Uploads stop after ~90 s per run (ids are kept on ServerStorage.EggV5Assets, per uploader): run it until it stops
--- saying "run this again"; the last run builds:
---   ReplicatedStorage.EggModels      Shell, HatchShell, Chunks/*, Cracks/*, FxRing, <Egg>/* pieces (attrs Texture,
---                                    GoldenTexture), BreakAnims (ModuleScript). The old v4 library -> ServerStorage.Old_EggModels_v4
---   ReplicatedStorage.IncubatorAnims (ModuleScript: rest centres + the Open / Close / Cook / Overload clips)
---   ServerStorage.Templates.IncubatorV5 (Model; Server.FirmBuilder clones it into every firm)
+-- tools/zones/BuildEggsV5.lua - uploads + builds the eggs v5 and the new incubator (2026-10-12, mr.robe's session;
+-- docs/EGGS_V5.md). Installed in the place as ServerStorage.EggV5Upload: a ModuleScript whose source is
+-- "return function(RUN_ARG) <this file> end", with tools/zones/PngDecode.lua as its child "PngDecode".
+--
+-- THE PLACE OWNER (crnuch) MUST RUN IT: the game only loads assets its owner uploaded (mr_blox174's uploads of these
+-- meshes and textures don't load - same as the carry animation). In his Studio, Edit mode, with the beta feature
+-- "CreateAssetAsync Luau API" on (File > Beta Features, then restart Studio), paste into the command bar:
+--     require(game.ServerStorage.EggV5Upload)()
+-- It uploads the 12 textures and 56 meshes (a few minutes; progress in the Output window), then builds everything
+-- into ServerStorage.EggV5Built (nothing live changes until a session installs it - docs/EGGS_V5.md). Safe to run
+-- again: what's uploaded is remembered on ServerStorage.EggV5Assets (per uploader).
+--   RUN_ARG nil      everything, however long it takes (the command bar)
+--   RUN_ARG number   stop uploading after that many seconds and say "run this again" (Studio MCP calls time out)
+--   RUN_ARG "dry"    decode every mesh + texture from the data, upload nothing
+--   RUN_ARG "local"  no uploads at all: unsaved EditableMesh parts in workspace._EggV5Lib (to try the animations)
+-- Data: ServerStorage.EggV5Data - the files tools/blender/eggs_v5.py -> incubator.py -> egg_break.py export, stored IN
+-- the place as chunked StringValues (JSON meshes + clips, base64 PNG textures "tex_<Egg>[_Golden].txt").
+-- Builds (in ServerStorage.EggV5Built, or workspace._EggV5Lib for "local"):
+--   EggModels       Shell, HatchShell, Chunks/*, Cracks/*, FxRing, <Egg>/* pieces (attrs Texture, GoldenTexture),
+--                   BreakAnims (ModuleScript)                         -> goes to ReplicatedStorage.EggModels
+--   IncubatorAnims  (ModuleScript: rest centres + the Open / Close / Cook / Overload clips) -> ReplicatedStorage
+--   IncubatorV5     (Model)                                          -> ServerStorage.Templates (Server.FirmBuilder)
 local HttpService = game:GetService("HttpService")
 local AssetService = game:GetService("AssetService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
-local BASE = "http://localhost:8766/"
--- LOCAL_TEST: no uploads - every mesh is an unsaved EditableMesh part, and everything goes into workspace._EggV5Lib (to
--- try the animations in Edit mode before the real upload; the parts don't survive a reload)
-local LOCAL_TEST = false
-local TEXTURES = { -- (tools/blender/eggs_v5.py paints them; uploaded 2026-10-12 with the Studio MCP's upload_image)
-	Briefcase = { "rbxassetid://97351967797334", "rbxassetid://140143464414856" },
-	Pet = { "rbxassetid://77571622617847", "rbxassetid://73935368120776" },
-	Brainrot = { "rbxassetid://114929850759979", "rbxassetid://120498420443381" },
-	Food = { "rbxassetid://81397707159207", "rbxassetid://134618248217931" },
-	Ocean = { "rbxassetid://125149307131596", "rbxassetid://138887934157174" },
-	Space = { "rbxassetid://92250233347467", "rbxassetid://76187503293624" },
-}
+local ARG: any = RUN_ARG
+local LOCAL_TEST = ARG == "local"
+local DRY = ARG == "dry"
+local BUDGET = if type(ARG) == "number" then ARG else math.huge
+local EGGS = { "Briefcase", "Pet", "Brainrot", "Food", "Ocean", "Space" }
+local BASE = "http://localhost:8766/" -- (only without ServerStorage.EggV5Data: a local server on _egg_export/)
 
--- The data: from ServerStorage.EggV5Data when it's there (the exported JSON files stored IN the place as chunked
--- StringValues, so the place owner can run this from his own Studio without the files - assets must be uploaded by
--- the place owner, crnuch, or the game can't load them), else from the local file server.
+local function say(msg: string)
+	print("[EggsV5] " .. msg)
+end
+
 local dataFolder = ServerStorage:FindFirstChild("EggV5Data")
-local function getJson(name: string): any
+local function getText(name: string): string
 	if dataFolder then
 		local f = dataFolder:FindFirstChild(name)
 		if not f then
@@ -46,27 +47,17 @@ local function getJson(name: string): any
 		for i = 1, #f:GetChildren() do
 			table.insert(parts, (f:FindFirstChild(tostring(i)) :: StringValue).Value)
 		end
-		return HttpService:JSONDecode(table.concat(parts))
+		return table.concat(parts)
 	end
-	return HttpService:JSONDecode(HttpService:GetAsync(BASE .. name, true))
+	return HttpService:GetAsync(BASE .. name, true)
+end
+local function getJson(name: string): any
+	return HttpService:JSONDecode(getText(name))
 end
 
 local manifest = getJson("manifest.json")
-if dataFolder and not LOCAL_TEST then -- the owner's texture ids must be set first (a texture the game can't load makes the shell invisible)
-	for egg in TEXTURES do
-		if typeof(dataFolder:GetAttribute("Texture_" .. egg)) ~= "string" or typeof(dataFolder:GetAttribute("Golden_" .. egg)) ~= "string" then
-			return "set ServerStorage.EggV5Data attributes Texture_" .. egg .. " / Golden_" .. egg .. " (the place owner's uploaded image ids, 'rbxassetid://...') first"
-		end
-	end
-end
-if dataFolder then -- (texture ids uploaded by the place owner, set as attributes Texture_<Egg> / Golden_<Egg>)
-	for egg, pair in TEXTURES do
-		pair[1] = (dataFolder:GetAttribute("Texture_" .. egg) :: string?) or pair[1]
-		pair[2] = (dataFolder:GetAttribute("Golden_" .. egg) :: string?) or pair[2]
-	end
-end
 
--- uploaded ids are remembered per uploader (a mesh someone else uploaded is no use: the game only loads its owner's)
+-- uploaded ids are remembered per uploader (someone else's upload is no use: the game only loads its owner's)
 local me = game:GetService("StudioService"):GetUserId()
 local cache = ServerStorage:FindFirstChild("EggV5Assets")
 if cache and cache:GetAttribute("Uploader") ~= me then
@@ -101,9 +92,10 @@ local function buildEditable(d: any): EditableMesh
 	return em
 end
 
-local uploaded, reused, failed, pending = 0, 0, {}, 0
-local BUDGET, started = 90, os.clock() -- (uploads stop after ~90 s so a call never times out; run it again to go on)
--- the mesh asset for `name` (uploads it once); returns the asset id and the JSON's box (lo, hi)
+local uploaded, reused, failed, pending, checked = 0, 0, {}, 0, 0
+local started = os.clock()
+
+-- the mesh asset for `name` (uploaded once); returns the asset id and its box (lo, hi)
 local function meshAsset(name: string): (number?, any)
 	local info = manifest.meshes[name]
 	local id = cache:GetAttribute(name)
@@ -115,8 +107,12 @@ local function meshAsset(name: string): (number?, any)
 		pending += 1
 		return nil, info
 	end
-	local d = getJson(info.file)
-	local em = buildEditable(d)
+	local em = buildEditable(getJson(info.file))
+	if DRY then
+		em:Destroy()
+		checked += 1
+		return nil, info
+	end
 	local ok, result, value = pcall(function()
 		return AssetService:CreateAssetAsync(em, Enum.AssetType.Mesh, { Name = "HL_" .. name, Description = "Hatch a Lawyer & Get Rich! - " .. name })
 	end)
@@ -124,10 +120,53 @@ local function meshAsset(name: string): (number?, any)
 	if ok and result == Enum.CreateAssetResult.Success and typeof(value) == "number" then
 		cache:SetAttribute(name, value)
 		uploaded += 1
+		say("uploaded mesh " .. name .. " (" .. uploaded .. ")")
 		return value, info
 	end
 	table.insert(failed, name .. ": " .. tostring(if ok then value else result))
 	return nil, info
+end
+
+-- a texture ("Brainrot" or "Brainrot_Golden"), decoded from the data and uploaded once -> "rbxassetid://..."
+local decoder: any = nil
+local function textureAsset(file: string): string?
+	local key = "Tex_" .. file
+	local id = cache:GetAttribute(key)
+	if typeof(id) == "number" then
+		reused += 1
+		return "rbxassetid://" .. id
+	end
+	if LOCAL_TEST then
+		return "" -- (an untextured shell; a texture the game can't load would hide it)
+	end
+	if os.clock() - started > BUDGET then
+		pending += 1
+		return nil
+	end
+	if not decoder then
+		local m = (script and script:FindFirstChild("PngDecode")) or (dataFolder and dataFolder:FindFirstChild("PngDecode"))
+		assert(m, "PngDecode module missing (ServerStorage.EggV5Upload.PngDecode)")
+		decoder = require(m :: ModuleScript)
+	end
+	local w, h, px = decoder.fromBase64(getText("tex_" .. file .. ".txt"))
+	if DRY then
+		checked += 1
+		return nil
+	end
+	local img = AssetService:CreateEditableImage({ Size = Vector2.new(w, h) })
+	img:WritePixelsBuffer(Vector2.zero, Vector2.new(w, h), px)
+	local ok, result, value = pcall(function()
+		return AssetService:CreateAssetAsync(img, Enum.AssetType.Image, { Name = "HL_EggTex_" .. file, Description = "Hatch a Lawyer & Get Rich! - egg texture " .. file })
+	end)
+	img:Destroy()
+	if ok and result == Enum.CreateAssetResult.Success and typeof(value) == "number" then
+		cache:SetAttribute(key, value)
+		uploaded += 1
+		say("uploaded texture " .. file .. " (" .. uploaded .. ")")
+		return "rbxassetid://" .. value
+	end
+	table.insert(failed, file .. ": " .. tostring(if ok then value else result))
+	return nil
 end
 
 local function meshPart(name: string, props: { [string]: any }?): MeshPart?
@@ -143,7 +182,7 @@ local function meshPart(name: string, props: { [string]: any }?): MeshPart?
 	if not id then
 		return nil
 	end
-	for attempt = 1, if mp then 0 else 2 do
+	for attempt = 1, if mp then 0 else 3 do
 		local ok, res = pcall(function()
 			return AssetService:CreateMeshPartAsync(Content.fromAssetId(id), {
 				CollisionFidelity = Enum.CollisionFidelity.Box,
@@ -157,7 +196,7 @@ local function meshPart(name: string, props: { [string]: any }?): MeshPart?
 		task.wait(attempt) -- (a fresh upload can take a moment to be loadable)
 	end
 	if not mp then
-		table.insert(failed, name .. ": CreateMeshPartAsync failed")
+		table.insert(failed, name .. ": can't load the uploaded mesh")
 		return nil
 	end
 	local m = mp :: MeshPart
@@ -201,17 +240,15 @@ local function dataModule(name: string, parent: Instance, header: string, data: 
 	local function emit(v: any)
 		local t = typeof(v)
 		if t == "table" then
+			table.insert(parts, "{")
 			if #v > 0 or next(v) == nil then
-				table.insert(parts, "{")
 				for i, x in v do
 					if i > 1 then
 						table.insert(parts, ",")
 					end
 					emit(x)
 				end
-				table.insert(parts, "}")
 			else
-				table.insert(parts, "{")
 				local keys = {}
 				for k in v do
 					table.insert(keys, k)
@@ -222,8 +259,8 @@ local function dataModule(name: string, parent: Instance, header: string, data: 
 					emit(v[k])
 					table.insert(parts, ",")
 				end
-				table.insert(parts, "}")
 			end
+			table.insert(parts, "}")
 		elseif t == "number" then
 			table.insert(parts, if v == math.floor(v) then tostring(v) else string.format("%.4g", v))
 		elseif t == "string" then
@@ -233,10 +270,6 @@ local function dataModule(name: string, parent: Instance, header: string, data: 
 		end
 	end
 	emit(data)
-	local old = parent:FindFirstChild(name)
-	if old then
-		old:Destroy()
-	end
 	local ms = Instance.new("ModuleScript")
 	ms.Name = name
 	ms.Source = header .. "\nreturn " .. table.concat(parts) .. "\n"
@@ -244,31 +277,48 @@ local function dataModule(name: string, parent: Instance, header: string, data: 
 	return ms
 end
 
-if not LOCAL_TEST then -- upload pass: every mesh first (resumable), building only once they're all up
+------------------------------------------------------------------ 1) uploads (resumable)
+if not LOCAL_TEST then
+	say(if DRY then "dry run: decoding every texture + mesh" else "uploading textures + meshes (a few minutes)...")
+	for _, egg in EGGS do
+		textureAsset(egg)
+		textureAsset(egg .. "_Golden")
+	end
 	for name in manifest.meshes do
 		meshAsset(name)
 	end
-	if pending > 0 or #failed > 0 then
-		return string.format("uploaded %d (already %d); %d still to upload - run this again%s", uploaded, reused, pending, if #failed > 0 then " | failed: " .. table.concat(failed, "; ") else "")
+	if DRY then
+		local msg = string.format("dry run OK: %d textures + meshes decode (%d already uploaded), %d failed", checked, reused, #failed)
+		say(msg)
+		return msg
 	end
+	if pending > 0 or #failed > 0 then
+		local msg = string.format("uploaded %d (already %d); %d still to upload - run this again%s", uploaded, reused, pending, if #failed > 0 then " | failed: " .. table.concat(failed, "; ") else "")
+		say(msg)
+		return msg
+	end
+	say("all uploaded; building...")
 	uploaded, reused = 0, 0
 end
-
-local rec = ChangeHistoryService:TryBeginRecording("Eggs v5 + incubator v5")
-local testOut: Folder? = nil
-if LOCAL_TEST then
-	local o = workspace:FindFirstChild("_EggV5Lib")
-	if o then
-		o:Destroy()
-	end
-	testOut = Instance.new("Folder")
-	;(testOut :: Folder).Name = "_EggV5Lib"
-	;(testOut :: Folder).Parent = workspace
+local TEXTURES = {}
+for _, egg in EGGS do
+	TEXTURES[egg] = { textureAsset(egg) or "", textureAsset(egg .. "_Golden") or "" }
 end
 
------------------------------------------------------------------- EggModels v5
+------------------------------------------------------------------ 2) build
+local rec = ChangeHistoryService:TryBeginRecording("Eggs v5 + incubator v5")
+local outName = if LOCAL_TEST then "_EggV5Lib" else "EggV5Built"
+local outParent = if LOCAL_TEST then workspace else ServerStorage
+local oldOut = outParent:FindFirstChild(outName)
+if oldOut then
+	oldOut:Destroy()
+end
+local out = Instance.new("Folder")
+out.Name = outName
+
 local lib = Instance.new("Folder")
-lib.Name = "EggModels_v5"
+lib.Name = "EggModels"
+lib:SetAttribute("EggV5", true)
 local shell = meshPart("Shell")
 if shell then
 	shell.Parent = lib
@@ -300,21 +350,22 @@ local ring = meshPart("FxRing", { Material = Enum.Material.Neon, CastShadow = fa
 if ring then
 	ring.Parent = lib
 end
+local pieces, piecesMade = 0, 0
 for egg, def in manifest.eggs do
 	local folder = Instance.new("Folder")
 	folder.Name = egg
-	local tex = TEXTURES[egg]
-	if tex then
-		folder:SetAttribute("Texture", tex[1])
-		folder:SetAttribute("GoldenTexture", tex[2])
-	end
+	local tex = TEXTURES[egg] or { "", "" }
+	folder:SetAttribute("Texture", tex[1])
+	folder:SetAttribute("GoldenTexture", tex[2])
 	for _, piece in def.pieces or {} do
+		pieces += 1
 		local p = meshPart(piece.mesh)
 		if p then
+			piecesMade += 1
 			p.Name = piece.name
 			if piece.mat == "tex" then
 				p:SetAttribute("UsesTexture", true)
-				p.TextureID = if tex then tex[1] else ""
+				p.TextureID = tex[1]
 			else
 				p.Color = rgb(piece.rgb)
 				style(p, piece.mat)
@@ -325,16 +376,19 @@ for egg, def in manifest.eggs do
 	folder.Parent = lib
 end
 dataModule("BreakAnims", lib, "-- generated by tools/zones/BuildEggsV5.lua from tools/blender/egg_break.py (Blender rigid-body sim):\n-- takes[take][chunk] = 7 numbers per frame (centre x y z in egg space at height 3.8, quaternion x y z w), 30 fps.", getJson("egg_break.json"))
+lib.Parent = out
 
------------------------------------------------------------------- the incubator
 local inc = manifest.incubator
 local clips = getJson("incubator.json")
 local model = Instance.new("Model")
 model.Name = "IncubatorV5"
 local SOLID = { Base = true, Arch = true, Tubes = true, Panel = true }
+local incParts, incMade = 0, 0
 for name, def in inc.parts do
+	incParts += 1
 	local p = meshPart(def.mesh)
 	if p then
+		incMade += 1
 		p.Name = name
 		p.Color = rgb(def.rgb)
 		style(p, def.mat)
@@ -369,50 +423,20 @@ if pad then
 	a.Parent = pad
 end
 model:SetAttribute("EggV5", true)
-local incComplete = #model:GetChildren() >= 22 and base ~= nil
-local templates = testOut or ServerStorage:FindFirstChild("Templates") or ServerStorage
-if incComplete then
-	local oldTemplate = templates:FindFirstChild("IncubatorV5")
-	if oldTemplate then
-		oldTemplate:Destroy()
-	end
-	model.Parent = templates
-else
-	model:Destroy() -- (Server.FirmBuilder keeps building the old incubator until the template is complete)
-end
-dataModule("IncubatorAnims", testOut or ReplicatedStorage, "-- generated by tools/zones/BuildEggsV5.lua from tools/blender/incubator.py (keyframed in Blender):\n-- parts[name] = rest centre (incubator space: the floor under its middle, front = -Z); clips[clip].parts[name] =\n-- 7 numbers per frame (centre x y z, quaternion x y z w), 30 fps.", clips)
+model.Parent = out
+dataModule("IncubatorAnims", out, "-- generated by tools/zones/BuildEggsV5.lua from tools/blender/incubator.py (keyframed in Blender):\n-- parts[name] = rest centre (incubator space: the floor under its middle, front = -Z); clips[clip].parts[name] =\n-- 7 numbers per frame (centre x y z, quaternion x y z w), 30 fps.", clips)
 
------------------------------------------------------------------- swap the egg library in (only if every egg mesh made it)
-local complete = shell ~= nil and hatchShell ~= nil and #chunks:GetChildren() == #manifest.chunks and #cracks:GetChildren() == #manifest.cracks
-if testOut then
-	lib.Name = "EggModels"
-	lib.Parent = testOut
-elseif complete then
-	local old = ReplicatedStorage:FindFirstChild("EggModels")
-	if old then
-		local keep = old:GetAttribute("EggV5") and nil or ServerStorage:FindFirstChild("Old_EggModels_v4")
-		if old:GetAttribute("EggV5") then
-			old:Destroy()
-		elseif not keep then
-			old.Name = "Old_EggModels_v4"
-			old.Parent = ServerStorage
-		else
-			old:Destroy()
-		end
-	end
-	lib.Name = "EggModels"
-	lib:SetAttribute("EggV5", true)
-	lib.Parent = ReplicatedStorage
-else
-	lib.Parent = ServerStorage -- (kept aside as EggModels_v5 until every mesh uploads)
-end
+local complete = shell ~= nil and hatchShell ~= nil and #chunks:GetChildren() == #manifest.chunks
+	and #cracks:GetChildren() == #manifest.cracks and ring ~= nil and piecesMade == pieces and incMade == incParts and base ~= nil
+out:SetAttribute("Complete", complete)
+out:SetAttribute("Uploader", me)
+out:SetAttribute("Built", os.date("!%Y-%m-%d %H:%M UTC"))
+out.Parent = outParent
 if rec then
 	ChangeHistoryService:FinishRecording(rec, Enum.FinishRecordingOperation.Commit)
 end
-local ids = {}
-for k, v in cache:GetAttributes() do
-	table.insert(ids, k .. "=" .. tostring(v))
-end
-table.sort(ids)
-return string.format("uploaded %d, reused %d, failed %d%s | library %s | incubator %s | ids: %s", uploaded, reused, #failed,
-	if #failed > 0 then " (" .. table.concat(failed, "; ") .. ")" else "", if complete then "swapped in" else "kept aside", if incComplete then "template ready" else "not built", table.concat(ids, ","))
+local msg = if complete
+	then "DONE - everything uploaded and built in " .. out:GetFullName() .. ". Tell mr.robe (his Claude installs it)."
+	else string.format("built with problems: %d failed (%s)", #failed, table.concat(failed, "; "))
+say(msg)
+return msg

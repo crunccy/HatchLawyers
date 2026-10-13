@@ -8,8 +8,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **mr.robe (local), since 2026-10-12 late:** eggs v5 (docs/EGGS_V5.md) - built and tested, **waiting for crnuch's one-time upload**, then the install. Don't touch EggModels / EggLook / the Eggs client hatch / FirmBuilder incubators / ServerStorage.EggV5Data until this is removed.
 
 ## Open items
-- [ ] **crnuch: upload the eggs v5 meshes + textures** (about 5 min, his own Studio; steps in docs/EGGS_V5.md -> "crnuch: the one-time upload").
-      The game only loads assets its owner uploaded, so mr_blox174's uploads can't be used. Then any local session installs the scripts (same doc).
+- [ ] **crnuch: run the eggs v5 upload** (about 5 min, no Claude needed). In his Studio:
+      1. File > Beta Features > tick "CreateAssetAsync Luau API", then restart Studio.
+      2. In Edit mode, paste `require(game.ServerStorage.EggV5Upload)()` into the command bar.
+      3. Wait for `[EggsV5] DONE` in the Output (docs/EGGS_V5.md).
+      Then mr.robe's Claude installs it from `ServerStorage.EggV5Built` + the scripts (same doc).
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
 - [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
@@ -137,6 +140,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
   - no scripts installed; `studio/` is unchanged;
   - added `ServerStorage.EggV5Data` and `ServerStorage.EggV5Assets` (upload cache, per uploader).
 - **Heads-up:** when installed, the hatch moves from the full-screen stage into the world at the incubator. The old ViewportFrame stage objects stay in the GUI, unused.
+- **Later the same night:** crnuch's Claude is out of usage this week, so the upload no longer needs it:
+  - the 12 textures are stored in the place too (base64 PNG; `tools/zones/PngDecode.lua`, a Luau inflate + PNG decoder);
+  - the uploader is installed as `ServerStorage.EggV5Upload`;
+  - crnuch's whole job is one Beta Feature + one command-bar line;
+  - its output goes to `ServerStorage.EggV5Built` (not live) for the install.
+  - Tested from here: the dry run (all 68 decode) and the local build (complete). A real image upload via EditableImage also works.
+
 ## 2026-10-12 — mr.robe, local session: odds board in every zone (exact + Lucky Eggs odds), PlotService leak
 - User: "keep going add some more features that mr.blox wanted". Picked from the open items.
 - **Zone odds boards:** the hub machines' odds boards left with the egg store, so each zone now has one beside its
