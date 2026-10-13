@@ -5,7 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- (nothing claimed)
+- **crnuch's cloud session · since 2026-10-13:** LAWYER MUTATIONS (merging becomes chance-based mutating: Normal →
+  Shiny → Diamond → Cosmic, a failure takes all 3; mutations recolour the lawyer) + SELL lawyers + lock. Touches
+  Config, Formulas, LawyerService, PlayerData, Merger, Lawyers panel, SkinLook, LawyerTags, sim - don't edit those.
 
 ## Open items
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
