@@ -49,6 +49,14 @@ if not HatchShow then
 	r.Parent = Remotes
 	HatchShow = r
 end
+-- (2026-10-13) a Mythic / Supreme hatch is announced to the whole server (a banner on every other screen)
+local HatchAnnounce = Remotes:FindFirstChild("HatchAnnounce") :: RemoteEvent?
+if not HatchAnnounce then
+	local r = Instance.new("RemoteEvent")
+	r.Name = "HatchAnnounce"
+	r.Parent = Remotes
+	HatchAnnounce = r
+end
 -- the share (%) a rarity had in the odds an egg was rolled with (for the reveal's "x% chance")
 local function weightShare(weights: { number }?, index: number): number?
 	local w = weights or Formulas.skinWeights()
@@ -307,6 +315,10 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	})
 	if o.at and HatchShow then -- (v5: everyone near the incubator watches every hatch there, StarterPlayerScripts.Eggs)
 		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id })
+	end
+	if (rarityId == "Mythic" or rarityId == "Supreme") and HatchAnnounce then
+		local skin = Formulas.getSkin(id)
+		HatchAnnounce:FireAllClients({ userId = player.UserId, name = player.DisplayName, lawyer = if skin then skin.Name else id, rarity = rarity, chance = chance })
 	end
 	return true
 end
