@@ -8,6 +8,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - (nothing claimed)
 
 ## Open items
+- [ ] **Proposal: dynamic Supreme screen crack + mutated eggs (Diamond / Rainbow / Cosmic)** -
+      docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (crnuch, 2026-10-13; not built, decide + claim first). Note in it:
+      Golden's luck x4 is already capped on Food / Ocean / Brainrot / Space eggs (x2.2-3.6), so higher mutations
+      use rarity floors instead of more luck.
 - [ ] **Eye-check the economy-pass push in a playtest** (pushed 2026-10-13, only "loads with no errors" + hatches
       checked): (1) locked egg prompt "Locked / Earn X more coins", toast, odds board "Unlocks at X earned"; (2) a Pet
       lawyer's "Earns x" includes the x1.25 (hatch screen, LAWYERS panel, name tag); (3) the Supreme screen's cost +
