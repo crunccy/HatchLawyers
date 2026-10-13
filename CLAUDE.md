@@ -132,6 +132,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ReplicatedStorage.Shared.Formulas` — pure math (winChance, payout, trainCost, clientInterval,
   expectedIncomePerSecond, rollSkin/rollSkinId, skinPayoutBonus, formatCoins). Rolls take a `Random`.
 - `ReplicatedStorage.Shared.SkinLook` — dresses an NPC in a skin; `showInViewport` for previews.
+- `ReplicatedStorage.Shared.UpgradeFx` — the LAWYERS panel's office-upgrade celebrations (1 level small, MAX /
+  UPGRADE ALL bigger with the number of levels, max level = whole-panel celebration). The panel passes it hooks.
 - `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`). The 18 Epic / Mythic /
   Supreme lawyers (2026-10-13) are brick Parts built in Blender: `tools/blender/lawyers_top.py` (on
   `tools/blender/brickkit.py`, a Python twin of BrickKit) → `tools/zones/lawyers_top.json` →

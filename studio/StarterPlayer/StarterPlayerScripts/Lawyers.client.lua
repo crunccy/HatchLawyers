@@ -577,6 +577,8 @@ type SlotRefs = { card: TextButton, pill: Frame, pillText: TextLabel, fill: Fram
 local slotRefs: { [number]: SlotRefs } = {}
 local previewSpin: Model? = nil
 local previewHome: CFrame? = nil
+-- an upgrade's hop + spin for the preview's lawyer (set by Shared.UpgradeFx, played by renderPreview's loop)
+local kick = { t0 = -math.huge, dur = 0, hop = 0, spins = 0, bounces = 1 }
 local render: () -> ()
 
 local function flash(msg: string, color: Color3?)
@@ -719,12 +721,21 @@ local function renderPreview(o: Office)
 	local vf, m = lawyerViewport(iconHolder, o.lawyerId, 268 / 116, 0)
 	if vf and m then
 		previewSpin, previewHome = m, m:GetPivot()
-		local center = m:GetBoundingBox().Position
+		local box, size = m:GetBoundingBox()
+		local center = box.Position
 		previewConn = RunService.RenderStepped:Connect(function()
 			local t = os.clock()
+			-- an upgrade's hops + spins (kick), eased out
+			local hop, spin = 0, 0
+			local k = t - kick.t0
+			if k >= 0 and k < kick.dur then
+				local u = k / kick.dur
+				hop = math.abs(math.sin(u * math.pi * kick.bounces)) * kick.hop * size.Y * (1 - u * 0.4)
+				spin = kick.spins * math.pi * 2 * (1 - (1 - u) ^ 3)
+			end
 			-- turn about its own centre, with a little idle bob
-			local turn = CFrame.new(center) * CFrame.Angles(0, math.sin(t * 1.2) * 0.5, 0) * CFrame.new(center):Inverse()
-			m:PivotTo(CFrame.new(0, math.sin(t * 2.6) * 0.06, 0) * turn * (previewHome :: CFrame))
+			local turn = CFrame.new(center) * CFrame.Angles(0, math.sin(t * 1.2) * 0.5 + spin, 0) * CFrame.new(center):Inverse()
+			m:PivotTo(CFrame.new(0, math.sin(t * 2.6) * 0.06 + hop, 0) * turn * (previewHome :: CFrame))
 		end)
 	else
 		drawIcon(iconHolder, o.lawyerId, 1.05, 12)
@@ -833,6 +844,24 @@ local function renderLeft()
 	end
 	renderLeftLive()
 end
+
+-- the upgrade celebrations (Shared.UpgradeFx, 2026-10-13): bigger for MAX / UPGRADE ALL, biggest at max level
+local upgradeFx = (require(Shared:WaitForChild("UpgradeFx") :: ModuleScript) :: any).new({
+	panel = panel, preview = preview, slotBar = slotBar, officeTag = officeTag, width = W, height = H, kick = kick,
+	card = function(i: number): GuiObject?
+		local refs = slotRefs[i]
+		return if refs then refs.card else nil
+	end,
+	office = office,
+	selected = function(): number
+		return selectedOffice
+	end,
+	deskCount = deskCount,
+	setTag = function(i: number, level: number)
+		officeTag.Text = string.format("OFFICE %d · Lv %d", i, level)
+	end,
+	lawyerViewport = lawyerViewport,
+})
 
 -- why the selected office can't take a client right now (nil = it can)
 local function assignBlocker(o: Office): string?
@@ -1181,6 +1210,7 @@ closePanel = function()
 	local s = panelScale.Scale
 	TweenService:Create(panelScale, TweenInfo.new(0.14, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Scale = s * 0.6 }):Play()
 	tween(shade, 0.14, { BackgroundTransparency = 1 })
+	upgradeFx.close()
 	task.wait(0.14)
 	panel.Visible = false
 	shade.Visible = false
@@ -1218,6 +1248,10 @@ local function upgrade(target: any, count: any, label: string)
 		return
 	end
 	busy = true
+	local before: { [number]: number } = {}
+	for i = 1, deskCount() do
+		before[i] = office(i).level
+	end
 	local ok, reason, bought = TrainLawyer:InvokeServer(target, count)
 	busy = false
 	if ok then
@@ -1230,6 +1264,13 @@ local function upgrade(target: any, count: any, label: string)
 		flash(reason or "Can't upgrade", RED)
 	end
 	render()
+	if ok then
+		if target == "all" then
+			task.spawn(upgradeFx.all, before, reason)
+		elseif typeof(target) == "number" and before[target] then
+			upgradeFx.one(target, before[target], before[target] + (bought or 1), reason)
+		end
+	end
 end
 
 maxButton.Activated:Connect(function()
@@ -1257,15 +1298,7 @@ upgradeButton.Activated:Connect(function()
 		flash(if o.level >= Config.Lawyer.MaxLevel then "This office is max level!" else "Not enough coins yet", RED)
 		return
 	end
-	busy = true
-	local ok, reason = TrainLawyer:InvokeServer(selectedOffice)
-	busy = false
-	if ok then
-		flash(if reason then "NEW LOOK: " .. string.upper(reason) .. "!" else string.format("Office %d upgraded!", selectedOffice), GREEN)
-	else
-		flash(reason or "Can't upgrade", RED)
-	end
-	render()
+	upgrade(selectedOffice, nil, "Office " .. selectedOffice)
 end)
 
 skillsButton.Activated:Connect(function()

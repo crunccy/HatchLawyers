@@ -5,8 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-13:** office upgrade animations in the LAWYERS panel (bigger for multi-level /
-  MAX / UPGRADE ALL, biggest when an office hits max level). Touches `StarterPlayerScripts.Lawyers` only.
+- **mr.robe (local), since 2026-10-13:** the hub's zone TELEPORTERS remade in Blender (6 pads, each fancier) + a
+  teleport animation per zone that escalates like the egg hatches (user's reference images). Touches
+  `Hub.ZoneTeleports`, `Server.ZoneService` (teleport flow), `StarterPlayerScripts.Zones`. Don't edit those meanwhile.
 
 ## Open items
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
@@ -52,6 +53,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
       lawyer's "Earns x" includes the x1.25 (hatch screen, LAWYERS panel, name tag); (3) the Supreme screen's cost +
       office count, eggs cheap again after a Supreme; (4) UPGRADE MAX / UPGRADE ALL; (5) LAWYERS panel at phone size
       (Device emulator, landscape) incl. the white Supreme pill; (6) desktop size unchanged.
+- [ ] **`Skin.Assets.Rays` / `Skin.Assets.Glow` don't load** (ContentProvider: Failure, 2026-10-13), so the
+      sunburst + glow behind Skin cards are missing everywhere. Re-upload them from crnuch's account (tools/ui_textures.py)
+      or point them at Effects' `rays` / `glow` textures (those load).
 - [ ] **Eye-check the Mythic / Supreme cinematics in a real window + at phone size**, and a real Mythic / Supreme
       hatch with a second player in the server (the banner was only tested with faked messages). The 10-13 stud
       Supreme lawyers at desks: check name tags, the client standing across the desk, and the Merger / LAWYERS previews.
@@ -129,6 +133,23 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — mr.robe, local session: office upgrade animations in the LAWYERS panel
+User: "do upgrade animations when the character gets upgraded in the lawyers tab, make it way bigger for the max
+level or upgrading multiple levels".
+- New `ReplicatedStorage.Shared.UpgradeFx` (src twin `src/UpgradeFx.lua`), used by `StarterPlayerScripts.Lawyers`
+  (the panel passes it hooks; its preview loop plays the hop/spin `kick`). Client-only, cosmetic.
+  - **1 level:** the lawyer hops + spins on a sunburst, green "LEVEL UP!", a star burst, the office card bounces
+    with "+1", the office tag flashes gold.
+  - **2+ levels (MAX / UPGRADE ALL) or a new office look:** the level counts up ("Lv 2 → 100") with rising pings
+    (HatchCue "beat"), more hops/spins, then a big burst, confetti, panel shake, "+N LEVELS!" (rainbow at 10+-ish,
+    full size at 50+), "NEW LOOK: …", the sting. UPGRADE ALL bounces every upgraded office card in turn and
+    celebrates over the office row.
+  - **Max level (100):** then the whole panel celebrates: the lawyer big and whirling on a gold sunburst, rainbow
+    "MAX LEVEL!", "OFFICE n · Lv 100", bursts + confetti rain; tap to close (closes itself after 4.5 s).
+- Playtested single / MAX / UPGRADE ALL with no warnings. **mr.robe's save:** every office is level 100 now (the
+  test spent ~1.3Qi of test coins); backup first: `Backup_Player_11776753629_1791924818`.
+- Found: `Skin.Assets.Rays` / `Glow` don't load (open item above); UpgradeFx uses Effects' textures instead.
 
 ## 2026-10-13 — crnuch, cloud session: lawyer MUTATIONS (merging → mutating), selling + locking
 - **User's calls:** merging is replaced by mutating (Normal → Shiny → Diamond → Cosmic); it isn't guaranteed and a
