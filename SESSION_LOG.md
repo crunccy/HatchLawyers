@@ -23,6 +23,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
       (6) the mutation effects (`Effects.mutationAura`) read at a high graphics level on a desk, the hatch reveal and
       a big Mythic/Supreme (they scale with height) - not too busy next to the rarity aura; (7) a LOCKED lawyer
       is hidden in the Mutation Machine picker. Also push `src/Effects.lua`.
+- [ ] **Push the "1 in N" overhead tags** (2026-10-13, cloud): `src/LawyerTags.client.lua` + `src/Formulas.lua`
+      (rides with the mutations push - both files already carry that work). Playtest: lawyer tags read "1 in 248"
+      etc. where "Earns x10" was, client tags "Rare · 1 in 20" where "Pays x8" was; numbers fit the tag width.
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
       (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
       each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
@@ -128,6 +131,18 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — crnuch, cloud session: "1 in N" on the overhead tags
+- **User's call:** the overhead tags show "1 in 2" / "1 in 248" / "1 in 29,382" instead of "Pays xN" (clients) and
+  "Earns xN" (lawyers). The user allowed made-up numbers; I used the REAL odds (my call: the odds boards show exact
+  odds and paid eggs must, so a different number on the tag would contradict them).
+- **How:** `Formulas.lawyerOdds(id, stars)` = the chance one normal hatch of the lawyer's own egg is exactly that
+  lawyer at that mutation (rarity weight / egg total / lawyers of that rarity in the egg x HatchMutation.Normal);
+  `Formulas.clientOdds(tier)` from `Config.Clients` base Weights; `Formulas.formatOdds` ("1 in 1.4", "1 in 12,500,000").
+  e.g. Rookie 1 in 5.5 (Shiny 1 in 269), Celestial 1 in 2,559 (Cosmic 1 in 12,500,000), Legendary clients 1 in 1,688.
+  The LAWYERS panel, hatch reveal and Mutation Machine still show "Earns xN".
+- **Checks:** new Config check - each egg's lawyer x mutation odds add up to exactly 1, clients too, plus the
+  formatting (40 checks). Nothing pushed to Studio.
 
 ## 2026-10-13 — crnuch, cloud session: lawyer MUTATIONS (merging → mutating), selling + locking
 - **User's calls:** merging is replaced by mutating (Normal → Shiny → Diamond → Cosmic); it isn't guaranteed and a

@@ -3,14 +3,16 @@
 -- reference: no panel, just stacked bold text with thick black outlines). The Manager stays clean.
 --   Client tag (every client in every firm - walking in, waiting on the sofas, at a desk), compact:
 --       Lemonade Lily         the client's name (ClientName attribute), white
---       Rare · Pays x8        tier rarity (Config.Clients[Tier].Id, coloured like the lawyers') + payout multiplier
+--       Rare · 1 in 20        tier rarity (Config.Clients[Tier].Id, coloured like the lawyers') + how rare this client
+--                             is (Formulas.clientOdds; user's call 2026-10-13: "1 in N" instead of "Pays xN")
 --     It floats above the client's case progress bar (CaseService.caseBar); every other waiting client sits a
 --     bit higher so neighbours on the sofas don't collide; shorter draw distance than lawyer tags.
 --   Name tag (every lawyer in every firm):
 --       Shiny / Diamond / Cosmic   the lawyer's MUTATION (2026-10-13; was the Gold / Rainbow merge tier), in its colour
 --       Tralalero Tralala     the lawyer's name, white
 --       Legendary             rarity, in Config.RarityColors (Legendary gets a slow gold shimmer)
---       Earns x10             earning multiplier (Formulas.lawyerEarn), yellow
+--       1 in 248              how rare this lawyer + mutation is from its egg (Formulas.lawyerOdds, the real odds;
+--                             user's call 2026-10-13, was "Earns x10" - the LAWYERS panel still shows Earns), yellow
 --     BillboardGuis live in PlayerGui (one per lawyer, Adornee = the lawyer's root) and are sized in studs, so
 --     they shrink with distance. A scan of the firms (same pattern as DeskLife) creates / rebuilds / removes
 --     them, so a re-dressed, merged or swapped lawyer never ends up with two tags.
@@ -183,7 +185,10 @@ local function buildTag(model: Model, desk: Instance, id: string, stars: number)
 	end
 	table.insert(rows, { text = def.Name, color = WHITE, size = 1.35 })
 	table.insert(rows, rarityRow(if rarity then rarity.Id else "Common"))
-	table.insert(rows, { text = "Earns x" .. tostring(Formulas.lawyerEarn(id, stars)), color = YELLOW })
+	local odds = Formulas.lawyerOdds(id, stars)
+	if odds then
+		table.insert(rows, { text = Formulas.formatOdds(odds), color = YELLOW })
+	end
 	local gui, height, gradients = makeTag(model, root, "LawyerTag", rows, HEAD_GAP)
 	return { gui = gui, key = id .. "|" .. stars, desk = desk, root = root, height = height, gradients = gradients }
 end
@@ -265,11 +270,12 @@ local function tagClient(model: Instance)
 		return
 	end
 	local name = model:GetAttribute("ClientName")
-	-- compact (clients crowd the waiting-room sofas): name, then "Rare · Pays x8" on one line
+	-- compact (clients crowd the waiting-room sofas): name, then "Rare · 1 in 20" on one line
 	local rarityHex = (RARITY_TEXT[def.Id] or WHITE):ToHex()
+	local odds = Formulas.clientOdds(tier :: number)
 	local rows: { Row } = {
 		{ text = if typeof(name) == "string" then name else def.Name, color = WHITE, size = 1.3 },
-		{ text = string.format('<font color="#%s">%s</font> · Pays x%s', rarityHex, def.Id, tostring(def.Multiplier)), color = YELLOW, rich = true },
+		{ text = string.format('<font color="#%s">%s</font>%s', rarityHex, def.Id, if odds then " · " .. Formulas.formatOdds(odds) else ""), color = YELLOW, rich = true },
 	}
 	-- neighbours on the sofas alternate heights so their names don't collide
 	local waitingId = model:GetAttribute("WaitingId")

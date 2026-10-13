@@ -309,6 +309,33 @@ check("client tiers have positive weights and case lengths", function()
 	end
 end)
 
+check("the tags' \"1 in N\" odds are real: every egg's lawyers x mutations add up to 1, clients too", function()
+	for i = 1, #Config.Eggs.Themed + 1 do
+		local egg = if i == 1 then nil else Config.Eggs.Themed[i - 1].Id
+		local sum = 0
+		for _, skin in Config.SkinCatalog do
+			if skin.Egg == egg then
+				for stars = 1, #Config.Lawyers.StarEarn do
+					local n = Formulas.lawyerOdds(skin.Id, stars)
+					if n then
+						assert(n >= 1, skin.Id .. " odds below 1 in 1")
+						sum += 1 / n
+					end
+				end
+			end
+		end
+		assert(math.abs(sum - 1) < 1e-6, string.format("%s egg: lawyer odds add up to %.6f", egg or "Briefcase", sum))
+	end
+	local clients = 0
+	for tier in Config.Clients do
+		clients += 1 / (Formulas.clientOdds(tier) :: number)
+	end
+	assert(math.abs(clients - 1) < 1e-6, "client odds add up to " .. clients)
+	assert(Formulas.formatOdds(2) == "1 in 2" and Formulas.formatOdds(1.44) == "1 in 1.4", "formatOdds small")
+	assert(Formulas.formatOdds(29382) == "1 in 29,382" and Formulas.formatOdds(248) == "1 in 248", "formatOdds commas")
+	assert(Formulas.formatOdds(12500000) == "1 in 12,500,000", "formatOdds millions")
+end)
+
 ------------------------------------------------------------------ report
 print(string.format("%d checks passed, %d failed", passed, #failures))
 for _, f in failures do

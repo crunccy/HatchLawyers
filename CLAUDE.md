@@ -105,8 +105,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   **BuilderSansMedium** for descriptions and small print. White text + thick black UIStroke on important text.
   No serif / navy / brass. **No words over the Manager's head** — user's call. Lawyers AND clients get overhead name tags (user's calls
   2026-10-09, `StarterPlayerScripts.LawyerTags`, mirrored in `src/LawyerTags.client.lua`): "Steal a Brainrot" style —
-  no panel, stacked bold text with thick black outlines. Lawyers: Gold/Rainbow tier · name · rarity · Earns xN (+ case
-  pop-ups). Clients (compact): name · "Rarity · Pays xN". Tags are stud-sized but clamped up close (NEAR_LIMIT).
+  no panel, stacked bold text with thick black outlines. Lawyers: Shiny/Diamond/Cosmic · name · rarity · "1 in N" (+ case
+  pop-ups). Clients (compact): name · "Rarity · 1 in N" (real odds: `Formulas.lawyerOdds` / `clientOdds`, user's call 2026-10-13). Tags are stud-sized but clamped up close (NEAR_LIMIT).
 - **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones. Panels are dark
   studded purple with purple striped headers (Shop / Merger / LAWYERS; UIKit restyles older ones to match). HUD menu
   tiles ONLY via `Shared.HudMenu.button` (one column, never hand-placed); icons are PNGs in `HudMenu.Icons` - no emoji.

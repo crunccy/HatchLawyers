@@ -176,6 +176,60 @@ function Formulas.lawyerName(id: string?, stars: number?): string
 	return if prefix ~= "" then prefix .. " " .. name else name
 end
 
+------------------------------------------------------------------ "1 in N" (the overhead tags, user's call 2026-10-13)
+-- These are the REAL odds (the odds boards show the same numbers, and paid eggs must show exact odds).
+-- A lawyer: the chance one hatch from its own egg (normal, not golden, no luck) is exactly this lawyer at this
+-- mutation tier = rarity weight / the egg's total / lawyers of that rarity in that egg x the hatch-mutation odds.
+-- Returns N, or nil for a lawyer no egg hatches.
+function Formulas.lawyerOdds(id: string?, stars: number?): number?
+	local def = Formulas.getSkin(id)
+	if not def then
+		return nil
+	end
+	local egg = Formulas.themedEgg(def.Egg)
+	local weights = if egg and egg.Weights then egg.Weights else Formulas.skinWeights()
+	local total = 0
+	for _, w in weights do
+		total += w
+	end
+	local same = 0
+	for _, skin in Config.SkinCatalog do
+		if skin.Rarity == def.Rarity and skin.Egg == def.Egg then
+			same += 1
+		end
+	end
+	local tier = stars or 1
+	local mutation = Config.Lawyers.HatchMutation.Normal
+	local mutated = 0
+	for t = 2, #Config.Lawyers.StarEarn do
+		mutated += mutation[t] or 0
+	end
+	local tierChance = if tier <= 1 then 1 - mutated else (mutation[tier] or 0)
+	local chance = (weights[def.Rarity] or 0) / total / math.max(same, 1) * tierChance
+	return if chance > 0 then 1 / chance else nil
+end
+
+-- A client: the chance a new client is this one (Config.Clients base Weights, before skills).
+function Formulas.clientOdds(tier: number): number?
+	local total = 0
+	for _, client in Config.Clients do
+		total += client.Weight
+	end
+	local def = Config.Clients[tier]
+	return if def and def.Weight > 0 then total / def.Weight else nil
+end
+
+-- "1 in 2", "1 in 1.4", "1 in 29,382"
+function Formulas.formatOdds(n: number): string
+	if n < 10 then
+		local s = string.format("%.1f", n)
+		return "1 in " .. (string.gsub(s, "%.0$", ""))
+	end
+	local digits = tostring(math.round(n))
+	local withCommas = string.reverse((string.gsub(string.reverse(digits), "(%d%d%d)", "%1,")))
+	return "1 in " .. (string.gsub(withCommas, "^,", ""))
+end
+
 ------------------------------------------------------------------ mutations + selling (Config.Lawyers)
 -- The Mutation Machine's chance of turning MergeCount lawyers at tier `stars` into one at stars + 1 (0 at the top).
 function Formulas.mutateChance(stars: number): number
