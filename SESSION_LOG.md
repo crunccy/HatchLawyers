@@ -5,9 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-13:** the hub's zone TELEPORTERS remade in Blender (6 pads, each fancier) + a
-  teleport animation per zone that escalates like the egg hatches (user's reference images). Touches
-  `Hub.ZoneTeleports`, `Server.ZoneService` (teleport flow), `StarterPlayerScripts.Zones`. Don't edit those meanwhile.
+- **mr.robe (local), since 2026-10-13:** cooler teleporters (Blender) + a teleport animation per zone that escalates
+  like the egg hatches (mr.robe's reference images). Overlaps crnuch's ZONE TRAVEL (portal + map, open item below):
+  asking mr.robe how to combine them before building. Don't change the travel / teleport visuals meanwhile.
 
 ## Open items
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
