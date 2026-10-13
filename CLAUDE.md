@@ -158,6 +158,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   Supreme = celestial sanctum (time-stop, screen crack, rainbow pillars, a giant halo, stars + aurora), then a
   "MYTHIC!" / "SUPREME!" title card with the odds. `Remotes.HatchAnnounce` (EggServer) puts a banner on everyone
   else's screen for a Mythic / Supreme. Preview any of it with the admin `/hatch mythic food` etc.
+- `Workspace.Hub.TravelPortal` (tag `TravelPortal`, from Blender: `tools/blender/travel_portal.py` →
+  `tools/zones/BuildTravelPortal.lua`) + `ServerScriptService.TravelServer` (`Remotes.Travel`) + `StarterPlayerScripts.Travel`
+  (the TRAVEL tile + travel map): zone travel since 2026-10-13; replaced the six `Hub.ZoneTeleports` pads (archived in
+  `ServerStorage.Old_ZoneTeleports`). No travel while carrying eggs (`Config.Zones.Travel`).
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.

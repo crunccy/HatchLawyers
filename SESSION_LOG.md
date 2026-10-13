@@ -5,8 +5,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **crnuch's cloud session · since 2026-10-13:** zone TRAVEL rework (option A, user's pick): one Travel Portal at
-  the hub (Blender model) + a travel map panel + a TRAVEL HUD tile; replaces the six `Hub.ZoneTeleports` pads.
+- (nothing claimed)
 
 ## Open items
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
@@ -17,9 +16,17 @@ Claim big work here before starting (who · what · since), push the claim, remo
       where they are now (seeded rng, untouched). Before re-running: anything hand-edited in Workspace.Zones since
       the last build gets archived to ServerStorage.Old_Zones - check first. Playtest: walk the gate sides, try to
       jump onto walls from the tallest props in every zone, camera close to a wall doesn't snap.
-- [ ] **Teleports look bad (user):** options A (one portal + travel map + TRAVEL HUD tile), B (six themed mini-gates),
-      C (polish the pads) - waiting on the user's pick; plus a whoosh transition, a Home button in each zone, and
-      maybe no teleporting while carrying eggs (it would skip the walk home past the bosses).
+- [ ] **Push + playtest ZONE TRAVEL** (user's pick "A", built 2026-10-13 in a cloud session, not in Studio yet):
+      1. serve `tools/zones` (tools/studio_sync/serve_files.ps1 -Root tools/zones), run `tools/zones/BuildTravelPortal.lua`
+         in Edit mode: builds `Workspace.Hub.TravelPortal` where the six `Hub.ZoneTeleports` pads were (facing the
+         plaza; set PLACE_AT if it lands badly) and archives the pads to `ServerStorage.Old_ZoneTeleports`.
+      2. new Script `ServerScriptService.TravelServer` (src/TravelServer.server.lua), new LocalScript
+         `StarterPlayerScripts.Travel` (src/Travel.client.lua); `Config` (zone `Color`s + `Config.Zones.Travel`).
+      3. crnuch uploads `art/icons/travel.png` and adds `Travel = "rbxassetid://..."` to `Shared.HudMenu.Icons`
+         (until then the tile shows the Star icon).
+      Playtest: walk into the portal → the map opens; GO to an owned zone (circle wipe, land facing down the lane,
+      a burst both ends); locked zones grey with a padlock + license; carrying an egg greys every GO + the orange
+      strip; HOME lands at your firm; the arms spin, particles on the face, gems lit only for your zones; phone size.
 - [ ] **Proposal: dynamic Supreme screen crack + mutated eggs (Diamond / Rainbow / Cosmic)** -
       docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (crnuch, 2026-10-13; not built, decide + claim first). Note in it:
       Golden's luck x4 is already capped on Food / Ocean / Brainrot / Space eggs (x2.2-3.6), so higher mutations
@@ -106,6 +113,18 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — crnuch, cloud session: zone travel (portal + map), lane gaps + wall climbing, Blender in the cloud
+- **User's calls:** travel option A (one portal + a map); every model is made in Blender from now on (CLAUDE.md →
+  Blender); the portal face slightly see-through, with particles, a full circle; no travel while carrying eggs
+  (my default - the walk home past the bosses is the game; `Config.Zones.Travel.BlockWhileCarrying` turns it off).
+- **Blender runs in cloud sessions now** (`pip install bpy==5.2.2` + Mesa, recipe in CLAUDE.md): the portal was built
+  and rendered here - `tools/blender/travel_portal.py` → `tools/zones/travel_portal.json` (116 blocks), review
+  render `art/travel/portal.png`, HUD icon `art/icons/travel.png`.
+- **Code:** `tools/zones/BuildTravelPortal.lua`, `src/TravelServer.server.lua` (Remotes.Travel, validated server-side),
+  `src/Travel.client.lua` (TRAVEL tile + map + wipe + portal spin / particles / gems), Config zone colours + Travel.
+- **Lane fixes** (`tools/zones/BuildLane.lua`): walls under every gate, invisible climb blocks on the wall tops.
+- Also: docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (a suggestion, not built). Nothing pushed to Studio.
 
 ## 2026-10-13 — mr.robe, local session: the 18 Epic / Mythic / Supreme lawyers (Blender), Mythic + Supreme hatch cinematics, the 7-rarity push
 User: "add the supreme, mythic, and epic [lawyers] ... described in the github by crnuch. the mythic and supreme should

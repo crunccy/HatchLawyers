@@ -958,13 +958,13 @@ Config.Minigames = {
 Config.Zones = {
 	List = {
 		-- one lane running south from the plaza's south edge (tools/zones/BuildLane.lua): Safe Zone, then each zone, a gate between
-		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -490, 36, -90 } },
-		{ Id = "PetPark", Name = "Pet Park", Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -902, 36, -502 } },
+		{ Id = "BriefcaseBay", Name = "Briefcase Bay", Color = Color3.fromRGB(104, 152, 236), Egg = "Briefcase", License = 0, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -490, 36, -90 } },
+		{ Id = "PetPark", Name = "Pet Park", Color = Color3.fromRGB(120, 196, 50), Egg = "Pet", License = 1, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -902, 36, -502 } },
 		-- zones 3-6 (2026-10-12, user: "make the other 4 zones and their bosses"); each sells its themed egg
-		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1314, 36, -914 } },
-		{ Id = "FoodCourt", Name = "Food Court", Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1726, 36, -1326 } },
-		{ Id = "OceanShore", Name = "Ocean Shore", Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2138, 36, -1738 } },
-		{ Id = "SpaceBase", Name = "Space Base", Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2550, 36, -2150 } },
+		{ Id = "BrainrotBoulevard", Name = "Brainrot Boulevard", Color = Color3.fromRGB(170, 80, 210), Egg = "Brainrot", License = 2, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1314, 36, -914 } },
+		{ Id = "FoodCourt", Name = "Food Court", Color = Color3.fromRGB(240, 84, 74), Egg = "Food", License = 3, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -1726, 36, -1326 } },
+		{ Id = "OceanShore", Name = "Ocean Shore", Color = Color3.fromRGB(70, 160, 225), Egg = "Ocean", License = 4, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2138, 36, -1738 } },
+		{ Id = "SpaceBase", Name = "Space Base", Color = Color3.fromRGB(80, 70, 160), Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2550, 36, -2150 } },
 	},
 	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
 	License = { -- level n opens every zone whose License is n or less
@@ -985,6 +985,10 @@ Config.Zones = {
 	},
 	Speed = { { WalkSpeed = 32 }, { WalkSpeed = 36, Cost = 1e6 }, { WalkSpeed = 40, Cost = 1e8 } }, -- (32 = the game's base speed)
 	EggColors = { Briefcase = Color3.fromRGB(245, 200, 70), Golden = Color3.fromRGB(255, 205, 40) },
+	-- TRAVEL (2026-10-13, user's pick: one Travel Portal at the hub + a travel map, ServerScriptService.TravelServer /
+	-- StarterPlayerScripts.Travel; replaced the six hub teleport pads). Cooldown: seconds between trips.
+	-- BlockWhileCarrying: no travel (zones or home) while you carry eggs - the walk home past the bosses is the game.
+	Travel = { Cooldown = 3, BlockWhileCarrying = true },
 }
 
 -- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from
