@@ -2015,7 +2015,7 @@ local function play(result: { [string]: any })
 	if not ok then
 		warn("[Eggs] hatch animation:", err) -- (the lawyer is hatched anyway: show the panel)
 	end
-	-- the reveal panel: name, rarity, earnings + skills, PLACE / KEEP
+	-- the reveal panel: name, rarity, "1 in N" + skills, PLACE / KEEP
 	nameLabel.Text = Formulas.lawyerName(result.skinId, hatchStars)
 	nameShimmer.Enabled = SHIMMERS[rarityName] ~= nil
 	if SHIMMERS[rarityName] then
@@ -2030,7 +2030,17 @@ local function play(result: { [string]: any })
 			table.insert(skillNames, sdef.Name)
 		end
 	end
-	buffLabel.Text = string.format("Earns x%s%s", tostring(Formulas.lawyerEarn(result.skinId, hatchStars)), if #skillNames > 0 then "  ·  " .. table.concat(skillNames, ", ") else "")
+	-- "1 in N" (user's call 2026-10-13, was "Earns xN"): how rare this lawyer + mutation is from its egg, the same
+	-- number as its overhead tag (Formulas.lawyerOdds). The LAWYERS panel still shows Earns.
+	local odds = Formulas.lawyerOdds(result.skinId, hatchStars)
+	local parts = {}
+	if odds then
+		table.insert(parts, Formulas.formatOdds(odds))
+	end
+	if #skillNames > 0 then
+		table.insert(parts, table.concat(skillNames, ", "))
+	end
+	buffLabel.Text = table.concat(parts, "  ·  ")
 	if result.emptyOffice then
 		equipButton.Text = "PUT IN OFFICE " .. result.emptyOffice
 		equipButton.BackgroundColor3 = GREEN

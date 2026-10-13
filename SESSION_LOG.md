@@ -25,7 +25,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
       is hidden in the Mutation Machine picker. Also push `src/Effects.lua`.
 - [ ] **Push the "1 in N" overhead tags** (2026-10-13, cloud): `src/LawyerTags.client.lua` + `src/Formulas.lua`
       (rides with the mutations push - both files already carry that work). Playtest: lawyer tags read "1 in 248"
-      etc. where "Earns x10" was, client tags "Rare · 1 in 20" where "Pays x8" was; numbers fit the tag width.
+      etc. where "Earns x10" was, client tags "Rare · 1 in 20" where "Pays x8" was; numbers fit the tag width;
+      the hatch reveal reads "1 in N · skills" (src/Eggs.client.lua, also in the mutations push).
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
       (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
       each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
@@ -140,7 +141,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   lawyer at that mutation (rarity weight / egg total / lawyers of that rarity in the egg x HatchMutation.Normal);
   `Formulas.clientOdds(tier)` from `Config.Clients` base Weights; `Formulas.formatOdds` ("1 in 1.4", "1 in 12,500,000").
   e.g. Rookie 1 in 5.5 (Shiny 1 in 269), Celestial 1 in 2,559 (Cosmic 1 in 12,500,000), Legendary clients 1 in 1,688.
-  The LAWYERS panel, hatch reveal and Mutation Machine still show "Earns xN".
+  The hatch reveal panel shows it too (user: "yes"), with the skills after it. The LAWYERS panel and the Mutation
+  Machine still show "Earns xN"; the Mythic / Supreme title card keeps its rarity odds (the chance actually rolled).
 - **Checks:** new Config check - each egg's lawyer x mutation odds add up to exactly 1, clients too, plus the
   formatting (40 checks). Nothing pushed to Studio.
 
