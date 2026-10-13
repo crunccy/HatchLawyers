@@ -248,3 +248,9 @@ blender-mcp: `claude mcp add blender -s user -- ~/.local/bin/uvx blender-mcp` (B
 the user clicks "Connect to Claude" in the N-panel). Use it for smooth/organic meshes. Export `.fbx`; **the user
 imports** into Studio (Studio MCP can't upload local files), then Claude swaps parts into templates.
 1 Blender m = 1 stud, transforms applied, characters face −Z. Full rules: docs/BLENDER_BRIEF.md.
+- **Every model is made in Blender** (user's call 2026-10-13): props, buildings, characters, portals, icons' art —
+  no more hand-placed Studio parts or procedural Luau builders for new models. Pipeline: a `tools/blender/*.py`
+  script builds it (brick blocks) → JSON in `tools/zones/` → a `tools/zones/Build*.lua` makes studded Parts in
+  Studio (or `.fbx` / meshes uploaded by crnuch). Cloud sessions can run Blender too: `pip install bpy==5.2.2` in a
+  venv (Python 3.13) + `apt-get install libegl1 libgl1 libegl-mesa0 libgl1-mesa-dri libgbm1`, then render with
+  `EGL_PLATFORM=surfaceless` (Workbench, Cycles and EEVEE all work headless).

@@ -5,7 +5,8 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- (nothing claimed)
+- **crnuch's cloud session · since 2026-10-13:** zone TRAVEL rework (option A, user's pick): one Travel Portal at
+  the hub (Blender model) + a travel map panel + a TRAVEL HUD tile; replaces the six `Hub.ZoneTeleports` pads.
 
 ## Open items
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
