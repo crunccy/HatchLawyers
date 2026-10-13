@@ -1400,13 +1400,14 @@ local function setSky(kind: string?)
 			Lighting.OutdoorAmbient = Color3.fromRGB(130, 50, 50)
 			Lighting.Ambient = Color3.fromRGB(80, 26, 30)
 			if atm then
-				atm.Density, atm.Color, atm.Decay, atm.Haze, atm.Glare = 0.4, Color3.fromRGB(220, 70, 60), Color3.fromRGB(120, 20, 30), 2.2, 0.6
+				atm.Density, atm.Color, atm.Decay, atm.Haze, atm.Glare = 0.32, Color3.fromRGB(220, 70, 60), Color3.fromRGB(120, 20, 30), 1.6, 0.5
 			end
 		else
 			Lighting.ClockTime = 0
 			Lighting.Brightness = 1.3
-			Lighting.OutdoorAmbient = Color3.fromRGB(110, 100, 160)
-			Lighting.Ambient = Color3.fromRGB(80, 70, 130)
+			-- (bright enough that the marble reads white under the night sky)
+			Lighting.OutdoorAmbient = Color3.fromRGB(200, 190, 235)
+			Lighting.Ambient = Color3.fromRGB(150, 140, 200)
 			if atm then
 				atm.Density, atm.Color, atm.Decay, atm.Haze, atm.Glare = 0.1, Color3.fromRGB(120, 110, 200), Color3.fromRGB(40, 30, 90), 0, 0
 			end
@@ -1564,7 +1565,7 @@ local function cinema(kind: string, sp: Spot, h: any, live: Live, tier: any, fxC
 	local st = HatchFx.stage(kind, origin)
 	setSky(kind)
 	HatchFx.post({ cc = { Saturation = 0.15, Contrast = 0.12, TintColor = WHITE, Brightness = 0 }, dof = { FarIntensity = 0 }, bloom = { Intensity = 0.7, Threshold = 1.3 } }, 0)
-	local stageSp: Spot = { inc = nil, front = sp.front, floor = origin * CFrame.new(0, 0.42, 0) }
+	local stageSp: Spot = { inc = nil, front = sp.front, floor = origin * CFrame.new(0, 0.55, 0) } -- (the centre disc's top, HatchFx.stage)
 	local lift = 2.2
 	h.model:PivotTo(stageSp.floor * CFrame.new(0, HOVER + lift, 0))
 	local spin = RunService.Heartbeat:Connect(st.spin)
@@ -1792,7 +1793,7 @@ local bannerGui = Instance.new("ScreenGui")
 bannerGui.Name = "HatchBanner"
 bannerGui.ResetOnSpawn = false
 bannerGui.IgnoreGuiInset = true
-bannerGui.DisplayOrder = 30
+bannerGui.DisplayOrder = 50 -- (over every window: Rewards / FirmStageUp are 40)
 bannerGui.Parent = player:WaitForChild("PlayerGui")
 local banner = Instance.new("Frame")
 banner.AnchorPoint = Vector2.new(0.5, 0)
@@ -1817,6 +1818,31 @@ local bannerScale = Instance.new("UIScale")
 bannerScale.Parent = banner
 local bannerQueue: { any } = {}
 local bannerBusy = false
+local function playBanner(i: any)
+	if typeof(i.rarity) ~= "number" or not Config.Eggs.Skins[i.rarity] then
+		return
+	end
+	local rarityName, rarityColor = rarityInfo(i.rarity)
+	local supreme = rarityName == "Supreme"
+	bannerText.Text = string.format("%s hatched a %s %s!", tostring(i.name or "Someone"), string.upper(rarityName), tostring(i.lawyer or "lawyer"))
+	bannerText.TextColor3 = if supreme then WHITE else rarityColor
+	bannerTextGrad.Enabled = supreme
+	bannerTextGrad.Color = HatchFx.RAINBOW
+	bannerStrokeGrad.Color = if supreme then HatchFx.RAINBOW else ColorSequence.new(rarityColor)
+	bannerOdds.Text = oddsText(i)
+	bannerScale.Scale = math.clamp(workspace.CurrentCamera.ViewportSize.X / 900, 0.55, 1)
+	tween(banner, 0.45, { Position = UDim2.new(0.5, 0, 0, 18) }, Enum.EasingStyle.Back)
+	hatchCue:Fire("burst", i.rarity or 1, rarityName)
+	local t0 = os.clock()
+	while os.clock() - t0 < 4.6 do
+		local t = os.clock() - t0
+		bannerTextGrad.Offset = Vector2.new(math.sin(t * 1.4) * 0.5, 0)
+		bannerStrokeGrad.Rotation = (t * 90) % 360
+		RunService.Heartbeat:Wait()
+	end
+	tween(banner, 0.35, { Position = UDim2.new(0.5, 0, 0, -140) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+	task.wait(0.4)
+end
 local function showBanner(info: any)
 	table.insert(bannerQueue, info)
 	if bannerBusy then
@@ -1824,27 +1850,12 @@ local function showBanner(info: any)
 	end
 	bannerBusy = true
 	while #bannerQueue > 0 do
-		local i = table.remove(bannerQueue, 1)
-		local rarityName, rarityColor = rarityInfo(i.rarity or 1)
-		local supreme = rarityName == "Supreme"
-		bannerText.Text = string.format("%s hatched a %s %s!", tostring(i.name or "Someone"), string.upper(rarityName), tostring(i.lawyer or "lawyer"))
-		bannerText.TextColor3 = if supreme then WHITE else rarityColor
-		bannerTextGrad.Enabled = supreme
-		bannerTextGrad.Color = HatchFx.RAINBOW
-		bannerStrokeGrad.Color = if supreme then HatchFx.RAINBOW else ColorSequence.new(rarityColor)
-		bannerOdds.Text = oddsText(i)
-		bannerScale.Scale = math.clamp(workspace.CurrentCamera.ViewportSize.X / 900, 0.55, 1)
-		tween(banner, 0.45, { Position = UDim2.new(0.5, 0, 0, 18) }, Enum.EasingStyle.Back)
-		hatchCue:Fire("burst", i.rarity or 1, rarityName)
-		local t0 = os.clock()
-		while os.clock() - t0 < 4.6 do
-			local t = os.clock() - t0
-			bannerTextGrad.Offset = Vector2.new(math.sin(t * 1.4) * 0.5, 0)
-			bannerStrokeGrad.Rotation = (t * 90) % 360
-			RunService.Heartbeat:Wait()
+		-- (a bad message must not jam the queue for the rest of the session)
+		local ok, err = pcall(playBanner, table.remove(bannerQueue, 1))
+		if not ok then
+			warn("[Eggs] hatch banner: " .. tostring(err))
+			banner.Position = UDim2.new(0.5, 0, 0, -140)
 		end
-		tween(banner, 0.35, { Position = UDim2.new(0.5, 0, 0, -140) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-		task.wait(0.4)
 	end
 	bannerBusy = false
 end

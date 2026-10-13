@@ -6,10 +6,15 @@
 --   ENERGY (Epic)       a churning blue-purple energy orb behind the lawyer, spiky spark streaks, dark specks.
 --   FIRE   (Legendary)  a fire tornado: stacked gold/orange slash rings spinning up the body, flame tongues,
 --                       embers, a scrolling light column, a floor swirl, star glints.
+--   INFERNO (Mythic)    the fire tornado in crimson, plus a crimson energy orb with dark specks.
+--   CELESTIAL (Supreme) a rainbow fire tornado, rainbow star glints, a rainbow energy orb and a spinning halo.
 --   STAR   (merged)     2 stars: gold star glints + a gold ring. 3 stars: rainbow, plus a rainbow energy orb.
 -- API (server calls these so every player sees them; particles replicate):
 --   Effects.aura(model, rarityId, stars)    lasting aura on a desk lawyer (replaces any earlier one)
---   Effects.burst(where, kind, color?)      one-shot: "rare" (ice), "legendary" (star burst + fire + coins),
+--   Effects.rarityBurst(rarityId)           which burst a hatched / placed lawyer of that rarity gets (nil = none)
+--   Effects.burst(where, kind, color?)      one-shot: "rare" (ice), "epic" (energy + star burst),
+--                                           "legendary" (star burst + fire + coins), "mythic" (crimson inferno),
+--                                           "supreme" (rainbow everything, biggest),
 --                                           "win" (star burst + coins), "tier" (star burst), "merge" (energy),
 --                                           "rainbow" (rainbow energy + star burst)
 --   Effects.ambient(parent, theme, color?, scale?)  small looping sparkle set ("star"/"ice"/"fire"/"energy")
@@ -78,6 +83,9 @@ Effects.RAINBOW = ColorSequence.new({
 })
 Effects.FIRE = grad(Color3.fromRGB(255, 200, 40), Color3.fromRGB(255, 110, 15), Color3.fromRGB(220, 40, 10))
 Effects.ENERGY = grad(Color3.fromRGB(120, 190, 255), Color3.fromRGB(90, 80, 255), Color3.fromRGB(160, 40, 255))
+Effects.MYTHIC_FIRE = grad(Color3.fromRGB(255, 130, 160), Color3.fromRGB(229, 57, 53), Color3.fromRGB(120, 10, 40))
+Effects.MYTHIC_ENERGY = grad(Color3.fromRGB(255, 100, 130), Color3.fromRGB(205, 30, 60), Color3.fromRGB(95, 10, 60))
+Effects.MYTHIC = Color3.fromRGB(229, 57, 53)
 local STAR_RED = grad(Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 80, 60))
 local DARK = ColorSequence.new(Color3.fromRGB(25, 10, 30))
 local BLOOD = ColorSequence.new(Color3.fromRGB(110, 12, 12))
@@ -247,9 +255,9 @@ local function energyAura(c: Ctx, tint: ColorSequence, specks: boolean)
 	end
 end
 
-local function fireAura(c: Ctx)
+local function fireAura(c: Ctx, tint: ColorSequence?)
 	local h = c.height
-	local fire = Effects.FIRE
+	local fire = tint or Effects.FIRE
 	-- the tornado: slash rings stacked up the body, narrower towards the top, all spinning the same way
 	for i, row in { { 0.08, 1.35 }, { 0.38, 1.1 }, { 0.68, 0.9 }, { 0.95, 0.7 } } do
 		local at = attach(c.body, "FxFireRing" .. i, CFrame.new(0, c.feetY + row[1] * h - c.body.Position.Y, 0)
@@ -311,11 +319,12 @@ local function starAura(c: Ctx, tint: ColorSequence)
 	c.tag(spinRing(c.feet, "StarFloor", h * 1.25, tint, 90, 0.6, 2.6))
 end
 
--- Lasting aura, laddered by rarity ("Common".."Legendary") and merge stars (1-3).
+-- Lasting aura, laddered by rarity ("Common".."Supreme") and merge stars (1-3).
+local AURA_RARITIES = { Rare = true, Epic = true, Legendary = true, Mythic = true, Supreme = true }
 function Effects.aura(model: Model, rarity: string?, stars: number?)
 	Effects.clearAura(model)
 	local s = stars or 1
-	if not (rarity == "Rare" or rarity == "Epic" or rarity == "Legendary") and s < 2 then
+	if not (rarity and AURA_RARITIES[rarity]) and s < 2 then
 		return
 	end
 	local body = bodyOf(model)
@@ -338,6 +347,16 @@ function Effects.aura(model: Model, rarity: string?, stars: number?)
 		energyAura(c, Effects.ENERGY, true)
 	elseif rarity == "Legendary" then
 		fireAura(c)
+	elseif rarity == "Mythic" then
+		fireAura(c, Effects.MYTHIC_FIRE)
+		energyAura(c, Effects.MYTHIC_ENERGY, true)
+	elseif rarity == "Supreme" then
+		fireAura(c, Effects.RAINBOW)
+		energyAura(c, Effects.RAINBOW, false)
+		starAura(c, Effects.RAINBOW)
+		-- a halo spinning over the head
+		local haloAt = attach(c.body, "FxHalo", CFrame.new(0, c.feetY + c.height + 0.5 - c.body.Position.Y, 0), "FxAura")
+		c.tag(spinRing(haloAt, "Halo", c.height * 0.42, grad(Color3.fromRGB(255, 250, 220), Effects.GOLD), 120, 1.4, 1.2))
 	end
 	if s >= 3 then
 		starAura(c, Effects.RAINBOW)
@@ -348,17 +367,24 @@ function Effects.aura(model: Model, rarity: string?, stars: number?)
 
 	local light = Instance.new("PointLight")
 	light.Name = "FxLight"
-	light.Color = if s >= 3 then Color3.fromRGB(255, 220, 255) elseif rarity == "Rare" then Effects.ICE
-		elseif rarity == "Epic" then Color3.fromRGB(150, 120, 255) else Effects.GOLD
+	light.Color = if s >= 3 or rarity == "Supreme" then Color3.fromRGB(255, 220, 255) elseif rarity == "Rare" then Effects.ICE
+		elseif rarity == "Epic" then Color3.fromRGB(150, 120, 255) elseif rarity == "Mythic" then Effects.MYTHIC else Effects.GOLD
 	-- dim on purpose: at high graphics quality bright aura lights wash the whole office out
-	light.Range = if rarity == "Legendary" then 12 else 9
-	light.Brightness = if rarity == "Legendary" then 0.8 else 0.6
+	local top = rarity == "Legendary" or rarity == "Mythic" or rarity == "Supreme"
+	light.Range = if top then 12 else 9
+	light.Brightness = if top then 0.8 else 0.6
 	light.Shadows = false
 	tag(light)
 	light.Parent = body
 end
 
 -- ---------------------------------------------------------------------------------------------- bursts
+local RARITY_BURSTS = { Rare = "rare", Epic = "epic", Legendary = "legendary", Mythic = "mythic", Supreme = "supreme" }
+-- The burst a lawyer of this rarity gets when it hatches / is placed (nil: Common and Uncommon get none).
+function Effects.rarityBurst(rarity: string?): string?
+	return if rarity then RARITY_BURSTS[rarity] else nil
+end
+
 -- One-shot burst. `where`: a BasePart (bursts at its centre), or a world position.
 function Effects.burst(where: BasePart | Vector3, kind: string, color: (Color3 | ColorSequence)?)
 	local pos = if typeof(where) == "Vector3" then where else (where :: BasePart).Position
@@ -382,8 +408,9 @@ function Effects.burst(where: BasePart | Vector3, kind: string, color: (Color3 |
 	ground.Parent = holder
 	ground.WorldPosition = if hit then hit.Position + Vector3.new(0, 0.2, 0) else pos - Vector3.new(0, 3, 0)
 
-	local big = kind == "legendary" or kind == "rainbow"
-	local scale = if big then 1.5 elseif kind == "tier" or kind == "rare" then 0.95 else 1.15
+	local fiery = kind == "legendary" or kind == "mythic" or kind == "supreme"
+	local big = fiery or kind == "rainbow"
+	local scale = if kind == "supreme" then 1.8 elseif big then 1.5 elseif kind == "tier" or kind == "rare" then 0.95 else 1.15
 	local function burst(name: string, count: number, props: { [string]: any }, on: Attachment?, delay: number?)
 		local e = emitter(on or at, name, props)
 		-- bursts stack many sprites in one spot: above ~1.4 the colours clip to white (playtested)
@@ -441,7 +468,7 @@ function Effects.burst(where: BasePart | Vector3, kind: string, color: (Color3 |
 		burst("IceFlare", 1, { Texture = T.star, Color = ice, Lifetime = NumberRange.new(0.5), LightEmission = 0.3, Brightness = 3,
 			Size = seq({ { 0, 2 }, { 0.15, 14 * scale }, { 1, 0 } }) })
 		tint = Effects.ICE
-	elseif kind == "merge" or kind == "rainbow" then
+	elseif kind == "merge" or kind == "rainbow" or kind == "epic" then
 		local energy = if kind == "rainbow" then Effects.RAINBOW else (if color then colorOf(color) else Effects.ENERGY)
 		burst("EnergyOrb", 1, flip({ Texture = T.energyFlip, Color = energy, Lifetime = NumberRange.new(1), LightEmission = 0.3, Brightness = 2.5,
 			Size = seq({ { 0, 2 }, { 0.2, 13 * scale }, { 0.7, 11 * scale }, { 1, 0 } }), RotSpeed = NumberRange.new(120) }, Enum.ParticleFlipbookMode.Loop, 20))
@@ -455,21 +482,34 @@ function Effects.burst(where: BasePart | Vector3, kind: string, color: (Color3 |
 		flatRing("EnergyRing", energy, 3, 16 * scale, 0.8, -380, nil, ground)
 		if kind == "rainbow" then
 			starBurst(Effects.RAINBOW, DARK)
+		elseif kind == "epic" then
+			starBurst(grad(Color3.fromRGB(255, 255, 255), Color3.fromRGB(180, 90, 255)), DARK)
 		end
 		tint = if kind == "rainbow" then Effects.RAINBOW else Color3.fromRGB(140, 120, 255)
 	else
-		-- legendary / win / tier: the star burst (gold for good news)
-		local hot = if kind == "legendary" then STAR_RED else grad(Color3.fromRGB(255, 255, 230), Effects.GOLD)
-		starBurst(color and colorOf(color) or hot, if kind == "legendary" then BLOOD else ColorSequence.new(Color3.fromRGB(120, 70, 10)))
-		if kind == "legendary" then
-			-- plus the fire tornado ramping up out of the ground
+		-- legendary / mythic / supreme / win / tier: the star burst (gold for good news)
+		local hot = if kind == "legendary" then STAR_RED
+			elseif kind == "mythic" then grad(Color3.fromRGB(255, 255, 255), Effects.MYTHIC)
+			elseif kind == "supreme" then Effects.RAINBOW
+			else grad(Color3.fromRGB(255, 255, 230), Effects.GOLD)
+		local under = if kind == "legendary" or kind == "mythic" then BLOOD elseif kind == "supreme" then DARK
+			else ColorSequence.new(Color3.fromRGB(120, 70, 10))
+		starBurst(color and colorOf(color) or hot, under)
+		if fiery then
+			-- plus the fire tornado ramping up out of the ground (crimson for Mythic, rainbow for Supreme)
+			local fire = if kind == "mythic" then Effects.MYTHIC_FIRE elseif kind == "supreme" then Effects.RAINBOW else Effects.FIRE
 			for i = 0, 2 do
 				local ring = Instance.new("Attachment")
 				ring.Parent = holder
 				ring.WorldPosition = ground.WorldPosition + Vector3.new(0, 1 + i * 2.2, 0)
-				flatRing("FireRing" .. i, Effects.FIRE, (10 - i * 2) * scale, (13 - i * 2) * scale, 0.9, 500 + i * 80, nil, ring, i * 0.08)
+				flatRing("FireRing" .. i, fire, (10 - i * 2) * scale, (13 - i * 2) * scale, 0.9, 500 + i * 80, nil, ring, i * 0.08)
 			end
-			burst("Flames", 16, flip({ Texture = T.flameFlip, Color = Effects.FIRE, Lifetime = NumberRange.new(0.7, 1), LightEmission = 0.25, Brightness = 2.5,
+			if kind == "supreme" then
+				burst("EnergyOrb", 1, flip({ Texture = T.energyFlip, Color = Effects.RAINBOW, Lifetime = NumberRange.new(1.2), LightEmission = 0.3,
+					Brightness = 2.5, Size = seq({ { 0, 2 }, { 0.2, 13 * scale }, { 0.7, 11 * scale }, { 1, 0 } }), RotSpeed = NumberRange.new(120) },
+					Enum.ParticleFlipbookMode.Loop, 20))
+			end
+			burst("Flames", 16, flip({ Texture = T.flameFlip, Color = fire, Lifetime = NumberRange.new(0.7, 1), LightEmission = 0.25, Brightness = 2.5,
 				Speed = NumberRange.new(8, 14), EmissionDirection = Enum.NormalId.Top, SpreadAngle = Vector2.new(70, 70), Drag = 4,
 				Acceleration = Vector3.new(0, 10, 0), Orientation = Enum.ParticleOrientation.FacingCameraWorldUp,
 				Size = seq({ { 0, 2 }, { 0.5, 4.5 }, { 1, 2 } }) }, Enum.ParticleFlipbookMode.OneShot), ground)
@@ -478,12 +518,17 @@ function Effects.burst(where: BasePart | Vector3, kind: string, color: (Color3 |
 			flatRing("TierRing", ColorSequence.new(Effects.GOLD), 4, 18, 1, 260, nil, ground)
 		end
 	end
-	if kind == "legendary" or kind == "win" then
+	if fiery or kind == "win" then
 		-- a shower of gold coins (pre-coloured texture)
-		burst("Coins", if kind == "legendary" then 30 else 22, { Texture = T.coin, Color = ColorSequence.new(Color3.new(1, 1, 1)),
+		burst("Coins", if kind == "supreme" then 50 elseif fiery then 30 else 22, { Texture = T.coin, Color = ColorSequence.new(Color3.new(1, 1, 1)),
 			LightEmission = 0.3, Brightness = 1.2, Lifetime = NumberRange.new(1.2, 1.8), Speed = NumberRange.new(14, 24),
 			EmissionDirection = Enum.NormalId.Top, SpreadAngle = Vector2.new(50, 50), Acceleration = Vector3.new(0, -45, 0),
 			Size = NumberSequence.new(0.9), RotSpeed = NumberRange.new(-200, 200), Rotation = NumberRange.new(0, 360) }, nil, 0.1)
+	end
+	if kind == "mythic" then
+		tint = Effects.MYTHIC
+	elseif kind == "supreme" then
+		tint = Color3.fromRGB(255, 230, 255)
 	end
 	local flash = Instance.new("PointLight")
 	flash.Color = firstColor(tint)

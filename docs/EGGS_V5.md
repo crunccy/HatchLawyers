@@ -94,8 +94,7 @@ Everyone near the incubator sees the same thing, without the camera or the words
 | Shared mesh helpers | `tools/blender/meshkit.py` |
 | Upload + build in Studio | `tools/zones/BuildEggsV5.lua` + `tools/zones/PngDecode.lua`, installed as `ServerStorage.EggV5Upload` (data from `ServerStorage.EggV5Data`; built pieces go to `ServerStorage.EggV5Built`) |
 | Runtime | `src/EggLook.lua` (v5), `src/HatchFx.lua`, `src/Incubator.lua` |
-| Live installs (v5 only, no economy pass) | `tools/zones/eggs_v5_live/` (Eggs client, EggServer, FirmBuilder) |
-| `src/` twins with v5 merged in | `src/Eggs.client.lua`, `src/EggServer.server.lua` (+ the pending economy pass) |
+| Live scripts (v5 + the economy pass, pushed 2026-10-13) | `studio/` snapshot; `src/Eggs.client.lua`, `src/EggServer.server.lua` are in sync with it (the v5-only staging copies in `tools/zones/eggs_v5_live/` were removed 2026-10-13) |
 | Previews | `art/eggs/v5_preview.png`, `art/eggs/incubator_preview_*.png` |
 
 Regenerate everything:
@@ -134,7 +133,8 @@ Re-export `studio/` first, then:
 - Then install:
 - **New modules:** `Shared.HatchFx` ← `src/HatchFx.lua`, `Shared.Incubator` ← `src/Incubator.lua`.
 - **`Shared.EggLook` ← `src/EggLook.lua`.** It's a straight replace: the live copy is v4, unchanged since this snapshot. Check with a diff against `studio/`.
-- **`StarterPlayerScripts.Eggs`, `Eggs.EggServer`, `Server.FirmBuilder`** ← `tools/zones/eggs_v5_live/*`.
+- **`StarterPlayerScripts.Eggs`, `Eggs.EggServer`, `Server.FirmBuilder`** ← `tools/zones/eggs_v5_live/*` (done
+  2026-10-13; those copies were removed afterwards, git history has them).
   - These are the live scripts as of commit `8468c2f`'s `studio/` snapshot plus the v5 changes.
   - If the live script changed since, 3-way merge: `git merge-file live.lua base.lua v5.lua`, with base = `studio/` at `8468c2f`. Never paste over.
 

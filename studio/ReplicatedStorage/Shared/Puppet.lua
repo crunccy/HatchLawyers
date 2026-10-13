@@ -8,6 +8,10 @@
 --   arm X > 0 swings the arm forward, armL Z < 0 / armR Z > 0 lift the arm out to the side
 --   head X > 0 looks up, head Y > 0 turns to the character's left (screen right in the court)
 --   rootRot X < 0 leans forward
+-- Moving bits (2026-10-13, the Epic / Mythic / Supreme lawyers from tools/blender/lawyers_top.py): a part with
+-- attribute FxKind keeps its own motion on top of its limb - "rot" turns (FxAmp deg/s), "osc" swings (FxAmp deg at
+-- FxRate Hz), "bob" floats (FxAmp studs at FxRate Hz) - about FxPivot along FxAxis (both in the part's own space;
+-- FxSize = its size when built, so a scaled model keeps the right pivot). Wings flap, tails sway, halos turn.
 
 local Puppet = {}
 Puppet.__index = Puppet
@@ -82,7 +86,26 @@ function Puppet:_sort()
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
 			local rest = base:ToObjectSpace(d.CFrame)
-			table.insert(parts, { part = d, rest = rest })
+			local entry: any = { part = d, rest = rest }
+			local fxKind = d:GetAttribute("FxKind")
+			if fxKind then
+				local size0 = d:GetAttribute("FxSize")
+				local k = if typeof(size0) == "Vector3" and size0.X > 0 then d.Size.X / size0.X else 1
+				local lp = d:GetAttribute("FxPivot")
+				local la = d:GetAttribute("FxAxis")
+				local pivotWorld = d.CFrame * ((if typeof(lp) == "Vector3" then lp else Vector3.zero) * k)
+				local axisWorld = d.CFrame:VectorToWorldSpace(if typeof(la) == "Vector3" and la.Magnitude > 0 then la.Unit else Vector3.yAxis)
+				local amp = (d:GetAttribute("FxAmp") :: number?) or 0
+				entry.fx = {
+					kind = fxKind,
+					pivot = base:PointToObjectSpace(pivotWorld),
+					axis = base:VectorToObjectSpace(axisWorld),
+					amp = if fxKind == "bob" then amp * k else amp,
+					rate = (d:GetAttribute("FxRate") :: number?) or 0,
+					phase = (d:GetAttribute("FxPhase") :: number?) or 0,
+				}
+			end
+			table.insert(parts, entry)
 			if d.Transparency < 1 then
 				y0 = math.min(y0, rest.Position.Y - d.Size.Y / 2)
 				local kind = NAMED[d.Name]
@@ -198,7 +221,20 @@ function Puppet:apply(pose, base: CFrame?)
 			g = root * joint * ang(pose[group]) * joint:Inverse()
 		end
 		for _, e in list do
-			e.part.CFrame = g * e.rest
+			local fx = e.fx
+			if fx then
+				local t = os.clock()
+				local off
+				if fx.kind == "bob" then
+					off = CFrame.new(fx.axis * fx.amp * math.sin(2 * math.pi * fx.rate * t + fx.phase))
+				else
+					local a = if fx.kind == "rot" then math.rad(fx.amp * t) + fx.phase else math.rad(fx.amp) * math.sin(2 * math.pi * fx.rate * t + fx.phase)
+					off = CFrame.new(fx.pivot) * CFrame.fromAxisAngle(fx.axis, a) * CFrame.new(-fx.pivot)
+				end
+				e.part.CFrame = g * off * e.rest
+			else
+				e.part.CFrame = g * e.rest
+			end
 		end
 	end
 end

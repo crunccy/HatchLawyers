@@ -1,7 +1,8 @@
 --!strict
 -- Lawyers and offices (v12 "hatch real lawyers"). Clients ask, the server checks and charges.
---   TrainLawyer(office)        upgrades an OFFICE one level (the main coin sink; the level stays with
---                              the office when lawyers swap). Free tutorial level-ups are spent first.
+--   TrainLawyer(office, count?) upgrades an OFFICE (the main coin sink; the level stays with the office when
+--                              lawyers swap): 1 level, `count` levels, or "max"; TrainLawyer("all") levels every
+--                              office with a lawyer, cheapest first. Free tutorial level-ups are spent first.
 --   PlaceLawyer(office, uid?)  puts an owned lawyer in an office (swapping with wherever it was) or,
 --                              with uid nil, sends the office's lawyer back to the inventory. If the office is
 --                              busy with a case, the change is QUEUED (unseat, or a bench lawyer replacing them)
@@ -22,6 +23,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
+local Effects = require(ReplicatedStorage.Shared.Effects) :: any -- (rarityBurst: which burst a placed lawyer gets)
 local PlayerData = require(script.Parent.PlayerData)
 local CaseService = require(script.Parent.CaseService)
 
@@ -69,8 +71,33 @@ local function officeFree(player: Player, index: number): boolean
 	return not desk or desk.phase == "Idle" or desk.phase == "Empty"
 end
 
--- Office upgrade. Returns ok and, on failure, a short reason the client can show.
-local function upgradeOffice(player: Player, index: unknown): (boolean, string?)
+-- Office upgrades. TrainLawyer(office, count?) buys up to `count` levels for one office (count = a whole number, or
+-- "max" = as many as you can afford); TrainLawyer("all") levels every office with a lawyer, cheapest level first,
+-- while coins last (economy pass 2026-10-09: a Supreme resets every office to level 1, so the panel needs MAX /
+-- UPGRADE ALL instead of hundreds of single clicks). Free tutorial level-ups are spent first. Coins are taken per
+-- level as it's bought, synced once at the end. Returns ok, a reason (failure) or the new office look's name, and
+-- how many levels were bought.
+local MAX_STEPS = 2000 -- levels one request may buy (20 offices x 100 levels)
+
+local function buyLevel(data: PlayerData.Data, index: number): boolean
+	local office = data.Desks[index]
+	if office.Level >= Config.Lawyer.MaxLevel then
+		return false
+	end
+	if data.Tutorial.FreeLevelUps > 0 then
+		data.Tutorial.FreeLevelUps -= 1
+	else
+		local cost = Formulas.trainCost(office.Level)
+		if data.Coins < cost then
+			return false
+		end
+		data.Coins -= cost
+	end
+	office.Level += 1
+	return true
+end
+
+local function upgradeOffice(player: Player, index: unknown, count: unknown): (boolean, string?, number?)
 	if throttled(player) then
 		return false, "Slow down!"
 	end
@@ -78,32 +105,74 @@ local function upgradeOffice(player: Player, index: unknown): (boolean, string?)
 	if not data then
 		return false, "Still loading"
 	end
-	if not isIndex(index) or not data.Desks[index :: number] then
+	local targets: { number } = {}
+	if index == "all" then
+		for i, office in data.Desks do
+			if office.Lawyer then
+				table.insert(targets, i)
+			end
+		end
+		if #targets == 0 then
+			return false, "Equip a lawyer first"
+		end
+	elseif isIndex(index) and data.Desks[index :: number] then
+		table.insert(targets, index :: number)
+	else
 		return false, "Bad office"
 	end
-	local office = data.Desks[index :: number]
-	if office.Level >= Config.Lawyer.MaxLevel then
-		return false, "Max level!"
+	local limit = 1
+	if index == "all" or count == "max" then
+		limit = MAX_STEPS
+	elseif isIndex(count) and (count :: number) >= 1 then
+		limit = math.min(count :: number, MAX_STEPS)
+	elseif count ~= nil then
+		return false, "Bad count"
 	end
-	if data.Tutorial.FreeLevelUps > 0 then
-		data.Tutorial.FreeLevelUps -= 1
-	elseif not PlayerData.spendCoins(player, Formulas.trainCost(office.Level)) then
-		return false, "Not enough coins"
+	local before: { [number]: number } = {}
+	for _, i in targets do
+		before[i] = Formulas.officeTier(data.Desks[i].Level)
 	end
-	local oldTier = Formulas.officeTier(office.Level)
-	office.Level += 1
+	local bought = 0
+	while bought < limit do
+		-- the cheapest next level among the targets (one office: just that one)
+		local pick, cheapest = nil, math.huge
+		for _, i in targets do
+			local level = data.Desks[i].Level
+			if level < Config.Lawyer.MaxLevel and Formulas.trainCost(level) < cheapest then
+				pick, cheapest = i, Formulas.trainCost(level)
+			end
+		end
+		if not pick or not buyLevel(data, pick) then
+			break
+		end
+		bought += 1
+	end
+	if bought == 0 then
+		local maxed = true
+		for _, i in targets do
+			if data.Desks[i].Level < Config.Lawyer.MaxLevel then
+				maxed = false
+			end
+		end
+		return false, if maxed then "Max level!" else "Not enough coins", 0
+	end
 	PlayerData.sync(player)
 	local GoalService = require(script.Parent.GoalService) :: any
-	GoalService.track(player, "train")
-	local newTier = Formulas.officeTier(office.Level)
-	if newTier > oldTier then
-		GoalService.track(player, "deskUpgrade")
+	GoalService.track(player, "train", bought)
+	local newLook: string? = nil
+	for _, i in targets do
+		local tier = Formulas.officeTier(data.Desks[i].Level)
+		local tierUp = tier > before[i]
+		if tierUp then
+			GoalService.track(player, "deskUpgrade")
+			newLook = Config.Desks.Tiers[tier].Name
+		end
+		CaseService.refreshDesk(player, i, tierUp)
+		if tierUp then
+			CaseService.burst(player, i, "tier")
+		end
 	end
-	CaseService.refreshDesk(player, index :: number, newTier > oldTier)
-	if newTier > oldTier then
-		CaseService.burst(player, index :: number, "tier")
-	end
-	return true, if newTier > oldTier then Config.Desks.Tiers[newTier].Name else nil
+	return true, newLook, bought
 end
 
 -- The move itself (office free, everything validated by the caller). uid nil = back to the inventory.
@@ -132,8 +201,9 @@ local function doPlace(player: Player, data: PlayerData.Data, target: number, ui
 	end
 	local def = Formulas.getSkin(data.Lawyers[uid].Id)
 	local rarity = def and Config.Eggs.Skins[def.Rarity]
-	if rarity and (rarity.Id == "Legendary" or rarity.Id == "Rare") then
-		CaseService.burst(player, target, if rarity.Id == "Legendary" then "legendary" else "rare")
+	local burstKind = rarity and Effects.rarityBurst(rarity.Id)
+	if burstKind then
+		CaseService.burst(player, target, burstKind)
 	end
 end
 

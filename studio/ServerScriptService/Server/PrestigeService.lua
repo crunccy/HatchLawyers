@@ -1,6 +1,7 @@
 --!strict
--- Prestige ("Supreme Empire", Config.Prestige). With a lawyer in every office of a fully expanded firm,
--- a player can reset coins, office levels, the firm size and the Manager for a permanent payout
+-- Prestige ("Supreme Empire", Config.Prestige). A ladder (economy pass 2026-10-09): going Supreme from level N
+-- takes Formulas.prestigeRequirement(N) - a coin cost and a number of offices with a lawyer in them. It resets
+-- coins, office levels, the firm size, the Manager and the egg price ramp (Eggs.RunOpened) for a permanent payout
 -- multiplier (Formulas.prestigeMultiplier, applied in CaseService and RewardsService). Their hatched
 -- LAWYERS are kept (lawyers in offices that go away return to the inventory), as are eggs, streaks,
 -- goals and stats.
@@ -42,15 +43,20 @@ local function prestige(player: Player): (boolean, string?)
 			working += 1
 		end
 	end
-	if working < Config.Prestige.RequiredDesks then
-		return false, string.format("Fill %d offices with lawyers first", Config.Prestige.RequiredDesks)
+	data.Prestige = data.Prestige or { Level = 0 }
+	local cost, offices = Formulas.prestigeRequirement(data.Prestige.Level)
+	if working < offices then
+		return false, string.format("Put lawyers in %d offices first", offices)
+	end
+	if data.Coins < cost then
+		return false, string.format("You need %s coins", Formulas.formatCoins(cost))
 	end
 
-	data.Prestige = data.Prestige or { Level = 0 }
 	data.Prestige.Level += 1
 	-- (spawned: badge calls yield / can throw - a throw here used to leave the new level without the reset)
 	task.spawn(require(script.Parent.BadgeAwards).award, player, "Supreme")
 	data.Coins = 0
+	data.Eggs.RunOpened = 0 -- eggs start cheap again (x Config.Eggs.PrestigePriceScale per level)
 	-- back to the starting firm: its offices at level 1; the lawyers in them stay put
 	local keep = Config.Firm.StartSegments * 2
 	local offices = {}

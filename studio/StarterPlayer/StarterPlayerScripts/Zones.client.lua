@@ -733,8 +733,11 @@ local function drawOdds(b: OddsBoard)
 	local egg = zone.Egg
 	local lucky = player:GetAttribute("PassLuckyEggs") == true
 	local luckFactor = if lucky then ((Config.Shop and Config.Shop.Effects and Config.Shop.Effects.LuckyEggs) or 1) else 1
-	local base = boosted(eggWeights(egg), luckFactor)
-	local golden = boosted(base, (CFG.Golden and CFG.Golden.Luck) or 1)
+	local goldLuck = (CFG.Golden and CFG.Golden.Luck) or 1
+	-- (the same maths as Eggs.EggServer: Formulas.luckyWeights, the pass and a golden egg's luck multiplied)
+	local base = if Formulas.luckyWeights then Formulas.luckyWeights(eggWeights(egg), luckFactor) else boosted(eggWeights(egg), luckFactor)
+	local golden = if Formulas.luckyWeights then Formulas.luckyWeights(eggWeights(egg), luckFactor * goldLuck) else boosted(base, goldLuck)
+	local luckNames = table.concat((Config.Eggs :: any).LuckRarities or { "Rare", "Legendary" }, ", ")
 	local panel = Instance.new("Frame")
 	panel.Size = UDim2.fromScale(1, 1)
 	panel.BackgroundColor3 = Color3.fromRGB(34, 28, 56)
@@ -756,8 +759,8 @@ local function drawOdds(b: OddsBoard)
 		label(panel, pct(golden, index), UDim2.fromScale(0.85, y), UDim2.fromScale(0.24, rowH * 0.8), Color3.fromRGB(255, 225, 120), 2)
 	end
 	local foot = if lucky
-		then string.format("LUCKY EGGS: Rare + Legendary x%s (yours!)", tostring(luckFactor))
-		else string.format("Golden eggs: Rare + Legendary x%s", tostring((CFG.Golden and CFG.Golden.Luck) or 1))
+		then string.format("LUCKY EGGS: %s x%s (yours!)", luckNames, tostring(luckFactor))
+		else string.format("Golden eggs: %s x%s", luckNames, tostring(goldLuck))
 	label(panel, foot, UDim2.fromScale(0.5, 0.9), UDim2.fromScale(0.92, 0.09), if lucky then Color3.fromRGB(150, 255, 110) else Color3.fromRGB(200, 200, 220), 2)
 end
 

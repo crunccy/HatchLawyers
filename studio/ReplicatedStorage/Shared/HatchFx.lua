@@ -532,6 +532,8 @@ export type Tier = {
 	confetti: number,
 	build: number, -- seconds of build-up after the 3rd crack
 	fancy: boolean, -- the incubator overloads and launches the egg into the sky
+	bolts: boolean?, -- Epic: purple lightning strikes the egg before it bursts
+	cinema: string?, -- Mythic / Supreme: the hatch cuts to its own stage ("mythic" crimson arena, "supreme" celestial sanctum)
 	cook: number, -- incubator cook speed (higher = shorter)
 	bloom: number,
 }
@@ -539,15 +541,20 @@ local LADDER: { [string]: Tier } = {
 	Common = { take = "pop", rings = 1, shake = 1.3, rays = 0, pillar = false, implode = false, blackhole = false, rainbow = false, slow = 0, coins = 0, confetti = 36, build = 0.2, fancy = false, cook = 2.6, bloom = 0.6 },
 	Uncommon = { take = "pop", rings = 2, shake = 1.7, rays = 5, pillar = false, implode = false, blackhole = false, rainbow = false, slow = 0, coins = 0, confetti = 54, build = 0.3, fancy = false, cook = 2.2, bloom = 0.8 },
 	Rare = { take = "burst", rings = 2, shake = 2.6, rays = 8, burst = "rare", pillar = false, implode = false, blackhole = false, rainbow = false, slow = 0, coins = 0, confetti = 70, build = 0.55, fancy = false, cook = 1, bloom = 1.1 },
-	Epic = { take = "burst", rings = 3, shake = 3.2, rays = 10, burst = "merge", pillar = false, implode = true, blackhole = false, rainbow = false, slow = 0.2, coins = 12, confetti = 84, build = 0.7, fancy = false, cook = 0.9, bloom = 1.3 },
+	Epic = { take = "burst", rings = 3, shake = 3.2, rays = 10, burst = "epic", bolts = true, pillar = false, implode = true, blackhole = false, rainbow = false, slow = 0.2, coins = 12, confetti = 84, build = 0.7, fancy = false, cook = 0.9, bloom = 1.3 },
 	Legendary = { take = "blast", rings = 3, shake = 4.6, rays = 12, burst = "legendary", pillar = true, implode = true, blackhole = false, rainbow = false, slow = 0.45, coins = 30, confetti = 110, build = 0.9, fancy = true, cook = 1, bloom = 1.6 },
-	Mythic = { take = "blast", rings = 4, shake = 5.2, rays = 14, burst = "legendary", pillar = true, implode = true, blackhole = true, rainbow = false, slow = 0.6, coins = 40, confetti = 130, build = 1.1, fancy = true, cook = 1, bloom = 1.8 },
-	Supreme = { take = "blast", rings = 5, shake = 6, rays = 16, burst = "rainbow", pillar = true, implode = true, blackhole = true, rainbow = true, slow = 0.8, coins = 60, confetti = 170, build = 1.3, fancy = true, cook = 1, bloom = 2 },
+	Mythic = { take = "blast", rings = 4, shake = 5.2, rays = 14, burst = "mythic", cinema = "mythic", pillar = true, implode = true, blackhole = true, rainbow = false, slow = 0.6, coins = 40, confetti = 130, build = 1.1, fancy = true, cook = 1, bloom = 1.8 },
+	Supreme = { take = "blast", rings = 5, shake = 6, rays = 16, burst = "supreme", cinema = "supreme", pillar = true, implode = true, blackhole = true, rainbow = true, slow = 0.8, coins = 60, confetti = 170, build = 1.3, fancy = true, cook = 1, bloom = 2 },
 }
 function HatchFx.ladder(rarity: string): Tier
 	return LADDER[rarity] or LADDER.Common
 end
 HatchFx.RAINBOW = Effects.RAINBOW
+local RAINBOW_LIST = {
+	Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 170, 60), Color3.fromRGB(255, 230, 80),
+	Color3.fromRGB(90, 230, 110), Color3.fromRGB(80, 170, 255), Color3.fromRGB(160, 100, 255),
+}
+HatchFx.RAINBOW_LIST = RAINBOW_LIST
 
 ------------------------------------------------------------------ the break: the Blender sim on the shell chunks
 local anims: any = nil
@@ -620,6 +627,334 @@ function HatchFx.breakApart(h: any, take: string, root: CFrame, slow: number?)
 	for _, p in h.pieces do
 		p.Transparency = 1
 	end
+end
+
+------------------------------------------------------------------ v6 pieces (2026-10-13): Epic bolts + the Mythic / Supreme cinematics
+-- (ideas from the rarest-pull cutscenes in other Roblox games, e.g. Sol's RNG: a star pull before the reveal, orbs that
+-- circle and collide, ground cracking with a glow, a white "breakthrough" crack across the screen, a stage of its own)
+
+local function neon(size: Vector3, cf: CFrame, color: Color3, parent: Instance?, shape: Enum.PartType?): Part
+	local p = Instance.new("Part")
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.CastShadow = false
+	p.Material = Enum.Material.Neon
+	if shape then
+		p.Shape = shape
+	end
+	p.Size = size
+	p.CFrame = cf
+	p.Color = color
+	p.Parent = parent or folder
+	return p
+end
+HatchFx.neon = neon
+
+-- a zigzag lightning bolt from `from` to `to`, gone after `seconds`
+function HatchFx.bolt(from: Vector3, to: Vector3, color: Color3, seconds: number?, thick: number?)
+	local dir = to - from
+	local side = dir:Cross(Vector3.yAxis)
+	side = if side.Magnitude > 0.01 then side.Unit else Vector3.xAxis
+	local side2 = dir:Cross(side).Unit
+	local pts = { from }
+	local n = 8
+	for i = 1, n - 1 do
+		local f = i / n
+		local j = dir.Magnitude * 0.09
+		table.insert(pts, from + dir * f + side * (math.random() - 0.5) * 2 * j + side2 * (math.random() - 0.5) * 2 * j)
+	end
+	table.insert(pts, to)
+	local th = thick or 0.35
+	local parts = {}
+	for i = 1, #pts - 1 do
+		local a, b = pts[i], pts[i + 1]
+		local cf = CFrame.lookAt((a + b) / 2, b)
+		local L = (b - a).Magnitude + th
+		table.insert(parts, neon(Vector3.new(th, th, L), cf, color))
+		table.insert(parts, neon(Vector3.new(th * 0.4, th * 0.4, L), cf, WHITE))
+	end
+	HatchFx.light(to, color, 30, 3, (seconds or 0.25) + 0.2)
+	task.delay(seconds or 0.25, function()
+		for _, p in parts do
+			tween(p, 0.15, { Transparency = 1 })
+		end
+		task.wait(0.16)
+		for _, p in parts do
+			p:Destroy()
+		end
+	end)
+end
+
+-- a shimmering dome (ForceField material) blasting out from `at`
+function HatchFx.dome(at: Vector3, radius: number, color: Color3, seconds: number)
+	local b = neon(Vector3.one, CFrame.new(at), color, nil, Enum.PartType.Ball)
+	b.Material = Enum.Material.ForceField
+	task.spawn(function()
+		local t0 = os.clock()
+		while true do
+			local a = math.min((os.clock() - t0) / seconds, 1)
+			local r = 1 + radius * (1 - (1 - a) ^ 3)
+			b.Size = Vector3.new(r, r, r) * 2
+			b.Transparency = a ^ 2
+			if a >= 1 then
+				break
+			end
+			RunService.Heartbeat:Wait()
+		end
+		b:Destroy()
+	end)
+end
+
+-- glowing orbs that circle `centre` and spiral in to collide there (yields for `seconds`)
+function HatchFx.orbs(centre: Vector3, colors: { Color3 }, radius: number, seconds: number, height: number?)
+	local list = {}
+	for i, c in colors do
+		local o = neon(Vector3.one * 1.1, CFrame.new(centre), c, nil, Enum.PartType.Ball)
+		local l = Instance.new("PointLight")
+		l.Color = c
+		l.Range = 14
+		l.Brightness = 1.5
+		l.Shadows = false
+		l.Parent = o
+		local a0 = Instance.new("Attachment")
+		a0.Position = Vector3.new(0, 0.5, 0)
+		a0.Parent = o
+		local a1 = Instance.new("Attachment")
+		a1.Position = Vector3.new(0, -0.5, 0)
+		a1.Parent = o
+		local tr = Instance.new("Trail")
+		tr.Attachment0, tr.Attachment1 = a0, a1
+		tr.Color = ColorSequence.new(c, WHITE)
+		tr.LightEmission = 0.7
+		tr.Lifetime = 0.45
+		tr.FaceCamera = true
+		tr.Transparency = NumberSequence.new(0, 1)
+		tr.WidthScale = NumberSequence.new(1, 0)
+		tr.Parent = o
+		table.insert(list, { part = o, phase = (i - 1) / #colors * math.pi * 2 })
+	end
+	local t0 = os.clock()
+	while true do
+		local a = math.min((os.clock() - t0) / seconds, 1)
+		local r = radius * (1 - a ^ 1.6)
+		local spin = a * a * 14 + a * 3
+		for _, o in list do
+			local ang = o.phase + spin
+			o.part.CFrame = CFrame.new(centre + Vector3.new(math.cos(ang) * r, (height or 0) * (1 - a) + math.sin(ang * 2) * 0.4 * (1 - a), math.sin(ang) * r))
+		end
+		if a >= 1 then
+			break
+		end
+		RunService.Heartbeat:Wait()
+	end
+	for _, o in list do
+		o.part:Destroy()
+	end
+end
+
+-- glowing cracks running out across the floor from `at` (Sol's RNG's ground-crack intro); returns a stop handle
+function HatchFx.fissures(at: Vector3, color: Color3, n: number, length: number, seconds: number): Handle
+	local parts = {}
+	local alive = true
+	for i = 1, n do
+		local ang = (i - 1) / n * math.pi * 2 + math.random() * 0.4
+		local p0 = at
+		local segs = 6
+		task.spawn(function()
+			for s = 1, segs do
+				if not alive then
+					return
+				end
+				ang += (math.random() - 0.5) * 0.7
+				local step = length / segs * (0.7 + math.random() * 0.6)
+				local p1 = p0 + Vector3.new(math.cos(ang) * step, 0, math.sin(ang) * step)
+				local w = 0.32 * (1 - s / (segs + 1)) + 0.08
+				local cf = CFrame.lookAt((p0 + p1) / 2, p1)
+				table.insert(parts, neon(Vector3.new(w, 0.06, step + w), cf, color))
+				table.insert(parts, neon(Vector3.new(w * 0.35, 0.07, step + w), cf, WHITE))
+				p0 = p1
+				task.wait(seconds / segs)
+			end
+		end)
+	end
+	HatchFx.light(at + Vector3.new(0, 1, 0), color, 26, 2.5, seconds + 1.5)
+	return {
+		stop = function(fade: number?)
+			alive = false
+			for _, p in parts do
+				tween(p, fade or 0.3, { Transparency = 1 })
+			end
+			task.delay((fade or 0.3) + 0.05, function()
+				for _, p in parts do
+					p:Destroy()
+				end
+			end)
+		end,
+	}
+end
+
+-- a dome of tiny stars around `centre` (radius studs); returns the folder
+function HatchFx.starfield(centre: Vector3, radius: number, n: number, parent: Instance): Folder
+	local f = Instance.new("Folder")
+	f.Name = "Stars"
+	f.Parent = parent
+	local rng = Random.new(7)
+	for _ = 1, n do
+		local u, v = rng:NextNumber(), rng:NextNumber(-0.25, 1)
+		local th, y = u * math.pi * 2, v
+		local r = math.sqrt(math.max(0, 1 - y * y))
+		local pos = centre + Vector3.new(math.cos(th) * r, y, math.sin(th) * r) * radius
+		local s = rng:NextNumber(0.25, 0.9)
+		local c = if rng:NextNumber() > 0.85 then RAINBOW_LIST[rng:NextInteger(1, #RAINBOW_LIST)] else Color3.fromRGB(255, 250, 230)
+		neon(Vector3.new(s, s, s), CFrame.lookAt(pos, centre), c, f)
+	end
+	return f
+end
+
+-- arcs of rainbow light across the sky over `centre` (Beams); returns the holder part
+function HatchFx.aurora(centre: Vector3, radius: number, parent: Instance): Part
+	local h = Instance.new("Part")
+	h.Anchored = true
+	h.CanCollide = false
+	h.CanQuery = false
+	h.Transparency = 1
+	h.Size = Vector3.one
+	h.CFrame = CFrame.new(centre)
+	h.Parent = parent
+	for i = 1, 5 do
+		local a0 = Instance.new("Attachment")
+		a0.Position = Vector3.new(-radius, radius * 0.25 + i * 6, -radius * 0.6 + i * radius * 0.25)
+		a0.Parent = h
+		local a1 = Instance.new("Attachment")
+		a1.Position = Vector3.new(radius, radius * 0.3 + i * 4, -radius * 0.4 + i * radius * 0.2)
+		a1.Parent = h
+		local b = Instance.new("Beam")
+		b.Attachment0, b.Attachment1 = a0, a1
+		b.Texture = T.column
+		b.TextureMode = Enum.TextureMode.Stretch
+		b.TextureSpeed = 0.3 + i * 0.1
+		b.Color = Effects.RAINBOW
+		b.LightEmission = 0.8
+		b.LightInfluence = 0
+		b.Brightness = 2
+		b.Width0, b.Width1 = 14 + i * 3, 20 + i * 2
+		b.CurveSize0, b.CurveSize1 = radius * 0.8, -radius * 0.5
+		b.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.3, 0.45), NumberSequenceKeypoint.new(0.7, 0.45), NumberSequenceKeypoint.new(1, 1) })
+		b.Segments = 30
+		b.Parent = h
+	end
+	return h
+end
+
+-- A stage of its own for the Mythic / Supreme hatch, far above the map (client-only): returns
+-- { model, spot (the egg's floor spot, its front = -Z, toward the camera), spin (a function to animate it), }
+function HatchFx.stage(kind: string, origin: CFrame): { [string]: any }
+	local m = Instance.new("Model")
+	m.Name = "HatchStage_" .. kind
+	m.Parent = folder
+	local spinning: { { part: BasePart, base: CFrame, speed: number, axis: Vector3 } } = {}
+	local function solid(size: Vector3, cf: CFrame, color: Color3, mat: Enum.Material, shape: Enum.PartType?): Part
+		local p = neon(size, cf, color, m, shape)
+		p.Material = mat
+		p.CastShadow = true
+		return p
+	end
+	local cyl = function(d: number, h: number, y: number, color: Color3, mat: Enum.Material): Part
+		return solid(Vector3.new(h, d, d), origin * CFrame.new(0, y, 0) * CFrame.Angles(0, 0, math.pi / 2), color, mat, Enum.PartType.Cylinder)
+	end
+	-- three glowing rings on the floor (top at 0.25): each is a neon disc with a floor-coloured disc just above it,
+	-- the biggest lowest, then the centre disc; its top (0.55) is where the egg and the lawyer stand (Eggs: STAGE_FLOOR)
+	local function floorRings(colors: { Color3 }, cover: Color3, mat: Enum.Material, centre: Color3, centreMat: Enum.Material)
+		local y = 0.25
+		for i = 3, 1, -1 do
+			local d = 14 + i * 7
+			y += 0.04
+			cyl(d + 0.8, 0.04, y - 0.02, colors[i], Enum.Material.Neon).CastShadow = false
+			y += 0.04
+			cyl(d, 0.04, y - 0.02, cover, mat)
+		end
+		cyl(12, 0.1, y + 0.01, centre, centreMat)
+	end
+	if kind == "mythic" then
+		-- an obsidian disc floating in a crimson dusk, a ring of lava, fire braziers, a blood moon
+		cyl(46, 3, -1.5, Color3.fromRGB(26, 16, 22), Enum.Material.Basalt)
+		cyl(40, 0.4, 0.05, Color3.fromRGB(44, 26, 34), Enum.Material.Slate)
+		cyl(47, 0.6, -0.8, Color3.fromRGB(255, 70, 20), Enum.Material.Neon)
+		local red = Color3.fromRGB(229, 57, 53)
+		floorRings({ red, Color3.fromRGB(255, 120, 30), red }, Color3.fromRGB(44, 26, 34), Enum.Material.Slate, Color3.fromRGB(120, 20, 24), Enum.Material.Slate)
+		for i = 0, 7 do
+			local a = i / 8 * math.pi * 2
+			local p = origin * CFrame.new(math.cos(a) * 17, 0, math.sin(a) * 17)
+			solid(Vector3.new(2, 7, 2), p * CFrame.new(0, 3.5, 0), Color3.fromRGB(34, 20, 28), Enum.Material.Basalt)
+			solid(Vector3.new(2.8, 0.8, 2.8), p * CFrame.new(0, 7.2, 0), Color3.fromRGB(60, 30, 30), Enum.Material.Basalt)
+			local fire = neon(Vector3.new(1.6, 1.6, 1.6), p * CFrame.new(0, 8.2, 0), Color3.fromRGB(255, 90, 30), m)
+			local e = emitter(fire, {
+				Texture = T.flameFlip,
+				FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4,
+				FlipbookMode = Enum.ParticleFlipbookMode.OneShot,
+				Color = Effects.FIRE,
+				Size = seq(0, 2.2, 1, 3.4),
+				Lifetime = NumberRange.new(0.6, 0.9),
+				Speed = NumberRange.new(4, 7),
+				SpreadAngle = Vector2.new(12, 12),
+				EmissionDirection = Enum.NormalId.Top,
+				Rate = 18,
+			})
+			e.Enabled = true
+		end
+		-- (off to the side: straight behind, it sat on the lawyer's head)
+		local moon = neon(Vector3.new(1, 70, 70), origin * CFrame.new(-85, 72, 240) * CFrame.Angles(0, math.pi / 2, 0), Color3.fromRGB(200, 30, 36), m, Enum.PartType.Cylinder)
+		moon.Transparency = 0.05
+		local embers = neon(Vector3.new(60, 1, 60), origin * CFrame.new(0, -6, 0), Color3.new(0, 0, 0), m)
+		embers.Transparency = 1
+		local ee = emitter(embers, {
+			Texture = T.ember,
+			Color = ColorSequence.new(Color3.fromRGB(255, 120, 40), Color3.fromRGB(229, 57, 53)),
+			Size = seq(0, 0.5, 1, 0),
+			Lifetime = NumberRange.new(3, 5),
+			Speed = NumberRange.new(3, 7),
+			EmissionDirection = Enum.NormalId.Top,
+			SpreadAngle = Vector2.new(20, 20),
+			Rate = 40,
+		})
+		ee.Enabled = true
+	else
+		-- a white-gold sanctum under a sky full of stars and rainbow auroras, a giant halo, rainbow pillars
+		cyl(46, 3, -1.5, Color3.fromRGB(240, 236, 226), Enum.Material.Marble)
+		cyl(40, 0.4, 0.05, Color3.fromRGB(250, 248, 240), Enum.Material.Marble)
+		cyl(47, 0.6, -0.8, Color3.fromRGB(255, 205, 60), Enum.Material.Neon)
+		floorRings({ RAINBOW_LIST[2], RAINBOW_LIST[4], RAINBOW_LIST[6] }, Color3.fromRGB(250, 248, 240), Enum.Material.Marble, Color3.fromRGB(255, 220, 120), Enum.Material.SmoothPlastic)
+		for i = 0, 5 do
+			local a = i / 6 * math.pi * 2
+			local p = origin * CFrame.new(math.cos(a) * 18, 0, math.sin(a) * 18)
+			solid(Vector3.new(2.2, 9, 2.2), p * CFrame.new(0, 4.5, 0), Color3.fromRGB(250, 246, 236), Enum.Material.Marble)
+			solid(Vector3.new(3, 0.8, 3), p * CFrame.new(0, 9.2, 0), Color3.fromRGB(255, 205, 60), Enum.Material.SmoothPlastic)
+			HatchFx.pillar((p * CFrame.new(0, 9.6, 0)).Position, RAINBOW_LIST[i + 1], 220, 3, 60)
+		end
+		-- the giant halo behind the stage, turning
+		local hc = origin * CFrame.new(0, 16, 22)
+		for i = 0, 35 do
+			local a = i / 36 * math.pi * 2
+			local seg = neon(Vector3.new(1.2, 1.2, 3.2), hc * CFrame.Angles(0, 0, a) * CFrame.new(0, 14, 0), if i % 2 == 0 then Color3.fromRGB(255, 220, 90) else Color3.fromRGB(255, 250, 220), m)
+			table.insert(spinning, { part = seg, base = hc:ToObjectSpace(seg.CFrame), speed = 0.15, axis = Vector3.zAxis, centre = hc } :: any)
+		end
+		HatchFx.starfield(origin.Position, 260, 220, m)
+		HatchFx.aurora(origin.Position + Vector3.new(0, 30, 0), 120, m)
+	end
+	local t0 = os.clock()
+	return {
+		model = m,
+		spot = origin,
+		spin = function()
+			local t = os.clock() - t0
+			for _, s in spinning do
+				local c = (s :: any).centre :: CFrame
+				s.part.CFrame = c * CFrame.fromAxisAngle(s.axis, t * s.speed * math.pi * 2) * s.base
+			end
+		end,
+	}
 end
 
 return HatchFx

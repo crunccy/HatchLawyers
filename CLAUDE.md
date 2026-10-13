@@ -132,7 +132,13 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ReplicatedStorage.Shared.Formulas` — pure math (winChance, payout, trainCost, clientInterval,
   expectedIncomePerSecond, rollSkin/rollSkinId, skinPayoutBonus, formatCoins). Rolls take a `Random`.
 - `ReplicatedStorage.Shared.SkinLook` — dresses an NPC in a skin; `showInViewport` for previews.
-- `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`).
+- `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`). The 18 Epic / Mythic /
+  Supreme lawyers (2026-10-13) are brick Parts built in Blender: `tools/blender/lawyers_top.py` (on
+  `tools/blender/brickkit.py`, a Python twin of BrickKit) → `tools/zones/lawyers_top.json` →
+  `tools/zones/BuildLawyersTop.lua` (plain Parts, so any Studio can run it). **Mythic is built 1.3× and Supreme 1.6×**
+  (user's call: bigger than Legendary; 7-13 studs tall, at desks too). Moving bits (wings, tails, orbiting planets,
+  halos) carry `FxKind` (rot / osc / bob) + `FxAxis` / `FxPivot` / `FxAmp` / `FxRate` / `FxPhase` / `FxSize`
+  attributes; `Shared.Puppet:apply` plays them (the hatch reveal, desks via `DeskLife`).
 - `ReplicatedStorage.Animations.CarryEggs` — the egg-carry arm pose (made in Blender: `tools/blender/carry_anim.py`
   → `tools/zones/BuildCarryAnimation.lua`; child `Source` = the KeyframeSequence). Played by
   `StarterPlayerScripts.CarryPose`. Published by crnuch as `rbxassetid://86324090376520`. **Animations must be
@@ -147,11 +153,16 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   world at the incubator for every rarity (`Shared.HatchFx` = the VFX kit + rarity ladder, `Shared.Incubator` = the
   incubator's Blender clips from `ReplicatedStorage.IncubatorAnims`; `Remotes.HatchShow` lets others watch). Firms clone
   `ServerStorage.Templates.IncubatorV5`. Made in Blender, uploaded by crnuch: docs/EGGS_V5.md.
+  Epic adds lightning. **Mythic and Supreme cut to a stage of their own** (`HatchFx.stage`, built client-only at
+  y = 3000, with the local Lighting changed and restored): Mythic = crimson arena (fissures, braziers, blood moon),
+  Supreme = celestial sanctum (time-stop, screen crack, rainbow pillars, a giant halo, stars + aurora), then a
+  "MYTHIC!" / "SUPREME!" title card with the odds. `Remotes.HatchAnnounce` (EggServer) puts a banner on everyone
+  else's screen for a Mythic / Supreme. Preview any of it with the admin `/hatch mythic food` etc.
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
   Ours: EggHatched, MarkSkinsSeen, AssignClient, PlaceLawyer, MergeLawyers, MergeSelected, CancelLawyerChange,
-  OpenLawyerPicker. Local bindables: `LawyersUI` (open the LAWYERS panel), `SkillsUI` (open Skills).
+  OpenLawyerPicker, HatchShow, HatchAnnounce. Local bindables: `LawyersUI` (open the LAWYERS panel), `SkillsUI` (open Skills).
   (TrainLawyer now upgrades an OFFICE; UpgradeDesk just answers "offices upgrade with their level".)
 - `ServerScriptService`
   - `Server.*` — mr.robe's gameplay (above) + ours: `FirmBuilder`, `DeskService`.
@@ -197,8 +208,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema: **live Studio is v16** (v14 firm areas, v15 minigames, v16 egg zones); **`src/` is v17** (+ the economy
-  pass's `Eggs.RunOpened`, renumbered from its old "v14" when merged — real saves were already at v16). Never reuse a
+- Save schema: **v17, live in Studio and `src/`** since 2026-10-13 (v14 firm areas, v15 minigames, v16 egg zones,
+  v17 the economy pass's `Eggs.RunOpened`, renumbered from its old "v14" when merged). Never reuse a
   migration number that has shipped. `PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`,
   `Zones = { License, Carry, Speed, Carried }`. Before adding any saved field: bump `SCHEMA_VERSION` and add a
   `MIGRATIONS` entry.
@@ -221,6 +232,11 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - The Studio MCP's own `execute_luau` runs in a separate VM: during a playtest, `require(PlayerData).get(player)` from
   it returns nil. Parent a temporary Script in the Server datamodel instead (it shares the game's modules).
 - Stopping a playtest from MCP sometimes doesn't take; ask the user to press Stop.
+- A Client `execute_luau` that is still running when anything changes `CameraType` gets it reset by the tool
+  ("Resetting from Custom back to Scriptable"), so a cutscene's camera breaks or stays stuck. Keep client calls short
+  (trigger, return) and wait in a *Server* call; to move the camera yourself, do it in `task.delay` after the call returns.
+- Studio must be the front window during a playtest you watch: in the background RenderStepped pauses (hatch
+  cameras freeze, the screen goes white). Chat commands: `TextChatService.TextChannels.RBXGeneral:SendAsync(";hatch …")`.
 - Test coins/skins: during play, parent a temporary Script in the *Server* datamodel (it shares PlayerData).
   Never leave test scripts in the edit place.
 - Wrap world edits in ChangeHistoryService recordings so they're one undo step.

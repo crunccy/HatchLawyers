@@ -150,9 +150,12 @@ refreshPrompt()
 -- picture (Shared.ArtAssets.Eggs, tools/shop_icons.py) on the left, one row per rarity and a footer on the right.
 -- Built from Config so it always matches the real odds (players must see the real chances).
 local function percentText(weight: number, total: number): string
-	-- one decimal at most, and none when it's a whole number (58/100 * 100 is 58.000000001 in floating point)
-	local shown = string.format("%.1f", weight / total * 100)
-	return (string.gsub(shown, "%.0$", ""))
+	-- exact odds (required): one decimal at most, none for whole numbers (58/100 * 100 is 58.000000001 in floating
+	-- point) - but two under 1% so Mythic / Supreme show as 0.16% / 0.04% instead of rounding to 0
+	local pct = weight / total * 100
+	local shown = string.format(if pct < 1 then "%.2f" else "%.1f", pct)
+	shown = string.gsub(shown, "0+$", "")
+	return (string.gsub(shown, "%.$", ""))
 end
 local function oddsBoard(surface: SurfaceGui, title: string, weights: { number }, footer: string, footerColor: Color3, image: string?)
 	local root = Instance.new("Frame")
@@ -236,21 +239,44 @@ for n, def in Config.Eggs.Themed do
 		bEgg:PivotTo(home * CFrame.new(0, math.sin(t * 2) * 0.35, 0) * CFrame.Angles(0, t * 0.6, math.sin(t * 1.3) * 0.06))
 	end)
 	local attr = def.Id .. "EggPrice"
+	local board = tMachine:FindFirstChild("OddsBoard")
+	local bGui = board and board:FindFirstChild("SurfaceGui")
+	-- egg tiers: locked until lifetime coins earned (player attribute CoinsEarned) reach def.UnlockEarned
+	local wasUnlocked: boolean? = nil
+	local function drawBoard(unlocked: boolean)
+		if not bGui then
+			return
+		end
+		bGui:ClearAllChildren()
+		local footer, footerColor = def.Tagline, Color3.fromRGB(150, 255, 110)
+		if not unlocked then
+			footer, footerColor = "Unlocks at " .. Formulas.formatCoins(def.UnlockEarned) .. " earned", Color3.fromRGB(255, 120, 120)
+		elseif def.EarnMultiplier and def.EarnMultiplier ~= 1 then
+			footer = def.Id .. " lawyers earn x" .. tostring(def.EarnMultiplier) .. "!" -- e.g. "Pet lawyers earn x1.25!"
+		end
+		oddsBoard(bGui :: SurfaceGui, string.upper(def.Name) .. " ODDS", def.Weights, footer, footerColor, ArtAssets.Eggs[def.Id])
+	end
 	local function refreshThemed()
+		local earned = (player:GetAttribute("CoinsEarned") :: number?) or 0
+		local unlocked = Formulas.eggUnlocked(def.Id, earned)
 		if tPrompt then
-			tPrompt.ActionText = "Hatch a " .. def.Id .. " Lawyer"
-			local price = (player:GetAttribute(attr) :: number?) or Config.Eggs.Price * def.PriceMultiplier
-			tPrompt.ObjectText = Formulas.formatCoins(price) .. " coins"
+			if unlocked then
+				tPrompt.ActionText = "Hatch a " .. def.Id .. " Lawyer"
+				local price = (player:GetAttribute(attr) :: number?) or Config.Eggs.Price * def.PriceMultiplier
+				tPrompt.ObjectText = Formulas.formatCoins(price) .. " coins"
+			else
+				tPrompt.ActionText = "Locked"
+				tPrompt.ObjectText = "Earn " .. Formulas.formatCoins(def.UnlockEarned - earned) .. " more coins"
+			end
+		end
+		if unlocked ~= wasUnlocked then
+			wasUnlocked = unlocked
+			drawBoard(unlocked)
 		end
 	end
 	player:GetAttributeChangedSignal(attr):Connect(refreshThemed)
+	player:GetAttributeChangedSignal("CoinsEarned"):Connect(refreshThemed)
 	refreshThemed()
-	local board = tMachine:FindFirstChild("OddsBoard")
-	local bGui = board and board:FindFirstChild("SurfaceGui")
-	if bGui then
-		bGui:ClearAllChildren()
-		oddsBoard(bGui :: SurfaceGui, string.upper(def.Name) .. " ODDS", def.Weights, def.Tagline, Color3.fromRGB(150, 255, 110), ArtAssets.Eggs[def.Id])
-	end
 end
 
 -------------------------------------------------------------------------------
@@ -725,9 +751,12 @@ end
 
 -- the lawyer standing on `floor` at `height` studs tall, facing `facing` (a direction); returns the model + its
 -- standing CFrame (pivot)
-local function standLawyer(m: Model, floor: Vector3, height: number, facing: Vector3): CFrame
-	local _, size = m:GetBoundingBox()
-	m:ScaleTo(m:GetScale() * height / math.max(size.Y, 0.1))
+-- (height nil = keep its own size: the big Mythic / Supreme lawyers)
+local function standLawyer(m: Model, floor: Vector3, height: number?, facing: Vector3): CFrame
+	if height then
+		local _, size = m:GetBoundingBox()
+		m:ScaleTo(m:GetScale() * height / math.max(size.Y, 0.1))
+	end
 	local box, size2 = m:GetBoundingBox()
 	local pivotAboveFeet = m:GetPivot().Position.Y - (box.Position.Y - size2.Y / 2)
 	local look = Vector3.new(facing.X, 0, facing.Z)
@@ -914,6 +943,9 @@ end
 local function camTo(cf: CFrame, rate: number?)
 	camGoal = cf
 	camRate = rate or 6
+end
+local function camSnap(cf: CFrame)
+	camCur, camGoal = cf, cf
 end
 local function camEnd()
 	if camConn then
@@ -1206,6 +1238,20 @@ local function buildUp(h: any, live: Live, tier: any, fxColor: any, watch: boole
 		HatchFx.post({ cc = { Brightness = if tier.blackhole then -0.3 else -0.12, Contrast = 0.22 }, bloom = { Intensity = 0.4 + tier.bloom * 0.3, Threshold = 1.35 } }, tier.build)
 		HatchFx.shake(1.1 + tier.shake * 0.15, 22, tier.build, 0.15)
 	end
+	-- Epic: purple lightning keeps striking the egg
+	local striking = tier.bolts == true
+	if striking then
+		task.spawn(function()
+			while striking do
+				local from = centre + Vector3.new((math.random() - 0.5) * 9, 11 + math.random() * 3, (math.random() - 0.5) * 9)
+				HatchFx.bolt(from, centre, rgbOf(fxColor), 0.16, 0.28)
+				if watch then
+					HatchFx.shake(1.1, 20, 0.01, 0.18)
+				end
+				task.wait(0.22 + math.random() * 0.2)
+			end
+		end)
+	end
 	local t0 = os.clock()
 	while os.clock() - t0 < tier.build do
 		local a = (os.clock() - t0) / tier.build
@@ -1213,6 +1259,12 @@ local function buildUp(h: any, live: Live, tier: any, fxColor: any, watch: boole
 		live.light.Brightness = 1.2 + a * 1.3
 		live.pulse.target = 1 + a * 0.08
 		RunService.Heartbeat:Wait()
+	end
+	striking = false
+	if tier.bolts then
+		for _ = 1, 3 do
+			HatchFx.bolt(centre + Vector3.new((math.random() - 0.5) * 4, 14, (math.random() - 0.5) * 4), centre, rgbOf(fxColor), 0.3, 0.45)
+		end
 	end
 	return function()
 		if rays then
@@ -1278,21 +1330,25 @@ local function liftDome(inc: Model?, dy: number, seconds: number)
 	end)
 end
 
--- 5) the lawyer rises out of the cradle as a silhouette; returns (model, bring-the-colours-back, stop)
-local function riseLawyer(sp: Spot, skinId: string, height: number, rarityName: string): (Model?, () -> (), () -> ())
+-- 5) the lawyer rises out of the cradle as a silhouette (descend = drops in from above instead); returns (model,
+-- bring-the-colours-back, stop, its height). height nil = its own size. Shared.Puppet poses it, so the moving bits of
+-- the big lawyers (wings, tails, halos, orbiting planets) move here too.
+local function riseLawyer(sp: Spot, skinId: string, height: number?, rarityName: string, descend: boolean?): (Model?, () -> (), () -> (), number)
 	local m = makeCharacter(skinId)
 	if not m then
-		return nil, function() end, function() end
+		return nil, function() end, function() end, height or 4.6
 	end
 	local floorPos = cradle(sp).Position
 	local stand = standLawyer(m, floorPos, height, sp.front)
+	local _, size = m:GetBoundingBox()
 	m.Parent = fxFolder
 	local restore = silhouette(m)
-	local rise = HatchFx.spring(2.4, 0.55, -height * 0.7)
+	local pup = Puppet.new(m)
+	local rise = HatchFx.spring(if descend then 1.6 else 2.4, 0.55, if descend then size.Y * 1.6 else -size.Y * 0.7)
 	rise.target = 0
 	local conn = RunService.Heartbeat:Connect(function(dt)
 		local y = HatchFx.stepSpring(rise, dt)
-		m:PivotTo(stand * CFrame.new(0, y, 0) * CFrame.Angles(0, math.sin(os.clock() * 0.6) * 0.3, 0))
+		pup:apply(Puppet.emptyPose(), stand * CFrame.new(0, y, 0) * CFrame.Angles(0, math.sin(os.clock() * 0.6) * 0.3, 0))
 	end)
 	return m, function()
 		restore()
@@ -1301,7 +1357,7 @@ local function riseLawyer(sp: Spot, skinId: string, height: number, rarityName: 
 		end
 	end, function()
 		conn:Disconnect()
-	end
+	end, size.Y
 end
 
 -- after a hatch: the incubator eases back, closes and rests
@@ -1317,6 +1373,284 @@ local function settleIncubator(inc: Model?)
 	end)
 end
 
+------------------------------------------------------------------ Mythic / Supreme: a cinematic on a stage of their own (v6, 2026-10-13)
+-- (mr.robe: "extreme vfx ... unique animations when hatching"; the idea of cutting away to a scene for the rarest pulls
+-- comes from games like Sol's RNG)
+--   MYTHIC  "Crimson Arena": after the 3rd crack the floor splits with glowing crimson fissures, a red flash, and the egg
+--           is on an obsidian disc under a blood moon - lava ring, fire braziers, embers. Two burning orbs circle and
+--           collide in it, it blows apart in a crimson shockwave dome, "MYTHIC!" slams in, the lawyer rises out of fire.
+--   SUPREME "Ascension": time stops (the colour drains), rainbow starlight streaks into the egg, the screen cracks white,
+--           and the egg floats in a white-gold sanctum under a night of stars and rainbow auroras, rainbow pillars, a
+--           giant halo. Six rainbow orbs spiral in, a slow-motion rainbow blast, "SUPREME!", "1 in N", and the lawyer
+--           descends from the sky.
+local STAGE_HEIGHT = 3000
+local Lighting = game:GetService("Lighting")
+local lightingSaved: { [string]: any }? = nil
+local function setSky(kind: string?)
+	local atm = Lighting:FindFirstChildOfClass("Atmosphere")
+	if kind then
+		if not lightingSaved then
+			lightingSaved = {
+				ClockTime = Lighting.ClockTime, Brightness = Lighting.Brightness, OutdoorAmbient = Lighting.OutdoorAmbient, Ambient = Lighting.Ambient,
+				atm = if atm then { Density = atm.Density, Color = atm.Color, Decay = atm.Decay, Haze = atm.Haze, Glare = atm.Glare } else nil,
+			}
+		end
+		if kind == "mythic" then
+			Lighting.ClockTime = 18.3
+			Lighting.OutdoorAmbient = Color3.fromRGB(130, 50, 50)
+			Lighting.Ambient = Color3.fromRGB(80, 26, 30)
+			if atm then
+				atm.Density, atm.Color, atm.Decay, atm.Haze, atm.Glare = 0.32, Color3.fromRGB(220, 70, 60), Color3.fromRGB(120, 20, 30), 1.6, 0.5
+			end
+		else
+			Lighting.ClockTime = 0
+			Lighting.Brightness = 1.3
+			-- (bright enough that the marble reads white under the night sky)
+			Lighting.OutdoorAmbient = Color3.fromRGB(200, 190, 235)
+			Lighting.Ambient = Color3.fromRGB(150, 140, 200)
+			if atm then
+				atm.Density, atm.Color, atm.Decay, atm.Haze, atm.Glare = 0.1, Color3.fromRGB(120, 110, 200), Color3.fromRGB(40, 30, 90), 0, 0
+			end
+		end
+	elseif lightingSaved then
+		local s = lightingSaved :: any
+		Lighting.ClockTime, Lighting.Brightness, Lighting.OutdoorAmbient, Lighting.Ambient = s.ClockTime, s.Brightness, s.OutdoorAmbient, s.Ambient
+		if atm and s.atm then
+			atm.Density, atm.Color, atm.Decay, atm.Haze, atm.Glare = s.atm.Density, s.atm.Color, s.atm.Decay, s.atm.Haze, s.atm.Glare
+		end
+		lightingSaved = nil
+	end
+end
+
+-- the big title ("MYTHIC!" / "SUPREME!") and the odds under it
+local titleCardLabel = bigText("", UDim2.fromOffset(1000, 170), UDim2.fromScale(0.5, 0.36), WHITE, 9, 12)
+local titleCardScale = Instance.new("UIScale")
+titleCardScale.Parent = titleCardLabel
+local titleCardGrad = Instance.new("UIGradient")
+titleCardGrad.Enabled = false
+titleCardGrad.Parent = titleCardLabel
+local oddsCard = label(gui, "", UDim2.fromOffset(520, 44), UDim2.fromScale(0.5, 0.47), WHITE, 4)
+oddsCard.ZIndex = 12
+oddsCard.Visible = false
+local function oddsText(result: { [string]: any }): string
+	local c = result.chance
+	if typeof(c) ~= "number" or c <= 0 then
+		return ""
+	end
+	local n = math.floor(100 / c + 0.5)
+	local s = tostring(n):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	return "1 in " .. s
+end
+local function titleCard(text: string, color: Color3, rainbow: boolean, odds: string)
+	titleCardLabel.Text = text
+	titleCardLabel.TextColor3 = if rainbow then WHITE else color
+	titleCardGrad.Enabled = rainbow
+	if rainbow then
+		titleCardGrad.Color = HatchFx.RAINBOW
+	end
+	titleCardLabel.Visible = true
+	titleCardScale.Scale = 3
+	titleCardLabel.Rotation = -6
+	tween(titleCardScale, 0.35, { Scale = 1 }, Enum.EasingStyle.Back)
+	tween(titleCardLabel, 0.5, { Rotation = 0 }, Enum.EasingStyle.Elastic)
+	oddsCard.Text = odds
+	oddsCard.TextColor3 = if rainbow then Color3.fromRGB(255, 240, 200) else color:Lerp(WHITE, 0.4)
+	oddsCard.Visible = odds ~= ""
+	task.spawn(function()
+		local t0 = os.clock()
+		while titleCardLabel.Visible do
+			local t = os.clock() - t0
+			if rainbow then
+				titleCardGrad.Offset = Vector2.new(math.sin(t * 1.5) * 0.5, 0)
+			end
+			titleCardScale.Scale = 1 + 0.03 * math.sin(t * 4)
+			RunService.Heartbeat:Wait()
+		end
+	end)
+end
+local function hideTitleCard()
+	titleCardLabel.Visible = false
+	oddsCard.Visible = false
+end
+
+-- a white crack across the screen (the "breakthrough" hit before the Supreme scene)
+local function screenCrack()
+	local cam = workspace.CurrentCamera
+	local vs = cam.ViewportSize
+	local holder = Instance.new("Frame")
+	holder.Size = UDim2.fromScale(1, 1)
+	holder.BackgroundTransparency = 1
+	holder.ZIndex = 11
+	holder.Parent = gui
+	local cx, cy = vs.X * 0.5, vs.Y * 0.45
+	for i = 1, 11 do
+		local ang = (i - 1) / 11 * math.pi * 2 + math.random() * 0.4
+		local x, y = cx, cy
+		for s = 1, 5 do
+			ang += (math.random() - 0.5) * 0.6
+			local len = vs.Y * (0.08 + math.random() * 0.08)
+			local x2, y2 = x + math.cos(ang) * len, y + math.sin(ang) * len
+			local f = Instance.new("Frame")
+			f.AnchorPoint = Vector2.new(0.5, 0.5)
+			f.Position = UDim2.fromOffset((x + x2) / 2, (y + y2) / 2)
+			f.Size = UDim2.fromOffset(len + 2, math.max(2, 7 - s))
+			f.Rotation = math.deg(math.atan2(y2 - y, x2 - x))
+			f.BackgroundColor3 = WHITE
+			f.BorderSizePixel = 0
+			f.ZIndex = 11
+			f.Parent = holder
+			x, y = x2, y2
+		end
+	end
+	task.delay(0.7, function()
+		for _, f in holder:GetChildren() do
+			tween(f, 0.3, { BackgroundTransparency = 1 })
+		end
+		task.wait(0.35)
+		holder:Destroy()
+	end)
+end
+
+-- the scene itself. `h` / `live`: the cracked egg, still at the incubator. Returns (lawyer model, stop, its height).
+local function cinema(kind: string, sp: Spot, h: any, live: Live, tier: any, fxColor: any, rarityName: string, result: { [string]: any }, accent: Color3): (Model?, () -> (), number)
+	local col = rgbOf(fxColor)
+	local floorY = if sp.inc then sp.inc:GetPivot().Position.Y + 0.03 else cradle(sp).Position.Y
+	-- 1) at the incubator: the floor splits (Mythic) / time stops and the stars pull in (Supreme)
+	if kind == "mythic" then
+		live.jitter = 0.22
+		local c = cradle(sp).Position
+		local fis = HatchFx.fissures(Vector3.new(c.X, floorY, c.Z), col, 9, 10, 1.0)
+		HatchFx.shake(2.6, 18, 0.25, 0.3, 0.8)
+		HatchFx.post({ cc = { TintColor = Color3.fromRGB(255, 165, 165), Contrast = 0.3 }, bloom = { Intensity = 0.8, Threshold = 1.25 } }, 0.6)
+		hatchCue:Fire("beat", 4)
+		task.wait(1.15)
+		flash.BackgroundColor3 = Color3.fromRGB(200, 20, 30)
+		tween(flash, 0.12, { BackgroundTransparency = 0 })
+		task.wait(0.14)
+		fis.stop(0)
+	else
+		stopLive(live, h, sp)
+		HatchFx.clearShakes()
+		HatchFx.post({ cc = { Saturation = -1, Contrast = 0.3 } }, 0.25)
+		task.wait(0.4)
+		local centre = h.shell.Position
+		local imp = HatchFx.implode(centre, HatchFx.RAINBOW, 16, 300)
+		local spinT = os.clock()
+		local cracking = true
+		task.spawn(function() -- the cracks run through the rainbow
+			while cracking do
+				local k = math.floor((os.clock() - spinT) * 8) % #HatchFx.RAINBOW_LIST + 1
+				for _, cr in h.cracks do
+					cr.Color = HatchFx.RAINBOW_LIST[k]
+				end
+				RunService.Heartbeat:Wait()
+			end
+		end)
+		HatchFx.shake(1.2, 25, 1.2, 0.2)
+		task.wait(1.5)
+		cracking = false
+		imp.stop()
+		screenCrack()
+		hatchCue:Fire("beat", 5)
+		task.wait(0.5)
+		flash.BackgroundColor3 = WHITE
+		tween(flash, 0.12, { BackgroundTransparency = 0 })
+		task.wait(0.14)
+	end
+	stopLive(live, h, sp)
+	-- 2) the cut: the stage, far above the map; the egg floats over its centre
+	local c0 = cradle(sp).Position
+	local base = Vector3.new(c0.X, STAGE_HEIGHT, c0.Z)
+	local origin = CFrame.lookAt(base, base + sp.front)
+	local st = HatchFx.stage(kind, origin)
+	setSky(kind)
+	HatchFx.post({ cc = { Saturation = 0.15, Contrast = 0.12, TintColor = WHITE, Brightness = 0 }, dof = { FarIntensity = 0 }, bloom = { Intensity = 0.7, Threshold = 1.3 } }, 0)
+	local stageSp: Spot = { inc = nil, front = sp.front, floor = origin * CFrame.new(0, 0.55, 0) } -- (the centre disc's top, HatchFx.stage)
+	local lift = 2.2
+	h.model:PivotTo(stageSp.floor * CFrame.new(0, HOVER + lift, 0))
+	local spin = RunService.Heartbeat:Connect(st.spin)
+	camSnap(shot(stageSp, 24, 9, 4))
+	camTo(shot(stageSp, 13, 4.5, HOVER + lift + 1.4), 1.2)
+	tween(flash, 0.7, { BackgroundTransparency = 1 })
+	hatchCue:Fire("beat", 6)
+	-- 3) build-up: the egg throbs; orbs circle and collide in it; god rays
+	local liveStage = liveEgg({ inc = nil, front = sp.front, floor = stageSp.floor * CFrame.new(0, lift, 0) }, h)
+	liveStage.jitter = 0.08
+	for _, cr in h.cracks do
+		cr.Transparency = 0
+		cr.Color = col
+	end
+	local centre = (stageSp.floor * CFrame.new(0, HOVER + lift + HATCH_EGG * 0.5, 0)).Position
+	local buildT = if kind == "mythic" then 2.4 else 3.0
+	local rays = HatchFx.rays(centre, fxColor, if kind == "mythic" then 14 else 20, 16, buildT)
+	local orbColors = if kind == "mythic" then { Color3.fromRGB(229, 57, 53), Color3.fromRGB(255, 140, 40) } else HatchFx.RAINBOW_LIST
+	task.spawn(HatchFx.orbs, centre, orbColors, if kind == "mythic" then 8 else 11, buildT, 1.5)
+	local ringT = task.spawn(function()
+		for i = 1, 6 do
+			HatchFx.ring(CFrame.new(centre - Vector3.new(0, HATCH_EGG * 0.5 + lift - 0.2, 0)), 6 + i, if kind == "mythic" then col else HatchFx.RAINBOW_LIST[i], 0.6)
+			task.wait(buildT / 6)
+		end
+	end)
+	HatchFx.shake(1.0, 22, buildT, 0.2)
+	HatchFx.post({ cc = { Brightness = -0.1, Contrast = 0.25 } }, buildT)
+	local t0 = os.clock()
+	while os.clock() - t0 < buildT do
+		local a = (os.clock() - t0) / buildT
+		liveStage.jitter = 0.08 + a * 0.25
+		liveStage.pulse.target = 1 + a * 0.12
+		RunService.Heartbeat:Wait()
+	end
+	task.cancel(ringT)
+	rays.stop(0.2)
+	-- 4) the burst
+	stopLive(liveStage, h, { inc = nil, front = sp.front, floor = stageSp.floor * CFrame.new(0, lift, 0) })
+	hatchCue:Fire("burst", result.rarity or 1, rarityName)
+	flash.BackgroundColor3 = accent:Lerp(WHITE, 0.6)
+	flash.BackgroundTransparency = 0
+	tween(flash, 0.9 + tier.slow, { BackgroundTransparency = 1 })
+	HatchFx.post({ cc = { Brightness = 0.3 }, bloom = { Intensity = 1.2 } }, 0)
+	HatchFx.post({ cc = { Brightness = 0, Contrast = 0.12 }, bloom = { Intensity = 0.7 } }, 1.2 + tier.slow)
+	local floorCF = CFrame.new((stageSp.floor).Position)
+	for r = 1, 7 do
+		local c = if kind == "mythic" then (if r % 2 == 0 then Color3.fromRGB(255, 140, 40) else col) else HatchFx.RAINBOW_LIST[(r - 1) % 6 + 1]
+		task.delay((r - 1) * 0.07, HatchFx.ring, floorCF * CFrame.new(0, 0.3 + r * 0.1, 0), 12 + r * 5, c, 0.8 + r * 0.08, 1.4 + r * 0.2)
+	end
+	HatchFx.dome(centre, if kind == "mythic" then 22 else 30, col, 1.1)
+	HatchFx.sparks(centre, fxColor, 120, 50, 1.8)
+	HatchFx.confetti(centre, tier.confetti * 2, 1.4)
+	HatchFx.coins(centre, tier.coins * 2)
+	pcall(Effects.burst, centre, tier.burst or "legendary", fxColor)
+	HatchFx.light(centre, col, 40, 3, 2)
+	HatchFx.shake(tier.shake + 1, 13, 0.01, 1.2)
+	task.spawn(HatchFx.breakApart, h, tier.take, stageSp.floor * CFrame.new(0, HOVER + lift, 0), tier.slow + 0.3)
+	task.wait(0.35)
+	titleCard(if kind == "mythic" then "MYTHIC!" else "SUPREME!", col, kind == "supreme", oddsText(result))
+	task.wait(0.6 + tier.slow * 0.6)
+	-- 5) the lawyer, full size: out of a fire vortex (Mythic) / down from the sky in a beam (Supreme)
+	if kind == "mythic" then
+		local imp = HatchFx.implode(stageSp.floor.Position + Vector3.new(0, 3, 0), Effects.FIRE, 7, 160)
+		task.delay(1.8, imp.stop)
+	else
+		HatchFx.pillar(stageSp.floor.Position, HatchFx.RAINBOW, 200, 9, 2.5)
+	end
+	local m, colour, stop, height = riseLawyer(stageSp, result.skinId, nil, rarityName, kind == "supreme")
+	camTo(shot(stageSp, height * 1.55 + 6, height * 0.55, height * 0.42), 1.6)
+	task.wait(1.1)
+	hideTitleCard()
+	colour()
+	flash.BackgroundColor3 = WHITE
+	flash.BackgroundTransparency = 0.15
+	tween(flash, 0.5, { BackgroundTransparency = 1 })
+	local mid = stageSp.floor.Position + Vector3.new(0, height * 0.5, 0)
+	HatchFx.sparks(mid, fxColor, 60, 30, 1.4)
+	pcall(Effects.burst, mid, tier.burst or "legendary", fxColor)
+	HatchFx.dome(mid, 14, col, 0.8)
+	HatchFx.shake(2, 12, 0.01, 0.5)
+	return m, function()
+		stop()
+		spin:Disconnect()
+	end, height
+end
 ------------------------------------------------------------------ the owner's hatch
 local hatchSpot: Spot? = nil
 local disabledPrompts: { ProximityPrompt } = {}
@@ -1379,36 +1713,43 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 		crack(h, live, i, fxColor, eggColor, true)
 	end)
 	eggTitle.Visible = false
-	-- 4) build-up + burst
-	camTo(shot(sp, 7.2, 3.9, HOVER + HATCH_EGG * 0.5), 2.5)
-	local endBuild = buildUp(h, live, tier, fxColor, true)
-	stopLive(live, h, sp)
-	endBuild()
-	hatchCue:Fire("burst", result.rarity or 1, rarityName)
-	flash.BackgroundColor3 = accent:Lerp(WHITE, 0.6)
-	flash.BackgroundTransparency = 0.05
-	tween(flash, 0.6 + tier.slow, { BackgroundTransparency = 1 })
-	HatchFx.post({ cc = { Brightness = 0.25 }, bloom = { Intensity = 0.5 + tier.bloom * 0.4 } }, 0)
-	HatchFx.post({ cc = { Brightness = 0, Contrast = 0.08, TintColor = WHITE }, bloom = HatchFx.postBloomBase() }, 0.9 + tier.slow)
-	burst(sp, h, tier, fxColor, true)
-	liftDome(sp.inc, 4, 0.6)
-	camTo(shot(sp, if tier.fancy then 12.5 else 10.5, 4.4, 2.6), if tier.slow > 0 then 1.5 else 3)
-	task.wait(0.25 + tier.slow * 0.6)
-	-- 5) the lawyer
-	local height = if tier.fancy then 5.4 else 4.6
-	local m, colour, stop = riseLawyer(sp, result.skinId, height, rarityName)
-	camTo(shot(sp, if tier.fancy then 11 else 9.2, 3.6, height * 0.28), 3)
-	task.wait(0.9)
-	colour()
-	flash.BackgroundColor3 = WHITE
-	flash.BackgroundTransparency = 0.2
-	tween(flash, 0.45, { BackgroundTransparency = 1 })
-	if m then
-		local mid = cradle(sp).Position + Vector3.new(0, height * 0.5, 0)
-		HatchFx.sparks(mid, fxColor, 24, 20)
-		if tier.fancy then
-			pcall(Effects.burst, mid, "legendary", fxColor)
-			HatchFx.shake(1.5, 12, 0.01, 0.4)
+	local m: Model?, stop: () -> (), height: number = nil, function() end, 4.6
+	if tier.cinema then
+		-- Mythic / Supreme: their own stage (cinema above)
+		m, stop, height = cinema(tier.cinema, sp, h, live, tier, fxColor, rarityName, result, accent)
+	else
+		-- 4) build-up + burst
+		camTo(shot(sp, 7.2, 3.9, HOVER + HATCH_EGG * 0.5), 2.5)
+		local endBuild = buildUp(h, live, tier, fxColor, true)
+		stopLive(live, h, sp)
+		endBuild()
+		hatchCue:Fire("burst", result.rarity or 1, rarityName)
+		flash.BackgroundColor3 = accent:Lerp(WHITE, 0.6)
+		flash.BackgroundTransparency = 0.05
+		tween(flash, 0.6 + tier.slow, { BackgroundTransparency = 1 })
+		HatchFx.post({ cc = { Brightness = 0.25 }, bloom = { Intensity = 0.5 + tier.bloom * 0.4 } }, 0)
+		HatchFx.post({ cc = { Brightness = 0, Contrast = 0.08, TintColor = WHITE }, bloom = HatchFx.postBloomBase() }, 0.9 + tier.slow)
+		burst(sp, h, tier, fxColor, true)
+		liftDome(sp.inc, 4, 0.6)
+		camTo(shot(sp, if tier.fancy then 12.5 else 10.5, 4.4, 2.6), if tier.slow > 0 then 1.5 else 3)
+		task.wait(0.25 + tier.slow * 0.6)
+		-- 5) the lawyer
+		height = if tier.fancy then 5.4 else 4.6
+		local colour
+		m, colour, stop = riseLawyer(sp, result.skinId, height, rarityName)
+		camTo(shot(sp, if tier.fancy then 11 else 9.2, 3.6, height * 0.28), 3)
+		task.wait(0.9)
+		colour()
+		flash.BackgroundColor3 = WHITE
+		flash.BackgroundTransparency = 0.2
+		tween(flash, 0.45, { BackgroundTransparency = 1 })
+		if m then
+			local mid = cradle(sp).Position + Vector3.new(0, height * 0.5, 0)
+			HatchFx.sparks(mid, fxColor, 24, 20)
+			if tier.fancy then
+				pcall(Effects.burst, mid, "legendary", fxColor)
+				HatchFx.shake(1.5, 12, 0.01, 0.4)
+			end
 		end
 	end
 	topName.Text = skin.Name
@@ -1429,6 +1770,8 @@ end
 local function hatchCleanup()
 	camEnd()
 	showAfterHatch()
+	setSky(nil)
+	hideTitleCard()
 	HatchFx.postEnd(0.35)
 	tween(vignette, 0.3, { BackgroundTransparency = 1 })
 	fxFolder:ClearAllChildren()
@@ -1442,6 +1785,87 @@ local function hatchCleanup()
 	end
 end
 
+------------------------------------------------------------------ the server-wide banner for a Mythic / Supreme (v6, 2026-10-13)
+-- Eggs.EggServer fires Remotes.HatchAnnounce to everyone when someone hatches a Mythic or Supreme: a banner slides
+-- down from the top ("mr_blox174 hatched a SUPREME Celestial!", the odds under it; rainbow for Supreme).
+local HatchAnnounce = Remotes:WaitForChild("HatchAnnounce", 15) :: RemoteEvent?
+local bannerGui = Instance.new("ScreenGui")
+bannerGui.Name = "HatchBanner"
+bannerGui.ResetOnSpawn = false
+bannerGui.IgnoreGuiInset = true
+bannerGui.DisplayOrder = 50 -- (over every window: Rewards / FirmStageUp are 40)
+bannerGui.Parent = player:WaitForChild("PlayerGui")
+local banner = Instance.new("Frame")
+banner.AnchorPoint = Vector2.new(0.5, 0)
+banner.Position = UDim2.new(0.5, 0, 0, -140)
+banner.Size = UDim2.fromOffset(760, 104)
+banner.BackgroundColor3 = Color3.fromRGB(26, 18, 40)
+banner.BackgroundTransparency = 0.12
+banner.Parent = bannerGui
+corner(banner, 0.25)
+local bannerStroke = Instance.new("UIStroke")
+bannerStroke.Thickness = 5
+bannerStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+bannerStroke.Parent = banner
+local bannerStrokeGrad = Instance.new("UIGradient")
+bannerStrokeGrad.Parent = bannerStroke
+local bannerText = label(banner, "", UDim2.new(1, -30, 0, 54), UDim2.new(0.5, 0, 0, 34), WHITE, 4)
+bannerText.Font = UIFonts.Title
+local bannerTextGrad = Instance.new("UIGradient")
+bannerTextGrad.Parent = bannerText
+local bannerOdds = label(banner, "", UDim2.new(1, -30, 0, 28), UDim2.new(0.5, 0, 0, 80), Color3.fromRGB(255, 240, 200), 3)
+local bannerScale = Instance.new("UIScale")
+bannerScale.Parent = banner
+local bannerQueue: { any } = {}
+local bannerBusy = false
+local function playBanner(i: any)
+	if typeof(i.rarity) ~= "number" or not Config.Eggs.Skins[i.rarity] then
+		return
+	end
+	local rarityName, rarityColor = rarityInfo(i.rarity)
+	local supreme = rarityName == "Supreme"
+	bannerText.Text = string.format("%s hatched a %s %s!", tostring(i.name or "Someone"), string.upper(rarityName), tostring(i.lawyer or "lawyer"))
+	bannerText.TextColor3 = if supreme then WHITE else rarityColor
+	bannerTextGrad.Enabled = supreme
+	bannerTextGrad.Color = HatchFx.RAINBOW
+	bannerStrokeGrad.Color = if supreme then HatchFx.RAINBOW else ColorSequence.new(rarityColor)
+	bannerOdds.Text = oddsText(i)
+	bannerScale.Scale = math.clamp(workspace.CurrentCamera.ViewportSize.X / 900, 0.55, 1)
+	tween(banner, 0.45, { Position = UDim2.new(0.5, 0, 0, 18) }, Enum.EasingStyle.Back)
+	hatchCue:Fire("burst", i.rarity or 1, rarityName)
+	local t0 = os.clock()
+	while os.clock() - t0 < 4.6 do
+		local t = os.clock() - t0
+		bannerTextGrad.Offset = Vector2.new(math.sin(t * 1.4) * 0.5, 0)
+		bannerStrokeGrad.Rotation = (t * 90) % 360
+		RunService.Heartbeat:Wait()
+	end
+	tween(banner, 0.35, { Position = UDim2.new(0.5, 0, 0, -140) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+	task.wait(0.4)
+end
+local function showBanner(info: any)
+	table.insert(bannerQueue, info)
+	if bannerBusy then
+		return
+	end
+	bannerBusy = true
+	while #bannerQueue > 0 do
+		-- (a bad message must not jam the queue for the rest of the session)
+		local ok, err = pcall(playBanner, table.remove(bannerQueue, 1))
+		if not ok then
+			warn("[Eggs] hatch banner: " .. tostring(err))
+			banner.Position = UDim2.new(0.5, 0, 0, -140)
+		end
+	end
+	bannerBusy = false
+end
+if HatchAnnounce then
+	HatchAnnounce.OnClientEvent:Connect(function(info)
+		if typeof(info) == "table" and info.userId ~= player.UserId then
+			task.spawn(showBanner, info)
+		end
+	end)
+end
 ------------------------------------------------------------------ everyone else's view (no camera, no words)
 local showing: { [Model]: boolean } = {}
 local function playShow(info: { [string]: any })
@@ -1661,6 +2085,11 @@ EggHatched.OnClientEvent:Connect(function(result)
 			gui.Enabled = true
 			if result.reason == "full" then
 				showToast("Too many lawyers! Merge some at the Lawyer Merger")
+			elseif result.reason == "locked" then
+				local def = Formulas.themedEgg(result.egg)
+				local earned = (player:GetAttribute("CoinsEarned") :: number?) or 0
+				local need = (result.need or (def and def.UnlockEarned) or 0) - earned
+				showToast("Earn " .. Formulas.formatCoins(math.max(need, 0)) .. " more coins to unlock!") -- short: one scaled line
 			else
 				showToast("Need " .. Formulas.formatCoins(result.price or Config.Eggs.Price) .. " coins!")
 			end

@@ -96,10 +96,57 @@ function Formulas.themedEgg(id: string?): any
 	return nil
 end
 
--- Themed egg price: its PriceMultiplier x the Briefcase Egg's price at the same opened count.
-function Formulas.themedEggPrice(id: string, opened: number): number
+-- Egg tiers: a themed egg's machine works once the player's lifetime coins earned (Stats.CoinsEarned) reach its
+-- UnlockEarned. The Briefcase Egg (id nil) and eggs without UnlockEarned are always open.
+function Formulas.eggUnlocked(id: string?, earned: number?): boolean
 	local def = Formulas.themedEgg(id)
-	return math.floor(Formulas.eggPrice(opened) * (if def then def.PriceMultiplier else 1))
+	return def == nil or def.UnlockEarned == nil or (earned or 0) >= def.UnlockEarned
+end
+
+-- Themed egg price: its PriceMultiplier x the Briefcase Egg's price at the same opened count.
+function Formulas.themedEggPrice(id: string, opened: number, prestige: number?): number
+	local def = Formulas.themedEgg(id)
+	return math.floor(Formulas.eggPrice(opened, prestige) * (if def then def.PriceMultiplier else 1))
+end
+
+-- Luck: the Config.Eggs.LuckRarities chances x luck, paid for out of the LuckPaidBy rarities (proportionally) so
+-- the total stays the same and every other rarity - Mythic, Supreme - keeps its exact odds. When the payers don't
+-- have enough weight, the boost is capped at all of it. luck <= 1 returns the weights unchanged.
+function Formulas.luckyWeights(weights: { number }, luck: number?): { number }
+	local l = luck or 1
+	if l <= 1 then
+		return weights
+	end
+	local boosted, payers = {}, {}
+	for _, id in Config.Eggs.LuckRarities or {} do
+		boosted[id] = true
+	end
+	for _, id in Config.Eggs.LuckPaidBy or {} do
+		payers[id] = true
+	end
+	local extra, available = 0, 0
+	for index, tier in Config.Eggs.Skins do
+		local w = weights[index] or 0
+		if boosted[tier.Id] then
+			extra += w * (l - 1)
+		elseif payers[tier.Id] then
+			available += w
+		end
+	end
+	if extra <= 0 or available <= 0 then
+		return weights
+	end
+	local give = math.min(extra, available)
+	local out = table.clone(weights)
+	for index, tier in Config.Eggs.Skins do
+		local w = weights[index] or 0
+		if boosted[tier.Id] then
+			out[index] = w + w * (l - 1) * (give / extra)
+		elseif payers[tier.Id] then
+			out[index] = w - w * (give / available)
+		end
+	end
+	return out
 end
 
 -- Payout bonus a lawyer gets from the skin they wear (0 with no skin). (Old skin system.)
@@ -110,15 +157,18 @@ end
 
 -- Hatched lawyers ------------------------------------------------------------------
 
--- A lawyer's earning power: rarity Earn x star multiplier (multiplies every case payout).
+-- A lawyer's earning power: rarity Earn x star multiplier x the EarnMultiplier of the egg that hatches it (egg
+-- tiers: later themed eggs hatch stronger lawyers; Briefcase lawyers x1). Multiplies every case payout.
 function Formulas.lawyerEarn(id: string?, stars: number?): number
 	local def = Formulas.getSkin(id)
 	local rarity = def and Config.Eggs.Skins[def.Rarity]
 	local starEarn = Config.Lawyers.StarEarn[math.clamp(stars or 1, 1, #Config.Lawyers.StarEarn)]
-	return (if rarity then rarity.Earn else 1) * starEarn
+	local egg = def and Formulas.themedEgg(def.Egg)
+	local eggEarn = if egg and egg.EarnMultiplier then egg.EarnMultiplier else 1
+	return (if rarity then rarity.Earn else 1) * starEarn * eggEarn
 end
 
--- "Gold Bow Tie Barrister" etc.
+-- "Gold Bow Tie Benny" etc.
 function Formulas.lawyerName(id: string?, stars: number?): string
 	local def = Formulas.getSkin(id)
 	local prefix = Config.Lawyers.StarNames[stars or 1] or ""
@@ -138,8 +188,10 @@ function Formulas.officeTier(level: number): number
 end
 
 -- Price of the next egg after `opened` paid eggs.
-function Formulas.eggPrice(opened: number): number
-	return math.floor(Config.Eggs.Price * (Config.Eggs.PriceGrowth or 1) ^ math.max(opened, 0))
+-- opened = eggs opened since the last Supreme (Eggs.RunOpened); prestige = Supreme level (Config.Eggs.PrestigePriceScale)
+function Formulas.eggPrice(opened: number, prestige: number?): number
+	return math.floor(Config.Eggs.Price * (Config.Eggs.PriceGrowth or 1) ^ math.max(opened, 0)
+		* (Config.Eggs.PrestigePriceScale or 1) ^ (prestige or 0))
 end
 
 -- Adds every source together, then clamps to Config.Caps.
@@ -379,6 +431,14 @@ end
 -- Prestige: permanent payout multiplier (applied on top of capped buffs).
 function Formulas.prestigeMultiplier(level: number?): number
 	return 1 + (level or 0) * Config.Prestige.PayoutBonusPerLevel
+end
+
+-- What going Supreme from `level` takes: coins (spent) and offices with a lawyer working in them.
+function Formulas.prestigeRequirement(level: number?): (number, number)
+	local p = Config.Prestige
+	local l = level or 0
+	local offices = math.min(p.RequiredDesks, (p.OfficesBase or p.RequiredDesks) + (p.OfficesPerLevel or 0) * l)
+	return math.floor((p.CostBase or 0) * (p.CostGrowth or 1) ^ l), offices
 end
 
 local SUFFIXES = { "", "K", "M", "B", "T", "Qa", "Qi" }

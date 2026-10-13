@@ -13,14 +13,17 @@
 -- attribute lists every stop's floor height; FirmFeatures runs both.
 
 local ServerStorage = game:GetService("ServerStorage")
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Config")) :: any
 
 local FirmStages = {}
 
 FirmStages.NAMES = { "Dingy Shack", "Storefront Practice", "Main Street Firm", "Glass Office", "Corporate HQ", "Supreme Tower" }
 
--- stage from the firm's office segments; any prestige unlocks the Supreme Tower for good
+-- stage from the firm's office segments; Supreme level Config.Prestige.TowerLevel unlocks the Supreme Tower for good
+-- (economy pass: the first Supreme is ~45 min in now - "any prestige" would skip the other stages every run)
 function FirmStages.stageFor(segments: number, prestigeLevel: number?): number
-	if (prestigeLevel or 0) > 0 then
+	local towerAt = ((Config :: any).Prestige and (Config :: any).Prestige.TowerLevel) or 1
+	if (prestigeLevel or 0) >= towerAt then
 		return 6
 	elseif segments >= 9 then
 		return 5

@@ -159,10 +159,19 @@ crimson inferno, Supreme celestial rainbow with a halo; plus the merge-star Gold
 - **Face:** two states. Sleepy has the lids half down; awake has the lids up and the mouth open. Reading glasses and
   a wooden gavel `#8A5A32`.
 
-## Epic, Mythic and Supreme (to build, 2026-10-12)
-In `Config.SkinCatalog` already (Ids are saved: never rename); each needs `ReplicatedStorage.SkinModels.<Id>`. Until
-then they show the blocky fallback. These are concepts, not specs: build them however looks best, keeping each
-tier clearly cooler than the last.
+## Epic, Mythic and Supreme (built 2026-10-13)
+All 18 are live in `ReplicatedStorage.SkinModels.<Id>` (Ids are saved: never rename). Built in Blender as brick Parts:
+`tools/blender/lawyers_top.py` (kit: `tools/blender/brickkit.py`, same frame as BrickKit.lua) → `tools/zones/lawyers_top.json`
+→ `tools/zones/BuildLawyersTop.lua`; previews in `art/lawyers/top_preview_{epic,mythic,supreme}.png`.
+- **Size (user's call 2026-10-13):** Mythic and Supreme are bigger than Legendary and more complex: Mythic is built
+  **1.3×** (7-9 studs tall, 77-187 parts), Supreme **1.6×** (10-13 studs, 93-186 parts); Epic is normal size (43-62 parts).
+  This replaces the ~85 / ~95 brick targets in the table above.
+- **Moving bits:** wings flap, tails sway, planets orbit, halos spin, storm clouds bob (Fx attributes, played by
+  `Shared.Puppet`; see `BuildLawyersTop.lua` for the attribute list).
+- To change one: edit its function in `lawyers_top.py`, run it in Blender, serve the JSON on :8766 and run the builder
+  (the old model goes to `ServerStorage.RetiredSkinModels`).
+
+The concepts they were built from:
 
 Display name first, saved Id in brackets.
 

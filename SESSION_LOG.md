@@ -5,9 +5,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-13:** the 18 Epic / Mythic / Supreme lawyers (docs/CHARACTER_STYLE.md), built in Blender as brick Parts, Mythic + Supreme bigger, with extreme VFX + unique hatch cinematics; then the src -> Studio push of the 7 rarities + economy pass. Don't touch SkinModels / Effects / Puppet / the Eggs hatch / Config rarities until this is removed.
+- (nothing claimed)
 
 ## Open items
+- [ ] **Eye-check the economy-pass push in a playtest** (pushed 2026-10-13, only "loads with no errors" + hatches
+      checked): (1) locked egg prompt "Locked / Earn X more coins", toast, odds board "Unlocks at X earned"; (2) a Pet
+      lawyer's "Earns x" includes the x1.25 (hatch screen, LAWYERS panel, name tag); (3) the Supreme screen's cost +
+      office count, eggs cheap again after a Supreme; (4) UPGRADE MAX / UPGRADE ALL; (5) LAWYERS panel at phone size
+      (Device emulator, landscape) incl. the white Supreme pill; (6) desktop size unchanged.
+- [ ] **Eye-check the Mythic / Supreme cinematics in a real window + at phone size**, and a real Mythic / Supreme
+      hatch with a second player in the server (the banner was only tested with faked messages). The 10-13 stud
+      Supreme lawyers at desks: check name tags, the client standing across the desk, and the Merger / LAWYERS previews.
 - [ ] **Eggs v5: eye-check in a real window.** Watch a few real hatches (all rarities, golden), check a phone-sized window, have a second player watch one. Delete `ServerStorage.Old_EggModels_v4` once happy.
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
@@ -35,7 +43,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
       before). Put them in the zones economy sim run (item below) and eye-check the briefcases on a few avatars.
 - [x] `PlotService` CharacterAdded leak - fixed 2026-10-12 (entry below).
 - [x] **Odds boards for Lucky Eggs owners** - done 2026-10-12: each zone's board shows the boosted odds to pass
-      owners (entry below). When the 7 rarities ship, check the board's Rare + Legendary boost matches EggServer's.
+      owners (entry below). 7 rarities shipped 2026-10-13: board and EggServer both use `Formulas.luckyWeights`.
 - [x] **Egg zones: one design, built** — the walled lane (docs/ZONES_REFERENCE.md), all six zones + bosses, 2026-10-12
       (entries below; user: "make the other 4 zones and their bosses").
 - [ ] **Egg tiers vs zones overlap** (decide): the economy pass locks themed eggs by lifetime coins
@@ -46,31 +54,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
       `claude/sharp-dirac-02vssj`, so new cloud sessions may start from that old branch). `ss-rob` isn't an admin.
 - [ ] **Re-run the economy sim for the zones** (carry 1/3/5 per trip instead of spamming the machine, golden eggs,
       License/Bag/Shoes costs, minigame rewards — all first guesses in `Config.Zones` / `Config.Minigames`).
-- [ ] **Build the 18 Epic / Mythic / Supreme lawyer models** (local session; concepts + ladder in
-      docs/CHARACTER_STYLE.md → "Epic, Mythic and Supreme"). Ids are in `Config.SkinCatalog`; each needs
-      `ReplicatedStorage.SkinModels.<Id>`. Do this before pushing the new rarities, or hatches show the blocky fallback.
-- [ ] **Before pushing the 7 rarities to Studio, grep Studio-only scripts for rarity NUMBERS** (Epic is now 4,
-      Legendary 5): `Eggs.Skins[4]`, `Rarity == 4`, `rarity == 4`, `"Legendary"` — in SkinLook, DeskLook, Puppet,
-      Guide, Hud, Goals, BadgeAwards, RewardsService, SkillService, CourtService, DeskService, and whatever listens to
-      `ReplicatedStorage.HatchCue` (it now also gets the rarity NAME as a 3rd argument; switch it to that).
-      Also check the Lawyers panel's white Supreme pill reads well (Config.RarityColors.Supreme is white).
-- [ ] **Push `src/` to Studio: economy pass + egg tiers + 7 rarities + phone LAWYERS panel** (2026-10-12 entries
-      below). Since the 2026-10-12 sync these `src/` files already contain every live Studio change too (3-way
-      merged), so pushing them no longer wipes the zones/incubators: `Config`, `Formulas` (Shared); `PlayerData`
-      (**schema v17**), `LawyerService`, `PrestigeService`, `EggServer` (server); `Eggs`, `Lawyers`, `Supreme` (new,
-      not in Studio yet) (StarterPlayerScripts); `Effects` (Shared). Re-export `studio/` first and diff each file
-      against its twin — anything changed in Studio since 2026-10-12 needs merging. Then, in a playtest:
-      (1) locked egg: prompt says "Locked / Earn X more coins", pressing it toasts, odds board says "Unlocks at X
-      earned"; with test coins (`Stats.CoinsEarned` ≥ 1e7) the Pet Egg unlocks live and its board says "Pet lawyers
-      earn x1.25!"; (2) a Pet lawyer's "Earns x" in the hatch screen / LAWYERS panel / name tag includes the x1.25;
-      (3) Supreme ladder: cost and office count on the Supreme screen, eggs cheap again after it;
-      (4) UPGRADE MAX / UPGRADE ALL; (5) LAWYERS panel at phone size (Device emulator, landscape phone): office-card
-      names, client situations (2 lines) and the status line readable, nothing spilling out of its box;
-      (6) desktop size unchanged.
-- [ ] **`Server.FirmStages` TowerLevel rule** (push together with the economy pass): `FirmStages.stageFor(segments,
-      prestige)` returns 6 (Supreme Tower) for ANY prestige > 0 — see `studio/ServerScriptService/Server/FirmStages.lua`.
-      Make it `prestige >= Config.Prestige.TowerLevel` (5); the first Supreme is now ~1 h in and would otherwise
-      skip the other stages every run.
+- [x] **The 18 Epic / Mythic / Supreme lawyers built, rarity-number audit, `src/` → Studio push (economy pass, egg
+      tiers, 7 rarities, schema v17, phone LAWYERS panel, Supreme panel), FirmStages TowerLevel rule** — 2026-10-13
+      (entry below). The push's playtest eye-checks are still open (top of this list).
 - [x] `GoalService.track(player, "train", count)` - checked 2026-10-12: Studio's GoalService adds `amount or 1`.
 - [x] **Brick style rollout** — done 2026-10-11: every lawyer, client, judge and the Manager (entry below).
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
@@ -104,6 +90,54 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — mr.robe, local session: the 18 Epic / Mythic / Supreme lawyers (Blender), Mythic + Supreme hatch cinematics, the 7-rarity push
+User: "add the supreme, mythic, and epic [lawyers] ... described in the github by crnuch. the mythic and supreme should
+b significantly cooler than the legendary, be more complex in style, and larger ... extreme vfx ... unique animations
+when hatching", "create these in blender also".
+- **Heads-up (save data + core economy): the whole `src/` economy pass is LIVE now.** Save **schema v17** (migration
+  v17 = `Eggs.RunOpened`), 7 rarities (Epic = 4, Legendary = 5, Mythic = 6, Supreme = 7), egg tiers, Upgrade ×N / MAX /
+  ALL, phone LAWYERS panel, the Supreme (prestige) panel (new `StarterPlayerScripts.Supreme`). mr.robe's save was
+  backed up first (`Backup_Player_11776753629_1791907691`, v16) and migrated fine.
+  - Pushed, each checked against the live source first (none had changed since the 2026-10-12 merge): Config,
+    Formulas, Effects, HatchFx, Puppet (Shared); PlayerData, LawyerService, PrestigeService, FirmStages, EggServer
+    (server); Eggs, Lawyers, Zones, Supreme (client).
+  - FirmStages: the Supreme Tower only from `Config.Prestige.TowerLevel`. Zones: odds boards use
+    `Formulas.luckyWeights` like EggServer.
+  - Rarity-number audit of the Studio-only scripts: lookups go through `Config.Eggs.Skins[...]` / rarity names;
+    Sounds' `value >= 3` still means Rare and up.
+- **The 18 lawyers**, built in Blender as brick Parts (pipeline + sizes: CLAUDE.md → SkinModels,
+  docs/CHARACTER_STYLE.md → "Epic, Mythic and Supreme"):
+  - Epic: normal size, 43-62 parts. Mythic: 1.3×, 77-187 parts. Supreme: 1.6×, 93-186 parts, 10-13 studs tall.
+  - Moving bits via Puppet Fx attributes: Phoenix's wings, the Kitsune's nine tails, Supernova's orbiting planets,
+    halos, Thunderclap's storm cloud.
+  - Earlier models with the same ids are in `ServerStorage.RetiredSkinModels`.
+- **Hatch VFX** (HatchFx + Eggs; ideas from Sol's RNG cutscenes: a stage of its own, orbs that collide, ground cracks,
+  a screen "breakthrough"):
+  - **Epic:** lightning around the egg, 3 final bolts.
+  - **Mythic:** crimson fissures and a red flash, then a cut to the Crimson Arena: an obsidian disc with glowing
+    rings, 8 fire braziers, a blood moon, embers and a dusk sky. Orbs spiral in, burst, "MYTHIC!" + "1 in N", and the
+    lawyer rises out of a fire implode.
+  - **Supreme:** time stops (colour drains), a rainbow implode, the screen cracks white, then a cut to the Celestial
+    Sanctum: marble, rainbow rings and pillars, a giant turning halo, stars and aurora under a night sky.
+    "SUPREME!", then the lawyer descends through a rainbow pillar.
+  - Lighting is restored after either one.
+- **Server banner:** `Remotes.HatchAnnounce`. A Mythic / Supreme hatch slides a banner onto everyone else's screen
+  ("X hatched a SUPREME Celestial Kitsune!" + the odds, rainbow for Supreme). Banners queue, at DisplayOrder 50, over
+  every window.
+- **Playtested** with `/hatch epic|mythic|supreme` previews. All three play end to end with no client warnings;
+  132/132 moving parts animate in the reveal; sky and camera come back; desks animate the Fx too (DeskLife). The
+  biggest Supreme (Grand Gâteau, 13 studs) fits his desk lane.
+  - Fixed during the test: the stage "rings" were solid neon discs, so the floors were a sheet of red / rainbow →
+    real rings.
+  - Supreme marble read purple → brighter ambient.
+  - The blood moon sat on the lawyer's head → moved aside.
+  - The banner hid behind the Daily window → DisplayOrder 50.
+  - A malformed banner message jammed the queue → pcall + rarity check.
+- Test-tool notes (added to CLAUDE.md): a Client `execute_luau` that is running when the game changes CameraType gets
+  it reset by the tool (the "stuck camera" after a hatch was that, not the game). Studio must be the front window
+  or RenderStepped pauses (a white hatch screen).
+- Next: the two eye-check items at the top of Open items.
 
 ## 2026-10-13 — mr.robe, local session: admin commands, lawyer rename, zone floor flicker, carried eggs hidden in the hatch
 - **Admin commands** (user: "if i want to see a legendary egg hatching i should be able to will it into existence"):

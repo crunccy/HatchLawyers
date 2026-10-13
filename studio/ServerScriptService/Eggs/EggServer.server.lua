@@ -7,7 +7,9 @@
 -- LAWYERS panel. The price grows with every egg opened (Formulas.eggPrice).
 -- Themed eggs (Config.Eggs.Themed: Brainrot / Pet / Food / Ocean / Space, each workspace.Hub.<Machine>)
 -- hatch only their own lawyers (catalog Egg = Id), with their own odds, at PriceMultiplier x the price
--- (never free). Attribute <Id>EggPrice (e.g. PetEggPrice) per themed egg.
+-- (never free). Attribute <Id>EggPrice (e.g. PetEggPrice) per themed egg. Egg tiers (2026-10-12): each
+-- themed machine refuses to roll (reason "locked") until the player's lifetime Stats.CoinsEarned reaches
+-- its UnlockEarned (Formulas.eggUnlocked).
 --
 -- Saved in PlayerData: Lawyers, Eggs.{Opened, FreeUsed, Seen, FreeTokens, RareTokens, SinceTop}.
 -- Mirrored attributes: FreeEgg, EggTokens, RareEggTokens, EggsOpened, EggPity, EggPrice,
@@ -46,6 +48,14 @@ if not HatchShow then
 	r.Name = "HatchShow"
 	r.Parent = Remotes
 	HatchShow = r
+end
+-- (2026-10-13) a Mythic / Supreme hatch is announced to the whole server (a banner on every other screen)
+local HatchAnnounce = Remotes:FindFirstChild("HatchAnnounce") :: RemoteEvent?
+if not HatchAnnounce then
+	local r = Instance.new("RemoteEvent")
+	r.Name = "HatchAnnounce"
+	r.Parent = Remotes
+	HatchAnnounce = r
 end
 -- the share (%) a rarity had in the odds an egg was rolled with (for the reveal's "x% chance")
 local function weightShare(weights: { number }?, index: number): number?
@@ -107,6 +117,14 @@ local DATA_WAIT = 120
 local rng = Random.new()
 local lastRoll: { [Player]: number } = {}
 
+-- the egg price ramp: eggs opened since the last Supreme, x Config.Eggs.PrestigePriceScale per Supreme level
+local function priceCount(data: any): number
+	return data.Eggs.RunOpened or data.Eggs.Opened
+end
+local function prestigeLevel(data: any): number
+	return if data.Prestige then data.Prestige.Level else 0
+end
+
 local function hatchCount(data: any): number
 	return data.Eggs.Opened + (if data.Eggs.FreeUsed then 1 else 0)
 end
@@ -123,9 +141,9 @@ local function sync(player: Player)
 	player:SetAttribute("EggTokens", data.Eggs.FreeTokens or 0)
 	player:SetAttribute("RareEggTokens", data.Eggs.RareTokens or 0)
 	player:SetAttribute("EggsOpened", data.Eggs.Opened)
-	player:SetAttribute("EggPrice", Formulas.eggPrice(data.Eggs.Opened))
+	player:SetAttribute("EggPrice", Formulas.eggPrice(priceCount(data), prestigeLevel(data)))
 	for _, def in Config.Eggs.Themed do
-		player:SetAttribute(def.Id .. "EggPrice", Formulas.themedEggPrice(def.Id, data.Eggs.Opened))
+		player:SetAttribute(def.Id .. "EggPrice", Formulas.themedEggPrice(def.Id, priceCount(data), prestigeLevel(data)))
 	end
 	if Config.Eggs.PityTop then
 		player:SetAttribute("EggPity", math.max(Config.Eggs.PityTop - (data.Eggs.SinceTop or 0), 1)) -- eggs until a guaranteed top lawyer
@@ -141,21 +159,15 @@ local function firstEmptyOffice(data: any): number?
 	return nil
 end
 
--- Lucky Eggs (Robux pass, Server.ShopService): the Rare and Legendary weights are multiplied.
-local function luckyWeights(player: Player, weights: { number }?): { number }?
+-- Lucky Eggs (Robux pass, Server.ShopService) and golden zone eggs: luck x the Rare, Epic and Legendary chances,
+-- taken from Common / Uncommon (Formulas.luckyWeights), so Mythic keeps its odds and Supreme stays exactly 1 in 2500.
+local function luckyWeights(player: Player, weights: { number }?, extraLuck: number?): { number }?
 	local ShopService = require(Server.ShopService) :: any
-	local luck = ShopService.effect(player, "LuckyEggs", 1)
+	local luck = ShopService.effect(player, "LuckyEggs", 1) * (extraLuck or 1)
 	if luck == 1 then
 		return weights
 	end
-	local base = weights or Formulas.skinWeights()
-	local out = table.clone(base)
-	for index, tier in Config.Eggs.Skins do
-		if (tier.Id == "Rare" or tier.Id == "Legendary") and out[index] then
-			out[index] *= luck
-		end
-	end
-	return out
+	return Formulas.luckyWeights(weights or Formulas.skinWeights(), luck)
 end
 
 local function roomFor(player: Player, data: any): number
@@ -178,6 +190,12 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	if lastRoll[player] and t - lastRoll[player] < ROLL_COOLDOWN then
 		return false
 	end
+	-- egg tiers: a themed machine only works once the player has earned its UnlockEarned (lifetime). A zone egg
+	-- that was already bought (o.paid) hatches anyway: its zone's Law License is the gate there (Config.Zones).
+	if themed and not o.paid and not Formulas.eggUnlocked(themed.Id, data.Stats and data.Stats.CoinsEarned) then
+		EggHatched:FireClient(player, { ok = false, reason = "locked", egg = themed.Id, need = themed.UnlockEarned })
+		return false
+	end
 	if roomFor(player, data) <= 0 then
 		EggHatched:FireClient(player, { ok = false, reason = "full" })
 		return false
@@ -191,7 +209,8 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	if o.tokensOnly and not (free or rareToken or freeToken) then
 		return false
 	end
-	local price = if themed then Formulas.themedEggPrice(themed.Id, data.Eggs.Opened) else Formulas.eggPrice(data.Eggs.Opened)
+	local price = if themed then Formulas.themedEggPrice(themed.Id, priceCount(data), prestigeLevel(data))
+		else Formulas.eggPrice(priceCount(data), prestigeLevel(data))
 	if not o.paid and not free and not rareToken and not freeToken and not PlayerData.spendCoins(player, price) then
 		EggHatched:FireClient(player, { ok = false, reason = "coins", price = price, egg = if themed then themed.Id else nil })
 		return false
@@ -207,6 +226,7 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	elseif rareToken then
 		data.Eggs.RareTokens -= 1
 		data.Eggs.Opened += 1
+		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
 		rarity = 3
 		for index, tier in Config.Eggs.Skins do
 			if tier.Id == "Rare" then
@@ -218,30 +238,22 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 			data.Eggs.FreeTokens -= 1
 		end
 		data.Eggs.Opened += 1
-		local weights = luckyWeights(player, if themed then themed.Weights else nil)
-		if o.golden then
-			-- a golden zone egg: the Rare and Legendary odds are multiplied (Config.Zones.Golden.Luck)
-			local luck = ((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1
-			local w = table.clone(weights or Formulas.skinWeights())
-			for index, tier in Config.Eggs.Skins do
-				if (tier.Id == "Rare" or tier.Id == "Legendary") and w[index] then
-					w[index] *= luck
-				end
-			end
-			weights = w
-		end
-		rarity = Formulas.rollSkin(rng, weights)
-		chance = weightShare(weights, rarity)
+		data.Eggs.RunOpened = (data.Eggs.RunOpened or 0) + 1
+		-- a golden zone egg stacks its luck (Config.Zones.Golden.Luck) on top of the Lucky Eggs pass
+		local goldenLuck = if o.golden then (((Config :: any).Zones and (Config :: any).Zones.Golden.Luck) or 1) else 1
+		local w = luckyWeights(player, if themed then themed.Weights else nil, goldenLuck)
+		rarity = Formulas.rollSkin(rng, w)
+		chance = weightShare(w, rarity)
 	end
-	-- pity: every egg but the tutorial one counts; the rarest tier resets it, and hitting the
-	-- limit upgrades this egg to the rarest tier (Config.Eggs.PityTop)
+	-- pity: every egg but the tutorial one counts; Config.Eggs.PityRarity (Legendary) or better resets it, and
+	-- hitting the limit upgrades this egg to exactly that rarity - never to Mythic / Supreme (Config.Eggs.PityTop)
 	if not free and Config.Eggs.PityTop then
-		local top = #Config.Eggs.Skins
+		local top = Config.Eggs.PityRarity or #Config.Eggs.Skins
 		data.Eggs.SinceTop = (data.Eggs.SinceTop or 0) + 1
-		if rarity ~= top and data.Eggs.SinceTop >= Config.Eggs.PityTop then
+		if rarity < top and data.Eggs.SinceTop >= Config.Eggs.PityTop then
 			rarity = top
 		end
-		if rarity == top then
+		if rarity >= top then
 			data.Eggs.SinceTop = 0
 		end
 	end
@@ -265,20 +277,22 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	PlayerData.sync(player)
 	sync(player)
 	require(Server.GoalService).track(player, "hatch") -- short-term goals
-	-- everyone near the machine sees a Rare / Legendary come out, timed with the client's 3D egg shattering
-	-- (StarterPlayerScripts.Eggs, measured in playtest: ~5.1 s for Rare, ~6.5 s for Legendary, unskipped)
+	-- everyone near the machine sees a Rare or better come out, timed with the client's 3D egg shattering
+	-- (StarterPlayerScripts.Eggs, measured in playtest: ~5.1 s for Rare, ~6.5 s for Legendary, unskipped; the
+	-- Legendary+ hatch has the longer build-up)
 	local rarityId = Config.Eggs.Skins[rarity] and Config.Eggs.Skins[rarity].Id
+	local burstKind = Effects.rarityBurst(rarityId)
 	local fancy = rarityId == "Legendary" or rarityId == "Mythic" or rarityId == "Supreme"
-	if not o.at and (rarityId == "Rare" or fancy) then -- (every incubator hatch has its own show since v5: HatchShow below)
+	if burstKind and not o.at then -- (every incubator hatch has its own show since v5: HatchShow below)
 		local from = if themed and themedMachines[themed.Id] then themedMachines[themed.Id] else machine
-		task.delay(if rarityId == "Legendary" then 6.5 else 5.1, function()
-			local at = o.at
+		task.delay(if rarity >= (Config.Eggs.PityRarity or 5) then 6.5 else 5.1, function()
+			local at = o.at -- an incubator passes where the egg hatched; a hub machine bursts over itself
 			if not at and from and from.Parent then
 				local box, size = (from :: Model):GetBoundingBox()
 				at = box.Position + Vector3.new(0, size.Y / 2 + 2, 0)
 			end
 			if at then
-				Effects.burst(at, if rarityId == "Legendary" then "legendary" else "rare")
+				Effects.burst(at, burstKind)
 			end
 		end)
 	end
@@ -301,6 +315,10 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	})
 	if o.at and HatchShow then -- (v5: everyone near the incubator watches every hatch there, StarterPlayerScripts.Eggs)
 		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id })
+	end
+	if (rarityId == "Mythic" or rarityId == "Supreme") and HatchAnnounce then
+		local skin = Formulas.getSkin(id)
+		HatchAnnounce:FireAllClients({ userId = player.UserId, name = player.DisplayName, lawyer = if skin then skin.Name else id, rarity = rarity, chance = chance })
 	end
 	return true
 end
@@ -353,8 +371,8 @@ end
 		-- args[2]: eggs already bought but not hatched yet (a zone bag), so each one in a bag costs the next step of
 		-- the ramp like the machine would (audit 2026-10-12: a full bag was bought at one price, ~26% off for 5)
 		local ahead = if typeof(args[2]) == "number" and args[2] == args[2] then math.clamp(math.floor(args[2]), 0, 100) else 0
-		local count = data.Eggs.Opened + ahead
-		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, count) else Formulas.eggPrice(count)
+		local count = priceCount(data) + ahead
+		return if eggId and eggId ~= "Briefcase" then Formulas.themedEggPrice(eggId, count, prestigeLevel(data)) else Formulas.eggPrice(count, prestigeLevel(data))
 	elseif action == "room" then
 		local data = PlayerData.get(player)
 		return if data then roomFor(player, data) else 0

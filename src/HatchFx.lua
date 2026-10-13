@@ -864,15 +864,26 @@ function HatchFx.stage(kind: string, origin: CFrame): { [string]: any }
 	local cyl = function(d: number, h: number, y: number, color: Color3, mat: Enum.Material): Part
 		return solid(Vector3.new(h, d, d), origin * CFrame.new(0, y, 0) * CFrame.Angles(0, 0, math.pi / 2), color, mat, Enum.PartType.Cylinder)
 	end
+	-- three glowing rings on the floor (top at 0.25): each is a neon disc with a floor-coloured disc just above it,
+	-- the biggest lowest, then the centre disc; its top (0.55) is where the egg and the lawyer stand (Eggs: STAGE_FLOOR)
+	local function floorRings(colors: { Color3 }, cover: Color3, mat: Enum.Material, centre: Color3, centreMat: Enum.Material)
+		local y = 0.25
+		for i = 3, 1, -1 do
+			local d = 14 + i * 7
+			y += 0.04
+			cyl(d + 0.8, 0.04, y - 0.02, colors[i], Enum.Material.Neon).CastShadow = false
+			y += 0.04
+			cyl(d, 0.04, y - 0.02, cover, mat)
+		end
+		cyl(12, 0.1, y + 0.01, centre, centreMat)
+	end
 	if kind == "mythic" then
 		-- an obsidian disc floating in a crimson dusk, a ring of lava, fire braziers, a blood moon
 		cyl(46, 3, -1.5, Color3.fromRGB(26, 16, 22), Enum.Material.Basalt)
 		cyl(40, 0.4, 0.05, Color3.fromRGB(44, 26, 34), Enum.Material.Slate)
 		cyl(47, 0.6, -0.8, Color3.fromRGB(255, 70, 20), Enum.Material.Neon)
-		cyl(12, 0.3, 0.2, Color3.fromRGB(120, 20, 24), Enum.Material.Slate)
-		for i = 1, 3 do
-			cyl(14 + i * 7, 0.08, 0.27, Color3.fromRGB(229, 57, 53), Enum.Material.Neon).Size = Vector3.new(0.08, 0.6 + 14 + i * 7, 0.6 + 14 + i * 7)
-		end
+		local red = Color3.fromRGB(229, 57, 53)
+		floorRings({ red, Color3.fromRGB(255, 120, 30), red }, Color3.fromRGB(44, 26, 34), Enum.Material.Slate, Color3.fromRGB(120, 20, 24), Enum.Material.Slate)
 		for i = 0, 7 do
 			local a = i / 8 * math.pi * 2
 			local p = origin * CFrame.new(math.cos(a) * 17, 0, math.sin(a) * 17)
@@ -893,7 +904,8 @@ function HatchFx.stage(kind: string, origin: CFrame): { [string]: any }
 			})
 			e.Enabled = true
 		end
-		local moon = neon(Vector3.new(1, 70, 70), origin * CFrame.new(0, 60, 240) * CFrame.Angles(0, math.pi / 2, 0), Color3.fromRGB(200, 30, 36), m, Enum.PartType.Cylinder)
+		-- (off to the side: straight behind, it sat on the lawyer's head)
+		local moon = neon(Vector3.new(1, 70, 70), origin * CFrame.new(-85, 72, 240) * CFrame.Angles(0, math.pi / 2, 0), Color3.fromRGB(200, 30, 36), m, Enum.PartType.Cylinder)
 		moon.Transparency = 0.05
 		local embers = neon(Vector3.new(60, 1, 60), origin * CFrame.new(0, -6, 0), Color3.new(0, 0, 0), m)
 		embers.Transparency = 1
@@ -913,11 +925,7 @@ function HatchFx.stage(kind: string, origin: CFrame): { [string]: any }
 		cyl(46, 3, -1.5, Color3.fromRGB(240, 236, 226), Enum.Material.Marble)
 		cyl(40, 0.4, 0.05, Color3.fromRGB(250, 248, 240), Enum.Material.Marble)
 		cyl(47, 0.6, -0.8, Color3.fromRGB(255, 205, 60), Enum.Material.Neon)
-		cyl(12, 0.3, 0.2, Color3.fromRGB(255, 220, 120), Enum.Material.SmoothPlastic)
-		for i = 1, 3 do
-			local r = cyl(14 + i * 7, 0.08, 0.27, RAINBOW_LIST[i * 2], Enum.Material.Neon)
-			r.Size = Vector3.new(0.08, 0.6 + 14 + i * 7, 0.6 + 14 + i * 7)
-		end
+		floorRings({ RAINBOW_LIST[2], RAINBOW_LIST[4], RAINBOW_LIST[6] }, Color3.fromRGB(250, 248, 240), Enum.Material.Marble, Color3.fromRGB(255, 220, 120), Enum.Material.SmoothPlastic)
 		for i = 0, 5 do
 			local a = i / 6 * math.pi * 2
 			local p = origin * CFrame.new(math.cos(a) * 18, 0, math.sin(a) * 18)
