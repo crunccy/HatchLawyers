@@ -199,6 +199,11 @@ ramp (`Config.Lawyers.Mutations[t].Ramp`, dark → light). The head keeps its fa
 teeth, tongue, ink brows / nose); every other colour is ranked darkest → lightest and spread along the ramp, so parts
 that were different stay different; Neon parts take the bright end. Preview any change first with
 `tools/blender/mutation_preview.py` → `art/mutations/preview.png` (Normal / Shiny / Diamond / Cosmic, side by side).
+On top of the colours each tier wears its own lasting particles (`Effects.mutationAura`, called by
+`MutationLook.apply`; tag `FxMutation`, scaled to the model's height): **Shiny** gold glints at three heights, a
+light sweep and rising gold dust; **Diamond** spinning ice crystals, twinkles, falling frost and a turning ring;
+**Cosmic** a tilted orbit ring with stars riding it, drifting stars, dark specks and a faint galaxy haze. They sit
+beside the rarity aura (`FxAura`), not instead of it.
 **New characters:** keep the kit's face colours exact (they're how the recolour finds the face), and give the body
 at least 3-4 clearly different shades so a mutation still reads.
 

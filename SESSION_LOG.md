@@ -19,7 +19,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
       tag, LAWYERS card, hatch screen), a fizzle shakes + "FIZZLED!" and all 3 are gone; refuses if it would leave you
       with no lawyers; (3) SELL on a bench lawyer (price matches), Epic+ asks twice, office / locked / last lawyer can't
       be sold, LOCK toggles the padlock, SELL ALL picker sells the ticked rarities; (4) golden zone eggs sometimes hatch
-      Shiny; (5) the mutation colours look right on brick lawyers AND the older models (judge by eye, tune ramps).
+      Shiny; (5) the mutation colours look right on brick lawyers AND the older models (judge by eye, tune ramps);
+      (6) the mutation effects (`Effects.mutationAura`) read at a high graphics level on a desk, the hatch reveal and
+      a big Mythic/Supreme (they scale with height) - not too busy next to the rarity aura; (7) a LOCKED lawyer
+      is hidden in the Mutation Machine picker. Also push `src/Effects.lua`.
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
       (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
       each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
@@ -137,6 +140,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   targets all still pass (`tools/economy_sim.py` now mutates with chances + fizzles).
 - **Look:** `Shared.MutationLook` (src/MutationLook.lua) + its Blender twin `tools/blender/mutation_preview.py`
   (render `art/mutations/preview.png`, real lawyers from lawyers_top.json).
+- **Mutation effects (user's later call: "slightly more frequent and cooler"):** `Effects.mutationAura(model, tier)` /
+  `clearMutationAura` (src/Effects.lua), added / cleared by `MutationLook.apply`: Shiny glints + sweep + gold dust,
+  Diamond crystals + twinkles + frost + ring, Cosmic tilted orbit + stars + specks + galaxy haze; tagged `FxMutation`.
+- **Review fixes (roblox-reviewer):** a locked lawyer can't go into the Mutation Machine (server refuses, the picker
+  hides it); the old auto-pick `MergeLawyers(uid)` remote only takes unlocked bench copies now (it used to pull idle
+  office lawyers too, which a fizzle would delete) and refuses a locked / office-queued main lawyer.
 - **Checks:** 39 Config checks (mutations, hatch odds, selling) + 32 sim tests pass. Nothing pushed to Studio.
 
 ## 2026-10-13 — crnuch, cloud session: zone travel (portal + map), lane gaps + wall climbing, Blender in the cloud

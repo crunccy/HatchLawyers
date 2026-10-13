@@ -464,25 +464,20 @@ local function merge(player: Player, uid: unknown): (boolean, string?)
 	if base.Stars >= #Config.Lawyers.StarEarn then
 		return false, "Already Cosmic!"
 	end
-	-- the copies to use up: inventory ones first, then ones in offices that aren't busy
-	local spare, working = {}, {}
-	for otherUid, other in data.Lawyers do
-		if otherUid ~= uid and other.Id == base.Id and other.Stars == base.Stars and not queuedForOffice(player, data, otherUid) then
-			local at = PlayerData.officeOf(data, otherUid)
-			if not at then
-				table.insert(spare, otherUid)
-			elseif officeFree(player, at) then
-				table.insert(working, otherUid)
-			end
-		end
+	if base.Locked then
+		return false, "Unlock it first"
 	end
-	local need = Config.Lawyers.MergeCount - 1
+	if queuedForOffice(player, data, uid) then
+		return false, "It's about to go into an office!"
+	end
+	-- the copies to use up: since a fizzle takes all of them, only unlocked BENCH copies the player isn't using
+	-- (never one sitting in an office, never a locked one) - the Mutation Machine (MergeSelected) is the real path
 	local used = {}
-	for _, list in { spare, working } do
-		for _, otherUid in list do
-			if #used < need then
-				table.insert(used, otherUid)
-			end
+	local need = Config.Lawyers.MergeCount - 1
+	for otherUid, other in data.Lawyers do
+		if #used < need and otherUid ~= uid and other.Id == base.Id and other.Stars == base.Stars and not other.Locked
+			and not PlayerData.officeOf(data, otherUid) and not queuedForOffice(player, data, otherUid) then
+			table.insert(used, otherUid)
 		end
 	end
 	if #used < need then
@@ -593,6 +588,9 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 			return false, "They must be the same lawyer"
 		end
 		first = first or lawyer
+		if lawyer.Locked then
+			return false, "Unlock it first" -- a lock keeps a lawyer safe from selling AND from a fizzle
+		end
 		local at = PlayerData.officeOf(data, u)
 		if at and not officeFree(player, at) then
 			return false, "One of them is busy with a case!"

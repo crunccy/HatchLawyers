@@ -1,18 +1,21 @@
 --!strict
 -- MutationLook (ReplicatedStorage.Shared.MutationLook, 2026-10-13): recolours a lawyer model for its mutation
--- (Config.Lawyers.Mutations: Shiny / Diamond / Cosmic - the saved `Stars` tier 2-4). User's call: no extra effects,
--- the WHOLE lawyer takes the mutation's colours, but its body parts must stay easy to tell apart.
+-- (Config.Lawyers.Mutations: Shiny / Diamond / Cosmic - the saved `Stars` tier 2-4). User's call: the WHOLE lawyer takes the mutation's colours, but its body parts must stay easy to tell apart;
+-- then (the user's later call, same day) each tier also wears its own lasting effects (Effects.mutationAura).
 -- The rule (same as tools/blender/mutation_preview.py, which renders it - keep the two in step):
 --   * the head keeps its face colours (eye whites, pupils, mouth, teeth, tongue, ink brows / nose);
 --   * every other colour on the model is ranked darkest -> lightest and placed along the mutation's Ramp (half by
 --     rank, half by its real brightness), so parts that were different stay different, in the new palette;
 --   * glowing (Neon) parts take the bright end of the ramp.
 -- MutationLook.apply(model, stars) recolours (tier 1 = puts the original colours back; safe to call again: the
--- originals are kept in each part's "MutBase" attribute). Shared.SkinLook.dress calls it, so desks, the hatch reveal,
+-- originals are kept in each part's "MutBase" attribute) and adds the mutation's effects (Effects.mutationAura). Shared.SkinLook.dress calls it, so desks, the hatch reveal,
 -- the LAWYERS panel and the Mutation Machine all match.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript) :: any
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
+-- the lasting mutation effects (Effects.mutationAura, 2026-10-13: the user asked for them on top of the colours)
+local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
 
 local MutationLook = {}
 
@@ -70,6 +73,9 @@ function MutationLook.apply(model: Instance, stars: number?)
 			end
 		end
 		model:SetAttribute("Mutation", nil)
+		if model:IsA("Model") then
+			Effects.clearMutationAura(model)
+		end
 		return
 	end
 	local stops = mutation.Ramp
@@ -113,6 +119,9 @@ function MutationLook.apply(model: Instance, stars: number?)
 		end
 	end
 	model:SetAttribute("Mutation", mutation.Id)
+	if model:IsA("Model") then
+		Effects.mutationAura(model, tier)
+	end
 end
 
 -- the mutation's name ("" for Normal) and colour, for labels

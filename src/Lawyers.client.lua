@@ -1524,7 +1524,7 @@ lockButton.Activated:Connect(function()
 	local ok, msg = LockLawyer:InvokeServer(pick.Uid, not pick.Locked)
 	busy = false
 	if ok then
-		flash(if pick.Locked then "Unlocked" else "Locked - it will never be sold", GOLD)
+		flash(if pick.Locked then "Unlocked" else "Locked - safe from selling and mutating", GOLD)
 	else
 		flash(msg or "Can't do that", RED)
 	end

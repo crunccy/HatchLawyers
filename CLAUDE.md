@@ -223,7 +223,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
   (`Config.Lawyers.Mutations[t].Chance`, shown first); a fizzle takes all 3 (never leaves you with no lawyers).
   Hatches can roll a mutation (`HatchMutation`, golden eggs more). A mutation is shown by RECOLOURING the whole lawyer
   (`Shared.MutationLook`, called by `SkinLook.dress(model, id, stars)`; preview: `tools/blender/mutation_preview.py`),
-  no extra effects. Selling + locking: `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`.
+  plus a lasting effect layer per tier (`Effects.mutationAura`, tag `FxMutation`: Shiny = gold glints + a sweep,
+  Diamond = crystals + frost + a ring, Cosmic = a tilted orbit + stars + a dark-matter haze). Selling + locking:
+  `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`; a locked lawyer can't be sold OR mutated.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,

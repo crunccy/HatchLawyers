@@ -273,7 +273,7 @@ local grid = make("ScrollingFrame", {
 local pickEmpty = text({ Position = UDim2.fromOffset(40, 220), Size = UDim2.new(1, -80, 0, 80), Text = "", TextWrapped = true, ZIndex = 32, Visible = false, Parent = picker }, 30)
 
 ------------------------------------------------------------------ state
-type Lawyer = { Uid: string, Id: string, Stars: number, Office: number? }
+type Lawyer = { Uid: string, Id: string, Stars: number, Office: number?, Locked: boolean? }
 local function lawyers(): { Lawyer }
 	local raw = player:GetAttribute("Lawyers")
 	if typeof(raw) ~= "string" then
@@ -397,7 +397,7 @@ local function openPicker(slotIndex: number)
 	local taken = chosenUids()
 	local kinds: { [string]: { id: string, stars: number, copies: { Lawyer } } } = {}
 	for _, l in lawyers() do
-		if l.Stars < MAX_STARS and not taken[l.Uid] and (not id or (l.Id == id and l.Stars == stars)) then
+		if l.Stars < MAX_STARS and not l.Locked and not taken[l.Uid] and (not id or (l.Id == id and l.Stars == stars)) then
 			local key = l.Id .. "|" .. l.Stars
 			kinds[key] = kinds[key] or { id = l.Id, stars = l.Stars, copies = {} }
 			table.insert(kinds[key].copies, l)
@@ -628,7 +628,7 @@ end)
 local function readyCount(): number
 	local counts = {}
 	for _, l in lawyers() do
-		if l.Stars < MAX_STARS then
+		if l.Stars < MAX_STARS and not l.Locked then
 			local k = l.Id .. "|" .. l.Stars
 			counts[k] = (counts[k] or 0) + 1
 		end
