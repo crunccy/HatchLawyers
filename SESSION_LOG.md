@@ -22,8 +22,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
          plaza; set PLACE_AT if it lands badly) and archives the pads to `ServerStorage.Old_ZoneTeleports`.
       2. new Script `ServerScriptService.TravelServer` (src/TravelServer.server.lua), new LocalScript
          `StarterPlayerScripts.Travel` (src/Travel.client.lua); `Config` (zone `Color`s + `Config.Zones.Travel`).
-      3. crnuch uploads `art/icons/travel.png` and adds `Travel = "rbxassetid://..."` to `Shared.HudMenu.Icons`
-         (until then the tile shows the Star icon).
+      3. push `Shared.HudMenu` too: `HudMenu.Icons.Travel = rbxassetid://136144875676517` (crnuch uploaded
+         `art/icons/travel.png` 2026-10-13); the TRAVEL tile uses it (Star until it's in).
       Playtest: walk into the portal → the map opens; GO to an owned zone (circle wipe, land facing down the lane,
       a burst both ends); locked zones grey with a padlock + license; carrying an egg greys every GO + the orange
       strip; HOME lands at your firm; the arms spin, particles on the face, gems lit only for your zones; phone size.

@@ -30,6 +30,7 @@ HudMenu.Icons = {
 	Star = "rbxassetid://15589354284", -- glossy yellow star
 	Trophy = "rbxassetid://114221933505948", -- outlined cartoon trophy
 	Scales = "rbxassetid://135009805354492", -- orange scales of justice
+	Travel = "rbxassetid://136144875676517", -- the Travel Portal (art/icons/travel.png, Blender; uploaded by crnuch 2026-10-13)
 }
 HudMenu.Studs = "rbxassetid://114488299634202" -- tools/ui_textures.py
 
