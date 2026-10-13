@@ -5,6 +5,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe (local), since 2026-10-13:** the 18 Epic / Mythic / Supreme lawyers (docs/CHARACTER_STYLE.md), built in Blender as brick Parts, Mythic + Supreme bigger, with extreme VFX + unique hatch cinematics; then the src -> Studio push of the 7 rarities + economy pass. Don't touch SkinModels / Effects / Puppet / the Eggs hatch / Config rarities until this is removed.
 
 ## Open items
 - [ ] **Eggs v5: eye-check in a real window.** Watch a few real hatches (all rarities, golden), check a phone-sized window, have a second player watch one. Delete `ServerStorage.Old_EggModels_v4` once happy.
