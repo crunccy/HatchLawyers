@@ -5,14 +5,10 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-12 late:** eggs v5 (docs/EGGS_V5.md) - built and tested, **waiting for crnuch's one-time upload**, then the install. Don't touch EggModels / EggLook / the Eggs client hatch / FirmBuilder incubators / ServerStorage.EggV5Data until this is removed.
 
 ## Open items
-- [ ] **crnuch: run the eggs v5 upload** (about 5 min, no Claude needed). In his Studio:
-      1. File > Beta Features > tick "CreateAssetAsync Luau API", then restart Studio.
-      2. In Edit mode, paste `require(game.ServerStorage.EggV5Upload)()` into the command bar.
-      3. Wait for `[EggsV5] DONE` in the Output (docs/EGGS_V5.md).
-      Then mr.robe's Claude installs it from `ServerStorage.EggV5Built` + the scripts (same doc).
+- [ ] **Eggs v5: eye-check in a real window.** Watch a few real hatches (all rarities, golden), check a phone-sized window, have a second player watch one. Delete `ServerStorage.Old_EggModels_v4` once happy.
+      "Tung Tung Tung Sahur" (a Legendary lawyer's name) is a real meme name: rename it? (CLAUDE.md: fictional only.)
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
 - [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
@@ -109,6 +105,22 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-13 — mr.robe, local session: eggs v5 INSTALLED (crnuch uploaded)
+- crnuch ran `ServerStorage.EggV5Upload` from his Studio: 12 textures + 56 meshes uploaded from the owner's account (ids: `tools/zones/egg_assets.json`, live in `ServerStorage.EggV5Assets`). The build was complete.
+- **Installed:**
+  - the built pieces: `ReplicatedStorage.EggModels` (v5; v4 kept as `ServerStorage.Old_EggModels_v4`), `ReplicatedStorage.IncubatorAnims`, `ServerStorage.Templates.IncubatorV5`;
+  - `Shared.EggLook` v5 and the new `Shared.HatchFx` and `Shared.Incubator`;
+  - `StarterPlayerScripts.Eggs` (the hatch at the incubator), `Eggs.EggServer` (HatchShow for every incubator hatch), `Server.FirmBuilder` (clones the v5 incubator, facing the aisle).
+  - No live script had changed since `8468c2f`, so these were straight installs.
+- **Removed** the upload data from the place (`EggV5Data`, `EggV5Upload`, about 11 MB). To regenerate, see docs/EGGS_V5.md.
+- **Playtested** with results sent client-side (no saves touched):
+  - Common, Rare and Legendary golden hatches; another player's view (HatchShow); KEEP closes it and restores the camera, HUD, character, post effects and prompts, and the incubator settles.
+- **Fixes after the first playtest:**
+  - your character, the eggs in your arms, the HUD and billboards (the "INCUBATOR" sign) are hidden during the hatch;
+  - lights and bloom toned down (the white lobby washed out);
+  - the dome lifts clear of the lawyer;
+  - the reveal is framed above the panel;
+  - the Legendary launch stops under the lobby ceiling (raycast) instead of flying through it.
 ## 2026-10-12 — mr.robe, local session: eggs v5 - eggs, hatch + incubator remade in Blender (waiting for crnuch's upload)
 - **The user's asks:**
   - "remake the animations everything to do with the eggs through blender and add vfx, use examples in github and make them 10000x cooler and more detailled ask me details";

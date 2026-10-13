@@ -223,9 +223,26 @@ local function stripWaitingRoom(room: Instance, frame: CFrame)
 	end
 end
 
--- An incubator: white base, warm neon ring, a straw nest with an egg under a glass dome, a heat lamp on an arm.
+-- An incubator, v5 (2026-10-12): the Blender-made machine (ServerStorage.Templates.IncubatorV5 from
+-- tools/blender/incubator.py + tools/zones/BuildEggsV5.lua: a dome that rises and spins, heat lamps, a halo, a lift
+-- cradle), its control panel facing the aisle (x = 0). Clients animate it during a hatch (Shared.Incubator).
+-- Without the template: the old one, built from parts below.
 local function buildIncubator(parent: Instance, frame: CFrame, index: number, at: Vector3)
-	local m = Instance.new("Model")
+	local templates = ServerStorage:FindFirstChild("Templates")
+	local template = templates and templates:FindFirstChild("IncubatorV5")
+	if template then
+		local m = template:Clone() :: Model
+		m.Name = "Incubator" .. index
+		local yaw = if at.X < 0 then -math.pi / 2 else math.pi / 2 -- (its front is -Z: turned to face the aisle)
+		m:PivotTo(frame * CFrame.new(at) * CFrame.Angles(0, yaw, 0))
+		local prompt = m:FindFirstChild("IncubatorPrompt", true)
+		if prompt then
+			CollectionService:AddTag(prompt, "OwnerOnlyPrompt")
+		end
+		CollectionService:AddTag(m, "Incubator")
+		m.Parent = parent
+		return
+	end	local m = Instance.new("Model")
 	m.Name = "Incubator" .. index
 	local cf = frame * CFrame.new(at)
 	local side = if at.X < 0 then -1 else 1 -- the lamp stands on the wall side

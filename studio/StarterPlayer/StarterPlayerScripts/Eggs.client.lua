@@ -342,18 +342,8 @@ for i = 1, 10 do
 end
 
 -------------------------------------------------------------------------------
--- The hatch, v4 (2026-10-12, mr.robe's session; user: "supreme, mythic and legendary hatches should look like the
--- more complicated animation while the other ones can look like the basic animation" - from their reference video).
--- Both kinds:
---   the egg (Shared.EggLook: the same detailed egg as in the zones) -> "Tap to crack!" x3 ("Again!", "One more!":
---   every tap swells, shakes and brightens it; it cracks by itself after a few seconds) -> it bursts into cube
---   shards -> the lawyer appears as a black SILHOUETTE in the rarity's light -> colour: its name + "RARITY · x%
---   chance" -> "Tap to continue" -> its earnings / skills and the PLACE / KEEP buttons.
--- BASIC (Common .. Epic): a full-screen 3D stage - a radial backdrop in the egg's colour, the egg's name across the
---   top, the egg bouncing onto a glowing round pedestal.
--- FANCY (Legendary, Mythic, Supreme), when the server says where it hatched (result.at = the incubator): in the
---   world - the camera looks up into the sky, the egg falls onto the incubator with an impact, it's cracked right
---   there and the lawyer appears there, big. Everyone else nearby sees a shorter version (Remotes.HatchShow).
+-- The hatch screen's words, taps and reveal panel. The hatch itself (v5, 2026-10-12) plays at the incubator in the
+-- world: see "the hatch, v5" below.
 -------------------------------------------------------------------------------
 local UserInputService = game:GetService("UserInputService")
 local EggLook = require(Shared:WaitForChild("EggLook") :: ModuleScript) :: any
@@ -748,82 +738,6 @@ local function standLawyer(m: Model, floor: Vector3, height: number, facing: Vec
 	return cf
 end
 
------------------------------------------------------------------- the egg: an actor we can squash, shake and brighten
-type Actor = { model: Model, colors: { [BasePart]: Color3 }, base: number }
-local function newActor(egg: string, golden: boolean, height: number, parent: Instance): Actor
-	local m = EggLook.build(egg, golden, height)
-	local colors = {}
-	for _, p in m:GetDescendants() do
-		if p:IsA("BasePart") then
-			colors[p] = p.Color
-			p.CanQuery = false
-		end
-	end
-	m.Parent = parent
-	return { model = m, colors = colors, base = m:GetScale() }
-end
--- place it (pivot = the middle of its bottom), swollen by `swell`, brightened by `bright` (0..1)
-local function actorSet(a: Actor, cf: CFrame, swell: number, bright: number?)
-	if math.abs(a.model:GetScale() - a.base * swell) > 1e-3 then
-		a.model:ScaleTo(a.base * swell)
-	end
-	a.model:PivotTo(cf)
-	if bright then
-		for p, c in a.colors do
-			p.Color = c:Lerp(WHITE, bright)
-		end
-	end
-end
-
--- cube shards bursting out of `centre` (moved by hand: works in a ViewportFrame and in the world alike)
-local function shards(parent: Instance, centre: Vector3, colors: { Color3 }, size: number, count: number, speed: number)
-	local bits = {}
-	for i = 1, count do
-		local p = Instance.new("Part")
-		p.Anchored = true
-		p.CanCollide = false
-		p.CanQuery = false
-		p.CanTouch = false
-		p.Material = Enum.Material.SmoothPlastic
-		local s = size * (0.5 + math.random() * 0.8)
-		p.Size = Vector3.new(s, s, s)
-		p.Color = colors[(i - 1) % #colors + 1]
-		p.CFrame = CFrame.new(centre)
-		p.Parent = parent
-		local dir = Vector3.new(math.random() - 0.5, math.random() * 0.9 + 0.1, math.random() - 0.5)
-		dir = if dir.Magnitude > 0.01 then dir.Unit else Vector3.yAxis
-		table.insert(bits, { part = p, vel = dir * speed * (0.6 + math.random() * 0.7), spin = Vector3.new(math.random(), math.random(), math.random()) * 8 })
-	end
-	task.spawn(function()
-		local t0 = os.clock()
-		while os.clock() - t0 < 1.3 do
-			local t = os.clock() - t0
-			for _, b in bits do
-				local pos = centre + b.vel * t + Vector3.new(0, -speed * 1.6 * t * t, 0)
-				b.part.CFrame = CFrame.new(pos) * CFrame.Angles(b.spin.X * t, b.spin.Y * t, b.spin.Z * t)
-				b.part.Transparency = math.clamp((t - 0.7) / 0.6, 0, 1)
-			end
-			RunService.Heartbeat:Wait()
-		end
-		for _, b in bits do
-			b.part:Destroy()
-		end
-	end)
-end
-
-local function eggColors(a: Actor): { Color3 }
-	local list = {}
-	for p, c in a.colors do
-		if p.Size.Magnitude > 1 then
-			table.insert(list, c)
-		end
-	end
-	if #list == 0 then
-		table.insert(list, WHITE)
-	end
-	return list
-end
-
 local function chanceText(result: { [string]: any }, rarityName: string): string
 	local c = result.chance
 	if typeof(c) ~= "number" then
@@ -853,348 +767,635 @@ local function crackRounds(onTap: (i: number) -> ())
 	dotsFrame.Visible = false
 end
 
------------------------------------------------------------------- BASIC: the 3D stage
-local stageParts: { Instance } = {}
-local function clearStage()
-	for _, o in stageParts do
-		o:Destroy()
-	end
-	stageParts = {}
-end
-local function stagePart(size: Vector3, cf: CFrame, color: Color3, neon: boolean?): Part
-	local p = Instance.new("Part")
-	p.Anchored = true
-	p.CanCollide = false
-	p.Shape = Enum.PartType.Cylinder
-	p.Size = size
-	p.CFrame = cf * CFrame.Angles(0, 0, math.pi / 2)
-	p.Color = color
-	p.Material = if neon then Enum.Material.Neon else Enum.Material.SmoothPlastic
-	p.Parent = eggView
-	table.insert(stageParts, p)
-	return p
-end
+------------------------------------------------------------------ the hatch, v5: AT the incubator, in the world
+-- (2026-10-12, mr.robe: "remake the animations everything to do with the eggs through blender and add vfx ... make
+-- them 10000x cooler"; "scale with rarity"; "last tap reveals"). The egg, the incubator and the shell break are made
+-- in Blender (Shared.EggLook, Shared.Incubator, Shared.HatchFx).
+--   1. the camera swings to your incubator; its dome opens and the egg floats out of your arms into the cradle
+--   2. the dome spins shut and it cooks (Common/Uncommon: a quick spin; Rare/Epic: the heat lamps swing in) - or,
+--      Legendary+, it OVERLOADS: alarms, sparks, the dome blows off and the egg rockets into the sky, then crashes back
+--   3. the egg floats up out of the cradle and grows: "Tap to crack!" x3 - glowing cracks spread (white; the 3rd tap
+--      turns them the rarity's colour), the egg jolts, light leaks out
+--   4. build-up (god rays; Epic+ streaks rush in), then the shell bursts (the Blender sim: pop / burst / blast) with
+--      the rarity's ladder (Shared.HatchFx.ladder): rings, sparks, confetti, coins, a light pillar, slow motion
+--   5. the lawyer rises out of the cradle as a silhouette, then in colour: its name + "RARITY · x% chance"
+-- Everyone else near that incubator sees it too, without the camera or the words (Remotes.HatchShow -> playShow).
+local HatchFx = require(Shared:WaitForChild("HatchFx") :: ModuleScript) :: any
+local Incubator = require(Shared:WaitForChild("Incubator") :: ModuleScript) :: any
+local CollectionService = game:GetService("CollectionService")
 
-local function playBasic(result: { [string]: any }, skin: any, rarityName: string, rarityColor: Color3, accent: Color3)
-	local eggId = (result.egg :: string?) or "Briefcase"
-	local golden = result.golden == true
-	local eggCol = EggLook.color(eggId, golden)
-	local def = Formulas.themedEgg(eggId)
-	local eggName = (if def then def.Name else "Briefcase Egg")
-	-- the backdrop: rings in the egg's colour, a floor band, the egg's name
-	stageBg.BackgroundTransparency = 0
-	stageGrad.Color = ColorSequence.new(eggCol:Lerp(BLACK, 0.35), eggCol:Lerp(BLACK, 0.55))
-	for i, r in rings do
-		local s = 0.42 + (i - 1) * 0.3
-		r.Size = UDim2.fromScale(s * 0.75, s * 0.75)
-		r.SizeConstraint = Enum.SizeConstraint.RelativeYY
-		r.BackgroundColor3 = eggCol:Lerp(WHITE, 0.3 - i * 0.06):Lerp(BLACK, (i - 1) * 0.12)
-		r.BackgroundTransparency = 0
-	end
-	floorBand.BackgroundColor3 = eggCol:Lerp(Color3.fromRGB(20, 60, 80), 0.6)
-	floorBand.BackgroundTransparency = 0
-	eggTitle.Text = string.upper((if golden then "Golden " else "") .. eggName)
-	eggTitle.TextColor3 = WHITE
-	eggTitle.Visible = true
-	-- the pedestal: a white top, a glowing rim, a gold base
-	clearStage()
-	stagePart(Vector3.new(0.7, 7.2, 7.2), CFrame.new(0, -0.35, 0), Color3.fromRGB(245, 245, 255))
-	local rim = stagePart(Vector3.new(0.4, 7.7, 7.7), CFrame.new(0, -0.75, 0), Color3.fromRGB(110, 230, 255), true)
-	stagePart(Vector3.new(0.7, 8.4, 8.4), CFrame.new(0, -1.2, 0), Color3.fromRGB(255, 205, 60))
-	eggView.Ambient = EGG_AMBIENT
-	eggView.LightColor = EGG_LIGHT
-	eggView.LightDirection = Vector3.new(-0.5, -1, -0.7)
-	eggCam.FieldOfView = 34
-	local camHome = CFrame.lookAt(Vector3.new(0, 4.2, 19), Vector3.new(0, 2.3, 0))
-	eggCam.CFrame = camHome
-	eggView.Visible = true
-	-- the egg drops in and bounces
-	local a = newActor(eggId, golden, 3.8, eggView)
-	table.insert(stageParts, a.model)
-	local swell, bright, shakeUntil, punch = 1, 0, 0, 0
-	local alive = true
-	local y = 12
-	local t0 = os.clock()
-	local driver = RunService.Heartbeat:Connect(function()
-		if not alive then
-			return
-		end
-		local t = os.clock() - t0
-		local jitter = if os.clock() < shakeUntil then CFrame.Angles((math.random() - 0.5) * 0.25, 0, (math.random() - 0.5) * 0.25) else CFrame.new()
-		actorSet(a, CFrame.new(0, y, 0) * CFrame.Angles(0, math.sin(t * 1.3) * 0.35, 0) * jitter, swell, bright)
-		rim.Transparency = 0.15 + 0.15 * math.sin(t * 3)
-		for i, r in rings do
-			local s = (0.42 + (i - 1) * 0.3) * (1 + 0.02 * math.sin(t * 2 + i))
-			r.Size = UDim2.fromScale(s * 0.75, s * 0.75)
-		end
-		eggCam.CFrame = camHome * CFrame.new(0, 0, -punch * 2.5)
-		punch = math.max(0, punch - 0.08)
-	end)
-	local dropStart = os.clock()
-	while os.clock() - dropStart < 0.7 do
-		local x = (os.clock() - dropStart) / 0.7
-		-- a fall with two little bounces
-		y = if x < 0.6 then 12 * (1 - (x / 0.6) ^ 2) elseif x < 0.85 then 1.2 * math.sin((x - 0.6) / 0.25 * math.pi) else 0.4 * math.sin((x - 0.85) / 0.15 * math.pi)
-		RunService.Heartbeat:Wait()
-	end
-	y = 0
-	-- 3 cracks
-	crackRounds(function(i)
-		swell = 1 + i * 0.07
-		bright = i * 0.18
-		shakeUntil = os.clock() + 0.3 + i * 0.08
-		punch = 1
-	end)
-	-- burst
-	alive = false
-	driver:Disconnect()
-	local centre = Vector3.new(0, 1.9 * swell, 0)
-	shards(eggView, centre, eggColors(a), 0.55, 40, 16)
-	a.model:Destroy()
-	hatchCue:Fire("burst", result.rarity or 1, rarityName)
-	flash.BackgroundColor3 = accent:Lerp(WHITE, 0.6)
-	flash.BackgroundTransparency = 0.1
-	tween(flash, 0.6, { BackgroundTransparency = 1 })
-	eggTitle.Visible = false
-	-- the silhouette, in the rarity's light
-	local m = makeCharacter(result.skinId)
-	local restore: (() -> ())? = nil
-	local turn: RBXScriptConnection? = nil
-	if m then
-		local stand = standLawyer(m, Vector3.new(0, 0, 0), 4.6, Vector3.new(0, 0, 1))
-		m.Parent = eggView
-		table.insert(stageParts, m)
-		restore = silhouette(m)
-		eggView.Ambient = accent:Lerp(BLACK, 0.4)
-		stageGrad.Color = ColorSequence.new(accent:Lerp(BLACK, 0.2), accent:Lerp(BLACK, 0.55))
-		for i, r in rings do
-			r.BackgroundColor3 = accent:Lerp(WHITE, 0.25 - i * 0.05):Lerp(BLACK, (i - 1) * 0.12)
-		end
-		local camTo = CFrame.lookAt(Vector3.new(0, 3.4, 15), Vector3.new(0, 2.4, 0))
-		local tr = os.clock()
-		turn = RunService.Heartbeat:Connect(function()
-			local u = os.clock() - tr
-			local rise = easeOut(u / 0.5, 3)
-			m:PivotTo(stand * CFrame.new(0, -1.2 * (1 - rise), 0) * CFrame.Angles(0, math.sin(u * 0.7) * 0.35, 0))
-			eggCam.CFrame = camHome:Lerp(camTo, easeOut(u / 0.8, 3))
-		end)
-		task.wait(0.9)
-		-- colour!
-		if restore then
-			restore()
-		end
-		eggView.Ambient = accent:Lerp(EGG_AMBIENT, 0.6)
-		flash.BackgroundColor3 = WHITE
-		flash.BackgroundTransparency = 0.2
-		tween(flash, 0.45, { BackgroundTransparency = 1 })
-	end
-	topName.Text = skin.Name
-	topName.TextColor3 = WHITE
-	topName.Visible = true
-	topSub.Text = chanceText(result, rarityName)
-	topSub.TextColor3 = rarityColor
-	topSub.Visible = true
-	continueLabel.Visible = true
-	task.wait(0.3)
-	waitTap(12)
-	continueLabel.Visible = false
-	topName.Visible = false
-	topSub.Visible = false
-	return function()
-		if turn then
-			turn:Disconnect()
-		end
-	end
-end
-
------------------------------------------------------------------- FANCY: in the world, at the incubator
 local fxFolder = Instance.new("Folder")
 fxFolder.Name = "HatchFx"
 fxFolder.Parent = workspace
+HatchFx.setFolder(fxFolder)
 
-local function ring(at: Vector3, radius: number, color: Color3, seconds: number)
-	local p = Instance.new("Part")
-	p.Anchored = true
-	p.CanCollide = false
-	p.CanQuery = false
-	p.Shape = Enum.PartType.Cylinder
-	p.Material = Enum.Material.Neon
-	p.Color = color
-	p.Size = Vector3.new(0.3, 1, 1)
-	p.Parent = fxFolder
-	task.spawn(function()
-		local t0 = os.clock()
-		while os.clock() - t0 < seconds do
-			local a = (os.clock() - t0) / seconds
-			local r = 1 + radius * easeOut(a, 2)
-			p.Size = Vector3.new(0.3, r * 2, r * 2)
-			p.CFrame = CFrame.new(at + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.pi / 2)
-			p.Transparency = a
-			RunService.Heartbeat:Wait()
-		end
-		p:Destroy()
-	end)
+local DISPLAY_EGG = 2.5 -- the egg in the cradle (studs tall)
+local HATCH_EGG = 3.3 -- the egg you crack
+local HOVER = 0.55 -- how far it floats above the cradle while you crack it
+local ALARM = Color3.fromRGB(255, 60, 60)
+local HEAT = Color3.fromRGB(255, 150, 60)
+
+local function rgbOf(c: any): Color3
+	return if typeof(c) == "ColorSequence" then c.Keypoints[1].Value else c
 end
 
-local function aura(m: Model, color: Color3): Instance?
-	local box = m:GetBoundingBox()
-	local holder = Instance.new("Part")
-	holder.Anchored = true
-	holder.CanCollide = false
-	holder.CanQuery = false
-	holder.Transparency = 1
-	holder.Size = Vector3.new(1, 1, 1)
-	holder.CFrame = box
-	holder.Parent = fxFolder
-	local light = Instance.new("PointLight")
-	light.Color = color
-	light.Range = 22
-	light.Brightness = 3
-	light.Parent = holder
-	local e = Instance.new("ParticleEmitter")
-	e.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-	e.Color = ColorSequence.new(color, WHITE)
-	e.LightEmission = 0.3
-	e.Rate = 40
-	e.Lifetime = NumberRange.new(0.8, 1.4)
-	e.Speed = NumberRange.new(4, 9)
-	e.SpreadAngle = Vector2.new(180, 180)
-	e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2), NumberSequenceKeypoint.new(1, 0) })
-	e.Parent = holder
-	return holder
+local function eggNameOf(eggId: string, golden: boolean): string
+	local def = Formulas.themedEgg(eggId)
+	return string.upper((if golden then "Golden " else "") .. (if def then def.Name else "Briefcase Egg"))
 end
 
--- where the egg lands: the top of whatever is under `at` (the incubator)
-local function landingSpot(at: Vector3): Vector3
+-- where it happens: the incubator the server named (result.at), else your nearest one, else the floor in front of you
+type Spot = { inc: Model?, front: Vector3, floor: CFrame }
+local function findSpot(at: Vector3?): Spot
+	local inc: Model? = nil
+	if typeof(at) == "Vector3" then
+		inc = Incubator.find(at, 14)
+	end
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not inc and root then
+		inc = Incubator.find(root.Position, 40)
+	end
+	if inc and Incubator.isV5(inc) then
+		return { inc = inc, front = Incubator.front(inc), floor = Incubator.eggSpot(inc) }
+	end
+	local origin = if root then root.Position else workspace.CurrentCamera.CFrame.Position
+	local look = if root then root.CFrame.LookVector else Vector3.new(0, 0, -1)
+	look = Vector3.new(look.X, 0, look.Z)
+	look = if look.Magnitude > 0.01 then look.Unit else Vector3.new(0, 0, -1)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
-	local ignore: { Instance } = { fxFolder }
-	for _, p in Players:GetPlayers() do
-		if p.Character then
-			table.insert(ignore, p.Character)
-		end
-	end
-	params.FilterDescendantsInstances = ignore
-	local hit = workspace:Raycast(at + Vector3.new(0, 4, 0), Vector3.new(0, -30, 0), params)
-	return if hit then hit.Position else at - Vector3.new(0, 5, 0)
+	params.FilterDescendantsInstances = { fxFolder, character :: Instance }
+	local probe = origin + look * 7
+	local hit = workspace:Raycast(probe + Vector3.new(0, 6, 0), Vector3.new(0, -24, 0), params)
+	local p = Vector3.new(probe.X, if hit then hit.Position.Y else origin.Y - 3, probe.Z)
+	return { inc = nil, front = -look, floor = CFrame.lookAt(p, p - look) }
 end
 
--- the egg falls from the sky onto `land` (1.2 s), with a landing ring; `onFrame(y)` per frame
-local FALL = 1.2
-local function fall(a: Actor, land: Vector3, onFrame: ((pos: Vector3) -> ())?)
-	local t0 = os.clock()
-	while true do
-		local x = math.min((os.clock() - t0) / FALL, 1)
-		local h = 90 * (1 - x * x)
-		local pos = land + Vector3.new(0, h, 0)
-		actorSet(a, CFrame.new(pos) * CFrame.Angles(0, x * 6, 0), 1)
-		if onFrame then
-			onFrame(pos)
+local function cradle(sp: Spot): CFrame
+	return if sp.inc then Incubator.eggSpot(sp.inc) else sp.floor
+end
+
+------------------------------------------------------------------ the camera
+local cam = workspace.CurrentCamera
+local camSaved: { type: Enum.CameraType, subject: Instance?, fov: number }? = nil
+local camGoal, camCur = CFrame.new(), CFrame.new()
+local camRate = 6
+local camConn: RBXScriptConnection? = nil
+-- while a hatch plays, the rest of the HUD and your own character (+ the eggs in your arms) are hidden: they'd sit
+-- right in front of the shot
+local hiddenGuis: { LayerCollector } = {}
+local hiddenParts: { [Instance]: boolean } = {}
+local function hideForHatch()
+	for _, g in player.PlayerGui:GetDescendants() do
+		if (g:IsA("ScreenGui") or g:IsA("BillboardGui")) and g ~= gui and g.Enabled and not g:IsDescendantOf(gui) then
+			g.Enabled = false
+			table.insert(hiddenGuis, g)
 		end
-		if x >= 1 then
+	end
+	local ch = player.Character
+	local root = ch and ch:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if ch then
+		for _, d in ch:GetDescendants() do
+			if d:IsA("BasePart") or d:IsA("Decal") then
+				hiddenParts[d] = true
+			end
+		end
+	end
+	local carried = workspace:FindFirstChild("CarryVisuals")
+	if carried and root then
+		for _, d in carried:GetDescendants() do
+			if d:IsA("BasePart") and (d.Position - root.Position).Magnitude < 9 then
+				hiddenParts[d] = true
+			end
+		end
+	end
+end
+local function showAfterHatch()
+	for _, g in hiddenGuis do
+		g.Enabled = true
+	end
+	table.clear(hiddenGuis)
+	for d in hiddenParts do
+		if d.Parent then
+			(d :: any).LocalTransparencyModifier = 0
+		end
+	end
+	table.clear(hiddenParts)
+end
+
+local function camBegin()
+	cam = workspace.CurrentCamera
+	camSaved = { type = cam.CameraType, subject = cam.CameraSubject, fov = cam.FieldOfView }
+	cam.CameraType = Enum.CameraType.Scriptable
+	camCur, camGoal = cam.CFrame, cam.CFrame
+	camConn = RunService.RenderStepped:Connect(function(dt)
+		camCur = camCur:Lerp(camGoal, 1 - math.exp(-dt * camRate))
+		for d in hiddenParts do
+			(d :: any).LocalTransparencyModifier = 1
+		end
+		cam.CFrame = camCur * HatchFx.shakeCFrame()
+	end)
+end
+local function camTo(cf: CFrame, rate: number?)
+	camGoal = cf
+	camRate = rate or 6
+end
+local function camEnd()
+	if camConn then
+		camConn:Disconnect()
+		camConn = nil
+	end
+	HatchFx.clearShakes()
+	if camSaved then
+		cam.CameraType = camSaved.type
+		if camSaved.subject then
+			cam.CameraSubject = camSaved.subject
+		end
+		cam.FieldOfView = camSaved.fov
+		camSaved = nil
+	end
+end
+-- looking at the cradle from in front of the incubator: `dist` out, `up` above the cradle, aiming `lookUp` above it
+local function shot(sp: Spot, dist: number, up: number, lookUp: number, side: number?): CFrame
+	local base = cradle(sp).Position
+	local right = sp.front:Cross(Vector3.yAxis)
+	return CFrame.lookAt(base + sp.front * dist + Vector3.yAxis * up + right * (side or 0), base + Vector3.yAxis * lookUp)
+end
+
+------------------------------------------------------------------ the phases (the owner's hatch and other players' view share them)
+-- 1) the egg floats from `from` into the cradle while the dome opens
+local function flyIn(sp: Spot, egg: Model, from: CFrame, watch: boolean)
+	if sp.inc then
+		task.spawn(Incubator.play, sp.inc, "Open", 1.5)
+	end
+	local t0, DUR = os.clock(), 0.7
+	while true do
+		local a = math.min((os.clock() - t0) / DUR, 1)
+		local e = a * a * (3 - 2 * a)
+		local goal = cradle(sp)
+		local p0, p2 = from.Position, goal.Position
+		local p1 = (p0 + p2) / 2 + Vector3.new(0, 4 + (p0 - p2).Magnitude * 0.3, 0)
+		local q = p0 * (1 - e) ^ 2 + p1 * 2 * (1 - e) * e + p2 * e * e
+		egg:PivotTo(CFrame.new(q) * goal.Rotation * CFrame.Angles(0, e * math.pi * 2, (1 - e) * 0.7))
+		if a >= 1 then
 			break
 		end
 		RunService.Heartbeat:Wait()
 	end
+	HatchFx.dust(cradle(sp).Position + Vector3.new(0, 0.3, 0), Color3.new(1, 1, 1), 8)
+	if watch then
+		hatchCue:Fire("beat", 0)
+		HatchFx.shake(0.6, 12, 0.01, 0.25)
+	end
 end
 
-local fancyCamera: { type: Enum.CameraType, subject: Instance? }? = nil
+-- 2) close + cook, or close + overload + launch. Returns the point in the sky the egg reached (fancy), else nil.
+local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: boolean, onRocket: ((pos: Vector3) -> ())?): Vector3?
+	local inc = sp.inc
+	local function follow()
+		egg:PivotTo(cradle(sp))
+	end
+	if inc then
+		Incubator.play(inc, "Close", 1.35, follow)
+	end
+	if not tier.fancy then
+		if inc then
+			Incubator.glow(inc, HEAT, 0.2)
+			local secs = (37 / 30) / tier.cook
+			HatchFx.light(cradle(sp).Position + Vector3.new(0, 1.5, 0), HEAT, 10, 0.9, secs + 0.3)
+			if watch and tier.cook < 2 then
+				HatchFx.shake(0.45, 9, 0.2, 0.3, secs - 0.5)
+			end
+			task.spawn(function()
+				for _ = 1, math.max(1, math.floor(secs / 0.3)) do
+					HatchFx.sparks(cradle(sp).Position + Vector3.new(0, 1.2, 0), HEAT, 4, 6, 0.5)
+					task.wait(0.3)
+				end
+			end)
+			Incubator.play(inc, "Cook", tier.cook, follow)
+			Incubator.glow(inc, nil, 0.3)
+			Incubator.play(inc, "Open", 1.25, follow)
+		end
+		return nil
+	end
+	-- OVERLOAD: flashing alarm lights, rattling, the dome blows off, the cradle fires the egg into the sky
+	local alarm = true
+	if inc then
+		task.spawn(function()
+			local i = 0
+			while alarm do
+				i += 1
+				Incubator.glow(inc, if i % 2 == 0 then ALARM else rgbOf(fxColor))
+				task.wait(0.11)
+			end
+		end)
+	end
+	if watch then
+		HatchFx.shake(1.3, 18, 0.25, 0.25, 0.6)
+	end
+	local launched = false
+	local function launch()
+		launched = true
+		local at = cradle(sp).Position
+		HatchFx.sparks(at + Vector3.new(0, 1, 0), Color3.fromRGB(255, 205, 90), 46, 34, 1.3)
+		HatchFx.ring(CFrame.new(at + Vector3.new(0, 0.3, 0)), 10, rgbOf(fxColor), 0.5)
+		HatchFx.light(at, rgbOf(fxColor), 20, 1.8, 0.6)
+		if watch then
+			HatchFx.shake(3.2, 14, 0.01, 0.5)
+			hatchCue:Fire("beat", 0)
+		end
+	end
+	if inc then
+		Incubator.play(inc, "Overload", 1, function(f)
+			if not launched then
+				follow()
+				if f >= 22 then
+					launch()
+				end
+			end
+		end)
+	else
+		task.wait(0.8)
+		launch()
+	end
+	alarm = false
+	if inc then
+		Incubator.glow(inc, rgbOf(fxColor), 0.2)
+	end
+	-- the egg rockets up with a light trail
+	local start = cradle(sp).Position
+	-- (incubators stand indoors: it rockets up to just under the ceiling, or 46 studs outside)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { fxFolder, egg, inc :: any, player.Character :: any }
+	local hit = workspace:Raycast(start + Vector3.new(0, 3, 0), Vector3.new(0, 60, 0), params)
+	local rise = if hit then math.max(7, hit.Position.Y - start.Y - 4) else 46
+	local top = start + Vector3.new(0, rise, 0)
+	local shell = egg.PrimaryPart
+	if shell then
+		local a0 = Instance.new("Attachment")
+		a0.Position = Vector3.new(0.5, 0, 0)
+		a0.Parent = shell
+		local a1 = Instance.new("Attachment")
+		a1.Position = Vector3.new(-0.5, 0, 0)
+		a1.Parent = shell
+		local trail = Instance.new("Trail")
+		trail.Attachment0 = a0
+		trail.Attachment1 = a1
+		trail.Color = if typeof(fxColor) == "ColorSequence" then fxColor else ColorSequence.new(Color3.new(1, 1, 1), fxColor)
+		trail.LightEmission = 0.6
+		trail.Lifetime = 0.35
+		trail.Transparency = NumberSequence.new(0, 1)
+		trail.WidthScale = NumberSequence.new(1, 0)
+		trail.FaceCamera = true
+		trail.Parent = shell
+	end
+	local t1, UP = os.clock(), 0.75
+	while true do
+		local a = math.min((os.clock() - t1) / UP, 1)
+		local p = start:Lerp(top, 1 - (1 - a) ^ 2.2)
+		egg:PivotTo(CFrame.new(p) * CFrame.Angles(0, a * 14, 0))
+		if onRocket then
+			onRocket(p)
+		end
+		if a >= 1 then
+			break
+		end
+		RunService.Heartbeat:Wait()
+	end
+	HatchFx.sparks(top, fxColor, 34, 18, 1.5)
+	HatchFx.light(top, rgbOf(fxColor), 26, 2.5, 0.7)
+	task.wait(0.35)
+	return top
+end
 
-local function playFancy(result: { [string]: any }, skin: any, rarityName: string, rarityColor: Color3, accent: Color3)
+-- 3a) a fancy egg crashes down from `top` into the cradle
+local function crashDown(sp: Spot, h: any, top: Vector3, tier: any, fxColor: any, watch: boolean, onFall: ((pos: Vector3) -> ())?)
+	local t0, FALL = os.clock(), 0.55
+	while true do
+		local a = math.min((os.clock() - t0) / FALL, 1)
+		local goal = cradle(sp) * CFrame.new(0, HOVER, 0)
+		local p = top:Lerp(goal.Position, a * a)
+		h.model:PivotTo(CFrame.new(p) * goal.Rotation * CFrame.Angles(0, (1 - a) * 6, 0))
+		if onFall then
+			onFall(p)
+		end
+		if a >= 1 then
+			break
+		end
+		RunService.Heartbeat:Wait()
+	end
+	local at = cradle(sp).Position
+	HatchFx.ring(CFrame.new(at + Vector3.new(0, 0.25, 0)), 16, rgbOf(fxColor), 0.6, 1.6)
+	HatchFx.ring(CFrame.new(at + Vector3.new(0, 0.4, 0)), 9, Color3.new(1, 1, 1), 0.4)
+	HatchFx.dust(at + Vector3.new(0, 0.5, 0), Color3.fromRGB(230, 220, 210), 22)
+	HatchFx.light(at, rgbOf(fxColor), 18, 1.8, 0.6)
+	if watch then
+		HatchFx.shake(4.2, 15, 0.01, 0.6)
+		hatchCue:Fire("beat", 0)
+	end
+end
+
+-- 3b) the cradle egg floats up and grows into the egg you crack
+local function riseAndGrow(sp: Spot, small: Model, h: any)
+	small:Destroy()
+	local final = h.scale
+	local s0 = DISPLAY_EGG / 3.8
+	local t0, DUR = os.clock(), 0.4
+	while true do
+		local a = math.min((os.clock() - t0) / DUR, 1)
+		local e = 1 - (1 - a) ^ 3
+		h.model:ScaleTo(s0 + (final - s0) * e)
+		h.model:PivotTo(cradle(sp) * CFrame.new(0, HOVER * e, 0) * CFrame.Angles(0, e * math.pi, 0))
+		if a >= 1 then
+			break
+		end
+		RunService.Heartbeat:Wait()
+	end
+	h.model:ScaleTo(final)
+end
+
+-- a live egg: jolts, pulses and hops on springs, wobbles, jitters (during the taps and the build-up)
+type Live = { jolt: any, pulse: any, hop: any, wob: number, jitter: number, conn: RBXScriptConnection?, light: PointLight }
+local function liveEgg(sp: Spot, h: any): Live
+	local light = Instance.new("PointLight")
+	light.Brightness = 0
+	light.Range = 10
+	light.Shadows = false
+	light.Parent = h.shell
+	local live: Live = { jolt = HatchFx.spring(3.2, 0.22), pulse = HatchFx.spring(4.5, 0.3, 1), hop = HatchFx.spring(3.6, 0.45), wob = 0.3, jitter = 0, conn = nil, light = light }
+	live.pulse.target = 1
+	local base = h.scale
+	live.conn = RunService.Heartbeat:Connect(function(dt)
+		local t = os.clock()
+		local j = HatchFx.stepSpring(live.jolt, dt)
+		local s = HatchFx.stepSpring(live.pulse, dt)
+		local hop = math.max(0, HatchFx.stepSpring(live.hop, dt))
+		local jit = if live.jitter > 0 then CFrame.Angles((math.random() - 0.5) * live.jitter, 0, (math.random() - 0.5) * live.jitter) else CFrame.identity
+		local cf = cradle(sp) * CFrame.new(0, HOVER + hop + math.sin(t * 2) * 0.07, 0)
+			* CFrame.Angles(0, math.sin(t * 0.8) * 0.35, 0)
+			* CFrame.Angles(j * 0.5, 0, j + math.sin(t * 3.1) * 0.05 * live.wob)
+			* jit
+		if math.abs(h.model:GetScale() - base * s) > 0.003 then
+			h.model:ScaleTo(base * s)
+		end
+		h.model:PivotTo(cf)
+	end)
+	return live
+end
+
+local function stopLive(live: Live, h: any, sp: Spot)
+	if live.conn then
+		live.conn:Disconnect()
+		live.conn = nil
+	end
+	h.model:ScaleTo(h.scale)
+	h.model:PivotTo(cradle(sp) * CFrame.new(0, HOVER, 0))
+	live.light:Destroy()
+end
+
+-- one crack (i = 1..3): the cracks spread, the egg jolts, dust + sparks fly off, light leaks out
+local function crack(h: any, live: Live, i: number, fxColor: any, eggColor: Color3, watch: boolean)
+	local col = if i < 3 then Color3.new(1, 1, 1) else rgbOf(fxColor)
+	for k = 1, math.min(i, #h.cracks) do
+		h.cracks[k].Transparency = 0
+		h.cracks[k].Color = col
+	end
+	local sign = if i % 2 == 1 then 1 else -1
+	live.jolt.v += sign * (5 + i * 2.5)
+	live.pulse.v += 3 + i * 1.5
+	live.hop.v += 6 + i * 2
+	live.wob = 0.3 + i * 0.45
+	live.light.Color = col
+	live.light.Brightness = i * (if i == 3 then 0.5 else 0.3)
+	live.light.Range = 8 + i * 2.5
+	local pt = if #h.chunks > 0 then h.chunks[math.random(1, #h.chunks)].Position else h.shell.Position
+	HatchFx.dust(pt, eggColor, 6 + i * 3)
+	HatchFx.sparks(pt, col, 6 + i * 5, 14, 0.6)
+	if watch then
+		HatchFx.shake(0.8 + i * 0.55, 16, 0.01, 0.35)
+		HatchFx.post({ blur = { Size = 5 + i } }, 0)
+		HatchFx.post({ blur = { Size = 0 } }, 0.25)
+		if i == 3 then
+			HatchFx.post({ cc = { TintColor = Color3.new(1, 1, 1):Lerp(col, 0.22) } }, 0.4)
+		end
+	end
+end
+
+-- 4) the build-up after the 3rd crack (god rays, an implosion), then the burst; the break plays on (returns at once)
+local function buildUp(h: any, live: Live, tier: any, fxColor: any, watch: boolean)
+	local centre = h.shell.Position
+	local rays = if tier.rays > 0 then HatchFx.rays(centre, fxColor, tier.rays, 8 + tier.rays * 0.6, tier.build) else nil
+	local imp = if tier.implode then HatchFx.implode(centre, fxColor, if tier.blackhole then 13 else 9, if tier.blackhole then 220 else 140) else nil
+	if watch then
+		HatchFx.post({ cc = { Brightness = if tier.blackhole then -0.3 else -0.12, Contrast = 0.22 }, bloom = { Intensity = 0.4 + tier.bloom * 0.3, Threshold = 1.35 } }, tier.build)
+		HatchFx.shake(1.1 + tier.shake * 0.15, 22, tier.build, 0.15)
+	end
+	local t0 = os.clock()
+	while os.clock() - t0 < tier.build do
+		local a = (os.clock() - t0) / tier.build
+		live.jitter = 0.05 + a * 0.2
+		live.light.Brightness = 1.2 + a * 1.3
+		live.pulse.target = 1 + a * 0.08
+		RunService.Heartbeat:Wait()
+	end
+	return function()
+		if rays then
+			rays.stop(0.25)
+		end
+		if imp then
+			imp.stop()
+		end
+	end
+end
+
+local function burst(sp: Spot, h: any, tier: any, fxColor: any, watch: boolean)
+	local root = cradle(sp) * CFrame.new(0, HOVER, 0)
+	local centre = root.Position + Vector3.new(0, HATCH_EGG * 0.5, 0)
+	local floor = CFrame.new(cradle(sp).Position)
+	for r = 1, tier.rings do
+		local c = if tier.rainbow then HatchFx.RAINBOW.Keypoints[((r - 1) % #HatchFx.RAINBOW.Keypoints) + 1].Value elseif r % 2 == 0 then Color3.new(1, 1, 1) else rgbOf(fxColor)
+		task.delay((r - 1) * 0.08, HatchFx.ring, floor * CFrame.new(0, 0.2 + r * 0.18, 0), 8 + r * 4.5, c, 0.55 + r * 0.1, 1 + r * 0.2)
+	end
+	HatchFx.sparks(centre, fxColor, 30 + tier.rings * 12, 30 + tier.shake * 4, 1 + tier.rings * 0.15)
+	HatchFx.confetti(centre, tier.confetti, 1)
+	if tier.coins > 0 then
+		HatchFx.coins(centre, tier.coins)
+	end
+	if tier.burst then
+		pcall(Effects.burst, centre, tier.burst, fxColor)
+	end
+	if tier.pillar then
+		HatchFx.pillar(cradle(sp).Position, fxColor, 140, 5.5, 3.2)
+	end
+	HatchFx.light(centre, rgbOf(fxColor), 22, 2.5, 1.3)
+	if watch then
+		HatchFx.shake(tier.shake, 14, 0.01, 0.9)
+	end
+	task.spawn(HatchFx.breakApart, h, tier.take, root, tier.slow)
+end
+
+-- the dome lifts clear of the lawyer (the Open clip leaves it just above the cradle)
+local function liftDome(inc: Model?, dy: number, seconds: number)
+	if not inc then
+		return
+	end
+	local parts = {}
+	for _, n in { "Dome", "DomeRim", "DomeCap" } do
+		local p = inc:FindFirstChild(n)
+		if p and p:IsA("BasePart") then
+			parts[p] = p.CFrame
+		end
+	end
+	task.spawn(function()
+		local t0 = os.clock()
+		while true do
+			local a = math.min((os.clock() - t0) / seconds, 1)
+			local e = 1 - (1 - a) ^ 3
+			for p, cf in parts do
+				p.CFrame = cf + Vector3.new(0, dy * e, 0)
+			end
+			if a >= 1 then
+				break
+			end
+			RunService.Heartbeat:Wait()
+		end
+	end)
+end
+
+-- 5) the lawyer rises out of the cradle as a silhouette; returns (model, bring-the-colours-back, stop)
+local function riseLawyer(sp: Spot, skinId: string, height: number, rarityName: string): (Model?, () -> (), () -> ())
+	local m = makeCharacter(skinId)
+	if not m then
+		return nil, function() end, function() end
+	end
+	local floorPos = cradle(sp).Position
+	local stand = standLawyer(m, floorPos, height, sp.front)
+	m.Parent = fxFolder
+	local restore = silhouette(m)
+	local rise = HatchFx.spring(2.4, 0.55, -height * 0.7)
+	rise.target = 0
+	local conn = RunService.Heartbeat:Connect(function(dt)
+		local y = HatchFx.stepSpring(rise, dt)
+		m:PivotTo(stand * CFrame.new(0, y, 0) * CFrame.Angles(0, math.sin(os.clock() * 0.6) * 0.3, 0))
+	end)
+	return m, function()
+		restore()
+		if rarityName ~= "Common" then
+			pcall(Effects.aura, m, rarityName)
+		end
+	end, function()
+		conn:Disconnect()
+	end
+end
+
+-- after a hatch: the incubator eases back, closes and rests
+local function settleIncubator(inc: Model?)
+	if not inc then
+		return
+	end
+	task.spawn(function()
+		Incubator.glow(inc, nil, 0.4)
+		Incubator.blendTo(inc, "Close", 0, 0.35)
+		Incubator.play(inc, "Close", 1.2)
+		Incubator.rest(inc)
+	end)
+end
+
+------------------------------------------------------------------ the owner's hatch
+local hatchSpot: Spot? = nil
+local disabledPrompts: { ProximityPrompt } = {}
+
+local function playHatch(result: { [string]: any }, skin: any, rarityName: string, rarityColor: Color3, accent: Color3): () -> ()
+	local tier = HatchFx.ladder(rarityName)
+	local fxColor: any = if tier.rainbow then HatchFx.RAINBOW else rarityColor
 	local eggId = (result.egg :: string?) or "Briefcase"
 	local golden = result.golden == true
-	local land = landingSpot(result.at)
-	local cam = workspace.CurrentCamera
-	fancyCamera = { type = cam.CameraType, subject = cam.CameraSubject }
-	cam.CameraType = Enum.CameraType.Scriptable
-	local character = player.Character
-	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
-	local side = if root then Vector3.new(root.Position.X - land.X, 0, root.Position.Z - land.Z) else Vector3.new(0, 0, 1)
-	side = if side.Magnitude > 1 then side.Unit else Vector3.new(0, 0, 1)
-	local eye = land + side * 22 + Vector3.new(0, 5, 0)
-	local close = land + side * 13 + Vector3.new(0, 5, 0)
-	-- 1) the sky: the title, the camera looking up, the egg a dot high above, then it falls and the camera follows
-	dim.BackgroundTransparency = 1
-	eggTitle.Text = string.upper(rarityName) .. " EGG"
-	eggTitle.TextColor3 = rarityColor
-	eggTitle.Visible = true
-	local a = newActor(eggId, golden, 5.2, fxFolder)
-	actorSet(a, CFrame.new(land + Vector3.new(0, 90, 0)), 1)
-	cam.CFrame = CFrame.lookAt(eye, land + Vector3.new(0, 90, 0))
-	task.wait(0.6)
-	fall(a, land, function(pos)
-		cam.CFrame = CFrame.lookAt(eye, pos + Vector3.new(0, 2.6, 0))
-	end)
-	-- 2) the impact
-	ring(land, 18, rarityColor, 0.6)
-	ring(land, 11, WHITE, 0.4)
-	hatchCue:Fire("beat", 0)
-	local shakeEnd = os.clock() + 0.45
-	while os.clock() < shakeEnd do
-		cam.CFrame = CFrame.lookAt(eye, land + Vector3.new(0, 2.6, 0)) * CFrame.new((math.random() - 0.5) * 0.8, (math.random() - 0.5) * 0.8, 0)
-		RunService.Heartbeat:Wait()
-	end
-	-- 3) the camera moves in; 3 cracks
-	local from, t0 = cam.CFrame, os.clock()
-	while os.clock() - t0 < 0.5 do
-		cam.CFrame = from:Lerp(CFrame.lookAt(close, land + Vector3.new(0, 2.8, 0)), easeOut((os.clock() - t0) / 0.5, 3))
-		RunService.Heartbeat:Wait()
-	end
-	local camHome = CFrame.lookAt(close, land + Vector3.new(0, 2.8, 0))
-	local swell, bright, shakeUntil, punch = 1, 0, 0, 0
-	local alive = true
-	local tb = os.clock()
-	local driver = RunService.Heartbeat:Connect(function()
-		if not alive then
-			return
+	local eggColor = EggLook.color(eggId, golden)
+	local sp = findSpot(result.at)
+	hatchSpot = sp
+	-- (no second hatch at an incubator while this one plays)
+	for _, m in CollectionService:GetTagged("Incubator") do
+		local pr = m:FindFirstChild("IncubatorPrompt", true)
+		if pr and pr:IsA("ProximityPrompt") and pr.Enabled then
+			pr.Enabled = false
+			table.insert(disabledPrompts, pr)
 		end
-		local t = os.clock() - tb
-		local jitter = if os.clock() < shakeUntil then CFrame.Angles((math.random() - 0.5) * 0.3, 0, (math.random() - 0.5) * 0.3) else CFrame.new()
-		actorSet(a, CFrame.new(land) * CFrame.Angles(0, math.sin(t * 1.3) * 0.3, 0) * jitter, swell, bright)
-		cam.CFrame = camHome * CFrame.new(0, 0, -punch * 2)
-		punch = math.max(0, punch - 0.08)
+	end
+	hideForHatch()
+	camBegin()
+	HatchFx.postBegin()
+	HatchFx.post({ cc = { Saturation = 0.12, Contrast = 0.06 }, dof = { FarIntensity = 0.35, FocusDistance = 11, InFocusRadius = 5 } }, 0.5)
+	tween(vignette, 0.5, { BackgroundTransparency = 0.3 })
+	local wide = shot(sp, 11.5, 4.6, 2.4)
+	camTo(wide, 4)
+	eggTitle.Text = eggNameOf(eggId, golden)
+	eggTitle.TextColor3 = WHITE
+	eggTitle.Visible = true
+	-- 1) into the incubator
+	local small = EggLook.build(eggId, golden, DISPLAY_EGG, true)
+	small.Parent = fxFolder
+	local character = player.Character
+	local torso = character and (character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso") or character:FindFirstChild("HumanoidRootPart"))
+	local from = if torso and torso:IsA("BasePart") then torso.CFrame * CFrame.new(0, 0, -1.4) else cradle(sp) * CFrame.new(0, 6, 7)
+	flyIn(sp, small, from, true)
+	-- 2) cook / overload
+	local top = cookPhase(sp, small, tier, fxColor, true, function(p)
+		camTo(CFrame.lookAt(wide.Position - Vector3.new(0, 1.5, 0), p), 10)
 	end)
+	-- 3) the egg you crack
+	local h = EggLook.buildHatch(eggId, golden, HATCH_EGG)
+	if not h then
+		small:Destroy()
+		return function() end
+	end
+	h.model.Parent = fxFolder
+	if top then
+		small:Destroy()
+		crashDown(sp, h, top, tier, fxColor, true, function(p)
+			camTo(CFrame.lookAt(wide.Position, p:Lerp(cradle(sp).Position + Vector3.new(0, 2, 0), 0.5)), 12)
+		end)
+	else
+		riseAndGrow(sp, small, h)
+	end
+	camTo(shot(sp, 8.6, 4.2, HOVER + HATCH_EGG * 0.55), 4)
+	local live = liveEgg(sp, h)
 	crackRounds(function(i)
-		swell = 1 + i * 0.08
-		bright = i * 0.2
-		shakeUntil = os.clock() + 0.35 + i * 0.1
-		punch = 1
+		crack(h, live, i, fxColor, eggColor, true)
 	end)
-	-- 4) burst
-	alive = false
-	driver:Disconnect()
-	local centre = land + Vector3.new(0, 2.6 * swell, 0)
-	shards(fxFolder, centre, eggColors(a), 0.8, 46, 22)
-	a.model:Destroy()
-	pcall(Effects.burst, centre, "legendary", rarityColor)
-	ring(land, 24, rarityColor, 0.7)
+	eggTitle.Visible = false
+	-- 4) build-up + burst
+	camTo(shot(sp, 7.2, 3.9, HOVER + HATCH_EGG * 0.5), 2.5)
+	local endBuild = buildUp(h, live, tier, fxColor, true)
+	stopLive(live, h, sp)
+	endBuild()
 	hatchCue:Fire("burst", result.rarity or 1, rarityName)
 	flash.BackgroundColor3 = accent:Lerp(WHITE, 0.6)
 	flash.BackgroundTransparency = 0.05
-	tween(flash, 0.7, { BackgroundTransparency = 1 })
-	eggTitle.Visible = false
-	-- 5) the silhouette, big, in an aura of the rarity's colour; then colour
-	local m = makeCharacter(result.skinId)
-	local turn: RBXScriptConnection? = nil
+	tween(flash, 0.6 + tier.slow, { BackgroundTransparency = 1 })
+	HatchFx.post({ cc = { Brightness = 0.25 }, bloom = { Intensity = 0.5 + tier.bloom * 0.4 } }, 0)
+	HatchFx.post({ cc = { Brightness = 0, Contrast = 0.08, TintColor = WHITE }, bloom = HatchFx.postBloomBase() }, 0.9 + tier.slow)
+	burst(sp, h, tier, fxColor, true)
+	liftDome(sp.inc, 4, 0.6)
+	camTo(shot(sp, if tier.fancy then 12.5 else 10.5, 4.4, 2.6), if tier.slow > 0 then 1.5 else 3)
+	task.wait(0.25 + tier.slow * 0.6)
+	-- 5) the lawyer
+	local height = if tier.fancy then 5.4 else 4.6
+	local m, colour, stop = riseLawyer(sp, result.skinId, height, rarityName)
+	camTo(shot(sp, if tier.fancy then 11 else 9.2, 3.6, height * 0.28), 3)
+	task.wait(0.9)
+	colour()
+	flash.BackgroundColor3 = WHITE
+	flash.BackgroundTransparency = 0.2
+	tween(flash, 0.45, { BackgroundTransparency = 1 })
 	if m then
-		local stand = standLawyer(m, land, 8.5, side)
-		m.Parent = fxFolder
-		local restore = silhouette(m)
-		aura(m, rarityColor)
-		local camTo = CFrame.lookAt(land + side * 17 + Vector3.new(0, 5.5, 0), land + Vector3.new(0, 4.5, 0))
-		local tr = os.clock()
-		turn = RunService.Heartbeat:Connect(function()
-			local u = os.clock() - tr
-			local rise = easeOut(u / 0.6, 3)
-			m:PivotTo(stand * CFrame.new(0, -2.5 * (1 - rise), 0) * CFrame.Angles(0, math.sin(u * 0.6) * 0.3, 0))
-			cam.CFrame = camHome:Lerp(camTo, easeOut(u / 0.9, 3))
-		end)
-		task.wait(1.1)
-		restore()
-		flash.BackgroundColor3 = WHITE
-		flash.BackgroundTransparency = 0.15
-		tween(flash, 0.5, { BackgroundTransparency = 1 })
-		pcall(Effects.burst, land + Vector3.new(0, 4, 0), "legendary", rarityColor)
+		local mid = cradle(sp).Position + Vector3.new(0, height * 0.5, 0)
+		HatchFx.sparks(mid, fxColor, 24, 20)
+		if tier.fancy then
+			pcall(Effects.burst, mid, "legendary", fxColor)
+			HatchFx.shake(1.5, 12, 0.01, 0.4)
+		end
 	end
 	topName.Text = skin.Name
 	topName.TextColor3 = WHITE
@@ -1208,57 +1409,94 @@ local function playFancy(result: { [string]: any }, skin: any, rarityName: strin
 	continueLabel.Visible = false
 	topName.Visible = false
 	topSub.Visible = false
-	tween(dim, 0.3, { BackgroundTransparency = 0.45 })
-	return function()
-		if turn then
-			turn:Disconnect()
-		end
+	return stop
+end
+
+local function hatchCleanup()
+	camEnd()
+	showAfterHatch()
+	HatchFx.postEnd(0.35)
+	tween(vignette, 0.3, { BackgroundTransparency = 1 })
+	fxFolder:ClearAllChildren()
+	for _, pr in disabledPrompts do
+		pr.Enabled = true
+	end
+	table.clear(disabledPrompts)
+	if hatchSpot then
+		settleIncubator(hatchSpot.inc)
+		hatchSpot = nil
 	end
 end
 
--- Everyone else's view of a fancy hatch nearby: the egg falls onto that incubator, shakes three times, bursts, and
--- the lawyer appears (silhouette, then colour) for a moment. No camera moves, no words.
+------------------------------------------------------------------ everyone else's view (no camera, no words)
+local showing: { [Model]: boolean } = {}
 local function playShow(info: { [string]: any })
 	if typeof(info.at) ~= "Vector3" then
 		return
 	end
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
-	if not root or (root.Position - info.at).Magnitude > 220 then
+	if not root or (root.Position - info.at).Magnitude > 160 then
 		return
 	end
-	local _, rarityColor = rarityInfo(info.rarity or 1)
-	local land = landingSpot(info.at)
-	local a = newActor(info.egg or "Briefcase", info.golden == true, 5.2, fxFolder)
-	fall(a, land, nil)
-	ring(land, 18, rarityColor, 0.6)
-	for i = 1, 3 do
-		local t0 = os.clock()
-		while os.clock() - t0 < 0.55 do
-			local jitter = if os.clock() - t0 < 0.3 then CFrame.Angles((math.random() - 0.5) * 0.3, 0, (math.random() - 0.5) * 0.3) else CFrame.new()
-			actorSet(a, CFrame.new(land) * jitter, 1 + i * 0.08, i * 0.2)
-			RunService.Heartbeat:Wait()
-		end
+	local inc = Incubator.find(info.at, 14)
+	if not inc or not Incubator.isV5(inc) or showing[inc] or (hatchSpot and hatchSpot.inc == inc) then
+		return
 	end
-	local centre = land + Vector3.new(0, 2.8, 0)
-	shards(fxFolder, centre, eggColors(a), 0.8, 30, 22)
-	a.model:Destroy()
-	pcall(Effects.burst, centre, "legendary", rarityColor)
-	local m = makeCharacter(info.skinId or "")
-	if m then
-		local look = Vector3.new(root.Position.X - land.X, 0, root.Position.Z - land.Z)
-		standLawyer(m, land, 8.5, look)
-		m.Parent = fxFolder
-		local restore = silhouette(m)
-		local glow = aura(m, rarityColor)
-		task.wait(1)
-		restore()
+	showing[inc] = true
+	local ok, err = pcall(function()
+		local rarityName, rarityColor = rarityInfo(info.rarity or 1)
+		local tier = HatchFx.ladder(rarityName)
+		local fxColor: any = if tier.rainbow then HatchFx.RAINBOW else rarityColor
+		local sp: Spot = { inc = inc, front = Incubator.front(inc), floor = Incubator.eggSpot(inc) }
+		local eggId = info.egg or "Briefcase"
+		local golden = info.golden == true
+		local small = EggLook.build(eggId, golden, DISPLAY_EGG, true)
+		small.Parent = fxFolder
+		small:PivotTo(cradle(sp))
+		local top = cookPhase(sp, small, tier, fxColor, false, nil)
+		local h = EggLook.buildHatch(eggId, golden, HATCH_EGG)
+		if not h then
+			small:Destroy()
+			return
+		end
+		h.model.Parent = fxFolder
+		if top then
+			small:Destroy()
+			crashDown(sp, h, top, tier, fxColor, false, nil)
+		else
+			riseAndGrow(sp, small, h)
+		end
+		local live = liveEgg(sp, h)
+		for i = 1, 3 do
+			task.wait(0.5)
+			crack(h, live, i, fxColor, EggLook.color(eggId, golden), false)
+		end
+		local endBuild = buildUp(h, live, tier, fxColor, false)
+		stopLive(live, h, sp)
+		endBuild()
+		burst(sp, h, tier, fxColor, false)
+		liftDome(sp.inc, 4, 0.6)
+		task.wait(0.3 + tier.slow * 0.6)
+		local m, colour, stop = riseLawyer(sp, info.skinId or "", if tier.fancy then 5.4 else 4.6, rarityName)
+		task.wait(0.9)
+		colour()
 		task.wait(2.5)
-		m:Destroy()
-		if glow then
-			glow:Destroy()
+		stop()
+		if m then
+			m:Destroy()
 		end
+		if h.model.Parent then
+			h.model:Destroy()
+		end
+	end)
+	if not ok then
+		warn("[Eggs] hatch show:", err)
 	end
+	settleIncubator(inc)
+	task.delay(1.8, function()
+		showing[inc] = nil
+	end)
 end
 if HatchShow then
 	HatchShow.OnClientEvent:Connect(function(info)
@@ -1273,7 +1511,7 @@ local finish: (() -> ())? = nil
 
 local function close()
 	tween(revealScale, 0.18, { Scale = 0 }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-	for _, o in { stageBg, vignette, dim, floorBand } do
+	for _, o in { stageBg, dim, floorBand } do
 		tween(o, 0.25, { BackgroundTransparency = 1 })
 	end
 	for _, r in rings do
@@ -1289,16 +1527,7 @@ local function close()
 	reveal.Visible = false
 	eggView.Visible = false
 	nameShimmer.Enabled = false
-	clearStage()
-	fxFolder:ClearAllChildren()
-	if fancyCamera then
-		local cam = workspace.CurrentCamera
-		cam.CameraType = fancyCamera.type
-		if fancyCamera.subject then
-			cam.CameraSubject = fancyCamera.subject
-		end
-		fancyCamera = nil
-	end
+	hatchCleanup()
 	current = nil
 	busy = false
 	rollPrompt.Enabled = true
@@ -1335,11 +1564,7 @@ local function play(result: { [string]: any })
 	end
 	local accent = if rarityName == "Common" then Color3.fromRGB(235, 235, 245) else rarityColor
 	local ok, err = pcall(function()
-		if FANCY[rarityName] and typeof(result.at) == "Vector3" then
-			finish = playFancy(result, skin, rarityName, rarityColor, accent)
-		else
-			finish = playBasic(result, skin, rarityName, rarityColor, accent)
-		end
+		finish = playHatch(result, skin, rarityName, rarityColor, accent)
 	end)
 	if not ok then
 		warn("[Eggs] hatch animation:", err) -- (the lawyer is hatched anyway: show the panel)

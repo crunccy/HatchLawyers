@@ -142,10 +142,11 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   `tools/blender/bosses.py` → `tools/zones/BuildBosses.lua`). `Server.BossService` runs them (state in
   `ReplicatedStorage.BossStates`, `Remotes.Bosses`), `StarterPlayerScripts.Bosses` draws them; `Config.Bosses`.
   Sounds: `rbxasset://sounds/swoosh.wav` is NOT approved for this place - use the game's licensed ids.
-- `ReplicatedStorage.EggModels` + `Shared.EggLook` — the detailed eggs (Blender: `tools/blender/eggs.py` →
-  `tools/zones/BuildEggs.lua`); every egg the game shows (zones, loose, carried, the hatch) comes from
-  `EggLook.build(egg, golden, height, simple)`. Hatch (StarterPlayerScripts.Eggs, v4): Common-Epic = full-screen
-  stage, Legendary+ = in the world at the incubator (`Remotes.HatchShow` tells the other clients).
+- `ReplicatedStorage.EggModels` (v5 meshes) + `Shared.EggLook` — every egg the game shows (zones, loose, carried, the hatch)
+  comes from `EggLook.build(egg, golden, height, simple)` / `EggLook.buildHatch`. The hatch (StarterPlayerScripts.Eggs, v5) plays in the
+  world at the incubator for every rarity (`Shared.HatchFx` = the VFX kit + rarity ladder, `Shared.Incubator` = the
+  incubator's Blender clips from `ReplicatedStorage.IncubatorAnims`; `Remotes.HatchShow` lets others watch). Firms clone
+  `ServerStorage.Templates.IncubatorV5`. Made in Blender, uploaded by crnuch: docs/EGGS_V5.md.
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.

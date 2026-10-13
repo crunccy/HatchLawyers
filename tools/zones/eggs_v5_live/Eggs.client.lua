@@ -842,6 +842,48 @@ local camSaved: { type: Enum.CameraType, subject: Instance?, fov: number }? = ni
 local camGoal, camCur = CFrame.new(), CFrame.new()
 local camRate = 6
 local camConn: RBXScriptConnection? = nil
+-- while a hatch plays, the rest of the HUD and your own character (+ the eggs in your arms) are hidden: they'd sit
+-- right in front of the shot
+local hiddenGuis: { LayerCollector } = {}
+local hiddenParts: { [Instance]: boolean } = {}
+local function hideForHatch()
+	for _, g in player.PlayerGui:GetDescendants() do
+		if (g:IsA("ScreenGui") or g:IsA("BillboardGui")) and g ~= gui and g.Enabled and not g:IsDescendantOf(gui) then
+			g.Enabled = false
+			table.insert(hiddenGuis, g)
+		end
+	end
+	local ch = player.Character
+	local root = ch and ch:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if ch then
+		for _, d in ch:GetDescendants() do
+			if d:IsA("BasePart") or d:IsA("Decal") then
+				hiddenParts[d] = true
+			end
+		end
+	end
+	local carried = workspace:FindFirstChild("CarryVisuals")
+	if carried and root then
+		for _, d in carried:GetDescendants() do
+			if d:IsA("BasePart") and (d.Position - root.Position).Magnitude < 9 then
+				hiddenParts[d] = true
+			end
+		end
+	end
+end
+local function showAfterHatch()
+	for _, g in hiddenGuis do
+		g.Enabled = true
+	end
+	table.clear(hiddenGuis)
+	for d in hiddenParts do
+		if d.Parent then
+			(d :: any).LocalTransparencyModifier = 0
+		end
+	end
+	table.clear(hiddenParts)
+end
+
 local function camBegin()
 	cam = workspace.CurrentCamera
 	camSaved = { type = cam.CameraType, subject = cam.CameraSubject, fov = cam.FieldOfView }
@@ -849,6 +891,9 @@ local function camBegin()
 	camCur, camGoal = cam.CFrame, cam.CFrame
 	camConn = RunService.RenderStepped:Connect(function(dt)
 		camCur = camCur:Lerp(camGoal, 1 - math.exp(-dt * camRate))
+		for d in hiddenParts do
+			(d :: any).LocalTransparencyModifier = 1
+		end
 		cam.CFrame = camCur * HatchFx.shakeCFrame()
 	end)
 end
@@ -918,7 +963,7 @@ local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: b
 		if inc then
 			Incubator.glow(inc, HEAT, 0.2)
 			local secs = (37 / 30) / tier.cook
-			HatchFx.light(cradle(sp).Position + Vector3.new(0, 1.5, 0), HEAT, 12, 3, secs + 0.3)
+			HatchFx.light(cradle(sp).Position + Vector3.new(0, 1.5, 0), HEAT, 10, 0.9, secs + 0.3)
 			if watch and tier.cook < 2 then
 				HatchFx.shake(0.45, 9, 0.2, 0.3, secs - 0.5)
 			end
@@ -955,7 +1000,7 @@ local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: b
 		local at = cradle(sp).Position
 		HatchFx.sparks(at + Vector3.new(0, 1, 0), Color3.fromRGB(255, 205, 90), 46, 34, 1.3)
 		HatchFx.ring(CFrame.new(at + Vector3.new(0, 0.3, 0)), 10, rgbOf(fxColor), 0.5)
-		HatchFx.light(at, rgbOf(fxColor), 24, 6, 0.6)
+		HatchFx.light(at, rgbOf(fxColor), 20, 1.8, 0.6)
 		if watch then
 			HatchFx.shake(3.2, 14, 0.01, 0.5)
 			hatchCue:Fire("beat", 0)
@@ -980,7 +1025,13 @@ local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: b
 	end
 	-- the egg rockets up with a light trail
 	local start = cradle(sp).Position
-	local top = start + Vector3.new(0, 46, 0)
+	-- (incubators stand indoors: it rockets up to just under the ceiling, or 46 studs outside)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { fxFolder, egg, inc :: any, player.Character :: any }
+	local hit = workspace:Raycast(start + Vector3.new(0, 3, 0), Vector3.new(0, 60, 0), params)
+	local rise = if hit then math.max(7, hit.Position.Y - start.Y - 4) else 46
+	local top = start + Vector3.new(0, rise, 0)
 	local shell = egg.PrimaryPart
 	if shell then
 		local a0 = Instance.new("Attachment")
@@ -1014,7 +1065,7 @@ local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: b
 		RunService.Heartbeat:Wait()
 	end
 	HatchFx.sparks(top, fxColor, 34, 18, 1.5)
-	HatchFx.light(top, rgbOf(fxColor), 30, 6, 0.7)
+	HatchFx.light(top, rgbOf(fxColor), 26, 2.5, 0.7)
 	task.wait(0.35)
 	return top
 end
@@ -1039,7 +1090,7 @@ local function crashDown(sp: Spot, h: any, top: Vector3, tier: any, fxColor: any
 	HatchFx.ring(CFrame.new(at + Vector3.new(0, 0.25, 0)), 16, rgbOf(fxColor), 0.6, 1.6)
 	HatchFx.ring(CFrame.new(at + Vector3.new(0, 0.4, 0)), 9, Color3.new(1, 1, 1), 0.4)
 	HatchFx.dust(at + Vector3.new(0, 0.5, 0), Color3.fromRGB(230, 220, 210), 22)
-	HatchFx.light(at, rgbOf(fxColor), 22, 5, 0.6)
+	HatchFx.light(at, rgbOf(fxColor), 18, 1.8, 0.6)
 	if watch then
 		HatchFx.shake(4.2, 15, 0.01, 0.6)
 		hatchCue:Fire("beat", 0)
@@ -1117,7 +1168,7 @@ local function crack(h: any, live: Live, i: number, fxColor: any, eggColor: Colo
 	live.hop.v += 6 + i * 2
 	live.wob = 0.3 + i * 0.45
 	live.light.Color = col
-	live.light.Brightness = i * (if i == 3 then 1.8 else 0.9)
+	live.light.Brightness = i * (if i == 3 then 0.5 else 0.3)
 	live.light.Range = 8 + i * 2.5
 	local pt = if #h.chunks > 0 then h.chunks[math.random(1, #h.chunks)].Position else h.shell.Position
 	HatchFx.dust(pt, eggColor, 6 + i * 3)
@@ -1138,14 +1189,14 @@ local function buildUp(h: any, live: Live, tier: any, fxColor: any, watch: boole
 	local rays = if tier.rays > 0 then HatchFx.rays(centre, fxColor, tier.rays, 8 + tier.rays * 0.6, tier.build) else nil
 	local imp = if tier.implode then HatchFx.implode(centre, fxColor, if tier.blackhole then 13 else 9, if tier.blackhole then 220 else 140) else nil
 	if watch then
-		HatchFx.post({ cc = { Brightness = if tier.blackhole then -0.3 else -0.12, Contrast = 0.22 }, bloom = { Intensity = tier.bloom, Threshold = 0.85 } }, tier.build)
+		HatchFx.post({ cc = { Brightness = if tier.blackhole then -0.3 else -0.12, Contrast = 0.22 }, bloom = { Intensity = 0.4 + tier.bloom * 0.3, Threshold = 1.35 } }, tier.build)
 		HatchFx.shake(1.1 + tier.shake * 0.15, 22, tier.build, 0.15)
 	end
 	local t0 = os.clock()
 	while os.clock() - t0 < tier.build do
 		local a = (os.clock() - t0) / tier.build
 		live.jitter = 0.05 + a * 0.2
-		live.light.Brightness = 3 + a * 5
+		live.light.Brightness = 1.2 + a * 1.3
 		live.pulse.target = 1 + a * 0.08
 		RunService.Heartbeat:Wait()
 	end
@@ -1178,11 +1229,39 @@ local function burst(sp: Spot, h: any, tier: any, fxColor: any, watch: boolean)
 	if tier.pillar then
 		HatchFx.pillar(cradle(sp).Position, fxColor, 140, 5.5, 3.2)
 	end
-	HatchFx.light(centre, rgbOf(fxColor), 28, 8, 1.3)
+	HatchFx.light(centre, rgbOf(fxColor), 22, 2.5, 1.3)
 	if watch then
 		HatchFx.shake(tier.shake, 14, 0.01, 0.9)
 	end
 	task.spawn(HatchFx.breakApart, h, tier.take, root, tier.slow)
+end
+
+-- the dome lifts clear of the lawyer (the Open clip leaves it just above the cradle)
+local function liftDome(inc: Model?, dy: number, seconds: number)
+	if not inc then
+		return
+	end
+	local parts = {}
+	for _, n in { "Dome", "DomeRim", "DomeCap" } do
+		local p = inc:FindFirstChild(n)
+		if p and p:IsA("BasePart") then
+			parts[p] = p.CFrame
+		end
+	end
+	task.spawn(function()
+		local t0 = os.clock()
+		while true do
+			local a = math.min((os.clock() - t0) / seconds, 1)
+			local e = 1 - (1 - a) ^ 3
+			for p, cf in parts do
+				p.CFrame = cf + Vector3.new(0, dy * e, 0)
+			end
+			if a >= 1 then
+				break
+			end
+			RunService.Heartbeat:Wait()
+		end
+	end)
 end
 
 -- 5) the lawyer rises out of the cradle as a silhouette; returns (model, bring-the-colours-back, stop)
@@ -1244,6 +1323,7 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 			table.insert(disabledPrompts, pr)
 		end
 	end
+	hideForHatch()
 	camBegin()
 	HatchFx.postBegin()
 	HatchFx.post({ cc = { Saturation = 0.12, Contrast = 0.06 }, dof = { FarIntensity = 0.35, FocusDistance = 11, InFocusRadius = 5 } }, 0.5)
@@ -1294,15 +1374,16 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 	flash.BackgroundColor3 = accent:Lerp(WHITE, 0.6)
 	flash.BackgroundTransparency = 0.05
 	tween(flash, 0.6 + tier.slow, { BackgroundTransparency = 1 })
-	HatchFx.post({ cc = { Brightness = 0.35 }, bloom = { Intensity = tier.bloom * 1.4 } }, 0)
+	HatchFx.post({ cc = { Brightness = 0.25 }, bloom = { Intensity = 0.5 + tier.bloom * 0.4 } }, 0)
 	HatchFx.post({ cc = { Brightness = 0, Contrast = 0.08, TintColor = WHITE }, bloom = HatchFx.postBloomBase() }, 0.9 + tier.slow)
 	burst(sp, h, tier, fxColor, true)
+	liftDome(sp.inc, 4, 0.6)
 	camTo(shot(sp, if tier.fancy then 12.5 else 10.5, 4.4, 2.6), if tier.slow > 0 then 1.5 else 3)
 	task.wait(0.25 + tier.slow * 0.6)
 	-- 5) the lawyer
 	local height = if tier.fancy then 5.4 else 4.6
 	local m, colour, stop = riseLawyer(sp, result.skinId, height, rarityName)
-	camTo(shot(sp, if tier.fancy then 12.5 else 10.5, 4.4, height * 0.62), 3)
+	camTo(shot(sp, if tier.fancy then 11 else 9.2, 3.6, height * 0.28), 3)
 	task.wait(0.9)
 	colour()
 	flash.BackgroundColor3 = WHITE
@@ -1333,6 +1414,7 @@ end
 
 local function hatchCleanup()
 	camEnd()
+	showAfterHatch()
 	HatchFx.postEnd(0.35)
 	tween(vignette, 0.3, { BackgroundTransparency = 1 })
 	fxFolder:ClearAllChildren()
@@ -1394,6 +1476,7 @@ local function playShow(info: { [string]: any })
 		stopLive(live, h, sp)
 		endBuild()
 		burst(sp, h, tier, fxColor, false)
+		liftDome(sp.inc, 4, 0.6)
 		task.wait(0.3 + tier.slow * 0.6)
 		local m, colour, stop = riseLawyer(sp, info.skinId or "", if tier.fancy then 5.4 else 4.6, rarityName)
 		task.wait(0.9)

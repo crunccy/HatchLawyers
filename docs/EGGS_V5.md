@@ -15,16 +15,8 @@ The user's choices:
   - Legendary and up overload and launch the egg into the sky.
 - **GitHub:** learn techniques from open repos and write our own code (spr springs and RbxCameraShaker noise shake, both MIT).
 
-## Status (2026-10-12)
-
-**Done**
-- The models, textures and clips are built.
-- The upload pipeline works.
-- The animations were checked in Studio Edit mode: the incubator clips, the cracked egg and the blast break.
-
-**Blocked on the place owner.** Assets uploaded by mr_blox174 don't load in crnuch's place (verified: crnuch's texture renders, ours doesn't; our meshes give "Failed to load mesh asset"). So **crnuch must upload**: one setting and one command-bar line, all data already in the place (below).
-
-**Ready to install afterwards.** The scripts are in `src/` and `tools/zones/eggs_v5_live/`.
+## Status
+**Live since 2026-10-13.** crnuch uploaded the assets (ids: `tools/zones/egg_assets.json`) and mr.robe's session installed and playtested it (SESSION_LOG). The upload data was removed from the place afterwards. The upload and install steps below are kept for when the models change.
 
 ## What it looks like
 
