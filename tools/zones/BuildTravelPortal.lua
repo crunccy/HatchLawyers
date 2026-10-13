@@ -8,7 +8,8 @@
 -- Every block is a studded Part (MaterialVariant BrickStuds) except tags: "neon" = glowing Neon, no collision;
 -- "field" = the ForceField portal face; "trigger" = the invisible walk-in box (Name "Trigger", Touched by the
 -- client); shape "cyl" = Cylinder; "a" = Transparency. Names the client looks up: Gem1-6 (attribute Zone = the zone
--- Id, lane order), SwirlArms (a Model, spun), SwirlDisc / SwirlCore (particles), SignPlate (gets "TRAVEL").
+-- Id, lane order), SwirlArms (a Model, spun), SwirlDisc / SwirlCore (particles), SignPlate (gets "TRAVEL"); v2
+-- (2026-10-13 mr.robe, the sci-fi pad from his references): FloatRing1-3 (Models, turned + bobbed), Beam (breathes).
 
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local CollectionService = game:GetService("CollectionService")
@@ -115,13 +116,32 @@ for _, b in data.parts do
 	if gem and zones[tonumber(gem)] then
 		p:SetAttribute("Zone", zones[tonumber(gem)].Id)
 	end
-	p.Parent = if b.n == "SwirlArm" then arms else portal
+	if string.match(b.n, "^FloatRing%d$") then
+		-- (v2) each floating ring round the light column is its own model: the client turns + bobs it
+		local ring = portal:FindFirstChild(b.n) :: Model?
+		if not ring then
+			ring = Instance.new("Model")
+			;(ring :: Model).Name = b.n
+			;(ring :: Model).Parent = portal
+		end
+		p.Parent = ring
+	else
+		p.Parent = if b.n == "SwirlArm" then arms else portal
+	end
 	blocks += 1
 end
--- the arms spin round the portal's centre, facing out of it (the client turns the Model about its pivot's Z)
+-- the arms spin round the swirl's centre (the client turns the Model about its pivot's Z): Z = the swirl disc's axis
+-- (a Cylinder's axis is its X), so it works for v1's upright portal and v2's flat one
 local disc = portal:FindFirstChild("SwirlDisc") :: BasePart?
 if disc then
-	arms.WorldPivot = CFrame.new(disc.Position) * placeAt.Rotation
+	arms.WorldPivot = CFrame.fromMatrix(disc.Position, disc.CFrame.UpVector, disc.CFrame.LookVector)
+end
+-- the floating rings turn about their own centres, upright
+for _, ring in portal:GetChildren() do
+	if ring:IsA("Model") and string.match(ring.Name, "^FloatRing%d$") then
+		local box = ring:GetBoundingBox()
+		ring.WorldPivot = CFrame.new(box.Position) * placeAt.Rotation
+	end
 end
 -- "TRAVEL" on the sign plate (its front is the model's +Z = NormalId.Back)
 local sign = portal:FindFirstChild("SignPlate") :: BasePart?

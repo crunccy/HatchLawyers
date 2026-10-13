@@ -163,7 +163,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `Workspace.Hub.TravelPortal` (tag `TravelPortal`, from Blender: `tools/blender/travel_portal.py` →
   `tools/zones/BuildTravelPortal.lua`) + `ServerScriptService.TravelServer` (`Remotes.Travel`) + `StarterPlayerScripts.Travel`
   (the TRAVEL tile + travel map): zone travel since 2026-10-13; replaced the six `Hub.ZoneTeleports` pads (archived in
-  `ServerStorage.Old_ZoneTeleports`). No travel while carrying eggs (`Config.Zones.Travel`).
+  `ServerStorage.Old_ZoneTeleports`). No travel while carrying eggs (`Config.Zones.Travel`). Portal v2 (mr.robe's
+  references): a sci-fi pad + light column + floating halo (FloatRing1-3 turned by the client). The trip itself is
+  `Shared.TravelFx`: one animation per destination, growing down the lane (zone 1 a beam-up ... Space Base a hyperspace
+  tunnel flight); it sets a local `Traveling` attribute (Bosses.client skips its ragdoll meanwhile).
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.
@@ -250,6 +253,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - A Client `execute_luau` that is still running when anything changes `CameraType` gets it reset by the tool
   ("Resetting from Custom back to Scriptable"), so a cutscene's camera breaks or stays stuck. Keep client calls short
   (trigger, return) and wait in a *Server* call; to move the camera yourself, do it in `task.delay` after the call returns.
+- `screen_capture` takes ~10 s to return and shoots when it starts: to catch a moment, put a mouse-input `wait` of
+  the right length just before it (and don't think between the calls). Client code that takes the camera: start it
+  with `task.delay` from execute_luau so the call has returned first.
 - Studio must be the front window during a playtest you watch: in the background RenderStepped pauses (hatch
   cameras freeze, the screen goes white). Chat commands: `TextChatService.TextChannels.RBXGeneral:SendAsync(";hatch …")`.
 - Test coins/skins: during play, parent a temporary Script in the *Server* datamodel (it shares PlayerData).

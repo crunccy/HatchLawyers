@@ -22,6 +22,7 @@ local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
+local TravelFx = require(Shared:WaitForChild("TravelFx") :: ModuleScript) :: any -- (the trip animations, 2026-10-13 mr.robe)
 local TravelRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Travel") :: RemoteFunction
 
 local ZONES = Config.Zones.List
@@ -162,45 +163,46 @@ local function render()
 	menuEntry.setAlert(false)
 end
 
------------------------------------------------------------------- the trip: a circle wipe in the destination's colour
-local wipeGui = make("ScreenGui", { Name = "TravelWipe", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 60, Enabled = false,
-	Parent = player:WaitForChild("PlayerGui") })
-local wipe = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(0, 0),
-	BackgroundColor3 = HOME_COLOR, Parent = wipeGui }, { make("UICorner", { CornerRadius = UDim.new(0.5, 0) }), Skin.stroke(8) })
-Skin.studs(wipe, 0.85)
-
-local function cover(color: Color3, closing: boolean): Tween
-	local cam = workspace.CurrentCamera
-	local vs = if cam then cam.ViewportSize else Vector2.new(1280, 720)
-	local big = math.ceil(vs.Magnitude * 1.15)
-	wipe.BackgroundColor3 = color
-	wipeGui.Enabled = true
-	local t = TweenService:Create(wipe, TweenInfo.new(if closing then 0.3 else 0.4, Enum.EasingStyle.Quad,
-		if closing then Enum.EasingDirection.In else Enum.EasingDirection.Out), { Size = if closing then UDim2.fromOffset(big, big) else UDim2.fromOffset(0, 0) })
-	if closing then
-		wipe.Size = UDim2.fromOffset(0, 0)
-	end
-	t:Play()
-	return t
-end
-
+------------------------------------------------------------------ the trip (Shared.TravelFx): an animation per destination that
+-- grows down the lane - zone 1 a beam-up and a flash ... Space Base a hyperspace flight through a vortex tunnel. HOME
+-- is the first step, in green. (2026-10-13 mr.robe; it replaced the circle wipe.)
 local REASONS = {
 	carrying = "Walk your eggs home to hatch them first!",
 	license = "You need that zone's Law License first!",
 	cooldown = "One moment...",
 }
+local flarePortals: (seconds: number) -> () -- (the portal you leave from lights up; defined with the portal below)
 local function go(c: Card)
 	if busy or not c.go.button:GetAttribute("Ready") then
 		return
 	end
+	-- knocked down by a boss (Bosses.client ragdolls you in the Physics state): get up first
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Physics then
+		message.Text = "Get back on your feet first!"
+		return
+	end
 	busy = true
 	message.Text = ""
-	cover(c.color, true).Completed:Wait()
 	win.hide()
-	local ok, reason = TravelRemote:InvokeServer(c.id)
-	task.wait(0.1)
-	cover(c.color, false).Completed:Wait()
-	wipeGui.Enabled = false
+	local index = 1
+	for i, z in ZONES do
+		if z.Id == c.id then
+			index = i
+		end
+	end
+	flarePortals(TravelFx.tier(index).charge + 0.4)
+	local ran, ok, reason = pcall(TravelFx.trip, {
+		index = index,
+		color = c.color,
+		go = function()
+			return TravelRemote:InvokeServer(c.id)
+		end,
+	})
+	if not ran then -- (an animation error must never leave the map stuck "busy")
+		warn("[Travel] " .. tostring(ok))
+		ok, reason = false, nil
+	end
 	busy = false
 	if not ok then
 		win.open()
@@ -231,7 +233,8 @@ menuEntry.button.Activated:Connect(function()
 end)
 
 ------------------------------------------------------------------ the portal (each client draws its own view)
-type Portal = { model: Model, arms: Model?, home: CFrame?, gems: { BasePart } }
+-- (v2 portal, 2026-10-13: FloatRing1-3 turn + bob round the light column, the Beam breathes and flares on a trip)
+type Portal = { model: Model, arms: Model?, home: CFrame?, gems: { BasePart }, rings: { { m: Model, home: CFrame } }, beam: BasePart?, beamBase: number }
 local portals: { [Model]: Portal } = {}
 local lastTouch = 0
 
@@ -260,7 +263,7 @@ local function track(model: Instance)
 	if not model:IsA("Model") or portals[model] then
 		return
 	end
-	local p: Portal = { model = model, gems = {} }
+	local p: Portal = { model = model, gems = {}, rings = {}, beam = nil, beamBase = 0.86 }
 	portals[model] = p
 	task.spawn(function()
 		-- (the portal streams in as one piece: wait for it)
@@ -274,7 +277,17 @@ local function track(model: Instance)
 		for _, d in model:GetChildren() do
 			if d:IsA("BasePart") and string.match(d.Name, "^Gem%d$") then
 				table.insert(p.gems, d)
+			elseif d:IsA("Model") and string.match(d.Name, "^FloatRing%d$") then
+				table.insert(p.rings, { m = d, home = d:GetPivot() })
 			end
+		end
+		table.sort(p.rings, function(a, b)
+			return a.m.Name < b.m.Name
+		end)
+		local beam = model:FindFirstChild("Beam")
+		if beam and beam:IsA("BasePart") then
+			p.beam = beam
+			p.beamBase = beam.Transparency
 		end
 		lightGems(p)
 		-- particles: the game's own effects kit, in the portal's colours (CLAUDE.md: no hand-rolled emitters)
@@ -303,13 +316,41 @@ for _, m in CollectionService:GetTagged("TravelPortal") do
 	track(m)
 end
 
--- the spiral arms turn (anchored parts, moved locally every frame; one small model)
-local spin = 0
+-- a trip from the pad: the portal you stand on (within 16 studs) flares - brighter beam, faster rings
+local flareUntil = 0
+flarePortals = function(seconds: number)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not root then
+		return
+	end
+	for _, p in portals do
+		if p.model.Parent and (p.model:GetPivot().Position - root.Position).Magnitude < 16 then
+			flareUntil = os.clock() + seconds
+		end
+	end
+end
+
+-- the spiral arms turn, the floating rings turn (alternate ways) and bob, the beam breathes (anchored parts, moved
+-- locally every frame; small models)
+local spin, ringSpin = 0, 0
 RunService.RenderStepped:Connect(function(dt)
-	spin = (spin + dt * 1.6) % (math.pi * 2)
+	local flaring = os.clock() < flareUntil
+	spin = (spin + dt * (if flaring then 5 else 1.6)) % (math.pi * 2)
+	ringSpin = (ringSpin + dt * (if flaring then 3.2 else 0.7)) % (math.pi * 2)
+	local t = os.clock()
 	for _, p in portals do
 		if p.arms and p.home and p.arms.Parent then
 			p.arms:PivotTo((p.home :: CFrame) * CFrame.Angles(0, 0, -spin))
+		end
+		for k, r in p.rings do
+			if r.m.Parent then
+				local dir = if k % 2 == 0 then -1 else 1
+				r.m:PivotTo(r.home * CFrame.new(0, math.sin(t * 1.3 + k * 2) * 0.35, 0) * CFrame.Angles(0, ringSpin * dir * (0.8 + k * 0.25), 0))
+			end
+		end
+		if p.beam and p.beam.Parent then
+			local base = if flaring then p.beamBase - 0.3 else p.beamBase
+			p.beam.Transparency = math.clamp(base + math.sin(t * 2.2) * 0.04, 0, 1)
 		end
 	end
 end)

@@ -5,9 +5,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-13:** cooler teleporters (Blender) + a teleport animation per zone that escalates
-  like the egg hatches (mr.robe's reference images). Overlaps crnuch's ZONE TRAVEL (portal + map, open item below):
-  asking mr.robe how to combine them before building. Don't change the travel / teleport visuals meanwhile.
+- (nothing claimed)
 
 ## Open items
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
@@ -33,17 +31,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
       where they are now (seeded rng, untouched). Before re-running: anything hand-edited in Workspace.Zones since
       the last build gets archived to ServerStorage.Old_Zones - check first. Playtest: walk the gate sides, try to
       jump onto walls from the tallest props in every zone, camera close to a wall doesn't snap.
-- [ ] **Push + playtest ZONE TRAVEL** (user's pick "A", built 2026-10-13 in a cloud session, not in Studio yet):
-      1. serve `tools/zones` (tools/studio_sync/serve_files.ps1 -Root tools/zones), run `tools/zones/BuildTravelPortal.lua`
-         in Edit mode: builds `Workspace.Hub.TravelPortal` where the six `Hub.ZoneTeleports` pads were (facing the
-         plaza; set PLACE_AT if it lands badly) and archives the pads to `ServerStorage.Old_ZoneTeleports`.
-      2. new Script `ServerScriptService.TravelServer` (src/TravelServer.server.lua), new LocalScript
-         `StarterPlayerScripts.Travel` (src/Travel.client.lua); `Config` (zone `Color`s + `Config.Zones.Travel`).
-      3. push `Shared.HudMenu` too: `HudMenu.Icons.Travel = rbxassetid://136144875676517` (crnuch uploaded
-         `art/icons/travel.png` 2026-10-13); the TRAVEL tile uses it (Star until it's in).
-      Playtest: walk into the portal → the map opens; GO to an owned zone (circle wipe, land facing down the lane,
-      a burst both ends); locked zones grey with a padlock + license; carrying an egg greys every GO + the orange
-      strip; HOME lands at your firm; the arms spin, particles on the face, gems lit only for your zones; phone size.
+- [ ] **Zone travel: the rest of the playtest** (pushed to Studio 2026-10-13 by mr.robe's session, with the v2
+      portal + the per-zone trip animations - entry below). Checked: the map opens from the TRAVEL tile, GO trips to
+      zone 1 and 6 land facing down the lane, carrying eggs blocks GO, every animation step plays. Still to check:
+      walking onto the pad opens the map; locked zones grey with a padlock; HOME; the gems lit only for your zones;
+      the floating rings / swirl / beam motion; another player watching (they see the server's bursts only);
+      phone size; zones 2, 4, 5 eye-checks.
 - [ ] **Proposal: dynamic Supreme screen crack + mutated eggs (Diamond / Rainbow / Cosmic)** -
       docs/PROPOSAL_SUPREME_CRACK_AND_MUTATIONS.md (crnuch, 2026-10-13; not built, decide + claim first). Note in it:
       Golden's luck x4 is already capped on Food / Ocean / Brainrot / Space eggs (x2.2-3.6), so higher mutations
@@ -53,9 +46,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
       lawyer's "Earns x" includes the x1.25 (hatch screen, LAWYERS panel, name tag); (3) the Supreme screen's cost +
       office count, eggs cheap again after a Supreme; (4) UPGRADE MAX / UPGRADE ALL; (5) LAWYERS panel at phone size
       (Device emulator, landscape) incl. the white Supreme pill; (6) desktop size unchanged.
-- [ ] **`Skin.Assets.Rays` / `Skin.Assets.Glow` don't load** (ContentProvider: Failure, 2026-10-13), so the
-      sunburst + glow behind Skin cards are missing everywhere. Re-upload them from crnuch's account (tools/ui_textures.py)
-      or point them at Effects' `rays` / `glow` textures (those load).
+- [ ] **`Skin.Assets.Rays` / `Skin.Assets.Glow` don't load** (2026-10-13): the output says "The experience doesn't
+      have access permission to use asset id 89557955610458 / 75348129891036", so the sunburst + glow behind Skin cards
+      (shop, travel map ...) are missing everywhere. crnuch: share them with the experience (Creator Dashboard →
+      the asset → permissions) or re-upload from the owner account (tools/ui_textures.py); or point them at Effects'
+      `rays` / `glow` textures (those load).
+- [ ] **Decide: minigames + upper floors** - docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md (mr.robe asked 2026-10-13;
+      9 minigame ideas, 9 floor ideas, top 3 of each). Pick, write "user's call", claim before building.
 - [ ] **Eye-check the Mythic / Supreme cinematics in a real window + at phone size**, and a real Mythic / Supreme
       hatch with a second player in the server (the banner was only tested with faked messages). The 10-13 stud
       Supreme lawyers at desks: check name tags, the client standing across the desk, and the Merger / LAWYERS previews.
@@ -133,6 +130,56 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — mr.robe, local session: zone travel live, the portal remade from mr.robe's references, a trip animation per zone; ideas doc
+User: "Change the teleporters to look way cooler, make the models in blender, also make animations for each one that
+progressively get better and better, just like the ones that you made for opening the eggs, Use the reference
+images, but also start slow"; "List me some minigames ..."; "ideas of what we could have on the upstairs floors".
+- **User's call (mr.robe):** keep crnuch's ONE Travel Portal + map (instead of six pads) and build on it.
+- **crnuch's zone travel pushed to Studio:**
+  - New `TravelServer` (Script), `StarterPlayerScripts.Travel` and `Shared.TravelFx`.
+  - `Shared.HudMenu` (the Travel icon).
+  - `Shared.Config`: ONLY the zone `Color`s and `Config.Zones.Travel`. Config's mutation work stays in `src/`, so
+    src/Config still differs from live on purpose.
+  - The six `Hub.ZoneTeleports` pads are archived in `ServerStorage.Old_ZoneTeleports`.
+- **Portal v2** (`tools/blender/travel_portal.py`, crnuch's v1 in git history → `travel_portal.json` →
+  `BuildTravelPortal.lua`, 198 blocks; renders `art/travel/portal.png` + `portal_under.png`). The three references:
+  - a white tiered stage under a halo: a three-step round platform with glowing stripes;
+  - a teleporter pad with an emitter ring above: a dark pad with glowing rings, a translucent light column, and a
+    floating HALO with concentric glowing rings underneath, the six zone gems on its rim and two pylons;
+  - a green iridescent vortex: a teal / mint swirl lying flat on the pad.
+
+  Plus three floating rings round the column (`FloatRing1-3`: the client turns + bobs them) and "TRAVEL" floating on
+  top. The builder now gives the swirl a pivot along the disc's axis (it lies flat).
+- **Trip animations** (`Shared.TravelFx`, replaces the circle wipe; the server move happens under the flash / in the
+  tunnel):
+
+  | Zone | Trip animation |
+  |---|---|
+  | 1 Briefcase Bay | floor ring, light column, fade up in sparkles, flash (your normal camera) |
+  | 2 Pet Park | + rising rings |
+  | 3 Brainrot Blvd | + float, emitter halo overhead, camera push-in |
+  | 4 Food Court | + implode, shockwave, a short vortex TUNNEL flight (glowing iridescent Blender rings, `EggModels.FxRing`) |
+  | 5 Ocean Shore | + tiered platform rising, the camera circles, a longer tunnel with your avatar flying ahead (trail) |
+  | 6 Space Base | + the world drains of colour, orbiting rings, long tunnel with star streaks, white warp exit, god rays + confetti + the sting |
+
+  HOME uses step 1 in green. The portal you leave from flares.
+- **Playtested:**
+  - real trips to zone 1 and zone 6 (land facing down the lane);
+  - steps 3 + 6 replayed client-side with a stand-in server call (charge, tunnel, landing);
+  - no warnings except the asset permissions below.
+- **Fixed during the playtest:**
+  - a `WaitForChild("PlayerModule")` hung the first trip (this place has none): controls now freeze via WalkSpeed
+    / Jump;
+  - a boss ragdoll mid-charge left you stuck in Physics: `Bosses.client` skips its ragdoll while the local
+    `Traveling` attribute is set, and GO waits until you're back on your feet;
+  - the tunnel was blown out white (less white in the rings, gentler bloom, star streaks kept off the camera's
+    path);
+  - the light pillars were too wide.
+- **Found:** `Skin.Assets.Rays` / `Glow` fail with "experience doesn't have access permission" (open item updated).
+- **Ideas:** docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md (open item).
+- Test-tool notes (CLAUDE.md): screen captures take ~10 s to come back, so time a capture with a mouse "wait"
+  right before it; start camera-taking client code with `task.delay` so the tool doesn't reset the camera.
 
 ## 2026-10-13 — mr.robe, local session: office upgrade animations in the LAWYERS panel
 User: "do upgrade animations when the character gets upgraded in the lawyers tab, make it way bigger for the max

@@ -858,6 +858,11 @@ local function ragdoll(away: Vector3, power: number, seconds: number)
 	if not character or not root or not humanoid or humanoid.Health <= 0 then
 		return
 	end
+	-- mid-trip (Shared.TravelFx anchors you and plays its animation): no fling, no ragdoll - its get-up step would run
+	-- while you're anchored and leave you stuck in Physics (2026-10-13 playtest)
+	if player:GetAttribute("Traveling") then
+		return
+	end
 	local fling = away * power + Vector3.new(0, 32, 0)
 	if ragdolled or seconds <= 0 then
 		root.AssemblyLinearVelocity = fling
