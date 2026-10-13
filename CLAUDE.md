@@ -212,11 +212,18 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema: **v17, live in Studio and `src/`** since 2026-10-13 (v14 firm areas, v15 minigames, v16 egg zones,
-  v17 the economy pass's `Eggs.RunOpened`, renumbered from its old "v14" when merged). Never reuse a
+- Save schema: **v17 live in Studio; `src/` is v18** (2026-10-13: lawyer mutations + selling - `Stars` now means the
+  MUTATION tier, 1 Normal / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`).
+  (v14 firm areas, v15 minigames, v16 egg zones, v17 the economy pass's `Eggs.RunOpened`.) Never reuse a
   migration number that has shipped. `PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`,
   `Zones = { License, Carry, Speed, Carried }`. Before adding any saved field: bump `SCHEMA_VERSION` and add a
   `MIGRATIONS` entry.
+- **Mutations replaced merging (user's calls 2026-10-13):** the Mutation Machine (`Hub.MergeMachine`, the old Lawyer
+  Merger; `Remotes.MergeSelected`) takes 3 of the same lawyer + tier and TRIES for the next tier
+  (`Config.Lawyers.Mutations[t].Chance`, shown first); a fizzle takes all 3 (never leaves you with no lawyers).
+  Hatches can roll a mutation (`HatchMutation`, golden eggs more). A mutation is shown by RECOLOURING the whole lawyer
+  (`Shared.MutationLook`, called by `SkinLook.dress(model, id, stars)`; preview: `tools/blender/mutation_preview.py`),
+  no extra effects. Selling + locking: `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,

@@ -18,12 +18,13 @@ local Formulas = require(ReplicatedStorage.Shared.Formulas)
 -- CasesDone counts finished cases (for free skill rolls); SkillRolls counts paid rolls (sets the price).
 export type LawyerData = {
 	Id: string,
-	Stars: number,
+	Stars: number, -- the MUTATION tier since 2026-10-13: 1 Normal, 2 Shiny, 3 Diamond, 4 Cosmic (was merge stars)
 	Skills: { Formulas.OwnedSkill },
 	PendingSkill: Formulas.OwnedSkill?,
 	SkillRolls: number,
 	FreeSkillRolls: number,
 	CasesDone: number,
+	Locked: boolean?, -- v18: never sold (LockLawyer)
 }
 -- An office (v12): its level (office upgrades) and the uid of the lawyer sitting in it, if any.
 -- Desks[i] is office i; there is one per office the firm has (Firm.Segments x 2).
@@ -71,7 +72,7 @@ export type Data = {
 
 type Session = { data: Data, releasing: boolean }
 
-local SCHEMA_VERSION = 17
+local SCHEMA_VERSION = 18
 local STORE_NAME = "PlayerData"
 local AUTOSAVE_INTERVAL = 60
 local LOCK_EXPIRY = 5 * 60 -- a lock this old belongs to a crashed server and can be taken over
@@ -81,6 +82,11 @@ local SAVE_ATTEMPTS = 3
 
 -- MIGRATIONS[n] upgrades a version-n record to version n + 1.
 local MIGRATIONS: { [number]: (any) -> any } = {
+	-- v18 (2026-10-13): lawyer MUTATIONS + selling. `Stars` keeps its numbers but now means the mutation tier (Gold 2 ->
+	-- Shiny, Rainbow 3 -> Diamond, same power), so nothing is rewritten. New optional Lawyers[uid].Locked (nil = not).
+	[17] = function(data)
+		return data
+	end,
 	-- v16: egg zones (Config.Zones). No License, the starting bag and shoes, nothing carried.
 	[15] = function(data)
 		data.Zones = data.Zones or { License = 0, Carry = 1, Speed = 1, Carried = {} }
@@ -439,7 +445,7 @@ local function syncAttributes(player: Player, data: Data)
 		if office then
 			placed += 1
 		end
-		table.insert(list, { Uid = uid, Id = lawyer.Id, Stars = lawyer.Stars, Skills = lawyer.Skills, Office = office })
+		table.insert(list, { Uid = uid, Id = lawyer.Id, Stars = lawyer.Stars, Skills = lawyer.Skills, Office = office, Locked = lawyer.Locked })
 	end
 	player:SetAttribute("LawyerCount", placed) -- lawyers working in offices
 	player:SetAttribute("LawyersOwned", #list)

@@ -5,11 +5,21 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **crnuch's cloud session · since 2026-10-13:** LAWYER MUTATIONS (merging becomes chance-based mutating: Normal →
-  Shiny → Diamond → Cosmic, a failure takes all 3; mutations recolour the lawyer) + SELL lawyers + lock. Touches
-  Config, Formulas, LawyerService, PlayerData, Merger, Lawyers panel, SkinLook, LawyerTags, sim - don't edit those.
+- (nothing claimed)
 
 ## Open items
+- [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
+      LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
+      3-way merge anything that changed since. Files: NEW `Shared.MutationLook` (src/MutationLook.lua); `Shared.SkinLook`
+      (src/SkinLook.lua, new working copy), `Shared.Config`, `Shared.Formulas`; server `PlayerData`, `LawyerService`,
+      `CaseService`, `EggServer`, `ZoneService`, `FirmFeatures` (new working copy); clients `Lawyers`, `Merger`, `Eggs`,
+      `LawyerTags`. In Studio also: rename the hub machine's sign "LAWYER MERGER" → "MUTATION MACHINE" and its
+      `MergePrompt` ActionText → "Mutate". Playtest: (1) old Gold / Rainbow lawyers show as Shiny / Diamond with the
+      same "Earns x"; (2) Mutation Machine shows the % on the button, a success recolours the lawyer everywhere (desk,
+      tag, LAWYERS card, hatch screen), a fizzle shakes + "FIZZLED!" and all 3 are gone; refuses if it would leave you
+      with no lawyers; (3) SELL on a bench lawyer (price matches), Epic+ asks twice, office / locked / last lawyer can't
+      be sold, LOCK toggles the padlock, SELL ALL picker sells the ticked rarities; (4) golden zone eggs sometimes hatch
+      Shiny; (5) the mutation colours look right on brick lawyers AND the older models (judge by eye, tune ramps).
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
       (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
       each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
@@ -115,6 +125,19 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-13 — crnuch, cloud session: lawyer MUTATIONS (merging → mutating), selling + locking
+- **User's calls:** merging is replaced by mutating (Normal → Shiny → Diamond → Cosmic); it isn't guaranteed and a
+  fizzle takes all 3 lawyers; old Gold → Shiny, Rainbow → Diamond; a mutation recolours the whole lawyer (body parts
+  must stay distinct), no extra effects; a SELL feature to clear the inventory (price = a share of the egg's
+  current price - my pick, approved) + a lock.
+- **How:** `Stars` keeps its numbers and now means the mutation tier, so saves aren't rewritten (v18 only adds the
+  optional `Locked`). Earn x1 / 2.5 / 6 / 15; machine chances 70% / 45% / 25%; hatch mutation odds 2% / 0.3% / 0.02%
+  (golden eggs 25% / 3% / 0.2%); sell shares 10%..1000% by rarity x the mutation. All first guesses; the sim's pacing
+  targets all still pass (`tools/economy_sim.py` now mutates with chances + fizzles).
+- **Look:** `Shared.MutationLook` (src/MutationLook.lua) + its Blender twin `tools/blender/mutation_preview.py`
+  (render `art/mutations/preview.png`, real lawyers from lawyers_top.json).
+- **Checks:** 39 Config checks (mutations, hatch odds, selling) + 32 sim tests pass. Nothing pushed to Studio.
 
 ## 2026-10-13 — crnuch, cloud session: zone travel (portal + map), lane gaps + wall climbing, Blender in the cloud
 - **User's calls:** travel option A (one portal + a map); every model is made in Blender from now on (CLAUDE.md →

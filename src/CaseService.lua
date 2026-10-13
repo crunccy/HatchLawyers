@@ -147,7 +147,7 @@ local function rarityId(id: string?): string?
 end
 
 local function lawyerTitle(lawyer: PlayerData.LawyerData, level: number): string
-	return string.format("%s%s · Lv %d", Formulas.lawyerName(lawyer.Id, lawyer.Stars), string.rep("★", lawyer.Stars - 1), level)
+	return string.format("%s · Lv %d", Formulas.lawyerName(lawyer.Id, lawyer.Stars), level) -- (the name carries the mutation)
 end
 
 local function setLawyerLevel(desk: DeskState, level: number)
@@ -189,13 +189,15 @@ local function applyLawyer(desk: DeskState, data: PlayerData.Data)
 		npc.Name = "Lawyer"
 		standOn(npc, desk.model:FindFirstChild("LawyerSpot") :: BasePart)
 		npc.Parent = desk.model
-		SkinLook.dress(npc, lawyer.Id)
+		SkinLook.dress(npc, lawyer.Id, lawyer.Stars)
 		desk.lawyerModel = npc
 	end
 	if lawyer and desk.lawyerModel then
-		SkinLook.dress(desk.lawyerModel, lawyer.Id) -- (re-dress: merging can change nothing visible but stars)
-		-- Shared.Effects aura, laddered by rarity and stars (Rare sparkle .. Legendary gold .. Rainbow merge)
-		Effects.aura(desk.lawyerModel, rarityId(lawyer.Id), lawyer.Stars)
+		-- (re-dress: a mutation recolours the whole lawyer - Shared.MutationLook via SkinLook, 2026-10-13)
+		SkinLook.dress(desk.lawyerModel, lawyer.Id, lawyer.Stars)
+		-- Shared.Effects aura, laddered by rarity only (the old Gold / Rainbow star layers are gone: user's call - a
+		-- mutation shows as the lawyer's colours, not extra effects)
+		Effects.aura(desk.lawyerModel, rarityId(lawyer.Id), 1)
 	end
 	if desk.lawyerLabel and lawyer then
 		desk.lawyerLabel.Text = lawyerTitle(lawyer, office.Level)

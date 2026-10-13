@@ -14,7 +14,8 @@ The run prints the DERIVED / BEHAVIOR assumptions so results are read with them 
 Model (expected values, event-driven, greedy player):
   - Offices have levels (the coin sink); a lawyer sitting in an office earns
     Payout.Base x Growth^level x client multiplier x capped buffs x lawyer power.
-    Lawyer power = rarity Earn x StarEarn[stars]; 3 copies of the same lawyer and stars merge (+1 star).
+    Lawyer power = rarity Earn x StarEarn[stars]; 3 copies of the same lawyer and tier TRY to mutate (+1 tier,
+    MutateChance) - a fizzle takes all 3 (LawyerService.mergeInto since 2026-10-13).
   - Clients walk in every Formulas.clientInterval(working lawyers) s while a waiting seat is free; each
     lawyer works one case at a time (walk to desk + case; mistrials rerun the same case). Clients go to the
     best-paid free lawyer. Before the Manager is hired, an active player assigns at most BEHAVIOR.AssignRate clients/s; for an AFK
@@ -67,7 +68,10 @@ CONFIG = {
     "Tutorial": {"FreeLevelUps": 1},                                 # SYNCED
     # Config.Desks.Tiers: office look + payout bonus by office level: (MinLevel, PayoutBonus)  SYNCED
     "OfficeTiers": [(1, 0.0), (10, 0.05), (30, 0.10), (60, 0.20)],
-    "Lawyers": {"StartId": "Rookie", "MergeCount": 3, "StarEarn": [1, 2.5, 6], "MaxOwned": 150},  # SYNCED
+    # (2026-10-13: merging became MUTATING - StarEarn by mutation tier Normal / Shiny / Diamond / Cosmic, and
+    # MutateChance[tier - 2] = the Mutation Machine's success chance to reach `tier`; a fizzle takes all of them)
+    "Lawyers": {"StartId": "Rookie", "MergeCount": 3, "StarEarn": [1, 2.5, 6, 15], "MutateChance": [0.7, 0.45, 0.25],
+                "MaxOwned": 150},  # SYNCED
     "Eggs": {
         "Price": 8000, "PriceGrowth": 1.22,                          # SYNCED 2026-10-09 economy pass
         "FreeFirstEgg": True, "FirstEggRarity": "Uncommon",          # SYNCED  tutorial egg, not counted
@@ -520,9 +524,11 @@ class Firm:
         self.run_opened = 0
 
     # --- merging --------------------------------------------------------------------------
-    def merge_all(self, **kw):
-        """Merge groups of MergeCount identical lawyers while that raises income (LawyerService.merge
-        keeps the best skill set). Returns the number of merges."""
+    def merge_all(self, rng=None, **kw):
+        """Mutate groups of MergeCount identical lawyers while the EXPECTED income goes up (or the inventory is past
+        the office count): success chance MutateChance, a fizzle takes all of them. Returns the number of tries."""
+        rng = rng or random.Random(0)
+        chances = CONFIG["Lawyers"].get("MutateChance") or [1.0] * (len(CONFIG["Lawyers"]["StarEarn"]) - 1)
         n = 0
         need = CONFIG["Lawyers"]["MergeCount"]
         while True:
@@ -537,10 +543,15 @@ class Firm:
                 group.sort(key=lambda l: -sum(s[1] for s in l.skills))
                 used = group[:need]
                 merged = Lawyer(used[0].id, used[0].rarity, stars + 1, used[0].skills)
-                after = [l for l in self.lawyers if l not in used] + [merged]
-                # merge when it doesn't lower income, or when the inventory is past the office count
-                if self.income(lawyers=after, **kw) >= self.income(**kw) or len(self.lawyers) > len(self.offices):
-                    self.lawyers = after
+                rest = [l for l in self.lawyers if l not in used]
+                if not rest:
+                    continue  # (the game refuses a try that could leave you with no lawyers)
+                after = rest + [merged]
+                p = chances[stars - 1]
+                expected = p * self.income(lawyers=after, **kw) + (1 - p) * self.income(lawyers=rest, **kw)
+                # try when the expected income doesn't drop, or when the inventory is past the office count
+                if expected >= self.income(**kw) or len(self.lawyers) > len(self.offices):
+                    self.lawyers = after if rng.random() < p else rest
                     n += 1
                     done = True
                     break
@@ -771,7 +782,7 @@ def simulate(hours, seed=1, log=False, active_bonus=0.0, afk=False):
                 res["full_at"] = t
             if name == "prestige":
                 res["prestiges"].append((t, inc))
-        merged = firm.merge_all(**kw)
+        merged = firm.merge_all(rng=rng, **kw)
         note()
         res["events"].append((t, name, cost, inc))
         for _ in range(merged):
@@ -866,8 +877,8 @@ def print_report(res):
     print("\nMilestones")
     for r in RARITIES:
         print(f"  first {r:<10} lawyer: {fmt_time(res['rarity_first'].get(r))}")
-    for s, name in ((2, "Gold"), (3, "Rainbow")):
-        print(f"  first {name:<9} (merged) lawyer: {fmt_time(res['stars_first'].get(s))}")
+    for s, name in ((2, "Shiny"), (3, "Diamond"), (4, "Cosmic")):
+        print(f"  first {name:<9} (mutated) lawyer: {fmt_time(res['stars_first'].get(s))}")
     print(f"  Manager hired: {fmt_time(res['manager_at'])}   (auto-assign; before it only clicks assign)")
     exp = [e for e in ev if e[1] == "expand"]
     print(f"  expansions: {len(exp)} (" + ", ".join(fmt_time(e[0]) for e in exp) + ")"
