@@ -512,6 +512,14 @@ local function resolveCase(session: Session, desk: DeskState)
 		end
 		local GoalService = require(script.Parent.GoalService) :: any
 		GoalService.track(player, "win")
+		-- the Case Files Archive counts wins by client type (Server.FloorBonuses, upstairs rooms 2026-10-13)
+		local fbModule = script.Parent:FindFirstChild("FloorBonuses")
+		if fbModule then
+			local okFb, Floors = pcall(require, fbModule)
+			if okFb then
+				Floors.onWin(data, tier)
+			end
+		end
 		if client.Multiplier >= Config.Clients[3].Multiplier then -- Rare or better
 			GoalService.track(player, "rareWin")
 		end

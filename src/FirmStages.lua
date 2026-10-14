@@ -564,7 +564,9 @@ FRONTS[5] = function(b)
 	pad:SetAttribute("Hologram", "Blue")
 	b:disc("HologramRing", 0, 13.5, 6 * F + 1.05, 4.7, 0.15, "glassdeep", false)
 	b:box("HQSign", -14, 3 * F - 2.6, -0.6, 14, 3 * F - 0.4, -0.2, "gold", false)
-	b:elevator({ 2 * F + 0.45, 3 * F + 0.45, 4 * F + 0.45, 6 * F + 0.45 })
+	-- (2026-10-13, upstairs rooms: a stop on 5F too - UpperBand is the slab between the glass box's two floors, and the
+	-- rooms of Config.Floors.Slots[5] stand on both)
+	b:elevator({ 2 * F + 0.45, 3 * F + 0.45, 4 * F + 0.45, 5 * F + 0.45, 6 * F + 0.45 })
 	return CFrame.new(0, 3 * F - 1.5, -0.75)
 end
 
@@ -587,7 +589,12 @@ FRONTS[6] = function(b)
 		b:post("CanopyColumn" .. s, 12 * s, -8, 0, 8.6, 0.6, "gold")
 	end
 	local T0, T1 = 2 * F + 0.45, 2 * F + 0.45 + 108
-	b:box("Tower", -20, T0, 2, 20, T1, 19, "glassdeep")
+	-- (2026-10-13, upstairs rooms: the tower is hollow - four glass walls - so its storeys hold the rooms of
+	-- Config.Floors.Slots[6]; the TowerBand slabs below are its floors, one every 9 studs. It was one solid glass block.)
+	b:box("TowerFront", -20, T0, 2, 20, T1, 2.6, "glassdeep")
+	b:box("TowerBack", -20, T0, 18.4, 20, T1, 19, "glassdeep")
+	b:box("TowerSideL", -20, T0, 2.6, -19.4, T1, 18.4, "glassdeep")
+	b:box("TowerSideR", 19.4, T0, 2.6, 20, T1, 18.4, "glassdeep")
 	for k = 0, 12 do
 		local y = T0 + (T1 - T0) * k / 12
 		b:box("TowerBand" .. k, -20.4, y - 0.35, 1.6, 20.4, y + 0.35, 19.4, if k % 3 == 0 then "gold" else "navy")
@@ -615,7 +622,11 @@ FRONTS[6] = function(b)
 	local tip = b:box("SpireTip", -15.6, T1 + 31, 14.4, -14.4, T1 + 32.2, 15.6, "red", false)
 	tip.Material = Enum.Material.Neon
 	b:light(beacon, 10, 1)
-	b:elevator({ F + 0.45, { y = T1 + 5, x = 0, z = 4.5, face = 1 } }) -- top stop on the crown, between pad and helipad
+	-- the tower's room floors (bands k = 0, 1, 2, 5: their tops are T0 + 9k + 0.35), stops by the back wall; then the crown
+	local function towerStop(k: number): any
+		return { y = T0 + 9 * k + 0.35, x = 15, z = 17.4, face = -1 }
+	end
+	b:elevator({ F + 0.45, towerStop(0), towerStop(1), towerStop(2), towerStop(5), { y = T1 + 5, x = 0, z = 4.5, face = 1 } }) -- top stop on the crown, between pad and helipad
 	return CFrame.new(0, 2 * F - 1.8, -0.75)
 end
 

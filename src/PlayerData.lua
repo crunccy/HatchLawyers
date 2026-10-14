@@ -84,7 +84,11 @@ local SAVE_ATTEMPTS = 3
 local MIGRATIONS: { [number]: (any) -> any } = {
 	-- v18 (2026-10-13): lawyer MUTATIONS + selling. `Stars` keeps its numbers but now means the mutation tier (Gold 2 ->
 	-- Shiny, Rainbow 3 -> Diamond, same power), so nothing is rewritten. New optional Lawyers[uid].Locked (nil = not).
+	-- v18 (2026-10-13): the UPSTAIRS ROOMS (Config.Floors, ServerScriptService.FloorRooms): data.Floors = Hall of Fame
+	-- index, Case Files counts, Moot Court booths, today's letters, the Partner's rules, guestbook likes, court recess.
+	-- (Shares v18 with the mutations work in src/, whose step adds nothing - so the two merge without renumbering.)
 	[17] = function(data)
+		data.Floors = data.Floors or { Index = {}, CaseFiles = {}, Training = {}, Mail = { Day = 0, Letters = {} }, Rules = {}, Likes = 0, Court = 0 }
 		return data
 	end,
 	-- v16: egg zones (Config.Zones). No License, the starting bag and shoes, nothing carried.
@@ -303,6 +307,7 @@ local function template(): Data
 		Firm = { Segments = Config.Firm.StartSegments, Areas = {} },
 		Purchases = {},
 		Minigames = {},
+		Floors = { Index = {}, CaseFiles = {}, Training = {}, Mail = { Day = 0, Letters = {} }, Rules = {}, Likes = 0, Court = 0 },
 		Zones = { License = 0, Carry = 1, Speed = 1, Carried = {} },
 	}
 end
