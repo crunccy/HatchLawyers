@@ -5,7 +5,10 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- (nothing claimed)
+- **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
+  (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
+  `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
+  Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
 ## Open items
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
@@ -51,8 +54,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
       (shop, travel map ...) are missing everywhere. crnuch: share them with the experience (Creator Dashboard →
       the asset → permissions) or re-upload from the owner account (tools/ui_textures.py); or point them at Effects'
       `rays` / `glow` textures (those load).
-- [ ] **Decide: minigames + upper floors** - docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md (mr.robe asked 2026-10-13;
-      9 minigame ideas, 9 floor ideas, top 3 of each). Pick, write "user's call", claim before building.
+- [ ] **Minigames + upper floors: BUILD** (user's call 2026-10-13: everything in
+      docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md except the Rooftop Helipad). Phase A (no save change) is claimed
+      above; Phase B (Hall of Fame, Case Files, Moot Court, Partner's Office, Mail Room, Guest Lounge) needs save v19,
+      so it waits for crnuch's mutations push (v18).
 - [ ] **Eye-check the Mythic / Supreme cinematics in a real window + at phone size**, and a real Mythic / Supreme
       hatch with a second player in the server (the banner was only tested with faked messages). The 10-13 stud
       Supreme lawyers at desks: check name tags, the client standing across the desk, and the Merger / LAWYERS previews.

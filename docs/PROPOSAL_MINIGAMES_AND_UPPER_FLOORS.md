@@ -1,5 +1,37 @@
 # Proposal: more minigames + what goes on the upper floors
 
+## DECIDED 2026-10-13 (mr.robe, user's call): build all of it EXCEPT the Rooftop Helipad
+"Add 2. and 3. I like these" - "not the rooftop helipad though" - "everything else". So: all 9 minigames and 8 of
+the 9 floors. Built one at a time, each playtested and pushed before the next; progress is ticked here.
+
+**Phase A: no save-format change** (uses `data.Minigames`, the existing cooldown map; runtime-only state):
+
+| # | What | Status |
+|---|---|---|
+| A0 | Arcade framework: `Config.Arcade`, `Server.ArcadeService` + one module per game, `StarterPlayerScripts.Arcade` + one client module per game, booths built in Blender | to do |
+| A1 | Lie Detector (S) | to do |
+| A2 | Briefcase Stack (S) | to do |
+| A3 | Filing Frenzy (S) | to do |
+| A4 | Evidence Hunt (M) | to do |
+| A5 | Courthouse Obby + server races (M) | to do |
+| A6 | Objection! Duel (M) | to do |
+| A7 | Evidence Relay, team event (M) | to do |
+| A8 | Zone challenges: Pet Park, Food Court, Ocean Shore, Space Base (M each) | to do |
+| A9 | Case Battles (L, a daily opponent - no ladder saved yet) | to do |
+| A10 | VIP Client Floor (touches CaseService: heads-up line in the log) | to do |
+| A11 | Private Courtroom hosts the Big Case trials | to do |
+
+**Phase B: needs new saved fields** - after crnuch's mutations push (save v18, open item in SESSION_LOG), as v19:
+
+| # | What | New saved field | Status |
+|---|---|---|---|
+| B1 | Hall of Fame / Lawyer Index | `Index` (every lawyer id ever owned + best mutation) | to do |
+| B2 | Case Files Archive | `CaseFiles` (wins by client type) | to do |
+| B3 | Moot Court | `Training` (booth slots) | to do |
+| B4 | Partner's Office | `ManagerRules` | to do |
+| B5 | Mail Room | `Mail` (daily quests) | to do |
+| B6 | Guest Lounge | `Likes` / guestbook | to do |
+
 mr.robe asked on 2026-10-13: "List me some minigames that we could continue to add that would be more intricate and
 fun" and "Think of some ideas of what we could have on the upstairs floors of the buildings that would be meaningful
 and actually would make sense." **Nothing here is built.** Pick ideas, write the picks down as "user's call",
