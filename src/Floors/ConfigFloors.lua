@@ -35,7 +35,7 @@ Config.Floors = {
 			CaseArchive = { -13, 45.45, 12, 0 }, GuestLounge = { 2, 45.45, 12, 0 },
 		},
 		[6] = { -- the tower's floors (FirmStages opened them up for these rooms)
-			MailRoom = { -14, 20.0, 9, 0 }, HallOfFame = { -2, 20.0, 9, 0 }, VIPLounge = { 9, 20.0, 8, 0 },
+			MailRoom = { -13.6, 20.0, 9, 0 }, HallOfFame = { -2, 20.0, 9, 0 }, VIPLounge = { 9, 20.0, 8, 0 },
 			MootCourt = { -13, 29.0, 9, 0 }, CaseArchive = { 0, 29.0, 9, 0 }, PartnersOffice = { 10, 29.0, 8, 0 },
 			GuestLounge = { -4, 38.0, 10, 0 },
 			PrivateCourtroom = { -3, 65.0, 10, 0 },

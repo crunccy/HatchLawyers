@@ -201,6 +201,14 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
     `ZONES` in the builder and to `Config.Zones.List`.
   - **Runtime:** `Server.ZoneService` + `StarterPlayerScripts.Zones`. Each zone's `OddsBoard` (tag `ZoneOddsBoard`, attr `Zone`) is drawn by the Zones client: exact odds, golden odds, and the Lucky Eggs odds for pass owners. The old islands are archived in
     `ServerStorage.Old_Zones`.
+- UPSTAIRS ROOMS (2026-10-13, `Config.Floors`): `ServerScriptService.FloorRooms` stands 8 Blender room sets
+  (`ServerStorage.Templates.FloorRooms`, from `tools/blender/floor_rooms.py`) on the front building's upper floors by
+  stage (`Config.Floors.Slots`) and runs them; panels `StarterPlayerScripts.Floors`; lasting bonuses
+  `Server.FloorBonuses` (through `FirmFeatures.buffSources`). The Supreme Tower is hollow (its bands are floors).
+  New building fronts must keep the rooms' slots clear (or move the slots).
+- ARCADE PIER (2026-10-13): `Workspace.ArcadePier` north of the hub (the land ends at z 168), booth games run by
+  `ServerScriptService.ArcadeServer` (+ `Games`), `StarterPlayerScripts.Arcade`, `ReplicatedStorage.ArcadeClient`,
+  `Config.Arcade`. Map from Blender (`tools/blender/arcade_pier.py`). See src/Arcade/README.md.
 - Firm: `Server.FirmStages` (6 front buildings by size/prestige, rooms sold on the lawn by `Server.FirmFeatures`),
   two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was; **no waiting room** —
   clients walk from the street straight to a free lawyer (`FirmBuilder.routeToDesk`).
@@ -217,8 +225,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema: **v17 live in Studio; `src/` is v18** (2026-10-13: lawyer mutations + selling - `Stars` now means the
-  MUTATION tier, 1 Normal / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`).
+- Save schema: **v18 live** (2026-10-13: its step adds `data.Floors`, the upstairs rooms). `src/`'s v18 also carries
+  the lawyer mutations + selling (not pushed yet; that step adds nothing - `Stars` now means the MUTATION tier, 1 Normal
+  / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`), so both ship as v18.
   (v14 firm areas, v15 minigames, v16 egg zones, v17 the economy pass's `Eggs.RunOpened`.) Never reuse a
   migration number that has shipped. `PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`,
   `Zones = { License, Carry, Speed, Carried }`. Before adding any saved field: bump `SCHEMA_VERSION` and add a

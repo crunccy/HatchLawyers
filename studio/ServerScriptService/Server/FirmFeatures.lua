@@ -168,7 +168,18 @@ function FirmFeatures.buffSources(player: Player?, data: any): { { [string]: num
 			end
 		end
 	end
-	return { source }
+	local list = { source }
+	-- the upstairs rooms' bonuses (Server.FloorBonuses: Hall of Fame sets, Case Files milestones, Guest Lounge visits)
+	local fb = script.Parent:FindFirstChild("FloorBonuses")
+	if fb then
+		local ok, mod = pcall(require, fb)
+		if ok then
+			for _, s in mod.sources(player, data) do
+				table.insert(list, s)
+			end
+		end
+	end
+	return list
 end
 
 -- Same, when only the save data is at hand (CaseService.deskBuffs): finds the owner for the lounge check.

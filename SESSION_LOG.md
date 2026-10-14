@@ -136,6 +136,50 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-13 — mr.robe, local session: the UPSTAIRS ROOMS - all 8 floor ideas built (no helipad)
+User (angry that the minigames went first): "Add the things on the top floors that WE TALKED ABOUT"; "make it in
+blender".
+- **HEADS-UP crnuch: save v18 is LIVE and adds `data.Floors`.** It shares v18 with your mutations work in src/: your
+  v18 step added nothing (Locked is optional), so the [17] step now creates Floors in both copies and nothing needs
+  renumbering. Also changed, in live AND in your src/ copies:
+  - `CaseService` (resolveCase: a win calls `FloorBonuses.onWin`);
+  - `FirmFeatures.buffSources` (+ FloorBonuses' sources);
+  - `LawyerService` (exports `upgradeOffice` + `equipBest`);
+  - `FirmStages` (stage 5: a 5F elevator stop; **stage 6: the Supreme Tower is hollow now** - four glass walls, the
+    TowerBand slabs are its floors, stops on tower floors 1, 2, 3, 6).
+  
+  Backup first: `Backup_Player_11776753629_1791948662` (v17).
+- **Rooms** (Config.Floors; sets made in Blender: `tools/blender/floor_rooms.py` → `tools/zones/floor_rooms.json` →
+  `tools/zones/BuildFloorRooms.lua` → `ServerStorage.Templates.FloorRooms`; render `art/floors/rooms.png`):
+
+  | Stage | Rooms |
+  |---|---|
+  | 3 | Mail Room, Hall of Fame |
+  | 4 | + VIP Lounge, Moot Court, Case Files Archive |
+  | 5 | + Partner's Office, Guest Lounge |
+  | 6 | all, in the tower + the Private Courtroom |
+
+  Spots per building: `Config.Floors.Slots`, checked for overlaps with every building part on stages 3-6.
+- **What they do** (`ServerScriptService.FloorRooms` + panels in `StarterPlayerScripts.Floors`, bonuses in
+  `Server.FloorBonuses`):
+  - **Mail Room:** 3 letters a day from clients (tasks fed by GoalService.track, which is wrapped), coins; the last
+    letter also gives an egg.
+  - **Hall of Fame:** every lawyer ever owned, by egg; a whole set = +5% cases.
+  - **VIP Lounge:** a VIP waits every 6 min; pick a lawyer; it pays by rarity.
+  - **Moot Court:** an office practises 15 min and gets a free skill roll.
+  - **Case Files Archive:** wins by client type; milestones give +0.4% each.
+  - **Partner's Office:** auto-upgrade the cheapest office at 3x its cost, auto-equip best.
+  - **Guest Lounge:** a visitor staying 4 s = +10% for both for 5 min; guestbook likes.
+  - **Private Courtroom:** hold court, 3 evidence picks, 10-minute recess.
+- **Playtested on mr.robe's stage-5 HQ:**
+  - all 7 rooms appeared on the right floors, facing right;
+  - every panel opened with real data (a VIP had arrived, the Archive was already counting wins);
+  - greetVip paid, Moot Court training started, claiming an unfinished letter is refused;
+  - stage 6 built in a test copy: tower floors + 7 elevator stops, all 8 rooms fit;
+  - no warnings.
+- **Not yet:** the Private Courtroom played for real (stage 6 only), the Partner's rules switched on (left OFF on
+  mr.robe's save), a second player for the Guest Lounge buff + likes.
+
 ## 2026-10-13 — mr.robe, local session: the ARCADE PIER + its first 3 games (minigames build, part 1)
 User's call: build everything in docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md except the Rooftop Helipad ("Add 2. and
 3. I like these" / "not the rooftop helipad though" / "everything else"). Plan + progress table in that doc.

@@ -18,19 +18,19 @@ the 9 floors. Built one at a time, each playtested and pushed before the next; p
 | A7 | Evidence Relay, team event (M) | to do |
 | A8 | Zone challenges: Pet Park, Food Court, Ocean Shore, Space Base (M each) | to do |
 | A9 | Case Battles (L, a daily opponent - no ladder saved yet) | to do |
-| A10 | VIP Client Floor (touches CaseService: heads-up line in the log) | to do |
-| A11 | Private Courtroom hosts the Big Case trials | to do |
+| A10 | VIP Lounge (a VIP waits upstairs; no CaseService change needed) | **live** |
+| A11 | Private Courtroom: hold court (3 evidence picks) | **live** (stage 6; not played yet) |
 
-**Phase B: needs new saved fields** - after crnuch's mutations push (save v18, open item in SESSION_LOG), as v19:
+**Floors - BUILT 2026-10-13** (user: floors first). Saved in `data.Floors` (v18, shared with the mutations work). Code: ServerScriptService.FloorRooms, Server.FloorBonuses, StarterPlayerScripts.Floors; sets: tools/blender/floor_rooms.py:
 
 | # | What | New saved field | Status |
 |---|---|---|---|
-| B1 | Hall of Fame / Lawyer Index | `Index` (every lawyer id ever owned + best mutation) | to do |
-| B2 | Case Files Archive | `CaseFiles` (wins by client type) | to do |
-| B3 | Moot Court | `Training` (booth slots) | to do |
-| B4 | Partner's Office | `ManagerRules` | to do |
-| B5 | Mail Room | `Mail` (daily quests) | to do |
-| B6 | Guest Lounge | `Likes` / guestbook | to do |
+| B1 | Hall of Fame / Lawyer Index | `Floors.Index` | **live** |
+| B2 | Case Files Archive | `Floors.CaseFiles` | **live** |
+| B3 | Moot Court (an office practises -> a free skill roll) | `Floors.Training` | **live** |
+| B4 | Partner's Office | `Floors.Rules` | **live** |
+| B5 | Mail Room | `Floors.Mail` | **live** |
+| B6 | Guest Lounge | `Floors.Likes` | **live** |
 
 mr.robe asked on 2026-10-13: "List me some minigames that we could continue to add that would be more intricate and
 fun" and "Think of some ideas of what we could have on the upstairs floors of the buildings that would be meaningful

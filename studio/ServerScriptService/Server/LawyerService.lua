@@ -620,4 +620,8 @@ function LawyerService.start()
 	end)
 end
 
+-- (the Partner's Office rules call these: ServerScriptService.FloorRooms, 2026-10-13)
+LawyerService.upgradeOffice = upgradeOffice
+LawyerService.equipBest = equipBest
+
 return LawyerService
