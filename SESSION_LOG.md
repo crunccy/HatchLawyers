@@ -136,6 +136,32 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-13 — mr.robe, local session: the ARCADE PIER + its first 3 games (minigames build, part 1)
+User's call: build everything in docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md except the Rooftop Helipad ("Add 2. and
+3. I like these" / "not the rooftop helipad though" / "everything else"). Plan + progress table in that doc.
+- **The hub has no free land** (its north edge is z 168, then the sea), so the arcade is a pier over the water:
+  `Workspace.ArcadePier`, 70 x 100 studs north of the minigame pads. Built in Blender (`tools/blender/arcade_pier.py`
+  → `tools/zones/arcade_pier.json` → `tools/zones/BuildArcadePier.lua`, 390 blocks; renders in `art/arcade/`):
+  - a wooden deck with railings, an "ARCADE PIER" arch, lamp posts and string lights;
+  - 8 booth slots (3 used now); the far end is kept for the big games.
+- **Framework:**
+  - `ServerScriptService.ArcadeServer`, with its games in `ArcadeServer.Games`. The server plans each round,
+    checks every tap at its timestamp and scores 0..1; the reward is minutes of income.
+  - The cooldown goes in `data.Minigames[id]`, so **no save change**.
+  - `StarterPlayerScripts.Arcade` + `ReplicatedStorage.ArcadeClient` (`Kit` + one module per game).
+  - `Config.Arcade`, merged into live Config without the mutation work.
+  - `Remotes.Arcade`. File map: src/Arcade/README.md.
+- **Games:** Lie Detector (stop the polygraph needle on the green band, 8 rounds), Briefcase Stack (drop sliding
+  cases; the overhang falls off; perfect drops keep the width; 20 levels), Filing Frenzy (tap the bin that matches the
+  front paper before the shredder: colours + shapes).
+- **Playtested:**
+  - The booths, boards and prompts work.
+  - Lie Detector ran a full round with no warnings.
+  - Briefcase Stack started.
+  - Filing Frenzy not played yet: mr.robe was playing in the same session, so I stopped testing.
+  - The snapshot (`studio/`) is NOT re-exported yet: Studio was in a playtest.
+- **Next:** play Briefcase Stack + Filing Frenzy, export the snapshot, then Evidence Hunt (A4).
+
 ## 2026-10-13 — mr.robe, local session: zone travel live, the portal remade from mr.robe's references, a trip animation per zone; ideas doc
 User: "Change the teleporters to look way cooler, make the models in blender, also make animations for each one that
 progressively get better and better, just like the ones that you made for opening the eggs, Use the reference

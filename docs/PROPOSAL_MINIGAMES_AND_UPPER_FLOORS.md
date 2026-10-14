@@ -8,10 +8,10 @@ the 9 floors. Built one at a time, each playtested and pushed before the next; p
 
 | # | What | Status |
 |---|---|---|
-| A0 | Arcade framework: `Config.Arcade`, `Server.ArcadeService` + one module per game, `StarterPlayerScripts.Arcade` + one client module per game, booths built in Blender | to do |
-| A1 | Lie Detector (S) | to do |
-| A2 | Briefcase Stack (S) | to do |
-| A3 | Filing Frenzy (S) | to do |
+| A0 | Arcade framework: `Config.Arcade`, `ServerScriptService.ArcadeServer` + one module per game, `StarterPlayerScripts.Arcade` + `ReplicatedStorage.ArcadeClient` (Kit + one module per game); the Arcade Pier + booths built in Blender (src/Arcade/README.md) | **in Studio** 2026-10-13 |
+| A1 | Lie Detector (S) | **in Studio**, played end to end (no warnings) |
+| A2 | Briefcase Stack (S) | **in Studio**, a round ran; eye-check the stacking |
+| A3 | Filing Frenzy (S) | **in Studio**, not played yet |
 | A4 | Evidence Hunt (M) | to do |
 | A5 | Courthouse Obby + server races (M) | to do |
 | A6 | Objection! Duel (M) | to do |
