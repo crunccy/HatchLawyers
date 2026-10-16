@@ -12,7 +12,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- Codex (cloud) · economy slowdown: simulate TrainBase and expansion-start-level changes, then document the recommendation in docs/ECONOMY_REVIEW.md · since 2026-10-16
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
@@ -121,8 +120,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [x] Egg-machine floor rings - obsolete 2026-10-12 (the hub egg machines are archived).
 - [x] **Pre-Manager auto-assign** — DONE 2026-10-08 (`Case.SelfAssignAfter` 12 s). (review §3, confirmed): AFK players earn 0 and can never afford the Manager.
       Auto-assign a seated client to the best free lawyer after ~10–15 s (CaseService queue is ours).
-- [ ] **Slow the economy ~10×** (review A/B/C): `Lawyer.TrainBase` 800 → ~10–12K **together with** new offices
-      starting at the firm's lowest office level (`DeskService.upgradeFirm`), or expansions stall. Sim it first.
+- [x] **Retune office costs for rebirth pacing** — 2026-10-16: `Lawyer.TrainBase` 800 → 2,000 in `src/Config.lua`,
+      matching the simulator and `docs/ECONOMY.md`. The old 10× / 10–12K recommendation targeted a superseded 1T/s-in-10–20h goal; current target is first prestige in 40–80 min. See `docs/ECONOMY_REVIEW.md` for seed results. `src/` only; not pushed to Studio.
 - [x] **Upgrade ×N / Max / UPGRADE ALL** — in `src/` (economy pass); not in Studio yet (push item above).
 - [x] **Egg tiers** — in `src/` 2026-10-12 (unlock milestones + EarnMultiplier); not in Studio yet (push item above).
 - [ ] Specialist skill targets 1 of 9 `Config.Clients` entries (review D) — heads-up to mr.robe.
@@ -141,6 +140,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — Codex, cloud session: rebirth economy pacing
+
+- **Change:** `src/Config.lua` `Lawyer.TrainBase` 800 → 2,000, matching `tools/economy_sim.py` and `docs/ECONOMY.md`.
+- **Why:** five-seed 1 h comparison: at 800, median first prestige 31.8 min and first expansion 11.2 min; at 2,000, 45.7 min and 16.8 min. One 24 h run at 2,000 reached 10 prestiges (target 8–14), with first prestige at 50.9 min. The older 10–12K recommendation aimed at a target later superseded by rebirth pacing.
+- **Validation:** ran `tools/economy_sim.py --hours 24 --seed 1 --report` and five 1 h runs each at 800 and 2,000. This is only in `src/`; Studio was not changed or playtested.
 
 ## 2026-10-13 — crnuch, cloud session: "1 in N" on the overhead tags
 - **User's call:** the overhead tags show "1 in 2" / "1 in 248" / "1 in 29,382" instead of "Pays xN" (clients) and
