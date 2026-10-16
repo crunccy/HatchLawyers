@@ -18,6 +18,7 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- Codex · convert all five minigames (Gavel Bonk, Lucky Briefcase, Lie Detector, Briefcase Stack, Filing Frenzy) to in-world 3D interactions with only compact status/result HUD; preserve server-owned timing/scoring/rewards · since 2026-10-16. Build from `studio/` + synced Studio Arcade source; do not push to Studio while Claude's bug-fix claim is active.
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
