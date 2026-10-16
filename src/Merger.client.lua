@@ -474,6 +474,126 @@ for i, s in slots do
 	end)
 end
 
+------------------------------------------------------------------ in-world mutation moment
+-- The picker is for choosing; the result plays beside the actual Mutation Machine so mutation feels like
+-- something the lawyer does, not another results screen. The machine/result remains server-authoritative.
+local RunService = game:GetService("RunService")
+
+local function worldMutationMoment(id: string, stars: number, succeeded: boolean)
+	local plots = workspace:FindFirstChild("Plots")
+	local plotName = player:GetAttribute("Plot")
+	local plot = plots and typeof(plotName) == "string" and plots:FindFirstChild(plotName)
+	local firm = plot and plot:FindFirstChild("Firm")
+	local desk = firm and firm:FindFirstChild("Desk1", true)
+	local source = desk and desk:FindFirstChild("Lawyer")
+	local hub = workspace:FindFirstChild("Hub")
+	local machine = hub and hub:FindFirstChild("MergeMachine")
+	if not (source and source:IsA("Model") and machine and machine:IsA("Model")) then
+		return false
+	end
+	local okClone, actor = pcall(function()
+		return (source :: Model):Clone()
+	end)
+	if not okClone or not actor then
+		return false
+	end
+	actor.Name = "MutationMomentLawyer"
+	SkinLook.dress(actor, id, stars)
+	for _, item in actor:GetDescendants() do
+		if item:IsA("BasePart") then
+			item.Anchored = true
+			item.CanCollide = false
+			item.CanTouch = false
+			item.CanQuery = false
+		elseif item:IsA("BillboardGui") or item:IsA("SurfaceGui") then
+			item:Destroy()
+		end
+	end
+	actor.Parent = workspace
+	local camera = workspace.CurrentCamera
+	local oldCameraType = camera and camera.CameraType
+	local oldSubject = camera and camera.CameraSubject
+	local oldCameraCFrame = camera and camera.CFrame
+	local oldFov = camera and camera.FieldOfView
+	local homeGuiEnabled = gui.Enabled
+	local success, err = pcall(function()
+		local pivot = (machine :: Model):GetPivot()
+		local window = machine:FindFirstChild("WindowFrame", true)
+		local console = machine:FindFirstChild("Console", true)
+		local focus = if window and window:IsA("BasePart") then window.Position else pivot.Position
+		local floorY = if console and console:IsA("BasePart") then console.Position.Y - 2 else pivot.Position.Y - 5
+		local approach = Vector3.new(focus.X + 4, floorY, focus.Z + 4)
+		local workSpot = Vector3.new(focus.X + 1.4, floorY, focus.Z + 1.4)
+		local away = workSpot + Vector3.new(5, 0, 1)
+		local look = CFrame.lookAt(approach, focus)
+		local box, size = actor:GetBoundingBox()
+		local footOffset = actor:GetPivot().Position - (box.Position - Vector3.new(0, size.Y / 2, 0))
+		local function pivotAt(ground: Vector3, facing: Vector3)
+			local target = CFrame.lookAt(ground + footOffset, facing + footOffset)
+			actor:PivotTo(target)
+		end
+		local function travel(from: CFrame, to: CFrame, duration: number)
+			local started = os.clock()
+			repeat
+				local t = math.clamp((os.clock() - started) / duration, 0, 1)
+				actor:PivotTo(from:Lerp(to, t))
+				RunService.RenderStepped:Wait()
+			until not actor.Parent or os.clock() - started >= duration
+		end
+		pivotAt(approach, focus)
+		if camera then
+			camera.CameraType = Enum.CameraType.Scriptable
+			camera.FieldOfView = 48
+			camera.CFrame = CFrame.lookAt(focus + Vector3.new(9, 5, 12), focus)
+		end
+		gui.Enabled = false
+		travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, focus + footOffset), 0.85)
+		-- A little nervous anticipation: two bouncy checks at the controls.
+		local rest = actor:GetPivot()
+		for _ = 1, 2 do
+			travel(rest, rest + Vector3.new(0, 0.55, 0), 0.16)
+			travel(actor:GetPivot(), rest, 0.18)
+			task.wait(0.12)
+		end
+		-- The machine lights up while the lawyer is transformed.
+		local effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
+		local mutationTier = if succeeded then math.min(stars + 1, MAX_STARS) else stars
+		local mutation = Config.Lawyers.Mutations[mutationTier]
+		local tint = if succeeded and mutation then mutation.Color else Color3.fromRGB(145, 145, 160)
+		effects.burst(focus, "tier", tint)
+		for _, part in machine:GetDescendants() do
+			if part:IsA("BasePart") and part.Material == Enum.Material.Neon then
+				local originalColor = part.Color
+				part.Color = tint
+				task.delay(0.65, function()
+					if part.Parent then part.Color = originalColor end
+				end)
+			end
+		end
+		if succeeded then
+			SkinLook.dress(actor, id, mutationTier)
+			travel(actor:GetPivot(), actor:GetPivot() * CFrame.new(0, 0.7, 0), 0.2)
+			travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, focus + footOffset) * CFrame.Angles(0, math.rad(24), 0), 0.2)
+			task.wait(0.65)
+		else
+			travel(actor:GetPivot(), CFrame.lookAt(away + footOffset, focus + footOffset), 0.35)
+			travel(actor:GetPivot(), CFrame.lookAt(away + Vector3.new(2, 0, 0) + footOffset, focus + footOffset), 0.4)
+		end
+	end)
+	if camera and oldCameraType and oldSubject and oldCameraCFrame and oldFov then
+		camera.CameraType = oldCameraType
+		camera.CameraSubject = oldSubject
+		camera.CFrame = oldCameraCFrame
+		camera.FieldOfView = oldFov
+	end
+	gui.Enabled = homeGuiEnabled
+	actor:Destroy()
+	if not success then
+		warn("[Merger] world mutation moment failed:", err)
+	end
+	return success
+end
+
 ------------------------------------------------------------------ merge + animation
 local function merge()
 	if busy then
@@ -504,6 +624,10 @@ local function merge()
 		end
 		showToast(tostring(nameOrReason or "Couldn't mutate"))
 		return
+	end
+	local mutationId, mutationStars = group()
+	if mutationId and mutationStars then
+		worldMutationMoment(mutationId, mutationStars, result ~= "fizzled")
 	end
 	if result == "fizzled" then
 		-- FIZZLED: the window shakes, a grey puff, and the lawyers run off (no "lose" on screen - CLAUDE.md)
