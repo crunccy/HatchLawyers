@@ -8,6 +8,7 @@
 
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
@@ -21,6 +22,27 @@ local CFG = Config.Arcade
 
 type Active = { id: number, acks: { (any) -> () }, result: any? }
 local active: Active? = nil
+local lastStation: Model? = nil
+
+local function stationFor(gameName: string): Model?
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local best: Model? = nil
+	local bestDistance = math.huge
+	for _, station in CollectionService:GetTagged("ArcadeStation") do
+		if station:IsA("Model") and station:GetAttribute("ArcadeGame") == gameName then
+			local distance = if root then (station:GetPivot().Position - root.Position).Magnitude else 0
+			if distance < bestDistance then best, bestDistance = station, distance end
+		end
+	end
+	return if lastStation and lastStation:GetAttribute("ArcadeGame") == gameName then lastStation else best
+end
+
+ProximityPromptService.PromptTriggered:Connect(function(prompt: ProximityPrompt)
+	local station = prompt:FindFirstAncestorWhichIsA("Model")
+	while station and station:GetAttribute("ArcadeGame") == nil do station = station.Parent and station.Parent:FindFirstAncestorWhichIsA("Model") end
+	if station and typeof(station:GetAttribute("ArcadeGame")) == "string" then lastStation = station end
+end)
 
 Remote.OnClientEvent:Connect(function(kind: string, info: any)
 	if kind == "Start" then
@@ -33,6 +55,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		local api = {
 			cfg = CFG[info.game],
 			kit = Kit,
+			station = stationFor(info.game),
 			send = function(k: string, data: { [string]: any }?)
 				local d = data or {}
 				if d.t == nil then
@@ -43,10 +66,10 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 			onAck = function(fn: (any) -> ())
 				table.insert(a.acks, fn)
 			end,
-			-- waits for the server's score (it comes when the round ends; 25 s at most)
-			result = function(): any?
+			-- Stack can take more than three minutes; keep waiting for its authoritative result.
+			result = function(cancelled): any?
 				local t0 = os.clock()
-				while not a.result and os.clock() - t0 < 25 do
+				while active == a and not a.result and os.clock() - t0 < 230 and not (cancelled and cancelled()) do
 					task.wait(0.05)
 				end
 				return a.result
@@ -55,6 +78,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		task.spawn(function()
 			local ok, err = pcall((require(mod) :: any).play, info, api)
 			if not ok then
+				require(ReplicatedStorage.MinigameClient.Scene).cancel()
 				warn("[Arcade] " .. tostring(info.game) .. ": " .. tostring(err))
 			end
 			if active == a then

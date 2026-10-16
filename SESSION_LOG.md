@@ -10,7 +10,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
+- **crnuch (local), since 2026-10-16:** finishing Codex's minigame work (all five minigames in the 3D world: Gavel Bonk +
+  Lucky Briefcase cinematic stages, the three Arcade Pier booths) + its in-world mutation scene (`src/Merger.client.lua`),
+  then the map art redo (docs/ART_REMODEL_BRIEF.md) one stage at a time. **User's call (crnuch, 2026-10-16): nobody else
+  is working on the minigames - this session takes over mr.robe's Arcade claim above and Codex's draft PRs #7 / #8.**
+
 ## Open items
+- [ ] **Map + model art pass** (docs/ART_REMODEL_BRIEF.md, from Codex 2026-10-16; claimed above).
 - [ ] **crnuch's bug report (2026-10-16, from a playtest).** All 7 fixed (entries below). Still to do: crnuch's eye-check
       in Studio of 1 / 3 / 6 / 7 (that session's viewport didn't render, so no screenshots).
       Leads found in the code, not confirmed:

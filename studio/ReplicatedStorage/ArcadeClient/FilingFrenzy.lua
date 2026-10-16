@@ -1,196 +1,63 @@
---!strict
--- ArcadeClient.FilingFrenzy (server: ArcadeServer.Games.FilingFrenzy) - papers ride the conveyor towards the shredder;
--- tap the bin that matches the FRONT paper (gold outline + arrow). Colours with a shape each, so it works without
--- reading and for colour-blind players: red circle, green square, blue diamond, yellow star. A paper flies into its
--- bin at once (predicted); the server's answer corrects the count. Shredded papers come from the server.
-
-local RunService = game:GetService("RunService")
-
-local M = {}
-
-local BINS = {
-	{ style = "Red", color = Color3.fromRGB(229, 57, 53), glyph = "●" },
-	{ style = "Green", color = Color3.fromRGB(79, 203, 46), glyph = "■" },
-	{ style = "Sky", color = Color3.fromRGB(60, 150, 240), glyph = "◆" },
-	{ style = "Gold", color = Color3.fromRGB(255, 190, 31), glyph = "★" },
-}
-
-function M.play(info: any, api: any)
-	local kit = api.kit
-	local Skin = kit.Skin
-	local gw = kit.window(api.cfg)
-	local body = gw.body
-	local papers = info.papers
-	local nBins = math.clamp(info.colors, 2, #BINS)
-
-	-- counters
-	local filedLabel = Skin.text({ Position = UDim2.fromOffset(24, 10), Size = UDim2.fromOffset(300, 44), Text = "FILED 0",
-		TextXAlignment = Enum.TextXAlignment.Left, FontFace = Skin.Fonts.Number, ZIndex = 5, Parent = body }, 40, 4)
-	local xs: { TextLabel } = {}
-	for k = 1, info.misses do
-		xs[k] = Skin.text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -24 - (info.misses - k) * 52, 0, 6), Size = UDim2.fromOffset(48, 48),
-			Text = "X", TextColor3 = Color3.fromRGB(80, 82, 100), FontFace = Skin.Fonts.Number, ZIndex = 5, Parent = body }, 46, 4)
-	end
-
-	-- the belt + shredder
-	local BX0, BX1, BY = 30, 780, 120
-	local belt = Skin.make("Frame", { Position = UDim2.fromOffset(BX0, BY + 70), Size = UDim2.fromOffset(BX1 - BX0, 46), BackgroundColor3 = Color3.fromRGB(60, 62, 78),
-		ClipsDescendants = true, ZIndex = 3, Parent = body }, { Skin.corner(10), Skin.stroke(4) })
-	local stripes: { Frame } = {}
-	for k = 0, 16 do
-		stripes[k + 1] = Skin.make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, k * 48, 0.5, 0), Size = UDim2.fromOffset(10, 60), Rotation = 20,
-			BackgroundColor3 = Color3.fromRGB(90, 92, 110), BorderSizePixel = 0, ZIndex = 3, Parent = belt })
-	end
-	local shredder = Skin.make("Frame", { Position = UDim2.fromOffset(BX1 - 4, BY + 10), Size = UDim2.fromOffset(110, 130), BackgroundColor3 = Color3.fromRGB(200, 60, 60),
-		ZIndex = 8, Parent = body }, { Skin.corner(10), Skin.stroke(4) })
-	Skin.studs(shredder, 0.8, nil, 20)
-	Skin.make("Frame", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -2, 0.62, 0), Size = UDim2.fromOffset(36, 50), BackgroundColor3 = Color3.fromRGB(30, 30, 40), ZIndex = 9, Parent = shredder },
-		{ Skin.corner(6) })
-	Skin.text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8), Size = UDim2.new(1, -10, 0, 30), Text = "SHRED", FontFace = Skin.Fonts.Number, ZIndex = 9, Parent = shredder }, 26, 3)
-
-	-- the bins
-	local binButtons: { any } = {}
-	local binW = math.min(210, (860 - (nBins - 1) * 16) / nBins)
-	for k = 1, nBins do
-		local b = BINS[k]
-		local x = 460 + (k - (nBins + 1) / 2) * (binW + 16)
-		binButtons[k] = Skin.button({ Parent = body, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0, x, 1, -14), Size = UDim2.fromOffset(binW, 120),
-			Text = b.glyph, Style = b.style, TextSize = 72, ZIndex = 6, Font = Skin.Fonts.Number })
-	end
-
-	-- the papers
-	local frames: { [number]: Frame } = {}
-	local state: { [number]: string } = {} -- "ok" / "wrong" / "shred" once it's off the belt
-	local front = 1
-	local filed, misses = 0, 0
-	local arrow = Skin.text({ AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(60, 50), Text = "▼", TextColor3 = kit.GOLD, FontFace = Skin.Fonts.Number,
-		ZIndex = 12, Visible = false, Parent = body }, 48, 4)
-	local function paperFrame(i: number): Frame
-		local p = papers[i]
-		local b = BINS[p.color] or BINS[1]
-		local f = Skin.make("Frame", { AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(78, 96), BackgroundColor3 = Color3.fromRGB(250, 250, 246), ZIndex = 6, Parent = body },
-			{ Skin.corner(6), Skin.stroke(3) })
-		Skin.make("Frame", { Size = UDim2.new(1, 0, 0, 16), BackgroundColor3 = b.color, BorderSizePixel = 0, ZIndex = 7, Parent = f }, { Skin.corner(6) })
-		Skin.text({ AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.56), Size = UDim2.fromOffset(60, 60), Text = b.glyph, TextColor3 = b.color,
-			FontFace = Skin.Fonts.Number, ZIndex = 8, Parent = f }, 56, 3)
-		Skin.make("Frame", { Position = UDim2.fromScale(0.15, 0.86), Size = UDim2.new(0.7, 0, 0, 3), BackgroundColor3 = Color3.fromRGB(190, 190, 200),
-			BorderSizePixel = 0, ZIndex = 7, Parent = f })
-		return f
-	end
-	local function xAt(i: number, t: number): number
-		local p = papers[i]
-		local u = (t - (info.startAt + p.at)) / p.travel
-		return BX0 + 40 + (BX1 - BX0 - 40) * math.clamp(u, 0, 1.05)
-	end
-	local function setMisses(m: number)
-		misses = m
-		for k, x in xs do
-			x.TextColor3 = if k <= m then kit.RED else Color3.fromRGB(80, 82, 100)
-		end
-	end
-	local function leave(i: number, how: string, bin: number?)
-		state[i] = how
-		local f = frames[i]
-		if not f then
-			return
-		end
-		frames[i] = nil
-		if how == "shred" then
-			kit.tween(f, 0.25, { Position = UDim2.fromOffset(BX1 + 30, BY + 116), Size = UDim2.fromOffset(20, 96) })
-			kit.sound("bad")
-		else
-			local target = (binButtons[bin or 1] :: any).button.Position
-			kit.tween(f, 0.28, { Position = target - UDim2.fromOffset(0, 40), Size = UDim2.fromOffset(30, 36), Rotation = if how == "ok" then 0 else 40 }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-		end
-		task.delay(0.32, function()
-			f:Destroy()
-		end)
-	end
-
-	local function sort(bin: number)
-		if gw.quit then
-			return
-		end
-		local t = kit.now()
-		local p = papers[front]
-		if not p or t < info.startAt + p.at - 0.05 or state[front] then
-			return
-		end
-		local i = front
-		local ok = bin == p.color
-		front += 1
-		leave(i, if ok then "ok" else "wrong", bin)
-		local at = UDim2.new(0, xAt(i, t), 0, BY - 6)
-		if ok then
-			filed += 1
-			filedLabel.Text = "FILED " .. filed
-			kit.pop(body, "FILED!", Color3.fromRGB(150, 245, 130), at, 40, 40)
-			kit.sound("good")
-		else
-			setMisses(misses + 1)
-			kit.pop(body, "WRONG!", kit.RED, at, 40, 40)
-			kit.sound("bad")
-		end
-		api.send("Sort", { i = i, bin = bin, t = t })
-	end
-	for k, b in binButtons do
-		b.button.Activated:Connect(function()
-			sort(k)
-		end)
-	end
-
-	api.onAck(function(a: any)
-		if a.shred then
-			for j = front, a.shred do
-				if not state[j] then
-					leave(j, "shred")
-				end
-			end
-			front = math.max(front, a.shred + 1)
-		end
-		if a.misses then
-			setMisses(a.misses)
-		end
-	end)
-
-	kit.countdown(body, info.startAt)
-	local conn = RunService.RenderStepped:Connect(function()
-		local t = kit.now()
-		for k, s in stripes do
-			s.Position = UDim2.new(0, ((k - 1) * 48 + (t * 90) % 48), 0.5, 0)
-		end
-		local shownArrow = false
-		for i, p in papers do
-			if state[i] then
-				continue
-			end
-			local appear = info.startAt + p.at
-			if t < appear - 0.05 then
-				break
-			end
-			local f = frames[i]
-			if not f then
-				f = paperFrame(i)
-				frames[i] = f
-			end
-			local x = xAt(i, t)
-			f.Position = UDim2.fromOffset(x, BY + 76)
-			local isFront = i == front
-			local st = f:FindFirstChildOfClass("UIStroke")
-			if st then
-				st.Color = if isFront then kit.GOLD else Color3.fromRGB(21, 19, 28)
-				st.Thickness = if isFront then 5 else 3
-			end
-			if isFront then
-				shownArrow = true
-				arrow.Position = UDim2.fromOffset(x, BY - 26 + math.sin(t * 8) * 4)
-			end
-		end
-		arrow.Visible = shownArrow
-	end)
-	local res = api.result()
-	conn:Disconnect()
-	kit.result(gw, res)
+local Scene=require(game.ReplicatedStorage.MinigameClient.Scene)
+local M={}
+local colors={Color3.fromRGB(240,70,70),Color3.fromRGB(98,205,48),Color3.fromRGB(60,160,235),Color3.fromRGB(255,200,40)}
+local names={'● RED','■ GREEN','◆ BLUE','★ GOLD'}
+local keys={Enum.KeyCode.One,Enum.KeyCode.Two,Enum.KeyCode.Three,Enum.KeyCode.Four}
+function M.play(info,api)
+ local s=Scene.new('FILING FRENZY',{distance=17,height=4.1,aim=Vector3.new(0,1.8,0)})
+ local machine=s:asset('FilingMachine',CFrame.new()); s:face(machine.TitleBoard,'SORT THE CASE FILES')
+ local bins,bases,files,state,pending={},{},{},{},{}
+ local front,filed,misses=1,0,0
+ for i=1,info.colors do
+  local m=s:asset('FileBin',CFrame.new((i-(info.colors+1)/2)*2.65,.1,2.2)); bins[i]=m; bases[i]=m.Lid:GetPivot()
+  for _,p in m:GetDescendants() do if p:IsA('BasePart') and p.Name~='Label' then p.Color=colors[i] end end
+  local face=m:FindFirstChild('Label'); if face then s:face(face,tostring(i)..'  '..names[i]) end
+ end
+ local function advance() while state[front] do front+=1 end end
+ local function sort(bin)
+  local i=front; local p=info.papers[i]
+  if not p or not files[i] or state[i] or Scene.now()<info.startAt+p.at then return end
+  state[i]='pending'; pending[i]=bin; advance(); api.send('Sort',{i=i,bin=bin,t=Scene.now()})
+  s:animate(bins[bin].Lid,'LidOpen',bases[bin]); task.delay(.35,function() if not s.closed then s:animate(bins[bin].Lid,'LidClose',bases[bin]) end end)
+ end
+ s:input(function(input)
+  for i,m in bins do if input.KeyCode==keys[i] or s:hit(input,{m}) then sort(i); return end end
+ end)
+ api.onAck(function(a)
+  if s.closed or s.ended then return end
+  local i=a.i or a.shred; if not i then return end
+  if a.shred then for j=1,i do state[j]='done'; if j~=i and files[j] then files[j]:Destroy() end end end
+  state[i]='done'; misses=a.misses or misses; if a.ok then filed+=1 end; advance()
+  local m=files[i]
+  if m then
+   local start=os.clock(); local from=m:GetPivot(); local bin=pending[i]
+   local dest=if bin then bins[bin]:GetPivot()*CFrame.new(0,.6,0) else CFrame.new(5.1,4000.5,-.8)
+   s:step(function()
+    if not m.Parent then return end
+    local t=math.clamp((os.clock()-start)/.35,0,1); local pose=Scene.sample('FileFlight',t*.35); m:PivotTo(from:Lerp(dest,pose.X)*CFrame.new(0,pose.Y,0)*pose.Rotation)
+    if t>=1 then m:Destroy() end
+   end)
+  end
+  api.kit.sound(if a.ok then 'good' else 'bad')
+  s.counter.Text=string.format('%d FILED    •    %d / %d mistakes',filed,misses,info.misses)
+ end)
+ s:step(function()
+  if s.ended then return end
+  local t=Scene.now()-info.startAt
+  for i,p in info.papers do
+   if t>=p.at and not state[i] then
+    if not files[i] then
+     local m=s:asset('CaseFile',CFrame.new()); files[i]=m
+     for _,v in m:GetChildren() do if v:IsA('BasePart') and (v.Name=='Folder' or v.Name=='Tab' or v.Name=='Seal') then v.Color=colors[p.color] end end
+     local seal=m:FindFirstChild('Seal'); if seal then s:face(seal,({'●','■','◆','★'})[p.color]) end
+    end
+    local u=math.clamp((t-p.at)/p.travel,0,1)
+    s:place(files[i],CFrame.new(-4.6+9.2*u,1.3,-.65)*CFrame.Angles(0,0,math.sin(t*4+i)*.025))
+   end
+  end
+  local p=info.papers[front]
+  s.hint.Text=if p and files[front] then 'File the oldest folder → '..names[p.color] else 'Tap a matching bin • Keyboard: 1 / 2 / 3'
+ end)
+ s:finish(api.result(function() return s.closed end)); while not s.closed do task.wait(.1) end
 end
-
 return M

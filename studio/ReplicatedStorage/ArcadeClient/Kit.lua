@@ -17,6 +17,7 @@ local TweenService = game:GetService("TweenService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
+local HatchFx = require(Shared:WaitForChild("HatchFx") :: ModuleScript) :: any
 
 local player = Players.LocalPlayer
 local Kit = {}
@@ -29,6 +30,146 @@ Kit.INK = Color3.fromRGB(40, 40, 52)
 
 function Kit.now(): number
 	return workspace:GetServerTimeNow()
+end
+
+-- Arcade game actions live on booth props. The booth's existing world screen doubles as the instruction/status panel.
+function Kit.boothStatus(station: Instance?, text: string, color: Color3?)
+	if not station then return end
+	local board = station:FindFirstChild("Board")
+	local status = board and board:FindFirstChild("Status", true)
+	if status and status:IsA("TextLabel") then
+		status.Text = text
+		if color then status.TextColor3 = color end
+	end
+end
+
+function Kit.physicalPrompt(part: BasePart, action: string, object: string, callback: () -> ()): ProximityPrompt
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "ArcadeAction"
+	prompt.ActionText = action
+	prompt.ObjectText = object
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 10
+	prompt.RequiresLineOfSight = false
+	prompt.Style = Enum.ProximityPromptStyle.Default
+	prompt.Parent = part
+	prompt.Triggered:Connect(callback)
+	return prompt
+end
+
+function Kit.clearPhysicalPrompts(prompts: { ProximityPrompt })
+	for _, prompt in prompts do if prompt.Parent then prompt:Destroy() end end
+end
+
+-- Match the egg hatch's establishing shot and push in, then restore every local visual when the round ends.
+function Kit.enterScene(base: Vector3, front: Vector3, keepGui: LayerCollector?, station: Instance?): any
+	local camera = workspace.CurrentCamera
+	local playerGui = player:WaitForChild("PlayerGui")
+	local state = {
+		camera = camera,
+		oldType = camera.CameraType,
+		oldSubject = camera.CameraSubject,
+		oldCFrame = camera.CFrame,
+		oldFov = camera.FieldOfView,
+		guis = {} :: { [LayerCollector]: boolean },
+		parts = {} :: { [Instance]: any },
+		stationParts = {} :: { [BasePart]: number },
+		stationGuis = {} :: { [LayerCollector]: boolean },
+		oldSceneAttribute = player:GetAttribute("MinigameSceneActive"),
+	}
+	local function hideGui(instance: Instance)
+		if instance:IsA("LayerCollector") and instance ~= keepGui and not state.guis[instance] then
+			state.guis[instance] = instance.Enabled
+			instance.Enabled = false
+		end
+	end
+	for _, instance in playerGui:GetDescendants() do hideGui(instance) end
+	state.guiAdded = playerGui.DescendantAdded:Connect(function(instance)
+		task.defer(hideGui, instance)
+	end)
+	if station then
+		local function isLocalGameItem(instance: Instance): boolean
+			local parent = instance
+			while parent and parent ~= station do
+				if string.sub(parent.Name, 1, 5) == "Local" then return true end
+				parent = parent.Parent
+			end
+			return false
+		end
+		-- The booth frame, awning, and old status board cut across the hatch-style camera.
+		-- Keep its counter surface and the live physical game model; fade its surrounding shell locally.
+		for _, instance in station:GetDescendants() do
+			if isLocalGameItem(instance) then continue end
+			if instance:IsA("BasePart") and instance.Name ~= "CounterTop" then
+				state.stationParts[instance] = instance.LocalTransparencyModifier
+				instance.LocalTransparencyModifier = 1
+			elseif instance:IsA("LayerCollector") then
+				state.stationGuis[instance] = instance.Enabled
+				instance.Enabled = false
+			end
+		end
+	end
+	local character = player.Character
+	if character then
+		for _, instance in character:GetDescendants() do
+			if instance:IsA("BasePart") then
+				state.parts[instance] = { kind = "part", value = instance.LocalTransparencyModifier }
+				instance.LocalTransparencyModifier = 1
+			elseif instance:IsA("Decal") or instance:IsA("Texture") then
+				state.parts[instance] = { kind = "texture", value = instance.Transparency }
+				instance.Transparency = 1
+			end
+		end
+	end
+	player:SetAttribute("MinigameSceneActive", true)
+	local towardPlayer = if front.Magnitude > 0.001 then front.Unit else Vector3.new(0, 0, 1)
+	camera.CameraType = Enum.CameraType.Scriptable
+	HatchFx.postBegin()
+	HatchFx.post({ cc = { Saturation = 0.12, Contrast = 0.06 }, dof = { FarIntensity = 0.35, FocusDistance = 11, InFocusRadius = 5 } }, 0.5)
+	local wide = CFrame.lookAt(base + towardPlayer * 11.5 + Vector3.yAxis * 4.6, base + Vector3.yAxis * 2.4)
+	local close = CFrame.lookAt(base + towardPlayer * 8.6 + Vector3.yAxis * 4.2, base + Vector3.yAxis * 2.4)
+	camera.CFrame = wide
+	TweenService:Create(camera, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { CFrame = close }):Play()
+	return state
+end
+
+function Kit.leaveScene(state: any)
+	local camera = state.camera :: Camera?
+	local function restore()
+		if state.guiAdded then state.guiAdded:Disconnect() end
+		for instance, enabled in state.guis do
+			if instance.Parent then instance.Enabled = enabled end
+		end
+		for instance, saved in state.parts do
+			if instance.Parent then
+				if saved.kind == "part" and instance:IsA("BasePart") then instance.LocalTransparencyModifier = saved.value
+				elseif (instance:IsA("Decal") or instance:IsA("Texture")) then instance.Transparency = saved.value end
+			end
+		end
+		for instance, value in state.stationParts do
+			if instance.Parent then instance.LocalTransparencyModifier = value end
+		end
+		for instance, enabled in state.stationGuis do
+			if instance.Parent then instance.Enabled = enabled end
+		end
+		player:SetAttribute("MinigameSceneActive", state.oldSceneAttribute)
+		HatchFx.postEnd(0.35)
+	end
+	if not camera or not camera.Parent then restore(); return end
+	local tween = TweenService:Create(camera, TweenInfo.new(0.48, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+		CFrame = state.oldCFrame,
+		FieldOfView = state.oldFov,
+	})
+	tween.Completed:Once(function()
+		if camera.Parent then
+			camera.CameraType = state.oldType
+			if state.oldSubject then camera.CameraSubject = state.oldSubject end
+		end
+		restore()
+	end)
+	tween:Play()
 end
 
 function Kit.tween(o: Instance, t: number, props: { [string]: any }, style: Enum.EasingStyle?, dir: Enum.EasingDirection?): Tween
