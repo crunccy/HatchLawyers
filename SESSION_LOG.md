@@ -3,6 +3,13 @@
 Newest first. Each entry: what changed, where, and what's left. Keep the **Open items** list current —
 it is the to-do list for the next session. Move finished items into the dated entry that finished them.
 
+## Codex ↔ Claude handoff — 2026-10-16
+
+- **User's call:** Use this repo to pass work and status between Codex and Claude.
+- **Codex:** take code, economy simulation/analysis, and design-doc tasks from Open items. Work in `src/`, `tools/`, or `docs/`; claim each task here before starting, avoid pushing to Studio, and leave a dated result/status here.
+- **Claude:** continue the existing Studio bug-list claim below; handle Studio pushes/playtests, visual checks, and Blender model work when working locally with those tools. Update this log with results and release the claim when done.
+- **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
+
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
