@@ -41,8 +41,8 @@ for side in (-1, 1):  # banded posts
 box("Crossbar", 0, 0, 6.2, 13.4, 0.6, 0.6, PAL["woodD"])
 for side in (-1, 1):
     box("Chain", side * 3.6, 0, 5.4, 0.2, 0.2, 0.8, PAL["ink"])
-box("SignBack", 0, 0, 2.6, 9.6, 0.5, 2.9, PAL["gold"])
-box("Sign", 0, 0.32, 2.75, 9.0, 0.2, 2.6, PAL["sign"], txt="OPEN LOT", fn=(0, 1, 0))
+box("SignBack", 0, 0, 2.6, 9.6, 0.5, 2.9, PAL["woodL"])
+box("Sign", 0, 0.32, 2.75, 9.0, 0.2, 2.6, PAL["woodD"], txt="OPEN LOT", fn=(0, 1, 0))  # wayfinding style: wood board
 box("SubSign", 0, 0.3, 1.5, 7.0, 0.3, 1.0, PAL["white"], txt="A new firm opens here!", fn=(0, 1, 0))
 box("SubChain", 0, 0, 2.5, 0.15, 0.15, 0.25, PAL["ink"])
 # traffic cones by the posts

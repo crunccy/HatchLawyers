@@ -101,8 +101,9 @@ for i in range(16):  # bulbs along the top and bottom of the sign, plaza side
     for zz in (LEG_H + 7.4, LEG_H + 0.1):
         box(G, "Bulb", -12.5 + 25 * t, 0.9, zz, 0.6, 0.6, 0.6, PAL["bulb"] if (i + int(zz)) % 2 == 0 else PAL["pink"], tag="neon")
 # the little hanging sign under the beam: where it leads
-box(G, "SubSign", 0, 0.6, LEG_H - 6.6, 18, 0.4, 2.6, PAL["purple"], txt="BIG CASES  •  ARCADE PIER", fn=(0, 1, 0))
-box(G, "SubSign", 0, -0.6, LEG_H - 6.6, 18, 0.4, 2.6, PAL["purple"], txt="BACK TO THE PLAZA", fn=(0, -1, 0))
+# (sign styles, 2026-10-16: wayfinding = a brown wood board with white text; attractions = a black panel, gold text, bulbs)
+box(G, "SubSign", 0, 0.6, LEG_H - 6.6, 18, 0.4, 2.6, PAL["woodD"], txt="BIG CASES  •  ARCADE PIER", fn=(0, 1, 0))
+box(G, "SubSign", 0, -0.6, LEG_H - 6.6, 18, 0.4, 2.6, PAL["woodD"], txt="BACK TO THE PLAZA", fn=(0, -1, 0))
 for side in (-1, 1):
     box(G, "SubSignChain", side * 7, 0, LEG_H - 4, 0.25, 0.25, 0.6, PAL["ink"])
 # planters at the feet, plaza side

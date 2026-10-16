@@ -192,6 +192,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
+- Design pass 2026-10-16: `Workspace.IslandEdge` (beach, docks, boats, far islands: `tools/blender/island_edge.py`),
+  `ZoneLandmarks.Pillars` (BuildLanePillars), `StarterPlayerScripts.WorldLife` (client-only motion). **Sign styles:**
+  wayfinding = brown wood board + white text; attractions = black panel + gold LuckiestGuy text + bulbs.
 - Art pass 2026-10-16 (docs/ART_REMODEL_BRIEF.md): `Plots.PlotN.LotSign` (shown on empty plots only - PlotService hides it
   on claim) and `Workspace.ZoneLandmarks` (statues on the License gates; re-run `tools/zones/BuildZoneLandmarks.lua`
   after a BuildLane re-run). Hub Shop / Mutation Machine / gate / fountain: `tools/zones/BuildHubLandmarks.lua`.

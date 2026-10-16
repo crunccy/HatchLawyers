@@ -30,8 +30,17 @@ local function sortedPlots(): { Model }
 			table.insert(list, plot)
 		end
 	end
-	-- Plot1, Plot2, ... in numeric order.
+	-- Nearest the plaza first (design pass 2026-10-16: on a quiet server the firms fill the plots by the hub, not the
+	-- far corners), then Plot1, Plot2, ... in numeric order.
+	local function dist(p: Model): number
+		local pos = p:GetPivot().Position
+		return math.floor(Vector2.new(pos.X, pos.Z).Magnitude / 10)
+	end
 	table.sort(list, function(a, b)
+		local da, db = dist(a), dist(b)
+		if da ~= db then
+			return da < db
+		end
 		return (tonumber(a.Name:match("%d+")) or 0) < (tonumber(b.Name:match("%d+")) or 0)
 	end)
 	return list

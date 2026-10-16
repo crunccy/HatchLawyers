@@ -151,6 +151,33 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-16 — crnuch, local session: design pass (plaza, height, island edge, lane rhythm, life) + pier connected
+- **Pier connected:** the Big Case terrace's hedge row closed the pier off. 5 hedge blocks in the middle are archived to
+  `ServerStorage.ArchivedVisuals.CaseTerraceHedgeGap` and `arcade_pier.py` adds a landing + two steps from the
+  terrace rim (top 0.9) down to the deck, with lamp posts either side.
+- **Plaza re-tiled** (colour only, one undo step): the orange checker is now only the walkways - a ring round the fountain
+  (radius 15-25) and spokes N / S / E / W + diagonals; calm sand inside, two-tone lawn outside (radius > 40).
+- **Height + edges** (`hub_landmarks.py`): the Egg Fountain stands on a two-step gold-edged dais; 8 `PlazaBench`es face it
+  at radius 28; 32 `PlazaPlanter`s (hedge + flowers) sit on the plaza's rim tiles, gaps at every walkway.
+  `BuildHubLandmarks.lua` learned "copies" (a list, or "rim") and other JSON via `_G.LANDMARKS_JSON` + "parent".
+- **Island edge** (`tools/blender/island_edge.py` -> `island_edge.json`, built with BuildHubLandmarks into
+  `Workspace.IslandEdge`): a two-step beach all round (gaps for the lane and the pier), 19 rock clusters, 2 docks with
+  rowboats beside the pier, 3 sailboats, 3 far islands on the horizon.
+- **Lane rhythm** (`tools/blender/lane_pillar.py` -> `tools/zones/BuildLanePillars.lua`): 95 banded pillars with a lamp and
+  a hanging banner in the zone's colour against both walls every 45 studs (clear of arrivals and gates, 3 skipped for
+  decor) in `Workspace.ZoneLandmarks.Pillars` - re-run after a BuildLane re-run.
+- **Life** - new `StarterPlayerScripts.WorldLife` (src/WorldLife.client.lua; client-only, only near the hub): brick water
+  droplets arcing from the fountain's fish spouts, flags / pennants / banners swaying, two lighthouse beams sweeping,
+  sailboats bobbing, 6 seagulls (`ReplicatedStorage.WorldLife.Bird`, from `tools/blender/world_life.py` via
+  `tools/zones/BuildWorldLife.lua`) circling, 4 clients (ReplicatedStorage.ClientModels) strolling the walkway ring.
+  No ambient sea sound: the game has no licensed sound id for it yet (CLAUDE.md: unapproved ids don't play).
+- **Plots** (`Server.PlotService`, heads-up mr.robe): players get the plots nearest the plaza first (2, 3, 6, 7, then
+  1, 4, 5, 8) so a quiet server's firms sit by the hub. **Sign styles:** wayfinding = brown wood board, white text
+  (the gate's hanging sign, OPEN LOT, the hub's signposts); attractions = black panel, gold text, bulbs.
+- Playtest: no errors; crnuch landed on Plot2 (its LotSign hidden); WorldLife running (6 birds, 24 droplets, 2 beams, 4
+  walkers). Save restored afterwards. `run_checks.py` ALL PASSED; snapshot 109 scripts (+ WorldLife; PlotService).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
+
 ## 2026-10-16 — crnuch, local session: art pass stages 4 + 5 (lot signs, zone statues) - the plan is done
 - **Stage 4 - LOT SIGN** (`tools/blender/lot_sign.py` -> `tools/zones/lot_sign.json` -> `tools/zones/BuildLotSigns.lua`):
   `Plots.PlotN.LotSign` at every plot's entrance (plot-local (0, 0.48, -20)): two banded red / white posts with gold
