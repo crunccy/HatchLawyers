@@ -37,6 +37,47 @@ local function now(): number
 	return workspace:GetServerTimeNow()
 end
 
+-- The egg scene's camera is a shot from the player's side of the prop, eased into the
+-- composition. Use the same geometry for the hub games instead of snapping behind the table.
+local function gameCameraIn(camera: Camera, base: Vector3, towardPlayer: Vector3, distance: number, height: number, lookHeight: number, side: number, fov: number)
+	local state = {
+		camera = camera,
+		oldType = camera.CameraType,
+		oldSubject = camera.CameraSubject,
+		oldCFrame = camera.CFrame,
+		oldFov = camera.FieldOfView,
+	}
+	camera.CameraType = Enum.CameraType.Scriptable
+	local right = towardPlayer:Cross(Vector3.yAxis).Unit
+	local goal = CFrame.lookAt(base + towardPlayer * distance + Vector3.yAxis * height + right * side,
+		base + Vector3.yAxis * lookHeight)
+	TweenService:Create(camera, TweenInfo.new(0.72, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+		CFrame = goal,
+		FieldOfView = fov,
+	}):Play()
+	return state
+end
+
+local function gameCameraOut(state: any, stage: Instance?)
+	local camera = state.camera :: Camera?
+	if not camera or not camera.Parent then
+		if stage then stage:Destroy() end
+		return
+	end
+	local back = TweenService:Create(camera, TweenInfo.new(0.42, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+		CFrame = state.oldCFrame,
+		FieldOfView = state.oldFov,
+	})
+	back.Completed:Once(function()
+		if camera.Parent then
+			camera.CameraType = state.oldType
+			if state.oldSubject then camera.CameraSubject = state.oldSubject end
+		end
+		if stage then stage:Destroy() end
+	end)
+	back:Play()
+end
+
 ------------------------------------------------------------------ sounds (same licensed sounds as StarterPlayerScripts.Sounds)
 local sfxGroup = SoundService:WaitForChild("SFX", 5) :: SoundGroup?
 local SOUNDS = {
@@ -124,6 +165,19 @@ local function label(parent: Instance, text: string, x: number, y: number, w: nu
 	end
 	l.Parent = parent
 	return l
+end
+
+local function faceTitle(part: BasePart?, text: string, color: Color3)
+	if not part then return end
+	local surface = Instance.new("SurfaceGui")
+	surface.Name = "MinigameTitle"
+	surface.Face = Enum.NormalId.Front
+	surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	surface.PixelsPerStud = 36
+	surface.LightInfluence = 0
+	surface.Parent = part
+	local title = label(surface, text, 0.5, 0.5, 0.92, 0.78, color, 2.5)
+	title.TextWrapped = true
 end
 
 -- a rounded box (round = corner radius as a share of the smaller side; 0.5 = pill / circle)
@@ -498,6 +552,18 @@ local function onTap(hole: Hole)
 	local pop = hole.current
 	hole.current = nil
 	Remote:FireServer("Bonk", r.id, pop.id)
+	if r.mallet and r.mallet.Parent then
+		r.malletToken += 1
+		local token = r.malletToken
+		local from = r.mallet:GetPivot()
+		local hit = hole.rest * CFrame.new(0, 2.15, -0.45) * CFrame.Angles(math.rad(-r.malletSwingDegrees), 0, math.rad(18))
+		task.spawn(function()
+			moveModel(r.mallet, from, hit, r.malletDownSeconds, function(a) return 1 - (1 - a) ^ 3 end)
+			if token == r.malletToken and bonk == r then
+				moveModel(r.mallet, hit, r.malletHome, r.malletRecoverSeconds, function(a) return 1 - (1 - a) ^ 4 end)
+			end
+		end)
+	end
 	local before = hole.actor:GetPivot()
 	task.spawn(function()
 		local direction = if pop.kind == "Judge" then 1 else -1
@@ -523,7 +589,6 @@ local function startBonk(info: any)
 	if not rootPart then return end
 	local camera = workspace.CurrentCamera
 	if not camera then return end
-	local oldCameraType, oldSubject, oldCFrame, oldFov = camera.CameraType, camera.CameraSubject, camera.CFrame, camera.FieldOfView
 	local stage = Instance.new("Folder")
 	stage.Name = "LocalGavelBonkStage"
 	stage.Parent = workspace
@@ -537,8 +602,17 @@ local function startBonk(info: any)
 		return p
 	end
 	local deckCF = face * CFrame.new(0, -1.2, 0)
-	part("Wooden Bench", Vector3.new(12, 0.5, 6), deckCF, WOOD, Enum.Material.WoodPlanks)
-	part("Gold Trim", Vector3.new(12.12, 0.12, 6.12), deckCF * CFrame.new(0, 0.28, 0), GOLD, Enum.Material.Metal)
+	local assets = ReplicatedStorage:FindFirstChild("MinigameAssets")
+	local benchTemplate = assets and assets:FindFirstChild("GavelBench")
+	if not benchTemplate or not benchTemplate:IsA("Model") then
+		stage:Destroy()
+		warn("[Minigames] Blender-authored GavelBench is missing from ReplicatedStorage.MinigameAssets")
+		return
+	end
+	local benchModel = benchTemplate:Clone()
+	benchModel:PivotTo(deckCF)
+	benchModel.Parent = stage
+	faceTitle(benchModel:FindFirstChild("SignFace", true) :: BasePart?, "GAVEL BONK", Color3.fromRGB(92, 46, 26))
 	local holes: { Hole } = {}
 	local hub = workspace:FindFirstChild("Hub")
 	local spots = hub and hub:FindFirstChild("SpecialSpots")
@@ -549,7 +623,6 @@ local function startBonk(info: any)
 		local row, col = math.floor((i - 1) / 3), (i - 1) % 3
 		local localCF = CFrame.new((col - 1) * 3.6, 0.35, (row - 1) * 1.65)
 		local holeCF = deckCF * localCF
-		local rim = part("Brick Target " .. i, Vector3.new(2.7, 0.45, 1.45), holeCF, Color3.fromRGB(135, 76, 42), Enum.Material.Brick)
 		local hitbox = part("Hit " .. i, Vector3.new(2.5, 1.4, 1.25), holeCF * CFrame.new(0, 0.9, 0), Color3.fromRGB(45, 27, 23), Enum.Material.SmoothPlastic)
 		hitbox.Transparency = 1
 		local actor: Model
@@ -571,8 +644,17 @@ local function startBonk(info: any)
 		actor:PivotTo(rest * CFrame.new(0, -1.25, 0))
 		setActorVisible(actor, false)
 		table.insert(holes, { hitbox = hitbox, actor = actor, rest = rest, current = nil, token = 0 })
-		local trim = rim
-		trim.TopSurface, trim.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+	end
+	local malletTemplate = assets:FindFirstChild("GavelMallet")
+	local mallet: Model? = nil
+	local malletHome = deckCF * CFrame.new(5.1, 2.2, -2.3) * CFrame.Angles(math.rad(20), 0, math.rad(-28))
+	local malletSwingDegrees = if malletTemplate then (malletTemplate:GetAttribute("swingDegrees") :: number?) or 58 else 58
+	local malletDownSeconds = if malletTemplate then (malletTemplate:GetAttribute("downSeconds") :: number?) or 0.1 else 0.1
+	local malletRecoverSeconds = if malletTemplate then (malletTemplate:GetAttribute("recoverSeconds") :: number?) or 0.2 else 0.2
+	if malletTemplate and malletTemplate:IsA("Model") then
+		mallet = malletTemplate:Clone()
+		mallet:PivotTo(malletHome)
+		mallet.Parent = stage
 	end
 	local scoreHud = Instance.new("ScreenGui")
 	scoreHud.Name, scoreHud.IgnoreGuiInset, scoreHud.ResetOnSpawn, scoreHud.DisplayOrder = "BonkStatus", true, false, 36
@@ -580,10 +662,9 @@ local function startBonk(info: any)
 	local scoreLabel = label(scoreHud, "0", 0.5, 0.08, 0.12, 0.07, GOLD, 2.5)
 	local timerBack = blob(scoreHud, Color3.fromRGB(30, 26, 52), 0.5, 0.15, 0.34, 0.025, 3, 0.5)
 	local timerFill = blob(timerBack, GREEN, 0.5, 0.5, 1, 1, 4, 0.5)
-	camera.CameraType = Enum.CameraType.Scriptable
-	camera.FieldOfView = 52
-	camera.CFrame = CFrame.lookAt((face * CFrame.new(0, 9, 15)).Position, origin + Vector3.new(0, 1, 0))
-	local r = { id = info.id, startAt = info.startAt, duration = info.duration, pops = info.pops, nextPop = 1, over = false, localScore = 0, scoreLabel = scoreLabel, holes = holes, stage = stage, camera = camera, oldCameraType = oldCameraType, oldSubject = oldSubject, oldCFrame = oldCFrame, oldFov = oldFov, gui = scoreHud, timerFill = timerFill }
+	local towardPlayer = (rootPart.Position - origin).Unit
+	local cameraState = gameCameraIn(camera, deckCF.Position, towardPlayer, 12.5, 5.1, 1.45, 5.2, 40)
+	local r = { id = info.id, startAt = info.startAt, duration = info.duration, pops = info.pops, nextPop = 1, over = false, localScore = 0, scoreLabel = scoreLabel, holes = holes, stage = stage, cameraState = cameraState, mallet = mallet, malletHome = malletHome, malletToken = 0, malletSwingDegrees = malletSwingDegrees, malletDownSeconds = malletDownSeconds, malletRecoverSeconds = malletRecoverSeconds, gui = scoreHud, timerFill = timerFill }
 	bonk = r
 	local function tapAt(position: Vector2)
 		if bonk ~= r or r.over then return end
@@ -625,15 +706,8 @@ end
 
 local function cleanupBonk(r: any)
 	if r.inputConn then r.inputConn:Disconnect() end
-	if r.stage then r.stage:Destroy() end
 	if r.gui then r.gui:Destroy() end
-	local camera = r.camera :: Camera?
-	if camera and camera.Parent then
-		camera.CameraType = r.oldCameraType
-		camera.CameraSubject = r.oldSubject
-		camera.CFrame = r.oldCFrame
-		camera.FieldOfView = r.oldFov
-	end
+	gameCameraOut(r.cameraState, r.stage)
 end
 
 ------------------------------------------------------------------ LUCKY BRIEFCASE
@@ -735,7 +809,6 @@ local function startBrief(info: any)
 	local rootPart = character:FindFirstChild("HumanoidRootPart") :: BasePart?
 	local camera = workspace.CurrentCamera
 	if not rootPart or not camera then return end
-	local oldType, oldSubject, oldCFrame, oldFov = camera.CameraType, camera.CameraSubject, camera.CFrame, camera.FieldOfView
 	local stage = Instance.new("Folder")
 	stage.Name = "LocalLuckyBriefcaseStage"
 	stage.Parent = workspace
@@ -749,36 +822,48 @@ local function startBrief(info: any)
 		return p
 	end
 	local tableCF = face * CFrame.new(0, -1.1, 0)
-	part("Brick Table", Vector3.new(12, 0.5, 5.4), tableCF, Color3.fromRGB(53, 117, 61), Enum.Material.Brick)
-	part("Gold Table Edge", Vector3.new(12.2, 0.18, 5.6), tableCF * CFrame.new(0, 0.32, 0), GOLD, Enum.Material.Metal)
+	local assets = ReplicatedStorage:FindFirstChild("MinigameAssets")
+	local tableTemplate = assets and assets:FindFirstChild("LuckyBriefcaseTable")
+	local caseTemplate = assets and assets:FindFirstChild("LuckyBriefcase")
+	if not tableTemplate or not tableTemplate:IsA("Model") or not caseTemplate or not caseTemplate:IsA("Model") then
+		stage:Destroy()
+		warn("[Minigames] Blender-authored LuckyBriefcase props are missing from ReplicatedStorage.MinigameAssets")
+		return
+	end
+	local gameTable = tableTemplate:Clone()
+	gameTable:PivotTo(tableCF)
+	gameTable.Parent = stage
+	faceTitle(gameTable:FindFirstChild("MarqueeFace", true) :: BasePart?, "LUCKY BRIEFCASE", Color3.fromRGB(72, 43, 18))
 	local cases: { [number]: Model } = {}
 	local lids: { [number]: BasePart } = {}
 	local bases: { [number]: BasePart } = {}
 	local atSlot: { number } = { 1, 2, 3 }
+	local lidOpenDegrees = (caseTemplate:GetAttribute("lidOpenDegrees") :: number?) or 68
+	local lidOpenSeconds = (caseTemplate:GetAttribute("openSeconds") :: number?) or 0.2
+	local lidCloseSeconds = (caseTemplate:GetAttribute("closeSeconds") :: number?) or 0.12
+	local shuffleLift = (caseTemplate:GetAttribute("shuffleLift") :: number?) or 0.85
 	for i = 1, 3 do
 		local rest = tableCF * CFrame.new((i - 2) * 3.6, 1, 0)
-		local model = Instance.new("Model")
+		local model = caseTemplate:Clone()
 		model.Name = "Case " .. i
-		local body = part("Briefcase Body", Vector3.new(2.5, 1.1, 1.8), rest, Color3.fromRGB(141, 83, 45), Enum.Material.WoodPlanks)
-		body.Parent = model
-		local lid = part("Briefcase Lid", Vector3.new(2.5, 0.25, 1.8), rest * CFrame.new(0, 0.65, 0), Color3.fromRGB(105, 58, 36), Enum.Material.WoodPlanks)
-		lid.Parent = model
-		local clasp = part("Gold Clasp", Vector3.new(0.35, 0.28, 0.14), rest * CFrame.new(0, 0.1, -0.94), GOLD, Enum.Material.Metal)
-		clasp.Parent = model
+		local body = model:FindFirstChild("Body") :: BasePart
+		local lid = model:FindFirstChild("Lid") :: BasePart
+		for _, d in model:GetDescendants() do
+			if d:IsA("BasePart") then d.CanQuery = true end
+		end
 		model.PrimaryPart = body
-		model.Parent = stage
+		model.WorldPivot = CFrame.identity
 		model:PivotTo(rest)
+		model.Parent = stage
 		cases[i], lids[i], bases[i] = model, lid, body
 	end
 	local status = Instance.new("ScreenGui")
 	status.Name, status.IgnoreGuiInset, status.ResetOnSpawn, status.DisplayOrder = "BriefcaseStatus", true, false, 36
 	status.Parent = player.PlayerGui
 	local hint = label(status, "WATCH THE STAR", 0.5, 0.08, 0.38, 0.06, UIKit.Colors.TextGold, 3)
-	local r = { id = info.id, picked = false, cases = cases, atSlot = atSlot, big = info.big, hint = hint, pickable = false, stage = stage, gui = status, camera = camera, oldType = oldType, oldSubject = oldSubject, oldCFrame = oldCFrame, oldFov = oldFov, lids = lids, bases = bases, tableCF = tableCF, info = info }
+	local cameraState = gameCameraIn(camera, tableCF.Position, (rootPart.Position - origin).Unit, 13.1, 5.0, 1.55, 4.8, 39)
+	local r = { id = info.id, picked = false, cases = cases, atSlot = atSlot, big = info.big, hint = hint, pickable = false, stage = stage, gui = status, cameraState = cameraState, lids = lids, bases = bases, tableCF = tableCF, info = info, lidOpenDegrees = lidOpenDegrees, lidOpenSeconds = lidOpenSeconds, lidCloseSeconds = lidCloseSeconds, shuffleLift = shuffleLift }
 	brief = r
-	camera.CameraType = Enum.CameraType.Scriptable
-	camera.FieldOfView = 50
-	camera.CFrame = CFrame.lookAt((face * CFrame.new(0, 8.5, 15)).Position, origin + Vector3.new(0, 1, 0))
 	local function showPrize(identity: number, kind: string)
 		local color = if kind == "Star" then GOLD else GREEN
 		local item = part(if kind == "Star" then "Star Prize" else "Prize Token", Vector3.new(0.8, 0.8, 0.8), cases[identity]:GetPivot() * CFrame.new(0, 1.2, 0), color, Enum.Material.Neon)
@@ -786,7 +871,7 @@ local function startBrief(info: any)
 		if kind == "Star" then item.Shape = Enum.PartType.Block; item.Size = Vector3.new(0.8, 0.8, 0.2) end
 		local lid = lids[identity]
 		local base = bases[identity]
-		TweenService:Create(lid, TweenInfo.new(0.2, Enum.EasingStyle.Back), { CFrame = base.CFrame * CFrame.new(0, 0.65, -0.45) * CFrame.Angles(math.rad(-58), 0, 0) }):Play()
+		TweenService:Create(lid, TweenInfo.new(lidOpenSeconds, Enum.EasingStyle.Back), { CFrame = base.CFrame * CFrame.new(0, 0.65, -0.45) * CFrame.Angles(math.rad(-lidOpenDegrees), 0, 0) }):Play()
 	end
 	local moves: { any } = {}
 	local finalSlots = { 1, 2, 3 }
@@ -835,7 +920,7 @@ local function startBrief(info: any)
 			phase = "swap"
 			for _, item in stage:GetChildren() do if item.Name == "Star Prize" or item.Name == "Prize Token" then item:Destroy() end end
 			hint.Text = "FOLLOW THE STAR"
-			for i = 1, 3 do TweenService:Create(lids[i], TweenInfo.new(0.12), { CFrame = bases[i].CFrame * CFrame.new(0, 0.65, 0) }):Play() end
+			for i = 1, 3 do TweenService:Create(lids[i], TweenInfo.new(lidCloseSeconds), { CFrame = bases[i].CFrame * CFrame.new(0, 0.65, 0) }):Play() end
 		end
 		if phase == "swap" then
 			for _, m in moves do
@@ -843,7 +928,7 @@ local function startBrief(info: any)
 				if t >= m.start and t <= m.start + info.swapTime then
 					local e = (1 - math.cos(a * math.pi)) / 2
 					local x = (m.from - 2) * 3.6 + (m.to - m.from) * 3.6 * e
-					local y = 1 + m.dir * 0.85 * math.sin(a * math.pi)
+					local y = 1 + m.dir * r.shuffleLift * math.sin(a * math.pi)
 					cases[m.case]:PivotTo(tableCF * CFrame.new(x, y, 0))
 				end
 			end
@@ -863,12 +948,8 @@ end
 
 local function cleanupBrief(r: any)
 	if r.inputConn then r.inputConn:Disconnect() end
-	if r.stage then r.stage:Destroy() end
 	if r.gui then r.gui:Destroy() end
-	local camera = r.camera :: Camera?
-	if camera and camera.Parent then
-		camera.CameraType, camera.CameraSubject, camera.CFrame, camera.FieldOfView = r.oldType, r.oldSubject, r.oldCFrame, r.oldFov
-	end
+	gameCameraOut(r.cameraState, r.stage)
 end
 
 local function briefResult(info: any)
@@ -884,8 +965,8 @@ local function briefResult(info: any)
 	local lid = r.lids[pickedIdentity]
 	local function openLid(partToMove: BasePart)
 		local from = partToMove.CFrame
-		local goal = from * CFrame.new(0, 0.5, -0.75) * CFrame.Angles(math.rad(-72), 0, 0)
-		TweenService:Create(partToMove, TweenInfo.new(0.24, Enum.EasingStyle.Back), { CFrame = goal }):Play()
+		local goal = from * CFrame.new(0, 0.5, -0.75) * CFrame.Angles(math.rad(-r.lidOpenDegrees), 0, 0)
+		TweenService:Create(partToMove, TweenInfo.new(r.lidOpenSeconds * 1.2, Enum.EasingStyle.Back), { CFrame = goal }):Play()
 	end
 	if lid then openLid(lid) end
 	local item = Instance.new("Part")
