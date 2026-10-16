@@ -9,26 +9,14 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
-- **crnuch (local), since 2026-10-16:** pushing LAWYER MUTATIONS + SELLING (save v18) from `src/` into Studio + its
-  playtest (open item below). Please don't edit PlayerData, LawyerService, CaseService, EggServer, ZoneService,
-  FirmFeatures, Config, Formulas, SkinLook, Effects or the Lawyers / Merger / Eggs / LawyerTags clients meanwhile.
 
 ## Open items
-- [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
-      LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
-      3-way merge anything that changed since. Files: NEW `Shared.MutationLook` (src/MutationLook.lua); `Shared.SkinLook`
-      (src/SkinLook.lua, new working copy), `Shared.Config`, `Shared.Formulas`; server `PlayerData`, `LawyerService`,
-      `CaseService`, `EggServer`, `ZoneService`, `FirmFeatures` (new working copy); clients `Lawyers`, `Merger`, `Eggs`,
-      `LawyerTags`. In Studio also: rename the hub machine's sign "LAWYER MERGER" → "MUTATION MACHINE" and its
-      `MergePrompt` ActionText → "Mutate". Playtest: (1) old Gold / Rainbow lawyers show as Shiny / Diamond with the
-      same "Earns x"; (2) Mutation Machine shows the % on the button, a success recolours the lawyer everywhere (desk,
-      tag, LAWYERS card, hatch screen), a fizzle shakes + "FIZZLED!" and all 3 are gone; refuses if it would leave you
-      with no lawyers; (3) SELL on a bench lawyer (price matches), Epic+ asks twice, office / locked / last lawyer can't
-      be sold, LOCK toggles the padlock, SELL ALL picker sells the ticked rarities; (4) golden zone eggs sometimes hatch
-      Shiny; (5) the mutation colours look right on brick lawyers AND the older models (judge by eye, tune ramps);
-      (6) the mutation effects (`Effects.mutationAura`) read at a high graphics level on a desk, the hatch reveal and
-      a big Mythic/Supreme (they scale with height) - not too busy next to the rarity aura; (7) a LOCKED lawyer
-      is hidden in the Mutation Machine picker. Also push `src/Effects.lua`.
+- [ ] **Lawyer mutations + selling: the rest of the playtest** (pushed to Studio 2026-10-16, entry below; the server
+      rules, the Mutation Machine panel + picker, old Gold → Shiny and a Shiny lawyer at a desk are checked). Still to
+      eye-check: a SUCCESS / FIZZLE animation in the panel (only rolled through the remote), the % on the button,
+      Epic+ asks twice before selling, SELL ALL picker, LOCK padlock in the LAWYERS panel, golden zone eggs sometimes
+      hatching Shiny, and Diamond / Cosmic colours + effects (nobody owns one yet: test with a temporary server Script,
+      then remove it) on brick AND older models, at a desk, the hatch reveal and a big Mythic / Supreme.
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
       (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
       each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
@@ -60,7 +48,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] **Minigames + upper floors: BUILD** (user's call 2026-10-13: everything in
       docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md except the Rooftop Helipad). Phase A (no save change) is claimed
       above; Phase B (Hall of Fame, Case Files, Moot Court, Partner's Office, Mail Room, Guest Lounge) needs save v19,
-      so it waits for crnuch's mutations push (v18).
+      and crnuch's mutations push (v18) is live since 2026-10-16, so it can start.
 - [ ] **Eye-check the Mythic / Supreme cinematics in a real window + at phone size**, and a real Mythic / Supreme
       hatch with a second player in the server (the banner was only tested with faked messages). The 10-13 stud
       Supreme lawyers at desks: check name tags, the client standing across the desk, and the Merger / LAWYERS previews.
@@ -138,6 +126,30 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: LAWYER MUTATIONS + SELLING live in Studio (save v18)
+- **Heads-up mr.robe:** PlayerData, LawyerService, CaseService, EggServer, ZoneService and FirmFeatures changed in Studio
+  (the 2026-10-13 mutations work). Save stays v18: its step adds nothing (`Stars` = mutation tier, optional `Locked`).
+  Phase B of the minigames (save v19) is unblocked.
+- **Pushed** (3-way merged: base = `src/` before 95c1ecd, or the `studio/` snapshot for the new working copies
+  SkinLook / FirmFeatures; every merge came out identical to `src/`, no conflicts but one comment block): Config,
+  Formulas, SkinLook, Effects, NEW `Shared.MutationLook`, PlayerData, LawyerService, CaseService, EggServer,
+  ZoneService, FirmFeatures, clients Lawyers, Merger, Eggs, LawyerTags. Written with ScriptEditorService (Mac: a
+  `python3 -m http.server --bind 127.0.0.1` on `src/` + HttpService, guarded by each live script's length). The hub
+  machine: sign "Mutation Machine" / "3 same = try a mutation", `MergePrompt` "Mutate" / "Mutation Machine".
+- **Playtested** (crnuch's real save, backed up first as `Backup_Player_2234491534_1792168291` in the `PlayerData`
+  store): loads with no game errors; the 26 old Gold lawyers show SHINY with the same Earns x (StarEarn 2.5 both before
+  and after); remotes: lock / unlock, locked can't be sold or mutated ("Unlock it first"), 2 picks / duplicate uids /
+  junk args / uids you don't own all refused, rate limit answers "Slow down!"; a mutation fizzled (all 3 gone) and one
+  succeeded (kept uid → Shiny Rookie); a sell paid `Formulas.sellPrice`. Mutation Machine panel + picker: the picker
+  hides the locked copy (x16 of 17). A Shiny Donut Dee at Desk 1 at high quality: gold recolour + glints, the name tag
+  reads SHINY / Earns x20. All test lawyers removed again (150 lawyers, none locked), saved.
+- **Checks:** `run_checks.py` ALL PASSED (249 Luau files, 39 Config checks, 32 sim tests). Snapshot re-exported
+  (103 scripts): exactly these 15 changed and each equals its `src/` copy.
+- **Note:** a ChangeHistoryService recording from a failed command-bar call (title label lookup) may be left open in
+  crnuch's Studio until it restarts - harmless, but the undo history around the sign rename may look odd.
+- Still open: the eye-checks in the open item above.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-13 — mr.robe, local session: the UPSTAIRS ROOMS - all 8 floor ideas built (no helipad)
 User (angry that the minigames went first): "Add the things on the top floors that WE TALKED ABOUT"; "make it in

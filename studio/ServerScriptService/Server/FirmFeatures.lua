@@ -84,10 +84,11 @@ local function descendantsWith(root: Instance, attr: string): { BasePart }
 end
 
 -- a lawyer model like the ones at the desks (Templates.NPC dressed by SkinLook), anchored and inert
-local function lawyerModel(id: string): Model
+-- (2026-10-13: `stars` = its mutation - the show lawyer wears its colours, Shared.MutationLook via SkinLook)
+local function lawyerModel(id: string, stars: number?): Model
 	local npc = ServerStorage.Templates.NPC:Clone() :: Model
 	npc.Name = "ShowLawyer"
-	SkinLook.dress(npc, id)
+	SkinLook.dress(npc, id, stars)
 	for _, d in npc:GetDescendants() do
 		if d:IsA("BasePart") then
 			d.Anchored = true
@@ -403,12 +404,12 @@ local function refreshShowcase(player: Player, firm: Model)
 	end)
 	for i, entry in best do
 		local ped = order[i]
-		local npc = lawyerModel(entry.lawyer.Id)
+		local npc = lawyerModel(entry.lawyer.Id, entry.lawyer.Stars)
 		local top = ped.Position + Vector3.new(0, ped.Size.X / 2, 0)
 		standAt(npc, top, firm.WorldPivot.LookVector)
 		local rid, color = rarityOf(entry.lawyer.Id)
 		npc.Parent = folder
-		pcall(Effects.aura, npc, rid, entry.lawyer.Stars)
+		pcall(Effects.aura, npc, rid, 1) -- (rarity aura only: a mutation shows as colours, user's call)
 		nameTag(npc, Formulas.lawyerName(entry.lawyer.Id, entry.lawyer.Stars), color, 90)
 	end
 	folder.Parent = firm
@@ -444,7 +445,7 @@ local function refreshHologram(player: Player, firm: Model)
 	local gold = pad:GetAttribute("Hologram") == "Gold"
 	local holo = Instance.new("Model")
 	holo.Name = "Hologram"
-	local npc = lawyerModel(best.lawyer.Id)
+	local npc = lawyerModel(best.lawyer.Id, best.lawyer.Stars)
 	npc:ScaleTo(3.2)
 	for _, p in npc:GetDescendants() do
 		if p:IsA("BasePart") and p.Transparency < 1 then
@@ -476,7 +477,7 @@ local function refreshHologram(player: Player, firm: Model)
 	light.Parent = beam
 	beam.Parent = holo
 	local rid, color = rarityOf(best.lawyer.Id)
-	pcall(Effects.aura, npc, rid, best.lawyer.Stars)
+	pcall(Effects.aura, npc, rid, 1)
 	nameTag(npc, Formulas.lawyerName(best.lawyer.Id, best.lawyer.Stars), color, 400)
 	holo.Parent = firm
 	holograms[holo] = { model = npc, centre = top, feet = top.Y }

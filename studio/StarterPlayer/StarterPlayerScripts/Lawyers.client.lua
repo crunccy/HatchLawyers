@@ -45,6 +45,11 @@ local MarkSkinsSeen = Remotes:WaitForChild("MarkSkinsSeen") :: RemoteEvent
 local AssignClient = Remotes:WaitForChild("AssignClient") :: RemoteFunction
 local TrainLawyer = Remotes:WaitForChild("TrainLawyer") :: RemoteFunction
 local CancelLawyerChange = Remotes:WaitForChild("CancelLawyerChange") :: RemoteFunction
+-- 2026-10-13: selling + locking (Server.LawyerService) and mutation colours (Shared.MutationLook)
+local SellLawyers = Remotes:WaitForChild("SellLawyers") :: RemoteFunction
+local LockLawyer = Remotes:WaitForChild("LockLawyer") :: RemoteFunction
+local MutationLook = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("MutationLook") :: ModuleScript) :: any
+local Effects = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Effects") :: ModuleScript) :: any
 
 -- local hooks: other scripts open this panel (LawyersUI) and the Skills screen (SkillsUI)
 local function bindable(name: string): BindableEvent
@@ -199,7 +204,7 @@ local function serverNow(): number
 end
 
 ------------------------------------------------------------------ state readers (server-mirrored attributes)
-type Lawyer = { Uid: string, Id: string, Stars: number, Skills: { any }, Office: number? }
+type Lawyer = { Uid: string, Id: string, Stars: number, Skills: { any }, Office: number?, Locked: boolean? }
 type Client = { Id: number, Tier: number, Name: string?, Situation: string?, Seated: boolean }
 type Office = {
 	index: number,
@@ -277,6 +282,23 @@ local function clientColor(tier: number): Color3
 end
 local function lawyerName(id: string, stars: number): string
 	return Formulas.lawyerName(id, stars)
+end
+-- a lawyer's mutation as a tag: "SHINY" / "DIAMOND" / "COSMIC" in its colour ("" for Normal) - replaced the stars
+local function mutationTag(stars: number): (string, Color3)
+	local name, color = MutationLook.info(stars)
+	return string.upper(name), color or GOLD
+end
+-- what selling pays - the same as the server's Formulas.sellPrice, from this player's own egg prices
+local function sellValue(l: Lawyer): number
+	local def = Formulas.getSkin(l.Id)
+	if not def then
+		return 0
+	end
+	local egg = Formulas.themedEgg(def.Egg)
+	local price = (player:GetAttribute(if egg then egg.Id .. "EggPrice" else "EggPrice") :: number?) or 0
+	local share = Config.Lawyers.Sell.Share[def.Rarity] or 0
+	local mut = Config.Lawyers.StarEarn[math.clamp(l.Stars, 1, #Config.Lawyers.StarEarn)]
+	return math.floor(price * share * mut)
 end
 local function findLawyer(list: { Lawyer }, uid: string?): Lawyer?
 	for _, l in list do
@@ -375,7 +397,7 @@ end
 -- an invisible stand-in body, so it works anywhere (the firm's desk lawyers stream out at the hub). One posed master
 -- per lawyer id, cloned into each ViewportFrame.
 local modelCache: { [string]: Model | false } = {}
-local function lawyerModel(id: string): Model?
+local function lawyerModel(id: string, stars: number?): Model?
 	local cached = modelCache[id]
 	if cached == nil then
 		cached = false
@@ -407,13 +429,20 @@ local function lawyerModel(id: string): Model?
 		end
 		modelCache[id] = cached
 	end
-	return if cached then (cached :: Model):Clone() else nil
+	if not cached then
+		return nil
+	end
+	local m = (cached :: Model):Clone()
+	if (stars or 1) > 1 then
+		MutationLook.apply(m, stars) -- (the master stays plain; each copy wears its own mutation)
+	end
+	return m
 end
 
 -- A ViewportFrame showing that lawyer, framed head to toe, turned a little toward the light. Returns the frame and
 -- its model (nil for a lawyer without a 3D model: then the drawn icon is used instead).
-local function lawyerViewport(parent: GuiObject, id: string, aspect: number, yaw: number?): (ViewportFrame?, Model?)
-	local m = lawyerModel(id)
+local function lawyerViewport(parent: GuiObject, id: string, aspect: number, yaw: number?, stars: number?): (ViewportFrame?, Model?)
+	local m = lawyerModel(id, stars)
 	if not m then
 		return nil, nil
 	end
@@ -550,7 +579,7 @@ local clientList = make("ScrollingFrame", {
 })
 local benchFrame = make("Frame", { Position = UDim2.fromOffset(0, CONTENT_Y), Size = UDim2.new(1, 0, 1, -CONTENT_Y), BackgroundTransparency = 1, Visible = false, Parent = right })
 local benchGrid = make("ScrollingFrame", {
-	Size = UDim2.new(1, 0, 1, -58), BackgroundColor3 = SLOT, BorderSizePixel = 0,
+	Size = UDim2.new(1, 0, 1, -114), BackgroundColor3 = SLOT, BorderSizePixel = 0,
 	ScrollBarThickness = 8, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = benchFrame,
 }, {
 	corner(8), stroke(4),
@@ -560,6 +589,30 @@ local benchGrid = make("ScrollingFrame", {
 local placeButton, placeLabel = button({ Position = UDim2.new(0, 0, 1, -50), Size = UDim2.new(0.66, -6, 0, 50), BackgroundColor3 = GREEN, Parent = benchFrame }, "PICK A LAWYER", 22)
 placeLabel.TextWrapped = true
 local bestButton, bestLabel = button({ Position = UDim2.new(0.66, 6, 1, -50), Size = UDim2.new(0.34, -6, 0, 50), BackgroundColor3 = GOLD, Parent = benchFrame }, "EQUIP BEST", 22)
+-- 2026-10-13: SELL the picked lawyer / LOCK it (never sold) / SELL ALL of some rarities (Server.LawyerService)
+local sellButton, sellLabel = button({ Position = UDim2.new(0, 0, 1, -106), Size = UDim2.new(0.42, -6, 0, 50), BackgroundColor3 = ORANGE, Parent = benchFrame }, "SELL", 20)
+sellLabel.TextWrapped = true
+local lockButton, lockLabel = button({ Position = UDim2.new(0.42, 6, 1, -106), Size = UDim2.new(0.22, -12, 0, 50), BackgroundColor3 = GOLD, Parent = benchFrame }, "LOCK", 20)
+local sellAllButton, sellAllLabel = button({ Position = UDim2.new(0.64, 6, 1, -106), Size = UDim2.new(0.36, -6, 0, 50), BackgroundColor3 = RED, Parent = benchFrame }, "SELL ALL...", 20)
+
+-- the SELL ALL picker: tick rarities, see what it sells and for how much, SELL
+local sellAll = make("Frame", { Name = "SellAll", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -110), Size = UDim2.new(1, 0, 0, 176),
+	BackgroundColor3 = Color3.fromRGB(24, 22, 36), Visible = false, ZIndex = 30, Parent = benchFrame }, { corner(8), stroke(4) })
+text({ Position = UDim2.fromOffset(10, 6), Size = UDim2.new(1, -20, 0, 26), Text = "SELL ALL OF THESE RARITIES", ZIndex = 31, Parent = sellAll }, 22)
+local chipRow = make("Frame", { Position = UDim2.fromOffset(10, 38), Size = UDim2.new(1, -20, 0, 36), BackgroundTransparency = 1, ZIndex = 31, Parent = sellAll },
+	{ make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center }) })
+local sellAllNote = text({ Position = UDim2.fromOffset(10, 80), Size = UDim2.new(1, -20, 0, 24), FontFace = BODY, Text = "", TextColor3 = SOFT, ZIndex = 31, Parent = sellAll }, 18, 0)
+local sellAllGo, sellAllGoLabel = button({ Position = UDim2.new(0, 10, 1, -60), Size = UDim2.new(0.62, -15, 0, 50), BackgroundColor3 = RED, ZIndex = 31, Parent = sellAll }, "SELL", 22)
+local sellAllCancel, sellAllCancelLabel = button({ Position = UDim2.new(0.62, 5, 1, -60), Size = UDim2.new(0.38, -15, 0, 50), BackgroundColor3 = GRAY, ZIndex = 31, Parent = sellAll }, "CANCEL", 22)
+local _ = sellAllCancelLabel
+local sellRarities: { [number]: boolean } = { [1] = true, [2] = true } -- Common + Uncommon ticked to start
+local chips: { [number]: TextButton } = {}
+for i, tier in Config.Eggs.Skins do
+	local chip = make("TextButton", { Size = UDim2.fromOffset(78, 34), BackgroundColor3 = Config.RarityColors[tier.Id] or WHITE, Text = "", AutoButtonColor = true, ZIndex = 32, Parent = chipRow }, { corner(8), stroke(3) })
+	chip:SetAttribute("NoSkin", true)
+	small(text({ Size = UDim2.fromScale(1, 1), Text = string.upper(tier.Id), ZIndex = 33, Parent = chip }, 13))
+	chips[i] = chip
+end
 
 -- feedback pill over the "YOUR OFFICES" row (never covers a button)
 local toastPill = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 95), Size = UDim2.fromOffset(660, 40), BackgroundColor3 = Color3.fromRGB(24, 22, 36), Visible = false, ZIndex = 20, Parent = panel }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(3) })
@@ -676,12 +729,13 @@ local function renderSlots()
 				make("UIGradient", { Rotation = 90, Color = ColorSequence.new(rColor:Lerp(CARD, 0.35), CARD), Parent = card })
 				-- (art 58 tall, name 20: room for a readable name at phone size, see small())
 				local art = make("Frame", { Position = UDim2.fromOffset(4, 14), Size = UDim2.new(1, -8, 0, 58), BackgroundTransparency = 1, Parent = content })
-				if not lawyerViewport(art, o.lawyerId, 104 / 58) then
+				if not lawyerViewport(art, o.lawyerId, 104 / 58, nil, o.stars) then
 					drawIcon(content, o.lawyerId, 0.52, 18)
 				end
 				small(text({ Position = UDim2.fromOffset(4, 72), Size = UDim2.new(1, -8, 0, 20), Text = lawyerName(o.lawyerId, 1), ZIndex = 2, Parent = content }, 15))
 				if o.stars > 1 then
-					text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 3), Size = UDim2.fromOffset(40, 18), Text = string.rep("★", o.stars - 1), TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 3, Parent = content }, 15)
+					local tag, tagColor = mutationTag(o.stars)
+					text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 3), Size = UDim2.fromOffset(70, 18), Text = tag, TextColor3 = tagColor, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 3, Parent = content }, 14)
 				end
 			else
 				text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 22), Size = UDim2.fromOffset(60, 52), Text = "+", FontFace = TITLE, TextColor3 = GRAY, Parent = content }, 52)
@@ -698,7 +752,7 @@ end
 
 -- the big preview: the selected office's lawyer in 3D, gently swaying
 local function renderPreview(o: Office)
-	local key = if o.lawyerId then o.lawyerId else "empty"
+	local key = if o.lawyerId then o.lawyerId .. "|" .. o.stars else "empty"
 	if key == previewKey then
 		return
 	end
@@ -718,7 +772,7 @@ local function renderPreview(o: Office)
 	emptyPlus.Visible = false
 	local _, color = rarityOf(o.lawyerId)
 	previewGradient.Color = ColorSequence.new(color:Lerp(WHITE, 0.7), color:Lerp(WHITE, 0.25))
-	local vf, m = lawyerViewport(iconHolder, o.lawyerId, 268 / 116, 0)
+	local vf, m = lawyerViewport(iconHolder, o.lawyerId, 268 / 116, 0, o.stars)
 	if vf and m then
 		previewSpin, previewHome = m, m:GetPivot()
 		local box, size = m:GetBoundingBox()
@@ -831,7 +885,9 @@ local function renderLeft()
 	if o.lawyerId then
 		local rName, rColor = rarityOf(o.lawyerId)
 		nameLabel.Text = lawyerName(o.lawyerId, o.stars)
-		starsLabel.Text = string.rep("★", o.stars)
+		local tag, tagColor = mutationTag(o.stars)
+		starsLabel.Text = tag
+		starsLabel.TextColor3 = tagColor
 		rarityPill.Visible = true
 		rarityPill.BackgroundColor3 = rColor
 		rarityText.Text = string.upper(rName)
@@ -971,13 +1027,77 @@ local function placeAction(o: Office, l: Lawyer?): (string, boolean, Color3)
 	return string.format("EQUIP IN OFFICE %d", o.index), true, GREEN
 end
 
-type BenchCard = { card: TextButton, overlay: Frame, stroke: UIStroke, key: string? }
+------------------------------------------------------------------ selling (2026-10-13)
+local sellArmed: string? = nil -- the uid whose SELL was tapped once (Epic and up ask twice)
+local sellArmedUntil = 0
+local function rarityIndex(id: string): number
+	local def = Formulas.getSkin(id)
+	return if def then def.Rarity else 1
+end
+local function sellable(l: Lawyer): boolean
+	return l.Office == nil and not l.Locked
+end
+-- the lawyers SELL ALL would sell with the ticked rarities (never your last lawyer: the server keeps one too)
+local function sellAllPicks(list: { Lawyer }): ({ string }, number)
+	local uids, total = {}, 0
+	for _, l in list do
+		if sellable(l) and sellRarities[rarityIndex(l.Id)] then
+			table.insert(uids, l.Uid)
+			total += sellValue(l)
+		end
+	end
+	if #uids >= #list then -- keep at least one
+		table.remove(uids)
+	end
+	return uids, total
+end
+local function renderSell(list: { Lawyer }, pick: Lawyer?)
+	if not pick then
+		setButton(sellButton, sellLabel, "SELL", ORANGE, false)
+		setButton(lockButton, lockLabel, "LOCK", GOLD, false)
+	else
+		if pick.Office then
+			setButton(sellButton, sellLabel, "IN AN OFFICE", ORANGE, false)
+		elseif pick.Locked then
+			setButton(sellButton, sellLabel, "LOCKED", ORANGE, false)
+		elseif #list <= 1 then
+			setButton(sellButton, sellLabel, "LAST LAWYER", ORANGE, false)
+		elseif sellArmed == pick.Uid and os.clock() < sellArmedUntil then
+			setButton(sellButton, sellLabel, "TAP AGAIN TO SELL", RED, true)
+		else
+			setButton(sellButton, sellLabel, "SELL · " .. Formulas.formatCoins(sellValue(pick)), ORANGE, true)
+		end
+		setButton(lockButton, lockLabel, if pick.Locked then "UNLOCK" else "LOCK", GOLD, true)
+	end
+	local any = false
+	for _, l in list do
+		any = any or sellable(l)
+	end
+	setButton(sellAllButton, sellAllLabel, "SELL ALL...", RED, any and #list > 1)
+	if sellAll.Visible then
+		for i, chip in chips do
+			local s = chip:FindFirstChildOfClass("UIStroke") :: UIStroke
+			s.Thickness = if sellRarities[i] then 4 else 2
+			s.Color = if sellRarities[i] then WHITE else BLACK
+			chip.BackgroundTransparency = if sellRarities[i] then 0 else 0.6
+		end
+		local uids, total = sellAllPicks(list)
+		sellAllNote.Text = if #uids > 0 then string.format("Sells %d lawyer%s for %s coins (not locked, not in an office)", #uids, if #uids == 1 then "" else "s", Formulas.formatCoins(total))
+			else "Nothing to sell with these rarities"
+		setButton(sellAllGo, sellAllGoLabel, if #uids > 0 then "SELL " .. #uids else "SELL", RED, #uids > 0)
+	end
+end
+
+type BenchCard = { card: TextButton, overlay: Frame, stroke: UIStroke, key: string?, stars: number }
 local benchCards: { [string]: BenchCard } = {}
 
 local function benchCard(l: Lawyer): BenchCard
 	local entry = benchCards[l.Uid]
-	if entry then
+	if entry and entry.stars == l.Stars then
 		return entry
+	elseif entry then -- it mutated: a new picture
+		entry.card:Destroy()
+		benchCards[l.Uid] = nil
 	end
 	local _, rColor = rarityOf(l.Id)
 	local card = make("TextButton", { Text = "", BackgroundColor3 = CARD, AutoButtonColor = true, Parent = benchGrid }, { corner(8) })
@@ -985,11 +1105,11 @@ local function benchCard(l: Lawyer): BenchCard
 	local s = stroke(3)
 	s.Parent = card
 	local art = make("Frame", { Position = UDim2.fromOffset(4, 6), Size = UDim2.new(1, -8, 0, 74), BackgroundTransparency = 1, Parent = card })
-	if not lawyerViewport(art, l.Id, 92 / 74) then
+	if not lawyerViewport(art, l.Id, 92 / 74, nil, l.Stars) then
 		drawIcon(card, l.Id, 0.6, 18)
 	end
 	local overlay = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 2, Parent = card })
-	entry = { card = card, overlay = overlay, stroke = s }
+	entry = { card = card, overlay = overlay, stroke = s, stars = l.Stars }
 	benchCards[l.Uid] = entry
 	card.Activated:Connect(function()
 		squish(card)
@@ -1044,13 +1164,19 @@ local function renderBench(o: Office)
 		entry.stroke.Color = if picked then GOLD else rColor:Lerp(BLACK, 0.35)
 		local busyHere = l.Office ~= nil and isBusy(office(l.Office))
 		local mergeable = l.Stars < #Config.Lawyers.StarEarn and copiesOf(list, l) >= Config.Lawyers.MergeCount
-		local key = string.format("%d|%s|%s|%s", l.Stars, tostring(l.Office), tostring(busyHere), tostring(mergeable))
+		local key = string.format("%d|%s|%s|%s|%s", l.Stars, tostring(l.Office), tostring(busyHere), tostring(mergeable), tostring(l.Locked))
 		if entry.key ~= key then
 			entry.key = key
 			local overlay = entry.overlay
 			overlay:ClearAllChildren()
 			small(text({ Position = UDim2.fromOffset(4, 78), Size = UDim2.new(1, -8, 0, 18), Text = lawyerName(l.Id, 1), ZIndex = 2, Parent = overlay }, 15))
-			text({ Position = UDim2.fromOffset(4, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = string.rep("★", l.Stars), TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = overlay }, 16)
+			local tag, tagColor = mutationTag(l.Stars)
+			text({ Position = UDim2.fromOffset(4, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = tag, TextColor3 = tagColor, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = overlay }, 13)
+			if l.Locked then -- a little gold padlock tag (frames, no emoji)
+				local lk = make("Frame", { AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 4, 0, 76), Size = UDim2.fromOffset(16, 13), BackgroundColor3 = GOLD, ZIndex = 4, Parent = overlay }, { corner(3), stroke(2) })
+				make("Frame", { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, 1), Size = UDim2.fromOffset(10, 9), BackgroundTransparency = 1, ZIndex = 4, Parent = lk },
+					{ make("UICorner", { CornerRadius = UDim.new(0.5, 0) }), make("UIStroke", { Thickness = 2.5, Color = Color3.fromRGB(40, 40, 52) }) })
+			end
 			text({ Position = UDim2.new(0.5, 0, 0, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = "x" .. tostring(Formulas.lawyerEarn(l.Id, l.Stars)), TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 2, Parent = overlay }, 16)
 			if l.Office then -- equipped: which office (orange while it's on a case)
 				local tag = make("Frame", { Position = UDim2.fromOffset(4, 4), Size = UDim2.fromOffset(62, 18), BackgroundColor3 = if busyHere then ORANGE else GREEN, ZIndex = 3, Parent = overlay }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
@@ -1058,7 +1184,7 @@ local function renderBench(o: Office)
 			end
 			if mergeable then
 				local m = make("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(30, 18), BackgroundColor3 = PURPLE, ZIndex = 3, Parent = overlay }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
-				text({ Size = UDim2.fromScale(1, 1), Text = "3x", ZIndex = 4, Parent = m }, 12)
+				text({ Size = UDim2.fromScale(1, 1), Text = "3x", ZIndex = 4, Parent = m }, 12) -- (3 copies: one try at the Mutation Machine)
 			end
 		end
 	end
@@ -1066,6 +1192,7 @@ local function renderBench(o: Office)
 	local label, enabled, color = placeAction(o, pick)
 	setButton(placeButton, placeLabel, label, color, enabled)
 	setButton(bestButton, bestLabel, "EQUIP BEST", GOLD, #list > 0)
+	renderSell(list, pick)
 end
 
 
@@ -1094,7 +1221,8 @@ local function renderInfo(o: Office)
 		local list = lawyers()
 		local pick = findLawyer(list, benchPick)
 		if pick and pick.Stars < #Config.Lawyers.StarEarn and copiesOf(list, pick) >= Config.Lawyers.MergeCount then
-			msg = string.format('You have %d of these! <font color="%s">Merge them at the Lawyer Merger</font> for +1 star.', copiesOf(list, pick), P)
+			msg = string.format('You have %d of these! <font color="%s">Try the Mutation Machine</font>: %d%% chance of a %s one.', copiesOf(list, pick), P,
+				math.floor(Formulas.mutateChance(pick.Stars) * 100 + 0.5), (MutationLook.info(pick.Stars + 1)))
 		elseif o.lawyerId and isBusy(o) then
 			msg = string.format('<font color="%s">Office %d is on a case.</font> Your pick gets equipped the moment it ends.', O, o.index)
 		elseif o.lawyerId then
@@ -1383,6 +1511,81 @@ bestButton.Activated:Connect(function()
 		previewKey = nil
 	end
 	render()
+end)
+
+-- SELL / LOCK / SELL ALL (2026-10-13; the server checks it all: Server.LawyerService.sell / lock)
+local function doSell(uids: { string }, label: string)
+	busy = true
+	local ok, coins, count = SellLawyers:InvokeServer(uids)
+	busy = false
+	if ok then
+		flash(string.format("Sold %s for %s coins!", label, Formulas.formatCoins(coins :: number)), GOLD)
+		Effects.guiBurst(gui, UDim2.fromOffset(sellButton.AbsolutePosition.X + sellButton.AbsoluteSize.X / 2, sellButton.AbsolutePosition.Y), 260, GOLD, 1.2, 25)
+		benchPick = nil
+	else
+		flash(tostring(coins or "Can't sell that"), RED)
+	end
+	local _ = count
+	render()
+end
+sellButton.Activated:Connect(function()
+	if busy or not sellButton:GetAttribute("Enabled") then
+		return
+	end
+	local pick = findLawyer(lawyers(), benchPick)
+	if not pick then
+		return
+	end
+	if rarityIndex(pick.Id) >= Config.Lawyers.Sell.ConfirmFrom and not (sellArmed == pick.Uid and os.clock() < sellArmedUntil) then
+		sellArmed, sellArmedUntil = pick.Uid, os.clock() + 3 -- Epic and up: tap twice
+		render()
+		task.delay(3.05, render)
+		return
+	end
+	sellArmed = nil
+	doSell({ pick.Uid }, lawyerName(pick.Id, pick.Stars))
+end)
+lockButton.Activated:Connect(function()
+	if busy or not lockButton:GetAttribute("Enabled") then
+		return
+	end
+	local pick = findLawyer(lawyers(), benchPick)
+	if not pick then
+		return
+	end
+	busy = true
+	local ok, msg = LockLawyer:InvokeServer(pick.Uid, not pick.Locked)
+	busy = false
+	if ok then
+		flash(if pick.Locked then "Unlocked" else "Locked - safe from selling and mutating", GOLD)
+	else
+		flash(msg or "Can't do that", RED)
+	end
+	render()
+end)
+sellAllButton.Activated:Connect(function()
+	if not sellAllButton:GetAttribute("Enabled") then
+		return
+	end
+	sellAll.Visible = not sellAll.Visible
+	render()
+end)
+for i, chip in chips do
+	chip.Activated:Connect(function()
+		sellRarities[i] = not sellRarities[i] or nil
+		render()
+	end)
+end
+sellAllCancel.Activated:Connect(function()
+	sellAll.Visible = false
+end)
+sellAllGo.Activated:Connect(function()
+	if busy or not sellAllGo:GetAttribute("Enabled") then
+		return
+	end
+	local uids = sellAllPicks(lawyers())
+	sellAll.Visible = false
+	doSell(uids, string.format("%d lawyer%s", #uids, if #uids == 1 then "" else "s"))
 end)
 
 ------------------------------------------------------------------ wiring

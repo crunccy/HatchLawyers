@@ -2,6 +2,8 @@
 -- Dresses a blocky NPC (the ServerStorage.Templates.NPC shape) in a skin from Config.SkinCatalog.
 -- The server uses it on desk lawyers and the client on the hatch preview, so both always match.
 -- Calling it again swaps the skin; passing nil puts the default outfit back.
+-- Mutations (2026-10-13): dress(model, skinId, stars) - a mutated lawyer (Stars 2-4: Shiny / Diamond / Cosmic) is
+-- recoloured by Shared.MutationLook after dressing; showInViewport takes the same `stars`.
 -- Two kinds of skin: recolor skins (suit/pants/tie/hat on the blocky body) and model skins
 -- (skin.Model names a rigged model in ReplicatedStorage.SkinModels that stands in for the body).
 
@@ -126,7 +128,27 @@ local function addHat(model: Model, head: BasePart, kind: string, color: Color3,
 	end
 end
 
-function SkinLook.dress(model: Model, skinId: string?)
+-- (Shared.MutationLook, if it's in the place: the mutation recolour)
+local mutationModule = script.Parent:FindFirstChild("MutationLook")
+local MutationLook = if mutationModule then (require(mutationModule :: ModuleScript) :: any) else nil
+
+local function finish(model: Model, stars: number?)
+	if MutationLook then
+		MutationLook.apply(model, stars)
+	end
+end
+
+function SkinLook.dress(model: Model, skinId: string?, stars: number?)
+	-- an earlier mutation recolour comes off first, and its saved originals are forgotten (the dress below sets
+	-- fresh colours; the recolour at the end reads them again)
+	if MutationLook then
+		MutationLook.apply(model, 1)
+		for _, d in model:GetDescendants() do
+			if d:GetAttribute("MutBase") ~= nil then
+				d:SetAttribute("MutBase", nil)
+			end
+		end
+	end
 	for _, d in model:GetDescendants() do
 		if d:GetAttribute("SkinPart") then
 			d:Destroy()
@@ -157,10 +179,12 @@ function SkinLook.dress(model: Model, skinId: string?)
 
 	local skin = Formulas.getSkin(skinId)
 	if not skin then
+		finish(model, stars)
 		return
 	end
 	if skin.Model then
 		putOnModel(model, skin)
+		finish(model, stars)
 		return
 	end
 
@@ -186,6 +210,7 @@ function SkinLook.dress(model: Model, skinId: string?)
 	if head and skin.Hat then
 		addHat(model, head, skin.Hat, skin.HatColor or skin.Suit, skin.Neon)
 	end
+	finish(model, stars)
 end
 
 -- Puts a model from ReplicatedStorage.SkinModels on a blocky NPC that isn't a catalog lawyer (the Manager).
@@ -195,12 +220,12 @@ end
 
 -- Client only: shows a copy of `source` (a lawyer model) wearing `skinId` inside a ViewportFrame,
 -- gently swaying. Returns the RenderStepped connection; disconnect it when the preview closes.
-function SkinLook.showInViewport(viewport: ViewportFrame, source: Model, skinId: string?): RBXScriptConnection
+function SkinLook.showInViewport(viewport: ViewportFrame, source: Model, skinId: string?, stars: number?): RBXScriptConnection
 	viewport:ClearAllChildren()
 	-- the desk lawyer may be mid-animation (Shared.Puppet); preview it standing at rest
 	local model = require(script.Parent.Puppet).cloneAtRest(source)
 	model:PivotTo(CFrame.new())
-	SkinLook.dress(model, skinId)
+	SkinLook.dress(model, skinId, stars)
 	for _, d in model:GetDescendants() do
 		-- Nameplates and particles don't belong in (or render in) a viewport.
 		if d:IsA("BillboardGui") or d:IsA("ParticleEmitter") then

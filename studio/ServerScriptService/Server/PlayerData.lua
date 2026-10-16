@@ -18,12 +18,13 @@ local Formulas = require(ReplicatedStorage.Shared.Formulas)
 -- CasesDone counts finished cases (for free skill rolls); SkillRolls counts paid rolls (sets the price).
 export type LawyerData = {
 	Id: string,
-	Stars: number,
+	Stars: number, -- the MUTATION tier since 2026-10-13: 1 Normal, 2 Shiny, 3 Diamond, 4 Cosmic (was merge stars)
 	Skills: { Formulas.OwnedSkill },
 	PendingSkill: Formulas.OwnedSkill?,
 	SkillRolls: number,
 	FreeSkillRolls: number,
 	CasesDone: number,
+	Locked: boolean?, -- v18: never sold (LockLawyer)
 }
 -- An office (v12): its level (office upgrades) and the uid of the lawyer sitting in it, if any.
 -- Desks[i] is office i; there is one per office the firm has (Firm.Segments x 2).
@@ -81,6 +82,8 @@ local SAVE_ATTEMPTS = 3
 
 -- MIGRATIONS[n] upgrades a version-n record to version n + 1.
 local MIGRATIONS: { [number]: (any) -> any } = {
+	-- v18 (2026-10-13): lawyer MUTATIONS + selling. `Stars` keeps its numbers but now means the mutation tier (Gold 2 ->
+	-- Shiny, Rainbow 3 -> Diamond, same power), so nothing is rewritten. New optional Lawyers[uid].Locked (nil = not).
 	-- v18 (2026-10-13): the UPSTAIRS ROOMS (Config.Floors, ServerScriptService.FloorRooms): data.Floors = Hall of Fame
 	-- index, Case Files counts, Moot Court booths, today's letters, the Partner's rules, guestbook likes, court recess.
 	-- (Shares v18 with the mutations work in src/, whose step adds nothing - so the two merge without renumbering.)
@@ -447,7 +450,7 @@ local function syncAttributes(player: Player, data: Data)
 		if office then
 			placed += 1
 		end
-		table.insert(list, { Uid = uid, Id = lawyer.Id, Stars = lawyer.Stars, Skills = lawyer.Skills, Office = office })
+		table.insert(list, { Uid = uid, Id = lawyer.Id, Stars = lawyer.Stars, Skills = lawyer.Skills, Office = office, Locked = lawyer.Locked })
 	end
 	player:SetAttribute("LawyerCount", placed) -- lawyers working in offices
 	player:SetAttribute("LawyersOwned", #list)

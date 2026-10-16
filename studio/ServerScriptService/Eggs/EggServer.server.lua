@@ -266,11 +266,14 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 			isNew = false
 		end
 	end
-	local uid, lawyer = LawyerService.hatch(data, id)
-	-- how many copies (same lawyer, 1 star) the player now has, for the "merge ready" hint
+	-- a hatch can come out MUTATED (Config.Lawyers.HatchMutation; golden zone eggs much more often). Rolled on its own,
+	-- so the rarity odds above never change. The tutorial egg never mutates.
+	local stars = if free then 1 else Formulas.rollHatchMutation(rng, o.golden == true)
+	local uid, lawyer = LawyerService.hatch(data, id, stars)
+	-- how many copies (same lawyer, same mutation) the player now has, for the "mutation ready" hint
 	local copies = 0
 	for _, other in data.Lawyers do
-		if other.Id == id and other.Stars == 1 then
+		if other.Id == id and other.Stars == lawyer.Stars then
 			copies += 1
 		end
 	end
@@ -312,9 +315,10 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		at = o.at, -- where it hatched (the incubator): a Legendary+ hatch plays out there, in the world
 		golden = o.golden == true,
 		chance = chance,
+		stars = lawyer.Stars, -- the mutation tier it hatched with (1 = none)
 	})
 	if o.at and HatchShow then -- (v5: everyone near the incubator watches every hatch there, StarterPlayerScripts.Eggs)
-		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id })
+		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id, stars = lawyer.Stars })
 	end
 	if (rarityId == "Mythic" or rarityId == "Supreme") and HatchAnnounce then
 		local skin = Formulas.getSkin(id)

@@ -1,9 +1,11 @@
 --!strict
--- The Lawyer Merger (Hub.MergeMachine), styled after the user's "Fuse Machine" reference: purple striped
+-- The Mutation Machine (Hub.MergeMachine, the old Lawyer Merger), styled after the user's "Fuse Machine" reference: purple striped
 -- header, dark studded panel, "Bring 3 same Lawyers to Merge", three slots with green + buttons piped into a
 -- result window, a big green button at the bottom, and a "3 small = 1 big" help card with OK.
--- Rule (same as everywhere, Config.Lawyers): MergeCount copies of the same lawyer at the same stars -> one
--- lawyer with +1 star (Config.Lawyers.StarNames: "", "Gold", "Rainbow"). The preview shows exactly that.
+-- MUTATION MACHINE since 2026-10-13 (user's calls; the hub model is still Hub.MergeMachine): MergeCount copies of the
+-- same lawyer at the same mutation TRY to become one lawyer of the next tier (Config.Lawyers.Mutations: Shiny ->
+-- Diamond -> Cosmic) with Formulas.mutateChance - shown on the button before you press it. If it FIZZLES, all of them
+-- are gone (the word "lose" never shows: "fizzled... they ran off"). Mutated lawyers show recoloured (MutationLook).
 -- The server decides everything (Remotes.MergeSelected, Server.LawyerService.mergeSelected); this only picks.
 -- The lawyer list comes from the player's "Lawyers" attribute (PlayerData): { Uid, Id, Stars, Skills, Office }.
 
@@ -90,13 +92,18 @@ local function rarityOf(id: string): (string, Color3)
 	local rid = if tier then tier.Id else "Common"
 	return rid, Config.RarityColors[rid] or WHITE
 end
+-- a lawyer's mutation tag ("" for Normal) - replaced the stars
 local function starText(stars: number): string
-	return string.rep("★", stars)
+	local m = Config.Lawyers.Mutations[stars]
+	return if m then "(" .. m.Id .. ")" else ""
+end
+local function pct(stars: number): string
+	return string.format("%d%%", math.floor(Formulas.mutateChance(stars) * 100 + 0.5))
 end
 
 -- A lawyer standing in a ViewportFrame (the same model the desks show: the office-1 lawyer re-dressed).
 -- `animate` keeps it swaying (one connection, returned); otherwise it's a still.
-local function showLawyer(vf: ViewportFrame, id: string, animate: boolean): RBXScriptConnection?
+local function showLawyer(vf: ViewportFrame, id: string, animate: boolean, stars: number?): RBXScriptConnection?
 	vf:ClearAllChildren()
 	local plotName = player:GetAttribute("Plot")
 	local plot = typeof(plotName) == "string" and workspace:FindFirstChild("Plots") and workspace.Plots:FindFirstChild(plotName)
@@ -104,7 +111,7 @@ local function showLawyer(vf: ViewportFrame, id: string, animate: boolean): RBXS
 	local desk = firm and firm:FindFirstChild("Desk1")
 	local source = desk and desk:FindFirstChild("Lawyer")
 	if source and source:IsA("Model") then
-		local conn = SkinLook.showInViewport(vf, source, id)
+		local conn = SkinLook.showInViewport(vf, source, id, stars)
 		if not animate then
 			conn:Disconnect()
 			return nil
@@ -138,14 +145,14 @@ local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4
 make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, ZIndex = 3, Parent = header })
 Skin.studs(header, 0.86, nil, 26)
 Skin.shineBands(header, 0.84)
-Skin.text({ Position = UDim2.fromOffset(24, 8), Size = UDim2.new(0.7, 0, 0, 68), FontFace = Skin.Fonts.Title, Text = "Lawyer Merger", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 60, 5)
+Skin.text({ Position = UDim2.fromOffset(24, 8), Size = UDim2.new(0.7, 0, 0, 68), FontFace = Skin.Fonts.Title, Text = "Mutation Machine", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 60, 5)
 local closeButton = Skin.closeButton(header, 66, 4)
 
 local line1 = text({ Position = UDim2.fromOffset(20, 112), Size = UDim2.new(1, -40, 0, 50), RichText = true,
-	Text = string.format('Bring <font color="#FF3B3B">%d</font> same Lawyers to Merge', NEED), Parent = panel }, 46)
+	Text = string.format('Bring <font color="#FF3B3B">%d</font> same Lawyers to Mutate', NEED), Parent = panel }, 46)
 line1.RichText = true
 local line2 = text({ Position = UDim2.fromOffset(20, 162), Size = UDim2.new(1, -40, 0, 38), RichText = true, FontFace = Font.new(TITLE.Family, Enum.FontWeight.Bold, Enum.FontStyle.Italic),
-	Text = '<font color="#5CF03C">Merged lawyers</font> earn <font color="#5CF03C">way more</font>!', Parent = panel }, 34)
+	Text = '<font color="#5CF03C">Mutated lawyers</font> earn <font color="#5CF03C">way more</font>... <font color="#FFB43C">if it works!</font>', Parent = panel }, 34)
 line2.RichText = true
 
 ------------------------------------------------------------------ slots, pipes, result
@@ -266,7 +273,7 @@ local grid = make("ScrollingFrame", {
 local pickEmpty = text({ Position = UDim2.fromOffset(40, 220), Size = UDim2.new(1, -80, 0, 80), Text = "", TextWrapped = true, ZIndex = 32, Visible = false, Parent = picker }, 30)
 
 ------------------------------------------------------------------ state
-type Lawyer = { Uid: string, Id: string, Stars: number, Office: number? }
+type Lawyer = { Uid: string, Id: string, Stars: number, Office: number?, Locked: boolean? }
 local function lawyers(): { Lawyer }
 	local raw = player:GetAttribute("Lawyers")
 	if typeof(raw) ~= "string" then
@@ -318,24 +325,25 @@ local function renderResult()
 		local name = Formulas.lawyerName(id, nextStars)
 		resultMystery.Visible = false
 		resultVf.Visible = true
-		resultSway = showLawyer(resultVf, id, true)
-		resultName.Text = name .. " " .. starText(nextStars)
-		resultEarn.Text = string.format("Earns x%s (was x%s)", tostring(Formulas.lawyerEarn(id, nextStars)), tostring(Formulas.lawyerEarn(id, stars)))
-		resultGlow.ImageColor3 = if nextStars >= 3 then Color3.fromRGB(255, 120, 255) else Color3.fromRGB(255, 205, 60)
+		resultSway = showLawyer(resultVf, id, true, nextStars)
+		resultName.Text = name
+		resultEarn.Text = string.format("%s chance · Earns x%s (was x%s)", pct(stars), tostring(Formulas.lawyerEarn(id, nextStars)), tostring(Formulas.lawyerEarn(id, stars)))
+		local m = Config.Lawyers.Mutations[nextStars]
+		resultGlow.ImageColor3 = if m then m.Color else Color3.fromRGB(255, 205, 60)
 		tween(resultGlow, 0.4, { ImageTransparency = 0.25 })
 	else
 		resultMystery.Visible = true
 		resultVf.Visible = false
 		resultVf:ClearAllChildren()
-		resultName.Text = if id then "Merge into ?" else ""
+		resultName.Text = if id then "Mutate into ?" else ""
 		resultEarn.Text = ""
 		resultGlow.ImageTransparency = 1
 	end
 	if busy then
-		mergeLabel.Text = "Merging..."
+		mergeLabel.Text = "Mutating..."
 		mergeButton.BackgroundColor3 = GRAY
 	elseif filled == NEED then
-		mergeLabel.Text = "MERGE!"
+		mergeLabel.Text = "MUTATE! (" .. pct(stars or 1) .. ")"
 		mergeButton.BackgroundColor3 = GREEN
 	else
 		local left = NEED - filled
@@ -354,7 +362,7 @@ local function setSlot(i: number, l: Lawyer?)
 		local _, color = rarityOf(l.Id)
 		s.title.Text = Formulas.lawyerName(l.Id, l.Stars) .. " " .. starText(l.Stars)
 		s.title.TextColor3 = color:Lerp(WHITE, 0.35)
-		showLawyer(s.vf, l.Id, false)
+		showLawyer(s.vf, l.Id, false, l.Stars)
 		s.vf.Size = UDim2.new(0.4, 0, 0.3, -12)
 		s.vf.Position = UDim2.new(0.3, 0, 0, 70)
 		tween(s.vf, 0.3, { Size = UDim2.new(1, 0, 1, -40), Position = UDim2.fromOffset(0, 40) }, Enum.EasingStyle.Back)
@@ -389,7 +397,7 @@ local function openPicker(slotIndex: number)
 	local taken = chosenUids()
 	local kinds: { [string]: { id: string, stars: number, copies: { Lawyer } } } = {}
 	for _, l in lawyers() do
-		if l.Stars < MAX_STARS and not taken[l.Uid] and (not id or (l.Id == id and l.Stars == stars)) then
+		if l.Stars < MAX_STARS and not l.Locked and not taken[l.Uid] and (not id or (l.Id == id and l.Stars == stars)) then
 			local key = l.Id .. "|" .. l.Stars
 			kinds[key] = kinds[key] or { id = l.Id, stars = l.Stars, copies = {} }
 			table.insert(kinds[key].copies, l)
@@ -412,19 +420,19 @@ local function openPicker(slotIndex: number)
 		end
 		return a.id < b.id
 	end)
-	pickTitle.Text = if id then "Add another " .. Formulas.lawyerName(id, stars) else "Pick a lawyer to merge"
+	pickTitle.Text = if id then "Add another " .. Formulas.lawyerName(id, stars) else "Pick a lawyer to mutate"
 	pickEmpty.Visible = #list == 0
-	pickEmpty.Text = if id then "You don't have another one. Hatch more from the eggs!" else "No lawyers to merge yet. Hatch some eggs!"
+	pickEmpty.Text = if id then "You don't have another one. Hatch more from the eggs!" else "No lawyers to mutate yet. Hatch some eggs!"
 	for order, k in list do
 		local _, color = rarityOf(k.id)
 		local ready = #k.copies + filled >= NEED
 		local card = make("TextButton", { Text = "", AutoButtonColor = true, BackgroundColor3 = color:Lerp(Color3.fromRGB(40, 40, 60), 0.55), LayoutOrder = order, ZIndex = 32, Parent = grid }, { corner(6), stroke(3, if ready then GREEN else BLACK) })
 		local vf = make("ViewportFrame", { Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 120), BackgroundTransparency = 1, Ambient = Color3.fromRGB(200, 200, 205), ZIndex = 33, Parent = card })
-		showLawyer(vf, k.id, false)
+		showLawyer(vf, k.id, false, k.stars)
 		text({ Position = UDim2.fromOffset(6, 126), Size = UDim2.new(1, -12, 0, 26), Text = Formulas.lawyerName(k.id, k.stars), ZIndex = 34, Parent = card }, 22)
 		text({ Position = UDim2.fromOffset(6, 152), Size = UDim2.new(1, -12, 0, 22), Text = starText(k.stars) .. "   x" .. #k.copies, TextColor3 = Color3.fromRGB(255, 225, 90), ZIndex = 34, Parent = card }, 20)
 		if ready then
-			text({ Position = UDim2.fromOffset(6, 172), Size = UDim2.new(1, -12, 0, 18), Text = "CAN MERGE!", TextColor3 = GREEN, ZIndex = 34, Parent = card }, 16)
+			text({ Position = UDim2.fromOffset(6, 172), Size = UDim2.new(1, -12, 0, 18), Text = "CAN MUTATE!", TextColor3 = GREEN, ZIndex = 34, Parent = card }, 16)
 		end
 		card.Activated:Connect(function()
 			-- inventory copies before ones working in an office
@@ -487,14 +495,41 @@ local function merge()
 		tween(s.title, 0.3, { TextTransparency = 1 })
 	end
 	task.wait(0.4)
-	local ok, nameOrReason = MergeSelected:InvokeServer(picks)
+	local ok, nameOrReason, _, result = MergeSelected:InvokeServer(picks)
 	if not ok then
 		busy = false
 		for i = 1, NEED do
 			slots[i].title.TextTransparency = 0
 			setSlot(i, nil)
 		end
-		showToast(tostring(nameOrReason or "Couldn't merge"))
+		showToast(tostring(nameOrReason or "Couldn't mutate"))
+		return
+	end
+	if result == "fizzled" then
+		-- FIZZLED: the window shakes, a grey puff, and the lawyers run off (no "lose" on screen - CLAUDE.md)
+		local resultScale0 = resultBox:FindFirstChildOfClass("UIScale") or make("UIScale", { Parent = resultBox })
+		local home = resultBox.Position
+		for k = 1, 8 do
+			resultBox.Position = home + UDim2.fromOffset(if k % 2 == 0 then -8 else 8, 0)
+			task.wait(0.04)
+		end
+		resultBox.Position = home
+		Effects.guiBurst(gui, UDim2.fromOffset(resultBox.AbsolutePosition.X + resultBox.AbsoluteSize.X / 2, resultBox.AbsolutePosition.Y + resultBox.AbsoluteSize.Y / 2), 360, Color3.fromRGB(150, 150, 165), 1.4, 3)
+		resultVf.Visible = false
+		resultVf:ClearAllChildren()
+		resultMystery.Visible = true
+		resultMystery.Text = "?"
+		resultGlow.ImageTransparency = 1
+		resultScale0.Scale = 0.85
+		tween(resultScale0, 0.4, { Scale = 1 }, Enum.EasingStyle.Back)
+		resultName.Text = "FIZZLED!"
+		resultEarn.Text = "Your lawyers ran off... try again!"
+		task.wait(2.4)
+		for _, s in slots do
+			s.title.TextTransparency = 0
+		end
+		busy = false
+		clearSlots()
 		return
 	end
 	-- flash + reveal in the window
@@ -505,7 +540,8 @@ local function merge()
 	tween(flash, 0.6, { BackgroundTransparency = 1 })
 	task.delay(0.6, flash.Destroy, flash)
 	local nextStars = (stars or 1) + 1
-	local burstColor = if nextStars >= 3 then Color3.fromRGB(255, 120, 255) else Color3.fromRGB(255, 205, 60)
+	local mut = Config.Lawyers.Mutations[nextStars]
+	local burstColor = if mut then mut.Color else Color3.fromRGB(255, 205, 60) -- (the window already shows the mutated lawyer)
 	Effects.guiBurst(gui, UDim2.fromOffset(resultBox.AbsolutePosition.X + resultBox.AbsoluteSize.X / 2, resultBox.AbsolutePosition.Y + resultBox.AbsoluteSize.Y / 2), 420, burstColor, 1.8, 3)
 	local resultScale = resultBox:FindFirstChildOfClass("UIScale") or make("UIScale", { Parent = resultBox })
 	resultScale.Scale = 1.25
@@ -592,7 +628,7 @@ end)
 local function readyCount(): number
 	local counts = {}
 	for _, l in lawyers() do
-		if l.Stars < MAX_STARS then
+		if l.Stars < MAX_STARS and not l.Locked then
 			local k = l.Id .. "|" .. l.Stars
 			counts[k] = (counts[k] or 0) + 1
 		end
@@ -621,7 +657,7 @@ local function refreshSign()
 	local count = title and title:FindFirstChild("Count") :: TextLabel?
 	local mark = machine:FindFirstChild("Mark", true) :: TextLabel?
 	if count then
-		count.Text = if n > 0 then string.format("%d merge%s ready!", n, if n == 1 then "" else "s") else "3 same = ★ stronger"
+		count.Text = if n > 0 then string.format("%d mutation%s ready!", n, if n == 1 then "" else "s") else "3 same = try to mutate"
 		count.TextColor3 = if n > 0 then Color3.fromRGB(110, 255, 90) else WHITE
 	end
 	if mark then

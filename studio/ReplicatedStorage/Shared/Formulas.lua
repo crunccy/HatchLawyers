@@ -168,12 +168,46 @@ function Formulas.lawyerEarn(id: string?, stars: number?): number
 	return (if rarity then rarity.Earn else 1) * starEarn * eggEarn
 end
 
--- "Gold Bow Tie Benny" etc.
+-- "Shiny Bow Tie Benny" etc. (Stars = the mutation tier since 2026-10-13: "", Shiny, Diamond, Cosmic)
 function Formulas.lawyerName(id: string?, stars: number?): string
 	local def = Formulas.getSkin(id)
 	local prefix = Config.Lawyers.StarNames[stars or 1] or ""
 	local name = if def then def.Name else "Lawyer"
 	return if prefix ~= "" then prefix .. " " .. name else name
+end
+
+------------------------------------------------------------------ mutations + selling (Config.Lawyers)
+-- The Mutation Machine's chance of turning MergeCount lawyers at tier `stars` into one at stars + 1 (0 at the top).
+function Formulas.mutateChance(stars: number): number
+	local m = Config.Lawyers.Mutations[stars + 1]
+	return if m then m.Chance else 0
+end
+
+-- The mutation tier a hatch comes out with (1 = none): rolled from the rarest tier down. `golden` = a golden egg.
+function Formulas.rollHatchMutation(rng: Random, golden: boolean?): number
+	local odds = Config.Lawyers.HatchMutation[if golden then "Golden" else "Normal"] or {}
+	local roll = rng:NextNumber()
+	local acc = 0
+	for tier = #Config.Lawyers.StarEarn, 2, -1 do
+		acc += odds[tier] or 0
+		if roll < acc then
+			return tier
+		end
+	end
+	return 1
+end
+
+-- What selling a lawyer pays: its egg's current price for this player x Share[rarity] x its mutation's earn.
+function Formulas.sellPrice(id: string, stars: number?, opened: number, prestige: number?): number
+	local def = Formulas.getSkin(id)
+	if not def then
+		return 0
+	end
+	local egg = Formulas.themedEgg(def.Egg)
+	local price = if egg then Formulas.themedEggPrice(egg.Id, opened, prestige) else Formulas.eggPrice(opened, prestige)
+	local share = Config.Lawyers.Sell.Share[def.Rarity] or 0
+	local mut = Config.Lawyers.StarEarn[math.clamp(stars or 1, 1, #Config.Lawyers.StarEarn)]
+	return math.floor(price * share * mut)
 end
 
 -- Index into Config.Desks.Tiers an office has reached at this level.

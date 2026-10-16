@@ -228,9 +228,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema: **v18 live** (2026-10-13: its step adds `data.Floors`, the upstairs rooms). `src/`'s v18 also carries
-  the lawyer mutations + selling (not pushed yet; that step adds nothing - `Stars` now means the MUTATION tier, 1 Normal
-  / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`), so both ship as v18.
+- Save schema: **v18 live** (2026-10-13: its step adds `data.Floors`, the upstairs rooms). v18 also carries the
+  lawyer mutations + selling (live since 2026-10-16; that step adds nothing - `Stars` now means the MUTATION tier,
+  1 Normal / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`).
   (v14 firm areas, v15 minigames, v16 egg zones, v17 the economy pass's `Eggs.RunOpened`.) Never reuse a
   migration number that has shipped. `PlayerData`: `Lawyers` by uid, `Desks[i] = { Level, Lawyer }`,
   `Zones = { License, Carry, Speed, Carried }`. Before adding any saved field: bump `SCHEMA_VERSION` and add a
