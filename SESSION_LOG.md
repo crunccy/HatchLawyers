@@ -10,6 +10,12 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Claude:** continue the existing Studio bug-list claim below; handle Studio pushes/playtests, visual checks, and Blender model work when working locally with those tools. Update this log with results and release the claim when done.
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
+## Codex — mutation presentation implementation — 2026-10-16
+
+- **User's direction:** keep mutation choices in the existing controls, but make the mutation itself a character-driven in-world moment like egg hatching.
+- **Change:** `src/Merger.client.lua` now hides the selection panel after the server returns its result, clones and dresses a lawyer at the Mutation Machine, frames a brief approach / anticipation / transformation scene, pulses the machine lights, then celebrates the new look or has the lawyer run off on a fizzle. The server remains authoritative for chance, cost, and outcome; this is presentation only.
+- **Review state:** committed on `codex/mutation-in-world-animation`. It has not been synced to Studio or playtested. Next: review Luau behavior, sync this script to Studio, and playtest success + fizzle at desktop and phone sizes; ensure the camera/UI restore cleanly on both paths.
+
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
