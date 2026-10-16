@@ -9,17 +9,16 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
-- **crnuch (local), since 2026-10-16:** bug report 1, 3, 7 (Dingy Shack incubators, over-bright firm stages, desk
-  tier props overlapping) - `Server.FirmStages` / `FirmBuilder` / `DeskService` + the firm templates. Bug 6 is a separate session.
 
 ## Open items
-- [ ] **crnuch's bug report (2026-10-16, from a playtest).** 2, 4 and 5 are fixed (entry below); still open: 1, 3, 6, 7.
+- [ ] **crnuch's bug report (2026-10-16, from a playtest).** 1, 2, 3, 4, 5 and 7 are fixed (entries below); still open: 6.
+      Still to do for 1 / 3 / 7: crnuch's eye-check in Studio (the viewport didn't render for that session, so no screenshots).
       Leads found in the code, not confirmed:
-  1. **Dingy Shack doesn't house the incubators properly** (`Server.FirmStages` stage 1, the shack is the old
+  1. ~~FIXED~~ **Dingy Shack doesn't house the incubators properly** (`Server.FirmStages` stage 1, the shack is the old
      template cloned + opened up; the two `Firm.Incubators` don't fit inside it).
   2. ~~FIXED~~ **A Legendary+ hatch in a low-tier firm: the egg flies up and out through the ceiling.** `Eggs.client` ~1085:
      `rise = math.max(7, ceiling - start - 4)` - the 7-stud minimum beats a low ceiling (the shack).
-  3. **Some firms with bright lights + white walls look extremely bright** (firm stages' lights / Neon on cream
+  3. ~~FIXED~~ **Some firms with bright lights + white walls look extremely bright** (firm stages' lights / Neon on cream
      walls; check each of the 6 stages).
   4. ~~FIXED~~ **The Travel Portal stands in the middle of the path** - crnuch wants it elsewhere (ask where);
      `Workspace.Hub.TravelPortal`, placed by `tools/zones/BuildTravelPortal.lua`.
@@ -29,7 +28,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   6. **Studio-built part models flicker when the camera moves: pieces overlap and the colours fight** (z-fighting:
      coplanar or overlapping faces). crnuch: "on the lawyers and other places just in general, not the eggs or the
      bosses" (those are meshes / Blender) - so the Part-built lawyers (BrickKit + BuildLawyersTop) and Part props.
-  7. **Desks overlap their accessories when levelled up** (office tier props from `Config.Desks.Tiers`, placed by
+  7. ~~FIXED~~ **Desks overlap their accessories when levelled up** (office tier props from `Config.Desks.Tiers`, placed by
      `Server.DeskService` / FirmBuilder).
 - [ ] **Lawyer mutations: golden zone eggs sometimes hatching Shiny** - the last unchecked bit of the mutations
       playtest (everything else eye-checked 2026-10-16, second crnuch entry below). Needs real golden hatches (25%).
@@ -150,6 +149,36 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: bug report 1, 3, 7 fixed (shack incubators, over-bright firms, desk tiers)
+- **1 - Dingy Shack incubators:** the shack (the Firm1 template) is only 24 wide (walls at x +-12), but the incubators
+  stood at the default x +-15.7, outside it. New `FirmStages.INCUBATORS[stage]` (FirmBuilder uses it, else its own
+  `INCUBATORS`): stage 1 = (+-7.8, 0, 14), inside at the back - 0.9 from the walls, 4.6 each side of the aisle, clear of
+  the floor cracks. The roof over the right one was open (the egg would rocket 46 studs out of the shack), so FRONTS[1]
+  adds a `TarpPatch` (a clone of the shack's tarp). Hatch rise (Eggs.client raycast): 5.1 left, 5.7 right; stages 2-6
+  unchanged (4.3-13.3, no overlaps).
+- **3 - over-bright firms:** checked all 6 stages' lights + Neon (Lighting: Brightness 2.25, Bloom threshold 1.6).
+  Worst: Neon panels of 28x4 / 44x7 / 39x18 studs (stage 4 + 6 canopies, stage 5 LoungeGlow, stage 6 PenthouseGlow)
+  and 6-12 overlapping 1.6-brightness ShowcaseSpots over the white showcase floors. Now: big panels use a new `glow` look
+  (warmer, darker Neon, 0.3 transparent); ShowcaseSpot 1.6/9 -> 0.7/8; porch lamps 1.4/18 -> 0.9/14; door lanterns
+  1.3/14 -> 0.9/12; shack lantern 1.4/16 -> 0.9/12 and the template's CeilingLight 1.4/22 -> 0.8/16; panel lights
+  0.9-1.2 / 16-30 -> 0.6 / 14-20; coffee bar 1.2 -> 0.8; elevator arrows 1 -> 0.6; hall sconces 0.8/12 -> 0.6/10;
+  `white` 250,250,245 -> 238,236,228; FirmFeatures' hologram beam light 2/26 -> 1/18. No firm light is above 1.0 now.
+- **7 - desk tiers overlapping:** `Server.DeskLook` was written for an older desk facing the other way: its side panels
+  sliced through the kit desk's pedestals and top, the trophy went through the laptop screen and the desk lamp, the
+  plaque through the mug, the lamp base into the laptop. v2 recolours the kit desk's own parts (found by size: top,
+  pedestals, modesty panel, front strip, handles, lamp) and adds only: a gold band around the top (T3+, every face 0.05+
+  from the desk's), the kit lamp turned into a banker's lamp with a 0.6 light (T3+), the PARTNER plaque on the client
+  edge and the trophy in the lawyer's far corner (T4). Checked: no tier piece overlaps a kit part, tier 1 restores
+  everything.
+- **Checked:** all 6 stages built from fresh clones in Edit mode (removed after), then a playtest: crnuch's firm
+  (Storefront Practice, 8 desks at tier 4) builds with the new desk pieces, a stage-1 firm built on an empty plot has
+  both incubators inside + the patch + the dimmer lights, no game errors. Nothing saved was touched. The viewport didn't
+  render (screen captures came back blank), so **nothing was eye-checked** - crnuch, look at a shack, a Glass Office /
+  Corporate HQ / Supreme Tower front and a tier-3/4 desk.
+- `run_checks.py` ALL PASSED; snapshot re-exported (103 scripts: DeskLook, FirmBuilder, FirmFeatures, FirmStages
+  changed; `src/` FirmStages + FirmFeatures equal to them).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: bug report 2, 4, 5 fixed (egg through the ceiling, portal moved, Rebirth)
 - **#2 the hatch egg went through the ceiling** (`Eggs.client` rocket): it always rose at least 7 studs. It now stops

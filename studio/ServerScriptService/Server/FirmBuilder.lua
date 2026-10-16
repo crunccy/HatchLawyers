@@ -197,7 +197,8 @@ function FirmBuilder.buildHireSlot(firm: Model, frame: CFrame, slot: number, pri
 	return desk
 end
 
--- Incubators, firm-local: on the lobby rugs where the waiting room's chairs and coffee tables were.
+-- Incubators, firm-local: on the lobby rugs where the waiting room's chairs and coffee tables were (a stage whose
+-- front is narrower has its own spots: FirmStages.INCUBATORS, e.g. inside the Dingy Shack).
 FirmBuilder.INCUBATORS = { Vector3.new(-15.7, 0, 8), Vector3.new(15.7, 0, 8) }
 
 -- The waiting room's furniture inside the WaitingRoom kit piece (firm-local positions; floor, walls, rugs, the
@@ -381,7 +382,7 @@ function FirmBuilder.build(plot: Model, segments: number, lawyers: number, maxSe
 	local incubators = Instance.new("Folder")
 	incubators.Name = "Incubators"
 	incubators.Parent = firm
-	for i, at in FirmBuilder.INCUBATORS do
+	for i, at in FirmStages.INCUBATORS[stageN] or FirmBuilder.INCUBATORS do
 		buildIncubator(incubators, frame, i, at)
 	end
 

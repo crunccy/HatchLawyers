@@ -213,7 +213,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   `ServerScriptService.ArcadeServer` (+ `Games`), `StarterPlayerScripts.Arcade`, `ReplicatedStorage.ArcadeClient`,
   `Config.Arcade`. Map from Blender (`tools/blender/arcade_pier.py`). See src/Arcade/README.md.
 - Firm: `Server.FirmStages` (6 front buildings by size/prestige, rooms sold on the lawn by `Server.FirmFeatures`),
-  two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was; **no waiting room** —
+  two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was (a narrower front has its own
+  spots: `FirmStages.INCUBATORS`, e.g. inside the Dingy Shack); office tiers recolour the kit desk (`Server.DeskLook`,
+  extras only in its free spots); **no waiting room** —
   clients walk from the street straight to a free lawyer (`FirmBuilder.routeToDesk`).
 
 ### Never rename (scripts look these up)

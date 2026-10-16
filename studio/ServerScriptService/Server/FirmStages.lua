@@ -19,6 +19,14 @@ local FirmStages = {}
 
 FirmStages.NAMES = { "Dingy Shack", "Storefront Practice", "Main Street Firm", "Glass Office", "Corporate HQ", "Supreme Tower" }
 
+-- Incubator spots (firm-local, FirmBuilder.buildIncubator) for a stage whose front doesn't fit the default ones
+-- (FirmBuilder.INCUBATORS, x +-15.7 in the lobby). The Dingy Shack is only 24 wide (walls at x +-12), so the default
+-- spots stood outside it: its two stand inside, at the back, clear of the walls, the aisle (x = 0) and the floor
+-- cracks (crnuch's bug report 2026-10-16).
+FirmStages.INCUBATORS = {
+	[1] = { Vector3.new(-7.8, 0, 14), Vector3.new(7.8, 0, 14) },
+}
+
 -- stage from the firm's office segments; Supreme level Config.Prestige.TowerLevel unlocks the Supreme Tower for good
 -- (economy pass: the first Supreme is ~45 min in now - "any prestige" would skip the other stages every run)
 function FirmStages.stageFor(segments: number, prestigeLevel: number?): number
@@ -48,7 +56,7 @@ local L: { [string]: LookDef } = {
 	cream = { color = rgb(246, 232, 204) },
 	sand = { color = rgb(238, 222, 192) },
 	stone = { color = rgb(200, 196, 188) },
-	white = { color = rgb(250, 250, 245) },
+	white = { color = rgb(238, 236, 228) }, -- (was 250,250,245: near-clipping in full sun next to the firm lights)
 	panel = { color = rgb(232, 232, 226) },
 	navy = { color = rgb(46, 58, 120) },
 	dark = { color = rgb(58, 62, 74) },
@@ -70,6 +78,9 @@ local L: { [string]: LookDef } = {
 	lamp = { color = rgb(255, 226, 150), mat = Enum.Material.Neon, smooth = true },
 	egg = { color = rgb(255, 140, 200), mat = Enum.Material.Neon, smooth = true },
 	signglow = { color = rgb(255, 205, 70), mat = Enum.Material.Neon, smooth = true },
+	-- big light panels (canopies, the lounge / penthouse glow): a softer, warmer Neon than "lamp" - full-strength Neon
+	-- this size blew out the white walls around it (bug report 2026-10-16)
+	glow = { color = rgb(255, 186, 96), mat = Enum.Material.Neon, t = 0.3, smooth = true },
 }
 
 ------------------------------------------------------------------ building helpers (firm-local)
@@ -164,7 +175,7 @@ function Build:lantern(name: string, x: number, y: number, z: number)
 	self:box(name .. "Arm", x - 0.15, y + 0.6, z - 0.9, x + 0.15, y + 0.9, z, "dark", false)
 	local glow = self:box(name, x - 0.45, y - 0.4, z - 1.35, x + 0.45, y + 0.6, z - 0.45, "lamp", false)
 	self:box(name .. "Cap", x - 0.6, y + 0.6, z - 1.5, x + 0.6, y + 0.9, z - 0.3, "dark", false)
-	self:light(glow, 14, 1.3)
+	self:light(glow, 12, 0.9)
 end
 
 -- street lamp post with a real light
@@ -173,7 +184,7 @@ function Build:lampPost(name: string, x: number, z: number, y: number)
 	self:box(name .. "Pole", x - 0.25, y + 0.5, z - 0.25, x + 0.25, y + 8, z + 0.25, "dark", false)
 	local glow = self:box(name .. "Lamp", x - 0.7, y + 8, z - 0.7, x + 0.7, y + 9.4, z + 0.7, "lamp", false)
 	self:box(name .. "Cap", x - 0.9, y + 9.4, z - 0.9, x + 0.9, y + 9.8, z + 0.9, "dark", false)
-	self:light(glow, 18, 1.4)
+	self:light(glow, 14, 0.9)
 end
 
 -- a framed window: frame, glass, mullion, sill (on a front face at z, facing the street)
@@ -251,7 +262,7 @@ function Build:showcase(y0: number, y1: number, count: number)
 		ped:SetAttribute("ShowcaseSlot", i)
 		self:disc("ShowcaseRing" .. i, x, 2.6, y0 + 1.7, 1.5, 0.08, "gold", false)
 		local spot = self:box("ShowcaseSpot" .. i, x - 0.5, y1 - 0.4, 2.1, x + 0.5, y1 - 0.1, 3.1, "lamp", false)
-		self:light(spot, 9, 1.6)
+		self:light(spot, 8, 0.7) -- (was 1.6: 6-12 of them overlap on the white showcase floor)
 	end
 	-- a label strip under the glass
 	self:box("ShowcaseBand", -24.2, y0 - 0.1, -0.85, 24.2, y0 + 0.5, -0.3, "gold", false)
@@ -291,7 +302,7 @@ function Build:elevator(stops: { any })
 		door:SetAttribute("Arrive", Vector3.new(cx, y + 3, cz + face * 3.5))
 		local l0, l1 = cz + face * 0.75, cz + face * 0.95
 		local arrow = self:box("ElevatorLight" .. i, cx - 0.6, y + 7.5, math.min(l0, l1), cx + 0.6, y + 7.9, math.max(l0, l1), "lamp", false)
-		self:light(arrow, 8, 1)
+		self:light(arrow, 6, 0.6)
 	end
 end
 
@@ -331,12 +342,28 @@ FRONTS[1] = function(b)
 				end
 			end
 		end
+		for _, l in shack:GetDescendants() do
+			if l:IsA("Light") then -- the template's ceiling light (1.4 / 22) washed the whole shack out
+				l.Brightness = math.min(l.Brightness, 0.8)
+				l.Range = math.min(l.Range, 16)
+			end
+		end
+		-- a tarp patch over the right-hand incubator (the roof was open there), so a hatch's egg stops under the roof
+		-- like it does on the left instead of rocketing out of the shack (Eggs.client raycasts up for the ceiling)
+		local tarp = shack:FindFirstChild("Tarp", true)
+		if tarp and tarp:IsA("BasePart") then
+			local patch = tarp:Clone()
+			patch.Name = "TarpPatch"
+			patch.Size = Vector3.new(6.2, 0.25, 7)
+			patch.CFrame = b.frame * CFrame.new(8.7, 10, 14) * CFrame.Angles(math.rad(-3), 0, math.rad(-2))
+			patch.Parent = tarp.Parent
+		end
 		shack.Parent = b.model
 	end
 	b:entry("woodDark")
 	-- a hanging lantern over the door and a crooked "OPEN" sign: still dingy, just loved
 	local lamp = b:box("ShackLantern", -0.5, 7.2, -4.4, 0.5, 8.3, -3.4, "lamp", false)
-	b:light(lamp, 16, 1.4)
+	b:light(lamp, 12, 0.9)
 	b:box("ShackLanternChain", -0.08, 8.3, -3.98, 0.08, 9.6, -3.82, "dark", false)
 	local open = b:box("OpenSign", 6, 5.6, -3.9, 10, 7, -3.7, "yellow", false)
 	open.CFrame = open.CFrame * CFrame.Angles(0, 0, math.rad(6))
@@ -479,8 +506,8 @@ FRONTS[4] = function(b)
 		b:box("Fin" .. s, math.min(24.6 * s, 24 * s), 0, -1.2, math.max(24.6 * s, 24 * s), 4 * F + 1.5, 3, "white")
 	end
 	b:box("Canopy", -16, 8.5, -8, 16, 9.3, 0, "white")
-	local under = b:box("CanopyLight", -14, 8.3, -6, 14, 8.5, -2, "lamp", false)
-	b:light(under, 16, 0.9)
+	local under = b:box("CanopyLight", -14, 8.3, -6, 14, 8.5, -2, "glow", false)
+	b:light(under, 14, 0.6)
 	for _, s in { -1, 1 } do
 		b:post("CanopyPost" .. s, 14 * s, -7, 0, 8.5, 0.35, "dark")
 	end
@@ -516,7 +543,7 @@ FRONTS[5] = function(b)
 		b:box("BarStool" .. i, x - 0.5, 0, 15, x + 0.5, 2.2, 16, "orange", false)
 	end
 	local bl = b:box("CoffeeBarLight", -14, 7, 17.5, -12, 7.4, 18.5, "lamp", false)
-	b:light(bl, 12, 1.2)
+	b:light(bl, 10, 0.8)
 	b.area = nil
 	b:floorPlate("Floor3", 2 * F)
 	b:showcase(2 * F + 0.45, 3 * F, 9)
@@ -530,8 +557,8 @@ FRONTS[5] = function(b)
 		b:box("SofaBack" .. i, x - 5, 3 * F + 2.3, 12.4, x + 5, 3 * F + 3.9, 13, "navy", false)
 		b:box("SofaTable" .. i, x - 2, 3 * F + 0.6, 6.5, x + 2, 3 * F + 1.6, 8.5, "wood", false)
 	end
-	local glow = b:box("LoungeGlow", -22, 3 * F + 1, 19.5, 22, 4 * F - 1, 20.3, "lamp", false)
-	b:light(glow, 20, 1)
+	local glow = b:box("LoungeGlow", -22, 3 * F + 1, 19.5, 22, 4 * F - 1, 20.3, "glow", false)
+	b:light(glow, 16, 0.6)
 	b.area = nil
 	b:floorPlate("Floor5", 4 * F)
 	-- floors 5-6 step back 6 from the street; planted terrace in front
@@ -583,8 +610,8 @@ FRONTS[6] = function(b)
 	b:showcase(F + 0.45, 2 * F, 12)
 	b:floorPlate("PodiumRoof", 2 * F, "gold")
 	b:box("Canopy", -14, 8.6, -9, 14, 9.6, 0, "gold")
-	local under = b:box("CanopyLight", -12, 8.4, -8, 12, 8.6, -2, "lamp", false)
-	b:light(under, 18, 1)
+	local under = b:box("CanopyLight", -12, 8.4, -8, 12, 8.6, -2, "glow", false)
+	b:light(under, 14, 0.6)
 	for _, s in { -1, 1 } do
 		b:post("CanopyColumn" .. s, 12 * s, -8, 0, 8.6, 0.6, "gold")
 	end
@@ -606,8 +633,8 @@ FRONTS[6] = function(b)
 	b.area = "PrivateCourt"
 	b:box("CourtroomFloor", -19.6, T0 + 45, 1.7, 19.6, T0 + 54, 2.2, "wood", false)
 	b.area = "PartnerSuite"
-	local pent = b:box("PenthouseGlow", -19.6, T1 - 18, 1.7, 19.6, T1 - 0.4, 2.2, "lamp", false)
-	b:light(pent, 30, 1.2)
+	local pent = b:box("PenthouseGlow", -19.6, T1 - 18, 1.7, 19.6, T1 - 0.4, 2.2, "glow", false)
+	b:light(pent, 20, 0.6)
 	b.area = nil
 	b:box("Crown", -18, T1, 3, 18, T1 + 5, 18, "gold")
 	b:box("CrownRail", -18, T1 + 5, 3, 18, T1 + 6, 3.4, "gold", false)
@@ -686,7 +713,7 @@ function FirmStages.dressHall(firm: Model, frame: CFrame, stage: number, hallSta
 			b:box("OfficePlant", s * 21.6 - 0.9, 1.1, z + 0.9, s * 21.6 + 0.9, 2.9, z + 2.7, "leaf", false)
 			if seg % 2 == 0 then
 				local sconce = b:box("Sconce", s * 23.2 - 0.3, 4.2, z - 0.4, s * 23.2 + 0.3, 4.9, z + 0.4, "lamp", false)
-				b:light(sconce, 12, 0.8)
+				b:light(sconce, 10, 0.6)
 			end
 		end
 		seg += 1

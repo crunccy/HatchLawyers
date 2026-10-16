@@ -1,29 +1,52 @@
 --!strict
 -- Dresses a desk model for its tier (Config.Desks.Tiers), in the game's chunky cartoon style.
--- Works on any Desk<N> that has a "Top" part: tier pieces are placed relative to Top, and the
--- desk's own "Leg"/"Pedestal" parts are hidden while panels replace them. Tier 1 restores the
--- original look. Calling it again swaps tiers cleanly.
+-- v2 (2026-10-16, crnuch's bug report 7): tiers used to bolt side panels, knobs, a lamp and a trophy onto an older
+-- desk that faced the other way, so on the kit desk (FirmBuilder: ServerStorage.Templates.FirmKitParts.LawyerDesk)
+-- they cut through its pedestals, laptop, mug and lamp. Now a tier RECOLOURS the kit desk's own parts and adds only
+-- a few pieces in the free spots of its top. Desk frame (= FirmBuilder.slotFrame): +X faces the client / the aisle,
+-- the lawyer stands at -X, the long side runs along Z; the kit's top is 2.8 x 0.45 x 5.6 with its surface at y 2.645.
+-- Kit parts are told apart by size (they are all called "Part"). Tier 1 restores the original look; calling it again
+-- swaps tiers cleanly.
 
 local DeskLook = {}
 
 type Style = {
-	top: Color3,
-	topMaterial: Enum.Material,
-	body: Color3?, -- side and front panels; nil keeps the original legs (tier 1)
-	trim: Color3?,
+	top: Color3?, -- nil keeps the original look (tier 1)
+	body: Color3?, -- pedestals, modesty panel, front strip
+	handle: Color3?,
+	trim: Color3?, -- gold band around the top's edge
 	extras: { string },
 }
 
 local GOLD = Color3.fromRGB(255, 205, 60)
 
 local STYLES: { Style } = {
-	{ top = Color3.new(), topMaterial = Enum.Material.Plastic, extras = {} }, -- tier 1: original folding table
-	{ top = Color3.fromRGB(205, 140, 72), topMaterial = Enum.Material.Wood, body = Color3.fromRGB(176, 110, 52), extras = { "Knobs" } },
-	{ top = Color3.fromRGB(112, 68, 42), topMaterial = Enum.Material.Wood, body = Color3.fromRGB(92, 54, 34), trim = GOLD, extras = { "Knobs", "Lamp" } },
-	{ top = Color3.fromRGB(150, 40, 36), topMaterial = Enum.Material.Wood, body = Color3.fromRGB(118, 28, 28), trim = GOLD, extras = { "Knobs", "Lamp", "Plaque", "Trophy", "Sparkles" } },
+	{ extras = {} }, -- tier 1: the kit desk as it is
+	{ top = Color3.fromRGB(205, 140, 72), body = Color3.fromRGB(176, 110, 52), handle = Color3.fromRGB(255, 230, 150), extras = {} },
+	{ top = Color3.fromRGB(112, 68, 42), body = Color3.fromRGB(92, 54, 34), handle = GOLD, trim = GOLD, extras = { "Lamp" } },
+	{ top = Color3.fromRGB(150, 40, 36), body = Color3.fromRGB(118, 28, 28), handle = GOLD, trim = GOLD, extras = { "Lamp", "Plaque", "Trophy", "Sparkles" } },
 }
 
-local HIDE_WHEN_PANELLED = { Leg = true, Pedestal = true }
+local TOP_Y = 2.645 -- the kit desk's top surface, desk frame
+local SLOT_TO_TOP = CFrame.new(-0.05, 2.45, 0) -- where FirmBuilder puts the Top marker in the desk frame
+
+-- kit part roles by size (rounded to 0.05)
+local function key(s: Vector3): string
+	local function r(v: number): number
+		return math.floor(v * 20 + 0.5)
+	end
+	return r(s.X) .. "," .. r(s.Y) .. "," .. r(s.Z)
+end
+local ROLES: { [string]: string } = {
+	[key(Vector3.new(2.8, 0.45, 5.6))] = "top",
+	[key(Vector3.new(2.3, 2.2, 1.5))] = "body", -- the two drawer pedestals
+	[key(Vector3.new(0.3, 1.7, 2.0))] = "body", -- modesty panel (client side)
+	[key(Vector3.new(0.1, 0.3, 1.8))] = "strip", -- the strip on the top's client edge
+	[key(Vector3.new(0.15, 0.2, 0.6))] = "handle",
+	[key(Vector3.new(0.5, 0.15, 0.5))] = "lampMetal", -- the kit's desk lamp: base, stem, shade
+	[key(Vector3.new(0.1, 1.0, 0.1))] = "lampMetal",
+	[key(Vector3.new(0.8, 0.45, 0.7))] = "lampShade",
+}
 
 local function piece(desk: Model, name: string, size: Vector3, cf: CFrame, color: Color3, material: Enum.Material?): Part
 	local p = Instance.new("Part")
@@ -66,7 +89,7 @@ function DeskLook.apply(desk: Model, tier: number)
 	if not (top and top:IsA("BasePart")) then
 		return
 	end
-	for _, d in desk:GetChildren() do
+	for _, d in desk:GetDescendants() do
 		if d:GetAttribute("DeskTierPart") then
 			d:Destroy()
 		end
@@ -74,69 +97,67 @@ function DeskLook.apply(desk: Model, tier: number)
 	local style = STYLES[math.clamp(tier, 1, #STYLES)]
 	desk:SetAttribute("DeskTier", tier)
 
-	remember(top)
-	restore(top)
-	for _, p in desk:GetChildren() do
-		if p:IsA("BasePart") and HIDE_WHEN_PANELLED[p.Name] then
-			remember(p)
-			restore(p)
+	-- the kit desk's own parts, by role; each goes back to its original look first
+	local parts: { [string]: { BasePart } } = {}
+	local kit = desk:FindFirstChild("DeskMesh")
+	if kit then
+		for _, p in kit:GetDescendants() do
+			if p:IsA("BasePart") then
+				local role = ROLES[key(p.Size)]
+				if role then
+					remember(p)
+					restore(p)
+					parts[role] = parts[role] or {}
+					table.insert(parts[role], p)
+				end
+			end
+		end
+	end
+	local function paint(role: string, color: Color3?, material: Enum.Material?)
+		if color then
+			for _, p in parts[role] or {} do
+				p.Color = color
+				if material then
+					p.Material = material
+				end
+			end
 		end
 	end
 	if tier <= 1 then
 		return
 	end
 
-	top.Color = style.top
-	top.Material = style.topMaterial
-	local size = top.Size
-	local base = top.CFrame
-	local floorDrop = 0
-	-- how far the top sits above the floor: use the hidden legs if there are any, else 3 studs
-	for _, p in desk:GetChildren() do
-		if p:IsA("BasePart") and HIDE_WHEN_PANELLED[p.Name] then
-			floorDrop = math.max(floorDrop, base.Position.Y - (p.Position.Y - p.Size.Y / 2))
-			p.Transparency = 1
-		end
-	end
-	if floorDrop == 0 then
-		floorDrop = 3
-	end
-	local height = floorDrop - size.Y / 2
-	local body = style.body :: Color3
+	paint("top", style.top)
+	paint("body", style.body)
+	paint("handle", style.handle, Enum.Material.Metal)
+	paint("strip", style.trim or style.body, if style.trim then Enum.Material.Metal else nil)
 
-	-- chunky side pedestals and a front panel facing the client (-Z of the top)
-	for _, side in { -1, 1 } do
-		piece(desk, "SidePanel", Vector3.new(1.2, height, size.Z - 0.2), base * CFrame.new(side * (size.X / 2 - 0.7), -size.Y / 2 - height / 2, 0), body, Enum.Material.Wood)
-	end
-	piece(desk, "FrontPanel", Vector3.new(size.X - 2.6, height - 0.6, 0.3), base * CFrame.new(0, -size.Y / 2 - (height - 0.6) / 2, -size.Z / 2 + 0.3), body, Enum.Material.Wood)
-
+	local base = top.CFrame * SLOT_TO_TOP:Inverse() -- the desk frame
 	if style.trim then
-		piece(desk, "Trim", Vector3.new(size.X + 0.1, 0.18, 0.15), base * CFrame.new(0, 0, -size.Z / 2 - 0.05), style.trim, Enum.Material.Metal)
-		piece(desk, "Trim", Vector3.new(size.X + 0.1, 0.18, 0.15), base * CFrame.new(0, 0, size.Z / 2 + 0.05), style.trim, Enum.Material.Metal)
+		-- a band around the top's edge, wrapping the top and the front strip (x 1.4..1.5): every face of it stays 0.05+
+		-- away from theirs, so nothing flickers
+		piece(desk, "Trim", Vector3.new(3.1, 0.14, 5.7), base * CFrame.new(0, 2.42, 0), style.trim, Enum.Material.Metal)
 	end
 
-	local onTop = base * CFrame.new(0, size.Y / 2, 0)
 	for _, extra in style.extras do
-		if extra == "Knobs" then
-			for _, side in { -1, 1 } do
-				for _, y in { 0.35, 0.65 } do
-					piece(desk, "Knob", Vector3.new(0.35, 0.35, 0.35), base * CFrame.new(side * (size.X / 2 - 0.7), -size.Y / 2 - height * y, -size.Z / 2 + 0.05), style.trim or Color3.fromRGB(255, 230, 150), Enum.Material.Metal).Shape = Enum.PartType.Ball
-				end
+		if extra == "Lamp" then
+			-- the kit's desk lamp becomes a banker's lamp (green shade, gold stand) and lights up
+			paint("lampMetal", GOLD, Enum.Material.Metal)
+			paint("lampShade", Color3.fromRGB(40, 170, 90))
+			local shade = (parts.lampShade or {})[1]
+			if shade then
+				local light = Instance.new("PointLight")
+				light.Color = Color3.fromRGB(255, 225, 160)
+				light.Range = 7
+				light.Brightness = 0.6
+				light.Shadows = false
+				light:SetAttribute("DeskTierPart", true)
+				light.Parent = shade
 			end
-		elseif extra == "Lamp" then
-			-- cartoon banker's lamp
-			local at = onTop * CFrame.new(-size.X / 2 + 1.1, 0, size.Z / 2 - 0.9)
-			piece(desk, "LampBase", Vector3.new(0.8, 0.2, 0.8), at * CFrame.new(0, 0.1, 0), GOLD, Enum.Material.Metal)
-			piece(desk, "LampStem", Vector3.new(0.18, 1.1, 0.18), at * CFrame.new(0, 0.75, 0), GOLD, Enum.Material.Metal)
-			local shade = piece(desk, "LampShade", Vector3.new(1.4, 0.45, 0.7), at * CFrame.new(0, 1.4, 0), Color3.fromRGB(40, 170, 90), Enum.Material.Glass)
-			local light = Instance.new("PointLight")
-			light.Color = Color3.fromRGB(255, 225, 160)
-			light.Range = 8
-			light.Brightness = 0.8
-			light.Shadows = false
-			light.Parent = shade
 		elseif extra == "Plaque" then
-			local plaque = piece(desk, "Plaque", Vector3.new(2.6, 0.6, 0.3), onTop * CFrame.new(0, 0.3, -size.Z / 2 + 0.35), GOLD, Enum.Material.Metal)
+			-- standing on the client edge, facing the client: clear of the keyboard, laptop and lamp
+			local plaque = piece(desk, "Plaque", Vector3.new(2.2, 0.6, 0.25),
+				base * CFrame.new(1.05, TOP_Y + 0.3, -0.75) * CFrame.Angles(0, -math.pi / 2, 0), GOLD, Enum.Material.Metal)
 			local gui = Instance.new("SurfaceGui")
 			gui.Face = Enum.NormalId.Front
 			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
@@ -151,8 +172,9 @@ function DeskLook.apply(desk: Model, tier: number)
 			label.Parent = gui
 			gui.Parent = plaque
 		elseif extra == "Trophy" then
-			local at = onTop * CFrame.new(size.X / 2 - 1, 0, size.Z / 2 - 0.9)
-			piece(desk, "TrophyBase", Vector3.new(0.9, 0.3, 0.9), at * CFrame.new(0, 0.15, 0), Color3.fromRGB(60, 40, 30), Enum.Material.Wood)
+			-- the lawyer's far corner, past the laptop
+			local at = base * CFrame.new(-0.85, TOP_Y, 2.25)
+			piece(desk, "TrophyBase", Vector3.new(0.9, 0.3, 0.9), at * CFrame.new(0, 0.15, 0), Color3.fromRGB(60, 40, 30))
 			piece(desk, "TrophyStem", Vector3.new(0.25, 0.6, 0.25), at * CFrame.new(0, 0.6, 0), GOLD, Enum.Material.Metal)
 			local cup = piece(desk, "TrophyCup", Vector3.new(0.9, 0.9, 0.9), at * CFrame.new(0, 1.3, 0), GOLD, Enum.Material.Metal)
 			cup.Shape = Enum.PartType.Ball

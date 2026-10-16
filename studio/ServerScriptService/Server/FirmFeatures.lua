@@ -472,8 +472,8 @@ local function refreshHologram(player: Player, firm: Model)
 	beam.CFrame = CFrame.new(top + Vector3.new(0, (size.Y + 1) / 2, 0)) * CFrame.Angles(0, 0, math.rad(90))
 	local light = Instance.new("PointLight")
 	light.Color = beam.Color
-	light.Range = 26
-	light.Brightness = 2
+	light.Range = 18
+	light.Brightness = 1 -- (was 26 / 2: lit the white crown up like a flash; bug report 2026-10-16)
 	light.Parent = beam
 	beam.Parent = holo
 	local rid, color = rarityOf(best.lawyer.Id)
