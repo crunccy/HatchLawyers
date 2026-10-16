@@ -9,6 +9,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
+- **crnuch (local), since 2026-10-16:** bug report 6 - z-fighting (coplanar / overlapping faces) across the map, the
+  firms and Part-built models: a scanner, then fixes in Workspace, ServerStorage templates and the builders' code.
 
 ## Open items
 - [ ] **crnuch's bug report (2026-10-16, from a playtest).** 1, 2, 3, 4, 5 and 7 are fixed (entries below); still open: 6.
