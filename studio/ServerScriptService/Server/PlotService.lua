@@ -54,6 +54,30 @@ local function moveToFirm(player: Player)
 	end
 end
 
+-- An empty plot shows its LOT SIGN (Plots.PlotN.LotSign, art pass 2026-10-16: tools/zones/BuildLotSigns.lua); it is
+-- tucked into ServerStorage.HiddenLotSigns while the plot has a firm and put back when the owner leaves.
+local function setLotSign(plot: Model, shown: boolean)
+	local hidden = ServerStorage:FindFirstChild("HiddenLotSigns")
+	if not hidden then
+		hidden = Instance.new("Folder")
+		hidden.Name = "HiddenLotSigns"
+		hidden.Parent = ServerStorage
+	end
+	if shown then
+		for _, sign in hidden:GetChildren() do
+			if sign:GetAttribute("Plot") == plot.Name then
+				sign.Parent = plot
+			end
+		end
+	else
+		local sign = plot:FindFirstChild("LotSign")
+		if sign then
+			sign:SetAttribute("Plot", plot.Name)
+			sign.Parent = hidden
+		end
+	end
+end
+
 -- The firm tier shown to other scripts: the number of office segments the firm has.
 function PlotService.tierOf(player: Player): number
 	local data = PlayerData.get(player)
@@ -98,6 +122,7 @@ function PlotService.assign(player: Player): Model?
 	for _, plot in sortedPlots() do
 		if not owners[plot] then
 			owners[plot] = player
+			setLotSign(plot, false)
 			local firm = buildFirm(player, plot)
 			firms[player] = firm
 			player:SetAttribute("Plot", plot.Name)
@@ -144,8 +169,10 @@ function PlotService.release(player: Player)
 		return
 	end
 	firms[player] = nil
-	owners[firm.Parent :: Model] = nil
+	local plot = firm.Parent :: Model
+	owners[plot] = nil
 	firm:Destroy()
+	setLotSign(plot, true)
 end
 
 return PlotService

@@ -10,12 +10,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
-- **crnuch (local), since 2026-10-16:** the map art pass (docs/ART_REMODEL_BRIEF.md), stage by stage - next: stage 4
-  (plots) and 5 (lane thresholds). **User's call (crnuch, 2026-10-16): nobody else is working on the minigames - crnuch's sessions took
-  over mr.robe's Arcade claim above and Codex's draft PRs #7 / #8 (finished, entry below).**
-
 ## Open items
-- [ ] **Map + model art pass** (docs/ART_REMODEL_BRIEF.md, from Codex 2026-10-16; claimed above).
+- [ ] **Map + model art pass: eye-check in a real playtest** (built 2026-10-16, entries below; Studio-only screenshots so far) - phone size too.
 - [ ] **crnuch's bug report (2026-10-16, from a playtest).** All 7 fixed (entries below). Still to do: crnuch's eye-check
       in Studio of 1 / 3 / 6 / 7 (that session's viewport didn't render, so no screenshots).
       Leads found in the code, not confirmed:
@@ -154,6 +150,24 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: art pass stages 4 + 5 (lot signs, zone statues) - the plan is done
+- **Stage 4 - LOT SIGN** (`tools/blender/lot_sign.py` -> `tools/zones/lot_sign.json` -> `tools/zones/BuildLotSigns.lua`):
+  `Plots.PlotN.LotSign` at every plot's entrance (plot-local (0, 0.48, -20)): two banded red / white posts with gold
+  caps, a hanging green "OPEN LOT" sign + "A new firm opens here!", traffic cones, a brick pile and a crate. 31 blocks.
+  **`Server.PlotService` (heads-up mr.robe: small change):** `setLotSign` tucks a plot's LotSign into
+  `ServerStorage.HiddenLotSigns` when `assign` claims the plot and puts it back on `release`. Playtest: Plot1 (crnuch)
+  hides its sign, Plots 2-8 show theirs, no errors.
+- **Stage 5 - zone statues** (`tools/blender/zone_landmarks.py` -> `tools/zones/zone_landmarks.json` ->
+  `tools/zones/BuildZoneLandmarks.lua`): a pair of brick statues (x1.5, gold plinths) on top of every License gate,
+  showing the zone it leads into, facing the players walking down the lane: puppies (Pet Park), googly brains
+  (Brainrot Boulevard), burgers (Food Court), leaping fish (Ocean Shore), rockets (Space Base). In
+  `Workspace.ZoneLandmarks` (outside Workspace.Zones - **re-run BuildZoneLandmarks after a BuildLane re-run if the gates
+  move**). Render `art/map/zone_landmarks.png`.
+- The stage 1 layout plan is fully built (docs/ART_REMODEL_BRIEF.md status). Claim released. Save restored after
+  every playtest (`Backup_Player_2234491534_1792186860`).
+- `run_checks.py` ALL PASSED; snapshot re-exported (108 scripts: PlotService changed).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: art pass stage 3 (Travel Portal, Shop, Mutation Machine)
 - **Travel Portal** (`tools/blender/travel_portal.py`, rebuilt with `BuildTravelPortal.lua`): animated core kept as it

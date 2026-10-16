@@ -1,6 +1,6 @@
 # Cohesive map and model art pass
 
-**Status (2026-10-16): stage 1 plan approved by crnuch; built: lighting grade, the Arcade Boardwalk (pier booths spread, staggered lamps, lighthouse end platform, BOARDWALK gateway) and the Egg Fountain (SESSION_LOG 2026-10-16). Stage 3 built the same day: Travel Portal frame (banded pylons, flags, bulb-lit TRAVEL sign), the Shop storefront and the Mutation Machine. Next: stage 4 (plots) and 5 (lane thresholds).** Claim each later stage in the session log before editing.
+**Status (2026-10-16): stage 1 plan approved by crnuch; built: lighting grade, the Arcade Boardwalk (pier booths spread, staggered lamps, lighthouse end platform, BOARDWALK gateway) and the Egg Fountain (SESSION_LOG 2026-10-16). Stage 3 built the same day: Travel Portal frame (banded pylons, flags, bulb-lit TRAVEL sign), the Shop storefront and the Mutation Machine. Stages 4 (LOT SIGNs on empty plots) and 5 (zone statues on every License gate) built too - the stage 1 plan is done; polish / new ideas from here.** Claim each later stage in the session log before editing.
 
 ## Goal
 

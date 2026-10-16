@@ -192,6 +192,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
+- Art pass 2026-10-16 (docs/ART_REMODEL_BRIEF.md): `Plots.PlotN.LotSign` (shown on empty plots only - PlotService hides it
+  on claim) and `Workspace.ZoneLandmarks` (statues on the License gates; re-run `tools/zones/BuildZoneLandmarks.lua`
+  after a BuildLane re-run). Hub Shop / Mutation Machine / gate / fountain: `tools/zones/BuildHubLandmarks.lua`.
 - `Workspace.Hub` — Street, Plaza (the lane's entrance on its south edge; `EggFountain` in its centre and the
   `BoardwalkGate` on its north edge, both from `tools/blender/hub_landmarks.py` -> `tools/zones/BuildHubLandmarks.lua`;
   the Arcade Pier past the Big Case terrace ends in a lighthouse - art pass 2026-10-16, docs/ART_REMODEL_BRIEF.md), no egg machines any more (all six eggs
