@@ -10,8 +10,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
-- **crnuch (local), since 2026-10-16:** the map art pass (docs/ART_REMODEL_BRIEF.md), stage by stage - next: stage 3
-  hub landmarks. **User's call (crnuch, 2026-10-16): nobody else is working on the minigames - crnuch's sessions took
+- **crnuch (local), since 2026-10-16:** the map art pass (docs/ART_REMODEL_BRIEF.md), stage by stage - next: stage 4
+  (plots) and 5 (lane thresholds). **User's call (crnuch, 2026-10-16): nobody else is working on the minigames - crnuch's sessions took
   over mr.robe's Arcade claim above and Codex's draft PRs #7 / #8 (finished, entry below).**
 
 ## Open items
@@ -154,6 +154,26 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: art pass stage 3 (Travel Portal, Shop, Mutation Machine)
+- **Travel Portal** (`tools/blender/travel_portal.py`, rebuilt with `BuildTravelPortal.lua`): animated core kept as it
+  was (SwirlDisc / SwirlArms / FloatRing1-3 / Beam / Gem1-6 / Trigger); the pylons are banded navy / white with gold
+  caps, finials and pennants in the zone colours, and the TRAVEL sign is bigger, higher (clears the gem crown) and
+  framed in cyan / violet / gold bulbs like the BOARDWALK sign. 236 blocks.
+- **Shop + Mutation Machine** now in `tools/blender/hub_landmarks.py` -> `BuildHubLandmarks.lua` (which learned
+  "prompt" / "lbl" / "light" fields and carries a model's old "Title" billboard over). Same spots, facing the plaza's
+  middle; the old ones are in `ServerStorage.Old_HubLandmarks`.
+  - `Hub.ShopStall`: a brick storefront - cream walls, banded red / white corner posts, red / white awning over a red
+    counter with a till and coins, shelves of what it sells (coin stacks, a golden egg, cash, a winged red boot, a
+    mini firm, a briefcase, eggs), purple roof with a lit SHOP sign and a giant gold $ coin. `ShopPrompt` ("Open Shop")
+    on an invisible PromptZone in front of the counter; the "SHOP / Passes & Boosts" billboard above the coin. 114 blocks.
+  - `Hub.MergeMachine`: a chunkier purple machine on a gold octagon plinth with a glowing ring - the "?/!" window
+    (`WindowFrame`, `Screen` with the `Mark` label + light), three gold chutes into a dome on top (three lawyers in),
+    an antenna, pink / green bubbling tanks, a console with buttons, screen and a big lever. `MergePrompt` on `Body`,
+    the `Title` / `Count` billboard on `Dome`. 56 blocks.
+- **Playtested:** the Shop prompt opens the shop, walking onto the portal pad opens the travel map, the Mutation
+  Machine opens and its in-world scene plays at the new window ("!" lit). No game errors. Save restored again after.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: art pass stage 1 built (lighting, Arcade Boardwalk, Egg Fountain)
 - **Plan approved by crnuch** (docs/ART_REMODEL_BRIEF.md "Stage 1"). Built in order:

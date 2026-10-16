@@ -187,13 +187,17 @@ for side in (-1, 1):
     zz = 1.8
     k = 0
     while zz < HALO_Z + 1.0:
-        box("Pylon", px, py, zz, 2.6, 2.6, 1.6, PAL["white"] if k % 2 == 0 else PAL["white2"])
+        box("Pylon", px, py, zz, 2.6, 2.6, 1.6, PAL["white"] if k % 2 == 0 else PAL["navy2"])  # banded, like the hub's gate / lighthouse
         zz += 1.6
         k += 1
     # a glowing strip down the inner face, gold caps
     ix, iy = px - side * 1.35, py - 0.0
     box("PylonGlow", ix, iy, 2.2, 0.2, 0.9, HALO_Z - 2.6, PAL["cyan"], tag="neon")
     box("PylonCap", px, py, zz, 3.2, 3.2, 0.7, PAL["gold"])
+    box("PylonFinial", px, py, zz + 0.7, 1.6, 1.6, 0.8, PAL["gold"])
+    box("PylonFlagpole", px, py, zz + 1.5, 0.3, 0.3, 4.2, PAL["ink"])
+    for f in range(3):  # little pennants in the zones' colours down each pole
+        box("PylonFlag", px + side * 0.9, py, zz + 4.9 - f * 1.3, 1.6, 0.15, 1.0, ZONE_COLORS[f + (0 if side < 0 else 3)])
     # the arm over to the halo rim
     tx, ty = side * 7.2, 4.6
     dx, dy = tx - px, ty - py
@@ -202,13 +206,19 @@ for side in (-1, 1):
     box("PylonArmGlow", (px + tx) / 2, (py + ty) / 2, HALO_Z + 0.05, L, 0.5, 0.2, PAL["violet"], rz=math.degrees(math.atan2(dy, dx)), tag="neon")
 
 # ------------------------------------------------------------------ the TRAVEL sign floating over the halo's front
-SIGN_Z = HALO_TOP + 2.2
-box("SignPost", -4.2, -2.0, HALO_TOP, 0.5, 0.5, 2.4, PAL["steel"])
-box("SignPost", 4.2, -2.0, HALO_TOP, 0.5, 0.5, 2.4, PAL["steel"])
-box("SignBack", 0, -2.0, SIGN_Z - 0.15, 12.6, 0.6, 2.9, PAL["white"])
-box("SignPlate", 0, -2.4, SIGN_Z, 12.0, 0.25, 2.6, PAL["ink"])  # the builder writes "TRAVEL" on its front
-box("SignGlow", 0, -2.33, SIGN_Z - 0.3, 12.9, 0.2, 0.25, PAL["cyan"], tag="neon")
-box("SignGlow", 0, -2.33, SIGN_Z + 2.65, 12.9, 0.2, 0.25, PAL["cyan"], tag="neon")
+# (2026-10-16 art pass: bigger and higher so it clears the gem crown, framed in bulbs like the BOARDWALK sign)
+SIGN_Z = HALO_TOP + 3.4
+box("SignPost", -5.6, -2.0, HALO_TOP, 0.6, 0.6, 3.6, PAL["gold"])
+box("SignPost", 5.6, -2.0, HALO_TOP, 0.6, 0.6, 3.6, PAL["gold"])
+box("SignBack", 0, -2.0, SIGN_Z - 0.3, 17.2, 0.6, 4.2, PAL["navy2"])
+box("SignTrim", 0, -2.0, SIGN_Z - 0.45, 17.6, 0.5, 0.35, PAL["gold"])
+box("SignTrim", 0, -2.0, SIGN_Z + 3.9, 17.6, 0.5, 0.35, PAL["gold"])
+box("SignPlate", 0, -2.4, SIGN_Z, 16.0, 0.25, 3.4, PAL["ink"])  # the builder writes "TRAVEL" on its front
+for i in range(14):  # bulbs along the top and bottom
+    t = i / 13
+    for zz in (SIGN_Z + 3.55, SIGN_Z - 0.35):
+        box("SignBulb", -7.6 + 15.2 * t, -2.55, zz - 0.25, 0.5, 0.3, 0.5,
+            [PAL["cyan"], PAL["violet"], PAL["gold"]][(i + (1 if zz > SIGN_Z else 0)) % 3], tag="neon")
 
 # walking onto the pad opens the travel map (invisible, no collision)
 box("Trigger", 0, 0, PAD_TOP, 8.0, 8.0, 7.0, PAL["core"], tag="trigger")

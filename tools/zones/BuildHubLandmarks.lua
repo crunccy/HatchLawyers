@@ -1,5 +1,8 @@
 -- tools/zones/BuildHubLandmarks.lua - builds the hub landmarks from tools/zones/hub_landmarks.json (made in Blender:
--- tools/blender/hub_landmarks.py; art pass 2026-10-16, docs/ART_REMODEL_BRIEF.md): Workspace.Hub.BoardwalkGate (the
+-- tools/blender/hub_landmarks.py; art pass 2026-10-16, docs/ART_REMODEL_BRIEF.md): Hub.ShopStall + Hub.MergeMachine
+-- (stage 3: rebuilt on their old spots; "prompt" fields make the ShopPrompt / MergePrompt, "lbl" names a text label - the
+-- Mutation Machine's "Mark" - and each model's old "Title" billboard is carried over onto the part its "title" names),
+-- Workspace.Hub.BoardwalkGate (the
 -- gateway from the plaza to the Big Case terrace + Arcade Pier; it replaces Hub.Gates.BigCaseGate, archived to
 -- ServerStorage.Old_HubGates) and Workspace.Hub.EggFountain (the plaza's centre piece).
 -- Re-runnable: a model built before goes to ServerStorage.Old_HubLandmarks first. Run in Edit mode with the JSON served
@@ -49,6 +52,13 @@ local report = {}
 for _, md in data.models do
 	local place = CFrame.new(md.place[1], md.place[2], md.place[3]) * CFrame.Angles(0, math.rad(md.place[4]), 0)
 	local existing = hub:FindFirstChild(md.name)
+	local oldTitle = existing and existing:FindFirstChild("Title", true)
+	if oldTitle and not oldTitle:IsA("BillboardGui") then
+		oldTitle = nil
+	end
+	if oldTitle then
+		oldTitle = oldTitle:Clone()
+	end
 	if existing then
 		archive(existing, "Old_HubLandmarks")
 	end
@@ -67,6 +77,12 @@ for _, md in data.models do
 		if b.t == "neon" then
 			p.Material = Enum.Material.Neon
 			p.CanCollide = false
+			p.CanTouch = false
+			p.CastShadow = false
+		elseif b.t == "prompt" then -- an invisible zone that only holds a ProximityPrompt
+			p.Transparency = 1
+			p.CanCollide = false
+			p.CanQuery = false
 			p.CanTouch = false
 			p.CastShadow = false
 		elseif b.t == "water" then
@@ -92,6 +108,7 @@ for _, md in data.models do
 			l.BackgroundTransparency = 1
 			l.Position = UDim2.fromScale(0.04, 0.1)
 			l.Size = UDim2.fromScale(0.92, 0.8)
+			l.Name = b.lbl or "Text"
 			l.Text = b.txt
 			l.TextScaled = true
 			l.TextColor3 = if big then Color3.fromRGB(255, 220, 90) else Color3.new(1, 1, 1)
@@ -103,7 +120,33 @@ for _, md in data.models do
 			l.Parent = gui
 			gui.Parent = p
 		end
+		if b.prompt then
+			local pr = Instance.new("ProximityPrompt")
+			pr.Name = b.prompt.name
+			pr.ActionText = b.prompt.action
+			pr.ObjectText = b.prompt.object
+			pr.HoldDuration = 0
+			pr.MaxActivationDistance = b.prompt.max or 10
+			pr.RequiresLineOfSight = false
+			pr.Parent = p
+		end
+		if b.light then
+			local l = Instance.new("PointLight")
+			l.Brightness = b.light[1]
+			l.Range = b.light[2]
+			l.Color = Color3.fromRGB(b.light[3][1], b.light[3][2], b.light[3][3])
+			l.Shadows = false
+			l.Parent = p
+		end
 		p.Parent = m
+	end
+	if md.title and oldTitle then
+		local on = m:FindFirstChild(md.title[1])
+		if on then
+			oldTitle.Adornee = on
+			oldTitle.StudsOffsetWorldSpace = Vector3.new(0, md.title[2], 0)
+			oldTitle.Parent = on
+		end
 	end
 	m.WorldPivot = place
 	for _ = 1, 3 do -- z-fighting (bug report 6): nudge apart faces left level (Server.ZFight)
