@@ -78,7 +78,7 @@ local function squish(gui: GuiObject)
 end
 
 ------------------------------------------------------------------ the tile
-local menuEntry = HudMenu.button({ name = "Supreme", label = "SUPREME", icon = "Trophy", color = Color3.fromRGB(255, 160, 30), order = 4 })
+local menuEntry = HudMenu.button({ name = "Supreme", label = "REBIRTH", icon = "Trophy", color = Color3.fromRGB(255, 160, 30), order = 4 })
 
 ------------------------------------------------------------------ the panel
 local gui = make("ScreenGui", { Name = "Supreme", ResetOnSpawn = false, DisplayOrder = 32, Enabled = false, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") })
@@ -98,7 +98,7 @@ local header = make("Frame", { Size = UDim2.new(1, 0, 0, 70), BackgroundColor3 =
 })
 make("Frame", { Position = UDim2.new(0, 0, 1, -10), Size = UDim2.new(1, 0, 0, 10), BackgroundColor3 = PURPLE_DARK, BorderSizePixel = 0, ZIndex = 2, Parent = header })
 make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(58, 58), BackgroundTransparency = 1, Image = HudMenu.Icons.Trophy, ZIndex = 3, Parent = header })
-text({ Position = UDim2.fromOffset(76, 8), Size = UDim2.new(1, -170, 0, 54), FontFace = TITLE, Text = "Supreme Empire", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = header }, 44)
+text({ Position = UDim2.fromOffset(76, 8), Size = UDim2.new(1, -170, 0, 54), FontFace = TITLE, Text = "Rebirth", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = header }, 44)
 local closeButton = make("TextButton", {
 	AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -12, 0.5, 0), Size = UDim2.fromOffset(60, 54), BackgroundColor3 = RED, Text = "", AutoButtonColor = true, ZIndex = 3, Parent = header,
 }, { corner(6), stroke(4) })
@@ -131,7 +131,7 @@ local goButton = make("TextButton", {
 	AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16), Size = UDim2.fromOffset(300, 58), BackgroundColor3 = GREEN, Text = "", AutoButtonColor = true, Parent = panel,
 }, { corner(10), stroke(4) })
 studs(goButton, 0.86)
-local goLabel = text({ Size = UDim2.fromScale(1, 1), Text = "GO SUPREME!", FontFace = TITLE, ZIndex = 2, Parent = goButton }, 34)
+local goLabel = text({ Size = UDim2.fromScale(1, 1), Text = "REBIRTH!", FontFace = TITLE, ZIndex = 2, Parent = goButton }, 34)
 
 ------------------------------------------------------------------ state
 local armedUntil = 0
@@ -155,7 +155,7 @@ local function render()
 	end
 	nowLabel.Text = "x" .. tostring(Formulas.prestigeMultiplier(level))
 	nextLabel.Text = "x" .. tostring(Formulas.prestigeMultiplier(level + 1))
-	levelLabel.Text = if level > 0 then string.format("Supreme level %d · payouts x%s now", level, tostring(Formulas.prestigeMultiplier(level))) else "Your first Supreme makes every case pay more!"
+	levelLabel.Text = if level > 0 then string.format("Rebirth %d · payouts x%s now", level, tostring(Formulas.prestigeMultiplier(level))) else "Your first rebirth makes every case pay more!"
 	coinsAmount.Text = string.format("%s / %s", Formulas.formatCoins(math.min(coins, cost)), Formulas.formatCoins(cost))
 	coinsAmount.TextColor3 = if coins >= cost then GREEN else WHITE
 	coinsFill.Size = UDim2.fromScale(math.clamp(coins / math.max(cost, 1), 0, 1), 1)
@@ -168,7 +168,7 @@ local function render()
 	elseif not ready then
 		goLabel.Text = if working < offices then "EXPAND + EQUIP LAWYERS" else "SAVE UP COINS"
 	else
-		goLabel.Text = if armed then "TAP AGAIN TO CONFIRM" else "GO SUPREME!"
+		goLabel.Text = if armed then "TAP AGAIN TO CONFIRM" else "REBIRTH!"
 	end
 	goButton.BackgroundColor3 = if ready then (if armed then GOLD else GREEN) else GRAY
 	goButton:SetAttribute("Ready", ready)

@@ -187,7 +187,7 @@ local function render()
 	local eligible = false
 	local armed = os.clock() < supremeArmedUntil
 	supremeButton.Visible = eligible
-	supremeButton.Text = if armed then "TAP AGAIN!" else "GO SUPREME ★"
+	supremeButton.Text = if armed then "TAP AGAIN!" else "REBIRTH ★"
 	hireCard.Visible = not hired
 	list.Visible = hired
 	if not hired then
@@ -263,7 +263,7 @@ supremeButton.Activated:Connect(function()
 	if ok then
 		close()
 	else
-		subtitle.Text = reason or "Can't go Supreme yet"
+		subtitle.Text = reason or "Can't rebirth yet"
 	end
 end)
 

@@ -245,6 +245,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
   `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`; a locked lawyer can't be sold OR mutated.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
+- The prestige reset is called **"Rebirth"** on screen (user's call 2026-10-16); "Supreme" means only the top rarity
+  (and the "Supreme Tower" firm). Code names (`PrestigeService`, `Supreme.client`) stay.
 - Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,
   Bigger Firm) and products (coin packs, 3 Rare Eggs) are allowed. Anything paid that's random must show its exact
   odds (Lucky Eggs: the boosted odds). Fictional clients only — no real people or brands.

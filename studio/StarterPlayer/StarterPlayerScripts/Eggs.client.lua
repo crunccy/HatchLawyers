@@ -1082,7 +1082,9 @@ local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: b
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = { fxFolder, egg, inc :: any, player.Character :: any }
 	local hit = workspace:Raycast(start + Vector3.new(0, 3, 0), Vector3.new(0, 60, 0), params)
-	local rise = if hit then math.max(7, hit.Position.Y - start.Y - 4) else 46
+	-- (stop with room for the bigger egg that crashes down from here: the old 7-stud minimum went straight through
+	-- low ceilings like the Dingy Shack's - crnuch's bug report 2026-10-16)
+	local rise = if hit then math.max(1.5, hit.Position.Y - start.Y - HATCH_EGG / 2 - 1) else 46
 	local top = start + Vector3.new(0, rise, 0)
 	local shell = egg.PrimaryPart
 	if shell then

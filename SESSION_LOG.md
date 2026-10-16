@@ -11,20 +11,22 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
 ## Open items
-- [ ] **crnuch's bug report (2026-10-16, from a playtest; none fixed yet).** Leads found in the code, not confirmed:
+- [ ] **crnuch's bug report (2026-10-16, from a playtest).** 2, 4 and 5 are fixed (entry below); still open: 1, 3, 6, 7.
+      Leads found in the code, not confirmed:
   1. **Dingy Shack doesn't house the incubators properly** (`Server.FirmStages` stage 1, the shack is the old
      template cloned + opened up; the two `Firm.Incubators` don't fit inside it).
-  2. **A Legendary+ hatch in a low-tier firm: the egg flies up and out through the ceiling.** `Eggs.client` ~1085:
+  2. ~~FIXED~~ **A Legendary+ hatch in a low-tier firm: the egg flies up and out through the ceiling.** `Eggs.client` ~1085:
      `rise = math.max(7, ceiling - start - 4)` - the 7-stud minimum beats a low ceiling (the shack).
   3. **Some firms with bright lights + white walls look extremely bright** (firm stages' lights / Neon on cream
      walls; check each of the 6 stages).
-  4. **The Travel Portal stands in the middle of the path** - crnuch wants it elsewhere (ask where);
+  4. ~~FIXED~~ **The Travel Portal stands in the middle of the path** - crnuch wants it elsewhere (ask where);
      `Workspace.Hub.TravelPortal`, placed by `tools/zones/BuildTravelPortal.lua`.
-  5. **The rebirth system is called "Supreme"; it should be called "Rebirth"** (user's call). On-screen text only:
+  5. ~~FIXED~~ **The rebirth system is called "Supreme"; it should be called "Rebirth"** (user's call). On-screen text only:
      `Supreme.client` (HUD tile "SUPREME", "Supreme Empire", "GO SUPREME!", "Supreme level N") + any toasts / Guide
      text; keep script / remote / save names (Prestige*) and the Supreme RARITY as they are.
   6. **Studio-built part models flicker when the camera moves: pieces overlap and the colours fight** (z-fighting:
-     coplanar or overlapping faces). Ask which models; likely the Studio-built bricks / firm kit / props.
+     coplanar or overlapping faces). crnuch: "on the lawyers and other places just in general, not the eggs or the
+     bosses" (those are meshes / Blender) - so the Part-built lawyers (BrickKit + BuildLawyersTop) and Part props.
   7. **Desks overlap their accessories when levelled up** (office tier props from `Config.Desks.Tiers`, placed by
      `Server.DeskService` / FirmBuilder).
 - [ ] **Lawyer mutations: golden zone eggs sometimes hatching Shiny** - the last unchecked bit of the mutations
@@ -146,6 +148,23 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: bug report 2, 4, 5 fixed (egg through the ceiling, portal moved, Rebirth)
+- **#2 the hatch egg went through the ceiling** (`Eggs.client` rocket): it always rose at least 7 studs. It now stops
+  `HATCH_EGG / 2 + 1` under the ceiling it raycasts (min 1.5). Even crnuch's own firm clipped: the front's Cornice is
+  8.2 above the cradle, so the 3.3-stud hatch egg poked 0.45 into it; now the egg peaks at y 8.6 under 11.3.
+- **#4 Travel Portal moved** (crnuch's pick: right of the lane entrance, across from the License Office, facing the
+  path): pivot (52, 0.5, -56), turned 180°. One oak (`Hub.Trees.Oak`) moved east to (76, -56) to make room.
+  `tools/zones/BuildTravelPortal.lua` PLACE_AT set to match. Walking onto the pad opens the Travel map (checked).
+- **#5 "Supreme" → "Rebirth" on screen** (user's call): `Config.Prestige.Name` = "Rebirth" (the toast reads REBIRTH ★),
+  `Supreme.client` (HUD tile, header, "REBIRTH!", "Rebirth 3 · payouts x..", "Your first rebirth ..."), `Manager.client`
+  ("REBIRTH ★", "Can't rebirth yet"). Script / remote / save names (Prestige*, `Supreme.client`), the BadgeAwards id
+  "Supreme" and the Supreme RARITY are unchanged. crnuch: the badge's display name lives on the Creator Dashboard.
+- **Also:** the Mutation Machine's wooden signpost (`Hub.MergeMachineSpot.Sign`) still said "LAWYER MERGER / 3 same
+  lawyers = 1 stronger" - now "MUTATION MACHINE / 3 same = try a mutation" (world edit, not a script).
+- 3-way merge: every live script equalled its `src/` base, so the edits went in as small multi_edits. `run_checks.py`
+  ALL PASSED; snapshot re-exported (103 scripts): Config, Eggs, Manager, Supreme changed, each equal to `src/`.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: mutations + selling eye-check (the rest of the playtest); Mythic stage fix
 - **Save safety:** crnuch's save backed up first as `Backup_Player_2234491534_1792168772` (`PlayerData` store, 150

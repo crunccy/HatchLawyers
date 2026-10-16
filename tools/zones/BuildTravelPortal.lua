@@ -18,7 +18,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local JSON_URL = "http://localhost:8766/travel_portal.json"
-local PLACE_AT: CFrame? = nil -- nil = where the old pads were, facing the plaza
+-- nil = where the old pads were, facing the plaza. 2026-10-16 (crnuch: it stood in the middle of the path): right of
+-- the lane entrance, across from the License Office, its front (+Z here) facing the path (-X)
+local PLACE_AT: CFrame? = CFrame.lookAt(Vector3.new(52, 0.5, -56), Vector3.new(53, 0.5, -56))
 
 local Config = require(ReplicatedStorage.Shared.Config:Clone()) -- (a fresh clone: the command bar caches modules)
 local data = HttpService:JSONDecode(HttpService:GetAsync(JSON_URL, true))

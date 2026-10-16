@@ -715,7 +715,7 @@ Config.Manager = {
 -- 1 + PayoutBonusPerLevel x prestige level. It multiplies case payouts AFTER Config.Caps (it's a
 -- reward for starting over, not a stacking buff). Skins, eggs, streaks, goals and stats are kept.
 Config.Prestige = {
-	Name = "Supreme Empire",
+	Name = "Rebirth", -- shown on screen (user's call 2026-10-16: "Rebirth", not "Supreme" - that is a rarity)
 	-- Economy pass 2026-10-09 (user: "fit how other games similar to this one operate"): a rebirth LADDER like
 	-- Steal a Brainrot / Pet Sim - the first one ~45 min in, each later one costs more and pays more. Going Supreme
 	-- from level N costs CostBase x CostGrowth^N coins and needs min(20, OfficesBase + OfficesPerLevel x N) offices
