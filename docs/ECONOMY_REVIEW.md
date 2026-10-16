@@ -14,6 +14,21 @@ Reproduce: `python3 tools/economy_sim.py --report`, `--sweep 1.25`, `--afk`, `--
 `--scenario <name>` (list: `busy-lawyers`, `no-self-assign`, `multi-hatch`, `egg-ramp-10`, `egg-ramp-20`, `pre-egg-tiers`, `briefcase-only`; the old hypothetical `egg-tiers` was replaced by the real themed eggs on 2026-10-12).
 Results below are seed 1 unless a range over seeds 1–5 is given.
 
+## Update 2026-10-16 (Codex, cloud session): rebirth pacing
+
+The October 8 recommendation to raise `TrainBase` to 10,000–12,000 targeted **1T coins/s in 10–20 h**. That target was later replaced by the rebirth loop: first prestige in 40–80 min and 8–14 prestiges/day (`Config.Targets`). The old recommendation would make the current game far too slow.
+
+The source of truth had drifted: `src/Config.lua` said `TrainBase = 800`, while `tools/economy_sim.py` and `docs/ECONOMY.md` used 2,000. A five-seed, one-hour comparison using the current simulator model:
+
+| TrainBase | First Expand, min / median / max | First prestige, min / median / max | Reached prestige in 1 h |
+| ---: | ---: | ---: | ---: |
+| 800 | 6.5 / 11.2 / 11.5 min | 18.1 / 31.8 / 41.4 min | 5/5 |
+| 2,000 | 6.6 / 16.8 / 18.2 min | 20.4 / 45.7 / 50.9 min | 4/5 |
+
+At 2,000, seed 1's 24-hour report reached 10 prestiges, within the 8–14 target; first expansion was 17.9 min and first prestige 50.9 min. This supports keeping the simulator's 2,000 value and syncing `src/Config.lua` to it. The stochastic spread is substantial: a lucky run can prestige around 20 min even at 2,000, so this is a pacing adjustment, not a guarantee that every player waits 40 min.
+
+**Recommendation implemented in the working source:** `Lawyer.TrainBase = 2,000`. The old 10–12K recommendation is historical and superseded. This changes `src/` only; Studio still needs the normal re-export / review / playtest workflow before it is live.
+
 ## Update 2026-10-12 (cloud session): economy pass finished in `src/`, egg tiers
 - **The WIP economy pass's `Config.lua` didn't parse.** A comment added mid-line in `Config.Firm.ExpandCosts`
   swallowed segments 7–10 *and* the table's closing brace (`luau-compile`: "Expected '}' (to close '{' at line
