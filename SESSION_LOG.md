@@ -16,7 +16,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
 ## Open items
-- [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`.
+- [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
       3-way merge anything that changed since. Files: NEW `Shared.MutationLook` (src/MutationLook.lua); `Shared.SkinLook`
