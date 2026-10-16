@@ -11,6 +11,22 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
 ## Open items
+- [ ] **crnuch's bug report (2026-10-16, from a playtest; none fixed yet).** Leads found in the code, not confirmed:
+  1. **Dingy Shack doesn't house the incubators properly** (`Server.FirmStages` stage 1, the shack is the old
+     template cloned + opened up; the two `Firm.Incubators` don't fit inside it).
+  2. **A Legendary+ hatch in a low-tier firm: the egg flies up and out through the ceiling.** `Eggs.client` ~1085:
+     `rise = math.max(7, ceiling - start - 4)` - the 7-stud minimum beats a low ceiling (the shack).
+  3. **Some firms with bright lights + white walls look extremely bright** (firm stages' lights / Neon on cream
+     walls; check each of the 6 stages).
+  4. **The Travel Portal stands in the middle of the path** - crnuch wants it elsewhere (ask where);
+     `Workspace.Hub.TravelPortal`, placed by `tools/zones/BuildTravelPortal.lua`.
+  5. **The rebirth system is called "Supreme"; it should be called "Rebirth"** (user's call). On-screen text only:
+     `Supreme.client` (HUD tile "SUPREME", "Supreme Empire", "GO SUPREME!", "Supreme level N") + any toasts / Guide
+     text; keep script / remote / save names (Prestige*) and the Supreme RARITY as they are.
+  6. **Studio-built part models flicker when the camera moves: pieces overlap and the colours fight** (z-fighting:
+     coplanar or overlapping faces). Ask which models; likely the Studio-built bricks / firm kit / props.
+  7. **Desks overlap their accessories when levelled up** (office tier props from `Config.Desks.Tiers`, placed by
+     `Server.DeskService` / FirmBuilder).
 - [ ] **Lawyer mutations: golden zone eggs sometimes hatching Shiny** - the last unchecked bit of the mutations
       playtest (everything else eye-checked 2026-10-16, second crnuch entry below). Needs real golden hatches (25%).
 - [ ] **LAWYERS panel: the bench grid is too short since the SELL / LOCK / SELL ALL row** (found 2026-10-16): at a
