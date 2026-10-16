@@ -1,6 +1,6 @@
 # Cohesive map and model art pass
 
-**Status: queued. Begin after the current Studio bug-fix claim in `SESSION_LOG.md` is complete and released.** Claim each stage in the session log before editing.
+**Status (2026-10-16): claimed by crnuch's local session (SESSION_LOG → In progress). Stage 1 layout plan below - waiting for crnuch's OK before any building.** Claim each later stage in the session log before editing.
 
 ## Goal
 
@@ -33,12 +33,13 @@ Keep the current route, zone gates, egg and boss spaces, walkable areas, and maj
 - **Shop:** Give it a clear storefront identity and richer brick-built detail.
 - **Mutation Machine:** Make it feel special and exciting while keeping its purpose obvious.
 
-### Mutation presentation
-
-Make the mutation feel like an in-world character event, inspired by the egg hatching animation. The lawyer should actively participate: approach or react to the machine, interact with it, show anticipation, and visibly transform on success or react to a fizzle. Let the machine, character animation, camera framing, lighting, and effects carry the moment. Keep selection and confirmation in the existing controls; present the mutation itself in the 3D world rather than adding another full-screen UI screen. Preserve the existing success/fizzle rules and clear outcome feedback.
 - **License Office/shop:** Make it feel official, fit the zone lane, and make progression easy to understand.
 - **Back-of-map minigame area:** Redesign the pier, existing minigames, `BigCaseBelt`, paths, signage, and surrounding scenery as one coherent attraction district.
 - **Map:** Give the long lane more visual rhythm and distinct zone landmarks without obscuring the route.
+
+### Mutation presentation (done 2026-10-16)
+
+Built by Codex, finished and playtested by Claude (SESSION_LOG 2026-10-16): the lawyer walks up to the Mutation Machine, fidgets, the machine flashes, then it transforms or runs off. Polish only from here.
 
 ## Work in focused stages
 
@@ -53,9 +54,45 @@ Work on **one bounded deliverable at a time**. Plan how the whole hub and miniga
 
 Keep each stage as its own claim/session when practical. The hub and minigame district should share a layout plan, but detailed modeling and integration should happen one component at a time to preserve focus and make visual checks useful.
 
+## Stage 1 - layout plan (2026-10-16, for crnuch's OK)
+
+Overview: `art/map/hub-top-2026-10-16.jpg` (top-down, north = up = +Z). What is there: the octagon checker plaza in
+the middle (the Gavel Bonk + Lucky Briefcase tents on its north side, the Mutation Machine SW, the Shop stall SE, the
+Travel Portal and the License counter either side of the lane entrance on its south edge); the Big Case court north
+of it (orange pad, belt in the middle); the Arcade Pier north of that (a long deck: the three booths huddle at its south end, x +-18.5, z 189-209, and
+the rest is empty planks with a row of identical lamps);
+the zone lane south; four plots each side, joined to the plaza by orange paths.
+
+1. **One north district, "Arcade Boardwalk"** (plaza → court → pier as one walk):
+   - a brick **gateway arch** where the plaza meets the court (name sign + lights), so the district has a front door;
+   - the court's centre path continues straight up the pier (it stops at the court edge today);
+   - **booths spread along the pier** instead of huddled at its start (room left for the later games), lamps every
+     other bay instead of one identical row;
+   - a **landmark at the pier's end** you can see from the plaza (a small brick lighthouse or a ferris wheel) - the
+     district's focal point;
+   - the Big Case court gets the same trim, rail and sign style as the pier, so it reads as part of it.
+2. **Plaza focal point:** a centre piece on the empty middle of the octagon (a brick fountain with a giant golden
+   gavel / egg on top), with the walking ring around it kept clear; the four plaza destinations (two tents, Machine,
+   Shop) face the centre.
+3. **Hub landmarks one at a time** (stage 3): Travel Portal, Shop, Mutation Machine - same spots, new Blender builds.
+4. **Firms and plots** (stage 4): the plot squares already have orange frames; add only a small lot sign / entry
+   marker per empty plot.
+5. **Lane** (stage 5): one landmark per zone threshold (in BuildLane), no clutter on the route.
+6. **Lighting** first, not last: a quick exposure / Bloom / ColorCorrection check before stage 2, so every model is
+   judged in the final light.
+
+Order to build after the OK: 6 (quick) → 1 (pier + booths, then arch, then pier-end landmark) → 2 → 3 → 4 → 5.
+
 ## Build and integration requirements
 
 Use Blender for new or remade models, following the repo's Blender and Studio workflows. Keep assets light enough for Roblox, especially on phones; favor bold grouped shapes over tiny individual pieces.
+
+Repo rules that apply to every stage (CLAUDE.md): anything the game loads (meshes, images, animations) must be
+uploaded from crnuch's account; Part-built models end with `ServerScriptService.Server.ZFight.fix` (z-fighting); the
+firm fronts are code (`Server.FirmStages` FRONTS + FirmFeatures' Area / Floor / ShowcaseSlot parts), not models; the
+License Office, zone gates and lane are built by `tools/zones/BuildLane.lua` (change the builder, not the place - a
+re-run archives hand edits); the Travel Portal's spot beside the lane entrance is crnuch's call (bug 4). Part budget:
+keep a new hub landmark under ~600 parts and a minigame prop under ~150 (phones).
 
 Preserve existing model names, paths, hierarchy, placement, prompts, SurfaceGuis, attributes, tags, and gameplay behavior. Keep interaction areas and collision surfaces clear. Check the repo's “Never rename” and Studio sync rules before replacing anything.
 
