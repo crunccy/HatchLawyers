@@ -1,37 +1,58 @@
 # Cohesive map and model art pass
 
-**Status: queued. Begin after the current Studio bug-fix claim in `SESSION_LOG.md` is complete and released.** Claim this work in the session log before editing.
+**Status: queued. Begin after the current Studio bug-fix claim in `SESSION_LOG.md` is complete and released.** Claim each stage in the session log before editing.
 
 ## Goal
 
-Lead a cohesive art pass for the map and major models: the firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame area.
+Improve the map and major models: the firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame area. The current layouts and concepts work, but the world feels plain and some assets do not match the chunky brick style. Keep the recognizable design while improving composition, landmark readability, and purposeful detail.
 
-The overall layouts and concepts are working. The world feels too plain, and these assets do not feel like they belong with the game's chunky brick style. Make them feel more finished, detailed, and visually consistent with the rest of the world.
+Read `CLAUDE.md` and the current `SESSION_LOG.md` first. Check active claims, Blender briefs, references, scripts, and Studio models before choosing a stage.
 
-Read `CLAUDE.md` and the current `SESSION_LOG.md` first. Check the active work claims. Use the existing Blender briefs, art references, scripts, and Studio models to understand how each asset fits into the game.
+## Current map observations
+
+From the current Studio overview and closer hub/pier views:
+
+- The orange checker plaza is the dominant hub surface. Several destinations are grouped around its far/right side, leaving a large central area without a strong focal point or clear route between activities.
+- The minigame pier is a long wooden deck with evenly spaced lamps and booths grouped toward one side. The adjacent `BigCaseBelt` attraction sits on its own orange pad, so the belt and pier do not yet read as one destination.
+- The zone lane is long and straight. Color changes distinguish zones, and large entrance landmarks could make the progression easier to read from a distance.
+- Unclaimed firm plots read as bright empty rectangles in the overview. Add only restrained lot framing or entry markers that leave future firm footprints clear.
+- The capture looks very bright and saturated, which flattens some depth. Check exposure, Bloom, and color grading before adding more small details.
+
+Use these as starting observations and verify them in a player-level view. Avoid filling empty space with clutter; retain room for movement and sightlines.
 
 ## Art direction
 
-Use the established cartoony voxel toy-brick style: chunky block-built forms, studded Plastic surfaces, bold readable silhouettes, and the game's bright green, orange, warm wood, cream, and purple palette. Add purposeful detail through layered trim, frames, signs, supports, roof shapes, contrasting panels, and a few well-placed props. Make the assets feel designed as one set, with consistent materials, proportions, and detail density.
+Use the established cartoony voxel toy-brick style: chunky block-built forms, studded Plastic surfaces, bold readable silhouettes, and the bright green, orange, warm wood, cream, and purple palette. Add purposeful detail through layered trim, frames, supports, roof shapes, contrasting panels, signage, and a few well-placed props. Build a shared material and proportion language so the areas feel related, while giving each attraction a distinct silhouette and identity.
 
-Keep the established concepts recognizable. Make the map feel richer and more intentional while keeping its current flow, sightlines, and open play areas.
+Keep the current route, zone gates, egg and boss spaces, walkable areas, and major concepts recognizable.
 
-## Assets and areas to improve together
+## Scope
 
-- **Firms:** Improve the exterior and visible office details so the buildings feel like part of the same playful legal world. Keep firm stages distinct and readable as they grow.
-- **Travel portal:** Make it a strong, memorable landmark that fits the brick world and reads clearly as the way to travel.
+- **Firms:** Improve exteriors and visible office details. Keep firm stages distinct and readable as they grow.
+- **Travel portal:** Make it a strong, recognizable landmark that reads clearly as the way to travel.
 - **Shop:** Give it a clear storefront identity and richer brick-built detail.
-- **Mutation Machine:** Make it feel like a special, exciting machine while keeping its purpose obvious.
-- **License Office/shop:** Make it feel like an official destination that fits naturally into the zone lane and makes progression easy to understand.
-- **Back-of-map minigame area:** Remake the minigame pier together with the existing minigames and the large conveyor belt area (`BigCaseBelt`). Treat the pier, minigames, belt, paths, signage, and surrounding scenery as one designed space. Give the area a clear visual identity and make the pieces feel like they belong beside each other.
-- **Map:** Add detail and visual rhythm to the existing environment so these assets feel connected to their surroundings. Preserve the current route, zone gates, egg and boss spaces, and walkable areas.
+- **Mutation Machine:** Make it feel special and exciting while keeping its purpose obvious.
+- **License Office/shop:** Make it feel official, fit the zone lane, and make progression easy to understand.
+- **Back-of-map minigame area:** Redesign the pier, existing minigames, `BigCaseBelt`, paths, signage, and surrounding scenery as one coherent attraction district.
+- **Map:** Give the long lane more visual rhythm and distinct zone landmarks without obscuring the route.
+
+## Work in focused stages
+
+Work on **one bounded deliverable at a time**. Plan how the whole hub and minigame district fit together first, then build and check components sequentially. Do not start another stage until the current one is integrated, visually reviewed, and its status is recorded in `SESSION_LOG.md`.
+
+1. **Composition and flow:** Make a simple layout/blockout plan for the plaza and back-of-map attractions. Establish a clear pedestrian route or loop between the pier, minigames, and `BigCaseBelt`; give the district a clear entrance and focal landmark. Balance the hub destinations around the open plaza.
+2. **Minigame district:** Build the pier as the shared style anchor. Then remake one minigame at a time, integrating and checking each before moving to the next. Finish the `BigCaseBelt` treatment so it visibly belongs to the same district.
+3. **Hub landmarks:** Remodel the travel portal, shop, and Mutation Machine one at a time, checking each in the plaza before starting another.
+4. **Firms and plots:** Improve one representative firm stage and its lot entry, review it at player scale, then apply the approved language to the other stages.
+5. **License Office and zone entrances:** Improve the office and one zone threshold, then check how the landmarks read along the route before applying any repeated treatment.
+6. **Final visual pass:** Tune lighting and color for depth and readability, then check the whole map and affected interactions at desktop and phone scale.
+
+Keep each stage as its own claim/session when practical. The hub and minigame district should share a layout plan, but detailed modeling and integration should happen one component at a time to preserve focus and make visual checks useful.
 
 ## Build and integration requirements
 
-Use Blender for new or remade models, following the repo's Blender and Studio workflows. Keep assets light enough for Roblox, especially on phones; favor bold shapes and grouped details over lots of tiny pieces.
+Use Blender for new or remade models, following the repo's Blender and Studio workflows. Keep assets light enough for Roblox, especially on phones; favor bold grouped shapes over tiny individual pieces.
 
-Preserve the existing model names, paths, hierarchy, placement, prompts, SurfaceGuis, attributes, tags, and gameplay behavior. Keep intended interaction areas and collision surfaces clear. Check the repo's “Never rename” and Studio sync rules before replacing anything.
+Preserve existing model names, paths, hierarchy, placement, prompts, SurfaceGuis, attributes, tags, and gameplay behavior. Keep interaction areas and collision surfaces clear. Check the repo's “Never rename” and Studio sync rules before replacing anything.
 
-Work in stages: plan the visual language and layout for the hub landmarks and minigame area as a whole. Make one representative asset or small area as the style reference, render or preview it, then apply that visual language across the remaining assets. Integrate and visually check the results in Studio at desktop and phone scale, and playtest the affected interactions and minigames.
-
-When finished, update `SESSION_LOG.md` with the assets and files changed, what was checked in Studio, any remaining follow-up, and the commit. Keep the work claim current while working.
+When each stage is finished, update `SESSION_LOG.md` with its files/assets, Studio checks, remaining follow-up, and commit. Keep the current claim accurate and release it before starting the next stage.
