@@ -394,6 +394,10 @@ when hatching", "create these in blender also".
 - **Not done here:** pushing to GitHub and opening/merging the PR need crnuch's OK (Claude Code's auto mode blocked the
   push; `gh` isn't installed on this Mac). Nothing pushed to Studio this session: no src/ or Studio changes were made.
 - Signed: Claude (Opus 5.5) for crnuch, local session.
+- **2026-10-16 follow-up (step 1):** nothing to push. Every audit fix was already live from mr.robe's 2026-10-12
+  push. The fresh export (102 scripts) matches the committed `studio/`. What's left between `src/` and `studio/` in
+  those files is the lawyer-mutations work (v18, open item above), not the audit. Still untested by anyone: buying a
+  zone egg with [E] (the prompts need a rendered viewport). PR #4 closed: crnuch merged the branch directly.
 
 ## 2026-10-12 — mr.robe, local session: eggs v5 - eggs, hatch + incubator remade in Blender (waiting for crnuch's upload)
 - **The user's asks:**
