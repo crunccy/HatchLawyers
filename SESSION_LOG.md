@@ -9,6 +9,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
+- **crnuch (local), since 2026-10-16:** bug report 1, 3, 7 (Dingy Shack incubators, over-bright firm stages, desk
+  tier props overlapping) - `Server.FirmStages` / `FirmBuilder` / `DeskService` + the firm templates. Bug 6 is a separate session.
 
 ## Open items
 - [ ] **crnuch's bug report (2026-10-16, from a playtest).** 2, 4 and 5 are fixed (entry below); still open: 1, 3, 6, 7.
