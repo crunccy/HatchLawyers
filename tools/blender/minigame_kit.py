@@ -1,233 +1,232 @@
-"""Blender-authored block kit for the hub's two physical minigames.
-
-Run with Blender's Python API (UI or --background). One Blender metre = one stud.
-Exports a compact parts description consumed by tools/zones/BuildMinigameKit.lua.
+"""Five cinematic brick minigames. Blender is the source for geometry AND sampled prop clips.
+All authored coordinates below use Roblox axes (X right, Y up, +Z toward the camera).
+Run: Blender --background --python tools/blender/minigame_kit.py
 """
-import bpy
-import json
-import math
-import os
-from mathutils import Matrix, Vector
+import bpy, json, math, os
+from mathutils import Matrix, Vector, Euler
+ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'../..'))
+OUT=os.path.join(ROOT,'art/minigames'); os.makedirs(OUT,exist_ok=True)
+sc=bpy.data.scenes.new('MinigameKitV2'); sc.render.fps=60
+if bpy.context.window: bpy.context.window.scene=sc
+C=Matrix(((1,0,0),(0,0,-1),(0,1,0)))
+DATA={'version':2,'models':{},'groups':{},'clips':{}}
+ROOTS={}; OBJS={}; serial=0
+CREAM=(246,226,180); WHITE=(250,246,224); WOOD=(214,140,70); DARK=(122,70,34)
+INK=(40,40,52); BLUE=(60,160,235); CYAN=(90,218,232); GREEN=(98,205,48)
+RED=(240,70,70); YELLOW=(255,200,40); PURPLE=(143,93,215)
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-OUT_JSON = os.path.join(ROOT, "tools", "zones", "minigame_kit.json")
-OUT_BLEND = os.path.join(ROOT, "art", "minigames", "MinigameKit.blend")
+def model(name,offset):
+ root=bpy.data.objects.new(name,None); sc.collection.objects.link(root); root.location=C@Vector(offset)
+ ROOTS[name]=root; DATA['models'][name]=[]; DATA['groups'][name]={}; return name
 
-sc = bpy.data.scenes.get("MinigameKit") or bpy.data.scenes.new("MinigameKit")
-for obj in list(sc.collection.all_objects):
-    bpy.data.objects.remove(obj, do_unlink=True)
+def part(m,n,p,s,c,rot=(0,0,0),kind='Block',g=None):
+ global serial
+ serial+=1
+ r=Euler(tuple(math.radians(a) for a in rot),'XYZ').to_matrix()
+ if kind=='Cylinder':
+  bpy.ops.mesh.primitive_cylinder_add(vertices=12,radius=.5,depth=1)
+  o=bpy.context.object
+  # Roblox cylinders run along X; Blender cylinders run along Z.
+  meshrot=Matrix.Rotation(math.pi/2,4,'Y'); o.data.transform(meshrot)
+ else:
+  bpy.ops.mesh.primitive_cube_add(size=1); o=bpy.context.object
+ o.name=f'{m}/{n}/{serial}'; o.parent=ROOTS[m]; o.location=C@Vector(p)
+ # Convert mesh coordinates too, so the exported box and Blender model agree exactly.
+ o.data.transform(C.to_4x4()); o.rotation_euler=(C@r@C.transposed()).to_euler(); o.scale=(s[0],s[2],s[1])
+ o.color=tuple(v/255 for v in c)+(1,)
+ row={'n':n,'p':p,'s':s,'r':[round(r[i][j],6) for i in range(3) for j in range(3)],'c':c,'shape':kind}
+ if g: row['g']=g
+ DATA['models'][m].append(row); OBJS[(m,n)]=o
+ return o
 
-cube_mesh = bpy.data.meshes.get("MinigameKitCube")
-if cube_mesh is None:
-    cube_mesh = bpy.data.meshes.new("MinigameKitCube")
-    cube_mesh.from_pydata(
-        [(-.5, -.5, -.5), (.5, -.5, -.5), (.5, .5, -.5), (-.5, .5, -.5),
-         (-.5, -.5, .5), (.5, -.5, .5), (.5, .5, .5), (-.5, .5, .5)],
-        [],
-        [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)],
-    )
-    cube_mesh.update()
+def stud(m,x,y,z,c=WHITE,g=None): return part(m,'Stud',(x,y,z),(.10,.27,.27),c,(0,0,90),'Cylinder',g)
+def rim(m,n,p,w,h,c):
+ x,y,z=p
+ for dx in [-w/2,w/2]: part(m,n,(x+dx,y,z),(.17,h,.19),c)
+ for dy in [-h/2,h/2]: part(m,n,(x,y+dy,z),(w,.17,.19),c)
+def group(m,n,p): DATA['groups'][m][n]=p
 
-MODEL_DATA = {"models": {}, "animations": {}}
-MODEL_ROOTS = {}
-MAT = {
-    "brick": 0,
-    "smooth": 1,
-    "metal": 2,
-    "neon": 3,
-}
+room=model('ArcadeStage',(0,0,18))
+part(room,'Floor',(0,-1.15,0),(40,.4,28),CREAM)
+part(room,'Platform',(0,-.83,0),(18,.25,11),BLUE)
+part(room,'PlatformTop',(0,-.66,0),(17.5,.12,10.5),CYAN)
+for x in range(-8,9):
+ for z in [-5,5]: stud(room,x,-.55,z,WHITE)
+part(room,'Backdrop',(0,5.1,-7),(30,12,.5),CREAM)
+for x in [-10,-5,0,5,10]:
+ part(room,'WallPanel',(x,5,-6.67),(4.6,7.5,.15),(224,239,221))
+ rim(room,'PanelFrame',(x,5,-6.55),4.6,7.5,WHITE)
+for x in [-8.5,8.5]:
+ part(room,'Pillar',(x,4,-5.9),(.8,9.5,.8),WHITE)
+ part(room,'PillarBase',(x,-.3,-5.9),(1.2,.6,1.2),YELLOW)
+ part(room,'PillarCap',(x,8.8,-5.9),(1.3,.4,1.3),YELLOW)
+part(room,'WallStripe',(0,.5,-6.6),(30,.35,.16),YELLOW)
 
-
-def model(name, display_x=0):
-    root = bpy.data.objects.new(name, None)
-    root.empty_display_type = "CUBE"
-    root.empty_display_size = .3
-    root.location = (display_x, 0, 0)
-    sc.collection.objects.link(root)
-    MODEL_ROOTS[name] = root
-    return root
-
-
-def block(root, name, pos, size, rgb, material="brick", rot=(0, 0, 0)):
-    obj = bpy.data.objects.new(name, cube_mesh)
-    obj.rotation_euler = tuple(math.radians(v) for v in rot)
-    obj.color = (*[v / 255 for v in rgb], 1)
-    obj["rgb"] = list(rgb)
-    obj["surface"] = material
-    sc.collection.objects.link(obj)
-    obj.parent = root
-    obj.location = pos
-    obj.scale = size
-    return obj
-
-
-WOOD = (150, 88, 50)
-DARK_WOOD = (96, 54, 32)
-GOLD = (255, 200, 46)
-GREEN = (75, 180, 75)
-PALE = (238, 235, 207)
-RED = (225, 67, 63)
-BLUE = (64, 150, 220)
-INK = (43, 37, 52)
-
-# All coordinates are Blender local: X = Roblox X, Z = Roblox Y, -Y = Roblox Z.
-# The pivot for the two tables is the centre of the playable top surface. The Lua game places
-# its hit targets and cases relative to this pivot, then animates those objects in Roblox.
-bench = model("GavelBench", -18)
-block(bench, "BenchTop", (0, 0, 0), (13.2, 6.8, .55), WOOD)
-block(bench, "TopInlay", (0, -.02, .29), (12.65, 6.25, .08), (186, 117, 66), "smooth")
-block(bench, "FrontApron", (0, -2.98, -1.05), (12.8, .45, 1.7), DARK_WOOD)
-block(bench, "BackApron", (0, 2.98, -1.05), (12.8, .45, 1.7), DARK_WOOD)
-for x in (-5.7, 5.7):
-    for y in (-2.55, 2.55):
-        block(bench, "ChunkyLeg", (x, y, -1.35), (1.05, 1.05, 2.7), WOOD)
-        block(bench, "Foot", (x, y, -2.82), (1.25, 1.25, .24), GOLD, "metal")
-block(bench, "FrontGoldBand", (0, -3.22, -.72), (12.2, .1, .16), GOLD, "metal")
-block(bench, "BackGoldBand", (0, 3.22, -.72), (12.2, .1, .16), GOLD, "metal")
-block(bench, "GameBoard", (0, 0, .38), (11.6, 4.8, .16), GREEN)
-# Nine deep brick sockets match the target hitbox grid in Minigames.client.lua.
+bench=model('GavelBench',(-19,0,0))
+part(bench,'Cabinet',(0,-.25,0),(10.8,1.0,6.4),RED)
+part(bench,'BaseTrim',(0,-.7,0),(11.1,.2,6.6),WHITE)
 for row in range(3):
-    for col in range(3):
-        x, y = (col - 1) * 3.6, (row - 1) * 1.65
-        block(bench, "SocketOuter", (x, y, .52), (2.9, 1.55, .18), DARK_WOOD)
-        block(bench, "SocketRim", (x, y, .63), (2.65, 1.3, .12), GOLD, "metal")
-        block(bench, "SocketWell", (x, y, .71), (2.4, 1.08, .1), INK, "smooth")
-for x in (-5.65, 5.65):
-    block(bench, "CornerPost", (x, 2.75, 1.45), (.38, .38, 2.3), RED)
-block(bench, "BackRail", (0, 2.75, 2.55), (11.7, .42, .38), GOLD, "metal")
-block(bench, "SignBoard", (0, 2.70, 3.35), (7.3, .5, 1.0), RED)
-block(bench, "SignFace", (0, 2.42, 3.35), (6.5, .12, .7), PALE, "smooth")
-for x in (-3.25, 3.25):
-    block(bench, "SignBolt", (x, 2.32, 3.35), (.18, .1, .18), GOLD, "metal")
+ y=.1+(2-row)*1.2; z=(row-1)*2.05
+ part(bench,'Terrace',(0,y-.18,z),(10.7,.75,1.98),WOOD)
+ part(bench,'FrontTrim',(0,y-.35,z+1),(10.6,.18,.12),YELLOW)
+ for col in range(3):
+  x=(col-1)*3.25
+  part(bench,'Socket',(x,y+.23,z),(2.45,.1,1.55),INK)
+  for xx in [-1.32,1.32]: part(bench,'SocketRim',(x+xx,y+.3,z),(.16,.18,1.8),BLUE)
+  for zz in [-.86,.86]: part(bench,'SocketRim',(x,y+.3,z+zz),(2.8,.18,.16),BLUE)
+  for xx in [-1.3,1.3]: stud(bench,x+xx,y+.42,z+.6,YELLOW)
+for x in [-5.45,5.45]:
+ part(bench,'SidePost',(x,1.7,-2.65),(.55,4.7,.65),BLUE)
+ part(bench,'SideCap',(x,4.15,-2.65),(.8,.3,.8),YELLOW)
+part(bench,'TitleBoard',(0,5.6,-3.0),(8.8,.95,.35),RED)
+rim(bench,'TitleTrim',(0,5.6,-2.79),8.8,.95,WHITE)
 
-table = model("LuckyBriefcaseTable", 0)
-block(table, "TableTop", (0, 0, 0), (13.2, 6.2, .5), GREEN)
-block(table, "PlaySurface", (0, -.05, .27), (12.65, 5.55, .08), (92, 196, 110), "smooth")
-block(table, "FrontApron", (0, -2.72, -1.1), (12.8, .42, 1.65), DARK_WOOD)
-block(table, "BackApron", (0, 2.72, -1.1), (12.8, .42, 1.65), DARK_WOOD)
-for x in (-5.7, 5.7):
-    for y in (-2.3, 2.3):
-        block(table, "ChunkyLeg", (x, y, -1.35), (.95, .95, 2.7), WOOD)
-        block(table, "Foot", (x, y, -2.82), (1.15, 1.15, .24), GOLD, "metal")
-block(table, "FrontGoldBand", (0, -2.98, -.72), (12.2, .1, .17), GOLD, "metal")
-block(table, "BackGoldBand", (0, 2.98, -.72), (12.2, .1, .17), GOLD, "metal")
-for slot in range(3):
-    x = (slot - 1) * 3.6
-    block(table, "CasePadBorder", (x, 0, .37), (3.25, 2.5, .12), GOLD, "metal")
-    block(table, "CasePad", (x, 0, .45), (3.0, 2.25, .08), (51, 120, 69), "smooth")
-    for side in (-1, 1):
-        block(table, "PadStud", (x + side * 1.28, 0, .53), (.12, .12, .08), PALE, "metal")
-for x in (-5.8, 5.8):
-    block(table, "MarqueePost", (x, 2.45, 1.3), (.38, .38, 2.3), BLUE)
-block(table, "Marquee", (0, 2.45, 2.5), (12.0, .42, .48), BLUE)
-block(table, "MarqueeFace", (0, 2.19, 2.5), (10.4, .1, .26), GOLD, "metal")
-for x in (-4.8, -3.2, -1.6, 0, 1.6, 3.2, 4.8):
-    block(table, "MarqueeBulb", (x, 2.10, 2.5), (.18, .12, .18), PALE, "neon")
+for name,judge,offset in [('BonkRobber',False,(-9,0,0)),('BonkJudge',True,(-7,0,0))]:
+ m=model(name,offset)
+ part(m,'Torso',(0,.45,0),(.95,.8,.65),INK)
+ part(m,'Head',(0,1.13,0),(1.05,.8,.75),(255,210,153))
+ if judge:
+  part(m,'Wig',(0,1.58,-.04),(1.23,.25,.82),WHITE)
+  for x in [-.63,.63]:
+   for y in [.9,1.16,1.42]: part(m,'WigCurl',(x,y,0),(.27,.24,.82),WHITE)
+  part(m,'Collar',(0,.78,.37),(.55,.18,.12),WHITE)
+ else:
+  part(m,'Mask',(0,1.18,.4),(1.12,.25,.1),INK)
+  part(m,'Hat',(0,1.62,0),(1.13,.3,.85),RED)
+  part(m,'HatBrim',(0,1.48,.1),(1.3,.12,1.05),RED)
+  for y in [.25,.55]: part(m,'ShirtStripe',(0,y,.35),(.96,.13,.08),WHITE)
+ for x in [-.25,.25]:
+  part(m,'EyeWhite',(x,1.2,.46),(.22,.22,.09),WHITE)
+  part(m,'Eye',(x,1.2,.52),(.09,.13,.06),INK)
+ part(m,'Mouth',(0,.94,.4),(.28,.06,.08),INK)
+ for x in [-.66,.66]: part(m,'Hand',(x,.44,.14),(.3,.4,.4),WHITE)
 
-# Reusable low-part-count game case. Its pivot is the centre of the body, with the lid and
-# clasp separate so Roblox can animate the open/reveal beat. Dimensions match the Lua slots.
-case = model("LuckyBriefcase", 18)
-block(case, "Body", (0, 0, 0), (2.5, 1.8, 1.1), WOOD)
-block(case, "LowerBand", (0, -.93, -.12), (2.58, .08, .18), DARK_WOOD)
-block(case, "Lid", (0, 0, .65), (2.5, 1.8, .2), (122, 71, 41))
-block(case, "Clasp", (0, -1.0, .2), (.42, .12, .3), GOLD, "metal")
-block(case, "HandleBase", (-.42, 0, .78), (.18, .3, .16), GOLD, "metal")
-block(case, "HandleBase", (.42, 0, .78), (.18, .3, .16), GOLD, "metal")
-block(case, "Handle", (0, 0, .93), (1.05, .24, .14), DARK_WOOD)
-block(case, "CornerCap", (-1.12, -.94, -.34), (.23, .08, .23), GOLD, "metal")
-block(case, "CornerCap", (1.12, -.94, -.34), (.23, .08, .23), GOLD, "metal")
+mallet=model('GavelMallet',(-5,0,0))
+part(mallet,'Head',(0,0,0),(1.6,.65,.7),WOOD)
+for x in [-.85,.85]: part(mallet,'EndCap',(x,0,0),(.25,.85,.9),RED)
+part(mallet,'Handle',(0,-1.05,0),(.3,1.8,.3),DARK)
+for y in [-.6,-.9,-1.2,-1.5]: part(mallet,'GripBand',(0,y,0),(.36,.09,.36),YELLOW)
+part(mallet,'GripEnd',(0,-1.94,0),(.46,.22,.46),BLUE)
 
-# Small visual mallet that swings on a click, authored in the same chunky brick palette.
-mallet = model("GavelMallet", 0)
-block(mallet, "Grip", (0, 0, 1.1), (.5, .5, 2.5), DARK_WOOD)
-block(mallet, "GripEnd", (0, 0, -.18), (.7, .7, .22), GOLD, "metal")
-block(mallet, "HeadCore", (0, 0, 2.5), (2.15, .85, .8), WOOD)
-block(mallet, "HeadCap", (-1.15, 0, 2.5), (.3, 1.0, 1.0), GOLD, "metal")
-block(mallet, "HeadCap", (1.15, 0, 2.5), (.3, 1.0, 1.0), GOLD, "metal")
-for side in (-1, 1):
-    block(mallet, "HeadStud", (side * .58, 0, 2.93), (.22, .22, .12), PALE, "metal")
+lt=model('LuckyBriefcaseTable',(0,0,0))
+part(lt,'Cabinet',(0,-.2,0),(10.8,1.1,4.6),BLUE)
+part(lt,'Rim',(0,.4,0),(11.1,.18,4.9),WHITE)
+part(lt,'Felt',(0,.52,0),(10.6,.1,4.4),GREEN)
+for x in [-3.3,0,3.3]:
+ part(lt,'Pad',(x,.61,0),(2.9,.09,2.4),WHITE)
+ part(lt,'PadInset',(x,.67,0),(2.65,.05,2.15),(68,157,56))
+ for dx in [-1.35,1.35]: stud(lt,x+dx,.75,1.03,YELLOW)
+part(lt,'TitleBoard',(0,4.4,-2.5),(9.6,.85,.35),BLUE)
+rim(lt,'TitleRim',(0,4.4,-2.29),9.6,.85,WHITE)
+for x in [-5,5]: part(lt,'SignPost',(x,1.75,-2.45),(.35,3.4,.35),YELLOW)
 
-# Key the gameplay prop actions in Blender so the shape, timing, and poses are reviewable here.
-# The Roblox client replays the same snappy arcs around live, server-timed interactions.
-mallet_root = MODEL_ROOTS["GavelMallet"]
-for frame, angle in ((1, 0), (7, -58), (12, 10), (24, 0)):
-    mallet_root.rotation_euler.x = math.radians(angle)
-    mallet_root.keyframe_insert(data_path="rotation_euler", frame=frame, group="Bonk swing")
-mallet_root["swing_degrees"] = 58
-case_root = MODEL_ROOTS["LuckyBriefcase"]
-lid_obj = next(o for o in case_root.children if o.name == "Lid")
-for frame, angle in ((1, 0), (18, 0), (26, -68), (36, -68), (44, 0)):
-    lid_obj.rotation_euler.x = math.radians(angle)
-    lid_obj.keyframe_insert(data_path="rotation_euler", frame=frame, group="Prize reveal")
-case_root["open_degrees"] = 68
-for frame, x in ((1, 0), (45, 0), (60, 1.2), (75, 0)):
-    case_root.location.x = x
-    case_root.keyframe_insert(data_path="location", frame=frame, group="Shuffle hop")
-sc.frame_start, sc.frame_end, sc.render.fps = 1, 75, 30
+case=model('LuckyBriefcase',(9,0,0)); group(case,'Lid',(0,.43,-.85))
+part(case,'Body',(0,0,0),(2.45,.85,1.75),WOOD)
+part(case,'Inside',(0,.44,0),(2.15,.06,1.45),INK)
+for x in [-1.1,1.1]:
+ for z in [-.78,.78]: part(case,'Corner',(x,-.26,z),(.3,.28,.25),YELLOW)
+for x in [-.75,.75]:
+ part(case,'Clasp',(x,.2,.91),(.24,.45,.12),YELLOW)
+ part(case,'Lock',(x,.22,.99),(.07,.1,.04),INK)
+part(case,'LidTop',(0,.55,0),(2.48,.24,1.78),RED,g='Lid')
+part(case,'LidInset',(0,.7,0),(2.15,.08,1.42),WOOD,g='Lid')
+for x in [-.52,.52]: part(case,'HandleFoot',(x,.89,0),(.16,.35,.23),YELLOW,g='Lid')
+part(case,'Handle',(0,1.05,0),(1.2,.16,.23),DARK,g='Lid')
+for x in [-.82,-.4,0,.4,.82]: stud(case,x,.81,.48,YELLOW,g='Lid')
 
-# Export each model as local parts in Roblox's axes. Keep the Blender scene alongside the
-# JSON so the asset can be art-directed and its animations can be previewed in Blender.
-BLENDER_TO_ROBLOX = Matrix(((1, 0, 0), (0, 0, 1), (0, -1, 0)))
+lie=model('LieDetectorMachine',(18,0,0)); group(lie,'Plunger',(0,.67,1.55))
+part(lie,'Cabinet',(0,.75,-.25),(8,2.7,2.2),GREEN)
+part(lie,'Foot',(0,-.55,0),(8.4,.25,3.8),BLUE)
+part(lie,'ControlDeck',(0,.32,1.0),(8.15,.4,1.9),WHITE)
+part(lie,'Monitor',(0,1.72,.9),(6.7,1.35,.15),INK)
+rim(lie,'MonitorRim',(0,1.72,1.01),6.85,1.48,WHITE)
+for x in [-2.8,-2.4,-2,-1.6,-1.2,-.8,-.4,0,.4,.8,1.2,1.6,2,2.4,2.8]:
+ part(lie,'Tick',(x,1.23,1.1),(.035,.18,.06),WHITE)
+part(lie,'PlungerBase',(0,.53,1.55),(1.6,.16,1.2),INK)
+part(lie,'Button',(0,.78,1.55),(1.3,.4,1.0),RED,g='Plunger')
+part(lie,'ButtonHighlight',(0,1.01,1.55),(1.12,.06,.82),(255,124,91),g='Plunger')
+for x in [-3.5,3.5]:
+ part(lie,'Antenna',(x,2.45,-.4),(.18,1.15,.18),BLUE)
+ part(lie,'AntennaCap',(x,3.05,-.4),(.45,.3,.45),YELLOW)
+ for y in [2.2,2.45,2.7]: part(lie,'Coil',(x,y,-.4),(.55,.12,.55),CYAN)
+for x in [-2.6,2.6]:
+ part(lie,'Dial',(x,.73,1.55),(.24,.7,.7),BLUE,(0,0,90),'Cylinder')
+part(lie,'TitleBoard',(0,3,-1.0),(6.3,.65,.25),GREEN)
 
+stack=model('StackPedestal',(-13,0,-13))
+part(stack,'Base',(0,-.18,0),(7.2,.9,3.9),PURPLE)
+part(stack,'Pad',(0,.33,0),(6.5,.16,3.4),WHITE)
+part(stack,'Guide',(0,.44,0),(3.1,.06,2.3),YELLOW)
+for x in [-5.25,5.25]:
+ part(stack,'TowerPost',(x,4.5,-2),(.45,10.5,.5),BLUE)
+ for i in range(21): part(stack,'LevelTick',(x, .6+i*.43,-1.7),(.65 if i%5==0 else .35,.045,.1),WHITE)
+part(stack,'TitleBoard',(0,9.5,-2.3),(8.5,.8,.3),PURPLE)
+scase=model('StackCase',(-7,0,-13))
+part(scase,'Body',(0,0,0),(3,.38,1.8),WOOD)
+part(scase,'Lid',(0,.22,0),(3.05,.08,1.85),RED)
+for x in [-1.3,1.3]: part(scase,'Corner',(x,0,.93),(.25,.4,.08),YELLOW)
+part(scase,'Handle',(0,.03,.99),(.65,.12,.15),DARK)
+part(scase,'Latch',(0,.12,1.02),(.2,.18,.1),YELLOW)
 
-def parts_for(root):
-    result = []
-    for obj in root.children:
-        loc = Vector(obj.location)
-        rot = obj.rotation_euler.to_matrix()
-        converted = BLENDER_TO_ROBLOX @ rot @ BLENDER_TO_ROBLOX.transposed()
-        dims = Vector((abs(obj.scale.x), abs(obj.scale.y), abs(obj.scale.z)))
-        result.append({
-            "n": obj.name,
-            "p": [round(loc.x, 4), round(loc.z, 4), round(-loc.y, 4)],
-            "s": [round(dims.x, 4), round(dims.z, 4), round(dims.y, 4)],
-            "r": [round(converted[i][j], 5) for i in range(3) for j in range(3)],
-            "c": list(obj["rgb"]),
-            "m": MAT[obj["surface"]],
-        })
-    return result
+file=model('FilingMachine',(5,0,-13))
+part(file,'ConveyorBase',(0,.6,-.8),(11.4,1.1,2.2),BLUE)
+part(file,'Belt',(0,1.22,-.8),(10.4,.12,1.8),INK)
+for x in range(-5,6): part(file,'Roller',(x,1.3,-.8),(.12,.12,1.65),WHITE)
+for z in [-1.85,.25]: part(file,'BeltRail',(0,1.25,z),(11.5,.3,.18),YELLOW)
+part(file,'Feeder',(-5.1,2.15,-1),(1.1,2.7,2),GREEN)
+part(file,'Shredder',(5.1,1.8,-.7),(1.3,2.4,2.15),RED)
+part(file,'ShredderMouth',(5.1,2.3,.42),(.95,.55,.1),INK)
+for x in [4.7,4.95,5.2,5.45]: part(file,'ShredderTooth',(x,2.5,.5),(.14,.32,.16),WHITE)
+part(file,'TitleBoard',(0,3.9,-2),(8.4,.75,.3),BLUE)
+for x in [-4.7,4.7]: part(file,'TitlePost',(x,2.8,-2),(.25,2.2,.25),YELLOW)
+binm=model('FileBin',(13,0,-13)); group(binm,'Lid',(0,.95,-.65))
+part(binm,'Body',(0,.3,0),(1.95,1.15,1.45),BLUE)
+part(binm,'DarkSlot',(0,.95,0),(1.65,.06,1.2),INK)
+part(binm,'Label',(0,.38,.76),(1.55,.6,.08),WHITE)
+part(binm,'Lid',(0,1.04,0),(2.02,.16,1.52),BLUE,g='Lid')
+folder=model('CaseFile',(16,0,-13))
+part(folder,'Folder',(0,.8,0),(1.5,1.55,.16),YELLOW)
+part(folder,'Tab',(-.36,1.62,0),(.68,.22,.16),YELLOW)
+part(folder,'Document',(0,.88,.1),(1.2,1.15,.04),WHITE)
+for y,w in [(1.15,.85),(.94,.8),(.73,.6)]: part(folder,'Writing',(0,y,.14),(w,.05,.025),INK)
+part(folder,'Seal',(.37,.5,.16),(.35,.3,.04),RED)
 
-for root in MODEL_ROOTS.values():
-    bpy.context.view_layer.update()
-    MODEL_DATA["models"][root.name] = parts_for(root)
-MODEL_DATA["animations"] = {
-    "GavelMallet": {"swingDegrees": 58, "downSeconds": 0.10, "recoverSeconds": 0.20},
-    "LuckyBriefcase": {"lidOpenDegrees": 68, "openSeconds": 0.20, "closeSeconds": 0.12, "shuffleLift": 0.85},
+# Curves are authored as Blender keyframes and sampled into transforms used by Roblox.
+# Each clip is local to an authored hinge / prop pivot, never an approximation of a mesh export.
+clips={
+ 'LidOpen':[(0,(0,0,0),(0,0,0)),(.12,(0,0,0),(-100,0,0)),(.24,(0,0,0),(-84,0,0)),(.34,(0,0,0),(-88,0,0))],
+ 'LidClose':[(0,(0,0,0),(-88,0,0)),(.17,(0,0,0),(7,0,0)),(.25,(0,0,0),(0,0,0))],
+ 'StackDrop':[(0,(0,.45,0),(0,0,0)),(.18,(0,-.035,0),(0,0,0)),(.28,(0,0,0),(0,0,0))],
+ 'FileFlight':[(0,(0,0,0),(0,0,0)),(.17,(.5,1.5,0),(0,0,12)),(.35,(1,0,0),(0,0,24))],
+ 'Press':[(0,(0,0,0),(0,0,0)),(.08,(0,-.22,0),(0,0,0)),(.18,(0,.04,0),(0,0,0)),(.28,(0,0,0),(0,0,0))],
+ 'Bonk':[(0,(1.2,2.5,.3),(-25,0,-25)),(.09,(0,0,0),(20,0,-8)),(.14,(0,-.05,0),(24,0,-8)),(.22,(.7,1.6,.2),(-20,0,-18)),(.4,(1.2,2.5,.3),(-25,0,-25))],
+ 'Pop':[(0,(0,-1.9,0),(0,0,0)),(.15,(0,.14,0),(0,0,3)),(.26,(0,0,0),(0,0,0))],
+ 'Duck':[(0,(0,0,0),(0,0,0)),(.18,(0,-1.9,0),(0,0,0))],
+ 'Shuffle':[(0,(-.5,0,0),(0,0,0)),(.5,(0,.62,.35),(0,0,-5)),(1,(.5,0,0),(0,0,0))],
 }
-
-os.makedirs(os.path.dirname(OUT_JSON), exist_ok=True)
-with open(OUT_JSON, "w", encoding="utf-8") as out:
-    json.dump(MODEL_DATA, out, separators=(",", ":"))
-
-# Open the Gavel scene in a clean, useful modelling view when run in Blender's UI.
-sc.render.engine = "BLENDER_WORKBENCH"
-sc.display.shading.light = "STUDIO"
-sc.display.shading.color_type = "OBJECT"
-sc.display.shading.show_cavity = True
-sc.display.shading.show_object_outline = True
-sc.render.resolution_x, sc.render.resolution_y = 1200, 720
-sc.render.filepath = os.path.join(ROOT, "art", "minigames", "MinigameKit.png")
-os.makedirs(os.path.dirname(sc.render.filepath), exist_ok=True)
-sc.world = sc.world or bpy.data.worlds.new("MinigameKitWorld")
-cam_data = bpy.data.cameras.new("MinigameKitCamera")
-cam = bpy.data.objects.new("MinigameKitCamera", cam_data)
-sc.collection.objects.link(cam)
-cam.location = (0, -42, 20)
-target = (0, 0, 0.2)
-direction = (target[0] - cam.location.x, target[1] - cam.location.y, target[2] - cam.location.z)
-cam.rotation_euler = (Vector(direction).to_track_quat("-Z", "Y").to_euler())
-cam_data.type = "ORTHO"
-cam_data.ortho_scale = 64
-sc.camera = cam
-for screen in bpy.data.screens:
-    for area in screen.areas:
-        if area.type == "VIEW_3D":
-            area.spaces.active.region_3d.view_distance = 48
-            area.spaces.active.region_3d.view_location = (0, 0, 0)
-            area.spaces.active.shading.color_type = "OBJECT"
-if bpy.context.window:
-    bpy.context.window.scene = sc
-sc.frame_set(45)
-bpy.ops.render.render(write_still=True, scene=sc.name)
-bpy.ops.wm.save_as_mainfile(filepath=OUT_BLEND)
-print("Built Blender-authored minigame kit:", {name: len(parts) for name, parts in MODEL_DATA.items()})
+for name,keys in clips.items():
+ o=bpy.data.objects.new('CLIP_'+name,None); sc.collection.objects.link(o)
+ for t,p,r in keys:
+  o.location=C@Vector(p); rr=Euler(tuple(math.radians(v) for v in r),'XYZ').to_matrix()
+  o.rotation_euler=(C@rr@C.transposed()).to_euler()
+  o.keyframe_insert(data_path='location',frame=1+t*60); o.keyframe_insert(data_path='rotation_euler',frame=1+t*60)
+ duration=keys[-1][0]; samples=[]
+ for i in range(round(duration*60)+1):
+  sc.frame_set(i+1); localp=C.transposed()@o.location; rr=C.transposed()@o.rotation_euler.to_matrix()@C
+  samples.append({'t':round(i/60,5),'p':[round(v,5) for v in localp],'r':[round(rr[a][b],5) for a in range(3) for b in range(3)]})
+ DATA['clips'][name]=samples
+sc.frame_set(1); sc.frame_end=75
+with open(os.path.join(ROOT,'tools/zones/minigame_kit.json'),'w') as f: json.dump(DATA,f,separators=(',',':'))
+runtime=os.path.join(ROOT,'src/MinigameClient'); os.makedirs(runtime,exist_ok=True)
+with open(os.path.join(runtime,'AssetData.lua'),'w') as f: f.write('-- Generated by tools/blender/minigame_kit.py; geometry and sampled Blender clips.\nreturn game:GetService("HttpService"):JSONDecode([==['+json.dumps(DATA,separators=(',',':'))+']==])\n')
+sc.render.engine='BLENDER_WORKBENCH'; sc.display.shading.light='STUDIO'; sc.display.shading.color_type='OBJECT'
+sc.display.shading.show_cavity=True; sc.display.shading.show_object_outline=True
+sc.world=bpy.data.worlds.new('ArcadeWorld'); sc.world.color=(.12,.16,.2)
+camd=bpy.data.cameras.new('Overview'); cam=bpy.data.objects.new('Overview',camd); sc.collection.objects.link(cam)
+cam.location=(35,-60,38); cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler()
+camd.type='ORTHO'; camd.ortho_scale=60; sc.camera=cam
+sc.render.resolution_x=1600;sc.render.resolution_y=1000;sc.render.resolution_percentage=100
+sc.render.filepath=os.path.join(OUT,'MinigameKit.png')
+bpy.data.libraries.write(os.path.join(OUT,'MinigameKit.blend'),{sc})
+bpy.ops.render.render(write_still=True)
+print('EXPORTED',sum(map(len,DATA['models'].values())),'parts',len(DATA['models']),'models',len(DATA['clips']),'Blender animation clips')
