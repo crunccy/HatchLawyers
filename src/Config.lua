@@ -275,8 +275,8 @@ Config.Case = {
 Config.Lawyer = {
 	StartLevel = 1,
 	MaxLevel = 100,
-	TrainBase = 800,
-	TrainGrowth = 1.37, -- v12 tune (EconomySimV12): 1T/s around 12-15 h
+	TrainBase = 2000,
+	TrainGrowth = 1.37, -- tuned 2026-10-16 for first prestige in 40-80 min; see docs/ECONOMY_REVIEW.md
 }
 
 -- HATCHED LAWYERS. Eggs give real lawyers (one of Config.SkinCatalog, which is now the lawyer
