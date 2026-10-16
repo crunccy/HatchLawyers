@@ -11,12 +11,16 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
 ## Open items
-- [ ] **Lawyer mutations + selling: the rest of the playtest** (pushed to Studio 2026-10-16, entry below; the server
-      rules, the Mutation Machine panel + picker, old Gold → Shiny and a Shiny lawyer at a desk are checked). Still to
-      eye-check: a SUCCESS / FIZZLE animation in the panel (only rolled through the remote), the % on the button,
-      Epic+ asks twice before selling, SELL ALL picker, LOCK padlock in the LAWYERS panel, golden zone eggs sometimes
-      hatching Shiny, and Diamond / Cosmic colours + effects (nobody owns one yet: test with a temporary server Script,
-      then remove it) on brick AND older models, at a desk, the hatch reveal and a big Mythic / Supreme.
+- [ ] **Lawyer mutations: golden zone eggs sometimes hatching Shiny** - the last unchecked bit of the mutations
+      playtest (everything else eye-checked 2026-10-16, second crnuch entry below). Needs real golden hatches (25%).
+- [ ] **LAWYERS panel: the bench grid is too short since the SELL / LOCK / SELL ALL row** (found 2026-10-16): at a
+      1429x776 Studio window the grid is 112 px tall but a card is 124 px, so not even one row fits and every card's
+      "Earns x" line is cut off (you have to scroll to see it). `Lawyers.client` benchGrid `Size (1, -114)` + the row at
+      `-106`. Needs a layout call (smaller cards when short / the row beside EQUIP / a taller right column).
+- [ ] **Taste calls from the mutations eye-check (no change made):** Diamond on a mostly-white lawyer (Celestial)
+      comes out near-white with blue accents, and with the Supreme aura it glares; the Cosmic orb (size h x 0.75)
+      washes a big lawyer's desk lavender. An Epic Diamond sells for ~194K at crnuch's 3 Qa stage (sell price
+      follows the Briefcase egg price) - economy review, not a bug.
 - [ ] **Re-run `tools/zones/BuildLane.lua` in Studio** (fixed 2026-10-13, crnuch cloud session, not in Studio yet):
       (1) walls + wall tops now continue under every License gate - there was a 12-stud opening on both sides of
       each gate where players walked out of the lane; (2) invisible `ClimbBlock` walls (collide, CanQuery off so the
@@ -126,6 +130,33 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: mutations + selling eye-check (the rest of the playtest); Mythic stage fix
+- **Save safety:** crnuch's save backed up first as `Backup_Player_2234491534_1792168772` (`PlayerData` store, 150
+  lawyers, v18). Test lawyers (uids L223+) were added by temporary Server-datamodel Scripts and all removed at the end;
+  the sale proceeds (3.67M) were taken back off. Checked in the DataStore afterwards: 150 lawyers, none locked, none
+  L223+, offices as before (9 / 10 empty), lock released. No TEMP_ scripts anywhere (they only lived in the play
+  datamodel). The Mac's display slept mid-session (Team Create dropped, Studio closed the place) - after the save.
+- **Eye-checked at QualityLevel 21:** Diamond + Cosmic recolours and `Effects.mutationAura` on the Rookie (older
+  Studio-built brick) and the Supreme Celestial (1.6x) at desks 9 / 10: everything but the face recoloured, tags read
+  DIAMOND / COSMIC with the right Earns x; Diamond ring + crystals, Cosmic tilted orbit + stars. Hatch reveal: Diamond
+  Thunderclap (Epic, Blender brick: blue, ring, lightning, "DIAMOND THUNDERCLAP / Earns x36") and Cosmic Phoenix
+  (Mythic stage, purple title card). Mutation Machine: "MUTATE! (70%)" + "70% chance · Earns x15 (was x6)", FIZZLED
+  (grey puff, "Your lawyers ran off... try again!", no "lose") and SHINY THUNDERCLAP! (gold burst). LAWYERS panel:
+  an Epic asks "TAP AGAIN TO SELL" (3 s window) then "Sold Diamond Thunderclap for 194.40K coins!"; LOCK puts a gold
+  padlock on the card, SELL turns grey "LOCKED", toast "Locked - safe from selling and mutating"; SELL ALL picker
+  (starts with Common + Uncommon ticked) showed "Sells 3 lawyers for 3.48M coins (not locked, not in an office)" -
+  it skipped the locked one and the office ones - and sold exactly those 3.
+- **Fixed (`Shared.HatchFx`, pushed + playtested):** the Mythic stage's 8 braziers stood on whole 45° steps, so one sat
+  on the stage's front axis right between the reveal camera (~20 studs out for a 1.3x Mythic) and the lawyer - every
+  Mythic reveal showed a black pillar over the lawyer. Turned half a step; `/hatch mythic` now shows the lawyer
+  framed by two braziers. Not a mutation bug (mr.robe's 10-13 cinematics) - heads-up mr.robe.
+- **Tip:** `screen_capture` with camera_position works in a playtest, but emitters that were off-screen haven't
+  simulated: point the client camera there first, wait ~3 s, then capture.
+- **Checks:** `run_checks.py` ALL PASSED (250 Luau files, 39 Config checks, 32 sim tests). Snapshot re-exported
+  (103 scripts): only HatchFx changed, equal to `src/HatchFx.lua`. MutationLook / Effects untouched (nothing clearly
+  wrong; taste calls in Open items).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: LAWYER MUTATIONS + SELLING live in Studio (save v18)
 - **Heads-up mr.robe:** PlayerData, LawyerService, CaseService, EggServer, ZoneService and FirmFeatures changed in Studio

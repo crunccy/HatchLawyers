@@ -885,7 +885,9 @@ function HatchFx.stage(kind: string, origin: CFrame): { [string]: any }
 		local red = Color3.fromRGB(229, 57, 53)
 		floorRings({ red, Color3.fromRGB(255, 120, 30), red }, Color3.fromRGB(44, 26, 34), Enum.Material.Slate, Color3.fromRGB(120, 20, 24), Enum.Material.Slate)
 		for i = 0, 7 do
-			local a = i / 8 * math.pi * 2
+			-- (half a step round: on whole steps one brazier stood on the front axis, right between the reveal
+			-- camera and the lawyer - a Mythic is 1.3x, so the camera sits ~20 out, behind it; 2026-10-16)
+			local a = (i + 0.5) / 8 * math.pi * 2
 			local p = origin * CFrame.new(math.cos(a) * 17, 0, math.sin(a) * 17)
 			solid(Vector3.new(2, 7, 2), p * CFrame.new(0, 3.5, 0), Color3.fromRGB(34, 20, 28), Enum.Material.Basalt)
 			solid(Vector3.new(2.8, 0.8, 2.8), p * CFrame.new(0, 7.2, 0), Color3.fromRGB(60, 30, 30), Enum.Material.Basalt)
