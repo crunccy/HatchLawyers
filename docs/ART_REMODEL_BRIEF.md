@@ -32,6 +32,10 @@ Keep the current route, zone gates, egg and boss spaces, walkable areas, and maj
 - **Travel portal:** Make it a strong, recognizable landmark that reads clearly as the way to travel.
 - **Shop:** Give it a clear storefront identity and richer brick-built detail.
 - **Mutation Machine:** Make it feel special and exciting while keeping its purpose obvious.
+
+### Mutation presentation
+
+Make the mutation feel like an in-world character event, inspired by the egg hatching animation. The lawyer should actively participate: approach or react to the machine, interact with it, show anticipation, and visibly transform on success or react to a fizzle. Let the machine, character animation, camera framing, lighting, and effects carry the moment. Keep selection and confirmation in the existing controls; present the mutation itself in the 3D world rather than adding another full-screen UI screen. Preserve the existing success/fizzle rules and clear outcome feedback.
 - **License Office/shop:** Make it feel official, fit the zone lane, and make progression easy to understand.
 - **Back-of-map minigame area:** Redesign the pier, existing minigames, `BigCaseBelt`, paths, signage, and surrounding scenery as one coherent attraction district.
 - **Map:** Give the long lane more visual rhythm and distinct zone landmarks without obscuring the route.
