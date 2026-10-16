@@ -1,6 +1,6 @@
 -- Install the version-2 Blender data into the shared cinematic renderer.
 -- Run in Studio Edit mode while serve_files.ps1 serves tools/zones on :8766.
--- Sync src/MinigameClient and the five client entry points too; see docs/MINIGAME_CINEMATICS.md.
+-- The client code that plays it lives in Studio (snapshot: studio/ReplicatedStorage/MinigameClient + ArcadeClient).
 local HttpService=game:GetService('HttpService')
 local RS=game:GetService('ReplicatedStorage')
 local json=HttpService:GetAsync('http://localhost:8766/minigame_kit.json',true)

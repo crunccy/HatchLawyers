@@ -474,6 +474,172 @@ for i, s in slots do
 	end)
 end
 
+------------------------------------------------------------------ in-world mutation moment
+-- The picker is for choosing; the result plays beside the actual Mutation Machine so mutation feels like
+-- something the lawyer does, not another results screen. The machine/result remains server-authoritative.
+local RunService = game:GetService("RunService")
+
+local function worldMutationMoment(id: string, stars: number, succeeded: boolean)
+	local plots = workspace:FindFirstChild("Plots")
+	local plotName = player:GetAttribute("Plot")
+	local plot = plots and typeof(plotName) == "string" and plots:FindFirstChild(plotName)
+	local firm = plot and plot:FindFirstChild("Firm")
+	-- any seated lawyer will do as the actor (it is redressed as the mutating lawyer); Desk1 can be empty
+	local source: Instance? = nil
+	for _, desk in (if firm then firm:GetChildren() else {}) do
+		local npc = if desk.Name:match("^Desk%d+$") then desk:FindFirstChild("Lawyer") else nil
+		if npc then
+			source = npc
+			break
+		end
+	end
+	local hub = workspace:FindFirstChild("Hub")
+	local machine = hub and hub:FindFirstChild("MergeMachine")
+	if not (source and source:IsA("Model") and machine and machine:IsA("Model")) then
+		return false
+	end
+	local okClone, actor = pcall(function()
+		return (source :: Model):Clone()
+	end)
+	if not okClone or not actor then
+		return false
+	end
+	actor.Name = "MutationMomentLawyer"
+	SkinLook.dress(actor, id, stars)
+	for _, item in actor:GetDescendants() do
+		if item:IsA("BasePart") then
+			item.Anchored = true
+			item.CanCollide = false
+			item.CanTouch = false
+			item.CanQuery = false
+		elseif item:IsA("BillboardGui") or item:IsA("SurfaceGui") then
+			item:Destroy()
+		end
+	end
+	actor.Parent = workspace
+	local camera = workspace.CurrentCamera
+	local oldCameraType = camera and camera.CameraType
+	local oldSubject = camera and camera.CameraSubject
+	local oldCameraCFrame = camera and camera.CFrame
+	local oldFov = camera and camera.FieldOfView
+	local homeGuiEnabled = gui.Enabled
+	-- the rest of the HUD and the player's own character step aside for the moment (put back below)
+	local hiddenGuis: { [LayerCollector]: boolean } = {}
+	for _, g in player.PlayerGui:GetChildren() do
+		if g:IsA("LayerCollector") and g ~= gui and g.Enabled then
+			hiddenGuis[g] = true
+			g.Enabled = false
+		end
+	end
+	local hiddenParts: { BasePart } = {}
+	if player.Character then
+		for _, p in player.Character:GetDescendants() do
+			if p:IsA("BasePart") then
+				table.insert(hiddenParts, p)
+				p.LocalTransparencyModifier = 1
+			end
+		end
+	end
+	local success, err = pcall(function()
+		-- staged in front of the machine's window (the model faces its pivot's LookVector, diagonally on the plaza)
+		local pivot = (machine :: Model):GetPivot()
+		local window = machine:FindFirstChild("WindowFrame", true)
+		local focus = if window and window:IsA("BasePart") then window.Position else pivot.Position
+		local front = Vector3.new(pivot.LookVector.X, 0, pivot.LookVector.Z).Unit
+		local right = front:Cross(Vector3.yAxis)
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = { actor, player.Character :: any, machine }
+		local function ground(at: Vector3): Vector3
+			local hit = workspace:Raycast(at + Vector3.new(0, 12, 0), Vector3.new(0, -40, 0), params)
+			return Vector3.new(at.X, if hit then hit.Position.Y else focus.Y - 5, at.Z)
+		end
+		-- the lawyer works the machine from beside its window, so the camera (front, a little to the other side)
+		-- sees its face and the window at once
+		local workSpot = ground(focus + front * 3 + right * 3)
+		local approach = ground(workSpot + front * 2 + right * 4)
+		local away = ground(workSpot + right * 6 + front * 3)
+		local faceAt = Vector3.new(focus.X, workSpot.Y, focus.Z) -- (level: looking up at the window tilted the model)
+		local box, size = actor:GetBoundingBox()
+		local footOffset = actor:GetPivot().Position - (box.Position - Vector3.new(0, size.Y / 2, 0))
+		local function pivotAt(ground: Vector3, facing: Vector3)
+			local target = CFrame.lookAt(ground + footOffset, facing + footOffset)
+			actor:PivotTo(target)
+		end
+		local function travel(from: CFrame, to: CFrame, duration: number)
+			local started = os.clock()
+			repeat
+				local t = math.clamp((os.clock() - started) / duration, 0, 1)
+				actor:PivotTo(from:Lerp(to, t))
+				RunService.RenderStepped:Wait()
+			until not actor.Parent or os.clock() - started >= duration
+		end
+		pivotAt(approach, faceAt)
+		if camera then
+			camera.CameraType = Enum.CameraType.Scriptable
+			camera.FieldOfView = 48
+			local mid = (workSpot + focus) / 2 + Vector3.new(0, 1.5, 0)
+			camera.CFrame = CFrame.lookAt(mid + front * 13 - right * 3 + Vector3.new(0, 3, 0), mid)
+		end
+		gui.Enabled = false
+		travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, faceAt + footOffset), 0.85)
+		-- A little nervous anticipation: two bouncy checks at the controls.
+		local rest = actor:GetPivot()
+		for _ = 1, 2 do
+			travel(rest, rest + Vector3.new(0, 0.55, 0), 0.16)
+			travel(actor:GetPivot(), rest, 0.18)
+			task.wait(0.12)
+		end
+		-- The machine lights up while the lawyer is transformed.
+		local effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
+		local mutationTier = if succeeded then math.min(stars + 1, MAX_STARS) else stars
+		local mutation = Config.Lawyers.Mutations[mutationTier]
+		local tint = if succeeded and mutation then mutation.Color else Color3.fromRGB(145, 145, 160)
+		effects.burst(focus, "tier", tint)
+		for _, part in machine:GetDescendants() do
+			if part:IsA("BasePart") and part.Material == Enum.Material.Neon then
+				local originalColor = part.Color
+				part.Color = tint
+				task.delay(0.65, function()
+					if part.Parent then part.Color = originalColor end
+				end)
+			end
+		end
+		if succeeded then
+			SkinLook.dress(actor, id, mutationTier)
+			travel(actor:GetPivot(), actor:GetPivot() * CFrame.new(0, 0.7, 0), 0.2)
+			travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, faceAt + footOffset) * CFrame.Angles(0, math.rad(24), 0), 0.2)
+			task.wait(0.65)
+		else
+			-- the lawyer turns tail and runs off (facing where it runs)
+			local run = (away - workSpot).Unit
+			travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, workSpot + run + footOffset), 0.15)
+			travel(actor:GetPivot(), CFrame.lookAt(away + footOffset, away + run + footOffset), 0.35)
+			travel(actor:GetPivot(), CFrame.lookAt(away + run * 3 + footOffset, away + run * 4 + footOffset), 0.4)
+		end
+	end)
+	if camera and oldCameraType and oldSubject and oldCameraCFrame and oldFov then
+		camera.CameraType = oldCameraType
+		camera.CameraSubject = oldSubject
+		camera.CFrame = oldCameraCFrame
+		camera.FieldOfView = oldFov
+	end
+	gui.Enabled = homeGuiEnabled
+	for g in hiddenGuis do
+		if g.Parent then
+			g.Enabled = true
+		end
+	end
+	for _, p in hiddenParts do
+		p.LocalTransparencyModifier = 0
+	end
+	actor:Destroy()
+	if not success then
+		warn("[Merger] world mutation moment failed:", err)
+	end
+	return success
+end
+
 ------------------------------------------------------------------ merge + animation
 local function merge()
 	if busy then
@@ -504,6 +670,10 @@ local function merge()
 		end
 		showToast(tostring(nameOrReason or "Couldn't mutate"))
 		return
+	end
+	local mutationId, mutationStars = group()
+	if mutationId and mutationStars then
+		worldMutationMoment(mutationId, mutationStars, result ~= "fizzled")
 	end
 	if result == "fizzled" then
 		-- FIZZLED: the window shakes, a grey puff, and the lawyers run off (no "lose" on screen - CLAUDE.md)

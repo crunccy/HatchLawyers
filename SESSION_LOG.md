@@ -156,6 +156,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-16 — crnuch, local session: Codex's minigames + mutation scene finished, playtested
+- **Took over Codex's work (user's call: nobody else is on it).** Live Studio was ahead of GitHub: Codex had synced a v2
+  (cinematic) version from its own checkout (`~/Documents/Codex/2026-10-16/id-l/HatchLawyers`, branch
+  `codex/world-minigames`, uncommitted). Brought onto main: the live scripts (`studio/`), the v2 Blender kit
+  (`tools/blender/minigame_kit.py` -> `tools/zones/minigame_kit.json` -> `tools/zones/BuildMinigameKit.lua`, which writes
+  `ReplicatedStorage.MinigameClient.AssetData`; `art/minigames/MinigameKit.blend`), `docs/ART_REMODEL_BRIEF.md` and the
+  mutation scene (`src/Merger.client.lua`). Its `src/Config.lua` edit only mirrored live (no live Config change).
+- **How the five minigames work now:** each round is a client-only stage at y = 4000 (`MinigameClient.Scene`: Blender
+  props, scripted camera, HUD hidden, movement frozen, tap / click / SPACE / 1-4). Hub: `MinigameClient.GavelBonk` /
+  `LuckyBriefcase` (from `Minigames.client`); pier: `ArcadeClient.LieDetector` / `BriefcaseStack` / `FilingFrenzy`
+  (from `Arcade.client`). Servers (`MinigameService`, `ArcadeServer`) unchanged: timing, scoring, rewards.
+- **Fixed:** (1) taps missed everything by 58 px: `Scene:hit` used `ScreenPointToRay` on `input.Position`, which is in
+  viewport space -> `ViewportPointToRay` (Gavel Bonk robbers, Lucky Briefcase cases, booth buttons / bins). (2) a lost
+  server result held the player in the stage for 240 s: `Scene:deadline` ends the round a few seconds after it should
+  have ended ("Round over!"). (3) Mutation scene: Codex placed the lawyer and camera along world axes, but the
+  Mutation Machine faces diagonally - the shot was side-on with the player in the way and the HUD up. Now staged
+  from the machine's front (the lawyer works it from beside the window, camera in front), the HUD and your own
+  character hidden for the moment, the floor found by raycast, the lawyer level (it was tilted toward the window),
+  runs off facing away on a fizzle, and any seated lawyer is the actor (Desk1 could be empty -> no scene).
+- **Playtested (crnuch's save, backed up first as `Backup_Player_2234491534_1792186860` and RESTORED after):** all five
+  played to a server result + CONTINUE, camera / movement / HUD / lighting restored after each; mutation x3 via the
+  real UI (Intern Suit), the in-world scene plays, the panel shows the result. No game errors.
+- **Still for crnuch to judge (taste):** the stages share one plain cream "ArcadeStage" room; a robber ducking
+  briefly shows through the gap between Gavel Bonk's bench rows; the mutation shot still sees the lawyer mostly from
+  the side. Phone-size check not done.
+- `run_checks.py` ALL PASSED; snapshot re-exported (108 scripts).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
+
 ## 2026-10-16 — crnuch, local session: bug report 6 fixed (z-fighting everywhere) + the oak inside the Travel Portal
 - **New `ServerScriptService.Server.ZFight`** (`scan` / `fix(roots, { only, noYield })`): finds block faces that point
   the same way, lie within 0.012 of the same plane and overlap (> 0.02 both ways) with a different colour / material /

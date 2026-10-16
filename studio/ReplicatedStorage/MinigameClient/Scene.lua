@@ -84,6 +84,9 @@ function Scene:face(p,text,color)
  local l=label(g,text,.5,.85); l.Size=UDim2.fromScale(.92,.85); if color then l.TextColor3=color end; return l
 end
 function Scene:step(fn) table.insert(self.steps,fn) end
+-- If the server's result never comes (a dropped message), end the round anyway shortly after it should have ended,
+-- instead of holding the player in the scene until the 240 s fallback.
+function Scene:deadline(t) self:step(function() if not self.ended and Scene.now()>t then self:finish(nil) end end) end
 function Scene:input(fn)
  table.insert(self.connections,Input.InputBegan:Connect(function(input,processed)
   if not self.closed and not self.ended and not Input:GetFocusedTextBox() and (not processed or Scene.isTap(input)) then fn(input) end
@@ -91,7 +94,8 @@ function Scene:input(fn)
 end
 function Scene:hit(input,targets)
  if input.UserInputType~=Enum.UserInputType.MouseButton1 and input.UserInputType~=Enum.UserInputType.Touch then return nil end
- local ray=self.camera:ScreenPointToRay(input.Position.X,input.Position.Y)
+ -- (input.Position is in viewport space - it leaves out the top bar - so ScreenPointToRay aimed 58 px too high)
+ local ray=self.camera:ViewportPointToRay(input.Position.X,input.Position.Y)
  local params=RaycastParams.new(); params.FilterType=Enum.RaycastFilterType.Include; params.FilterDescendantsInstances=targets
  local result=workspace:Raycast(ray.Origin,ray.Direction*200,params); return result and result.Instance
 end
@@ -132,7 +136,7 @@ function Scene:pulse(at,color)
 end
 function Scene:finish(result)
  if self.closed or self.ended then return end; self.ended=true
- self.counter.Text=(result and (result.reward or result.text)) or 'The server did not return a score. Please try again later.'
+ self.counter.Text=(result and (result.reward or result.text)) or 'Round over!'
  self.hint.Text='Nice playing!'; self:pulse(CFrame.new(0,3,0))
  task.delay(1.2,function()
   if self.closed then return end

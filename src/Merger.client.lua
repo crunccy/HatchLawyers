@@ -484,8 +484,15 @@ local function worldMutationMoment(id: string, stars: number, succeeded: boolean
 	local plotName = player:GetAttribute("Plot")
 	local plot = plots and typeof(plotName) == "string" and plots:FindFirstChild(plotName)
 	local firm = plot and plot:FindFirstChild("Firm")
-	local desk = firm and firm:FindFirstChild("Desk1", true)
-	local source = desk and desk:FindFirstChild("Lawyer")
+	-- any seated lawyer will do as the actor (it is redressed as the mutating lawyer); Desk1 can be empty
+	local source: Instance? = nil
+	for _, desk in (if firm then firm:GetChildren() else {}) do
+		local npc = if desk.Name:match("^Desk%d+$") then desk:FindFirstChild("Lawyer") else nil
+		if npc then
+			source = npc
+			break
+		end
+	end
 	local hub = workspace:FindFirstChild("Hub")
 	local machine = hub and hub:FindFirstChild("MergeMachine")
 	if not (source and source:IsA("Model") and machine and machine:IsA("Model")) then
@@ -516,16 +523,43 @@ local function worldMutationMoment(id: string, stars: number, succeeded: boolean
 	local oldCameraCFrame = camera and camera.CFrame
 	local oldFov = camera and camera.FieldOfView
 	local homeGuiEnabled = gui.Enabled
+	-- the rest of the HUD and the player's own character step aside for the moment (put back below)
+	local hiddenGuis: { [LayerCollector]: boolean } = {}
+	for _, g in player.PlayerGui:GetChildren() do
+		if g:IsA("LayerCollector") and g ~= gui and g.Enabled then
+			hiddenGuis[g] = true
+			g.Enabled = false
+		end
+	end
+	local hiddenParts: { BasePart } = {}
+	if player.Character then
+		for _, p in player.Character:GetDescendants() do
+			if p:IsA("BasePart") then
+				table.insert(hiddenParts, p)
+				p.LocalTransparencyModifier = 1
+			end
+		end
+	end
 	local success, err = pcall(function()
+		-- staged in front of the machine's window (the model faces its pivot's LookVector, diagonally on the plaza)
 		local pivot = (machine :: Model):GetPivot()
 		local window = machine:FindFirstChild("WindowFrame", true)
-		local console = machine:FindFirstChild("Console", true)
 		local focus = if window and window:IsA("BasePart") then window.Position else pivot.Position
-		local floorY = if console and console:IsA("BasePart") then console.Position.Y - 2 else pivot.Position.Y - 5
-		local approach = Vector3.new(focus.X + 4, floorY, focus.Z + 4)
-		local workSpot = Vector3.new(focus.X + 1.4, floorY, focus.Z + 1.4)
-		local away = workSpot + Vector3.new(5, 0, 1)
-		local look = CFrame.lookAt(approach, focus)
+		local front = Vector3.new(pivot.LookVector.X, 0, pivot.LookVector.Z).Unit
+		local right = front:Cross(Vector3.yAxis)
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = { actor, player.Character :: any, machine }
+		local function ground(at: Vector3): Vector3
+			local hit = workspace:Raycast(at + Vector3.new(0, 12, 0), Vector3.new(0, -40, 0), params)
+			return Vector3.new(at.X, if hit then hit.Position.Y else focus.Y - 5, at.Z)
+		end
+		-- the lawyer works the machine from beside its window, so the camera (front, a little to the other side)
+		-- sees its face and the window at once
+		local workSpot = ground(focus + front * 3 + right * 3)
+		local approach = ground(workSpot + front * 2 + right * 4)
+		local away = ground(workSpot + right * 6 + front * 3)
+		local faceAt = Vector3.new(focus.X, workSpot.Y, focus.Z) -- (level: looking up at the window tilted the model)
 		local box, size = actor:GetBoundingBox()
 		local footOffset = actor:GetPivot().Position - (box.Position - Vector3.new(0, size.Y / 2, 0))
 		local function pivotAt(ground: Vector3, facing: Vector3)
@@ -540,14 +574,15 @@ local function worldMutationMoment(id: string, stars: number, succeeded: boolean
 				RunService.RenderStepped:Wait()
 			until not actor.Parent or os.clock() - started >= duration
 		end
-		pivotAt(approach, focus)
+		pivotAt(approach, faceAt)
 		if camera then
 			camera.CameraType = Enum.CameraType.Scriptable
 			camera.FieldOfView = 48
-			camera.CFrame = CFrame.lookAt(focus + Vector3.new(9, 5, 12), focus)
+			local mid = (workSpot + focus) / 2 + Vector3.new(0, 1.5, 0)
+			camera.CFrame = CFrame.lookAt(mid + front * 13 - right * 3 + Vector3.new(0, 3, 0), mid)
 		end
 		gui.Enabled = false
-		travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, focus + footOffset), 0.85)
+		travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, faceAt + footOffset), 0.85)
 		-- A little nervous anticipation: two bouncy checks at the controls.
 		local rest = actor:GetPivot()
 		for _ = 1, 2 do
@@ -573,11 +608,14 @@ local function worldMutationMoment(id: string, stars: number, succeeded: boolean
 		if succeeded then
 			SkinLook.dress(actor, id, mutationTier)
 			travel(actor:GetPivot(), actor:GetPivot() * CFrame.new(0, 0.7, 0), 0.2)
-			travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, focus + footOffset) * CFrame.Angles(0, math.rad(24), 0), 0.2)
+			travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, faceAt + footOffset) * CFrame.Angles(0, math.rad(24), 0), 0.2)
 			task.wait(0.65)
 		else
-			travel(actor:GetPivot(), CFrame.lookAt(away + footOffset, focus + footOffset), 0.35)
-			travel(actor:GetPivot(), CFrame.lookAt(away + Vector3.new(2, 0, 0) + footOffset, focus + footOffset), 0.4)
+			-- the lawyer turns tail and runs off (facing where it runs)
+			local run = (away - workSpot).Unit
+			travel(actor:GetPivot(), CFrame.lookAt(workSpot + footOffset, workSpot + run + footOffset), 0.15)
+			travel(actor:GetPivot(), CFrame.lookAt(away + footOffset, away + run + footOffset), 0.35)
+			travel(actor:GetPivot(), CFrame.lookAt(away + run * 3 + footOffset, away + run * 4 + footOffset), 0.4)
 		end
 	end)
 	if camera and oldCameraType and oldSubject and oldCameraCFrame and oldFov then
@@ -587,6 +625,14 @@ local function worldMutationMoment(id: string, stars: number, succeeded: boolean
 		camera.FieldOfView = oldFov
 	end
 	gui.Enabled = homeGuiEnabled
+	for g in hiddenGuis do
+		if g.Parent then
+			g.Enabled = true
+		end
+	end
+	for _, p in hiddenParts do
+		p.LocalTransparencyModifier = 0
+	end
 	actor:Destroy()
 	if not success then
 		warn("[Merger] world mutation moment failed:", err)

@@ -48,6 +48,7 @@ function M.start(info,send)
   s.title.Text='GAVEL BONK  •  '..math.max(0,math.ceil(info.duration-math.max(0,elapsed)))..'s'
   if elapsed<0 then s.hint.Text='Tap the robbers. Let the judges pass!' end
  end)
+ s:deadline(info.startAt+info.duration+6)
  local game={scene=s,id=info.id}
  function game.ack(a) if not s.closed then s.counter.Text=tostring(a.score)..' POINTS' end end
  function game.result(a) s:finish(a) end

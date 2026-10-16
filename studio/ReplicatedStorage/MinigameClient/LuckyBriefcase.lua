@@ -46,6 +46,7 @@ function M.start(info,send)
   end
   if phase=='show' then for i,p in prizes do p.CFrame=CFrame.new((i-2)*3.3,4002.15+math.sin(t*3)*.1,.2)*CFrame.Angles(0,math.sin(t*2)*.18,0) end end
  end)
+ s:deadline(info.pickAt+require(game:GetService('ReplicatedStorage').Shared.Config).Minigames.LuckyBriefcase.PickTimeout+6)
  local game={scene=s,id=info.id}
  function game.result(a)
   if s.closed then return end; picked=true; phase='result'
