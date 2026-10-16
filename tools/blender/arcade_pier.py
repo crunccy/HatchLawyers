@@ -96,6 +96,17 @@ for yy in range(6, int(LEN), 16):  # posts down into the sea
     for x in (-W / 2 + 1, W / 2 - 1):
         box("Post", x, yy, DECK - 7, 2.2, 2.2, 6, PAL["woodD"])
 
+# ------------------------------------------------------------------ the landing from the Big Case terrace (2026-10-16: the
+# terrace's hedge row used to close the pier off): its rim tops out at +0.9, the deck at 0 - a wide plank landing and
+# two steps down, with a gold-capped post either side (the hedge has a 30-stud gap here, see the session log)
+box("Landing", 0, -5.0, DECK - 1, 28, 4, 1.9, PAL["woodM"])
+box("LandingStep", 0, -2.25, DECK - 1, 28, 1.5, 1.6, PAL["woodL"])
+box("LandingStep", 0, -0.75, DECK - 1, 28, 1.5, 1.3, PAL["woodM"])
+for side in (-1, 1):
+    box("LandingPost", side * 14.6, -5.0, DECK - 1, 1.4, 1.4, 4.4, PAL["white"])
+    box("LandingCap", side * 14.6, -5.0, DECK + 3.4, 1.8, 1.8, 0.5, PAL["gold"])
+    box("LandingLamp", side * 14.6, -5.0, DECK + 3.9, 1.0, 1.0, 1.0, PAL["bulb"], tag="neon")
+
 # ------------------------------------------------------------------ railings (sides + the far end), posts with gold caps
 def rail_run(x0, y0, x1, y1):
     L = math.hypot(x1 - x0, y1 - y0)
