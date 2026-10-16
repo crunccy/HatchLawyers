@@ -192,7 +192,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),
   `NPC` (blocky fallback for Epic/Legendary clients), `LuxuryFirm` (archived). `Firm` (old closet office) is unused.
-- `Workspace.Hub` — Street, Plaza (the lane's entrance on its south edge), no egg machines any more (all six eggs
+- `Workspace.Hub` — Street, Plaza (the lane's entrance on its south edge; `EggFountain` in its centre and the
+  `BoardwalkGate` on its north edge, both from `tools/blender/hub_landmarks.py` -> `tools/zones/BuildHubLandmarks.lua`;
+  the Arcade Pier past the Big Case terrace ends in a lighthouse - art pass 2026-10-16, docs/ART_REMODEL_BRIEF.md), no egg machines any more (all six eggs
   are sold in the zones; the machines + egg terrace are in `ServerStorage.Old_HubEggMachines`), BigCaseBelt, SpecialSpots (the
   Gavel Bonk / Lucky Briefcase minigames), ZoneTeleports, Palms. `Workspace.Plots.Plot1–8`.
   Front/door = local −Z; plots are rotated to face the street (two rows facing the street along x, z = 0).

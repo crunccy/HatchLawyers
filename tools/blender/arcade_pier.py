@@ -8,7 +8,11 @@
 # Names the game looks up: each booth is a group "booth:<GameId>" (the builder makes a Model tagged ArcadeStation with
 # attribute ArcadeGame); in it "Screen" (gets the Board SurfaceGui: title + status), "Marquee" (the game's name),
 # "PlayZone" (invisible, gets the PlayPrompt). The entrance arch's "ArchSign" gets "ARCADE PIER".
+# 2026-10-16 (art pass stage 2, docs/ART_REMODEL_BRIEF.md): booths spread down the deck instead of huddled at its start,
+# lamps staggered with the string lights zig-zagging over the walkway, and a round end platform with a brick
+# LIGHTHOUSE - the boardwalk's landmark, seen from the plaza.
 # Run: "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b -P tools/blender/arcade_pier.py
+#  (Mac: /Applications/Blender.app/Contents/MacOS/Blender -b -P tools/blender/arcade_pier.py)
 # Units: 1 Blender m = 1 stud, Z up. The pier's entrance is at the origin and it runs along Blender +Y; the builder
 # turns it so it runs north (Roblox +Z) from the shore.
 import bpy, math, json, os
@@ -106,7 +110,9 @@ def rail_run(x0, y0, x1, y1):
     box("Rail", (x0 + x1) / 2, (y0 + y1) / 2, DECK + 1.6, L, 0.5, 0.5, PAL["white"], rz=ang)
 rail_run(-W / 2 + 0.6, 4, -W / 2 + 0.6, LEN - 0.6)
 rail_run(W / 2 - 0.6, 4, W / 2 - 0.6, LEN - 0.6)
-rail_run(-W / 2 + 0.6, LEN - 0.6, W / 2 - 0.6, LEN - 0.6)
+# the far end opens onto the lighthouse platform (12 wide gap in the middle)
+rail_run(-W / 2 + 0.6, LEN - 0.6, -6, LEN - 0.6)
+rail_run(6, LEN - 0.6, W / 2 - 0.6, LEN - 0.6)
 
 # ------------------------------------------------------------------ the entrance arch with its sign + bulbs
 for side in (-1, 1):
@@ -124,18 +130,17 @@ for i in range(14):  # bulbs round the sign
     box("Bulb", -10.3 + 20.6 * t, 0.15, DECK + 16.9, 0.6, 0.6, 0.6, PAL["pink"] if i % 2 == 0 else PAL["bulb"], tag="neon")
 
 # ------------------------------------------------------------------ lamp posts down the walkway + string lights
-LAMPS = [(side * 10, yy) for yy in (14, 34, 54, 74, 92) for side in (-1, 1)]
+LAMPS = [((-10 if i % 2 == 0 else 10), 12 + i * 16) for i in range(6)]  # staggered, one side then the other
 for (x, yy) in LAMPS:
     box("LampPost", x, yy, DECK, 0.9, 0.9, 9, PAL["ink"])
     box("LampArm", x, yy, DECK + 9, 2.4, 0.6, 0.5, PAL["ink"])
     box("Lamp", x, yy, DECK + 9.5, 1.6, 1.6, 1.6, PAL["bulb"], tag="neon")
-for side in (-1, 1):  # bulbs strung between the lamps, sagging a little
-    for a, b in zip([l for l in LAMPS if l[0] == side * 10][:-1], [l for l in LAMPS if l[0] == side * 10][1:]):
-        for i in range(1, 7):
-            t = i / 7
-            sag = math.sin(t * math.pi) * 1.4
-            box("StringBulb", side * 10, a[1] + (b[1] - a[1]) * t, DECK + 9.2 - sag, 0.5, 0.5, 0.5,
-                [PAL["bulb"], PAL["pink"], PAL["sky"]][i % 3], tag="neon")
+for a, b in zip(LAMPS[:-1], LAMPS[1:]):  # string lights zig-zag across the walkway from lamp to lamp, sagging
+    for i in range(1, 9):
+        t = i / 9
+        sag = math.sin(t * math.pi) * 1.6
+        box("StringBulb", a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, DECK + 9.2 - sag, 0.5, 0.5, 0.5,
+            [PAL["bulb"], PAL["pink"], PAL["sky"]][i % 3], tag="neon")
 
 # ------------------------------------------------------------------ booths
 def booth(gid, name, col, side, yy):
@@ -193,9 +198,54 @@ def booth(gid, name, col, side, yy):
         for i, c in enumerate((PAL["red"], rgb(79, 203, 46), rgb(60, 150, 240))):
             box("Prop", px, yy + 2.6 + (i - 1) * 1.6, top, 1.4, 1.3, 1.2, c, group=g)
 
-SLOTS = [(-1, 22), (1, 22), (-1, 42), (1, 42), (-1, 62), (1, 62), (-1, 82), (1, 82)]  # (alternating sides, front first)
+SLOTS = [(-1, 22), (1, 48), (-1, 74), (1, 22), (-1, 48), (1, 74)]  # spread down the deck first, then the facing slots
 for (gid, name, col), (side, yy) in zip(BOOTHS, SLOTS):
     booth(gid, name, col, side, yy)
+
+# ------------------------------------------------------------------ the end platform + LIGHTHOUSE (the landmark)
+PY = LEN + 16  # platform centre
+R = 15  # platform half-size
+for i, (sx, sy) in enumerate(((2 * R, 2 * R - 8), (2 * R - 8, 2 * R))):  # a chunky octagon: two crossed slabs
+    box("EndDeck", 0, PY, DECK - 1, sx, sy, 1, PAL["woodL"] if i == 0 else PAL["woodM"])
+box("EndDeckLink", 0, LEN + 0.5, DECK - 1, 12, 2.4, 1, PAL["woodM"])  # the step across from the pier
+for (px, py) in ((-R + 1, PY - R + 5), (R - 1, PY - R + 5), (-R + 1, PY + R - 5), (R - 1, PY + R - 5)):
+    box("Post", px, py, DECK - 7, 2.2, 2.2, 6, PAL["woodD"])
+rail_run(-R + 0.6, PY - R + 4, -R + 0.6, PY + R - 4)
+rail_run(R - 0.6, PY - R + 4, R - 0.6, PY + R - 4)
+rail_run(-R + 4, PY + R - 0.6, R - 4, PY + R - 0.6)
+rail_run(-R + 0.6, PY + R - 4, -R + 4, PY + R - 0.6)
+rail_run(R - 0.6, PY + R - 4, R - 4, PY + R - 0.6)
+rail_run(-R + 0.6, PY - R + 4, -6, PY - R + 0.6)
+rail_run(R - 0.6, PY - R + 4, 6, PY - R + 0.6)
+# the tower: stacked bands, red / white, stepping in as it rises
+LX, LY = 0, PY + 4
+box("LighthouseBase", LX, LY, DECK, 11, 11, 2, PAL["ink"])
+z = DECK + 2
+widths = [9.0, 8.4, 7.8, 7.2, 6.6, 6.0, 5.6, 5.2]
+for i, w in enumerate(widths):
+    box("LighthouseBand", LX, LY, z, w, w, 3.2, PAL["red"] if i % 2 == 0 else PAL["white"])
+    z += 3.2
+box("LighthouseDoor", LX, LY - 4.55, DECK + 2, 2.4, 0.3, 4, PAL["woodD"])
+for k in range(3):  # little windows up the tower, facing the pier
+    box("LighthouseWindow", LX, LY - widths[2 + k * 2] / 2 - 0.12, DECK + 10 + k * 6.4, 1.2, 0.3, 1.6, PAL["sky"])
+box("Gallery", LX, LY, z, 9, 9, 0.8, PAL["ink"])  # the balcony + gold rail
+for (gx, gy, gw, gd) in ((0, 4.3, 9, 0.4), (0, -4.3, 9, 0.4), (4.3, 0, 0.4, 9), (-4.3, 0, 0.4, 9)):
+    box("GalleryRail", LX + gx, LY + gy, z + 0.8, gw, gd, 1.4, PAL["gold"])
+z += 0.8
+box("LampRoom", LX, LY, z, 4.6, 4.6, 3.6, PAL["bulb"], tag="neon")
+for (gx, gy) in ((2.4, 2.4), (-2.4, 2.4), (2.4, -2.4), (-2.4, -2.4)):
+    box("LampFrame", LX + gx, LY + gy, z, 0.5, 0.5, 3.6, PAL["ink"])
+z += 3.6
+box("Roof", LX, LY, z, 6.4, 6.4, 1.2, PAL["red"])
+box("Roof", LX, LY, z + 1.2, 4.2, 4.2, 1.2, PAL["red"])
+box("Roof", LX, LY, z + 2.4, 2.2, 2.2, 1.2, PAL["red"])
+box("RoofBall", LX, LY, z + 3.6, 1.2, 1.2, 1.2, PAL["gold"])
+# benches + a life ring either side of the tower
+for side in (-1, 1):
+    box("Bench", side * 9, PY - 6, DECK, 6, 2, 1.4, PAL["woodD"])
+    box("BenchBack", side * 9, PY - 5.2, DECK + 1.4, 6, 0.5, 1.6, PAL["woodL"])
+    box("LifeRing", side * 7, LY, DECK + 3, 0.6, 2.6, 2.6, PAL["red"])
+    box("LifeRingBand", side * 7.05, LY, DECK + 4, 0.6, 2.7, 0.6, PAL["white"])
 
 # ------------------------------------------------------------------ export (Roblox: Y up; the builder turns the pier to face north)
 def to_rbx_vec(v):
@@ -215,7 +265,7 @@ for o in ROOT.children:
                       a=round(o["alpha"], 2), fn=to_rbx_vec(fn) if fn else None))
 os.makedirs(os.path.dirname(OUT_JSON), exist_ok=True)
 with open(OUT_JSON, "w") as fh:
-    json.dump(dict(size=[W, 26, LEN], booths=[dict(id=b[0], name=b[1], color=list(b[2])) for b in BOOTHS], parts=parts), fh, separators=(",", ":"))
+    json.dump(dict(size=[W, 48, LEN + 32], booths=[dict(id=b[0], name=b[1], color=list(b[2])) for b in BOOTHS], parts=parts), fh, separators=(",", ":"))
 
 # ------------------------------------------------------------------ renders (review)
 mats = {}
@@ -278,7 +328,7 @@ def look(at, frm):
 cam_data.lens = 30
 sc.render.resolution_x, sc.render.resolution_y = 1500, 1000
 os.makedirs(os.path.dirname(OUT_PNG), exist_ok=True)
-look((0, 50, 0), (60, -45, 55))
+look((0, 62, 8), (75, -55, 60))
 sc.render.filepath = OUT_PNG
 bpy.ops.render.render(write_still=True, scene=sc.name)
 look((-20, 30, 6), (6, 4, 7))  # walking in: the left booths

@@ -10,10 +10,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
 
-- **crnuch (local), since 2026-10-16:** finishing Codex's minigame work (all five minigames in the 3D world: Gavel Bonk +
-  Lucky Briefcase cinematic stages, the three Arcade Pier booths) + its in-world mutation scene (`src/Merger.client.lua`),
-  then the map art redo (docs/ART_REMODEL_BRIEF.md) one stage at a time. **User's call (crnuch, 2026-10-16): nobody else
-  is working on the minigames - this session takes over mr.robe's Arcade claim above and Codex's draft PRs #7 / #8.**
+- **crnuch (local), since 2026-10-16:** the map art pass (docs/ART_REMODEL_BRIEF.md), stage by stage - next: stage 3
+  hub landmarks. **User's call (crnuch, 2026-10-16): nobody else is working on the minigames - crnuch's sessions took
+  over mr.robe's Arcade claim above and Codex's draft PRs #7 / #8 (finished, entry below).**
 
 ## Open items
 - [ ] **Map + model art pass** (docs/ART_REMODEL_BRIEF.md, from Codex 2026-10-16; claimed above).
@@ -155,6 +154,29 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: art pass stage 1 built (lighting, Arcade Boardwalk, Egg Fountain)
+- **Plan approved by crnuch** (docs/ART_REMODEL_BRIEF.md "Stage 1"). Built in order:
+- **Lighting:** the hub's grade was flattening the orange plaza into one hot wall. `Lighting.ExposureCompensation`
+  -0.10 -> -0.25, `ColorCorrection.Saturation` 0.20 -> 0.05, `Contrast` 0.08 -> 0.12 (place properties, one undo step).
+- **Arcade Pier** (`tools/blender/arcade_pier.py` -> `tools/zones/arcade_pier.json` -> `BuildArcadePier.lua`, rebuilt;
+  the old one is `ServerStorage.Old_ArcadePier`): booths spread down the deck (Lie Detector z 189 east, Briefcase Stack
+  z 215 west, Filing Frenzy z 241 east; three facing slots left free for later games), lamps staggered with the string
+  lights zig-zagging over the walkway, and a round end platform with a red / white brick LIGHTHOUSE (z ~287, ~36 tall,
+  lit lamp room, benches, life rings) - the district's landmark, framed by the pier arch from the plaza. 464 blocks.
+  Playtested: ArcadeServer re-hooks the rebuilt booths, the moved Briefcase Stack prompt starts its round.
+- **New `tools/blender/hub_landmarks.py` -> `tools/zones/hub_landmarks.json` -> `tools/zones/BuildHubLandmarks.lua`**
+  (re-runnable; older builds go to `ServerStorage.Old_HubLandmarks`): `Workspace.Hub.BoardwalkGate` (z 86, where the
+  plaza meets the Big Case terrace: banded red / white legs, gold caps, flags, lit "BOARDWALK" sign both sides, hanging
+  "BIG CASES • ARCADE PIER" / "BACK TO THE PLAZA", planters; replaces `Hub.Gates.BigCaseGate`, archived to
+  `ServerStorage.Old_HubGates`) and `Workspace.Hub.EggFountain` (plaza centre: octagon basin with water, gold rim and
+  fish spouts, tiered pedestal, a giant GOLDEN brick egg with white spots, a golden gavel facing the lane). 84 + 69
+  blocks, Blender renders `art/map/hub_landmarks.png`. Cream egg read grey in the hub light -> gold.
+- **Moved** the `Hub.Trees` Oak standing on the boardwalk line (0, 148) to (-46, 150): the plaza -> gate -> belt -> pier
+  arch -> lighthouse axis is clear now.
+- Playtest: no game errors. crnuch's save was restored from `Backup_Player_2234491534_1792186860` again afterwards.
+- **Next (stage 3):** Travel Portal, Shop, Mutation Machine one at a time; then plots (4) and lane thresholds (5).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: Codex's minigames + mutation scene finished, playtested
 - **Took over Codex's work (user's call: nobody else is on it).** Live Studio was ahead of GitHub: Codex had synced a v2

@@ -1,6 +1,6 @@
 # Cohesive map and model art pass
 
-**Status (2026-10-16): claimed by crnuch's local session (SESSION_LOG → In progress). Stage 1 layout plan below - waiting for crnuch's OK before any building.** Claim each later stage in the session log before editing.
+**Status (2026-10-16): stage 1 plan approved by crnuch; built: lighting grade, the Arcade Boardwalk (pier booths spread, staggered lamps, lighthouse end platform, BOARDWALK gateway) and the Egg Fountain (SESSION_LOG 2026-10-16). Next: stage 3 hub landmarks (Travel Portal, Shop, Mutation Machine), then 4 and 5.** Claim each later stage in the session log before editing.
 
 ## Goal
 
