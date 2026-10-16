@@ -169,6 +169,13 @@ if sign then
 end
 portal.WorldPivot = placeAt
 CollectionService:AddTag(portal, "TravelPortal")
+-- z-fighting (bug report 6, 2026-10-16): nudge apart faces this build left level (ServerScriptService.Server.ZFight)
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
+for _ = 1, 3 do
+	if ZFight.fix({ portal }) == 0 then
+		break
+	end
+end
 portal.Parent = hub
 
 -- the six old pads go to storage (kept, like everything we retire)

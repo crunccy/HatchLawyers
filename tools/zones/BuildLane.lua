@@ -840,4 +840,14 @@ do
 	end
 end
 
+-- z-fighting (bug report 6, 2026-10-16): nudge apart faces this build left level (ServerScriptService.Server.ZFight)
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
+for _ = 1, 3 do
+	if ZFight.fix({ zonesRoot, workspace:FindFirstChild("Ground") or zonesRoot }, { only = function(p)
+		return p:IsDescendantOf(zonesRoot)
+	end }) == 0 then
+		break
+	end
+end
+
 return ("built the lane: %d parts, %d studs long (Safe Zone + %d zones), starting at %s"):format(parts, s, #ZONES, tostring(LANE_START))

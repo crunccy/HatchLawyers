@@ -17,6 +17,7 @@
 local CollectionService = game:GetService("CollectionService")
 local ServerStorage = game:GetService("ServerStorage")
 local FirmStages = require(script.Parent:WaitForChild("FirmStages"))
+local ZFight = require(script.Parent:WaitForChild("ZFight"))
 
 local FirmBuilder = {}
 
@@ -393,6 +394,26 @@ function FirmBuilder.build(plot: Model, segments: number, lawyers: number, maxSe
 
 	firm.WorldPivot = frame
 	FirmBuilder.clearDecor(plot, frame, depth)
+	-- the stage front, the kit pieces, the offices and the plot's decor meet here: nudge apart any faces left level
+	-- (z-fighting, bug report 6). Only the firm's own parts move; each piece was fixed on its own in its template.
+	-- (Not against the firm being replaced: PlotService builds the new one before destroying the old.)
+	local roots: { Instance } = { firm }
+	for _, c in plot:GetChildren() do
+		if c.Name ~= "Firm" then
+			table.insert(roots, c)
+		end
+	end
+	for _ = 1, 3 do -- (a nudge can leave a face level with a third part: a pass or two more settles it)
+		local moved = ZFight.fix(roots, {
+			noYield = true,
+			only = function(p)
+				return p:IsDescendantOf(firm)
+			end,
+		})
+		if moved == 0 then
+			break
+		end
+	end
 	return firm
 end
 

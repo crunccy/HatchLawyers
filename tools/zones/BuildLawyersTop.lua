@@ -9,6 +9,7 @@
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
 local data = HttpService:JSONDecode(HttpService:GetAsync("http://localhost:8766/lawyers_top.json", true))
@@ -87,6 +88,11 @@ for id, def in data do
 		else
 			old.Name = id .. "_preTop"
 			old.Parent = folder
+		end
+	end
+	for _ = 1, 3 do -- z-fighting (bug report 6): nudge apart faces left level (Server.ZFight)
+		if ZFight.fix({ m }) == 0 then
+			break
 		end
 	end
 	m.Parent = skins

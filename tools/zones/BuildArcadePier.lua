@@ -165,6 +165,15 @@ for id, m in booths do
 	local _ = id
 end
 pier.WorldPivot = PLACE_AT
+-- z-fighting (bug report 6, 2026-10-16): nudge apart faces this build left level (ServerScriptService.Server.ZFight)
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
+for _ = 1, 3 do
+	if ZFight.fix({ pier, workspace:FindFirstChild("Ground") or pier }, { only = function(p)
+		return p:IsDescendantOf(pier)
+	end }) == 0 then
+		break
+	end
+end
 pier.Parent = workspace
 if recording then
 	ChangeHistoryService:FinishRecording(recording, Enum.FinishRecordingOperation.Commit)

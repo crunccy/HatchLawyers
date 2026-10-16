@@ -53,4 +53,14 @@ for name, def in data do
 	m.Parent = lib
 	models += 1
 end
+-- z-fighting (bug report 6, 2026-10-16): nudge apart faces this build left level (ServerScriptService.Server.ZFight)
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
+for _, m in lib:GetChildren() do
+	for _ = 1, 3 do
+		if ZFight.fix({ m }) == 0 then
+			break
+		end
+	end
+end
+
 return ("ZoneDecorLibrary: %d models, %d blocks"):format(models, blocks)

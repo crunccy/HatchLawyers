@@ -163,6 +163,7 @@ local function refreshUpgradeSign(player: Player)
 		end
 	end)
 
+	require(script.Parent.ZFight).fix({ sign }, { noYield = true }) -- its caps / trim / faceplate meet level (bug report 6)
 	sign.Parent = firm
 end
 

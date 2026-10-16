@@ -12,6 +12,7 @@ local fn, err = loadstring(_G.fetchSrc(run.file))
 assert(fn, err)
 local builders = fn()
 
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
 local stage = workspace:FindFirstChild("_BrickStage")
 if stage then
 	stage:Destroy()
@@ -66,6 +67,11 @@ for i, id in run.ids do
 			if math.abs(jointY - want) > 0.2 then
 				warn ..= string.format(" !! %s joint would be at y %.2f (want %.2f)", side, jointY, want)
 			end
+		end
+	end
+	for _ = 1, 3 do -- z-fighting (bug report 6): nudge apart faces left level (Server.ZFight)
+		if ZFight.fix({ k.model }) == 0 then
+			break
 		end
 	end
 	_G.BrickBuild[id] = k

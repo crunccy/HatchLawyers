@@ -127,6 +127,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
   colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
   Studio's command bar caches required modules: after editing a ModuleScript, re-require a fresh clone.
+- **No z-fighting (bug report 6, 2026-10-16):** two block faces in the same plane with different colours flicker.
+  `ServerScriptService.Server.ZFight.fix({ model })` nudges them apart; every Studio builder in tools/ ends with it and
+  FirmBuilder runs it on each firm. New builders / hand-built models: run it on what you built.
 - mr.robe's realistic restyle is **archived, not deleted**: `ServerStorage.Templates.LuxuryFirm` (953 parts →
   future top firm tier) and `ServerStorage.ArchivedVisuals` (skyline, sidewalks/lampposts, planters).
 

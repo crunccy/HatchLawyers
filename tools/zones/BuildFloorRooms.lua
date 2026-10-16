@@ -111,6 +111,15 @@ for id, parts in data.rooms do
 	m.Parent = folder
 	table.insert(report, ("%s %d"):format(id, #parts))
 end
+-- z-fighting (bug report 6, 2026-10-16): nudge apart faces this build left level (ServerScriptService.Server.ZFight)
+local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
+for _, m in folder:GetChildren() do
+	for _ = 1, 3 do
+		if ZFight.fix({ m }) == 0 then
+			break
+		end
+	end
+end
 folder.Parent = templates
 if recording then
 	ChangeHistoryService:FinishRecording(recording, Enum.FinishRecordingOperation.Commit)

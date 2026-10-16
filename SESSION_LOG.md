@@ -9,12 +9,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
-- **crnuch (local), since 2026-10-16:** bug report 6 - z-fighting (coplanar / overlapping faces) across the map, the
-  firms and Part-built models: a scanner, then fixes in Workspace, ServerStorage templates and the builders' code.
 
 ## Open items
-- [ ] **crnuch's bug report (2026-10-16, from a playtest).** 1, 2, 3, 4, 5 and 7 are fixed (entries below); still open: 6.
-      Still to do for 1 / 3 / 7: crnuch's eye-check in Studio (the viewport didn't render for that session, so no screenshots).
+- [ ] **crnuch's bug report (2026-10-16, from a playtest).** All 7 fixed (entries below). Still to do: crnuch's eye-check
+      in Studio of 1 / 3 / 6 / 7 (that session's viewport didn't render, so no screenshots).
       Leads found in the code, not confirmed:
   1. ~~FIXED~~ **Dingy Shack doesn't house the incubators properly** (`Server.FirmStages` stage 1, the shack is the old
      template cloned + opened up; the two `Firm.Incubators` don't fit inside it).
@@ -27,7 +25,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   5. ~~FIXED~~ **The rebirth system is called "Supreme"; it should be called "Rebirth"** (user's call). On-screen text only:
      `Supreme.client` (HUD tile "SUPREME", "Supreme Empire", "GO SUPREME!", "Supreme level N") + any toasts / Guide
      text; keep script / remote / save names (Prestige*) and the Supreme RARITY as they are.
-  6. **Studio-built part models flicker when the camera moves: pieces overlap and the colours fight** (z-fighting:
+  6. ~~FIXED~~ **Studio-built part models flicker when the camera moves: pieces overlap and the colours fight** (z-fighting:
      coplanar or overlapping faces). crnuch: "on the lawyers and other places just in general, not the eggs or the
      bosses" (those are meshes / Blender) - so the Part-built lawyers (BrickKit + BuildLawyersTop) and Part props.
   7. ~~FIXED~~ **Desks overlap their accessories when levelled up** (office tier props from `Config.Desks.Tiers`, placed by
@@ -151,6 +149,33 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-16 — crnuch, local session: bug report 6 fixed (z-fighting everywhere) + the oak inside the Travel Portal
+- **New `ServerScriptService.Server.ZFight`** (`scan` / `fix(roots, { only, noYield })`): finds block faces that point
+  the same way, lie within 0.012 of the same plane and overlap (> 0.02 both ways) with a different colour / material /
+  transparency / surface - the flicker crnuch saw (light-brown on dark-brown etc.). Each plane's overlapping faces get
+  "levels": the smallest face (the detail) stays put, each face clashing with one already placed moves back 0.04 a
+  level (that side of the part SHRINKS, never thinner than 0.04; too thin -> it grows out instead). Shrinking can't
+  make new overlaps - growing sideways did (first try: 0.04 slivers along every neighbour, never converged; undone).
+- **Fixed in place (Edit mode, one ChangeHistory step each):** the whole Workspace (3395 face pairs found at the start:
+  Shrubbery, every zone's WallDecor, Hub Plaza / CaseTerrace on the Ground, IslandDecor, ArcadePier booths, ...) and
+  the templates, model by model: Templates.FirmKitParts / Firms / Clients / FloorRooms / Firm, ZoneDecorLibrary,
+  HiddenDecor, ReplicatedStorage.SkinModels / JudgeModels / Briefcases / Bosses / CourtroomSet. ~6400 faces moved
+  in 4 passes + a leftovers pass; 1 left (a character face plate). Most moves are 0.04-0.08; clusters of tiny
+  decorations (flowers, sprinkles, moss) up to 0.2.
+- **Runtime:** `FirmBuilder.build` runs ZFight (up to 3 passes, no yield, ~28 ms with a stage-6 10-segment build)
+  on the new firm against the plot's decor - only the firm's parts move, and not against the old firm (PlotService
+  builds the new one first). `DeskService` runs it on the EXPAND FIRM sign. Playtest: map outside the plots 0 left,
+  crnuch's firm 8 (desks vs the seated clients' legs, a rug, the CafeTerrace area pad - moving / later-added parts),
+  no game errors.
+- **Builders keep it fixed:** BuildLane, BuildDecorLibrary, BuildTravelPortal, BuildArcadePier, BuildFloorRooms,
+  BuildBriefcases, BuildBosses, BuildLawyersTop and tools/brick/Run.lua now end with a ZFight pass on what they built
+  (BuildLane's queued re-run - open item - stays fixed).
+- **Travel Portal:** the Hub.Trees Oak standing in it is archived to `ServerStorage.ArchivedVisuals.HubTrees` (no free
+  spot near the portal for a 16x19 oak); the oak at x 76 grazing its edge moved 2 studs east.
+- Not eye-checked (no rendering viewport this session) - crnuch: walk the hub, a zone, your firm.
+- `run_checks.py` ALL PASSED; snapshot re-exported (104 scripts: + ZFight; FirmBuilder, DeskService changed).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: bug report 1, 3, 7 fixed (shack incubators, over-bright firms, desk tiers)
 - **1 - Dingy Shack incubators:** the shack (the Firm1 template) is only 24 wide (walls at x +-12), but the incubators
