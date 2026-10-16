@@ -567,7 +567,7 @@ function TravelFx.trip(opts: { index: number, color: Color3, go: () -> (boolean,
 		local steps = math.max(tier.rings, 2)
 		for k = 1, steps do
 			task.delay(tier.charge * (k - 1) / steps, function()
-				cue("beat", math.min(k + opts.index - 1, 8))
+				cue("charge", math.min(k + opts.index - 1, 8))
 				HatchFx.sparks(rr.root.Position, color, 8 + opts.index * 3, 14, 0.8)
 				if k <= tier.rings then
 					local ring = risingRing(base, 2.6 + (k % 2) * 0.6, if k % 2 == 0 then color else WHITE, 5.5 + tier.float, if tier.orbit then 99 else 0.9, tier.orbit, k)
@@ -587,6 +587,7 @@ function TravelFx.trip(opts: { index: number, color: Color3, go: () -> (boolean,
 		end
 
 		------------------------------------------------ 2) vanish
+		cue("whoosh", 0)
 		HatchFx.sparks(rr.root.Position, color, 30 + opts.index * 8, 26)
 		if opts.index >= 4 then
 			HatchFx.ring(CFrame.new(base + Vector3.new(0, 0.3, 0)), 10 + opts.index * 2, color, 0.5, 1.6)
@@ -666,7 +667,7 @@ function TravelFx.trip(opts: { index: number, color: Color3, go: () -> (boolean,
 				end
 				RunService.RenderStepped:Wait()
 			end
-			cue("beat", 8)
+			cue("charge", 8)
 			flashTo(WHITE, 0, 0.16).Completed:Wait()
 			setSky(nil)
 			tn.model:Destroy()

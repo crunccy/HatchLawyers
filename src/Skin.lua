@@ -21,6 +21,14 @@ local RunService = game:GetService("RunService")
 
 local Skin = {}
 
+-- window open / close sounds (Shared.Sfx), looked up lazily so Skin never waits on it
+local function playSfx(name: string)
+	local m = script.Parent:FindFirstChild("Sfx")
+	if m and m:IsA("ModuleScript") then
+		(require(m) :: any).play(name)
+	end
+end
+
 ------------------------------------------------------------------ tokens
 Skin.Fonts = {
 	Title = Font.new("rbxasset://fonts/families/FredokaOne.json"),
@@ -414,6 +422,7 @@ function Skin.window(opts: { [string]: any }): Window
 			return
 		end
 		gui.Enabled = true
+		playSfx("open")
 		dim.BackgroundTransparency = 1
 		tween(dim, 0.2, { BackgroundTransparency = 0.35 })
 		scale.Scale = 0.7 * fit()
@@ -426,6 +435,7 @@ function Skin.window(opts: { [string]: any }): Window
 			return
 		end
 		busy = true
+		playSfx("close")
 		tween(dim, 0.14, { BackgroundTransparency = 1 })
 		local t = tween(scale, 0.14, { Scale = 0.75 * fit() }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
 		t.Completed:Wait()

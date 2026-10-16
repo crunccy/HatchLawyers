@@ -22,6 +22,7 @@ local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
 local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 local MergeSelected = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("MergeSelected") :: RemoteFunction
 
 local STUDS = "rbxassetid://114488299634202"
@@ -505,6 +506,7 @@ local function worldMutationMoment(id: string, stars: number, succeeded: boolean
 		return false
 	end
 	actor.Name = "MutationMomentLawyer"
+	Sfx.at("gears", machine:GetPivot().Position)
 	SkinLook.dress(actor, id, stars)
 	for _, item in actor:GetDescendants() do
 		if item:IsA("BasePart") then
@@ -677,6 +679,7 @@ local function merge()
 	end
 	if result == "fizzled" then
 		-- FIZZLED: the window shakes, a grey puff, and the lawyers run off (no "lose" on screen - CLAUDE.md)
+		Sfx.play("goodbye")
 		local resultScale0 = resultBox:FindFirstChildOfClass("UIScale") or make("UIScale", { Parent = resultBox })
 		local home = resultBox.Position
 		for k = 1, 8 do
@@ -712,6 +715,7 @@ local function merge()
 	local nextStars = (stars or 1) + 1
 	local mut = Config.Lawyers.Mutations[nextStars]
 	local burstColor = if mut then mut.Color else Color3.fromRGB(255, 205, 60) -- (the window already shows the mutated lawyer)
+	Sfx.play("hit")
 	Effects.guiBurst(gui, UDim2.fromOffset(resultBox.AbsolutePosition.X + resultBox.AbsoluteSize.X / 2, resultBox.AbsolutePosition.Y + resultBox.AbsoluteSize.Y / 2), 420, burstColor, 1.8, 3)
 	local resultScale = resultBox:FindFirstChildOfClass("UIScale") or make("UIScale", { Parent = resultBox })
 	resultScale.Scale = 1.25

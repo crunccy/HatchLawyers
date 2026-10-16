@@ -1776,3 +1776,28 @@ Waiting room → lawyer offices along both walls with a red-carpet aisle → exp
   CanCollide/Query/Touch off, faces −Z, feet at y=0.
 - Art direction locked to cartoony voxel; mr.robe's realistic restyle archived (see CLAUDE.md).
 - Economy scale decided: big simulator numbers, coin-based training (overrides DESIGN.md's XP/upgrade curve).
+
+## 2026-10-16 — crnuch, local session: more SFX (in progress, NOT playtested)
+- New `ReplicatedStorage.Shared.Sfx` (src/Sfx.lua): a catalogue of 29 licensed sounds (Roblox UI pack, Pro Sound
+  Effects, APM). It has `play` (2D), `at` (3D) and `loop` (ambience).
+- **Wired in Studio (live):**
+  - Sounds.client:
+    - a click on every GuiButton
+    - egg-crack beats with rising pitch
+    - a pop when the shell bursts
+    - a fanfare for Mythic and Supreme
+    - a stinger on level-ups
+  - Skin.window: open and close sounds.
+  - ArcadeClient.Kit: tick, tap, good, perfect, bad and thud swapped from the old ping and gavel.
+  - Bosses: hit, boing, charge, land and grab.
+  - BigCase: tap and wrong.
+  - Zones: buy (cash register), upgrade and note.
+  - Merger: gears at the machine, goodbye on a fizzle, a hit sting on success.
+  - TravelFx:
+    - charge pings now go out as a new "charge" cue, so egg cracks don't play during travel
+    - a whoosh as you vanish
+  - WorldLife: wave loops round the beach, gulls over the hub, the fountain splashing.
+- **Still to do:**
+  - playtest: check each id loads (TimeLength > 0) and the volumes sound right
+  - re-export the snapshot
+  - run `run_checks.py`
