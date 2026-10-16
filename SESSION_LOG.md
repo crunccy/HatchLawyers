@@ -9,6 +9,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
+- **crnuch (local), since 2026-10-16:** pushing LAWYER MUTATIONS + SELLING (save v18) from `src/` into Studio + its
+  playtest (open item below). Please don't edit PlayerData, LawyerService, CaseService, EggServer, ZoneService,
+  FirmFeatures, Config, Formulas, SkinLook, Effects or the Lawyers / Merger / Eggs / LawyerTags clients meanwhile.
 
 ## Open items
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
