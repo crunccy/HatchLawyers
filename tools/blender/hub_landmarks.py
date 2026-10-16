@@ -159,6 +159,33 @@ for (x, y) in ((R - 2.5, R - 2.5), (-R + 2.5, R - 2.5), (R - 2.5, -R + 2.5), (-R
 for (x, y, col) in ((6, 3, PAL["leaf"]), (-5, -6, PAL["leaf"]), (4, -7, PAL["gold"]), (-7, 4, PAL["gold"])):
     box(F, "Pad", x, y, 1.6, 1.6 if col == PAL["leaf"] else 0.7, 1.6 if col == PAL["leaf"] else 0.7, 0.12, col)
 
+# (2026-10-16 design pass: the fountain stands on a two-step dais - lift everything above, then lay the steps)
+for o in list(root(F).children):
+    o.location.z += 1.2
+for i, (w, z0, col) in enumerate(((36, 0, PAL["stone"]), (31, 0.6, PAL["cream"]))):
+    for (sx, sy) in ((w, w - 11), (w - 11, w)):
+        box(F, "Dais", 0, 0, z0, sx, sy, 0.6, col)
+    box(F, "DaisTrim", 0, 0, z0 + 0.6, w - 12, w - 12, 0.05, col)  # (keeps the octagon's middle level)
+for (sx, sy) in ((36.4, 25.4), (25.4, 36.4)):
+    box(F, "DaisEdge", 0, 0, 0, sx, sy, 0.25, PAL["gold"])
+
+# ------------------------------------------------------------------ PLAZA BENCH + PLANTER (design pass, 2026-10-16): the
+# builder sets copies round the fountain (benches, facing in) and along the plaza's rim (planters, gaps at the walkways)
+B = "PlazaBench"
+box(B, "BenchLeg", -2.2, 0, 0, 0.5, 1.4, 1.2, PAL["ink"])
+box(B, "BenchLeg", 2.2, 0, 0, 0.5, 1.4, 1.2, PAL["ink"])
+box(B, "BenchSeat", 0, 0, 1.2, 5.6, 1.8, 0.4, PAL["woodL"])
+box(B, "BenchBack", 0, -0.75, 1.6, 5.6, 0.35, 1.4, PAL["woodD"])
+box(B, "BenchArm", -2.75, 0, 1.6, 0.35, 1.8, 0.7, PAL["gold"])
+box(B, "BenchArm", 2.75, 0, 1.6, 0.35, 1.8, 0.7, PAL["gold"])
+P = "PlazaPlanter"
+box(P, "PlanterBox", 0, 0, 0, 7.4, 7.4, 1.4, PAL["woodD"])
+box(P, "PlanterRim", 0, 0, 1.4, 7.8, 7.8, 0.3, PAL["woodL"])
+box(P, "PlanterHedge", 0, 0, 1.7, 6.6, 6.6, 2.2, PAL["green"])
+box(P, "PlanterHedgeTop", 0, 0, 3.9, 5.0, 5.0, 0.8, PAL["leaf"])
+for (fx, fy, col) in ((-2.0, 2.6, PAL["pink"]), (1.6, 2.7, PAL["gold"]), (2.7, -1.2, PAL["pink"]), (-2.6, -1.8, PAL["white"])):
+    box(P, "Flower", fx, fy, 3.6, 0.8, 0.8, 0.8, col)
+
 # ------------------------------------------------------------------ the SHOP (stage 3, 2026-10-16): a brick storefront, its counter facing Blender +Y
 S = "ShopStall"
 box(S, "Floor", 0, 0, 0, 17, 13, 0.6, PAL["cream"])
@@ -276,6 +303,13 @@ PLACE = {  # Roblox world: x, y (ground top), z, yaw degrees
     "ShopStall": [-30.4, 0.5, -30.4, -135],
     "MergeMachine": [31.47, 0.5, -31.47, 135],
 }
+# copies: [x, y, z, yaw] each (benches round the fountain, facing it, between the walkway spokes); "rim" = the builder
+# puts one on every Plaza Rim tile that isn't on a walkway
+COPIES = {"PlazaBench": [[round(math.sin(math.radians(a)) * 28, 2), 0.5, round(math.cos(math.radians(a)) * 28, 2), a]
+                         for a in (22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5)],
+          "PlazaPlanter": "rim"}
+PLACE["PlazaBench"] = None
+PLACE["PlazaPlanter"] = None
 TITLE = {"ShopStall": ["Counter", 21.5], "MergeMachine": ["Dome", 9.0]}  # carry the old Title billboard: onto part, height
 for name, r in ROOTS.items():
     parts = []
@@ -290,7 +324,7 @@ for name, r in ROOTS.items():
                           r=[round(Rr[i][j], 5) for i in range(3) for j in range(3)], c=list(o["rgb"]), t=o["tag"],
                           txt=o["txt"] or None, fn=to_rbx(fn) if fn else None, lbl=o["lbl"] or None,
                           prompt=json.loads(o["prompt"]) if o["prompt"] else None, light=json.loads(o["light"]) if o["light"] else None))
-    models.append(dict(name=name, place=PLACE[name], parts=parts, title=TITLE.get(name)))
+    models.append(dict(name=name, place=PLACE[name], parts=parts, title=TITLE.get(name), copies=COPIES.get(name)))
 os.makedirs(os.path.dirname(OUT_JSON), exist_ok=True)
 with open(OUT_JSON, "w") as fh:
     json.dump(dict(models=models), fh, separators=(",", ":"))
@@ -321,6 +355,8 @@ ROOTS["BoardwalkGate"].location = (-22, 10, 0)
 ROOTS["EggFountain"].location = (24, -4, 0)
 ROOTS["ShopStall"].location = (-50, -10, 0)
 ROOTS["MergeMachine"].location = (50, -10, 0)
+ROOTS["PlazaBench"].location = (-14, 30, 0)
+ROOTS["PlazaPlanter"].location = (14, 30, 0)
 ground = bpy.data.objects.new("Ground", me)
 ground.scale = (200, 200, 1)
 ground.location = (0, 0, -0.5)

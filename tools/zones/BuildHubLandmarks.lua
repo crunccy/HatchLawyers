@@ -14,10 +14,17 @@ local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local HttpService = game:GetService("HttpService")
 local ServerStorage = game:GetService("ServerStorage")
 
-local JSON_URL = "http://localhost:8766/hub_landmarks.json"
+-- (other JSON in the same shape - e.g. tools/zones/island_edge.json - by setting _G.LANDMARKS_JSON first; its "parent"
+-- names the Workspace folder it goes into, made if missing; default Workspace.Hub)
+local JSON_URL = (_G :: any).LANDMARKS_JSON or "http://localhost:8766/hub_landmarks.json"
 local data = HttpService:JSONDecode(HttpService:GetAsync(JSON_URL, true))
 local recording = ChangeHistoryService:TryBeginRecording("BuildHubLandmarks")
-local hub = workspace:WaitForChild("Hub")
+local hub = workspace:FindFirstChild(data.parent or "Hub")
+if not hub then
+	hub = Instance.new("Folder")
+	hub.Name = data.parent
+	hub.Parent = workspace
+end
 
 local function archive(inst: Instance, folderName: string)
 	local store = ServerStorage:FindFirstChild(folderName)
@@ -49,8 +56,33 @@ end
 
 local ZFight = require(game:GetService("ServerScriptService").Server.ZFight:Clone())
 local report = {}
+-- where a model goes: its one "place", its "copies" list, or "rim" = every Plaza Rim tile that isn't on a walkway
+-- (walkways: the N / S / E / W spokes and the diagonals), turned to face the plaza's middle
+local function placesFor(md: any): { CFrame }
+	local list = {}
+	if md.copies == "rim" then
+		local plaza = hub:FindFirstChild("Plaza")
+		for _, r in (if plaza then plaza:GetChildren() else {}) do
+			if r:IsA("BasePart") and r.Name == "Rim" then
+				local x, z = r.Position.X, r.Position.Z
+				if math.abs(x) > 12 and math.abs(z) > 12 and math.abs(math.abs(x) - math.abs(z)) > 10 then
+					local yaw = math.atan2(x, z) -- front (model -Z) toward the middle
+					table.insert(list, CFrame.new(x, r.Position.Y + r.Size.Y / 2, z) * CFrame.Angles(0, yaw, 0))
+				end
+			end
+		end
+	elseif type(md.copies) == "table" then
+		for _, c in md.copies do
+			table.insert(list, CFrame.new(c[1], c[2], c[3]) * CFrame.Angles(0, math.rad(c[4]), 0))
+		end
+	elseif md.place then
+		table.insert(list, CFrame.new(md.place[1], md.place[2], md.place[3]) * CFrame.Angles(0, math.rad(md.place[4]), 0))
+	end
+	return list
+end
+
 for _, md in data.models do
-	local place = CFrame.new(md.place[1], md.place[2], md.place[3]) * CFrame.Angles(0, math.rad(md.place[4]), 0)
+	local places = placesFor(md)
 	local existing = hub:FindFirstChild(md.name)
 	local oldTitle = existing and existing:FindFirstChild("Title", true)
 	if oldTitle and not oldTitle:IsA("BillboardGui") then
@@ -62,8 +94,14 @@ for _, md in data.models do
 	if existing then
 		archive(existing, "Old_HubLandmarks")
 	end
+	local holder: Model? = nil
+	if md.copies then -- several copies: one Model holding them all
+		holder = Instance.new("Model")
+		holder.Name = md.name
+	end
+	for ci, place in places do
 	local m = Instance.new("Model")
-	m.Name = md.name
+	m.Name = if holder then md.name .. ci else md.name
 	for _, b in md.parts do
 		local p = Instance.new("Part")
 		p.Name = b.n
@@ -154,8 +192,12 @@ for _, md in data.models do
 			break
 		end
 	end
-	m.Parent = hub
-	table.insert(report, ("%s %d blocks at %s"):format(md.name, #md.parts, tostring(place.Position)))
+	m.Parent = holder or hub
+	end
+	if holder then
+		holder.Parent = hub
+	end
+	table.insert(report, ("%s %d blocks x%d"):format(md.name, #md.parts, #places))
 end
 
 -- the Boardwalk gateway takes the old Big Case gate's place
