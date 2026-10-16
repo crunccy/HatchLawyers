@@ -15,6 +15,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config")) :: any
@@ -34,6 +35,47 @@ local WOOD_DARK = Color3.fromRGB(96, 54, 32)
 
 local function now(): number
 	return workspace:GetServerTimeNow()
+end
+
+-- The egg scene's camera is a shot from the player's side of the prop, eased into the
+-- composition. Use the same geometry for the hub games instead of snapping behind the table.
+local function gameCameraIn(camera: Camera, base: Vector3, towardPlayer: Vector3, distance: number, height: number, lookHeight: number, side: number, fov: number)
+	local state = {
+		camera = camera,
+		oldType = camera.CameraType,
+		oldSubject = camera.CameraSubject,
+		oldCFrame = camera.CFrame,
+		oldFov = camera.FieldOfView,
+	}
+	camera.CameraType = Enum.CameraType.Scriptable
+	local right = towardPlayer:Cross(Vector3.yAxis).Unit
+	local goal = CFrame.lookAt(base + towardPlayer * distance + Vector3.yAxis * height + right * side,
+		base + Vector3.yAxis * lookHeight)
+	TweenService:Create(camera, TweenInfo.new(0.72, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+		CFrame = goal,
+		FieldOfView = fov,
+	}):Play()
+	return state
+end
+
+local function gameCameraOut(state: any, stage: Instance?)
+	local camera = state.camera :: Camera?
+	if not camera or not camera.Parent then
+		if stage then stage:Destroy() end
+		return
+	end
+	local back = TweenService:Create(camera, TweenInfo.new(0.42, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+		CFrame = state.oldCFrame,
+		FieldOfView = state.oldFov,
+	})
+	back.Completed:Once(function()
+		if camera.Parent then
+			camera.CameraType = state.oldType
+			if state.oldSubject then camera.CameraSubject = state.oldSubject end
+		end
+		if stage then stage:Destroy() end
+	end)
+	back:Play()
 end
 
 ------------------------------------------------------------------ sounds (same licensed sounds as StarterPlayerScripts.Sounds)
@@ -123,6 +165,19 @@ local function label(parent: Instance, text: string, x: number, y: number, w: nu
 	end
 	l.Parent = parent
 	return l
+end
+
+local function faceTitle(part: BasePart?, text: string, color: Color3)
+	if not part then return end
+	local surface = Instance.new("SurfaceGui")
+	surface.Name = "MinigameTitle"
+	surface.Face = Enum.NormalId.Front
+	surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	surface.PixelsPerStud = 36
+	surface.LightInfluence = 0
+	surface.Parent = part
+	local title = label(surface, text, 0.5, 0.5, 0.92, 0.78, color, 2.5)
+	title.TextWrapped = true
 end
 
 -- a rounded box (round = corner radius as a share of the smaller side; 0.5 = pill / circle)
@@ -429,265 +484,230 @@ local function showResult(title: string, reward: string, stars: number?, extra: 
 	task.delay(8, close)
 end
 
------------------------------------------------------------------- GAVEL BONK
-type Hole = { cell: Frame, holder: Frame, gavel: Frame, current: any, token: number }
+------------------------------------------------------------------ GAVEL BONK (3D booth scene; only score + timer remain in the HUD)
+type Hole = { hitbox: BasePart, actor: Model, rest: CFrame, current: any, token: number }
 
-local bonk: any = nil -- the running round
+local bonk: any = nil
+
+local function moveModel(model: Model, from: CFrame, to: CFrame, duration: number, easing: ((number) -> number)?)
+	local started = os.clock()
+	while model.Parent do
+		local a = math.clamp((os.clock() - started) / duration, 0, 1)
+		local alpha = if easing then easing(a) else a
+		model:PivotTo(from:Lerp(to, alpha))
+		if a >= 1 then break end
+		RunService.RenderStepped:Wait()
+	end
+end
+
+local function setActorVisible(model: Model, visible: boolean)
+	for _, d in model:GetDescendants() do
+		if d:IsA("BasePart") then d.LocalTransparencyModifier = if visible then 0 else 1 end
+	end
+end
 
 local function hideHole(hole: Hole, fast: boolean?)
+	local pop = hole.current
 	hole.current = nil
 	hole.token += 1
-	tween(hole.holder, if fast then 0.08 else 0.14, { Position = UDim2.fromScale(0, 1.05) }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+	local token = hole.token
+	task.spawn(function()
+		local from = hole.actor:GetPivot()
+		moveModel(hole.actor, from, hole.rest * CFrame.new(0, -1.25, 0), if fast then 0.08 else 0.13, function(a) return a * a end)
+		if hole.token == token then setActorVisible(hole.actor, false) end
+	end)
 end
 
 local function showPop(hole: Hole, pop: any)
-	for _, c in hole.holder:GetChildren() do
-		c:Destroy()
-	end
-	if pop.kind == "Judge" then
-		drawJudge(hole.holder)
-	else
-		drawRobber(hole.holder)
-	end
 	hole.current = pop
 	hole.token += 1
-	hole.holder.Position = UDim2.fromScale(0, 1.05)
-	tween(hole.holder, 0.14, { Position = UDim2.fromScale(0, 0.04) }, Enum.EasingStyle.Back)
-	play("pop")
-end
-
-local function swing(hole: Hole)
-	local g = hole.gavel
-	g.Visible = true
-	g.Rotation = 40
-	tween(g, 0.07, { Rotation = -18 })
-	local token = os.clock()
-	g:SetAttribute("Swing", token)
-	task.delay(0.22, function()
-		if g:GetAttribute("Swing") == token then
-			g.Visible = false
+	local token = hole.token
+	setActorVisible(hole.actor, true)
+	local from = hole.rest * CFrame.new(0, -1.25, 0)
+	local to = hole.rest
+	hole.actor:PivotTo(from)
+	if pop.kind == "Judge" then
+		for _, d in hole.actor:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.Color = if d.Name == "Head" then Color3.fromRGB(255, 220, 175) else Color3.fromRGB(55, 65, 110)
+			end
 		end
+	else
+		for _, d in hole.actor:GetDescendants() do
+			if d:IsA("BasePart") then d.Color = if d.Name == "Head" then Color3.fromRGB(255, 205, 70) else Color3.fromRGB(45, 45, 58) end
+		end
+	end
+	task.spawn(function()
+		moveModel(hole.actor, from, to, 0.14, function(a) return 1 - (1 - a) ^ 3 end)
+		if hole.token ~= token then return end
 	end)
+	play("pop")
 end
 
 local function onTap(hole: Hole)
 	local r = bonk
-	if not r or r.over then
-		return
-	end
+	if not r or r.over or not hole.current then return end
 	local elapsed = now() - r.startAt
-	if elapsed < 0 or elapsed > r.duration then
-		return
-	end
-	swing(hole)
+	if elapsed < 0 or elapsed > r.duration then return end
 	local pop = hole.current
-	if not pop then
-		return
-	end
+	hole.current = nil
 	Remote:FireServer("Bonk", r.id, pop.id)
-	local holder = hole.holder
-	if pop.kind == "Robber" then
-		r.localScore += 1
-		play("bonk")
-		popText(hole.cell, "BONK!", Color3.fromRGB(255, 230, 60), 0.5, 0.3, 1.1)
-		sparkle(hole.cell, 0.5, 0.45, GOLD)
-		-- squash, then duck
-		local s = holder:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
-		s.Parent = holder
-		s.Scale = 0.8
-		tween(s, 0.12, { Scale = 1 })
-	else
-		r.localScore = math.max(0, r.localScore - CFG.GavelBonk.JudgePenalty)
-		play("oops")
-		popText(hole.cell, "OUCH!", RED, 0.5, 0.3, 1.1)
-		shake(r.panel)
-		r.panel.BackgroundColor3 = Color3.fromRGB(255, 160, 160)
-		task.delay(0.15, function()
-			if r.panel.Parent then
-				r.panel.BackgroundColor3 = WHITE
+	if r.mallet and r.mallet.Parent then
+		r.malletToken += 1
+		local token = r.malletToken
+		local from = r.mallet:GetPivot()
+		local hit = hole.rest * CFrame.new(0, 2.15, -0.45) * CFrame.Angles(math.rad(-r.malletSwingDegrees), 0, math.rad(18))
+		task.spawn(function()
+			moveModel(r.mallet, from, hit, r.malletDownSeconds, function(a) return 1 - (1 - a) ^ 3 end)
+			if token == r.malletToken and bonk == r then
+				moveModel(r.mallet, hit, r.malletHome, r.malletRecoverSeconds, function(a) return 1 - (1 - a) ^ 4 end)
 			end
 		end)
 	end
+	local before = hole.actor:GetPivot()
+	task.spawn(function()
+		local direction = if pop.kind == "Judge" then 1 else -1
+		moveModel(hole.actor, before, before * CFrame.new(0, direction * 0.6, 0) * CFrame.Angles(math.rad(16), 0, 0), 0.1)
+	end)
+	if pop.kind == "Robber" then
+		r.localScore += 1
+		play("bonk")
+	else
+		r.localScore = math.max(0, r.localScore - CFG.GavelBonk.JudgePenalty)
+		play("oops")
+	end
 	r.scoreLabel.Text = tostring(r.localScore)
 	task.delay(0.12, function()
-		if hole.current == nil or hole.current == pop then
-			hideHole(hole, true)
-		end
+		if hole.current == nil then hideHole(hole, true) end
 	end)
-	hole.current = nil
 end
 
 local function startBonk(info: any)
 	closeOverlay()
-	local root = backdrop()
-	overlay = root
-	local panel = gamePanel(root, "GAVEL BONK!", Color3.fromRGB(240, 120, 40), 0.82)
-
-	-- score pill (left) and time bar (right)
-	local pill = blob(panel, Color3.fromRGB(30, 26, 52), 0.22, 0.135, 0.3, 0.075, 3, 0.5)
-	stroke(pill, 3)
-	local hammer = label(pill, "🔨", 0.2, 0.5, 0.3, 0.9)
-	hammer.ZIndex = 4
-	local scoreLabel = label(pill, "0", 0.64, 0.5, 0.6, 0.85, GOLD, 2.5)
-	scoreLabel.ZIndex = 4
-	local track = blob(panel, Color3.fromRGB(30, 26, 52), 0.68, 0.135, 0.52, 0.05, 3, 0.5)
-	stroke(track, 3)
-	local fill = Instance.new("Frame")
-	fill.Size = UDim2.fromScale(1, 1)
-	fill.BackgroundColor3 = GREEN
-	fill.BorderSizePixel = 0
-	fill.ZIndex = 4
-	fill.Parent = track
-	local fc = Instance.new("UICorner")
-	fc.CornerRadius = UDim.new(0.5, 0)
-	fc.Parent = fill
-
-	-- the 3x3 bench
-	local grid = Instance.new("Frame")
-	grid.Name = "Grid"
-	grid.AnchorPoint = Vector2.new(0.5, 0)
-	grid.Position = UDim2.fromScale(0.5, 0.21)
-	grid.Size = UDim2.fromScale(0.9, 0.74)
-	grid.BackgroundTransparency = 1
-	grid.Parent = panel
-	local layout = Instance.new("UIGridLayout")
-	layout.CellSize = UDim2.fromScale(0.31, 0.31)
-	layout.CellPadding = UDim2.fromScale(0.035, 0.035)
-	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	layout.VerticalAlignment = Enum.VerticalAlignment.Center
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = grid
-
+	local character = player.Character or player.CharacterAdded:Wait()
+	local rootPart = character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not rootPart then return end
+	local camera = workspace.CurrentCamera
+	if not camera then return end
+	local stage = Instance.new("Folder")
+	stage.Name = "LocalGavelBonkStage"
+	stage.Parent = workspace
+	local origin = rootPart.Position + rootPart.CFrame.LookVector * 9
+	local face = CFrame.lookAt(origin, rootPart.Position)
+	local function part(name: string, size: Vector3, cf: CFrame, color: Color3, material: Enum.Material): Part
+		local p = Instance.new("Part")
+		p.Name, p.Size, p.CFrame, p.Color, p.Material = name, size, cf, color, material
+		p.Anchored, p.CanCollide, p.CanTouch, p.CanQuery = true, false, false, true
+		p.Parent = stage
+		return p
+	end
+	local deckCF = face * CFrame.new(0, -1.2, 0)
+	local assets = ReplicatedStorage:FindFirstChild("MinigameAssets")
+	local benchTemplate = assets and assets:FindFirstChild("GavelBench")
+	if not benchTemplate or not benchTemplate:IsA("Model") then
+		stage:Destroy()
+		warn("[Minigames] Blender-authored GavelBench is missing from ReplicatedStorage.MinigameAssets")
+		return
+	end
+	local benchModel = benchTemplate:Clone()
+	benchModel:PivotTo(deckCF)
+	benchModel.Parent = stage
+	faceTitle(benchModel:FindFirstChild("SignFace", true) :: BasePart?, "GAVEL BONK", Color3.fromRGB(92, 46, 26))
 	local holes: { Hole } = {}
+	local hub = workspace:FindFirstChild("Hub")
+	local spots = hub and hub:FindFirstChild("SpecialSpots")
+	local sourceModel = spots and spots:FindFirstChild("SpecialSpot1")
+	local sourceBooth = sourceModel and sourceModel:FindFirstChild("Station")
+	local sourceActor = sourceBooth and sourceBooth:FindFirstChild("Peeker1")
 	for i = 1, info.holes do
-		local cell = Instance.new("Frame")
-		cell.Name = "Hole" .. i
-		cell.LayoutOrder = i
-		cell.BackgroundColor3 = WOOD
-		cell.Parent = grid
-		UIKit.corner(cell, 14)
-		UIKit.outline(cell, 3)
-		UIKit.shade(cell, 1.05, 0.78)
-		local window = blob(cell, Color3.fromRGB(38, 22, 18), 0.5, 0.5, 0.8, 0.76, 2, 0.18)
-		window.ClipsDescendants = true
-		stroke(window, 3, WOOD_DARK)
-		local holder = Instance.new("Frame")
-		holder.Name = "Holder"
-		holder.Size = UDim2.fromScale(1, 1)
-		holder.Position = UDim2.fromScale(0, 1.05)
-		holder.BackgroundTransparency = 1
-		holder.ZIndex = 3
-		holder.Parent = window
-		local sill = blob(cell, GOLD, 0.5, 0.88, 0.88, 0.1, 9, 0.5) -- covers the robbers' feet
-		stroke(sill, 2)
-		local button = Instance.new("TextButton")
-		button.Name = "Tap"
-		button.BackgroundTransparency = 1
-		button.Text = ""
-		button.Size = UDim2.fromScale(1, 1)
-		button.ZIndex = 30
-		button.Parent = cell
-		local hole: Hole = { cell = cell, holder = holder, gavel = drawGavel(cell), current = nil, token = 0 }
-		holes[i] = hole
-		button.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				onTap(hole)
-			end
-		end)
-	end
-
-	-- intro: who to bonk (no reading needed), then READY... GO!
-	local intro = Instance.new("Frame")
-	intro.Name = "Intro"
-	intro.AnchorPoint = grid.AnchorPoint -- over the bench, but not inside the grid (the layout would move it)
-	intro.Position = grid.Position
-	intro.Size = grid.Size
-	intro.BackgroundColor3 = Color3.fromRGB(20, 16, 36)
-	intro.BackgroundTransparency = 0.25
-	intro.ZIndex = 40
-	intro.Parent = panel
-	UIKit.corner(intro, 18)
-	for k, who in { "Robber", "Judge" } do
-		local card = blob(intro, Color3.fromRGB(60, 40, 30), 0.28 + (k - 1) * 0.44, 0.38, 0.34, 0.4, 41, 0.12)
-		stroke(card, 3)
-		card.ClipsDescendants = true
-		local h = Instance.new("Frame")
-		h.Size = UDim2.fromScale(1, 1)
-		h.BackgroundTransparency = 1
-		h.ZIndex = 42
-		h.Parent = card
-		if who == "Robber" then
-			drawRobber(h)
+		local row, col = math.floor((i - 1) / 3), (i - 1) % 3
+		local localCF = CFrame.new((col - 1) * 3.6, 0.35, (row - 1) * 1.65)
+		local holeCF = deckCF * localCF
+		local hitbox = part("Hit " .. i, Vector3.new(2.5, 1.4, 1.25), holeCF * CFrame.new(0, 0.9, 0), Color3.fromRGB(45, 27, 23), Enum.Material.SmoothPlastic)
+		hitbox.Transparency = 1
+		local actor: Model
+		if sourceActor and sourceActor:IsA("Model") then
+			actor = sourceActor:Clone()
 		else
-			drawJudge(h)
+			actor = Instance.new("Model")
+			local head = Instance.new("Part")
+			head.Name, head.Shape, head.Size, head.Color = "Head", Enum.PartType.Ball, Vector3.new(1.1, 1.1, 1.1), GOLD
+			head.Parent = actor
 		end
-		local mark = blob(intro, if who == "Robber" then GREEN else RED, 0.28 + (k - 1) * 0.44 + 0.13, 0.55, 0.14, 0.14, 50)
-		square(mark)
-		stroke(mark, 3)
-		local m = label(mark, if who == "Robber" then "✓" else "✗", 0.5, 0.5, 0.8, 0.8, WHITE, 2)
-		m.ZIndex = 51
+		actor.Name = "Popper " .. i
+		for _, d in actor:GetDescendants() do
+			if d:IsA("BasePart") then d.Anchored, d.CanCollide, d.CanTouch, d.CanQuery = true, false, false, true end
+			if d:IsA("BillboardGui") or d:IsA("SurfaceGui") then d:Destroy() end
+		end
+		actor.Parent = stage
+		local rest = holeCF * CFrame.new(0, 1.25, 0)
+		actor:PivotTo(rest * CFrame.new(0, -1.25, 0))
+		setActorVisible(actor, false)
+		table.insert(holes, { hitbox = hitbox, actor = actor, rest = rest, current = nil, token = 0 })
 	end
-	local ready = label(intro, "READY?", 0.5, 0.8, 0.8, 0.2, UIKit.Colors.TextGold, 4)
-	ready.ZIndex = 52
-
-	local r = {
-		id = info.id,
-		startAt = info.startAt,
-		duration = info.duration,
-		pops = info.pops,
-		nextPop = 1,
-		over = false,
-		localScore = 0,
-		scoreLabel = scoreLabel,
-		panel = panel,
-		holes = holes,
-		intro = intro,
-		goShown = false,
-	}
+	local malletTemplate = assets:FindFirstChild("GavelMallet")
+	local mallet: Model? = nil
+	local malletHome = deckCF * CFrame.new(5.1, 2.2, -2.3) * CFrame.Angles(math.rad(20), 0, math.rad(-28))
+	local malletSwingDegrees = if malletTemplate then (malletTemplate:GetAttribute("swingDegrees") :: number?) or 58 else 58
+	local malletDownSeconds = if malletTemplate then (malletTemplate:GetAttribute("downSeconds") :: number?) or 0.1 else 0.1
+	local malletRecoverSeconds = if malletTemplate then (malletTemplate:GetAttribute("recoverSeconds") :: number?) or 0.2 else 0.2
+	if malletTemplate and malletTemplate:IsA("Model") then
+		mallet = malletTemplate:Clone()
+		mallet:PivotTo(malletHome)
+		mallet.Parent = stage
+	end
+	local scoreHud = Instance.new("ScreenGui")
+	scoreHud.Name, scoreHud.IgnoreGuiInset, scoreHud.ResetOnSpawn, scoreHud.DisplayOrder = "BonkStatus", true, false, 36
+	scoreHud.Parent = player.PlayerGui
+	local scoreLabel = label(scoreHud, "0", 0.5, 0.08, 0.12, 0.07, GOLD, 2.5)
+	local timerBack = blob(scoreHud, Color3.fromRGB(30, 26, 52), 0.5, 0.15, 0.34, 0.025, 3, 0.5)
+	local timerFill = blob(timerBack, GREEN, 0.5, 0.5, 1, 1, 4, 0.5)
+	local towardPlayer = (rootPart.Position - origin).Unit
+	local cameraState = gameCameraIn(camera, deckCF.Position, towardPlayer, 12.5, 5.1, 1.45, 5.2, 40)
+	local r = { id = info.id, startAt = info.startAt, duration = info.duration, pops = info.pops, nextPop = 1, over = false, localScore = 0, scoreLabel = scoreLabel, holes = holes, stage = stage, cameraState = cameraState, mallet = mallet, malletHome = malletHome, malletToken = 0, malletSwingDegrees = malletSwingDegrees, malletDownSeconds = malletDownSeconds, malletRecoverSeconds = malletRecoverSeconds, gui = scoreHud, timerFill = timerFill }
 	bonk = r
-
+	local function tapAt(position: Vector2)
+		if bonk ~= r or r.over then return end
+		local ray = camera:ScreenPointToRay(position.X, position.Y)
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Include
+		params.FilterDescendantsInstances = { stage }
+		local hit = workspace:Raycast(ray.Origin, ray.Direction * 200, params)
+		if not hit then return end
+		for _, hole in holes do
+			if hit.Instance == hole.hitbox or hit.Instance:IsDescendantOf(hole.actor) then onTap(hole); return end
+		end
+	end
+	local inputConn = UserInputService.InputBegan:Connect(function(input, processed)
+		if processed then return end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then tapAt(Vector2.new(input.Position.X, input.Position.Y)) end
+	end)
+	r.inputConn = inputConn
 	local conn: RBXScriptConnection
 	conn = RunService.RenderStepped:Connect(function()
-		if bonk ~= r or not panel.Parent then
-			conn:Disconnect()
-			return
-		end
+		if bonk ~= r or not stage.Parent then conn:Disconnect(); return end
 		local elapsed = now() - r.startAt
-		if elapsed >= 0 and not r.goShown then
-			r.goShown = true
-			play("go")
-			intro:Destroy()
-			popText(panel, "GO!", GREEN, 0.5, 0.55, 0.6)
-		end
 		local left = math.clamp(1 - elapsed / r.duration, 0, 1)
-		fill.Size = UDim2.fromScale(left, 1)
-		fill.BackgroundColor3 = if left > 0.5 then GREEN elseif left > 0.2 then GOLD else RED
-		-- pops come up on the server's schedule and duck back down when their time is up
+		timerFill.Size = UDim2.fromScale(left, 1)
+		timerFill.BackgroundColor3 = if left > 0.5 then GREEN elseif left > 0.2 then GOLD else RED
 		while r.nextPop <= #r.pops and elapsed >= r.pops[r.nextPop].t do
-			local pop = r.pops[r.nextPop]
-			r.nextPop += 1
+			local pop = r.pops[r.nextPop]; r.nextPop += 1
 			local hole = holes[pop.hole]
-			if hole then
-				showPop(hole, pop)
-			end
+			if hole then showPop(hole, pop) end
 		end
-		for _, hole in holes do
-			local pop = hole.current
-			if pop and elapsed >= pop.t + pop.stay then
-				hideHole(hole)
-			end
-		end
+		for _, hole in holes do if hole.current and elapsed >= hole.current.t + hole.current.stay then hideHole(hole) end end
 		if elapsed >= r.duration and not r.over then
 			r.over = true
-			for _, hole in holes do
-				if hole.current then
-					hideHole(hole)
-				end
-			end
-			local up = label(panel, "TIME'S UP!", 0.5, 0.55, 0.8, 0.16, UIKit.Colors.TextGold, 4)
-			up.ZIndex = 60
+			for _, hole in holes do hideHole(hole, true) end
+			label(scoreHud, "TIME'S UP!", 0.5, 0.21, 0.36, 0.06, UIKit.Colors.TextGold, 3)
 		end
 	end)
+end
+
+local function cleanupBonk(r: any)
+	if r.inputConn then r.inputConn:Disconnect() end
+	if r.gui then r.gui:Destroy() end
+	gameCameraOut(r.cameraState, r.stage)
 end
 
 ------------------------------------------------------------------ LUCKY BRIEFCASE
@@ -785,144 +805,151 @@ end
 
 local function startBrief(info: any)
 	closeOverlay()
-	local root = backdrop()
-	overlay = root
-	local panel = gamePanel(root, "LUCKY BRIEFCASE", Color3.fromRGB(150, 80, 230), 1.05)
-	local hint = label(panel, "WATCH THE ★", 0.5, 0.17, 0.8, 0.1, UIKit.Colors.TextGold, 3)
-
-	local felt = blob(panel, Color3.fromRGB(58, 150, 60), 0.5, 0.6, 0.9, 0.66, 2, 0.08)
-	felt.Name = "Table"
-	stroke(felt, 4)
-	UIKit.shade(felt, 1.05, 0.8)
-	local trim = blob(felt, Color3.new(0, 0, 0), 0.5, 0.5, 0.94, 0.9, 2, 0.07)
-	trim.BackgroundTransparency = 1
-	stroke(trim, 3, GOLD)
-
-	local cases: { Frame } = {} -- cases[k] = case k (identity); slotOf[k] = where it is now
-	local atSlot: { number } = {}
-	for k = 1, 3 do
-		cases[k] = makeCase(felt, k)
-		atSlot[k] = k
+	local character = player.Character or player.CharacterAdded:Wait()
+	local rootPart = character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local camera = workspace.CurrentCamera
+	if not rootPart or not camera then return end
+	local stage = Instance.new("Folder")
+	stage.Name = "LocalLuckyBriefcaseStage"
+	stage.Parent = workspace
+	local origin = rootPart.Position + rootPart.CFrame.LookVector * 9
+	local face = CFrame.lookAt(origin, rootPart.Position)
+	local function part(name: string, size: Vector3, cf: CFrame, color: Color3, material: Enum.Material): Part
+		local p = Instance.new("Part")
+		p.Name, p.Size, p.CFrame, p.Color, p.Material = name, size, cf, color, material
+		p.Anchored, p.CanCollide, p.CanTouch, p.CanQuery = true, false, false, true
+		p.Parent = stage
+		return p
 	end
-
-	local r = {
-		id = info.id,
-		picked = false,
-		cases = cases,
-		atSlot = atSlot, -- atSlot[slot] = case index standing there
-		big = info.big,
-		hint = hint,
-		pickable = false,
-		panel = panel,
-	}
-	brief = r
-
-	local t0 = info.startAt
-	local tShow, tClose = t0, t0 + info.showTime
-	local tSwap = tClose + info.closeTime
-	-- moves: { case, fromX, toX, start, dir }
-	local moves: { any } = {}
-	do
-		local slots = { 1, 2, 3 } -- slots[slot] = case
-		for i, s in info.swaps do
-			local a, b = s[1], s[2]
-			local start = tSwap + (i - 1) * info.swapTime
-			table.insert(moves, { case = slots[a], from = SLOT_X[a], to = SLOT_X[b], start = start, dir = -1 })
-			table.insert(moves, { case = slots[b], from = SLOT_X[b], to = SLOT_X[a], start = start, dir = 1 })
-			slots[a], slots[b] = slots[b], slots[a]
+	local tableCF = face * CFrame.new(0, -1.1, 0)
+	local assets = ReplicatedStorage:FindFirstChild("MinigameAssets")
+	local tableTemplate = assets and assets:FindFirstChild("LuckyBriefcaseTable")
+	local caseTemplate = assets and assets:FindFirstChild("LuckyBriefcase")
+	if not tableTemplate or not tableTemplate:IsA("Model") or not caseTemplate or not caseTemplate:IsA("Model") then
+		stage:Destroy()
+		warn("[Minigames] Blender-authored LuckyBriefcase props are missing from ReplicatedStorage.MinigameAssets")
+		return
+	end
+	local gameTable = tableTemplate:Clone()
+	gameTable:PivotTo(tableCF)
+	gameTable.Parent = stage
+	faceTitle(gameTable:FindFirstChild("MarqueeFace", true) :: BasePart?, "LUCKY BRIEFCASE", Color3.fromRGB(72, 43, 18))
+	local cases: { [number]: Model } = {}
+	local lids: { [number]: BasePart } = {}
+	local bases: { [number]: BasePart } = {}
+	local atSlot: { number } = { 1, 2, 3 }
+	local lidOpenDegrees = (caseTemplate:GetAttribute("lidOpenDegrees") :: number?) or 68
+	local lidOpenSeconds = (caseTemplate:GetAttribute("openSeconds") :: number?) or 0.2
+	local lidCloseSeconds = (caseTemplate:GetAttribute("closeSeconds") :: number?) or 0.12
+	local shuffleLift = (caseTemplate:GetAttribute("shuffleLift") :: number?) or 0.85
+	for i = 1, 3 do
+		local rest = tableCF * CFrame.new((i - 2) * 3.6, 1, 0)
+		local model = caseTemplate:Clone()
+		model.Name = "Case " .. i
+		local body = model:FindFirstChild("Body") :: BasePart
+		local lid = model:FindFirstChild("Lid") :: BasePart
+		for _, d in model:GetDescendants() do
+			if d:IsA("BasePart") then d.CanQuery = true end
 		end
-		r.finalSlots = slots
+		model.PrimaryPart = body
+		model.WorldPivot = CFrame.identity
+		model:PivotTo(rest)
+		model.Parent = stage
+		cases[i], lids[i], bases[i] = model, lid, body
 	end
-
+	local status = Instance.new("ScreenGui")
+	status.Name, status.IgnoreGuiInset, status.ResetOnSpawn, status.DisplayOrder = "BriefcaseStatus", true, false, 36
+	status.Parent = player.PlayerGui
+	local hint = label(status, "WATCH THE STAR", 0.5, 0.08, 0.38, 0.06, UIKit.Colors.TextGold, 3)
+	local cameraState = gameCameraIn(camera, tableCF.Position, (rootPart.Position - origin).Unit, 13.1, 5.0, 1.55, 4.8, 39)
+	local r = { id = info.id, picked = false, cases = cases, atSlot = atSlot, big = info.big, hint = hint, pickable = false, stage = stage, gui = status, cameraState = cameraState, lids = lids, bases = bases, tableCF = tableCF, info = info, lidOpenDegrees = lidOpenDegrees, lidOpenSeconds = lidOpenSeconds, lidCloseSeconds = lidCloseSeconds, shuffleLift = shuffleLift }
+	brief = r
+	local function showPrize(identity: number, kind: string)
+		local color = if kind == "Star" then GOLD else GREEN
+		local item = part(if kind == "Star" then "Star Prize" else "Prize Token", Vector3.new(0.8, 0.8, 0.8), cases[identity]:GetPivot() * CFrame.new(0, 1.2, 0), color, Enum.Material.Neon)
+		item.Shape = Enum.PartType.Ball
+		if kind == "Star" then item.Shape = Enum.PartType.Block; item.Size = Vector3.new(0.8, 0.8, 0.2) end
+		local lid = lids[identity]
+		local base = bases[identity]
+		TweenService:Create(lid, TweenInfo.new(lidOpenSeconds, Enum.EasingStyle.Back), { CFrame = base.CFrame * CFrame.new(0, 0.65, -0.45) * CFrame.Angles(math.rad(-lidOpenDegrees), 0, 0) }):Play()
+	end
+	local moves: { any } = {}
+	local finalSlots = { 1, 2, 3 }
+	local tClose = info.startAt + info.showTime
+	local tSwap = tClose + info.closeTime
+	for i, pair in info.swaps do
+		local a, b = pair[1], pair[2]
+		local ca, cb = finalSlots[a], finalSlots[b]
+		table.insert(moves, { case = ca, from = a, to = b, start = tSwap + (i - 1) * info.swapTime, dir = -1 })
+		table.insert(moves, { case = cb, from = b, to = a, start = tSwap + (i - 1) * info.swapTime, dir = 1 })
+		finalSlots[a], finalSlots[b] = cb, ca
+	end
+	r.finalSlots = finalSlots
+	local inputConn = UserInputService.InputBegan:Connect(function(input, processed)
+		if processed or brief ~= r or not r.pickable or r.picked then return end
+		if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
+		local ray = camera:ScreenPointToRay(input.Position.X, input.Position.Y)
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Include
+		params.FilterDescendantsInstances = { stage }
+		local hit = workspace:Raycast(ray.Origin, ray.Direction * 200, params)
+		if not hit then return end
+		for identity, model in cases do
+			if hit.Instance:IsDescendantOf(model) then
+				local slot = table.find(r.atSlot, identity)
+				if slot then
+					r.picked, r.pickable = true, false
+					play("pop")
+					Remote:FireServer("Pick", r.id, slot)
+				end
+				return
+			end
+		end
+	end)
+	r.inputConn = inputConn
 	local phase = "wait"
 	local conn: RBXScriptConnection
 	conn = RunService.RenderStepped:Connect(function()
-		if brief ~= r or not panel.Parent then
-			conn:Disconnect()
-			return
-		end
+		if brief ~= r or not stage.Parent then conn:Disconnect(); return end
 		local t = now()
-		if phase == "wait" and t >= tShow then
+		if phase == "wait" and t >= info.startAt then
 			phase = "show"
-			for k = 1, 3 do
-				openCase(cases[k], if k == r.big then "Star" else "Coins")
-			end
+			for identity = 1, 3 do showPrize(identity, if identity == info.big then "Star" else "Coins") end
 			play("go")
 		elseif phase == "show" and t >= tClose then
-			phase = "close"
-			for k = 1, 3 do
-				closeCase(cases[k])
-			end
-			hint.Text = "..."
-		elseif phase == "close" and t >= tSwap then
 			phase = "swap"
+			for _, item in stage:GetChildren() do if item.Name == "Star Prize" or item.Name == "Prize Token" then item:Destroy() end end
+			hint.Text = "FOLLOW THE STAR"
+			for i = 1, 3 do TweenService:Create(lids[i], TweenInfo.new(lidCloseSeconds), { CFrame = bases[i].CFrame * CFrame.new(0, 0.65, 0) }):Play() end
 		end
 		if phase == "swap" then
 			for _, m in moves do
-				local a = (t - m.start) / info.swapTime
-				if a >= 0 and a <= 1.05 then
-					a = math.clamp(a, 0, 1)
+				local a = math.clamp((t - m.start) / info.swapTime, 0, 1)
+				if t >= m.start and t <= m.start + info.swapTime then
 					local e = (1 - math.cos(a * math.pi)) / 2
-					local x = m.from + (m.to - m.from) * e
-					local y = CASE_Y + m.dir * 0.2 * math.sin(a * math.pi)
-					cases[m.case].Position = UDim2.fromScale(x, y)
-					cases[m.case].ZIndex = if m.dir < 0 then 5 else 10
+					local x = (m.from - 2) * 3.6 + (m.to - m.from) * 3.6 * e
+					local y = 1 + m.dir * r.shuffleLift * math.sin(a * math.pi)
+					cases[m.case]:PivotTo(tableCF * CFrame.new(x, y, 0))
 				end
 			end
 			if t >= info.pickAt then
 				phase = "pick"
-				for slot = 1, 3 do
-					local k = r.finalSlots[slot]
-					cases[k].Position = UDim2.fromScale(SLOT_X[slot], CASE_Y)
-					r.atSlot[slot] = k
-				end
-				hint.Text = "PICK ONE!"
-				hint.TextColor3 = WHITE
 				r.pickable = true
+				hint.Text = "PICK A CASE!"
 				play("go")
-			end
-		end
-		if phase == "pick" and r.pickable then
-			local pulse = 1 + 0.05 * math.sin(t * 8)
-			for k = 1, 3 do
-				local s = cases[k]:FindFirstChildOfClass("UIScale")
-				if s then
-					s.Scale = pulse
+				for slot = 1, 3 do
+					cases[finalSlots[slot]]:PivotTo(tableCF * CFrame.new((slot - 2) * 3.6, 1, 0))
+					r.atSlot[slot] = finalSlots[slot]
 				end
 			end
 		end
 	end)
+end
 
-	for slot = 1, 3 do
-		-- the buttons belong to cases, so map back to the slot the case stands in when tapped
-		local k = slot
-		local btn = cases[k]:FindFirstChild("Pick") :: TextButton
-		btn.Active = true
-		btn.Activated:Connect(function()
-			if brief ~= r or not r.pickable or r.picked then
-				return
-			end
-			local where = 0
-			for s = 1, 3 do
-				if r.atSlot[s] == k then
-					where = s
-				end
-			end
-			if where == 0 then
-				return
-			end
-			r.picked = true
-			r.pickable = false
-			for j = 1, 3 do
-				local s = cases[j]:FindFirstChildOfClass("UIScale")
-				if s then
-					s.Scale = if j == k then 1.12 else 0.92
-				end
-			end
-			play("pop")
-			Remote:FireServer("Pick", r.id, where)
-		end)
-	end
+local function cleanupBrief(r: any)
+	if r.inputConn then r.inputConn:Disconnect() end
+	if r.gui then r.gui:Destroy() end
+	gameCameraOut(r.cameraState, r.stage)
 end
 
 local function briefResult(info: any)
@@ -931,29 +958,57 @@ local function briefResult(info: any)
 		showResult(if info.big then "BIG PRIZE!" else "YOU WON!", info.text, nil, nil, info.big)
 		return
 	end
-	r.pickable = false
-	r.picked = true
-	local picked = r.atSlot[info.slot]
-	local starCase = r.atSlot[info.finalBig]
-	local kind = if info.big then (if info.kind == "Egg" then "Egg" else "Star") else "Coins"
-	openCase(r.cases[picked], kind)
-	if info.big then
-		sparkle(r.cases[picked], 0.5, 0, GOLD)
+	r.pickable, r.picked = false, true
+	local pickedIdentity = r.atSlot[info.slot]
+	local starIdentity = r.finalSlots[info.finalBig]
+	local pickedModel = r.cases[pickedIdentity]
+	local lid = r.lids[pickedIdentity]
+	local function openLid(partToMove: BasePart)
+		local from = partToMove.CFrame
+		local goal = from * CFrame.new(0, 0.5, -0.75) * CFrame.Angles(math.rad(-r.lidOpenDegrees), 0, 0)
+		TweenService:Create(partToMove, TweenInfo.new(r.lidOpenSeconds * 1.2, Enum.EasingStyle.Back), { CFrame = goal }):Play()
 	end
+	if lid then openLid(lid) end
+	local item = Instance.new("Part")
+	item.Name = if info.big then "Big Prize" else "Prize"
+	item.Shape = Enum.PartType.Ball
+	item.Size = Vector3.new(0.9, 0.9, 0.9)
+	item.Material = Enum.Material.Neon
+	item.Color = if info.big then GOLD else GREEN
+	item.Anchored, item.CanCollide, item.CanTouch, item.CanQuery = true, false, false, false
+	item.CFrame = pickedModel:GetPivot() * CFrame.new(0, 1.4, 0)
+	item.Parent = r.stage
+	if info.big then
+		item.Shape = Enum.PartType.Block
+		item.Size = Vector3.new(0.85, 0.85, 0.2)
+	end
+	TweenService:Create(item, TweenInfo.new(0.35, Enum.EasingStyle.Back), { Position = item.Position + Vector3.new(0, 0.8, 0) }):Play()
 	play(if info.big then "coin" else "pop")
-	r.hint.Text = if info.big then "YOU FOUND IT!" else "NICE!"
+	if info.big then sparkle(r.gui, 0.5, 0.25, GOLD) end
+	r.hint.Text = if info.big then "YOU FOUND THE STAR!" else "NICE PICK!"
 	task.delay(0.8, function()
-		for k = 1, 3 do
-			if k ~= picked then
-				openCase(r.cases[k], if k == starCase then "Star" else "Coins")
-			end
+		if brief ~= r then return end
+		local finalModel = r.cases[starIdentity]
+		if finalModel and starIdentity ~= pickedIdentity then
+			local reveal = Instance.new("Part")
+			reveal.Name = "The Star"
+			reveal.Shape = Enum.PartType.Block
+			reveal.Size = Vector3.new(0.85, 0.85, 0.2)
+			reveal.Color = GOLD
+			reveal.Material = Enum.Material.Neon
+			reveal.Anchored, reveal.CanCollide, reveal.CanTouch, reveal.CanQuery = true, false, false, false
+			reveal.CFrame = finalModel:GetPivot() * CFrame.new(0, 1.4, 0)
+			reveal.Parent = r.stage
+			local starLid = r.lids[starIdentity]
+			if starLid then openLid(starLid) end
 		end
 	end)
 	task.delay(2.2, function()
 		if brief == r then
 			brief = nil
+			cleanupBrief(r)
 			local title = if info.kind == "Egg" then "FREE EGG!" elseif info.big then "BIG PRIZE!" else "YOU WON!"
-			showResult(title, info.text, nil, if info.big then nil else "Follow the ★ for the big prize!", info.big)
+			showResult(title, info.text, nil, if info.big then nil else "Follow the star next time!", info.big)
 		end
 	end)
 end
@@ -976,6 +1031,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		if info.game == "GavelBonk" then
 			local r = bonk
 			bonk = nil
+			if r then cleanupBonk(r) end
 			local title = if info.stars >= 3 then "AMAZING!" elseif info.stars == 2 then "GREAT JOB!" else "NICE TRY!"
 			local extra = "🔨 " .. info.robbersHit .. " robbers bonked"
 			task.delay(if r then 0.6 else 0, function()

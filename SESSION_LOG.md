@@ -10,11 +10,27 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Claude:** continue the existing Studio bug-list claim below; handle Studio pushes/playtests, visual checks, and Blender model work when working locally with those tools. Update this log with results and release the claim when done.
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
+## Codex — hub minigame camera + Blender prop sync — 2026-10-16
+
+- **User's direction:** fix Gavel Bonk and Lucky Briefcase framing/quality to feel closer to the egg hatch scene; create their props and animations in Blender; sync the work so Claude can access it.
+- **Change:** `src/Minigames.client.lua` now eases the camera into a player-facing composition and eases it back out; Gavel Bonk uses a Blender-authored studded bench and swinging mallet; Lucky Briefcase uses a Blender-authored table/cases with eased lid and shuffle motion.
+- **Blender source:** `tools/blender/minigame_kit.py` generates `tools/zones/minigame_kit.json` and `art/minigames/MinigameKit.blend`; `tools/zones/BuildMinigameKit.lua` installs the JSON geometry in Studio. Four models (102 parts) are now under `ReplicatedStorage.MinigameAssets`.
+- **Studio sync:** updated `StarterPlayerScripts.Minigames` in the connected Edit place and installed the four models. Copied the same client source to `studio/StarterPlayer/StarterPlayerScripts/Minigames.client.lua` for the local Studio mirror. The separate Big Case showdown games were left intact.
+- **Still needed:** playtest both hub games in Studio, verify target/case taps and camera restore on desktop + touch; inspect the Blender model from close camera distance and tune if the parts feel too plain. The two Big Case showdown activities remain on their existing client flow.
+
 ## Codex — mutation presentation implementation — 2026-10-16
 
 - **User's direction:** keep mutation choices in the existing controls, but make the mutation itself a character-driven in-world moment like egg hatching.
 - **Change:** `src/Merger.client.lua` now hides the selection panel after the server returns its result, clones and dresses a lawyer at the Mutation Machine, frames a brief approach / anticipation / transformation scene, pulses the machine lights, then celebrates the new look or has the lawyer run off on a fizzle. The server remains authoritative for chance, cost, and outcome; this is presentation only.
 - **Review state:** committed on `codex/mutation-in-world-animation`. It has not been synced to Studio or playtested. Next: review Luau behavior, sync this script to Studio, and playtest success + fizzle at desktop and phone sizes; ensure the camera/UI restore cleanly on both paths.
+
+## Codex — minigames move into the 3D world — 2026-10-16
+
+- **User's direction:** make all five minigames playable as physical in-world activities like the egg hatch moment, including the two hub games beside the Big Case belt.
+- **Change:** Gavel Bonk now runs on a 3D brick bench with nine animated targets and tap-to-bonk raycasting; Lucky Briefcase uses a 3D moving-case stage with tap-to-pick. Lie Detector, Briefcase Stack, and Filing Frenzy now use the Arcade Pier booth props: a moving needle and physical STOP prompt, a moving brick case and DROP prompt, and moving papers sorted through the physical colored bins. The existing Arcade server modules still own timing validation, scoring, and rewards; only status/progress and final reward use GUI.
+- **Source:** `src/Minigames.client.lua`, `src/Arcade.client.lua`, `src/ArcadeClient/`, and `src/ArcadeServer/` (the Arcade source was absent from the repo snapshot, so the current Studio scripts were first copied into the branch as their working source).
+- **Sync:** user explicitly asked Codex to sync; six client scripts were copied into the connected Studio Edit place and read back to confirm exact source match. The three live Arcade server modules were left untouched. No playtest run yet.
+- **Review state:** draft PR on `codex/world-minigames`. Next: playtest all five activities with desktop and touch controls; check booth prompt placement, rewards, and camera/input cleanup.
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
@@ -23,6 +39,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 
 ## Open items
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
+- [ ] **Playtest the five in-world minigames** already synced from the `codex/world-minigames` draft PR. Include Gavel Bonk + Lucky Briefcase with the new eased camera and Blender props; check every physical prompt, timing animation, reward result, touch interaction, and camera/input cleanup.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
       3-way merge anything that changed since. Files: NEW `Shared.MutationLook` (src/MutationLook.lua); `Shared.SkinLook`
