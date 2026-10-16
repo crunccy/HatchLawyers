@@ -17,6 +17,7 @@ the working notes for Claude, and offline tools.
 | [docs/ECONOMY_REVIEW.md](docs/ECONOMY_REVIEW.md) | Sim analysis: what needs attention, ranked |
 | [docs/CLIENTS.md](docs/CLIENTS.md) | Client roster and bios |
 | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) | Plan for remaking models in Blender |
+| [docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md) | Queued cohesive map + model art pass (start after current bug-fix claim) |
 | [docs/BOSSES.md](docs/BOSSES.md) | Zone boss concepts and the egg-drop rule |
 | [tools/economy_sim.py](tools/economy_sim.py) | Offline economy simulator: `python3 tools/economy_sim.py --report` |
 | [tools/test_economy_sim.py](tools/test_economy_sim.py) | Sim tests: `python3 -m unittest discover tools` |
