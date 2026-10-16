@@ -21,7 +21,8 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **User's direction:** make all five minigames playable as physical in-world activities like the egg hatch moment, including the two hub games beside the Big Case belt.
 - **Change:** Gavel Bonk now runs on a 3D brick bench with nine animated targets and tap-to-bonk raycasting; Lucky Briefcase uses a 3D moving-case stage with tap-to-pick. Lie Detector, Briefcase Stack, and Filing Frenzy now use the Arcade Pier booth props: a moving needle and physical STOP prompt, a moving brick case and DROP prompt, and moving papers sorted through the physical colored bins. The existing Arcade server modules still own timing validation, scoring, and rewards; only status/progress and final reward use GUI.
 - **Source:** `src/Minigames.client.lua`, `src/Arcade.client.lua`, `src/ArcadeClient/`, and `src/ArcadeServer/` (the Arcade source was absent from the repo snapshot, so the current Studio scripts were first copied into the branch as their working source).
-- **Review state:** draft PR on `codex/world-minigames`; not synced to Studio or playtested. After the current Studio bug-fix claim is clear, merge/rebase the latest Studio snapshot, sync these scripts, and playtest all five activities with desktop and touch controls; check booth prompt placement and camera cleanup.
+- **Sync:** user explicitly asked Codex to sync; six client scripts were copied into the connected Studio Edit place and read back to confirm exact source match. The three live Arcade server modules were left untouched. No playtest run yet.
+- **Review state:** draft PR on `codex/world-minigames`. Next: playtest all five activities with desktop and touch controls; check booth prompt placement, rewards, and camera/input cleanup.
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
@@ -30,7 +31,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 
 ## Open items
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
-- [ ] **Sync + playtest the five in-world minigames** from the `codex/world-minigames` draft PR after the current Studio bug-fix claim is released. Check every physical prompt, timing animation, reward result, touch interaction, and camera/input cleanup.
+- [ ] **Playtest the five in-world minigames** already synced from the `codex/world-minigames` draft PR. Check every physical prompt, timing animation, reward result, touch interaction, and camera/input cleanup.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
       3-way merge anything that changed since. Files: NEW `Shared.MutationLook` (src/MutationLook.lua); `Shared.SkinLook`
