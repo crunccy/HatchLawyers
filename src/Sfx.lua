@@ -40,9 +40,10 @@ Sfx.LIST = {
 	gears = { id = 9116494032, volume = 0.45, speed = 1.1 },
 	gavel = { id = 9125574353, volume = 0.8, speed = 1 },
 	-- stings (APM Music)
-	win = { id = 1844278029, volume = 0.5, speed = 1, cut = 2.4 },
-	big = { id = 9045751375, volume = 0.55, speed = 1 },
-	fanfare = { id = 1842130722, volume = 0.5, speed = 1, cut = 3 },
+	win = { id = 1844278029, volume = 0.16, speed = 1, cut = 2.4 }, -- (cut to a third 2026-10-16, crnuch: too loud)
+	-- (win, big + fanfare cut to about a third 2026-10-16: crnuch - "incredibly loud" next to the rest; they stay loud all the way through)
+	big = { id = 9045751375, volume = 0.18, speed = 1 },
+	fanfare = { id = 1842130722, volume = 0.18, speed = 1, cut = 3 },
 	hit = { id = 9046296613, volume = 0.5, speed = 1 },
 	-- ambience loops (Pro Sound Effects)
 	waves = { id = 9126201551, volume = 0.35, speed = 1 },

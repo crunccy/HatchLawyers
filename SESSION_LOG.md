@@ -151,6 +151,17 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-16 — crnuch, local session: the music stings turned down (win, big, fanfare)
+- crnuch: two sounds from the first SFX batch were "incredibly loud" next to the rest - the fanfare (Mythic / Supreme
+  hatch) and "big" (the "dunnnn dun dunnn": Rare+ hatches, Epic / Legendary client wins, office tier-ups, rebirth),
+  then "win" too. Measured in a playtest (PlaybackLoudness at Volume 1): these APM stings stay loud for their whole
+  length (average 150-190) while UI sounds are short blips (average < 60). `Shared.Sfx` volumes, picked by ear with
+  crnuch over 3 rounds of an on-screen numbered comparison: win 0.5 -> 0.16, big 0.55 -> 0.18, fanfare 0.5 -> 0.18
+  (big stays a touch above win). Live in Studio, src/Sfx.lua == live, snapshot re-exported, `run_checks.py` passed.
+- Noticed, not changed: the wave loops (`WorldLife`) play with no SoundGroup, so the SFX group's volume doesn't reach
+  them (the fountain's does).
+- Signed: Claude (Opus 5.5) for crnuch, local session.
+
 ## 2026-10-18 — crnuch, local session: bug 6 follow-up (z-fighting: studded faces, client-side scan, minigame props)
 - **The detector had two blind spots** (`ZFight`, now `ReplicatedStorage.Shared.ZFight`; `Server.ZFight` is a one-line
   wrapper so FirmBuilder, DeskService and every `tools/zones/Build*.lua` keep their require):
