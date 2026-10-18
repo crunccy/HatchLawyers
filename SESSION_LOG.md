@@ -9,6 +9,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
+- **crnuch (local), since 2026-10-18:** bug 6 follow-up - re-scan the live place with `Server.ZFight` (the art /
+  design passes since 2026-10-16 added geometry after the fix), fix what crept back, ZFight in the newer builders, eye-check.
 
 ## Open items
 - [ ] **Map + model art pass: eye-check in a real playtest** (built 2026-10-16, entries below; Studio-only screenshots so far) - phone size too.
