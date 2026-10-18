@@ -2,6 +2,7 @@
 -- tools/zones/world_life.json (tools/blender/world_life.py; design pass 2026-10-16). Re-runnable. JSON at JSON_URL.
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ZFight = require(ReplicatedStorage.Shared.ZFight:Clone())
 local JSON_URL = "http://localhost:8766/world_life.json"
 local data = HttpService:JSONDecode(HttpService:GetAsync(JSON_URL, true))
 local old = ReplicatedStorage:FindFirstChild("WorldLife")
@@ -30,6 +31,11 @@ for _, md in data.models do
 		p.Parent = m
 	end
 	m.WorldPivot = CFrame.new()
+	for _ = 1, 3 do -- z-fighting (bug 6)
+		if ZFight.fix({ m }, { noYield = true }) == 0 then
+			break
+		end
+	end
 	m.Parent = folder
 end
 folder.Parent = ReplicatedStorage

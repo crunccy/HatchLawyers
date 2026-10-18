@@ -127,6 +127,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
   colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
   Studio's command bar caches required modules: after editing a ModuleScript, re-require a fresh clone.
+- **Z-fighting (flicker where Part faces overlap):** `ReplicatedStorage.Shared.ZFight` finds and fixes it (`scan` / `fix`,
+  per model - models stored at the same spot clash with each other). Every Part builder ends with up to 3 `fix` passes on
+  what it built; FirmBuilder and the minigame Scene run it at runtime. Same-colour BrickStuds faces count too (offset stud grids).
 - **No z-fighting (bug report 6, 2026-10-16):** two block faces in the same plane with different colours flicker.
   `ServerScriptService.Server.ZFight.fix({ model })` nudges them apart; every Studio builder in tools/ ends with it and
   FirmBuilder runs it on each firm. New builders / hand-built models: run it on what you built.

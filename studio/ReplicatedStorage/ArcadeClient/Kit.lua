@@ -178,14 +178,14 @@ function Kit.tween(o: Instance, t: number, props: { [string]: any }, style: Enum
 	return tw
 end
 
------------------------------------------------------------------- sounds (the game's licensed set, as in Sounds.client)
+------------------------------------------------------------------ sounds (licensed ids, the same set as Shared.Sfx: Roblox UI pack, Pro Sound Effects, APM)
 local SOUNDS = {
-	tick = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.22, speed = 1.2 },
-	tap = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.3, speed = 1.6 },
-	good = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.45, speed = 2 },
-	perfect = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.55, speed = 2.5 },
-	bad = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.45, speed = 0.55 },
-	thud = { id = "rbxassetid://9125574353", volume = 0.5, speed = 1.4 },
+	tick = { id = "rbxassetid://15675032796", volume = 0.3, speed = 1.1 }, -- UI small click
+	tap = { id = "rbxassetid://15675055424", volume = 0.4, speed = 1.1 }, -- UI cute pop
+	good = { id = "rbxassetid://15675059323", volume = 0.5, speed = 1.1 }, -- UI bright click
+	perfect = { id = "rbxassetid://15675043410", volume = 0.5, speed = 1.15 }, -- UI tonal stinger
+	bad = { id = "rbxassetid://15675075163", volume = 0.45, speed = 1 }, -- UI delete
+	thud = { id = "rbxassetid://9114753510", volume = 0.55, speed = 1.1, cut = 0.5 }, -- PSE hammer on wood
 	win = { id = "rbxassetid://1844278029", volume = 0.45, speed = 1, cut = 2.4 },
 	big = { id = "rbxassetid://9045751375", volume = 0.5, speed = 1 },
 }

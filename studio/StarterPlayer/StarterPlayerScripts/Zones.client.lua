@@ -69,10 +69,10 @@ local function sound(id: string, volume: number, speed: number): Sound
 	return s
 end
 local SND = {
-	buy = sound("rbxasset://sounds/electronicpingshort.wav", 0.45, 1.4),
+	buy = sound("rbxassetid://9113728049", 0.5, 1), -- PSE cash register
 	alert = sound("rbxassetid://9045751375", 0.5, 1),
-	upgrade = sound("rbxasset://sounds/electronicpingshort.wav", 0.55, 1.8),
-	note = sound("rbxasset://sounds/electronicpingshort.wav", 0.3, 0.7),
+	upgrade = sound("rbxassetid://15675043410", 0.5, 1), -- UI tonal stinger
+	note = sound("rbxassetid://15675085146", 0.4, 1), -- UI indicator
 }
 
 ------------------------------------------------------------------ gui

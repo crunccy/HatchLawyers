@@ -6,6 +6,7 @@ local Input = game:GetService('UserInputService')
 local CAS = game:GetService('ContextActionService')
 local Lighting = game:GetService('Lighting')
 local Data = require(script.Parent:WaitForChild('AssetData'))
+local ZFight = require(RS:WaitForChild('Shared'):WaitForChild('ZFight'))
 local Scene = {}; Scene.__index = Scene
 local active
 local origin = CFrame.new(0,4000,0)
@@ -74,6 +75,7 @@ function Scene:asset(name,at,scale)
    p.Parent=groups[row.g]
   else p.Parent=m end
  end
+ for _=1,2 do if ZFight.fix({m},{noYield=true})==0 then break end end -- flickering coplanar faces (bug 6)
  m.WorldPivot=origin*at; m.Parent=self.root
  for name,g in groups do g.WorldPivot=origin*at*CFrame.new(Vector3.new(table.unpack(Data.groups[m.Name][name]))*scale) end
  return m

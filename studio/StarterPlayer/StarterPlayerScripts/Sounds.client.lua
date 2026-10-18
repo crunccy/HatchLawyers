@@ -1,13 +1,12 @@
 --!strict
--- Sound effects, driven only by events other scripts already send (no other script plays these).
--- Sources: Roblox built-in ping (coins, level-ups), Pro Sound Effects gavel, APM Music stings, all
--- licensed for Roblox use. Background cases only get a quiet coin ping so 5 lawyers don't spam
--- stings; the big sounds are for court verdicts and special moments. Volume: the SFX SoundGroup.
+-- Sound effects, driven by events other scripts already send. Every sound comes from Shared.Sfx (the licensed
+-- catalogue: Roblox UI pack, Pro Sound Effects, APM Music - 2026-10-16, replaced the one built-in ping).
+-- Background cases only get a quiet coin toss so 5 lawyers don't spam stings; the big sounds are for court
+-- verdicts and special moments. Also here: a click on every button tap. Volume: the SFX SoundGroup.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
-local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
@@ -23,45 +22,11 @@ if not group then
 	group = g
 end
 
-local SOUNDS = {
-	coin = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.35, speed = 1.25 },
-	levelUp = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.6, speed = 1.7 },
-	gavel = { id = "rbxassetid://9125574353", volume = 0.8, speed = 1 },
-	win = { id = "rbxassetid://1844278029", volume = 0.5, speed = 1, cut = 2.4 }, -- 5.4s long: fade early
-	big = { id = "rbxassetid://9045751375", volume = 0.55, speed = 1 },
-}
+local Sfx = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Sfx")) :: any
 
-local sounds: { [string]: Sound } = {}
-for name, info in SOUNDS do
-	local s = Instance.new("Sound")
-	s.Name = "Sfx_" .. name
-	s.SoundId = info.id
-	s.Volume = info.volume
-	s.PlaybackSpeed = info.speed
-	s.SoundGroup = group
-	s.Parent = SoundService
-	sounds[name] = s
-end
-
-local lastPlayed: { [string]: number } = {}
+-- per-name minimum gaps (the old pooled sounds restarted; Sfx overlaps, so busy names get a gap)
 local function play(name: string, minGap: number?)
-	local s = sounds[name]
-	local now = os.clock()
-	if not s or now - (lastPlayed[name] or 0) < (minGap or 0.15) then
-		return
-	end
-	lastPlayed[name] = now
-	s.TimePosition = 0
-	s.Volume = SOUNDS[name].volume
-	s:Play()
-	local cut = (SOUNDS[name] :: any).cut
-	if cut then
-		task.delay(cut, function()
-			if lastPlayed[name] == now then
-				TweenService:Create(s, TweenInfo.new(0.4), { Volume = 0 }):Play()
-			end
-		end)
-	end
+	Sfx.play(name, { gap = minGap or 0.15 })
 end
 
 local function courtOpen(): boolean
@@ -98,21 +63,28 @@ RewardGranted.OnClientEvent:Connect(function(info: { [string]: any })
 	play(if info.kind == "Prestige" then "big" else "win", 1)
 end)
 
--- egg hatches: the Eggs script cues us (HatchCue) - a rising ping on every crack round of the 3D egg, and the
--- sting the moment it shatters (the animation's length varies with rarity and the player can skip it)
-local hatchPing = sounds.levelUp:Clone()
-hatchPing.Name = "Sfx_hatchPing"
-hatchPing.Parent = SoundService
+-- HatchCue (a local bindable): the Eggs script - "beat" on every crack round of the 3D egg (value = round), "burst"
+-- the moment it shatters (value = rarity, third arg = rarity name); TravelFx - "charge" pings while the portal charges,
+-- "whoosh" as you vanish, "burst" on landing; UpgradeFx - "burst".
+local MYTHIC = { Mythic = true, Supreme = true }
 task.spawn(function()
 	local cue = ReplicatedStorage:WaitForChild("HatchCue") :: BindableEvent
-	cue.Event:Connect(function(kind: string, value: number)
+	cue.Event:Connect(function(kind: string, value: number, rarityName: string?)
 		if kind == "beat" then
-			hatchPing.PlaybackSpeed = 1.1 + value * 0.22
-			hatchPing.Volume = 0.35 + value * 0.08
-			hatchPing.TimePosition = 0
-			hatchPing:Play()
+			Sfx.play(if value % 2 == 0 then "crack" else "crack2", { speed = 0.9 + value * 0.07, volume = 0.7 + value * 0.06, gap = 0.05 })
+		elseif kind == "charge" then
+			Sfx.play("clickBright", { speed = 0.9 + value * 0.12, volume = 0.8 + value * 0.05, gap = 0.05 })
+		elseif kind == "whoosh" then
+			Sfx.play("whooshBig")
 		elseif kind == "burst" then
-			play(if value >= 3 then "big" else "win")
+			if rarityName then
+				Sfx.play("pop", { speed = 0.8 })
+			end
+			if rarityName and MYTHIC[rarityName] then
+				Sfx.play("fanfare")
+			else
+				play(if value >= 3 then "big" else "win")
+			end
 		end
 	end)
 end)
@@ -130,7 +102,7 @@ player.AttributeChanged:Connect(function(name)
 		return
 	end
 	if name:match("^Desk%d+Level$") then
-		play("levelUp")
+		play("stinger")
 	elseif name:match("^Desk%d+Tier$") or name == "DeskCount" then
 		play("big", 1)
 	end
@@ -140,3 +112,21 @@ for name, value in player:GetAttributes() do
 		known[name] = value
 	end
 end
+
+-- a click on every button tap (the window's backdrop and click blockers stay quiet; a button can opt out with the
+-- attribute NoClick). Window open / close sounds are played by Shared.Skin.window.
+local QUIET = { Dim = true, ClickBlocker = true }
+local function hookButton(d: Instance)
+	if d:IsA("GuiButton") and not QUIET[d.Name] then
+		d.Activated:Connect(function()
+			if not d:GetAttribute("NoClick") then
+				Sfx.play("click", { gap = 0.05 })
+			end
+		end)
+	end
+end
+local playerGui = player:WaitForChild("PlayerGui")
+for _, d in playerGui:GetDescendants() do
+	hookButton(d)
+end
+playerGui.DescendantAdded:Connect(hookButton)

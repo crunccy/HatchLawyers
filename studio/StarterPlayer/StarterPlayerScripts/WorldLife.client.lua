@@ -7,6 +7,7 @@
 --   * the sailboats out on the water bob and roll (Workspace.IslandEdge.Sailboat)
 --   * a few seagulls (ReplicatedStorage.WorldLife.Bird, from Blender) circle the hub, flapping
 --   * some clients (ReplicatedStorage.ClientModels) stroll the plaza's walkway ring round the fountain
+--   * ambience (Shared.Sfx loops, 3D): waves along the beach, gulls over the hub, the fountain's splashing
 -- Everything only runs while the player is within HUB_RANGE of the hub; parts that stream out are dropped.
 
 local Players = game:GetService("Players")
@@ -20,6 +21,35 @@ local HUB_RANGE = 420
 local folder = Instance.new("Folder")
 folder.Name = "WorldLife"
 folder.Parent = workspace
+
+------------------------------------------------------------------ ambience (always on; 3D roll-off keeps it to the island)
+local Sfx = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Sfx")) :: any
+local ambience = Instance.new("Folder")
+ambience.Name = "WorldLifeAmbience"
+ambience.Parent = workspace
+local function emitter(name: string, pos: Vector3, sound: string, opts: { [string]: number }?): Part
+	local p = Instance.new("Part")
+	p.Name = name
+	p.Size = Vector3.new(1, 1, 1)
+	p.Position = pos
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.Transparency = 1
+	p.Parent = ambience
+	Sfx.loop(sound, p, opts)
+	return p
+end
+-- the beach (island grass x +-256, z +-160; the pier leaves north, the zone lane south)
+for i, pos in {
+	Vector3.new(-160, 0, 182), Vector3.new(160, 0, 182), Vector3.new(275, 0, -80), Vector3.new(275, 0, 80),
+	Vector3.new(-275, 0, -80), Vector3.new(-275, 0, 80), Vector3.new(-180, 0, -182), Vector3.new(180, 0, -182),
+} do
+	emitter("Waves" .. i, pos, "waves", { range = 110, speed = 0.92 + (i % 3) * 0.05 })
+end
+emitter("Gulls", HUB + Vector3.new(0, 45, 0), "gulls", { range = 300 })
+local fountainSound = false
 
 local function inHub(): boolean
 	local character = player.Character
@@ -72,6 +102,10 @@ local function setupFountain()
 		return
 	end
 	local centre = fountain:GetPivot().Position
+	if not fountainSound then
+		fountainSound = true
+		emitter("Fountain", centre + Vector3.new(0, 3, 0), "fountain", { range = 55 })
+	end
 	for _, spout in fountain:GetChildren() do
 		if spout:IsA("BasePart") and spout.Name == "Spout" then
 			local from = spout.Position + Vector3.new(0, 0.4, 0)

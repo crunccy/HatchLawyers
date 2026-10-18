@@ -49,8 +49,8 @@ for name, info in {
 	siren = { id = "rbxassetid://9045751375", volume = 0.55, speed = 1 },
 	win = { id = "rbxassetid://1844278029", volume = 0.5, speed = 1 },
 	gavel = { id = "rbxassetid://9125574353", volume = 0.8, speed = 1 },
-	tap = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.25, speed = 1.6 },
-	wrong = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.4, speed = 0.6 },
+	tap = { id = "rbxassetid://15675055424", volume = 0.35, speed = 1.15 }, -- UI cute pop
+	wrong = { id = "rbxassetid://15675075163", volume = 0.45, speed = 1 }, -- UI delete
 } do
 	local s = Instance.new("Sound")
 	s.Name = "BigCase_" .. name

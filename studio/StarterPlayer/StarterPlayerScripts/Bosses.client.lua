@@ -80,18 +80,18 @@ local function part(props: { [string]: any }): BasePart
 	return p
 end
 
--- licensed / built-in sounds only (the game's sound rule; rbxasset://sounds/swoosh.wav is NOT approved for this place).
+-- licensed sounds only (Roblox UI pack, Pro Sound Effects, APM - the Shared.Sfx set) (the game's sound rule; rbxasset://sounds/swoosh.wav is NOT approved for this place).
 -- { id, volume, speed, stop after (s)? }
 local SOUNDS = {
 	windup = { "rbxassetid://9045751375", 0.45, 1.5, 1.0 }, -- the Big Case alert, quick and cut short
 	slam = { "rbxassetid://9125574353", 1, 0.62 }, -- the gavel knock, low
 	bark = { "rbxassetid://9125574353", 1, 0.45 },
-	hit = { "rbxassetid://9125574353", 0.8, 1.3 },
-	boing = { "rbxasset://sounds/electronicpingshort.wav", 0.5, 0.55 },
-	charge = { "rbxassetid://9125574353", 0.9, 0.85 },
+	hit = { "rbxassetid://9114753510", 0.8, 1.2, 0.6 }, -- hammer on wood
+	boing = { "rbxassetid://15675055424", 0.7, 0.65 }, -- a low cute pop
+	charge = { "rbxassetid://15674975792", 0.8, 0.85 }, -- a big whoosh
 	pull = { "rbxassetid://9045751375", 0.4, 0.7, 2.0 },
-	land = { "rbxassetid://9125574353", 0.25, 2.2 },
-	grab = { "rbxasset://sounds/electronicpingshort.wav", 0.45, 1.6 },
+	land = { "rbxassetid://9114753510", 0.35, 1.6, 0.5 },
+	grab = { "rbxassetid://15675024286", 0.55, 1.1 }, -- whoosh
 }
 local function playAt(pos: Vector3, kind: string)
 	local def = SOUNDS[kind]

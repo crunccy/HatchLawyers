@@ -9,13 +9,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
-- **crnuch (local), since 2026-10-18:** bug 6 follow-up - re-scan the live place with `Server.ZFight` (the art /
-  design passes since 2026-10-16 added geometry after the fix), fix what crept back, ZFight in the newer builders, eye-check.
 
 ## Open items
 - [ ] **Map + model art pass: eye-check in a real playtest** (built 2026-10-16, entries below; Studio-only screenshots so far) - phone size too.
 - [ ] **crnuch's bug report (2026-10-16, from a playtest).** All 7 fixed (entries below). Still to do: crnuch's eye-check
-      in Studio of 1 / 3 / 6 / 7 (that session's viewport didn't render, so no screenshots).
+      in Studio of 1 / 3 / 7 (that session's viewport didn't render, so no screenshots). 6 was eye-checked 2026-10-18.
       Leads found in the code, not confirmed:
   1. ~~FIXED~~ **Dingy Shack doesn't house the incubators properly** (`Server.FirmStages` stage 1, the shack is the old
      template cloned + opened up; the two `Firm.Incubators` don't fit inside it).
@@ -152,6 +150,37 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: bug 6 follow-up (z-fighting: studded faces, client-side scan, minigame props)
+- **The detector had two blind spots** (`ZFight`, now `ReplicatedStorage.Shared.ZFight`; `Server.ZFight` is a one-line
+  wrapper so FirmBuilder, DeskService and every `tools/zones/Build*.lua` keep their require):
+  1. It ignored `MaterialVariant`: a `BrickStuds` face over a plain Plastic face of the same colour still flickers, and
+     so do two overlapping BrickStuds faces even with everything equal - each part tiles the stud texture from its own
+     position, so the grids don't line up (tested with two parts in Studio: offset grids visibly break up, aligned
+     ones don't). `differ` now counts a variant mismatch, and any two textured faces, as a clash.
+  2. It compared each face's axis-aligned box in the plane, so a part turned within the plane (an arm Puppet tilts
+     30 degrees) gave false hits. The overlap is now exact (separating axes on the two face rectangles). Client scan
+     of a running firm: 109 -> ~20 hits.
+- **Fixed in place (Edit mode):** storage per model (SkinModels, JudgeModels, Templates.Clients / Firms / ..., the
+  decor library, WorldLife, skipping Retired* / *Backup* / StagePreviews* / LuxuryFirm): 835 faces; Workspace outside
+  the plots 2758 + 202 + 97 + 14 faces (zone WallDecor, pier rails, far islands, fountain rim, shop stall...) -> 0;
+  the 8 plot LotSigns (16). A few thin plates kept chasing each other at 0.04 steps (layers an older pass left exactly
+  0.04 apart): one pass at 0.025 settled them. Left: 4 faces on the cast (a 0.045 coat-tail plate on PiratePatches...),
+  Workspace 0. **Gotcha:** don't loop `ZFight.fix` more than ~3 passes - oscillating faces walk; and ChangeHistory
+  recordings made from the MCP show up as "Assistant N" waypoints, so an Undo from a later call may hit the wrong one.
+- **Builders keep it fixed:** the existing ZFight passes pick the new rules up; added one to `BuildWorldLife.lua`.
+  `MinigameClient.Scene:asset` (the cinematic minigame props, built client-side from AssetData on every play) runs
+  2 passes on each prop (~4 ms for the whole kit): it had 40 clashing faces (ArcadeStage 20) -> 0, checked by building
+  ArcadeStage through the real Scene in a playtest.
+- **Playtest (QualityLevel 21), crnuch's firm:** client scan ~20 left - SeniorPartner boss head (bosses are out of
+  scope), the carried briefcase, the Storefront front floor / area pad / expansion lock (hidden undersides, known from
+  the 10-16 entry) and StarJudge's gavel caps (0.012 off the handle at the desk's 1.2x scale - at the threshold, not
+  coplanar). Close-ups of a desk lawyer (Starla) + seated client: no speckled / striped faces.
+- Snapshot re-exported (111 scripts: + Shared.ZFight; Server.ZFight, MinigameClient.Scene changed). It also picked up
+  the SFX pass's live edits that weren't in the snapshot yet (Shared.Sfx + Skin, TravelFx, ArcadeClient.Kit, BigCase,
+  Bosses, Merger, Sounds, WorldLife, Zones clients) - not mine, just now recorded.
+- `run_checks.py` ALL PASSED.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-16 — crnuch, local session: design pass (plaza, height, island edge, lane rhythm, life) + pier connected
 - **Pier connected:** the Big Case terrace's hedge row closed the pier off. 5 hedge blocks in the middle are archived to
