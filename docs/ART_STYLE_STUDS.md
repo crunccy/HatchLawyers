@@ -32,8 +32,8 @@ terrain**, not a LEGO diorama, a Minecraft island or a pile of stacked toy brick
 - **Unstudded:** smooth water, glowing energy (portals, glows) and selected natural details (palm fronds, coral,
   shells, foliage).
 - Detail comes from the natural environment (cliffs, palms, coral, driftwood, waterfalls), not decorative buildings.
-- Ocean Shore v2 (`environment-redesign/ocean_shore_v2/`) is the benchmark; the other islands follow only after
-  crnuch approves it. Until then they keep the voxel builds from earlier on 2026-10-19.
+- Ocean Shore v2 (`environment-redesign/ocean_shore_v2/`) is **the approved benchmark (crnuch, 2026-10-19)**. The other
+  islands are redesigned to it one at a time, when crnuch asks; until then they keep their voxel builds.
 
 ## "Everything" means everything (crnuch's call, 2026-10-19)
 After the floating-island renders crnuch clarified: *"when i say i want studded voxel on everything i genuinely mean

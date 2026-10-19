@@ -17,15 +17,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
-  session (waiting for approval); Space Base done 2026-10-19 by mr.robe's session (waiting for approval): all six
+  session (waiting for approval), then redesigned as Ocean Shore v2 by crnuch's session = APPROVED 2026-10-19 as the
+  benchmark the other islands get redone to (one at a time, when crnuch asks); Space Base done 2026-10-19 by mr.robe's session (waiting for approval): all six
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
-
-- **crnuch (local), since 2026-10-19:** OCEAN SHORE v2 redesign in Blender (crnuch's brief + concept image:
-  classic Roblox studs not LEGO, natural tropical wilderness, one continuous flat sand surface for Megalodon, spawn SW,
-  purple escape portal NE). New folder `environment-redesign/ocean_shore_v2/`; v1 (`ocean_shore/`) stays as the backup.
-  Layout first, then detailed modeling after crnuch's approval. Blender only. Don't redesign Ocean Shore meanwhile.
-  Layout approved 2026-10-19; detailed pass done (waiting for approval).
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -269,7 +264,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   - the studded dirt chunks looked like LEGO (soil stays smooth)
   - an islet was too close to the island
   - the doorway vortex overlapped the round one (now one door shape)
-- **Waiting for crnuch's approval**, then the other five islands follow this benchmark.
+- **crnuch's call: Ocean Shore v2 APPROVED as the benchmark** (2026-10-19). The other five islands get redesigned to
+  it one at a time when crnuch asks (not started); the claim is released.
 
 ## 2026-10-19 — crnuch, local session: Ocean Shore v2 — audit + LAYOUT for approval (Blender)
 - **crnuch's brief** (+ concept image `environment-redesign/references/ocean_shore_concept.webp`): redesign Ocean

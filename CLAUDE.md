@@ -131,8 +131,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   geometry or drop the studs; no plain Roblox parts, no smooth low-poly. Read that doc before building anything.
   **Later 2026-10-19 (crnuch's Ocean Shore v2 brief): classic Roblox studs, NOT LEGO.** Cohesive terrain meshes with
   studs on broad terrain + structural surfaces; smooth water, glow and selected natural details stay unstudded; no
-  island built from hundreds of stacked small bricks. Ocean Shore v2 is the benchmark (ART_STYLE_STUDS.md); the
-  earlier "everything voxel" builds stand until crnuch approves it.
+  island built from hundreds of stacked small bricks. Ocean Shore v2 is the APPROVED benchmark (2026-10-19,
+  ART_STYLE_STUDS.md); the other islands get redesigned to it one at a time when crnuch asks.
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
   far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),

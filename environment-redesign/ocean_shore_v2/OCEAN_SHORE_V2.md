@@ -1,4 +1,4 @@
-# Ocean Shore v2 — DETAILED (2026-10-19) · layout approved, detailed pass waiting for approval
+# Ocean Shore v2 — DETAILED (2026-10-19) · APPROVED by crnuch 2026-10-19 as the benchmark for the other islands
 
 crnuch's brief: redesign Ocean Shore from the approved concept image (`../references/ocean_shore_concept.webp`) as a
 natural tropical wilderness built around the real Megalodon mechanics, in **classic Roblox studs, not LEGO**. The
