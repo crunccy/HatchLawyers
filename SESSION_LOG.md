@@ -151,6 +151,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-18 — crnuch, local session: glossy HUD icon art
+- Added the 16-icon glossy HUD revision under `art/icons/hud_navigation_glossy/`, including transparent PNGs,
+  an overview, a browser review page, and a manifest. The latest art incorporates the requested yellow Daily Gift,
+  refined Lawyers icon, and quieter effects on Rebirth, Travel, Settings, and Merge.
+- Assets are in Git for review; no Roblox Studio import or HUD wiring was done.
+- Signed: Codex for crnuch, local session.
+
 ## 2026-10-16 — crnuch, local session: the music stings turned down (win, big, fanfare)
 - crnuch: two sounds from the first SFX batch were "incredibly loud" next to the rest - the fanfare (Mythic / Supreme
   hatch) and "big" (the "dunnnn dun dunnn": Rare+ hatches, Epic / Legendary client wins, office tier-ups, rebirth),

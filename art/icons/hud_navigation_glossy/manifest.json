@@ -1,0 +1,146 @@
+[
+  {
+    "name": "daily-gift",
+    "file": "icons/daily-gift.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": true
+  },
+  {
+    "name": "goals",
+    "file": "icons/goals.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "lawyers",
+    "file": "icons/lawyers.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": true
+  },
+  {
+    "name": "shop",
+    "file": "icons/shop.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "rebirth",
+    "file": "icons/rebirth.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": true
+  },
+  {
+    "name": "travel",
+    "file": "icons/travel.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": true
+  },
+  {
+    "name": "settings",
+    "file": "icons/settings.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": true
+  },
+  {
+    "name": "codes",
+    "file": "icons/codes.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "index",
+    "file": "icons/index.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "achievements",
+    "file": "icons/achievements.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "vip",
+    "file": "icons/vip.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "upgrades",
+    "file": "icons/upgrades.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "money",
+    "file": "icons/money.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "merge",
+    "file": "icons/merge.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": true
+  },
+  {
+    "name": "eggs",
+    "file": "icons/eggs.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  },
+  {
+    "name": "friends",
+    "file": "icons/friends.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "changed_from_v1": false
+  }
+]
