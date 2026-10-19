@@ -210,7 +210,9 @@ def license_building(F):
 
 
 # ------------------------------------------------------------------ 3. Travel Portal (inner ring NW)
-def travel_portal(F):
+def travel_portal(F, fx=None):
+    """fx: an optional second frame for the moving parts (the light swirl spins in the ambience pass)."""
+    fx = fx or F
     F.cyl(0, 2, 21, 0, 1.4, "stone_dark", segs=48)
     F.cyl(0, 2, 19, 1.4, 3.2, "stone", segs=48, bevel=0.3)
     F.ring(18.6, 19.4, 3.2, 3.7, "gold", cx=0, cy=2, segs=48)
@@ -244,7 +246,7 @@ def travel_portal(F):
         t = k / 46
         r = 1.0 + 10.8 * t
         a = math.radians(t * 720)
-        F.brick(r * math.cos(a), 2.6, cz + r * math.sin(a) - 0.35, 0.8, 0.5, 0.7, "glow_white" if k % 3 == 0 else "glow_cyan", studs=False, bevel=0.12)
+        fx.brick(r * math.cos(a), 2.6, cz + r * math.sin(a) - 0.35, 0.8, 0.5, 0.7, "glow_white" if k % 3 == 0 else "glow_cyan", studs=False, bevel=0.12)
     for k in range(8):
         a = math.radians(k * 45 + 22.5)
         F.brick(14.1 * math.cos(a), 1.0, cz + 14.1 * math.sin(a) - 0.6, 1.2, 0.4, 1.2, "glow_purple", studs=False, bevel=0.1)
@@ -513,7 +515,9 @@ def _briefcase_prop(G):
         G.text("?", x, 0.9, 5.6, 1.0, "white", kind="bold", extrude=0.05)
 
 
-def bigcase_terrace(F):
+def bigcase_terrace(F, fx=None):
+    """fx: an optional second frame for the moving parts (the cases ride the belt in the ambience pass)."""
+    fx = fx or F
     F.brick(0, 0, 0, 66, 34, 1.2, "stone_warm")
     for sgn in (-1, 1):
         F.brick(0, sgn * 17.1, 0, 66.6, 0.6, 1.5, "gold", studs=False)
@@ -532,8 +536,8 @@ def bigcase_terrace(F):
         F.disc_v(sgn * 28.6, 6, 2.6, 1.6, 6.0, "metal", rot=90, segs=16)
     for k in range(7):  # big cases riding the belt
         x = -24 + k * 8
-        F.brick(x, 6, 4.0, 3.0, 1.4, 2.2, "wood_dark" if k % 3 else "gold", studs=False)
-        F.brick(x, 6, 6.2, 1.2, 0.4, 0.5, "gold" if k % 3 else "wood_dark", studs=False)
+        fx.brick(x, 6, 4.0, 3.0, 1.4, 2.2, "wood_dark" if k % 3 else "gold", studs=False)
+        fx.brick(x, 6, 6.2, 1.2, 0.4, 0.5, "gold" if k % 3 else "wood_dark", studs=False)
     # arch over the belt with the BIG CASES marquee
     for sgn in (-1, 1):
         F.brick(sgn * 11, 6, 1.2, 2.4, 2.4, 11, "roof_navy", studs=False)

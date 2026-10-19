@@ -45,7 +45,7 @@ PAL = {
 GLOWS = {"glow_warm": ((255, 226, 150), 3.0), "glow_cyan": ((90, 210, 255), 2.6), "glow_purple": ((170, 90, 255), 2.2),
          "glow_gold": ((255, 210, 90), 3.0), "glow_green": ((120, 255, 140), 3.0), "glow_red": ((255, 90, 90), 3.0),
          "glow_white": ((255, 255, 255), 2.5)}
-GLASS = {"glass": (150, 210, 245), "glass_dark": (60, 110, 170), "water": (60, 170, 240), "water_deep": (30, 120, 210),
+GLASS = {"glass": (150, 210, 245), "glass_dark": (60, 110, 170), "water": (60, 170, 240), "water_fall": (70, 175, 245), "water_deep": (30, 120, 210),
          "portal_field": (40, 140, 255)}
 # Roblox equivalent per look family (for integration; Blender-only shading is listed in the README)
 ROBLOX_MATERIAL = {"glow_": "Neon", "glass": "Glass (Transparency 0.4)", "water": "Glass / Terrain Water",

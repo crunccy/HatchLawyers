@@ -10,7 +10,7 @@ pitch, Roblox's own stud shape).
 | 1 | Repository audit | **Done**: [01_AUDIT.md](01_AUDIT.md) |
 | 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
 | 3 | Hub detailed modeling | **Done 2026-10-18**: [central_hub/STAGE3.md](central_hub/STAGE3.md) + the shared kit [kit/hl_kit.py](kit/hl_kit.py) |
-| 4 | Hub ambience (animations, audio research) | not started |
+| 4 | Hub ambience (animations, audio research) | **Done 2026-10-18, waiting for approval**: [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
 | 5 | The six egg islands, one at a time | not started |
 | 6 | All-islands presentation | not started |
 | 7 | Roblox integration plan (plan only) | not started |

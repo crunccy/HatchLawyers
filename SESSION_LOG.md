@@ -15,8 +15,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
-  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stage 3 (hub detailed modeling) done 2026-10-18;
-  Stage 4 (hub ambience) next, then crnuch's approval.
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3 (hub modeling) + 4 (hub ambience) done
+  2026-10-18: waiting for crnuch's approval before Stage 5 (the six egg islands).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
@@ -165,6 +165,24 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: world redesign Stage 4 (central hub ambience, Blender + audio research)
+- **`environment-redesign/central_hub/hub_ambience.py`:** opens the built hub, adds the ambience, saves the animated
+  `central_hub.blend`, renders previews. The effects:
+  - wind sway on canopies + their studs (Geometry Nodes)
+  - flowing waterfalls and rippling water (animated shaders)
+  - breathing glows (drivers), the spinning portal swirl and the belt cases (separate FX objects from hub_build)
+  - 22 butterflies, floating pollen (baked particles), drifting clouds
+  - 5 MP4 clips in `renders/ambience/`
+- Render cost: EEVEE here is ~0.6 s per sample per frame with 681k studs (not the effects: profiled), so the
+  previews are 8 samples at 960×540.
+- **`AUDIO.md`:** Tier 1 = Roblox Creator Store partner audio (the `Shared.Sfx` house rule: licensed partner
+  audio, never random uploads; fountain / gulls / waves already exist). Tier 2 = external picks with verified
+  licences (Freesound CC0 / CC-BY, Pixabay, Kenney CC0). Nothing downloaded (needs crnuch's OK per file), nothing
+  listened to (I can't). Relaxing the house rule is crnuch's call.
+- **`AMBIENCE.md`:** what moves, how Blender does it vs how Roblox would, Blender-only effects, the hub ambience
+  spec, and the **future WorldAmbience system** design (Config data, world detection, client controller with tags,
+  transitions under TravelFx, client-side Lighting, streaming). Not implemented.
 
 ## 2026-10-18 — crnuch, local session: world redesign Stage 3 (central hub detailed modeling, Blender)
 - crnuch approved the hub layout with 5 decisions (in `environment-redesign/central_hub/blockout/LAYOUT.md`):

@@ -105,22 +105,37 @@ def covered(x, y, pad=0.0, ground_only=False):
 
 
 # ------------------------------------------------------------------ services + landmarks (placed first: footprints)
-def place(fn, r, a, name, note, foot, **kw):
+FX = {}  # name -> (fx object, frame) for the ambience pass
+
+
+def place(fn, r, a, name, note, foot, fx=False, **kw):
     x, y = polar(r, a)
     m = K.Mesh(name, C["Hub_Services"])
-    fn(K.Frame(m, x, y, a - 90), **kw)
+    F = K.Frame(m, x, y, a - 90)
+    if fx:  # moving parts in their own object (Environmental_Effects), animated by hub_ambience.py
+        fm = K.Mesh(name + "_FX", C["Environmental_Effects"])
+        fn(F, fx=K.Frame(fm, x, y, a - 90), **kw)
+        FX[name] = (fm.done(), F)
+    else:
+        fn(F, **kw)
     m.done()
     add_foot(x, y, foot)
     LAYOUT["services"].append({"name": name, "x": round(x, 1), "y": round(y, 1), "roblox_xz": [round(x, 1), round(-y, 1)], "note": note})
 
 
 place(P.license_building, 172, 90, "Law License Building", "licenses (crnuch: split from Upgrades)", 36)
-place(P.travel_portal, SERVICE_R, 135, "Travel Portal", "Hub.TravelPortal; island destinations", 24)
+place(P.travel_portal, SERVICE_R, 135, "Travel Portal", "Hub.TravelPortal; island destinations", 24, fx=True)
 place(P.egg_incubator, SERVICE_R, 45, "Egg Incubator", "landmark only (crnuch's call); hatching stays in firms", 20)
 place(P.shop, SERVICE_R, 225, "Shop", "Hub.ShopStall", 20)
 place(P.upgrades, SERVICE_R, 315, "Upgrades", "Carry + Speed (crnuch: split from the License Office)", 20)
 place(P.mutation_machine, SERVICE_R, 180, "Mutation Machine", "Hub.MergeMachine", 17)
-place(P.bigcase_terrace, SERVICE_R, 0, "Big Case Terrace", "Hub.BigCaseBelt + minigame pads", 36)
+place(P.bigcase_terrace, SERVICE_R, 0, "Big Case Terrace", "Hub.BigCaseBelt + minigame pads", 36, fx=True)
+pob, pF = FX["Travel Portal"]
+cx_, cy_ = pF.p(0, 2.6)
+pob["pivot"] = (cx_, cy_, 4.6 + 15.2)
+pob["axis"] = (-pF.s, pF.c, 0.0)  # local +y in world (the ring's normal)
+bob, bF = FX["Big Case Terrace"]
+bob["slide"] = (bF.c, bF.s, 0.0)  # local +x in world (along the belt)
 lb = K.Mesh("Leaderboards", C["Hub_Services"])
 for (x, y, title) in ((-22, -84, "RICHEST FIRMS"), (-22, -104, "MOST CASES WON"), (22, -84, "TOP LAWYER"), (22, -104, "BIGGEST PAYOUT")):
     P.leaderboard(K.Frame(lb, x, y, -90 if x < 0 else 90), title)
@@ -373,7 +388,7 @@ for a in WATERFALLS:
     lip = er + 0.8
     for k in range(4):
         fx, fy = polar(lip + k * 0.9, a)
-        wt.brick(fx, fy, -0.4 - k * 0.9, 1.2, 5.2, 0.9, "water", rot=a, studs=False, bevel=0.2)
+        wt.brick(fx, fy, -0.4 - k * 0.9, 1.2, 5.2, 0.9, "water_fall", rot=a, studs=False, bevel=0.2)
     fx, fy = polar(lip + 4.2, a)
     z = -3.0
     k = 0
@@ -382,7 +397,7 @@ for a in WATERFALLS:
         w = 12.0 + min(6.0, k * 0.5) + rng.uniform(-1.5, 1.5)
         sway = rng.uniform(-0.8, 0.8)
         ox_, oy_ = -math.sin(math.radians(a)) * sway, math.cos(math.radians(a)) * sway
-        wt.brick(fx + ox_, fy + oy_, z - h, 1.8, w, h, "water", rot=a, studs=False, bevel=0.3)
+        wt.brick(fx + ox_, fy + oy_, z - h, 1.8, w, h, "water_fall", rot=a, studs=False, bevel=0.3)
         for e in (-1, 1):  # white water along both edges
             ex, ey = -math.sin(math.radians(a)) * e * (w / 2 - 0.4), math.cos(math.radians(a)) * e * (w / 2 - 0.4)
             wt.brick(fx + ox_ + ex + math.cos(math.radians(a)) * 0.6, fy + oy_ + ey + math.sin(math.radians(a)) * 0.6, z - h, 0.8, 1.2, h,
