@@ -18,6 +18,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
+- **mr.robe (local), since 2026-10-19:** world redesign Stage 5, island 5 — **Ocean Shore** (Blender only, same kit
+  + deliverables as islands 1-4), on the user's call ("do what mr blox was doing ... add the island"). Backup of the
+  version before it: tag `backup-2026-10-19-before-ocean-shore`. Don't build Ocean Shore meanwhile.
 
 ## Open items
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
