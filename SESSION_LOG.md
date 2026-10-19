@@ -16,11 +16,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
-  Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore next.
+  Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
+  session (waiting for approval); Space Base next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
-- **mr.robe (local), since 2026-10-19:** world redesign Stage 5, island 5 — **Ocean Shore** (Blender only, same kit
-  + deliverables as islands 1-4), on the user's call ("do what mr blox was doing ... add the island"). Backup of the
-  version before it: tag `backup-2026-10-19-before-ocean-shore`. Don't build Ocean Shore meanwhile.
 
 ## Open items
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
@@ -168,6 +166,31 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — mr.robe, local session: world redesign Stage 5, island 5 — Ocean Shore (Blender)
+- **User's call** (on mr.robe's PC): "do what mr blox was doing, save the current version as a new copy and then add
+  the island he was working on". The island work in the repo was the world redesign (logged under crnuch), so this
+  session built the next island, Ocean Shore, the same way as islands 1-4. **The copy:** git tag
+  `backup-2026-10-19-before-ocean-shore` (= 42210b1, pushed) holds the version from before. No Studio, gameplay or
+  map change (the redesign stays Blender only).
+- **Ocean Shore** (`environment-redesign/ocean_shore/`; doc `OCEAN_SHORE.md`), a sunny tropical beach:
+  - route arrival (on the sand) → OCEAN SHORE gate (two giant surfboards + a driftwood beam) → orange path past the
+    lighthouse, giant sandcastles and statues of the game's Ocean lawyers (Hammerhead, Narwhal, Tidal Sovereign) →
+    SEASIDE PLAZA (Big Blue the whale fountain, 8 tiki shacks, bunting) → Coral Garden / Tide Pools / Sandcastle
+    Beach egg fields → THE SHARK DOCK over a turquoise lagoon (Megalodon at 3.2×) → shell-keystone RETURN HOME
+  - a sand beach all round a green middle (a wavy shoreline at ~80 % of the radius); SURF CLUB, AQUARIUM, BOAT HOUSE,
+    BEACH CAFE, SEASIDE HOTEL, a SHIPWRECK; palms; 87 beach props; two waterfalls; 24 egg spots; the Ocean egg
+  - Megalodon check: the dock is 72 × 148, so his 130-stud Fin Charge fits along it (boss area 56 × 132); the
+    plaza's north edge is 20 from the area (inside TriggerRange, but charges are clamped to the dock: a scare)
+  - 579k tris + 238k studs, 8.6 MB .blend; 7 renders; ambience in the .blend: lighthouse beam sweeping, two turning
+    signs, whale-spout spray, tide-pool bubbles, gulls, water, tiki flames, Megalodon's sway, palm wind
+  - audio picks (waves, gulls, beach children): CC0, licence read on each freesound page (curl)
+- **Kit:** `hl_kit.font()` also finds the Windows fonts (Arial Rounded / Arial Black), so labels + signs match on
+  either machine; looks named `beam*` are faint see-through light (the lighthouse beam).
+- **Fixed in review:** the whale read as a blue blob from the south (now faces arriving players, big eyes, fins);
+  plank seams on the dock showed the water (dark sub-deck); the beam read as a solid plank in stills (fainter);
+  sign boards clipped low roofs (now on the eaves); the NE path ran through the lifeguard tower (re-routed).
+- **Left:** crnuch's approval of Ocean Shore (and Food Court); Space Base is the last island.
 
 ## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 4 — Food Court (Blender)
 - **crnuch's call:** Brainrot Zone approved.

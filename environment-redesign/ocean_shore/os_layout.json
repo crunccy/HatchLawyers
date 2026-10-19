@@ -1,0 +1,639 @@
+{
+ "island": "Ocean Shore (game zone: Ocean Shore)",
+ "radius_xy": [
+  185,
+  210
+ ],
+ "places": [
+  {
+   "name": "SEASIDE PLAZA",
+   "blender_xy": [
+    0,
+    -47
+   ],
+   "roblox_xz": [
+    0,
+    47
+   ],
+   "what": "wavy mosaic floor, Big Blue the whale fountain, 8 beach shacks, umbrella tables, bunting"
+  },
+  {
+   "name": "Arrival pad",
+   "blender_xy": [
+    0,
+    -194
+   ],
+   "roblox_xz": [
+    0,
+    194
+   ],
+   "what": "where Travel lands players (on the beach)"
+  },
+  {
+   "name": "OCEAN SHORE gate",
+   "blender_xy": [
+    0,
+    -162
+   ],
+   "roblox_xz": [
+    0,
+    162
+   ],
+   "what": "two giant surfboards + a driftwood beam, life rings, a starfish crest"
+  },
+  {
+   "name": "LIGHTHOUSE",
+   "blender_xy": [
+    -128,
+    -100
+   ],
+   "roblox_xz": [
+    -128,
+    100
+   ],
+   "what": "red-and-white striped tower, keeper's cottage; its beam turns"
+  },
+  {
+   "name": "SURF CLUB",
+   "blender_xy": [
+    -118,
+    62
+   ],
+   "roblox_xz": [
+    -118,
+    -62
+   ],
+   "what": "two-storey beach house, surfboards along the front; its surfboard sign turns"
+  },
+  {
+   "name": "AQUARIUM",
+   "blender_xy": [
+    138,
+    26
+   ],
+   "roblox_xz": [
+    138,
+    -26
+   ],
+   "what": "round mint aquarium with a glass dome; its fish sign turns on top"
+  },
+  {
+   "name": "BOAT HOUSE",
+   "blender_xy": [
+    105,
+    -118
+   ],
+   "roblox_xz": [
+    105,
+    118
+   ],
+   "what": "plank boathouse, a sailboat on the slipway"
+  },
+  {
+   "name": "BEACH CAFE",
+   "blender_xy": [
+    -82,
+    150
+   ],
+   "roblox_xz": [
+    -82,
+    -150
+   ],
+   "what": "white cafe, teal awning, umbrella tables"
+  },
+  {
+   "name": "SEASIDE HOTEL",
+   "blender_xy": [
+    86,
+    150
+   ],
+   "roblox_xz": [
+    86,
+    -150
+   ],
+   "what": "three-storey peach hotel with balconies"
+  },
+  {
+   "name": "SHIPWRECK",
+   "blender_xy": [
+    -150,
+    18
+   ],
+   "roblox_xz": [
+    -150,
+    -18
+   ],
+   "what": "a wrecked ship stuck in the west beach, a spilled treasure chest"
+  },
+  {
+   "name": "RETURN HOME portal",
+   "blender_xy": [
+    0,
+    175
+   ],
+   "roblox_xz": [
+    0,
+    -175
+   ],
+   "what": "home WITH eggs, past the boss (crnuch's call)"
+  },
+  {
+   "name": "Giant sandcastle",
+   "blender_xy": [
+    -46,
+    -66
+   ],
+   "roblox_xz": [
+    -46,
+    66
+   ],
+   "what": "a studded sandcastle as tall as a house"
+  },
+  {
+   "name": "Giant sandcastle",
+   "blender_xy": [
+    50,
+    -78
+   ],
+   "roblox_xz": [
+    50,
+    78
+   ],
+   "what": "a studded sandcastle as tall as a house"
+  },
+  {
+   "name": "Statue: HammerheadAdvocate",
+   "blender_xy": [
+    -40,
+    -138
+   ],
+   "roblox_xz": [
+    -40,
+    138
+   ],
+   "what": "the game's HammerheadAdvocate lawyer at 5.0x on a plinth"
+  },
+  {
+   "name": "Statue: NarwhalMagistrate",
+   "blender_xy": [
+    36,
+    -112
+   ],
+   "roblox_xz": [
+    36,
+    112
+   ],
+   "what": "the game's NarwhalMagistrate lawyer at 3.6x on a plinth"
+  },
+  {
+   "name": "Statue: TidalSovereign",
+   "blender_xy": [
+    -58,
+    -8
+   ],
+   "roblox_xz": [
+    -58,
+    8
+   ],
+   "what": "the game's TidalSovereign lawyer at 2.5x on a plinth"
+  },
+  {
+   "name": "THE LAGOON",
+   "blender_xy": [
+    0,
+    73
+   ],
+   "roblox_xz": [
+    0,
+    -73
+   ],
+   "what": "shallow turquoise water 124 x 116 round the dock's middle: boats, buoys, a little reef"
+  },
+  {
+   "name": "THE SHARK DOCK (boss arena)",
+   "blender_xy": [
+    0,
+    73
+   ],
+   "roblox_xz": [
+    0,
+    -73
+   ],
+   "what": "open wooden dock 72 x 148 over the lagoon: Megalodon charges 130 studs along it"
+  },
+  {
+   "name": "Coral Garden (egg field)",
+   "blender_xy": [
+    -114,
+    -17
+   ],
+   "roblox_xz": [
+    -114,
+    17
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Tide Pools (egg field)",
+   "blender_xy": [
+    116,
+    -47
+   ],
+   "roblox_xz": [
+    116,
+    47
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Sandcastle Beach (egg field)",
+   "blender_xy": [
+    122,
+    92
+   ],
+   "roblox_xz": [
+    122,
+    -92
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "West falls",
+   "blender_xy": [
+    -134.6,
+    -59.9
+   ],
+   "roblox_xz": [
+    -134.6,
+    59.9
+   ],
+   "what": "a rock pool, a stream and a waterfall off the edge"
+  },
+  {
+   "name": "East falls",
+   "blender_xy": [
+    127.3,
+    -92.5
+   ],
+   "roblox_xz": [
+    127.3,
+    92.5
+   ],
+   "what": "a rock pool, a stream and a waterfall off the edge"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -108.3,
+    -35.3
+   ],
+   "roblox_xz": [
+    -108.3,
+    35.3
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -119.0,
+    -12.5
+   ],
+   "roblox_xz": [
+    -119.0,
+    12.5
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -110.5,
+    0.2
+   ],
+   "roblox_xz": [
+    -110.5,
+    -0.2
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -120.0,
+    -33.9
+   ],
+   "roblox_xz": [
+    -120.0,
+    33.9
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -130.8,
+    -13.2
+   ],
+   "roblox_xz": [
+    -130.8,
+    13.2
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -87.2,
+    -24.6
+   ],
+   "roblox_xz": [
+    -87.2,
+    24.6
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -125.9,
+    -27.9
+   ],
+   "roblox_xz": [
+    -125.9,
+    27.9
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    -99.2,
+    -11.3
+   ],
+   "roblox_xz": [
+    -99.2,
+    11.3
+   ],
+   "where": "Coral Garden"
+  },
+  {
+   "blender_xy": [
+    103.3,
+    -48.6
+   ],
+   "roblox_xz": [
+    103.3,
+    48.6
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    114.8,
+    -38.1
+   ],
+   "roblox_xz": [
+    114.8,
+    38.1
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    116.5,
+    -62.9
+   ],
+   "roblox_xz": [
+    116.5,
+    62.9
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    140.2,
+    -55.7
+   ],
+   "roblox_xz": [
+    140.2,
+    55.7
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    96.6,
+    -50.8
+   ],
+   "roblox_xz": [
+    96.6,
+    50.8
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    132.2,
+    -42.9
+   ],
+   "roblox_xz": [
+    132.2,
+    42.9
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    109.6,
+    -57.6
+   ],
+   "roblox_xz": [
+    109.6,
+    57.6
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    89.3,
+    -54.7
+   ],
+   "roblox_xz": [
+    89.3,
+    54.7
+   ],
+   "where": "Tide Pools"
+  },
+  {
+   "blender_xy": [
+    126.4,
+    89.9
+   ],
+   "roblox_xz": [
+    126.4,
+    -89.9
+   ],
+   "where": "Sandcastle Beach"
+  },
+  {
+   "blender_xy": [
+    122.0,
+    77.3
+   ],
+   "roblox_xz": [
+    122.0,
+    -77.3
+   ],
+   "where": "Sandcastle Beach"
+  },
+  {
+   "blender_xy": [
+    109.1,
+    91.7
+   ],
+   "roblox_xz": [
+    109.1,
+    -91.7
+   ],
+   "where": "Sandcastle Beach"
+  },
+  {
+   "blender_xy": [
+    127.5,
+    101.9
+   ],
+   "roblox_xz": [
+    127.5,
+    -101.9
+   ],
+   "where": "Sandcastle Beach"
+  },
+  {
+   "blender_xy": [
+    -22,
+    33
+   ],
+   "roblox_xz": [
+    -22,
+    -33
+   ],
+   "where": "THE SHARK DOCK (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    22,
+    33
+   ],
+   "roblox_xz": [
+    22,
+    -33
+   ],
+   "where": "THE SHARK DOCK (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -22,
+    113
+   ],
+   "roblox_xz": [
+    -22,
+    -113
+   ],
+   "where": "THE SHARK DOCK (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    22,
+    113
+   ],
+   "roblox_xz": [
+    22,
+    -113
+   ],
+   "where": "THE SHARK DOCK (bonus, on the boss arena)"
+  }
+ ],
+ "fx": {
+  "spray": [
+   [
+    0.0,
+    -47.8,
+    14.6
+   ]
+  ],
+  "bubbles": [
+   [
+    102,
+    -35,
+    0.6,
+    5.5
+   ],
+   [
+    128,
+    -31,
+    0.6,
+    4.6
+   ],
+   [
+    100,
+    -61,
+    0.6,
+    4.8
+   ],
+   [
+    130,
+    -59,
+    0.6,
+    5.2
+   ],
+   [
+    116,
+    -47,
+    0.6,
+    3.6
+   ]
+  ],
+  "spinners": [
+   {
+    "name": "Spin_LighthouseBeam",
+    "pivot": [
+     -128.0,
+     -100.0,
+     34.9
+    ],
+    "seconds_per_turn": 8.0
+   },
+   {
+    "name": "Spin_SurfSign",
+    "pivot": [
+     -108.99,
+     77.61,
+     16.0
+    ],
+    "seconds_per_turn": 10.0
+   },
+   {
+    "name": "Spin_FishSign",
+    "pivot": [
+     138.0,
+     26.0,
+     22.4
+    ],
+    "seconds_per_turn": 12.0
+   }
+  ],
+  "gull_rings": [
+   [
+    0,
+    0,
+    176,
+    205,
+    26,
+    38
+   ],
+   [
+    0,
+    73,
+    30,
+    55,
+    26,
+    34
+   ]
+  ]
+ }
+}

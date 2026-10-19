@@ -78,11 +78,12 @@ def mat(name):
         rgb = GLASS[name]
         bsdf.inputs["Base Color"].default_value = (*lin(rgb), 1)
         bsdf.inputs["Roughness"].default_value = 0.08
-        a = 0.55 if name.startswith("glass") else (0.6 if name.startswith("portal_") else (0.97 if name.startswith("choco") else 0.82))
+        a = 0.55 if name.startswith("glass") else (0.6 if name.startswith("portal_") else (0.97 if name.startswith("choco") else
+                                                                                           (0.16 if name.startswith("beam") else 0.82)))
         bsdf.inputs["Alpha"].default_value = a
-        if name.startswith("portal_") or name.startswith("goo"):
+        if name.startswith("portal_") or name.startswith("goo") or name.startswith("beam"):  # (beam*: a see-through light beam)
             bsdf.inputs["Emission Color"].default_value = (*lin(rgb), 1)
-            bsdf.inputs["Emission Strength"].default_value = 1.1
+            bsdf.inputs["Emission Strength"].default_value = 0.6 if name.startswith("beam") else 1.1
         try:
             m.surface_render_method = "BLENDED"
         except Exception:
@@ -747,8 +748,9 @@ def font(kind="rounded"):
     if kind in FONTS:
         return FONTS[kind]
     import os
-    paths = {"rounded": ["/System/Library/Fonts/Supplemental/Arial Rounded Bold.ttf"],
-             "bold": ["/System/Library/Fonts/Supplemental/Arial Black.ttf", "/System/Library/Fonts/Supplemental/Arial Bold.ttf"]}[kind]
+    paths = {"rounded": ["/System/Library/Fonts/Supplemental/Arial Rounded Bold.ttf", "C:/Windows/Fonts/ARLRDBD.TTF"],
+             "bold": ["/System/Library/Fonts/Supplemental/Arial Black.ttf", "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+                      "C:/Windows/Fonts/ariblk.ttf", "C:/Windows/Fonts/arialbd.ttf"]}[kind]  # (macOS, then mr.robe's Windows PC)
     for p in paths:
         if os.path.exists(p):
             FONTS[kind] = bpy.data.fonts.load(p)
