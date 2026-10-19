@@ -15,8 +15,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
-  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; crnuch moved on to Stage 5:
-  Briefcase Bay in progress (one island at a time).
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay done,
+  waiting for crnuch's approval; Pet Park next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
@@ -165,6 +165,27 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: world redesign Stage 5, island 1 — Briefcase Bay (Blender)
+- crnuch skipped the hub clip re-render ("just begin with the next island"). The hub fixes (arch straddling the belt,
+  IN/OUT tunnel hoods, butterfly clearances) are in the scripts and the .blend; the committed hub belt clip predates
+  them.
+- **Shared kit grew:**
+  - `kit/hl_island.py`: oval islands, strata cliffs, waterfalls, coverage, groves, hills, clouds, labels, and
+    `boss()`, which rebuilds a zone boss from `tools/zones/bosses.json` for scale
+  - `kit/hl_ambience.py`: wind, water, glows / blinks, pivots, idles, butterflies, particles, track cameras, clips
+- **Briefcase Bay** (`environment-redesign/briefcase_bay/`; doc `BRIEFCASE_BAY.md`):
+  - route arrival → gate → boulevard / cross street → 4 office-park egg fields → Partners' Plaza (The Senior
+    Partner at 3.5×) → RETURN HOME portal
+  - 12 buildings (fictional firms), the Bay (harbour + ferry + waterfall), 24 egg spots (4 bonus in the arena)
+  - 409k tris + 224k studs; renders (aerial, layout, 3 ground, arena aerial, cliff) + 4 ambience clips (steam,
+    papers, blinking marquees, boss idle)
+  - audio picks: Freesound CC0, checked
+- Bugs found in review and fixed: egg spots landing on paths (now sampled clear), a pond under a tower, the cross
+  street into the harbour, the harbour with no visible water (a stone disc above it), lamp posts that would have
+  swayed with the trees, street lamps that would have blinked with the marquees.
+- For crnuch: the north parks are inside the boss's 60-stud trigger when it's on the arena's south rim. Accept it, or
+  keep the boss ≥ 60 away (BRIEFCASE_BAY.md).
 
 ## 2026-10-18 — crnuch, local session: world redesign Stage 4 (central hub ambience, Blender + audio research)
 - **`environment-redesign/central_hub/hub_ambience.py`:** opens the built hub, adds the ambience, saves the animated

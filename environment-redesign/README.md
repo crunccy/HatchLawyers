@@ -11,7 +11,7 @@ pitch, Roblox's own stud shape).
 | 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
 | 3 | Hub detailed modeling | **Done 2026-10-18**: [central_hub/STAGE3.md](central_hub/STAGE3.md) + the shared kit [kit/hl_kit.py](kit/hl_kit.py) |
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
-| 5 | The six egg islands, one at a time | **in progress**: Briefcase Bay |
+| 5 | The six egg islands, one at a time | **Briefcase Bay done 2026-10-18, waiting for approval**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md); Pet Park next |
 | 6 | All-islands presentation | not started |
 | 7 | Roblox integration plan (plan only) | not started |
 
@@ -20,9 +20,11 @@ pitch, Roblox's own stud shape).
 environment-redesign/
   01_AUDIT.md                     Stage 1
   references/                     approved mockups (put crnuch's reference images here)
-  kit/                            the shared studded-brick kit (hl_kit.py) + its preview
+  kit/                            the shared kit: hl_kit.py (bricks, studs, props), hl_island.py (island terrain, boss import),
+                                  hl_ambience.py (wind, water, glows, particles, butterflies, clips)
   central_hub/blockout/           Stage 2: hub_blockout.py (source), .blend, hub_layout.json, LAYOUT.md, renders/
   central_hub/                    Stage 3: hub_parts.py, hub_build.py, showcase.py, central_hub.blend, STAGE3.md, renders/
+  briefcase_bay/                  World 1: bb_parts.py, bb_build.py, bb_ambience.py, briefcase_bay.blend, BRIEFCASE_BAY.md, renders/
   <island>/                       later: one folder per island, each its own .blend (independent, exportable)
 ```
 Each island is its own `.blend` and collection, so new islands can be added without touching the others.

@@ -1,0 +1,551 @@
+{
+ "island": "Briefcase Bay",
+ "radius_xy": [
+  150,
+  195
+ ],
+ "places": [
+  {
+   "name": "Arrival pad",
+   "blender_xy": [
+    0,
+    -156
+   ],
+   "roblox_xz": [
+    0,
+    156
+   ],
+   "what": "where Travel lands players (ZoneService Arrival)"
+  },
+  {
+   "name": "BRIEFCASE BAY gate",
+   "blender_xy": [
+    0,
+    -122
+   ],
+   "roblox_xz": [
+    0,
+    122
+   ],
+   "what": "welcome arch over the boulevard"
+  },
+  {
+   "name": "News kiosk",
+   "blender_xy": [
+    -26,
+    -142
+   ],
+   "roblox_xz": [
+    -26,
+    142
+   ],
+   "what": "decor"
+  },
+  {
+   "name": "Bus stop",
+   "blender_xy": [
+    26,
+    -144
+   ],
+   "roblox_xz": [
+    26,
+    144
+   ],
+   "what": "decor"
+  },
+  {
+   "name": "Lexicon Law tower",
+   "blender_xy": [
+    -118,
+    0
+   ],
+   "roblox_xz": [
+    -118,
+    0
+   ],
+   "what": "office tower (fictional firm)"
+  },
+  {
+   "name": "Brief & Co.",
+   "blender_xy": [
+    -120,
+    -84
+   ],
+   "roblox_xz": [
+    -120,
+    84
+   ],
+   "what": "mid-rise offices"
+  },
+  {
+   "name": "Law Library",
+   "blender_xy": [
+    -108,
+    64
+   ],
+   "roblox_xz": [
+    -108,
+    -64
+   ],
+   "what": "classical library"
+  },
+  {
+   "name": "Caseworks tower",
+   "blender_xy": [
+    124,
+    8
+   ],
+   "roblox_xz": [
+    124,
+    -8
+   ],
+   "what": "office tower (teal glass)"
+  },
+  {
+   "name": "Notary House",
+   "blender_xy": [
+    108,
+    74
+   ],
+   "roblox_xz": [
+    108,
+    -74
+   ],
+   "what": "mid-rise offices"
+  },
+  {
+   "name": "Coffee Break",
+   "blender_xy": [
+    60,
+    -118
+   ],
+   "roblox_xz": [
+    60,
+    118
+   ],
+   "what": "caf\u00e9 (steam rises in the ambience)"
+  },
+  {
+   "name": "Amicus Tower",
+   "blender_xy": [
+    -86,
+    128
+   ],
+   "roblox_xz": [
+    -86,
+    -128
+   ],
+   "what": "tower round the arena"
+  },
+  {
+   "name": "Verdict Tower",
+   "blender_xy": [
+    86,
+    128
+   ],
+   "roblox_xz": [
+    86,
+    -128
+   ],
+   "what": "tower round the arena"
+  },
+  {
+   "name": "Habeas Tower",
+   "blender_xy": [
+    -58,
+    166
+   ],
+   "roblox_xz": [
+    -58,
+    -166
+   ],
+   "what": "office building (fictional firm)"
+  },
+  {
+   "name": "Docket Tower",
+   "blender_xy": [
+    58,
+    166
+   ],
+   "roblox_xz": [
+    58,
+    -166
+   ],
+   "what": "office building (fictional firm)"
+  },
+  {
+   "name": "Clause & Co.",
+   "blender_xy": [
+    -132,
+    -40
+   ],
+   "roblox_xz": [
+    -132,
+    40
+   ],
+   "what": "office building (fictional firm)"
+  },
+  {
+   "name": "Tort Tower",
+   "blender_xy": [
+    118,
+    -96
+   ],
+   "roblox_xz": [
+    118,
+    96
+   ],
+   "what": "office building (fictional firm)"
+  },
+  {
+   "name": "Paralegal Place",
+   "blender_xy": [
+    -80,
+    -142
+   ],
+   "roblox_xz": [
+    -80,
+    142
+   ],
+   "what": "office building (fictional firm)"
+  },
+  {
+   "name": "Affidavit House",
+   "blender_xy": [
+    128,
+    40
+   ],
+   "roblox_xz": [
+    128,
+    -40
+   ],
+   "what": "office building (fictional firm)"
+  },
+  {
+   "name": "Giant gavel",
+   "blender_xy": [
+    -34,
+    146
+   ],
+   "roblox_xz": [
+    -34,
+    -146
+   ],
+   "what": "monument by the arena's north exit"
+  },
+  {
+   "name": "Giant briefcase",
+   "blender_xy": [
+    34,
+    146
+   ],
+   "roblox_xz": [
+    34,
+    -146
+   ],
+   "what": "monument by the arena's north exit"
+  },
+  {
+   "name": "RETURN HOME portal",
+   "blender_xy": [
+    0,
+    160
+   ],
+   "roblox_xz": [
+    0,
+    -160
+   ],
+   "what": "the way home WITH eggs, past the boss (crnuch's call)"
+  },
+  {
+   "name": "Partners' Plaza (boss arena)",
+   "blender_xy": [
+    0,
+    70
+   ],
+   "roblox_xz": [
+    0,
+    -70
+   ],
+   "what": "open floor r 62: The Senior Partner (45-stud cone, 60-stud trigger) roams it"
+  },
+  {
+   "name": "The Bay (harbour)",
+   "blender_xy": [
+    108,
+    -40
+   ],
+   "roblox_xz": [
+    108,
+    40
+   ],
+   "what": "basin, boardwalk, the Bay Ferry; overflows into the east waterfall"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -86.0,
+    -90.1
+   ],
+   "roblox_xz": [
+    -86.0,
+    90.1
+   ],
+   "where": "West Park South"
+  },
+  {
+   "blender_xy": [
+    -86.5,
+    -76.5
+   ],
+   "roblox_xz": [
+    -86.5,
+    76.5
+   ],
+   "where": "West Park South"
+  },
+  {
+   "blender_xy": [
+    -53.8,
+    -86.1
+   ],
+   "roblox_xz": [
+    -53.8,
+    86.1
+   ],
+   "where": "West Park South"
+  },
+  {
+   "blender_xy": [
+    -38.2,
+    -83.4
+   ],
+   "roblox_xz": [
+    -38.2,
+    83.4
+   ],
+   "where": "West Park South"
+  },
+  {
+   "blender_xy": [
+    -68.1,
+    -74.4
+   ],
+   "roblox_xz": [
+    -68.1,
+    74.4
+   ],
+   "where": "West Park South"
+  },
+  {
+   "blender_xy": [
+    -43.4,
+    -77.5
+   ],
+   "roblox_xz": [
+    -43.4,
+    77.5
+   ],
+   "where": "West Park South"
+  },
+  {
+   "blender_xy": [
+    -50.2,
+    -24.1
+   ],
+   "roblox_xz": [
+    -50.2,
+    24.1
+   ],
+   "where": "West Park North"
+  },
+  {
+   "blender_xy": [
+    -83.1,
+    -21.4
+   ],
+   "roblox_xz": [
+    -83.1,
+    21.4
+   ],
+   "where": "West Park North"
+  },
+  {
+   "blender_xy": [
+    -24.1,
+    -12.3
+   ],
+   "roblox_xz": [
+    -24.1,
+    12.3
+   ],
+   "where": "West Park North"
+  },
+  {
+   "blender_xy": [
+    -35.8,
+    -21.5
+   ],
+   "roblox_xz": [
+    -35.8,
+    21.5
+   ],
+   "where": "West Park North"
+  },
+  {
+   "blender_xy": [
+    -76.2,
+    -23.3
+   ],
+   "roblox_xz": [
+    -76.2,
+    23.3
+   ],
+   "where": "West Park North"
+  },
+  {
+   "blender_xy": [
+    -43.0,
+    -23.2
+   ],
+   "roblox_xz": [
+    -43.0,
+    23.2
+   ],
+   "where": "West Park North"
+  },
+  {
+   "blender_xy": [
+    56.0,
+    -74.2
+   ],
+   "roblox_xz": [
+    56.0,
+    74.2
+   ],
+   "where": "East Park South"
+  },
+  {
+   "blender_xy": [
+    37.3,
+    -84.4
+   ],
+   "roblox_xz": [
+    37.3,
+    84.4
+   ],
+   "where": "East Park South"
+  },
+  {
+   "blender_xy": [
+    34.2,
+    -75.8
+   ],
+   "roblox_xz": [
+    34.2,
+    75.8
+   ],
+   "where": "East Park South"
+  },
+  {
+   "blender_xy": [
+    58.5,
+    -83.3
+   ],
+   "roblox_xz": [
+    58.5,
+    83.3
+   ],
+   "where": "East Park South"
+  },
+  {
+   "blender_xy": [
+    58.7,
+    -90.5
+   ],
+   "roblox_xz": [
+    58.7,
+    90.5
+   ],
+   "where": "East Park South"
+  },
+  {
+   "blender_xy": [
+    69.9,
+    -91.0
+   ],
+   "roblox_xz": [
+    69.9,
+    91.0
+   ],
+   "where": "East Park South"
+  },
+  {
+   "blender_xy": [
+    58.1,
+    -22.0
+   ],
+   "roblox_xz": [
+    58.1,
+    22.0
+   ],
+   "where": "East Park North"
+  },
+  {
+   "blender_xy": [
+    32.8,
+    -22.6
+   ],
+   "roblox_xz": [
+    32.8,
+    22.6
+   ],
+   "where": "East Park North"
+  },
+  {
+   "blender_xy": [
+    47.6,
+    97.5
+   ],
+   "roblox_xz": [
+    47.6,
+    -97.5
+   ],
+   "where": "Partners' Plaza (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -47.6,
+    97.5
+   ],
+   "roblox_xz": [
+    -47.6,
+    -97.5
+   ],
+   "where": "Partners' Plaza (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -47.6,
+    42.5
+   ],
+   "roblox_xz": [
+    -47.6,
+    -42.5
+   ],
+   "where": "Partners' Plaza (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    47.6,
+    42.5
+   ],
+   "roblox_xz": [
+    47.6,
+    -42.5
+   ],
+   "where": "Partners' Plaza (bonus, inside the boss arena)"
+  }
+ ]
+}

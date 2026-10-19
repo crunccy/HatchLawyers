@@ -44,9 +44,9 @@ PAL = {
 }
 GLOWS = {"glow_warm": ((255, 226, 150), 3.0), "glow_cyan": ((90, 210, 255), 2.6), "glow_purple": ((170, 90, 255), 2.2),
          "glow_gold": ((255, 210, 90), 3.0), "glow_green": ((120, 255, 140), 3.0), "glow_red": ((255, 90, 90), 3.0),
-         "glow_white": ((255, 255, 255), 2.5)}
+         "glow_white": ((255, 255, 255), 2.5), "glow_bulb": ((255, 230, 160), 3.2)}
 GLASS = {"glass": (150, 210, 245), "glass_dark": (60, 110, 170), "water": (60, 170, 240), "water_fall": (70, 175, 245), "water_deep": (30, 120, 210),
-         "portal_field": (40, 140, 255)}
+         "portal_field": (40, 140, 255), "portal_home": (70, 230, 140)}
 # Roblox equivalent per look family (for integration; Blender-only shading is listed in the README)
 ROBLOX_MATERIAL = {"glow_": "Neon", "glass": "Glass (Transparency 0.4)", "water": "Glass / Terrain Water",
                    "metal": "Metal", "gold": "Plastic (gold colour) or Foil", "portal_field": "Neon + Transparency 0.5",
@@ -76,9 +76,9 @@ def mat(name):
         rgb = GLASS[name]
         bsdf.inputs["Base Color"].default_value = (*lin(rgb), 1)
         bsdf.inputs["Roughness"].default_value = 0.08
-        a = 0.55 if name.startswith("glass") else (0.6 if name == "portal_field" else 0.82)
+        a = 0.55 if name.startswith("glass") else (0.6 if name.startswith("portal_") else 0.82)
         bsdf.inputs["Alpha"].default_value = a
-        if name == "portal_field":
+        if name.startswith("portal_"):
             bsdf.inputs["Emission Color"].default_value = (*lin(rgb), 1)
             bsdf.inputs["Emission Strength"].default_value = 1.1
         try:
