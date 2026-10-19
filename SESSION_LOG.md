@@ -15,7 +15,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
-  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stage 3 (hub detailed modeling) in progress.
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stage 3 (hub detailed modeling) done 2026-10-18;
+  Stage 4 (hub ambience) next, then crnuch's approval.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
@@ -164,6 +165,30 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: world redesign Stage 3 (central hub detailed modeling, Blender)
+- crnuch approved the hub layout with 5 decisions (in `environment-redesign/central_hub/blockout/LAYOUT.md`):
+  - firms face the centre
+  - the hub Egg Incubator is a landmark only
+  - License and Upgrades are split
+  - each egg island gets a return portal past its boss
+  - the Arcade Pier stays off the south edge
+- **Shared kit** `environment-redesign/kit/hl_kit.py` (every island uses it):
+  - chamfered bricks
+  - Roblox-shaped raised studs as Geometry Nodes instances (one stud mesh, a point cloud per colour)
+  - stepped studded roofs, upright rings / discs, voxel domes, windows / doors / columns / stairs / railings
+  - 4 tree types, street furniture, attraction + wayfinding signs
+  - EEVEE lighting with bloom and the Standard view transform (AgX washed out the toy colours)
+- **Hub** (`central_hub/hub_parts.py` + `hub_build.py` → `central_hub.blend`, 13 MB, script = source):
+  - layered voxel cliffs, 4 waterfalls, hills, groves
+  - roads, the plaza with the statue fountain
+  - License Building, Travel Portal, Egg Incubator, Shop, Upgrades, Mutation Lab, Big Case terrace, 4 leaderboards
+  - 8 lots with example firms (DYNAMIC), the Arcade Pier, clouds / islets
+  - 681k studs, 863k other tris
+  - 7 renders + per-building showcases; reviewed by eye and fixed (washed colours, blown portal field, buried
+    waterfalls, flat cliffs, random tree scatter → groves, bare services ring)
+  - Write-up, asset list, Roblox notes and known weaknesses: `central_hub/STAGE3.md`
+- Nothing in Studio or gameplay changed.
 
 ## 2026-10-18 — crnuch, local session: world redesign Stage 1 (audit) + Stage 2 (central hub blockout)
 - crnuch's brief: a floating-island universe (hub + six egg islands), **Blender only** until approved; no Studio,

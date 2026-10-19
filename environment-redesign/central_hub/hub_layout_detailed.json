@@ -1,0 +1,186 @@
+{
+ "services": [
+  {
+   "name": "Law License Building",
+   "x": 0.0,
+   "y": 172.0,
+   "roblox_xz": [
+    0.0,
+    -172.0
+   ],
+   "note": "licenses (crnuch: split from Upgrades)"
+  },
+  {
+   "name": "Travel Portal",
+   "x": -72.1,
+   "y": 72.1,
+   "roblox_xz": [
+    -72.1,
+    -72.1
+   ],
+   "note": "Hub.TravelPortal; island destinations"
+  },
+  {
+   "name": "Egg Incubator",
+   "x": 72.1,
+   "y": 72.1,
+   "roblox_xz": [
+    72.1,
+    -72.1
+   ],
+   "note": "landmark only (crnuch's call); hatching stays in firms"
+  },
+  {
+   "name": "Shop",
+   "x": -72.1,
+   "y": -72.1,
+   "roblox_xz": [
+    -72.1,
+    72.1
+   ],
+   "note": "Hub.ShopStall"
+  },
+  {
+   "name": "Upgrades",
+   "x": 72.1,
+   "y": -72.1,
+   "roblox_xz": [
+    72.1,
+    72.1
+   ],
+   "note": "Carry + Speed (crnuch: split from the License Office)"
+  },
+  {
+   "name": "Mutation Machine",
+   "x": -102.0,
+   "y": 0.0,
+   "roblox_xz": [
+    -102.0,
+    -0.0
+   ],
+   "note": "Hub.MergeMachine"
+  },
+  {
+   "name": "Big Case Terrace",
+   "x": 102.0,
+   "y": 0.0,
+   "roblox_xz": [
+    102.0,
+    -0.0
+   ],
+   "note": "Hub.BigCaseBelt + minigame pads"
+  },
+  {
+   "name": "Leaderboards x4",
+   "roblox_xz": [
+    [
+     -22,
+     84
+    ],
+    [
+     -22,
+     104
+    ],
+    [
+     22,
+     84
+    ],
+    [
+     22,
+     104
+    ]
+   ],
+   "note": "facing the avenue"
+  },
+  {
+   "name": "Arcade Pier",
+   "roblox_xz": [
+    0,
+    473.2
+   ],
+   "note": "mr.robe's Arcade booths (LieDetector, FilingFrenzy, BriefcaseStack)"
+  }
+ ],
+ "plots": [
+  {
+   "plot": "Plot1",
+   "angle": 60,
+   "street_edge_roblox_xz": [
+    74.0,
+    -128.2
+   ],
+   "yaw": 150,
+   "example": "supreme"
+  },
+  {
+   "plot": "Plot2",
+   "angle": 20,
+   "street_edge_roblox_xz": [
+    139.1,
+    -50.6
+   ],
+   "yaw": 110,
+   "example": "glass"
+  },
+  {
+   "plot": "Plot3",
+   "angle": -20,
+   "street_edge_roblox_xz": [
+    139.1,
+    50.6
+   ],
+   "yaw": 70,
+   "example": "main"
+  },
+  {
+   "plot": "Plot4",
+   "angle": -60,
+   "street_edge_roblox_xz": [
+    74.0,
+    128.2
+   ],
+   "yaw": 30,
+   "example": "empty"
+  },
+  {
+   "plot": "Plot5",
+   "angle": 240,
+   "street_edge_roblox_xz": [
+    -74.0,
+    128.2
+   ],
+   "yaw": 330,
+   "example": "main"
+  },
+  {
+   "plot": "Plot6",
+   "angle": 200,
+   "street_edge_roblox_xz": [
+    -139.1,
+    50.6
+   ],
+   "yaw": 290,
+   "example": "glass"
+  },
+  {
+   "plot": "Plot7",
+   "angle": 160,
+   "street_edge_roblox_xz": [
+    -139.1,
+    -50.6
+   ],
+   "yaw": 250,
+   "example": "main"
+  },
+  {
+   "plot": "Plot8",
+   "angle": 120,
+   "street_edge_roblox_xz": [
+    -74.0,
+    -128.2
+   ],
+   "yaw": 210,
+   "example": "empty"
+  }
+ ]
+}

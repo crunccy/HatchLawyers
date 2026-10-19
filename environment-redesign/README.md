@@ -9,7 +9,7 @@ pitch, Roblox's own stud shape).
 | --- | --- | --- |
 | 1 | Repository audit | **Done**: [01_AUDIT.md](01_AUDIT.md) |
 | 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
-| 3 | Hub detailed modeling | **in progress** |
+| 3 | Hub detailed modeling | **Done 2026-10-18**: [central_hub/STAGE3.md](central_hub/STAGE3.md) + the shared kit [kit/hl_kit.py](kit/hl_kit.py) |
 | 4 | Hub ambience (animations, audio research) | not started |
 | 5 | The six egg islands, one at a time | not started |
 | 6 | All-islands presentation | not started |
@@ -20,7 +20,9 @@ pitch, Roblox's own stud shape).
 environment-redesign/
   01_AUDIT.md                     Stage 1
   references/                     approved mockups (put crnuch's reference images here)
+  kit/                            the shared studded-brick kit (hl_kit.py) + its preview
   central_hub/blockout/           Stage 2: hub_blockout.py (source), .blend, hub_layout.json, LAYOUT.md, renders/
+  central_hub/                    Stage 3: hub_parts.py, hub_build.py, showcase.py, central_hub.blend, STAGE3.md, renders/
   <island>/                       later: one folder per island, each its own .blend (independent, exportable)
 ```
 Each island is its own `.blend` and collection, so new islands can be added without touching the others.
