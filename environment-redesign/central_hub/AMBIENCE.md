@@ -46,7 +46,9 @@ The previews are kept short and low-sample because each frame costs about 0.6 s 
 - **Seamless loops hide their seams:** a looping ride starts and ends inside something (the belt's IN / OUT tunnel
   hoods with flaps), so nothing pops in or rolls off an end.
 - **Check frames, not just the idea:** render the start, middle and end frames of each clip (`-- stills`) and look
-  for clipping before the MP4.
+  for clipping before the MP4. (Since 2026-10-19 crnuch wants no stills or clips: check clearances in the build code instead.)
+- **Nothing flashes faster than 3 Hz** (2026-10-19, photosensitivity: the players are young). Marquee bulbs blink at
+  ~1.4 Hz; everything else breathes (sine) below 0.5 Hz. No "glitch flicker" on big lit areas.
 
 ## Hub ambience spec (for the game)
 - **Mood:** welcoming, sunny early afternoon, gentle breeze, birds, distant voices, a relaxed ukulele track.

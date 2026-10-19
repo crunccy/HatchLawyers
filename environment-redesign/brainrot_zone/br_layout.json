@@ -1,0 +1,503 @@
+{
+ "island": "Brainrot Zone (game zone: Brainrot Boulevard)",
+ "radius_xy": [
+  160,
+  190
+ ],
+ "places": [
+  {
+   "name": "Arrival pad",
+   "blender_xy": [
+    0,
+    -161
+   ],
+   "roblox_xz": [
+    0,
+    161
+   ],
+   "what": "where Travel lands players"
+  },
+  {
+   "name": "BRAINROT BOULEVARD gate",
+   "blender_xy": [
+    0,
+    -127
+   ],
+   "roblox_xz": [
+    0,
+    127
+   ],
+   "what": "a glitched arch"
+  },
+  {
+   "name": "Big Screen",
+   "blender_xy": [
+    -112,
+    30
+   ],
+   "roblox_xz": [
+    -112,
+    -30
+   ],
+   "what": "dark tower with a giant cartoon-face screen"
+  },
+  {
+   "name": "Twisty Tower",
+   "blender_xy": [
+    -76,
+    132
+   ],
+   "roblox_xz": [
+    -76,
+    -132
+   ],
+   "what": "every floor turned 7.5 degrees"
+  },
+  {
+   "name": "Melty Mall",
+   "blender_xy": [
+    92,
+    128
+   ],
+   "roblox_xz": [
+    92,
+    -128
+   ],
+   "what": "the roof is melting down the walls"
+  },
+  {
+   "name": "Neon tower LOL LAW",
+   "blender_xy": [
+    -128,
+    -20
+   ],
+   "roblox_xz": [
+    -128,
+    20
+   ],
+   "what": "neon skyscraper"
+  },
+  {
+   "name": "Neon tower OBJECTION!",
+   "blender_xy": [
+    -120,
+    88
+   ],
+   "roblox_xz": [
+    -120,
+    -88
+   ],
+   "what": "neon skyscraper"
+  },
+  {
+   "name": "Neon tower SIGMA SUITS",
+   "blender_xy": [
+    126,
+    66
+   ],
+   "roblox_xz": [
+    126,
+    -66
+   ],
+   "what": "neon skyscraper"
+  },
+  {
+   "name": "Neon tower GIGA CASE",
+   "blender_xy": [
+    124,
+    -112
+   ],
+   "roblox_xz": [
+    124,
+    112
+   ],
+   "what": "neon skyscraper"
+  },
+  {
+   "name": "Neon tower BRAIN LAB",
+   "blender_xy": [
+    -90,
+    -128
+   ],
+   "roblox_xz": [
+    -90,
+    128
+   ],
+   "what": "neon skyscraper"
+  },
+  {
+   "name": "RETURN HOME portal",
+   "blender_xy": [
+    0,
+    154
+   ],
+   "roblox_xz": [
+    0,
+    -154
+   ],
+   "what": "home WITH eggs, past the boss (crnuch's call)"
+  },
+  {
+   "name": "Giant gelato / traffic cones",
+   "blender_xy": [
+    0,
+    0
+   ],
+   "roblox_xz": [
+    0,
+    0
+   ],
+   "what": "odd giant objects along the boulevard + by the arena"
+  },
+  {
+   "name": "Statue: CactusinoAvvocatino",
+   "blender_xy": [
+    -50,
+    -96
+   ],
+   "roblox_xz": [
+    -50,
+    96
+   ],
+   "what": "the game's CactusinoAvvocatino lawyer at 4.0x on a neon plinth"
+  },
+  {
+   "name": "Statue: DraghettoSpaghetto",
+   "blender_xy": [
+    50,
+    -34
+   ],
+   "roblox_xz": [
+    50,
+    34
+   ],
+   "what": "the game's DraghettoSpaghetto lawyer at 3.4x on a neon plinth"
+  },
+  {
+   "name": "Statue: ImperatorePinguino",
+   "blender_xy": [
+    -52,
+    -6
+   ],
+   "roblox_xz": [
+    -52,
+    6
+   ],
+   "what": "the game's ImperatorePinguino lawyer at 2.4x on a neon plinth"
+  },
+  {
+   "name": "THE GAVEL PIT (boss arena)",
+   "blender_xy": [
+    0,
+    80
+   ],
+   "roblox_xz": [
+    0,
+    -80
+   ],
+   "what": "open floor r 52: Judge Martello (Slam r 26, hops where you stood)"
+  },
+  {
+   "name": "Glitch Garden (egg field)",
+   "blender_xy": [
+    -98,
+    -55
+   ],
+   "roblox_xz": [
+    -98,
+    55
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Wobble Square (egg field)",
+   "blender_xy": [
+    96,
+    -72
+   ],
+   "roblox_xz": [
+    96,
+    72
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Upside-Down Park (egg field)",
+   "blender_xy": [
+    96,
+    8
+   ],
+   "roblox_xz": [
+    96,
+    -8
+   ],
+   "what": "egg field"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -85.0,
+    -56.1
+   ],
+   "roblox_xz": [
+    -85.0,
+    56.1
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -94.6,
+    -36.7
+   ],
+   "roblox_xz": [
+    -94.6,
+    36.7
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -104.2,
+    -30.0
+   ],
+   "roblox_xz": [
+    -104.2,
+    30.0
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -108.7,
+    -76.3
+   ],
+   "roblox_xz": [
+    -108.7,
+    76.3
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -99.7,
+    -76.6
+   ],
+   "roblox_xz": [
+    -99.7,
+    76.6
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -89.1,
+    -70.7
+   ],
+   "roblox_xz": [
+    -89.1,
+    70.7
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -89.7,
+    -50.8
+   ],
+   "roblox_xz": [
+    -89.7,
+    50.8
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -107.2,
+    -49.0
+   ],
+   "roblox_xz": [
+    -107.2,
+    49.0
+   ],
+   "where": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    104.4,
+    -89.5
+   ],
+   "roblox_xz": [
+    104.4,
+    89.5
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    111.3,
+    -66.2
+   ],
+   "roblox_xz": [
+    111.3,
+    66.2
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    73.4,
+    -73.3
+   ],
+   "roblox_xz": [
+    73.4,
+    73.3
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    103.2,
+    -49.6
+   ],
+   "roblox_xz": [
+    103.2,
+    49.6
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    80.1,
+    -65.0
+   ],
+   "roblox_xz": [
+    80.1,
+    65.0
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    97.1,
+    -55.8
+   ],
+   "roblox_xz": [
+    97.1,
+    55.8
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    96.0,
+    -88.4
+   ],
+   "roblox_xz": [
+    96.0,
+    88.4
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    85.5,
+    -55.4
+   ],
+   "roblox_xz": [
+    85.5,
+    55.4
+   ],
+   "where": "Wobble Square"
+  },
+  {
+   "blender_xy": [
+    94.3,
+    21.7
+   ],
+   "roblox_xz": [
+    94.3,
+    -21.7
+   ],
+   "where": "Upside-Down Park"
+  },
+  {
+   "blender_xy": [
+    83.8,
+    12.1
+   ],
+   "roblox_xz": [
+    83.8,
+    -12.1
+   ],
+   "where": "Upside-Down Park"
+  },
+  {
+   "blender_xy": [
+    109.4,
+    23.9
+   ],
+   "roblox_xz": [
+    109.4,
+    -23.9
+   ],
+   "where": "Upside-Down Park"
+  },
+  {
+   "blender_xy": [
+    76.7,
+    14.4
+   ],
+   "roblox_xz": [
+    76.7,
+    -14.4
+   ],
+   "where": "Upside-Down Park"
+  },
+  {
+   "blender_xy": [
+    38.1,
+    102.0
+   ],
+   "roblox_xz": [
+    38.1,
+    -102.0
+   ],
+   "where": "THE GAVEL PIT (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -38.1,
+    102.0
+   ],
+   "roblox_xz": [
+    -38.1,
+    -102.0
+   ],
+   "where": "THE GAVEL PIT (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -38.1,
+    58.0
+   ],
+   "roblox_xz": [
+    -38.1,
+    -58.0
+   ],
+   "where": "THE GAVEL PIT (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    38.1,
+    58.0
+   ],
+   "roblox_xz": [
+    38.1,
+    -58.0
+   ],
+   "where": "THE GAVEL PIT (bonus, inside the boss arena)"
+  }
+ ]
+}

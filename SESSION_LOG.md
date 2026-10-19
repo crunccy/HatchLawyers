@@ -15,11 +15,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
-  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay approved,
-  Pet Park done (waiting for approval); Brainrot next.
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay + Pet
+  Park approved, Brainrot Zone done (waiting for approval); Food Court next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
+- [ ] **World redesign: rebuild the hub, Briefcase Bay and Pet Park .blends** (`-- norender` + their ambience, no
+      clips) so their drifting clouds carry their studs (kit fix 2026-10-19, Brainrot entry). Renders are unaffected.
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -165,6 +167,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 3 — Brainrot Zone (Blender)
+- **crnuch's call:** Pet Park approved.
+- **Brainrot Zone** (`environment-redesign/brainrot_zone/`; doc `BRAINROT_ZONE.md`), a surreal neon island at dusk:
+  - route arrival → glitched gate → zig-zag neon boulevard with giant statues of the game's own brainrot lawyers
+    (CactusinoAvvocatino / DraghettoSpaghetto / ImperatorePinguino from `lawyers_top.json`) → Glitch Garden /
+    Wobble Square / Upside-Down Park egg fields → THE GAVEL PIT (Judge Martello at 3.4×) → brain-keystone RETURN HOME
+  - five neon towers (made-up signs only), Big Screen, Twisty Tower, Melty Mall, goo waterfalls, floating cubes +
+    eyeballs, gelato / traffic cones; 24 egg spots; the Brainrot egg design (purple, neon zig-zags)
+  - Martello check: open floor r 52 vs Slam r 26; suggested Bounds = the square inside the floor; Upside-Down Park
+    is the one field inside his 60-stud trigger (4 eggs, by design)
+  - 332k tris + 210k studs; 7 renders; ambience in the .blend (neon breathing, goo, cube bob, Martello's hop, sparkles, wind)
+  - audio picks (synth bed, neon hum, glitch, boing): CC0, each licence read on its page
+- **Kit:**
+  - `hl_island.model_from_parts` (bosses + now `lawyer()` statues from `lawyers_top.json`); neon / goo looks in `hl_kit`
+  - **stud groups** (`K.STUD_GROUP`): the drifting `Clouds_Islets` now gets its own stud instancers parented to it.
+    Before, its studs sat in the island-wide instancers and stayed put while the clouds drifted (all four .blends;
+    nobody saw it because the reviews are static renders). Brainrot has the fix; the hub / Bay / Pet Park .blends
+    get it when rebuilt (open item)
+- **Fixed in review:**
+  - a "SKIBIDI SUITS" sign renamed SIGMA SUITS (fictional names only)
+  - the arena camera sat behind the GAVEL PIT marquee
+  - smooth eye / gelato / cone / spire shapes made studded voxel; studs added to the leaning towers' ledges
+  - the west goo pond sat inside Glitch Garden on an egg spot (the falls are built after the spots): both falls
+    moved to angles clear of the fields (225° / 346°)
+  - floating cubes kept off towers (they bob)
+  - the grove canopies got their own looks so wind sways their studs with them
+  - a planned window flicker (~3.7 Hz) slowed to a breath: young players, nothing flashes over 3 Hz
 
 ## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 2 — Pet Park (Blender)
 - **crnuch's calls:**

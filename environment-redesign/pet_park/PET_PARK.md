@@ -1,4 +1,4 @@
-# World 2 — Pet Park (Stage 5, 2026-10-18) · presented for crnuch's approval
+# World 2 — Pet Park (Stage 5, 2026-10-18) · APPROVED by crnuch 2026-10-19
 
 A lush, cheerful animal park on its own floating island: winding orange paths, a pond with a giant corgi, fenced
 pet meadows, and a dog-run boss arena. Built in the shared kit (`../kit/`), now including `hl_world.py`, the

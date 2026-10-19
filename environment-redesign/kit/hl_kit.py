@@ -40,12 +40,14 @@ PAL = {
     "yellow": (255, 220, 60), "blue": (60, 140, 240), "sky_blue": (120, 200, 255), "purple": (150, 90, 220),
     "purple_dark": (90, 50, 150), "pink": (255, 120, 180), "teal": (40, 190, 180), "ink": (40, 40, 52),
     "metal": (170, 176, 186), "metal_dark": (80, 86, 98), "black": (30, 30, 36), "bronze": (168, 112, 58), "eggshell": (252, 238, 200), "hazard": (250, 200, 30),
+    "magenta": (230, 50, 200), "violet": (110, 55, 190), "lilac": (190, 150, 255), "night": (40, 30, 70), "teal_dark": (20, 120, 130),
     "blossom": (255, 170, 200), "blossom_light": (255, 205, 225), "awning_red": (230, 50, 50), "awning_white": (252, 250, 246),
 }
 GLOWS = {"glow_warm": ((255, 226, 150), 3.0), "glow_cyan": ((90, 210, 255), 2.6), "glow_purple": ((170, 90, 255), 2.2),
          "glow_gold": ((255, 210, 90), 3.0), "glow_green": ((120, 255, 140), 3.0), "glow_red": ((255, 90, 90), 3.0),
-         "glow_white": ((255, 255, 255), 2.5), "glow_bulb": ((255, 230, 160), 3.2)}
-GLASS = {"glass": (150, 210, 245), "glass_dark": (60, 110, 170), "water": (60, 170, 240), "water_fall": (70, 175, 245), "water_deep": (30, 120, 210),
+         "glow_white": ((255, 255, 255), 2.5), "glow_bulb": ((255, 230, 160), 3.2), "glow_magenta": ((255, 60, 220), 2.6),
+         "glow_lime": ((170, 255, 60), 2.4)}
+GLASS = {"glass": (150, 210, 245), "glass_dark": (60, 110, 170), "water": (60, 170, 240), "water_fall": (70, 175, 245), "goo": (190, 70, 255), "goo_fall": (210, 90, 255), "water_deep": (30, 120, 210),
          "portal_field": (40, 140, 255), "portal_home": (70, 230, 140)}
 # Roblox equivalent per look family (for integration; Blender-only shading is listed in the README)
 ROBLOX_MATERIAL = {"glow_": "Neon", "glass": "Glass (Transparency 0.4)", "water": "Glass / Terrain Water",
@@ -78,7 +80,7 @@ def mat(name):
         bsdf.inputs["Roughness"].default_value = 0.08
         a = 0.55 if name.startswith("glass") else (0.6 if name.startswith("portal_") else 0.82)
         bsdf.inputs["Alpha"].default_value = a
-        if name.startswith("portal_"):
+        if name.startswith("portal_") or name.startswith("goo"):
             bsdf.inputs["Emission Color"].default_value = (*lin(rgb), 1)
             bsdf.inputs["Emission Strength"].default_value = 1.1
         try:
@@ -157,53 +159,61 @@ def stud_mesh(segs=3):
     return me
 
 
-STUDS = {}  # look -> [(x, y, z, rz)]
+STUDS = {}  # (group, look) -> [(x, y, z, rz)]
+STUD_GROUP = None  # set to an object's name while building something that MOVES as one object (the drifting
+#                    Clouds_Islets): its studs get their own instancers parented to it, so they ride along
 
 
 def add_studs(look, pts):
-    STUDS.setdefault(look, []).extend(pts)
+    STUDS.setdefault((STUD_GROUP, look), []).extend(pts)
 
 
 def studs_done(target_collection, name="Studs"):
-    """One instancer object per look: a point mesh (+ 'rz' attribute) -> Geometry Nodes Instance on Points."""
+    """One instancer object per look (per group): a point mesh (+ 'rz' attribute) -> Geometry Nodes Instance on
+    Points. A group's instancers are parented to the object of that name (built at the origin, so no offset)."""
     src_mesh = stud_mesh()
-    total = 0
-    for look, pts in STUDS.items():
+    total, groups = 0, {}
+    for (group, look), pts in STUDS.items():
         if not pts:
             continue
-        src = bpy.data.objects.new("StudSource_" + look, src_mesh.copy())
-        src.data.materials.append(mat(look))
-        COLS["Kit_Sources"].objects.link(src)
-        me = bpy.data.meshes.new(name + "_" + look)
+        ng = groups.get(look)
+        if not ng:
+            src = bpy.data.objects.new("StudSource_" + look, src_mesh.copy())
+            src.data.materials.append(mat(look))
+            COLS["Kit_Sources"].objects.link(src)
+            ng = bpy.data.node_groups.new("StudInstancer_" + look, "GeometryNodeTree")
+            ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+            ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+            N = ng.nodes
+            gi, go = N.new("NodeGroupInput"), N.new("NodeGroupOutput")
+            topts = N.new("GeometryNodeMeshToPoints")
+            inst = N.new("GeometryNodeInstanceOnPoints")
+            info = N.new("GeometryNodeObjectInfo")
+            info.inputs["Object"].default_value = src
+            na = N.new("GeometryNodeInputNamedAttribute")
+            na.data_type = "FLOAT"
+            na.inputs["Name"].default_value = "rz"
+            cx = N.new("ShaderNodeCombineXYZ")
+            L = ng.links
+            L.new(gi.outputs[0], topts.inputs["Mesh"])
+            L.new(topts.outputs["Points"], inst.inputs["Points"])
+            L.new(info.outputs["Geometry"], inst.inputs["Instance"])
+            L.new(na.outputs["Attribute"], cx.inputs["Z"])
+            L.new(cx.outputs["Vector"], inst.inputs["Rotation"])
+            L.new(inst.outputs["Instances"], go.inputs[0])
+            groups[look] = ng
+        oname = f"{name}_{look}" if group is None else f"{name}_{group}_{look}"
+        me = bpy.data.meshes.new(oname)
         me.from_pydata([(p[0], p[1], p[2]) for p in pts], [], [])
         attr = me.attributes.new("rz", "FLOAT", "POINT")
         attr.data.foreach_set("value", [p[3] for p in pts])
-        ob = bpy.data.objects.new(name + "_" + look, me)
+        ob = bpy.data.objects.new(oname, me)
         target_collection.objects.link(ob)
-        ng = bpy.data.node_groups.new("StudInstancer_" + look, "GeometryNodeTree")
-        ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
-        ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
-        N = ng.nodes
-        gi, go = N.new("NodeGroupInput"), N.new("NodeGroupOutput")
-        topts = N.new("GeometryNodeMeshToPoints")
-        inst = N.new("GeometryNodeInstanceOnPoints")
-        info = N.new("GeometryNodeObjectInfo")
-        info.inputs["Object"].default_value = src
-        na = N.new("GeometryNodeInputNamedAttribute")
-        na.data_type = "FLOAT"
-        na.inputs["Name"].default_value = "rz"
-        cx = N.new("ShaderNodeCombineXYZ")
-        L = ng.links
-        L.new(gi.outputs[0], topts.inputs["Mesh"])
-        L.new(topts.outputs["Points"], inst.inputs["Points"])
-        L.new(info.outputs["Geometry"], inst.inputs["Instance"])
-        L.new(na.outputs["Attribute"], cx.inputs["Z"])
-        L.new(cx.outputs["Vector"], inst.inputs["Rotation"])
-        L.new(inst.outputs["Instances"], go.inputs[0])
-        mod = ob.modifiers.new("Studs", "NODES")
-        mod.node_group = ng
+        if group and bpy.data.objects.get(group):
+            ob.parent = bpy.data.objects[group]
+        ob.modifiers.new("Studs", "NODES").node_group = ng
         total += len(pts)
-    print(f"[kit] studs: {total} raised studs in {len(STUDS)} colours")
+    print(f"[kit] studs: {total} raised studs in {len(groups)} colours")
     return total
 
 

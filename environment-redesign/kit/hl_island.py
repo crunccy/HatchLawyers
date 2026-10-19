@@ -256,6 +256,13 @@ class Island:
             made += 1
 
     def clouds(self, m, n=16, rmin=None, rmax=None, islets=8):
+        K.STUD_GROUP = m.name  # (the ambience drifts this object: its studs ride on it)
+        try:
+            self._clouds(m, n, rmin, rmax, islets)
+        finally:
+            K.STUD_GROUP = None
+
+    def _clouds(self, m, n, rmin, rmax, islets):
         rng = self.rng
         R = max(self.rx, self.ry)
         rmin, rmax = rmin or R + 60, rmax or R + 260
@@ -279,30 +286,27 @@ class Island:
         K.add_studs(look, K.grid_in_polygon(self.top_pts(f), 0.0, keep=lambda x, y: not self.covered(x, y, ground_only=True)))
 
 
-# ------------------------------------------------------------------ a boss from tools/zones/bosses.json (scale + posing reference)
-def boss(col, name, x, y, z=0.0, scale=1.0, facing=0.0):
-    """Rebuilds a zone boss from its exported blocks (Roblox space) - for layout scale and presentation only: in the
-    game BossService + Bosses.client draw and animate it."""
-    data = json.load(open(os.path.join(REPO, "tools", "zones", "bosses.json")))[name]
+# ------------------------------------------------------------------ game models from their exported blocks (Roblox space)
+def model_from_parts(col, name, parts, x, y, z=0.0, scale=1.0, facing=0.0):
+    """Rebuilds a model exported as Roblox-space blocks (p / s / r / c / t, as tools/zones/bosses.json and
+    lawyers_top.json store them) into one Blender object: scale x, turned `facing` degrees, feet at (x, y, z)."""
     bm = bmesh.new()
     looks = []
     c, s = math.cos(math.radians(facing)), math.sin(math.radians(facing))
-    for p in data["parts"]:
+    for p in parts:
         rx, ry, rz = p["p"]
         bxp, byp, bzp = rx, -rz, ry  # Roblox -> Blender
         R = p["r"]
         Rr = [[R[0], R[1], R[2]], [R[3], R[4], R[5]], [R[6], R[7], R[8]]]
-        # Blender basis vectors of the part: roblox X, Y(up), Z axes mapped: column j of Rr is the part's local axis j
-        ax = [(Rr[0][j], -Rr[2][j], Rr[1][j]) for j in range(3)]
-        sx, sy, sz = p["s"]  # (roblox: x, y = up, z)
-        half = (sx / 2, sy / 2, sz / 2)
+        ax = [(Rr[0][j], -Rr[2][j], Rr[1][j]) for j in range(3)]  # each local axis in Blender space
+        half = (p["s"][0] / 2, p["s"][1] / 2, p["s"][2] / 2)
         rgb = tuple(p["c"])
-        lk = "boss_%d_%d_%d" % rgb + ("_neon" if p.get("t") == "neon" else "")
-        if lk not in K.PAL and lk not in K.GLOWS:
-            if p.get("t") == "neon":
-                K.GLOWS[lk] = (rgb, 2.0)
-            else:
-                K.PAL[lk] = rgb
+        neon = p.get("t") == "neon"
+        lk = "model_%d_%d_%d" % rgb + ("_neon" if neon else "")
+        if neon and lk not in K.GLOWS:
+            K.GLOWS[lk] = (rgb, 2.0)
+        elif not neon and lk not in K.PAL:
+            K.PAL[lk] = rgb
         if lk not in looks:
             looks.append(lk)
         mi = looks.index(lk)
@@ -321,15 +325,28 @@ def boss(col, name, x, y, z=0.0, scale=1.0, facing=0.0):
                 f.material_index = mi
             except ValueError:
                 pass
-    me = bpy.data.meshes.new("Boss_" + name)
+    me = bpy.data.meshes.new(name)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
     bm.to_mesh(me)
     bm.free()
     for lk in looks:
         me.materials.append(K.mat(lk))
-    ob = bpy.data.objects.new("Boss_" + name, me)
+    ob = bpy.data.objects.new(name, me)
     col.objects.link(ob)
     return ob
+
+
+def boss(col, name, x, y, z=0.0, scale=1.0, facing=0.0):
+    """A zone boss from tools/zones/bosses.json - for layout scale + presentation only (in game BossService +
+    Bosses.client draw and animate it)."""
+    data = json.load(open(os.path.join(REPO, "tools", "zones", "bosses.json")))[name]
+    return model_from_parts(col, "Boss_" + name, data["parts"], x, y, z, scale, facing)
+
+
+def lawyer(col, name, x, y, z=0.0, scale=1.0, facing=0.0):
+    """A hatched lawyer from tools/zones/lawyers_top.json (the Epic / Mythic / Supreme cast) - e.g. a giant statue."""
+    data = json.load(open(os.path.join(REPO, "tools", "zones", "lawyers_top.json")))[name]
+    return model_from_parts(col, "Statue_" + name, data["parts"], x, y, z, scale, facing)
 
 
 # ------------------------------------------------------------------ plan labels

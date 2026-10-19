@@ -11,7 +11,7 @@ pitch, Roblox's own stud shape).
 | 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
 | 3 | Hub detailed modeling | **Done 2026-10-18**: [central_hub/STAGE3.md](central_hub/STAGE3.md) + the shared kit [kit/hl_kit.py](kit/hl_kit.py) |
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
-| 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **done, waiting for approval**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot next |
+| 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **done, waiting for approval**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court next |
 | 6 | All-islands presentation | not started |
 | 7 | Roblox integration plan (plan only) | not started |
 
