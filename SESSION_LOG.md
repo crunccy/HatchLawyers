@@ -17,17 +17,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
-  session (waiting for approval); Space Base next.
+  session (waiting for approval); Space Base done 2026-10-19 by mr.robe's session (waiting for approval): all six
+  islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
-- **mr.robe (local), since 2026-10-19:** world redesign island 6 — **Space Base** (Blender, same kit + deliverables as
-  islands 1-5), then exported into `Workspace.WorldRedesign` (its ring slot) - user's call ("model the space base
-  island"). Don't build Space Base meanwhile.
 
 ## Open items
 - [ ] **Redesign islands in the place, not wired yet** (built 2026-10-19, `Workspace.WorldRedesign`): next = the
       Stage 7 wiring (Travel to each island's arrival, EggSpots + ZoneService, boss arenas, RETURN HOME, the hub's
-      firm lots), raised studs (StudTop tags), Space Base (not modelled yet). Check fps / memory on a phone: the place
-      went from ~19.5k to ~115k parts (all islands stream; move them to ServerStorage if it hurts).
+      firm lots), raised studs (StudTop tags), a space skybox for Space Base. Check fps / memory on a phone: the place
+      went from ~19.5k to ~128k parts (all islands stream; move them to ServerStorage if it hurts).
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -173,6 +171,26 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — mr.robe, local session: world redesign island 6 — Space Base (Blender + into the place)
+- **User's call:** "model the space base island" (the one island the redesign hadn't modelled).
+- **Space Base** (`environment-redesign/space_base/`; doc `SPACE_BASE.md`), a lunar base under a starry sky:
+  - route landing pad → SPACE BASE airlock gate → orange path past the rocket + gantry and statues of the game's Space
+    lawyers (Comet, Nebula, Supernova Sovereign) → MISSION CONTROL PLAZA (a turning hologram planet, 8 kiosks, neon
+    light strings) → Crater Field / Alien Garden / Crystal Field → THE ECLIPSE RING (round, r 72) → ringed-planet
+    RETURN HOME
+  - observatory (turning dome), habitat domes, robot factory (radar), solar farm, fuel depot, a big turning dish, a
+    UFO landing (fictional); craters, alien plants, crystals; two plasma falls; drifting asteroids; 24 egg spots; the
+    Space egg (purple, gold ring band, neon stars)
+  - Eclipse check: Pull r 44 / gavel ring r 38 from a 52 × 52 boss area stay on the r 72 floor; nothing outside the
+    ring is reachable; crossing the ring is the way home
+  - 404k tris + 197k studs, 6.0 MB .blend; 7 renders; ambience in the .blend; CC0 audio picks (hum, beeps, rumble)
+  - the sky in Blender: a deep-space background (Light Path: the camera sees dark space, the scene stays lit), 900
+    stars, a ringed planet, a moon (`Sky_Backdrop`: hl_export now skips `Sky_*` meshes)
+- **Into the place:** exported (13,283 parts) and built in `Workspace.WorldRedesign.SpaceBase` at its NW ring slot
+  (3220, 150, -1858) - BuildRedesignIsland's LAYOUT has it now; checked from the landing pad in Studio. `/island space`
+  should reach it (the command finds islands by name; not playtested for this island).
+- **Left:** crnuch's approval; a space skybox / Lighting for this island when the islands get wired.
 
 ## 2026-10-19 — mr.robe, local session: the redesign islands built into the place
 - **User's call** (on mr.robe's PC, after Ocean Shore): "just build them" — the islands go into the game now, without

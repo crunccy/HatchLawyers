@@ -11,9 +11,9 @@ pitch, Roblox's own stud shape).
 | 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
 | 3 | Hub detailed modeling | **Done 2026-10-18**: [central_hub/STAGE3.md](central_hub/STAGE3.md) + the shared kit [kit/hl_kit.py](kit/hl_kit.py) |
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
-| 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **approved**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court **done, waiting for approval**: [food_court/FOOD_COURT.md](food_court/FOOD_COURT.md) · Ocean Shore **done, waiting for approval** (mr.robe's session): [ocean_shore/OCEAN_SHORE.md](ocean_shore/OCEAN_SHORE.md) · Space Base next |
+| 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **approved**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court **done, waiting for approval**: [food_court/FOOD_COURT.md](food_court/FOOD_COURT.md) · Ocean Shore **done, waiting for approval** (mr.robe's session): [ocean_shore/OCEAN_SHORE.md](ocean_shore/OCEAN_SHORE.md) · Space Base **done, waiting for approval** (mr.robe's session): [space_base/SPACE_BASE.md](space_base/SPACE_BASE.md) · all six modelled |
 | 6 | All-islands presentation | not started |
-| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + the five finished islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). Wiring plan: not written |
+| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + all six islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). Wiring plan: not written |
 
 ## Layout
 ```
@@ -30,6 +30,7 @@ environment-redesign/
   brainrot_zone/                  World 3: br_parts.py, br_build.py, br_ambience.py, brainrot_zone.blend, BRAINROT_ZONE.md, renders/
   food_court/                     World 4: fc_parts.py, fc_build.py, fc_ambience.py, food_court.blend, FOOD_COURT.md, renders/
   ocean_shore/                    World 5: os_parts.py, os_build.py, os_ambience.py, ocean_shore.blend, OCEAN_SHORE.md, renders/
+  space_base/                     World 6: sb_parts.py, sb_build.py, sb_ambience.py, space_base.blend, SPACE_BASE.md, renders/
   <island>/                       later: one folder per island, each its own .blend (independent, exportable)
 ```
 Each island is its own `.blend` and collection, so new islands can be added without touching the others.
@@ -72,6 +73,7 @@ are left out) and `kit/export_island.py` runs the build with it, saving nothing 
 `tools/zones/BuildRedesignIsland.lua` builds it into `Workspace.WorldRedesign.<Island>` (one Model per Blender
 object, BrickStuds plastic, Neon glows, Glass water without collision; ZFight passes at the end). Re-export + rebuild
 an island after changing its Blender script. Where they stand: the hub at (3600, 150, -1200), the egg islands on a ring
-of 760 round it (Briefcase Bay NE, Pet Park E, Brainrot Zone SE, Food Court SW, Ocean Shore W; Space Base's slot NW).
-Parts: hub 27.6k, Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot Zone 10.9k, Food Court 13.9k, Ocean Shore 17.1k.
+of 760 round it (Briefcase Bay NE, Pet Park E, Brainrot Zone SE, Food Court SW, Ocean Shore W, Space Base NW).
+Parts: hub 27.6k, Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot Zone 10.9k, Food Court 13.9k, Ocean Shore 17.1k, Space Base 13.3k.
+Meshes named `Sky_*` (far Blender-only backdrops like Space Base's starfield) are not exported.
 Admin `/island <name>` (AdminCommands) drops you on an island's south side in a playtest.

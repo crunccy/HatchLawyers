@@ -29,7 +29,7 @@ local LAYOUT: { [string]: Vector3 } = {
 	BrainrotZone = onRing(-60),
 	FoodCourt = onRing(-120),
 	OceanShore = onRing(180),
-	-- SpaceBase = onRing(120) (not built in Blender yet)
+	SpaceBase = onRing(120), -- zone 6, NW
 }
 
 local ISLAND: string = ARGS.island or "OceanShore"

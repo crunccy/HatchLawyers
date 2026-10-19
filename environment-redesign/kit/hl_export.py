@@ -63,7 +63,7 @@ def _matrix(xb, yb):
 
 
 def _on(self):
-    return self.name not in SKIP_MESHES
+    return self.name not in SKIP_MESHES and not self.name.startswith("Sky_")  # (Sky_* = far Blender-only backdrops)
 
 
 def _box(self, cx, cy, zc, sx, sy, h, look, rot):

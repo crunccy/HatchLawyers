@@ -1,0 +1,607 @@
+{
+ "island": "Space Base (game zone: Space Base)",
+ "radius_xy": [
+  180,
+  212
+ ],
+ "places": [
+  {
+   "name": "MISSION CONTROL PLAZA",
+   "blender_xy": [
+    0,
+    -42
+   ],
+   "roblox_xz": [
+    0,
+    42
+   ],
+   "what": "ringed tiles, the hologram planet, 8 kiosks, neon light strings, tables"
+  },
+  {
+   "name": "Arrival pad",
+   "blender_xy": [
+    0,
+    -197
+   ],
+   "roblox_xz": [
+    0,
+    197
+   ],
+   "what": "where Travel lands players (the landing pad)"
+  },
+  {
+   "name": "SPACE BASE gate",
+   "blender_xy": [
+    0,
+    -165
+   ],
+   "roblox_xz": [
+    0,
+    165
+   ],
+   "what": "an airlock: white pylons with hazard feet, the doors slid open, beacons"
+  },
+  {
+   "name": "ROCKET + LAUNCH PAD",
+   "blender_xy": [
+    -64,
+    -118
+   ],
+   "roblox_xz": [
+    -64,
+    118
+   ],
+   "what": "red-and-white rocket with a gantry (exhaust steam)"
+  },
+  {
+   "name": "OBSERVATORY",
+   "blender_xy": [
+    -118,
+    62
+   ],
+   "roblox_xz": [
+    -118,
+    -62
+   ],
+   "what": "white drum, gold band; its dome turns slowly"
+  },
+  {
+   "name": "HABITAT DOMES",
+   "blender_xy": [
+    138,
+    26
+   ],
+   "roblox_xz": [
+    138,
+    -26
+   ],
+   "what": "three glass domes joined by tubes, alien gardens inside"
+  },
+  {
+   "name": "ROBOT FACTORY",
+   "blender_xy": [
+    105,
+    -118
+   ],
+   "roblox_xz": [
+    105,
+    118
+   ],
+   "what": "grey factory, neon windows, glowing vent stacks; its radar turns"
+  },
+  {
+   "name": "SOLAR FARM",
+   "blender_xy": [
+    -82,
+    150
+   ],
+   "roblox_xz": [
+    -82,
+    -150
+   ],
+   "what": "rows of blue solar panels"
+  },
+  {
+   "name": "FUEL DEPOT",
+   "blender_xy": [
+    86,
+    150
+   ],
+   "roblox_xz": [
+    86,
+    -150
+   ],
+   "what": "two round tanks on legs, pipes, hazard bands"
+  },
+  {
+   "name": "SATELLITE DISH",
+   "blender_xy": [
+    -150,
+    8
+   ],
+   "roblox_xz": [
+    -150,
+    -8
+   ],
+   "what": "a big dish on the west edge; it turns"
+  },
+  {
+   "name": "UFO LANDING",
+   "blender_xy": [
+    -130,
+    -72
+   ],
+   "roblox_xz": [
+    -130,
+    72
+   ],
+   "what": "a parked flying saucer on a landing ring (fictional)"
+  },
+  {
+   "name": "RETURN HOME portal",
+   "blender_xy": [
+    0,
+    176
+   ],
+   "roblox_xz": [
+    0,
+    -176
+   ],
+   "what": "home WITH eggs, past the boss (crnuch's call)"
+  },
+  {
+   "name": "Moon rocks",
+   "blender_xy": [
+    44,
+    -70
+   ],
+   "roblox_xz": [
+    44,
+    70
+   ],
+   "what": "lawn landmark"
+  },
+  {
+   "name": "Meteorite",
+   "blender_xy": [
+    -44,
+    -60
+   ],
+   "roblox_xz": [
+    -44,
+    60
+   ],
+   "what": "lawn landmark"
+  },
+  {
+   "name": "Statue: CometCounsel",
+   "blender_xy": [
+    38,
+    -136
+   ],
+   "roblox_xz": [
+    38,
+    136
+   ],
+   "what": "the game's CometCounsel lawyer at 5.0x on a plinth"
+  },
+  {
+   "name": "Statue: NebulaArbiter",
+   "blender_xy": [
+    -34,
+    -88
+   ],
+   "roblox_xz": [
+    -34,
+    88
+   ],
+   "what": "the game's NebulaArbiter lawyer at 4.0x on a plinth"
+  },
+  {
+   "name": "Statue: SupernovaSovereign",
+   "blender_xy": [
+    -58,
+    -4
+   ],
+   "roblox_xz": [
+    -58,
+    4
+   ],
+   "what": "the game's SupernovaSovereign lawyer at 2.6x on a plinth"
+  },
+  {
+   "name": "THE ECLIPSE RING (boss arena)",
+   "blender_xy": [
+    0,
+    76
+   ],
+   "roblox_xz": [
+    0,
+    -76
+   ],
+   "what": "open round observation floor r 72: Eclipse pulls r 44 and throws his gavel ring r 38"
+  },
+  {
+   "name": "Crater Field (egg field)",
+   "blender_xy": [
+    -114,
+    -14
+   ],
+   "roblox_xz": [
+    -114,
+    14
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Alien Garden (egg field)",
+   "blender_xy": [
+    116,
+    -42
+   ],
+   "roblox_xz": [
+    116,
+    42
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Crystal Field (egg field)",
+   "blender_xy": [
+    116,
+    92
+   ],
+   "roblox_xz": [
+    116,
+    -92
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "West plasma falls",
+   "blender_xy": [
+    -128.9,
+    -104.4
+   ],
+   "roblox_xz": [
+    -128.9,
+    104.4
+   ],
+   "what": "a glowing plasma pool, a stream and a fall off the edge"
+  },
+  {
+   "name": "East plasma falls",
+   "blender_xy": [
+    125.3,
+    -91.0
+   ],
+   "roblox_xz": [
+    125.3,
+    91.0
+   ],
+   "what": "a glowing plasma pool, a stream and a fall off the edge"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -107.9,
+    -6.8
+   ],
+   "roblox_xz": [
+    -107.9,
+    6.8
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -121.6,
+    -19.2
+   ],
+   "roblox_xz": [
+    -121.6,
+    19.2
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -120.0,
+    -30.2
+   ],
+   "roblox_xz": [
+    -120.0,
+    30.2
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -114.3,
+    -23.9
+   ],
+   "roblox_xz": [
+    -114.3,
+    23.9
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -107.9,
+    -31.4
+   ],
+   "roblox_xz": [
+    -107.9,
+    31.4
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -141.7,
+    -22.4
+   ],
+   "roblox_xz": [
+    -141.7,
+    22.4
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -112.4,
+    0.8
+   ],
+   "roblox_xz": [
+    -112.4,
+    -0.8
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    -120.9,
+    -38.3
+   ],
+   "roblox_xz": [
+    -120.9,
+    38.3
+   ],
+   "where": "Crater Field"
+  },
+  {
+   "blender_xy": [
+    134.0,
+    -39.3
+   ],
+   "roblox_xz": [
+    134.0,
+    39.3
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    102.4,
+    -50.4
+   ],
+   "roblox_xz": [
+    102.4,
+    50.4
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    93.5,
+    -33.3
+   ],
+   "roblox_xz": [
+    93.5,
+    33.3
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    102.4,
+    -37.7
+   ],
+   "roblox_xz": [
+    102.4,
+    37.7
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    121.3,
+    -56.0
+   ],
+   "roblox_xz": [
+    121.3,
+    56.0
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    122.2,
+    -15.0
+   ],
+   "roblox_xz": [
+    122.2,
+    15.0
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    115.6,
+    -26.7
+   ],
+   "roblox_xz": [
+    115.6,
+    26.7
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    138.8,
+    -56.3
+   ],
+   "roblox_xz": [
+    138.8,
+    56.3
+   ],
+   "where": "Alien Garden"
+  },
+  {
+   "blender_xy": [
+    96.8,
+    86.6
+   ],
+   "roblox_xz": [
+    96.8,
+    -86.6
+   ],
+   "where": "Crystal Field"
+  },
+  {
+   "blender_xy": [
+    120.1,
+    92.8
+   ],
+   "roblox_xz": [
+    120.1,
+    -92.8
+   ],
+   "where": "Crystal Field"
+  },
+  {
+   "blender_xy": [
+    117.2,
+    104.1
+   ],
+   "roblox_xz": [
+    117.2,
+    -104.1
+   ],
+   "where": "Crystal Field"
+  },
+  {
+   "blender_xy": [
+    122.2,
+    74.5
+   ],
+   "roblox_xz": [
+    122.2,
+    -74.5
+   ],
+   "where": "Crystal Field"
+  },
+  {
+   "blender_xy": [
+    -24,
+    52
+   ],
+   "roblox_xz": [
+    -24,
+    -52
+   ],
+   "where": "THE ECLIPSE RING (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    24,
+    52
+   ],
+   "roblox_xz": [
+    24,
+    -52
+   ],
+   "where": "THE ECLIPSE RING (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -24,
+    100
+   ],
+   "roblox_xz": [
+    -24,
+    -100
+   ],
+   "where": "THE ECLIPSE RING (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    24,
+    100
+   ],
+   "roblox_xz": [
+    24,
+    -100
+   ],
+   "where": "THE ECLIPSE RING (bonus, on the boss arena)"
+  }
+ ],
+ "fx": {
+  "steam": [
+   [
+    -64.0,
+    -118.0,
+    1.6
+   ]
+  ],
+  "motes": [
+   [
+    116,
+    -42,
+    1.5,
+    28
+   ]
+  ],
+  "spinners": [
+   {
+    "name": "Spin_HoloPlanet",
+    "pivot": [
+     0,
+     -42,
+     16.8
+    ],
+    "seconds_per_turn": 14.0
+   },
+   {
+    "name": "Spin_ObservatoryDome",
+    "pivot": [
+     -118.0,
+     62.0,
+     9.8
+    ],
+    "seconds_per_turn": 60.0
+   },
+   {
+    "name": "Spin_Radar",
+    "pivot": [
+     110.25,
+     -120.9,
+     12.6
+    ],
+    "seconds_per_turn": 6.0
+   },
+   {
+    "name": "Spin_SatDish",
+    "pivot": [
+     -150,
+     8,
+     1.0
+    ],
+    "seconds_per_turn": 16.0
+   }
+  ],
+  "beacons": []
+ }
+}
