@@ -1,0 +1,674 @@
+{
+ "island": "Briefcase Bay v2 (layout for approval)",
+ "places": [
+  {
+   "name": "SPAWN (arrival terrace, safe zone)",
+   "blender_xy": [
+    0.0,
+    -168.0
+   ],
+   "roblox_xz": [
+    0.0,
+    168.0
+   ],
+   "what": "classic blue-and-white spawn pad on a round limestone terrace, lamp posts + benches; the BRIEFCASE BAY arch over the way in"
+  },
+  {
+   "name": "ESCAPE PORTAL (RETURN HOME)",
+   "blender_xy": [
+    0.0,
+    167.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -167.0
+   ],
+   "what": "the purple vortex in a limestone arch on a round plaza, flush with the lawn (a level walk-in)"
+  },
+  {
+   "name": "The Senior Partner's start pad",
+   "blender_xy": [
+    0.0,
+    0.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -0.0
+   ],
+   "what": "a round limestone patch with a gold scales-of-justice inlay, flush with the lawn (he leaves it to hunt)"
+  },
+  {
+   "name": "The Bay",
+   "blender_xy": [
+    160.0,
+    -107.9
+   ],
+   "roblox_xz": [
+    160.0,
+    107.9
+   ],
+   "what": "a sheltered harbour basin: a limestone quay with bollards + lamps, a pier, the Bay Ferry; spills over the edge (scenery)"
+  },
+  {
+   "name": "Lighthouse",
+   "blender_xy": [
+    105.7,
+    -156.7
+   ],
+   "roblox_xz": [
+    105.7,
+    156.7
+   ],
+   "what": "a red-and-white lighthouse on the bay's headland (scenery)"
+  },
+  {
+   "name": "Waterfall off the edge (14 deg)",
+   "blender_xy": [
+    200.0,
+    49.9
+   ],
+   "roblox_xz": [
+    200.0,
+    -49.9
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Pools",
+   "blender_xy": [
+    0,
+    0
+   ],
+   "roblox_xz": [
+    0,
+    0
+   ],
+   "what": "four pools in limestone pockets round the ring (the cascade pool, the grotto pool, an edge-fall pool, a lily pond)"
+  },
+  {
+   "name": "The cascade",
+   "blender_xy": [
+    -169.0,
+    141.8
+   ],
+   "roblox_xz": [
+    -169.0,
+    -141.8
+   ],
+   "what": "a waterfall dropping ~38 studs in three steps from the NW cliffs into a pool"
+  },
+  {
+   "name": "Grotto",
+   "blender_xy": [
+    -162.3,
+    -59.1
+   ],
+   "roblox_xz": [
+    -162.3,
+    59.1
+   ],
+   "what": "a dark cave mouth in the west cliffs (scenery: not enterable)"
+  },
+  {
+   "name": "Rock arch",
+   "blender_xy": [
+    -158.5,
+    -142.7
+   ],
+   "roblox_xz": [
+    -158.5,
+    142.7
+   ],
+   "what": "a natural limestone arch on the south-west rim"
+  },
+  {
+   "name": "Giant briefcase",
+   "blender_xy": [
+    -53.0,
+    -145.7
+   ],
+   "roblox_xz": [
+    -53.0,
+    145.7
+   ],
+   "what": "the zone's emblem on a limestone plinth, beside the arrival terrace (scenery)"
+  },
+  {
+   "name": "Giant gavel",
+   "blender_xy": [
+    70.9,
+    145.4
+   ],
+   "roblox_xz": [
+    70.9,
+    -145.4
+   ],
+   "what": "a giant gavel on its sound block, beside the portal (scenery)"
+  },
+  {
+   "name": "The skyline",
+   "blender_xy": [
+    0,
+    200
+   ],
+   "roblox_xz": [
+    0,
+    -200
+   ],
+   "what": "six classic glass towers on the back ring behind the cliffs (scenery: the firms the bay is named for)"
+  }
+ ],
+ "egg_regions": [
+  {
+   "name": "Welcome Lawn",
+   "blender_xy": [
+    -34,
+    -54
+   ],
+   "roblox_xz": [
+    -34,
+    54
+   ],
+   "radius": 25,
+   "risk": "south, nearest the spawn: the safer start"
+  },
+  {
+   "name": "Harbour Green",
+   "blender_xy": [
+    66,
+    -44
+   ],
+   "roblox_xz": [
+    66,
+    44
+   ],
+   "radius": 23,
+   "risk": "south-east, by the bay: mid risk"
+  },
+  {
+   "name": "Cascade Lawn",
+   "blender_xy": [
+    -68,
+    32
+   ],
+   "roblox_xz": [
+    -68,
+    -32
+   ],
+   "radius": 25,
+   "risk": "west, under the cascade cliffs: mid risk"
+  },
+  {
+   "name": "Ledger Row",
+   "blender_xy": [
+    58,
+    8
+   ],
+   "roblox_xz": [
+    58,
+    -8
+   ],
+   "radius": 21,
+   "risk": "east, on his patrol line: high risk"
+  },
+  {
+   "name": "Skyline Lawn",
+   "blender_xy": [
+    26,
+    60
+   ],
+   "roblox_xz": [
+    26,
+    -60
+   ],
+   "radius": 22,
+   "risk": "north, on the way to the portal: high risk"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -56.3,
+    -52.9
+   ],
+   "roblox_xz": [
+    -56.3,
+    52.9
+   ],
+   "region": "Welcome Lawn"
+  },
+  {
+   "blender_xy": [
+    -11.0,
+    -58.1
+   ],
+   "roblox_xz": [
+    -11.0,
+    58.1
+   ],
+   "region": "Welcome Lawn"
+  },
+  {
+   "blender_xy": [
+    -55.5,
+    -64.0
+   ],
+   "roblox_xz": [
+    -55.5,
+    64.0
+   ],
+   "region": "Welcome Lawn"
+  },
+  {
+   "blender_xy": [
+    -33.0,
+    -64.6
+   ],
+   "roblox_xz": [
+    -33.0,
+    64.6
+   ],
+   "region": "Welcome Lawn"
+  },
+  {
+   "blender_xy": [
+    -24.5,
+    -36.5
+   ],
+   "roblox_xz": [
+    -24.5,
+    36.5
+   ],
+   "region": "Welcome Lawn"
+  },
+  {
+   "blender_xy": [
+    -50.7,
+    -39.8
+   ],
+   "roblox_xz": [
+    -50.7,
+    39.8
+   ],
+   "region": "Welcome Lawn"
+  },
+  {
+   "blender_xy": [
+    69.0,
+    -36.5
+   ],
+   "roblox_xz": [
+    69.0,
+    36.5
+   ],
+   "region": "Harbour Green"
+  },
+  {
+   "blender_xy": [
+    54.0,
+    -53.1
+   ],
+   "roblox_xz": [
+    54.0,
+    53.1
+   ],
+   "region": "Harbour Green"
+  },
+  {
+   "blender_xy": [
+    78.1,
+    -28.1
+   ],
+   "roblox_xz": [
+    78.1,
+    28.1
+   ],
+   "region": "Harbour Green"
+  },
+  {
+   "blender_xy": [
+    69.9,
+    -50.4
+   ],
+   "roblox_xz": [
+    69.9,
+    50.4
+   ],
+   "region": "Harbour Green"
+  },
+  {
+   "blender_xy": [
+    76.1,
+    -57.2
+   ],
+   "roblox_xz": [
+    76.1,
+    57.2
+   ],
+   "region": "Harbour Green"
+  },
+  {
+   "blender_xy": [
+    -90.8,
+    25.5
+   ],
+   "roblox_xz": [
+    -90.8,
+    -25.5
+   ],
+   "region": "Cascade Lawn"
+  },
+  {
+   "blender_xy": [
+    -62.7,
+    48.1
+   ],
+   "roblox_xz": [
+    -62.7,
+    -48.1
+   ],
+   "region": "Cascade Lawn"
+  },
+  {
+   "blender_xy": [
+    -45.1,
+    31.8
+   ],
+   "roblox_xz": [
+    -45.1,
+    -31.8
+   ],
+   "region": "Cascade Lawn"
+  },
+  {
+   "blender_xy": [
+    -77.7,
+    26.5
+   ],
+   "roblox_xz": [
+    -77.7,
+    -26.5
+   ],
+   "region": "Cascade Lawn"
+  },
+  {
+   "blender_xy": [
+    -72.1,
+    12.0
+   ],
+   "roblox_xz": [
+    -72.1,
+    -12.0
+   ],
+   "region": "Cascade Lawn"
+  },
+  {
+   "blender_xy": [
+    -72.8,
+    37.9
+   ],
+   "roblox_xz": [
+    -72.8,
+    -37.9
+   ],
+   "region": "Cascade Lawn"
+  },
+  {
+   "blender_xy": [
+    53.4,
+    3.2
+   ],
+   "roblox_xz": [
+    53.4,
+    -3.2
+   ],
+   "region": "Ledger Row"
+  },
+  {
+   "blender_xy": [
+    69.1,
+    11.7
+   ],
+   "roblox_xz": [
+    69.1,
+    -11.7
+   ],
+   "region": "Ledger Row"
+  },
+  {
+   "blender_xy": [
+    41.2,
+    -4.4
+   ],
+   "roblox_xz": [
+    41.2,
+    4.4
+   ],
+   "region": "Ledger Row"
+  },
+  {
+   "blender_xy": [
+    53.9,
+    -11.5
+   ],
+   "roblox_xz": [
+    53.9,
+    11.5
+   ],
+   "region": "Ledger Row"
+  },
+  {
+   "blender_xy": [
+    48.8,
+    18.8
+   ],
+   "roblox_xz": [
+    48.8,
+    -18.8
+   ],
+   "region": "Ledger Row"
+  },
+  {
+   "blender_xy": [
+    14.4,
+    48.8
+   ],
+   "roblox_xz": [
+    14.4,
+    -48.8
+   ],
+   "region": "Skyline Lawn"
+  },
+  {
+   "blender_xy": [
+    29.8,
+    56.7
+   ],
+   "roblox_xz": [
+    29.8,
+    -56.7
+   ],
+   "region": "Skyline Lawn"
+  },
+  {
+   "blender_xy": [
+    8.0,
+    72.6
+   ],
+   "roblox_xz": [
+    8.0,
+    -72.6
+   ],
+   "region": "Skyline Lawn"
+  },
+  {
+   "blender_xy": [
+    45.5,
+    55.6
+   ],
+   "roblox_xz": [
+    45.5,
+    -55.6
+   ],
+   "region": "Skyline Lawn"
+  },
+  {
+   "blender_xy": [
+    29.7,
+    80.2
+   ],
+   "roblox_xz": [
+    29.7,
+    -80.2
+   ],
+   "region": "Skyline Lawn"
+  }
+ ],
+ "checks": {
+  "green_decor": "small walk-through decor on the Green (daisies, flower tufts, papers, pebbles, flat stones, colour patches, the path): at most 1.2 studs tall, collision off in Roblox",
+  "box_open_lawn": "2193/2193 sample points (4-stud grid) are open lawn",
+  "swing_room": "1008 sampled swings (45-stud x 110 deg fans from a 25-stud grid, 16 facings): 98% of their area lies on the playable Green; 0 of 98148 fan points where a player can stand are covered (warning hidden) - the rest of each fan reaches over the hedges into the scenery ring, where no one can stand",
+  "dodge": "windup 1.2 s = 38.4 studs at the base speed 32; the worst place in the fan needs 20.2 (out of the radius or the angle)",
+  "egg_edge_clearance": {
+   "Welcome Lawn": "33.7 studs to the Green's edge (drops scatter at most 20.7)",
+   "Harbour Green": "32.3 studs to the Green's edge (drops scatter at most 20.7)",
+   "Cascade Lawn": "32.0 studs to the Green's edge (drops scatter at most 20.7)",
+   "Ledger Row": "35.1 studs to the Green's edge (drops scatter at most 20.7)",
+   "Skyline Lawn": "39.6 studs to the Green's edge (drops scatter at most 20.7)"
+  },
+  "drops_today_3_eggs": "hit anywhere on the Green carrying 3: 96.0% of eggs land on the lawn (the rest only from hits within ~16 studs of its edge)",
+  "drops_today_12_eggs": "hit anywhere on the Green carrying 12: 94.2% of eggs land on the lawn (the rest only from hits within ~21 studs of its edge)",
+  "spawn_safe": "spawn pad 83 studs outside his box (his swing reaches 45); the arrival terrace's nearest edge 63",
+  "portal_threat": "portal 82 studs outside his box; the plaza's nearest edge 58 (out of his swing); with him at the box edge, a player stays inside his 60-stud trigger until 22 studs from the portal (he swings at the air: the swing reaches 45)",
+  "spawn_to_portal": "reachable on level ground",
+  "no_safe_bypass": "no walkable route avoids his reach (every route crosses his swing)",
+  "box_on_lawn": "all four box corners are on the lawn",
+  "edge_in_reach": "the Green's edge is 32-44 studs from his box, all round: every place on the lawn is inside his 45-stud swing (no safe strip, no safe corner)",
+  "egg_spots": "27 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
+ },
+ "boss": {
+  "name": "The Senior Partner",
+  "box_blender": [
+   -100.0,
+   -85.0,
+   100.0,
+   85.0
+  ],
+  "box_roblox_xz": [
+   -100.0,
+   -85.0,
+   100.0,
+   85.0
+  ],
+  "reach": 45,
+  "suggested_bounds_blender": [
+   -144.0,
+   -129.0,
+   144.0,
+   129.0
+  ],
+  "suggested_bounds_roblox_xz": [
+   -144.0,
+   -129.0,
+   144.0,
+   129.0
+  ],
+  "Scale": 3.5,
+  "WalkSpeed": 38,
+  "Chase": 0.85,
+  "AttackEvery": 3.5,
+  "Windup": 1.2,
+  "Attack": "Cone",
+  "Radius": 45,
+  "Angle": 110,
+  "StayNearMiddle": 14,
+  "TriggerRange": 60,
+  "HitboxWidth": 23.099999999999998,
+  "HitboxBack": 4.8999999999999995,
+  "HitboxFront": 6.3,
+  "HitboxHeight": 40.25,
+  "ModelHeight": 37.8
+ },
+ "fx": {
+  "fall_landings": [
+   [
+    -157.2,
+    131.9,
+    0.8
+   ]
+  ],
+  "edge_lips": [
+   [
+    188.2,
+    -108.7,
+    0.7,
+    330.0
+   ],
+   [
+    200.0,
+    49.9,
+    0.6,
+    14
+   ]
+  ],
+  "pools": [
+   [
+    -150.6,
+    126.4,
+    14
+   ],
+   [
+    -163.9,
+    -47.0,
+    13
+   ],
+   [
+    162.8,
+    40.6,
+    12
+   ],
+   [
+    -97.8,
+    -144.9,
+    9
+   ]
+  ],
+  "beacons": [
+   [
+    105.7,
+    -156.7,
+    35.8
+   ],
+   [
+    106.1,
+    169.8,
+    59.7
+   ],
+   [
+    56.2,
+    173.0,
+    84.4
+   ],
+   [
+    -53.3,
+    185.8,
+    104.5
+   ],
+   [
+    -104.7,
+    181.4,
+    75.4
+   ],
+   [
+    165.0,
+    138.4,
+    46.3
+   ],
+   [
+    -152.3,
+    169.2,
+    57.5
+   ]
+  ]
+ }
+}

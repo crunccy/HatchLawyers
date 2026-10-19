@@ -24,6 +24,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **crnuch (local), since 2026-10-19:** BRIEFCASE BAY v2 redesign in Blender on the Ocean Shore v2 benchmark
   (`environment-redesign/briefcase_bay_v2/`; v1 in `briefcase_bay/` stays untouched as the backup): audit, then a
   layout for crnuch's approval, built round The Senior Partner's real numbers. Don't redesign Briefcase Bay meanwhile.
+  Audit + layout done 2026-10-19 (waiting for crnuch's approval; the detailed pass after it).
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -179,6 +180,41 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: Briefcase Bay v2 — audit + LAYOUT for approval (Blender)
+- **crnuch's call:** redo Briefcase Bay on the Ocean Shore v2 benchmark (audit, then a layout for approval).
+  v1 (`environment-redesign/briefcase_bay/`) untouched as the backup; v2 in `environment-redesign/briefcase_bay_v2/`.
+- **Audit (code):**
+  - The Senior Partner: Cone 45 studs x 110 deg, 1.2 s windup, every 3.5 s inside TriggerRange 60.
+  - Walk 38 (> players' 32); 37.8 tall, body 23 wide; idle patrol in a +-14 band.
+  - Drops: up to 20.7 studs, clamped 4 inside Bounds; **no Floor under a drop = it lands at y 0** (`ZoneService.floorAt`).
+  - v1's arena + hedged parks + portal past the arena is exactly what the benchmark rules out.
+- **Layout:**
+  - one open studded lawn (the Green); his box is 200 x 170, the lawn grows it by 30-44 studs (organic) so every
+    place on it is inside his swing;
+  - the arrival terrace S (BRIEFCASE BAY arch, spawn pad), the escape portal N (Ocean Shore v2's portal in limestone),
+    a flush orange path across, his start pad with a gold scales inlay;
+  - 5 egg regions / 27 spots (Welcome Lawn safer ... Ledger Row on his patrol line, Skyline Lawn on the way out);
+  - the ring (out of his reach): limestone cliffs, the cascade, 4 pools, a grotto, a rock arch, the bay (quay, pier,
+    ferry, an edge fall), a lighthouse, a six-tower glass skyline, the giant briefcase + gavel, ball / blossom
+    trees, palms, hedges marking the lawn's edge.
+- **Checks** (measured, real numbers):
+  - box 2193/2193 open lawn; 1008 sampled swings, 0 of 98k standable fan points covered;
+  - dodge: 20.2 studs needed vs 38.4 in the windup; spawn 83 / portal 82 studs out;
+  - spawn → portal level; **no safe bypass**.
+  - Drops with today's code: 94-96% land on the lawn. **New integration item, Ocean Shore v2 too:** step a drop with no
+    Floor under it back toward the player; an invisible wall at the playable edge (OSv2's moss ring is walkable today).
+- **For crnuch to decide:** keep the skyline + harbour + monuments as Briefcase Bay's identity in the ring, or go
+  all-natural like Ocean Shore (the layout stays either way).
+- **Kit:** `bbv2_parts.py` (tower, lighthouse, ferry, giant briefcase / gavel, welcome arch, ball tree, lamp, bench,
+  hedge, path, scales pad, lawn decor); Ocean Shore v2's pieces reused unchanged (rock looks recoloured to limestone
+  for this island only).
+- 457k tris + 322k studs, 7.2 MB .blend. **Fixed in review:**
+  - the lawn read as a square baseplate (now an organic edge, bolder patches, clover meadows);
+  - the bay's water hid under its quay;
+  - a canopy hung over the lawn;
+  - the walk check tripped on the overhead sign;
+  - the boss-view camera sat in his face.
 
 ## 2026-10-19 — mr.robe, local session: world redesign island 6 — Space Base (Blender + into the place)
 - **User's call:** "model the space base island" (the one island the redesign hadn't modelled).

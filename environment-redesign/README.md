@@ -32,6 +32,7 @@ environment-redesign/
   ocean_shore/                    World 5: os_parts.py, os_build.py, os_ambience.py, ocean_shore.blend, OCEAN_SHORE.md, renders/
   space_base/                     World 6: sb_parts.py, sb_build.py, sb_ambience.py, space_base.blend, SPACE_BASE.md, renders/
   ocean_shore_v2/                 Ocean Shore REDESIGN (crnuch's brief, classic studs not LEGO): osv2_parts.py, osv2_build.py, OCEAN_SHORE_V2.md, osv2_detail.py, osv2_ambience.py, renders/ - APPROVED 2026-10-19 as the benchmark for the other islands
+  briefcase_bay_v2/               Briefcase Bay REDESIGN on the Ocean Shore v2 benchmark: bbv2_parts.py, bbv2_build.py, BRIEFCASE_BAY_V2.md, renders/ - LAYOUT waiting for approval (v1 in briefcase_bay/ kept)
   <island>/                       later: one folder per island, each its own .blend (independent, exportable)
 ```
 Each island is its own `.blend` and collection, so new islands can be added without touching the others.
