@@ -13,6 +13,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   and minigame screen onto `Shared.Skin` + the glossy PNG icons. Audit + plan: docs/UI_OVERHAUL.md. Figma design
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
+- **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
+  deliverables in `environment-redesign/`. Stage 1 audit + Stage 2 hub blockout first, then crnuch's approval.
+  Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
