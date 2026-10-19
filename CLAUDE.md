@@ -129,6 +129,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   Real raised 3D studs (not textures) on terrain, roads, roofs, platforms, props; one stud scale everywhere; reusable
   stud assets from Blender; decorative studs separate from collision; LOD for distance + phones. Never smooth the
   geometry or drop the studs; no plain Roblox parts, no smooth low-poly. Read that doc before building anything.
+  **"Everything" means everything (crnuch's call 2026-10-19):** no smooth round or sloped shape on any object (round =
+  pixel circles / voxel balls, slopes = steps) and studs on every exposed top, bosses, statues, eggs and liquids too.
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
   far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),

@@ -8,7 +8,9 @@
 #   b = K.Mesh("Name", collection)    many bricks into ONE object (material slots); b.done() makes it
 #   b.brick(cx, cy, z0, sx, sy, h, "grass", rot=0, studs=True, bevel=0.08)
 #   b.cyl / b.prism / b.wedge / b.pyramid / b.ring / b.cone
-#   K.studs_done()                    builds the stud instancers (one per colour, Geometry Nodes instances)
+#   K.studs_done()                    THE STUD PASS: raised studs on every exposed top of every object (call last)
+#   Everything is VOXEL (crnuch's call 2026-10-19): cyl / ring / cone / sphere / prism / wedge / pyramid / ring_v /
+#   disc_v all build stepped bricks on the 1-stud grid; nothing smooth, nothing round.
 #   props: K.tree_round / tree_pine / tree_palm / tree_blossom / bush / flowerbed / rocks / lamp / bench / planter /
 #          signpost / flag / railing / stairs / column / window / door / label3d
 # Units: 1 Blender m = 1 stud. +Z up, +Y = north. Roblox (x, y, z) = (bx, bz, -by).
@@ -160,69 +162,163 @@ def stud_mesh(segs=3):
     return me
 
 
-STUDS = {}  # (group, look) -> [(x, y, z, rz)]
-STUD_GROUP = None  # set to an object's name while building something that MOVES as one object (the drifting
-#                    Clouds_Islets): its studs get their own instancers parented to it, so they ride along
-SWAYING = ("Vegetation", "Street_Trees")  # the meshes the ambience's wind sways (hl_ambience.wind)
-CANOPY_LOOKS = ("leaf", "leaf_light", "leaf_deep", "blossom", "blossom_light")  # (= hl_ambience.CANOPY_LOOKS)
+STUDS = {}  # (kept for old callers; unused - the stud pass below finds every exposed top itself)
+STUD_GROUP = None  # (kept for old callers: every object now carries its own studs)
+STUD_MIN_FACE = 0.55  # a top face narrower than this can't hold a 1-stud stud (foot 0.60)
 
 
 def add_studs(look, pts, owner=None):
-    """owner = the Mesh's name. The wind sways every Studs_<canopy look>, so a hedge / planter in a canopy look on a
-    mesh that doesn't sway gets its studs in Studs_Still_<look> (else they'd sway off the still leaves)."""
-    group = STUD_GROUP
-    if group is None and owner and owner not in SWAYING and look in CANOPY_LOOKS:
-        group = "Still"
-    STUDS.setdefault((group, look), []).extend(pts)
+    """No-op since 2026-10-19: studs_done() studs every exposed top face of every object by itself."""
+    return None
 
 
-def studs_done(target_collection, name="Studs"):
-    """One instancer object per look (per group): a point mesh (+ 'rz' attribute) -> Geometry Nodes Instance on
-    Points. A group's instancers are parented to the object of that name (built at the origin, so no offset)."""
-    src_mesh = stud_mesh()
-    total, groups = 0, {}
-    for (group, look), pts in STUDS.items():
-        if not pts:
-            continue
-        ng = groups.get(look)
-        if not ng:
-            src = bpy.data.objects.new("StudSource_" + look, src_mesh.copy())
-            src.data.materials.append(mat(look))
-            COLS["Kit_Sources"].objects.link(src)
-            ng = bpy.data.node_groups.new("StudInstancer_" + look, "GeometryNodeTree")
-            ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
-            ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
-            N = ng.nodes
-            gi, go = N.new("NodeGroupInput"), N.new("NodeGroupOutput")
-            topts = N.new("GeometryNodeMeshToPoints")
-            inst = N.new("GeometryNodeInstanceOnPoints")
-            info = N.new("GeometryNodeObjectInfo")
-            info.inputs["Object"].default_value = src
-            na = N.new("GeometryNodeInputNamedAttribute")
-            na.data_type = "FLOAT"
-            na.inputs["Name"].default_value = "rz"
-            cx = N.new("ShaderNodeCombineXYZ")
-            L = ng.links
-            L.new(gi.outputs[0], topts.inputs["Mesh"])
-            L.new(topts.outputs["Points"], inst.inputs["Points"])
-            L.new(info.outputs["Geometry"], inst.inputs["Instance"])
-            L.new(na.outputs["Attribute"], cx.inputs["Z"])
-            L.new(cx.outputs["Vector"], inst.inputs["Rotation"])
-            L.new(inst.outputs["Instances"], go.inputs[0])
-            groups[look] = ng
-        oname = f"{name}_{look}" if group is None else f"{name}_{group}_{look}"
-        me = bpy.data.meshes.new(oname)
-        me.from_pydata([(p[0], p[1], p[2]) for p in pts], [], [])
-        attr = me.attributes.new("rz", "FLOAT", "POINT")
-        attr.data.foreach_set("value", [p[3] for p in pts])
-        ob = bpy.data.objects.new(oname, me)
-        target_collection.objects.link(ob)
-        if group and bpy.data.objects.get(group):
-            ob.parent = bpy.data.objects[group]
-        ob.modifiers.new("Studs", "NODES").node_group = ng
-        total += len(pts)
-    print(f"[kit] studs: {total} raised studs in {len(groups)} colours")
+def _stud_sources():
+    src_mesh, made = stud_mesh(), {}
+
+    def get(look_mat):
+        if look_mat.name in made:
+            return made[look_mat.name]
+        src = bpy.data.objects.new("StudSource_" + look_mat.name, src_mesh.copy())
+        src.data.materials.append(look_mat)
+        COLS["Kit_Sources"].objects.link(src)
+        ng = bpy.data.node_groups.new("StudInstancer_" + look_mat.name, "GeometryNodeTree")
+        ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+        ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+        N, L = ng.nodes, ng.links
+        gi, go = N.new("NodeGroupInput"), N.new("NodeGroupOutput")
+        topts, inst, info = N.new("GeometryNodeMeshToPoints"), N.new("GeometryNodeInstanceOnPoints"), N.new("GeometryNodeObjectInfo")
+        info.inputs["Object"].default_value = src
+        na = N.new("GeometryNodeInputNamedAttribute")
+        na.data_type = "FLOAT"
+        na.inputs["Name"].default_value = "rz"
+        cx = N.new("ShaderNodeCombineXYZ")
+        L.new(gi.outputs[0], topts.inputs["Mesh"])
+        L.new(topts.outputs["Points"], inst.inputs["Points"])
+        L.new(info.outputs["Geometry"], inst.inputs["Instance"])
+        L.new(na.outputs["Attribute"], cx.inputs["Z"])
+        L.new(cx.outputs["Vector"], inst.inputs["Rotation"])
+        L.new(inst.outputs["Instances"], go.inputs[0])
+        made[look_mat.name] = ng
+        return ng
+    return get
+
+
+def studs_done(target_collection=None, name="Studs"):
+    """THE STUD PASS (crnuch's call 2026-10-19: studded voxel on EVERYTHING): raised studs on every exposed top face of
+    every mesh object in the scene - terrain, paths, buildings, props, eggs, liquids, clouds, bosses, statues.
+    A grid point is studded unless something sits on it or hangs just above it (rays against all the geometry, at
+    the stud's centre and four corners); overlapping coplanar tops are deduped. Each object gets its OWN instancers,
+    parented to it (Studs_<object>_<look>), so studs ride whatever moves: wind, drift, turning signs, boss idles."""
+    from mathutils.bvhtree import BVHTree
+    skip = {"Kit_Sources", "Presentation"}
+    objs = [o for o in bpy.context.scene.objects if o.type == "MESH" and not o.name.startswith(("Studs_", "StudSource_"))
+            and not any(c.name in skip or "Labels" in c.name or c.name == "Lighting" for c in o.users_collection)]
+    verts, polys, data = [], [], []
+    for o in objs:
+        mw = o.matrix_world
+        base = len(verts)
+        co = [mw @ v.co for v in o.data.vertices]
+        verts.extend(co)
+        polys.extend([[base + i for i in p.vertices] for p in o.data.polygons])
+        data.append((o, co))
+    bvh = BVHTree.FromPolygons(verts, polys)
+    UP = Vector((0, 0, 1))
+
+    def free(x, y, z):
+        hit = bvh.ray_cast(Vector((x, y, z + 0.02)), UP, 120.0)
+        if hit[0] is None:
+            return True
+        if hit[1].z > 0.0:  # we are INSIDE something (we hit its top from within)
+            return False
+        return hit[3] > 0.16  # something hangs right above
+
+    seen = {}
+
+    def dupe(x, y, z):
+        key = (round(x), round(y), round(z * 4))
+        for kx in (key[0] - 1, key[0], key[0] + 1):
+            for ky in (key[1] - 1, key[1], key[1] + 1):
+                for (px, py) in seen.get((kx, ky, key[2]), ()):
+                    if (px - x) ** 2 + (py - y) ** 2 < 0.25:
+                        return True
+        seen.setdefault(key, []).append((x, y))
+        return False
+
+    source = _stud_sources()
+    total = n_obj = 0
+    for o, co in data:
+        me = o.data
+        r3 = o.matrix_world.to_3x3()
+        per = {}
+        for p in me.polygons:
+            n = (r3 @ p.normal)
+            if n.length == 0 or n.z / n.length < 0.995:
+                continue
+            vs = [co[i] for i in p.vertices]
+            z = sum(v.z for v in vs) / len(vs)
+            best, ex = 0.0, None
+            for k in range(len(vs)):
+                e = vs[(k + 1) % len(vs)] - vs[k]
+                L2 = e.x * e.x + e.y * e.y
+                if L2 > best:
+                    best, ex = L2, (e.x, e.y)
+            if not ex:
+                continue
+            L = math.sqrt(best)
+            ux, uy = ex[0] / L, ex[1] / L
+            vx, vy = -uy, ux
+            uv = [((v.x - vs[0].x) * ux + (v.y - vs[0].y) * uy, (v.x - vs[0].x) * vx + (v.y - vs[0].y) * vy) for v in vs]
+            us, vv = [q[0] for q in uv], [q[1] for q in uv]
+            w, d = max(us) - min(us), max(vv) - min(vv)
+            if w < STUD_MIN_FACE or d < STUD_MIN_FACE:
+                continue
+            nu, nv = max(1, int(w + 0.35)), max(1, int(d + 0.35))
+            uc, vc = (max(us) + min(us)) / 2, (max(vv) + min(vv)) / 2
+            rect = len(vs) == 4 and abs(w * d - abs(sum(uv[k][0] * uv[(k + 1) % 4][1] - uv[(k + 1) % 4][0] * uv[k][1] for k in range(4)) / 2)) < 0.02 * w * d + 1e-6
+            look = me.materials[p.material_index] if me.materials else None
+            if look is None:
+                continue
+            rz = math.atan2(uy, ux)
+            for i in range(nu):
+                for j in range(nv):
+                    pu, pv = uc + (i - (nu - 1) / 2), vc + (j - (nv - 1) / 2)
+                    if not rect and not _inside(uv, pu, pv):
+                        continue
+                    x, y = vs[0].x + pu * ux + pv * vx, vs[0].y + pu * uy + pv * vy
+                    if not free(x, y, z):
+                        continue
+                    if not all(free(x + a * ux * 0.27 + b * vx * 0.27, y + a * uy * 0.27 + b * vy * 0.27, z) for a in (-1, 1) for b in (-1, 1)):
+                        continue
+                    if dupe(x, y, z):
+                        continue
+                    per.setdefault(look.name, (look, []))[1].append((x, y, z, rz))
+        inv = o.matrix_world.inverted()
+        for lname, (look, pts) in per.items():
+            oname = f"{name}_{o.name}_{lname}"
+            sm = bpy.data.meshes.new(oname)
+            sm.from_pydata([tuple(inv @ Vector(q[:3])) for q in pts], [], [])
+            attr = sm.attributes.new("rz", "FLOAT", "POINT")
+            attr.data.foreach_set("value", [q[3] for q in pts])
+            so = bpy.data.objects.new(oname, sm)
+            for c in o.users_collection:
+                c.objects.link(so)
+            so.parent = o
+            so.visible_shadow = False  # (as in Roblox: the raised-stud tiles are CastShadow = false; also keeps renders fast)
+            so.modifiers.new("Studs", "NODES").node_group = source(look)
+            total += len(pts)
+            n_obj += 1
+    print(f"[kit] studs: {total} raised studs on every exposed top ({n_obj} instancers on {len(objs)} objects)")
     return total
+
+
+def _inside(poly, x, y):
+    c = False
+    n = len(poly)
+    for i in range(n):
+        (x1, y1), (x2, y2) = poly[i], poly[(i + 1) % n]
+        if (y1 > y) != (y2 > y) and x < x1 + (y - y1) * (x2 - x1) / (y2 - y1):
+            c = not c
+    return c
 
 
 # ------------------------------------------------------------------ the mesh builder
@@ -294,94 +390,117 @@ class Mesh:
                 for sy_ in (-1, 1):
                     for sz_ in (-1, 1):
                         self._face([V[("x", sx_, sy_, sz_)], V[("y", sx_, sy_, sz_)], V[("z", sx_, sy_, sz_)]], mi)
-        if studs and sx >= 0.95 and sy >= 0.95:
-            nx, ny = max(1, int(sx + 1e-6)), max(1, int(sy + 1e-6))
-            pts = []
-            for i in range(nx):
-                for j in range(ny):
-                    lx, ly = (i + 0.5) - nx / 2, (j + 0.5) - ny / 2
-                    pts.append((cx + lx * c - ly * s, cy + lx * s + ly * c, z0 + h, rad(rot)))
-            add_studs(stud_look or look, pts, self.name)
+        # (studs: the stud pass in studs_done() puts them on every exposed top)
 
-    def prism(self, pts, z0, z1, look, studs=False, stud_rot=0.0):
-        """Vertical prism over a CCW polygon [(x, y)]; studs=True fills its top with the 1-stud grid (inside test)."""
-        mi = self._mi(look)
-        bot = [self.bm.verts.new((x, y, z0)) for x, y in pts]
-        top = [self.bm.verts.new((x, y, z1)) for x, y in pts]
-        self._face(top, mi)
-        self._face(list(reversed(bot)), mi)
-        n = len(pts)
-        for i in range(n):
-            j = (i + 1) % n
-            self._face((bot[i], bot[j], top[j], top[i]), mi)
-        if studs:
-            add_studs(look, grid_in_polygon(pts, z1), self.name)
+    # -- VOXEL primitives (crnuch's call 2026-10-19: "studded voxel on everything"): every round / sloped / polygonal
+    #    shape is built from stepped bricks on a 1-stud grid (a finer 0.5 grid only for small upright pieces), turned
+    #    with its frame; studs_done() studs every exposed top. Old arguments (segs, bevel, studs) are accepted + ignored.
+    @staticmethod
+    def _runs(row):
+        """[(i, look)] -> [(i0, i1, look)] runs of neighbouring cells with the same look."""
+        row = sorted(row)
+        out, k = [], 0
+        while k < len(row):
+            i0, lk = row[k]
+            i1 = i0
+            while k + 1 < len(row) and row[k + 1][0] == i1 + 1 and row[k + 1][1] == lk:
+                k += 1
+                i1 = row[k][0]
+            out.append((i0, i1, lk))
+            k += 1
+        return out
 
-    def cyl(self, cx, cy, r, z0, z1, look, segs=24, bevel=0.0, studs=False):
-        mi = self._mi(look)
-        ring = lambda rr, z: [self.bm.verts.new((cx + rr * math.cos(TAU * i / segs), cy + rr * math.sin(TAU * i / segs), z)) for i in range(segs)]
-        b = min(bevel, r / 3, (z1 - z0) / 3)
-        bot = ring(r, z0)
-        mid = ring(r, z1 - b) if b > 0 else None
-        top = ring(r - b, z1) if b > 0 else ring(r, z1)
-        self._face(list(reversed(bot)), mi)
-        self._face(top, mi)
-        rows = [bot] + ([mid] if mid else []) + [top]
-        for a, bb in zip(rows, rows[1:]):
-            for i in range(segs):
-                j = (i + 1) % segs
-                self._face((a[i], a[j], bb[j], bb[i]), mi)
-        if studs:
-            pts = [(cx + (r - 0.5) * math.cos(TAU * i / segs), cy + (r - 0.5) * math.sin(TAU * i / segs)) for i in range(segs)]
-            add_studs(look, grid_in_polygon(pts, z1), self.name)
+    def _flat(self, cx, cy, z0, z1, rot, cells, ox, oy, cell=1.0, bevel=0.06):
+        """cells {j: [(i, look)]} at local ((i + ox) * cell, (j + oy) * cell) -> one brick per run."""
+        c, s = math.cos(rad(rot)), math.sin(rad(rot))
+        for j, row in cells.items():
+            ly = (j + oy) * cell
+            for i0, i1, lk in self._runs(row):
+                lx = ((i0 + i1) / 2 + ox) * cell
+                self.brick(cx + lx * c - ly * s, cy + lx * s + ly * c, z0, (i1 - i0 + 1) * cell, cell, z1 - z0, lk, rot, bevel=bevel)
 
-    def ring(self, r0, r1, z0, z1, look, segs=96, a0=0.0, a1=360.0, cx=0.0, cy=0.0, studs=False):
-        mi = self._mi(look)
-        full = abs(a1 - a0) >= 359.99
-        n = segs if full else max(2, int(segs * abs(a1 - a0) / 360) + 1)
+    @staticmethod
+    def _grid(rx, ry, cell, keep, look_at):
+        nx, ny = max(1, round(2 * rx / cell)), max(1, round(2 * ry / cell))
+        ox, oy = (0.0 if nx % 2 else 0.5), (0.0 if ny % 2 else 0.5)
+        cells = {}
+        for j in range(-(ny // 2) - 1, ny // 2 + 2):
+            y = (j + oy) * cell
+            for i in range(-(nx // 2) - 1, nx // 2 + 2):
+                x = (i + ox) * cell
+                if keep(x, y):
+                    cells.setdefault(j, []).append((i, look_at(x, y)))
+        return cells, ox, oy
 
-        def pt(r, k):
-            a = rad(a0 + (a1 - a0) * k / (n if full else n - 1))
-            return (cx + r * math.cos(a), cy + r * math.sin(a))
+    def prism(self, pts, z0, z1, look, studs=False, stud_rot=0.0, rot=0.0):
+        """A vertical prism over a polygon [(x, y)], voxelized: 1-stud rows (scanline), stepped edges."""
+        if z1 < z0:
+            z0, z1 = z1, z0
+        c, s = math.cos(rad(rot)), math.sin(rad(rot))
+        loc = [(x * c + y * s, -x * s + y * c) for x, y in pts]
+        n = len(loc)
+        area = abs(sum(loc[k][0] * loc[(k + 1) % n][1] - loc[(k + 1) % n][0] * loc[k][1] for k in range(n))) / 2
+        bevel = 0.0 if area > 300 else 0.05
+        ys = [q[1] for q in loc]
+        for j in range(math.floor(min(ys)), math.ceil(max(ys))):
+            yc = j + 0.5
+            xs = []
+            for k in range(n):
+                (x1, y1), (x2, y2) = loc[k], loc[(k + 1) % n]
+                if (y1 > yc) != (y2 > yc):
+                    xs.append(x1 + (yc - y1) * (x2 - x1) / (y2 - y1))
+            xs.sort()
+            for a, b in zip(xs[0::2], xs[1::2]):
+                i0, i1 = math.ceil(a - 0.5), math.floor(b - 0.5)
+                if i1 >= i0:
+                    lx0, lx1 = i0, i1 + 1
+                elif b - a > 0.3:
+                    lx0, lx1 = a, b
+                else:
+                    continue
+                lx = (lx0 + lx1) / 2
+                self.brick(lx * c - yc * s, lx * s + yc * c, z0, lx1 - lx0, 1.0, z1 - z0, look, rot, bevel=bevel)
 
-        loops = [[self.bm.verts.new((*pt(r, k), z)) for k in range(n)] for r, z in ((r0, z0), (r1, z0), (r1, z1), (r0, z1))]
-        ks = range(n) if full else range(n - 1)
-        for a, b in ((0, 1), (1, 2), (2, 3), (3, 0)):
-            for k in ks:
-                j = (k + 1) % n
-                self._face((loops[a][k], loops[a][j], loops[b][j], loops[b][k]), mi)
-        if not full:
-            for k in (0, n - 1):
-                self._face((loops[0][k], loops[1][k], loops[2][k], loops[3][k]), mi)
-        if studs:
-            pts = []
-            for r in range(int(r0) + 1, int(r1)):
-                cnt = max(1, int(TAU * (r + 0.5) * abs(a1 - a0) / 360))
-                for k in range(cnt):
-                    a = rad(a0 + (a1 - a0) * (k + 0.5) / cnt)
-                    pts.append((cx + (r + 0.5) * math.cos(a), cy + (r + 0.5) * math.sin(a), z1, a))
-            add_studs(look, pts, self.name)
+    def cyl(self, cx, cy, r, z0, z1, look, segs=24, bevel=0.0, studs=False, rot=0.0, cell=1.0):
+        """A round column / disc, voxelized: a pixel circle on the 1-stud grid (a square post when thinner than ~1)."""
+        if z1 < z0:
+            z0, z1 = z1, z0
+        if z1 - z0 < 1e-4:
+            return
+        if r < 0.55:
+            self.brick(cx, cy, z0, max(2 * r, 0.3), max(2 * r, 0.3), z1 - z0, look, rot, bevel=0.04)
+            return
+        cells, ox, oy = self._grid(r, r, cell, lambda x, y: x * x + y * y <= r * r + 0.05 * cell, lambda x, y: look)
+        self._flat(cx, cy, z0, z1, rot, cells, ox, oy, cell, bevel=0.06 if r < 6 else 0.0)  # (big rounds: plain steps, light)
+
+    def ring(self, r0, r1, z0, z1, look, segs=96, a0=0.0, a1=360.0, cx=0.0, cy=0.0, studs=False, rot=0.0):
+        """A flat ring / arc, voxelized: a pixel ring at least one cell wide."""
+        if z1 < z0:
+            z0, z1 = z1, z0
+        rm, hw = (r0 + r1) / 2, max((r1 - r0) / 2, 0.5)
+        span = (a1 - a0) % 360 if abs(a1 - a0) < 359.99 else 360.0
+
+        def keep(x, y):
+            if abs(math.hypot(x, y) - rm) > hw + 0.02:
+                return False
+            if span >= 360.0:
+                return True
+            wa = math.degrees(math.atan2(x * math.sin(rad(rot)) + y * math.cos(rad(rot)), x * math.cos(rad(rot)) - y * math.sin(rad(rot))))
+            return (wa - a0) % 360 <= span + 1e-6
+
+        cells, ox, oy = self._grid(r1 + 0.5, r1 + 0.5, 1.0, keep, lambda x, y: look)
+        self._flat(cx, cy, z0, z1, rot, cells, ox, oy)
 
     def wedge(self, cx, cy, z0, sx, sy, h, look, rot=0.0, ridge="x"):
-        """A gable: ridge along local x (default) at the top middle."""
-        mi = self._mi(look)
-        c, s = math.cos(rad(rot)), math.sin(rad(rot))
-        P = lambda x, y, z: self.bm.verts.new((cx + x * c - y * s, cy + x * s + y * c, z))
-        hx, hy = sx / 2, sy / 2
-        if ridge == "x":
-            a, b_, cc, d = P(-hx, -hy, z0), P(hx, -hy, z0), P(hx, hy, z0), P(-hx, hy, z0)
-            e, f = P(-hx, 0, z0 + h), P(hx, 0, z0 + h)
-            for q in ((a, b_, f, e), (cc, d, e, f), (d, cc, b_, a)):
-                self._face(q, mi)
-            self._face((a, e, d), mi)
-            self._face((b_, cc, f), mi)
-        else:
-            a, b_, cc, d = P(-hx, -hy, z0), P(hx, -hy, z0), P(hx, hy, z0), P(-hx, hy, z0)
-            e, f = P(0, -hy, z0 + h), P(0, hy, z0 + h)
-            for q in ((b_, cc, f, e), (d, a, e, f), (d, cc, b_, a)):
-                self._face(q, mi)
-            self._face((a, b_, e), mi)
-            self._face((cc, d, f), mi)
+        """A gable shape, STEPPED: courses narrowing to a ridge along local x (or y)."""
+        n = max(2, round(h / 0.8))
+        ch = h / n
+        for k in range(n):
+            f = 1 - k / n
+            if ridge == "x":
+                self.brick(cx, cy, z0 + k * ch, sx, max(sy * f, 0.6), ch, look, rot, bevel=0.05)
+            else:
+                self.brick(cx, cy, z0 + k * ch, max(sx * f, 0.6), sy, ch, look, rot, bevel=0.05)
 
     def roof_gable(self, cx, cy, z0, sx, sy, h, look, rot=0.0, courses=None, trim=None, overhang=0.8):
         """A STEPPED gable (toy-brick roof): courses of studded bricks narrowing to the ridge along local x,
@@ -411,89 +530,88 @@ class Mesh:
             self.brick(cx, cy, z0 + h, 1.6, 1.6, 0.8, cap, rot, studs=False, bevel=0.15)
 
     def pyramid(self, cx, cy, z0, sx, sy, h, look, rot=0.0, top=0.0):
-        """Hip roof / pyramid; top > 0 leaves a flat top that wide."""
-        mi = self._mi(look)
-        c, s = math.cos(rad(rot)), math.sin(rad(rot))
-        P = lambda x, y, z: self.bm.verts.new((cx + x * c - y * s, cy + x * s + y * c, z))
-        hx, hy = sx / 2, sy / 2
-        base = [P(-hx, -hy, z0), P(hx, -hy, z0), P(hx, hy, z0), P(-hx, hy, z0)]
-        if top > 0:
-            t = top / 2
-            tp = [P(-t * hx / max(hx, hy), -t * hy / max(hx, hy), z0 + h), P(t * hx / max(hx, hy), -t * hy / max(hx, hy), z0 + h),
-                  P(t * hx / max(hx, hy), t * hy / max(hx, hy), z0 + h), P(-t * hx / max(hx, hy), t * hy / max(hx, hy), z0 + h)]
-            for i in range(4):
-                j = (i + 1) % 4
-                self._face((base[i], base[j], tp[j], tp[i]), mi)
-            self._face(tp, mi)
-        else:
-            apex = P(0, 0, z0 + h)
-            for i in range(4):
-                self._face((base[i], base[(i + 1) % 4], apex), mi)
-        self._face(list(reversed(base)), mi)
+        """A pyramid / hip shape, STEPPED; top > 0 leaves a flat top that wide."""
+        n = max(2, round(h / 0.8))
+        ch = h / n
+        t = top / max(sx, sy) if top > 0 else 0.0
+        for k in range(n):
+            f = 1 - (1 - t) * k / n
+            self.brick(cx, cy, z0 + k * ch, max(sx * f, 0.6), max(sy * f, 0.6), ch, look, rot, bevel=0.05)
 
-    def cone(self, cx, cy, r, z0, z1, look, segs=8, r1=0.0):
-        mi = self._mi(look)
-        base = [self.bm.verts.new((cx + r * math.cos(TAU * i / segs), cy + r * math.sin(TAU * i / segs), z0)) for i in range(segs)]
-        if r1 > 0:
-            top = [self.bm.verts.new((cx + r1 * math.cos(TAU * i / segs), cy + r1 * math.sin(TAU * i / segs), z1)) for i in range(segs)]
-            for i in range(segs):
-                j = (i + 1) % segs
-                self._face((base[i], base[j], top[j], top[i]), mi)
-            self._face(top, mi)
-        else:
-            tip = self.bm.verts.new((cx, cy, z1))
-            for i in range(segs):
-                self._face((base[i], base[(i + 1) % segs], tip), mi)
-        self._face(list(reversed(base)), mi)
+    def cone(self, cx, cy, r, z0, z1, look, segs=8, r1=0.0, rot=0.0, cell=None):
+        """A cone / frustum, voxelized: stacked pixel circles (z1 < z0 makes it point down)."""
+        lo, hi = min(z0, z1), max(z0, z1)
+        rb, rt = (r, r1) if z1 >= z0 else (r1, r)
+        n = max(2, min(round((hi - lo) / 1.0), 10))  # (at most 10 steps: big cliff rocks stay light)
+        dz = (hi - lo) / n
+        cell = cell or (2.0 if max(r, r1) >= 5 else 1.0)  # (big cones, e.g. the rocks under the cliffs: 2-stud cells)
+        for k in range(n):
+            rr = rb + (rt - rb) * (k + 0.5) / n
+            if rr >= 0.12:
+                self.cyl(cx, cy, rr, lo + k * dz, lo + (k + 1) * dz, look, rot=rot, cell=cell if rr >= cell else 1.0)
 
-    def sphere(self, cx, cy, cz, rx, ry, rz, look, seg=16, rings=10):
-        mi = self._mi(look)
-        rows = []
-        for k in range(1, rings):
-            t = math.pi * k / rings
-            rows.append([self.bm.verts.new((cx + rx * math.sin(t) * math.cos(TAU * i / seg), cy + ry * math.sin(t) * math.sin(TAU * i / seg), cz + rz * math.cos(t))) for i in range(seg)])
-        top, bot = self.bm.verts.new((cx, cy, cz + rz)), self.bm.verts.new((cx, cy, cz - rz))
-        for i in range(seg):
-            j = (i + 1) % seg
-            self._face((top, rows[0][i], rows[0][j]), mi)
-            self._face((bot, rows[-1][j], rows[-1][i]), mi)
-        for a, b in zip(rows, rows[1:]):
-            for i in range(seg):
-                j = (i + 1) % seg
-                self._face((a[i], b[i], b[j], a[j]), mi)
+    def sphere(self, cx, cy, cz, rx, ry, rz, look, seg=16, rings=10, rot=0.0):
+        """A ball / ellipsoid, voxelized: stacked pixel ellipses (plates for small balls)."""
+        step = min(1.0, max(0.35, rz / 3))
+        n = max(1, round(2 * rz / step))
+        dz = 2 * rz / n
+        for k in range(n):
+            zc = -rz + (k + 0.5) * dz
+            f = math.sqrt(max(0.0, 1 - (zc / rz) ** 2))
+            a, b = max(rx * f, 0.15), max(ry * f, 0.15)
+            zb = cz - rz + k * dz
+            if a < 0.55 and b < 0.55:
+                self.brick(cx, cy, zb, 2 * a, 2 * b, dz, look, rot, bevel=0.04)
+                continue
+            cells, ox, oy = self._grid(a, b, 1.0, lambda x, y: (x / a) ** 2 + (y / b) ** 2 <= 1.04, lambda x, y: look)
+            self._flat(cx, cy, zb, zb + dz, rot, cells, ox, oy)
+
+    def _upright(self, cx, cy, cz, depth, rot, R, cell, keep, look_at):
+        """Pixel art in the local x-z plane (depth along local y): rows of bricks."""
+        c, s_ = math.cos(rad(rot)), math.sin(rad(rot))
+        n = max(1, round(2 * R / cell))
+        o = 0.0 if n % 2 else 0.5
+        N = n // 2 + 1
+        for j in range(-N, N + 1):
+            z = (j + o) * cell
+            row = []
+            for i in range(-N, N + 1):
+                x = (i + o) * cell
+                lk = keep(x, z) and look_at(x, z)
+                if lk:
+                    row.append((i, lk))
+            for i0, i1, lk in self._runs(row):
+                lx = ((i0 + i1) / 2 + o) * cell
+                self.brick(cx + lx * c, cy + lx * s_, cz + z - cell / 2, (i1 - i0 + 1) * cell, depth, cell, lk, rot, bevel=0.04)
 
     def ring_v(self, cx, cy, cz, r0, r1, depth, looks, rot=0.0, segs=24, gap=0.12, a0=0.0, a1=360.0):
-        """An UPRIGHT ring (arch / portal / gear rim) in the local x-z plane, `depth` thick along local y, built from
-        `segs` separate chunky blocks (gap between them) - looks is one look or a list cycled per block."""
+        """An UPRIGHT ring / arch (portal, wheel rim, handle) in the local x-z plane, voxelized: a pixel ring of bricks
+        `depth` thick; looks is one look or a list cycled round it in `segs` segments."""
         looks = looks if isinstance(looks, (list, tuple)) else [looks]
-        c, s_ = math.cos(rad(rot)), math.sin(rad(rot))
-        span = (a1 - a0) / segs
-        for k in range(segs):
-            mi = self._mi(looks[k % len(looks)])
-            g = math.degrees(gap / max(r1, 0.1))
-            aa, ab = rad(a0 + k * span + g / 2), rad(a0 + (k + 1) * span - g / 2)
-            vs = []
-            for yy in (-depth / 2, depth / 2):
-                for (r, a) in ((r0, aa), (r1, aa), (r1, ab), (r0, ab)):
-                    lx, lz = r * math.cos(a), r * math.sin(a)
-                    vs.append(self.bm.verts.new((cx + lx * c - yy * s_, cy + lx * s_ + yy * c, cz + lz)))
-            f, b = vs[:4], vs[4:]
-            for q in (f, list(reversed(b)), (f[0], f[1], b[1], b[0]), (f[1], f[2], b[2], b[1]), (f[2], f[3], b[3], b[2]), (f[3], f[0], b[0], b[3])):
-                self._face(q, mi)
+        cell = 1.0 if r1 >= 3.0 else 0.5
+        rm, hw = (r0 + r1) / 2, max((r1 - r0) / 2, cell / 2)
+        full = abs(a1 - a0) >= 359.99
+        span = (a1 - a0) / max(1, segs)
 
-    def disc_v(self, cx, cy, cz, r, depth, look, rot=0.0, segs=32):
-        """An UPRIGHT disc in the local x-z plane (a portal field, a clock face, a round window)."""
-        mi = self._mi(look)
-        c, s_ = math.cos(rad(rot)), math.sin(rad(rot))
-        loops = []
-        for yy in (-depth / 2, depth / 2):
-            loops.append([self.bm.verts.new((cx + r * math.cos(TAU * i / segs) * c - yy * s_, cy + r * math.cos(TAU * i / segs) * s_ + yy * c,
-                                              cz + r * math.sin(TAU * i / segs))) for i in range(segs)])
-        self._face(loops[0], mi)
-        self._face(list(reversed(loops[1])), mi)
-        for i in range(segs):
-            j = (i + 1) % segs
-            self._face((loops[0][i], loops[0][j], loops[1][j], loops[1][i]), mi)
+        def keep(x, z):
+            if abs(math.hypot(x, z) - rm) > hw + 0.02:
+                return False
+            return full or (math.degrees(math.atan2(z, x)) - a0) % 360 <= (a1 - a0) + 1e-6
+
+        def look_at(x, z):
+            rel = (math.degrees(math.atan2(z, x)) - a0) % 360
+            return looks[int(rel / span) % len(looks)] if span > 0 else looks[0]
+
+        self._upright(cx, cy, cz, depth, rot, r1 + cell / 2, cell, keep, look_at)
+
+    def disc_v(self, cx, cy, cz, r, depth, look, rot=0.0, segs=32, look_at=None):
+        """An UPRIGHT disc (portal field, clock face, wheel) in the local x-z plane, voxelized. look_at(x, z) can colour
+        each cell (e.g. a lollipop's swirl bands) - one disc, so neighbouring bands never overlap."""
+        cell = 1.0 if r >= 3.0 else 0.5
+        if r < cell * 0.55:
+            self.brick(cx, cy, cz - r, 2 * r, depth, 2 * r, look, rot, bevel=0.04)
+            return
+        self._upright(cx, cy, cz, depth, rot, r, cell, lambda x, z: x * x + z * z <= r * r + 0.05 * cell, look_at or (lambda x, z: look))
 
     def done(self, smooth=False):
         me = bpy.data.meshes.new(self.name)
@@ -899,20 +1017,20 @@ class Frame:
         self.m.brick(*self.p(lx, ly), z0 + self.z, sx, sy, h, look, rot + self.rot, **kw)
 
     def cyl(self, lx, ly, r, z0, z1, look, **kw):
-        self.m.cyl(*self.p(lx, ly), r, z0 + self.z, z1 + self.z, look, **kw)
+        self.m.cyl(*self.p(lx, ly), r, z0 + self.z, z1 + self.z, look, rot=kw.pop("rot", 0.0) + self.rot, **kw)
 
     def cone(self, lx, ly, r, z0, z1, look, **kw):
-        self.m.cone(*self.p(lx, ly), r, z0 + self.z, z1 + self.z, look, **kw)
+        self.m.cone(*self.p(lx, ly), r, z0 + self.z, z1 + self.z, look, rot=kw.pop("rot", 0.0) + self.rot, **kw)
 
     def sphere(self, lx, ly, cz, rx, ry, rz, look, **kw):
-        self.m.sphere(*self.p(lx, ly), cz + self.z, rx, ry, rz, look, **kw)
+        self.m.sphere(*self.p(lx, ly), cz + self.z, rx, ry, rz, look, rot=kw.pop("rot", 0.0) + self.rot, **kw)
 
     def ring(self, r0, r1, z0, z1, look, cx=0.0, cy=0.0, a0=0.0, a1=360.0, **kw):
         wx, wy = self.p(cx, cy)
-        self.m.ring(r0, r1, z0 + self.z, z1 + self.z, look, cx=wx, cy=wy, a0=a0 + self.rot, a1=a1 + self.rot, **kw)
+        self.m.ring(r0, r1, z0 + self.z, z1 + self.z, look, cx=wx, cy=wy, a0=a0 + self.rot, a1=a1 + self.rot, rot=self.rot, **kw)
 
     def prism(self, pts, z0, z1, look, **kw):
-        self.m.prism([self.p(x, y) for x, y in pts], z0 + self.z, z1 + self.z, look, **kw)
+        self.m.prism([self.p(x, y) for x, y in pts], z0 + self.z, z1 + self.z, look, rot=self.rot, **kw)
 
     def wedge(self, lx, ly, z0, sx, sy, h, look, rot=0.0, **kw):
         self.m.wedge(*self.p(lx, ly), z0 + self.z, sx, sy, h, look, rot + self.rot, **kw)

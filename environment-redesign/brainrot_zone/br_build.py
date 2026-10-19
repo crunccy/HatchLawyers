@@ -226,6 +226,15 @@ flo.done()
 veg = K.Mesh("Vegetation", C["Vegetation"])
 I.build_top(C["BR_Terrain"], look="violet")
 I.cover_circle(*PORTAL, 22)
+CAMS = {
+    "aerial": (("Cam_Aerial", (-250, -570, 420), (0, 0, -25), 34), 2400, 1350),
+    "ground_arrival": (("Cam_Ground_Arrival", (0, -176, 9), (0, -60, 16), 24), 1920, 1080),
+    "ground_boulevard": (("Cam_Ground_Boulevard", (-6, -78, 10), (-40, -8, 18), 24), 1920, 1080),
+    "ground_arena": (("Cam_Ground_Arena", (0, 4, 18), (2, 110, 10), 24), 1920, 1080),
+    "ground_fields": (("Cam_Ground_Fields", (64, -40, 14), (100, -76, 8), 26), 1920, 1080),
+    "cliff": (("Cam_Cliff", (-320, -200, -40), (-140, -80, -40), 30), 1920, 1080),
+}
+I.keep_views_clear(CAMS)  # (no grove right in front of a presentation camera)
 groves, tries = [], 0
 while len(groves) < 13 and tries < 4000:  # pixel-tree GROVES, one colour each (no confetti)
     tries += 1
@@ -282,14 +291,6 @@ with open(os.path.join(HERE, "br_layout.json"), "w") as fh:
     json.dump(LAYOUT, fh, indent=1)
 print(f"[br] saved; {len(spots)} egg spots")
 
-CAMS = {
-    "aerial": (("Cam_Aerial", (-250, -570, 420), (0, 0, -25), 34), 2400, 1350),
-    "ground_arrival": (("Cam_Ground_Arrival", (0, -176, 9), (0, -60, 16), 24), 1920, 1080),
-    "ground_boulevard": (("Cam_Ground_Boulevard", (-6, -78, 10), (-40, -8, 18), 24), 1920, 1080),
-    "ground_arena": (("Cam_Ground_Arena", (0, 4, 18), (2, 110, 10), 24), 1920, 1080),
-    "ground_fields": (("Cam_Ground_Fields", (64, -40, 14), (100, -76, 8), 26), 1920, 1080),
-    "cliff": (("Cam_Cliff", (-320, -200, -40), (-140, -80, -40), 30), 1920, 1080),
-}
 only = next((a.split("=", 1)[1].split(",") for a in argv if a.startswith("only=")), None)
 if "norender" not in argv:
     for key, ((name, loc, look, lens), w, h) in CAMS.items():

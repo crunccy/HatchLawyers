@@ -116,7 +116,7 @@ swayed = []
 for ob in bpy.data.objects:
     if ob.type != "MESH":
         continue
-    canopy_studs = ob.name.startswith("Studs_") and ob.name.split("Studs_", 1)[1] in ("leaf", "leaf_light", "leaf_deep", "blossom", "blossom_light")
+    canopy_studs = ob.name.startswith("Studs_") and ob.parent is not None and ob.parent.name == "Vegetation"  # (its own studs)
     if ob.name == "Vegetation" or canopy_studs:
         ob.modifiers.new("Wind", "NODES").node_group = WIND
         swayed.append(ob.name)

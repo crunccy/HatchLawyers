@@ -72,8 +72,8 @@ def dog_house(F, body="roof_blue", roof="red", name="REX"):
     F.roof_gable(0, 0.3, 4.9, 6.0, 6.4, 2.6, roof, rot=90, courses=3, overhang=0.6, trim="white")
     F.brick(0, -3.2, 4.2, 3.6, 0.3, 0.9, "white", studs=False)
     F.text(name, 0, -3.4, 4.65, 0.55, "black", kind="bold", extrude=0.04)
-    F.cyl(3.6, -3.4, 1.0, 0, 0.6, "red", segs=12)  # food bowl
-    F.cyl(3.6, -3.4, 0.8, 0.4, 0.65, "wood", segs=12)
+    F.cyl(3.6, -3.4, 1.0, 0, 0.4, "red", segs=12)  # food bowl
+    F.cyl(3.6, -3.4, 0.8, 0.4, 0.65, "wood", segs=12)  # (the food stacked on it)
 
 
 def cat_tower(F):

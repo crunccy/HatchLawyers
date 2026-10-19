@@ -4,7 +4,7 @@
 #   I.cover_circle / cover_rect / cover_fn                       what stands on the ground (no grass studs, no planting)
 #   I.build_top(col) / I.build_cliffs(col) / I.waterfall(m, a)   terrain
 #   I.groves(m, n, kinds) / I.hills(m, n) / I.clouds(m, n)       landscaping + sky
-#   I.grass_studs()                                              the studded grass top (call last, before K.studs_done)
+#   (K.studs_done() studs the grass with everything else; I.grass_studs() is kept as a no-op)
 #   boss(col, "SeniorPartner", x, y, scale, facing)              a zone boss from tools/zones/bosses.json (for scale)
 #   label(col, text, x, y, size)                                 plan labels
 import bpy, bmesh, json, math, os, random
@@ -281,9 +281,20 @@ class Island:
             m.cone(x, y, s * 0.6, z - s * 0.4, z - s * 1.6, "rock", segs=6)
             (K.tree_round if i % 2 == 0 else K.tree_pine)(K.Frame(m, x, y, 0, z=z + 2.5), 0, 0, 0.8)
 
+    def keep_views_clear(self, cams, dists=(6, 14, 24), r=9):
+        """Keep groves / hills out of the ground cameras' foregrounds: cams = {key: ((name, (x, y, z), (tx, ty, tz), lens), w, h)}
+        (an island's CAMS); call before placing groves."""
+        for key, ((name, loc, look, lens), w, h) in cams.items():
+            if not key.startswith("ground"):
+                continue
+            dx, dy = look[0] - loc[0], look[1] - loc[1]
+            L = math.hypot(dx, dy) or 1.0
+            for d in dists:
+                self.cover_circle(loc[0] + dx / L * d, loc[1] + dy / L * d, r, ground=False)
+
     def grass_studs(self, look=None, f=0.995):
-        look = look or self.top_look
-        K.add_studs(look, K.grid_in_polygon(self.top_pts(f), 0.0, keep=lambda x, y: not self.covered(x, y, ground_only=True)))
+        """No-op since 2026-10-19: K.studs_done() studs every exposed top (the grass included) by itself."""
+        return None
 
 
 # ------------------------------------------------------------------ game models from their exported blocks (Roblox space)

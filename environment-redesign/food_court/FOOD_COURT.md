@@ -79,9 +79,9 @@ island's Bounds: see `../README.md` → "Notes for Stage 7".
 | Plants | Fruit trees (orange / apple / lemon) |
 | Eggs | Food eggs + spot rings |
 
-Every round food is a studded voxel round (stacked rings with studs on each exposed ledge); only the glowing bulbs
-are smooth balls. Static props avoid the leaf looks, because the wind sways those looks' studs (`fc_parts.py`
-header). Totals: 439k tris + 224k raised studs (one 48-tri stud mesh, instanced; 6.7 MB .blend).
+Everything is voxel (crnuch's call 2026-10-19, "studded voxel on everything"): every round piece is pixel circles or
+voxel balls on the 1-stud grid, the bulbs, bottles, lollipops and portal ring included, and the kit's stud pass puts
+studs on every exposed top: the boss, statues, eggs and the soda and chocolate too. Totals: 778k tris + 410k raised studs (one 48-tri stud mesh, instanced; 10.9 MB .blend).
 
 ## Ambience
 ### Visual (`fc_ambience.py`, in the .blend: no preview clips, crnuch's call 2026-10-19)
@@ -131,6 +131,5 @@ Licences below were read on each sound's own page (2026-10-19).
 - **Open lawn:** between the restaurants the island has wide lime lawns (orchards and hills fill some of it). It
   reads calm next to the busy plaza.
 - **Plain interiors:** the restaurants and stalls are shells (awnings, signs, counters, props); no interiors.
-- **Lollipops and the upright donut** use smooth upright rings (like the portal), not studded faces.
 - **The board is wide open on purpose:** nothing stands on it, so from far away it reads as one big wooden plane.
   The planks, the rim and the decor around it carry the theme.

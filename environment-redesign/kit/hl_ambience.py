@@ -89,14 +89,14 @@ CANOPY_LOOKS = ("leaf", "leaf_light", "leaf_deep", "blossom", "blossom_light")
 
 
 def wind(object_names):
-    """Sway the named objects' canopies + the canopy-coloured stud instancers (so the studs ride the leaves)."""
+    """Sway the named objects + their own stud instancers (children, K.studs_done), so the studs ride the leaves."""
     ng = wind_group()
     done = []
     for ob in bpy.data.objects:
         if ob.type != "MESH":
             continue
-        studs = ob.name.startswith("Studs_") and ob.name.split("_", 1)[1] in CANOPY_LOOKS
-        if ob.name in object_names or studs:
+        own_studs = ob.name.startswith("Studs_") and ob.parent is not None and ob.parent.name in object_names
+        if ob.name in object_names or own_studs:
             ob.modifiers.new("Wind", "NODES").node_group = ng
             done.append(ob.name)
     return done
@@ -260,8 +260,8 @@ def mote(collection, name, kind, size, rgb, emit=0.0):
     if emit:
         b.inputs["Emission Color"].default_value = (*lin, 1)
         b.inputs["Emission Strength"].default_value = emit
-    if kind == "ico":
-        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=size, location=(0, 0, -800))
+    if kind == "ico":  # (voxel puffs since 2026-10-19: a little cube, never a round ball)
+        bpy.ops.mesh.primitive_cube_add(size=size * 1.6, location=(0, 0, -800))
     else:
         bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, -800))
         bpy.context.active_object.scale = size

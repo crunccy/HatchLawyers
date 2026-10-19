@@ -22,6 +22,20 @@ circular studs**. That look is the game's identity.
   phones; decorative studs separate from gameplay collision.
 - **Standard:** every island belongs to the same colorful, detailed, polished, unmistakably studded universe.
 
+## "Everything" means everything (crnuch's call, 2026-10-19)
+After the floating-island renders crnuch clarified: *"when i say i want studded voxel on everything i genuinely mean
+everything"*. So the "suitable architecture" / "no stud clutter on tiny objects" wording above is too narrow:
+- **Voxel shapes only.** No smooth cylinders, spheres, cones, discs, rings or slopes anywhere, not even bottles,
+  cups, poles, lollipops, portal rings, wheels, lamp globes or roofs. Round shapes are pixel circles / voxel balls
+  on the 1-stud grid; slopes are steps.
+- **Studs on every exposed top face of every object:** terrain, paths, buildings, props, eggs, liquids (studded
+  translucent plates), clouds, bosses and statues included.
+- **Only exceptions:** sign lettering (printed; it becomes SurfaceGui text in Roblox) and pieces narrower than about
+  half a stud, which can't hold a 1-stud stud.
+- Blender: `environment-redesign/kit/hl_kit.py` builds every primitive as stepped bricks, and `K.studs_done()` is a
+  pass that studs every exposed top of every object (rays against all the geometry). Roblox later: the same rule for
+  Parts / MeshParts (the raised-stud tiles go on every up-facing face, models included).
+
 ## How it maps onto this game
 Where we are on 2026-10-18: the map is Plastic Parts with `TopSurface = Studs` (flat texture, 1-stud spacing); the
 characters use `MaterialService.BrickStuds` (a normal map, 0.5-stud spacing, docs/CHARACTER_STYLE.md). No raised studs

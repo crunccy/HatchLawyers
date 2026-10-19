@@ -71,7 +71,7 @@ ARRIVAL (south) ──> PET PARK bone gate ──> winding path ──> THE POND
 | Park pieces | Picket fences (white / pink / wood), arched wood bridge, lily pads, benches, flower beds |
 | Landmarks | Bone gate, BARK COURT (agility course, judge's bench), paw-keystone RETURN HOME portal, Pet eggs + spot rings |
 
-Totals: 416k tris + 236k raised studs (one 48-tri stud mesh, instanced).
+Totals (voxel rebuild 2026-10-19): 740k tris + 365k raised studs (one 48-tri stud mesh, instanced; 10.5 MB .blend).
 
 ## Ambience
 ### Visual (`pp_ambience.py`, in the .blend: no preview clips, crnuch's call 2026-10-19; clearance rules from `../central_hub/AMBIENCE.md`, checked per prop in its header)

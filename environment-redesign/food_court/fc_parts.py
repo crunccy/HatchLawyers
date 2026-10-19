@@ -2,8 +2,8 @@
 # An oversized, colourful food festival (the game's zone: Food Court). Palette: warm oranges, reds, yellows + fresh
 # greens / pinks as accents. Local frames: front = local -y. Every round food is a studded VOXEL round (stacked
 # rings, studs on each exposed ledge), never a smooth sphere; glowing bulbs are the only smooth balls.
-# Static props never use the canopy looks (leaf / leaf_light / leaf_deep / blossom): the ambience wind sways those
-# looks' studs island-wide, so a lettuce leaf in "leaf_light" would shed its studs. Greens here are veg_green etc.
+# Since 2026-10-19 the kit is voxel throughout and every object carries its own studs (K.studs_done), so any look is
+# safe on any prop; the food greens (veg_green, lettuce, broccoli) are just their own colours.
 import math
 import hl_kit as K
 import hl_world as W
@@ -61,7 +61,7 @@ def giant_burger(F, x, y, s=1.0):
     for a in (65, 155, 245, 335):  # cheese drips at the corners
         px, py = polar(R * 1.02, a)
         F.brick(x + px, y + py, 2.4 * s, 1.0 * s, 1.0 * s, 1.7 * s, "cheese", rot=a, studs=False, bevel=0.2)
-    F.cyl(x, y, R * 1.02, 4.1 * s, 4.8 * s, "tomato", segs=28)
+    F.cyl(x, y, R + 0.6, 4.1 * s, 4.8 * s, "tomato", segs=28)  # (one voxel wider than the bun so it shows)
     for k in range(18):  # the lettuce frill
         px, py = polar(R * 1.04, k * 20)
         F.brick(x + px, y + py, 4.6 * s, 2.6 * s, 0.7 * s, 0.6 * s, "lettuce", rot=k * 20 + 90, studs=False, bevel=0.15)
@@ -180,11 +180,8 @@ def cupcake(F, x, y, s=1.0, wrapper="pink", frost="cream_soft"):
 
 def lollipop(F, x, y, h=10.0, r=4.0, looks=("red", "white"), rot=0.0):
     G = F.sub(x, y, rot)
-    G.cyl(0, 0, 0.35, 0, h, "white", segs=8)
-    edges = [0.0, 0.9] + [0.9 + (k + 1) * (r - 0.9) / 3 for k in range(3)]
-    G.disc_v(0, 0, h, edges[1], 1.0, looks[1], segs=16)
-    for k in range(3):
-        G.ring_v(0, 0, h, edges[k + 1], edges[k + 2], 1.0, looks[k % 2], segs=28, gap=0.0)
+    G.cyl(0, 0, 0.35, 0, h - r + 0.5, "white", segs=8)
+    G.disc_v(0, 0, h, r, 1.0, looks[0], look_at=lambda x, z: looks[int(math.hypot(x, z) / 1.2) % 2])  # one disc, swirl bands
 
 
 def candy_cane(F, x, y, h=12.0, rot=0.0, R=2.5):
@@ -277,8 +274,9 @@ def picnic_table(F, x, y, rot=0.0, umbrella="red"):
 def condiment_lamp(F, x, y, kind="ketchup"):
     """A giant squeeze bottle (ketchup red or mustard yellow) with a warm bulb at the nozzle: the island's lamp post."""
     look = kind
-    F.cyl(x, y, 1.3, 0, 6.0, look, segs=16, bevel=0.2)
-    F.cyl(x, y, 1.36, 2.4, 4.0, "white", segs=16)
+    F.cyl(x, y, 1.3, 0, 2.4, look)
+    F.cyl(x, y, 1.3, 2.4, 4.0, "white")  # (stacked label segment)
+    F.cyl(x, y, 1.3, 4.0, 6.0, look)
     taper(F, x, y, 6.0, 1.3, 0.5, 1.2, look, step=0.4, segs=16)
     F.cyl(x, y, 0.3, 7.2, 8.4, "white", segs=8)
     F.sphere(x, y, 9.0, 0.7, 0.7, 0.7, "glow_warm", seg=10, rings=6)
@@ -408,7 +406,7 @@ def fry_factory(F):
         K.window(F, -10 + k * 10, -7.05, 2.4, 5.0, 4.4, 0, frame="white", mullions=2)
     K.door(F, 13, -7.05, 0.8, 3.4, 6.0, 0, frame="white", leaf="red")
     W.board(F, -2, -7.4, 7.2, 16, 2.2, "FRY FACTORY", bg="red", fg="yellow", trim="white", size=1.2)
-    F.cyl(12, 7, 1.8, 10.4, 22, "brick_red", segs=12)
+    F.cyl(12, 7, 1.8, 10.4, 21, "brick_red", segs=12)
     F.cyl(12, 7, 2.1, 21, 22.4, "stone_dark", segs=12)
     giant_fries(F.sub(-6, 6, z=14.4), 0, 0, 0.8, sections=3)
 
@@ -474,9 +472,10 @@ def noodle_house(F):
 # ------------------------------------------------------------------ the plaza's soda fountain, the gate, the portal
 def soda_fountain(F):
     """A giant striped soda cup with a lid and a bendy straw in a round basin; soda pours from four spouts."""
-    F.cyl(0, 0, 10, 0, 1.4, "white", segs=40, studs=True)
-    F.ring(9.0, 10.2, 1.4, 2.0, "red", segs=40)
-    F.cyl(0, 0, 9.0, 0.8, 1.3, "soda", segs=40)
+    F.cyl(0, 0, 10, 0, 0.6, "white", segs=40)  # the basin floor
+    F.ring(8.6, 10.2, 0.6, 1.6, "white", segs=40)  # its wall
+    F.ring(8.6, 10.2, 1.6, 2.0, "red", segs=40)  # (stacked rim)
+    F.cyl(0, 0, 8.0, 0.6, 1.3, "soda", segs=40)  # the soda, inside the wall
     taper(F, 0, 0, 1.3, 3.4, 4.4, 11.6, "red", step=0.8, studs=False, looks=lambda k: "red" if (k // 2) % 2 == 0 else "white")
     F.cyl(0, 0, 4.7, 12.9, 13.7, "white", segs=24, studs=True)
     for k in range(8):  # the straw: striped, with a bend
@@ -495,8 +494,9 @@ def soda_fountain(F):
 def big_bottle(F, x, y, look, H=14.0, R=3.2):
     """A giant squeeze bottle (a gate pillar): body, white label band, stepped shoulders, nozzle."""
     F.cyl(x, y, R + 0.6, 0, 1.0, "white", segs=20)
-    F.cyl(x, y, R, 1.0, H, look, segs=20, bevel=0.3)
-    F.cyl(x, y, R + 0.08, H * 0.35, H * 0.62, "white", segs=20)
+    F.cyl(x, y, R, 1.0, H * 0.35, look)  # (the label is its own stacked segment: no overlapping band)
+    F.cyl(x, y, R, H * 0.35, H * 0.62, "white")
+    F.cyl(x, y, R, H * 0.62, H, look)
     taper(F, x, y, H, R, 0.9, 2.4, look, step=0.6, segs=20)
     taper(F, x, y, H + 2.4, 0.9, 0.4, 1.6, "white", step=0.4, segs=10)
 

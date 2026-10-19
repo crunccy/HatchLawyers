@@ -155,8 +155,9 @@ def coffee_shop(F):
             F.brick(x, -3.7 - j * 0.9, 7.0 - j * 0.5, 1.8, 1.0, 0.55, "sign_green" if k % 2 == 0 else "awning_white", studs=(j == 0))
     board(F, 0, -3.3, 8.6, 12, 2.4, "COFFEE BREAK", bg="sign_green", fg="white", trim="white", size=1.15)
     # giant cup on the roof (the steam rises in the ambience pass)
-    F.cyl(0, 4, 2.6, 9.5, 14.5, "white", segs=20, bevel=0.2)
-    F.cyl(0, 4, 2.7, 11.0, 12.6, "wood", segs=20)
+    F.cyl(0, 4, 2.6, 9.5, 11.0, "white")  # the cup, its sleeve stacked in (voxel rings never overlap)
+    F.cyl(0, 4, 2.6, 11.0, 12.6, "wood")
+    F.cyl(0, 4, 2.6, 12.6, 14.5, "white")
     F.ring_v(3.0, 4, 12.0, 1.0, 1.6, 0.6, "white", rot=0, segs=10, gap=0.05)
     F.cyl(0, 4, 2.2, 14.5, 14.7, "wood_dark", segs=20)
     for k, (x, y) in enumerate(((-7, -8.5), (0, -9.5), (7, -8.5))):  # tables + umbrellas
@@ -229,8 +230,8 @@ def giant_briefcase(F, s=1.0, look="wood_dark"):
 
 def giant_gavel(F, s=1.0):
     F.brick(0, 0, 0, 10 * s, 10 * s, 1.6 * s, "marble")
-    F.cyl(0, 0, 4.0 * s, 1.6 * s, 3.4 * s, "wood_dark", segs=20, studs=True)  # sound block
-    F.cyl(0, 0, 4.2 * s, 3.0 * s, 3.4 * s, "gold", segs=20)
+    F.cyl(0, 0, 4.0 * s, 1.6 * s, 3.0 * s, "wood_dark", segs=20, studs=True)  # sound block
+    F.cyl(0, 0, 4.0 * s, 3.0 * s, 3.4 * s, "gold", segs=20)  # (its gold band stacked on top: voxel rings never overlap)
     for k in range(6):  # the handle, leaning
         F.brick((-0.4 + k * 0.6) * s, 0, (3.4 + k * 1.3) * s, 0.9 * s, 0.9 * s, 1.4 * s, "wood", rot=0, studs=False)
     F.brick(3.2 * s, 0, 10.8 * s, 6.0 * s, 3.0 * s, 3.0 * s, "wood_dark", studs=False, bevel=0.3 * s)  # head

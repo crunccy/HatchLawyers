@@ -76,8 +76,8 @@ ARRIVAL (south) ──> glitched BRAINROT BOULEVARD gate ──> zig-zag NEON BO
 | Plants | Pixel trees, upside-down trees |
 | Eggs | Brainrot eggs + spot rings |
 
-Totals: 332k tris + 210k raised studs (one 48-tri stud mesh, instanced; 5.4 MB .blend). Lamp heads and antenna lights are glowing bulbs (smooth
-spheres, as on the hub); everything solid is studded brick.
+Totals (voxel rebuild 2026-10-19): 631k tris + 358k raised studs (one 48-tri stud mesh, instanced; 8.8 MB .blend). Since 2026-10-19 everything is voxel, the glowing
+bulbs too (crnuch's call: studded voxel on everything).
 
 ## Ambience
 ### Visual (`br_ambience.py`, in the .blend: no preview clips, crnuch's call 2026-10-19)
@@ -133,4 +133,3 @@ distance.
   the dark boulevard, neon and the green portal are what break it up.
 - **Daylight:** the look depends on the dusk lighting (above). In daylight the neon would look flat.
 - **Plain interiors:** the towers and shops are shells (window strips, signs, props); the interiors aren't modelled.
-- **Glowing bulbs:** lamp heads, antenna lights and the leaning towers' tip orbs are smooth glowing spheres.

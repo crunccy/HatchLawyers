@@ -80,7 +80,7 @@ is changed.
 
 Firm names are fictional.
 
-Totals: 409k tris + 224k raised studs (one 48-tri stud mesh, instanced).
+Totals (voxel rebuild 2026-10-19): 656k tris + 384k raised studs (one 48-tri stud mesh, instanced; 9.2 MB .blend).
 - Heaviest objects: cliffs 185k, buildings 103k.
 - Same Roblox plan as the hub (STAGE3.md): merge the cliff cladding per colour, trees as reusable MeshParts.
 

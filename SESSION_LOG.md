@@ -233,6 +233,29 @@ Claim big work here before starting (who · what · since), push the claim, remo
   plank seams on the dock showed the water (dark sub-deck); the beam read as a solid plank in stills (fainter);
   sign boards clipped low roofs (now on the eaves); the NE path ran through the lifeguard tower (re-routed).
 - **Left:** crnuch's approval of Ocean Shore (and Food Court); Space Base is the last island.
+## 2026-10-19 — crnuch, local session: world redesign — studded voxel on EVERYTHING (kit + all five areas rebuilt)
+- **crnuch's call:** "when i say i want studded voxel on everything i genuinely mean everything". Recorded in
+  docs/ART_STYLE_STUDS.md ("Everything means everything") + CLAUDE.md: no smooth round or sloped shape on any object,
+  studs on every exposed top (bosses, statues, eggs, liquids, clouds included). Exceptions: sign lettering (printed;
+  SurfaceGui text in Roblox) and pieces under ~half a stud wide.
+- **Kit (`environment-redesign/kit/`):**
+  - `hl_kit.Mesh`: cyl / ring / cone / sphere / prism / wedge / pyramid / ring_v / disc_v now build stepped bricks on
+    the 1-stud grid, turned with their frame (pixel circles, voxel balls, stepped slopes; big cones use 2-stud cells
+    and at most 10 steps so the cliff rocks stay light). `disc_v(look_at=)` colours cells (one disc, no overlapping
+    bands)
+  - `K.studs_done()` is now THE STUD PASS: raised studs on every exposed top face of every object (BVH rays at each
+    stud's centre + corners, coplanar duplicates dropped). Each object owns its instancers (`Studs_<object>_<look>`,
+    parented), so wind, drift, turning signs and boss idles carry their studs. The old per-call `studs=` flags,
+    `add_studs`, `K.STUD_GROUP`, `Studs_Still_*` and `grass_studs()` are now no-ops
+  - `hl_ambience.wind` sways the named objects' own studs; particle motes are little cubes
+- **Voxel gotcha (fixed where found):** a band made as a slightly wider cylinder over the same height lands on the same
+  cells as the body (z-fighting): stack bands as their own segments. Fixed: Food Court bottles / lamps / chimney / soda
+  basin / lollipops, Briefcase Bay's coffee cup + gavel band, the hub's glass-case glow, Pet Park's food bowl.
+- **Rebuilt + re-rendered** (build + ambience, no clips): hub 1.34M tris + 1.14M studs (19.0 MB .blend); Briefcase Bay
+  656k + 384k (9.2 MB); Pet Park 740k + 365k (10.5 MB); Brainrot 631k + 358k (8.8 MB); Food Court 778k + 410k
+  (10.9 MB). Studs cast no shadows (as the Roblox stud tiles: CastShadow = false). Ground views take ~1-4 min each on
+  this Mac now. `Island.keep_views_clear(CAMS)` keeps groves out of the ground cameras' foregrounds (a Brainrot grove
+  had landed in front of the boulevard camera).
 
 ## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 4 — Food Court (Blender)
 - **crnuch's call:** Brainrot Zone approved.

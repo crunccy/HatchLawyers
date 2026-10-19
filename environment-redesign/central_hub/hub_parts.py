@@ -441,7 +441,7 @@ def mutation_machine(F):
     for a in (150, 90, 30):
         x, y = polar(7.8, a)
         F.cyl(x, y, 2.6, 2.0, 3.0, "metal", segs=20, bevel=0.2)
-        F.cyl(x, y, 2.0, 3.0, 3.3, "glow_purple", segs=20)
+        F.cyl(x, y, 1.4, 3.0, 3.3, "glow_purple", segs=20)  # (inside the glass, not on its cells)
         F.cyl(x, y, 2.1, 3.0, 9.0, "glass", segs=20)
         F.cyl(x, y, 2.6, 9.0, 10.0, "metal", segs=20, bevel=0.2)
         F.cone(x, y, 1.8, 10.0, 11.2, "purple", segs=8)
