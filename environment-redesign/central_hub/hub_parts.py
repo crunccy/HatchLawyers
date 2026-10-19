@@ -524,8 +524,8 @@ def bigcase_terrace(F, fx=None):
         F.brick(sgn * 33.1, 0, 0, 0.6, 34.6, 1.5, "gold", studs=False)
     for x, y in ((-30, -14), (30, -14), (-30, 14), (30, 14)):
         K.planter(F.sub(0, 0, z=1.2), x, y, 4, 4, plant="flowers" if y < 0 else "bush")
-    for sgn in (-1, 1):
-        K.flag(F, sgn * 11, 4.6, 13, 6, "gold" if sgn < 0 else "red")
+    for sgn in (-1, 1):  # flags on the back posts, clear of the belt
+        K.flag(F, sgn * 11, 11.0, 13, 6, "gold" if sgn < 0 else "red")
     # the belt along local x
     F.brick(0, 6, 1.2, 58, 6.6, 2.4, "metal_dark", studs=False)
     F.brick(0, 6, 3.6, 56, 5.2, 0.3, "black", studs=False)
@@ -534,14 +534,30 @@ def bigcase_terrace(F, fx=None):
     for sgn in (-1, 1):
         F.brick(0, 6 + sgn * 3.1, 3.6, 58, 0.5, 1.0, "hazard", studs=False)
         F.disc_v(sgn * 28.6, 6, 2.6, 1.6, 6.0, "metal", rot=90, segs=16)
+    # tunnel hoods at both ends (in / out, like a luggage belt): cases come out of one and go into the other,
+    # so the looping ride never shows a case appearing or leaving the belt's end
+    for sgn in (-1, 1):
+        cx = sgn * 27.0
+        for sy in (-1, 1):
+            F.brick(cx, 6 + sy * 3.9, 1.2, 14, 0.8, 8.0, "roof_navy", studs=False)
+        F.brick(cx, 6, 9.2, 14.4, 8.8, 1.2, "roof_navy")
+        F.brick(cx, 6, 9.0, 14.8, 9.2, 0.4, "gold", studs=False)
+        F.brick(sgn * 33.6, 6, 1.2, 0.8, 8.6, 9.2, "roof_navy", studs=False)  # closed back
+        for k in range(7):  # rubber flaps at the mouth
+            F.brick(sgn * 20.2, 3.0 + k * 1.0, 4.1, 0.2, 0.85, 5.1, "black", studs=False, bevel=0.03)
+        F.text("IN" if sgn < 0 else "OUT", sgn * 19.85, 6, 10.4, 1.2, "gold", rot=90 * sgn, kind="bold", extrude=0.08)
     for k in range(7):  # big cases riding the belt
         x = -24 + k * 8
         fx.brick(x, 6, 4.0, 3.0, 1.4, 2.2, "wood_dark" if k % 3 else "gold", studs=False)
         fx.brick(x, 6, 6.2, 1.2, 0.4, 0.5, "gold" if k % 3 else "wood_dark", studs=False)
     # arch over the belt with the BIG CASES marquee
-    for sgn in (-1, 1):
-        F.brick(sgn * 11, 6, 1.2, 2.4, 2.4, 11, "roof_navy", studs=False)
-        F.brick(sgn * 11, 6, 12.2, 3.0, 3.0, 0.8, "gold", studs=False)
+    # two goalpost frames STRADDLING the belt (posts beside it, a crossbeam over it), joined by the top beam:
+    # the cases ride underneath (belt y 2.7..9.3, case tops at z 6.7, beams from z 12.2)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            F.brick(sx * 11, 6 + sy * 5.0, 1.2, 1.8, 1.8, 11, "roof_navy", studs=False)
+            F.brick(sx * 11, 6 + sy * 5.0, 12.2, 2.4, 2.4, 0.8, "gold", studs=False)
+        F.brick(sx * 11, 6, 12.2, 2.0, 12.4, 1.4, "roof_navy", studs=False)
     F.brick(0, 6, 13.0, 25, 2.6, 1.2, "roof_navy", studs=False)
     attraction_sign(F, 0, 4.4, 14.2, 18, 3.6, "BIG CASES!", size=1.8)
     booth(F, -21, -9, "GAVEL BONK", "red", _gavel_prop)

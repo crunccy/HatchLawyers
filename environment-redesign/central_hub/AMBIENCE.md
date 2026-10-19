@@ -39,6 +39,15 @@ The previews are kept short and low-sample because each frame costs about 0.6 s 
 | Soft sunlight, bloom | EEVEE sun + gradient sky + compositor glare | `Lighting` (ClockTime ~14, Brightness), `Atmosphere`, `BloomEffect` (low intensity), `ColorCorrectionEffect` | Bloom look differs |
 | Ray-traced AO / soft shadows | EEVEE ray tracing | Roblox Future / ShadowMap lighting (no AO control) | Yes |
 
+## Rules for moving parts (learned 2026-10-18: crnuch caught cases riding through the arch)
+- **Clearance:** every moving thing's whole path is checked against the static scene before it's presented. The
+  Big Case arch now straddles the belt (posts beside it, crossbeams over it, flags on the back posts). Butterflies
+  fly in rings kept outside platforms / walls and above platform height.
+- **Seamless loops hide their seams:** a looping ride starts and ends inside something (the belt's IN / OUT tunnel
+  hoods with flaps), so nothing pops in or rolls off an end.
+- **Check frames, not just the idea:** render the start, middle and end frames of each clip (`-- stills`) and look
+  for clipping before the MP4.
+
 ## Hub ambience spec (for the game)
 - **Mood:** welcoming, sunny early afternoon, gentle breeze, birds, distant voices, a relaxed ukulele track.
 - **Motion budget:** everything subtle and slow. No flashing; glows breathe at 0.3–0.5 Hz; sway ≤ 0.4 studs at the

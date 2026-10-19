@@ -243,9 +243,13 @@ def box(name, sx, sy, sz, look, parent=None, loc=(0, 0, 0)):
 
 
 WING_LOOKS = ["yellow", "pink", "sky_blue", "orange", "white", "purple"]
-spots = [(0, 0, 58, 10), (-72, 72, 26, 6), (72, 72, 26, 6), (72, -72, 26, 6), (-72, -72, 26, 6), (0, -95, 30, 6)]
+# where they fly: (centre x, y, radius min, max, height min, max) - rings kept clear of what stands there:
+# the plaza between the fountain (r <= 20) and the bench ring (r 50); round each service OUTSIDE its platform /
+# walls (r >= 22) and above its platform height (z >= 5), so nothing flies through a building
+spots = [(0, 0, 28, 46, 3.0, 8.0), (-72, 72, 23, 30, 5.5, 9.5), (72, 72, 23, 30, 5.0, 9.0), (72, -72, 23, 30, 5.0, 9.0),
+         (-72, -72, 23, 30, 5.0, 9.0), (0, 0, 28, 46, 3.0, 8.0)]
 for i in range(22):
-    cx, cy, R, n = spots[i % len(spots)]
+    cx, cy, r0, r1, z0, z1 = spots[i % len(spots)]
     body = box(f"Butterfly_{i}", 0.25, 0.7, 0.25, "black")
     look = WING_LOOKS[i % len(WING_LOOKS)]
     for sgn in (-1, 1):
@@ -259,10 +263,11 @@ for i in range(22):
         loop(hinge)
     # a meandering path: a new waypoint every second
     a0 = rng.uniform(0, 360)
+    a = a0
     for k in range(0, 13):
-        a = a0 + k * rng.uniform(15, 40)
-        r = rng.uniform(R * 0.55, R)
-        body.location = (cx + r * math.cos(math.radians(a)), cy + r * math.sin(math.radians(a)), rng.uniform(2.5, 7.5))
+        a += rng.uniform(12, 30)  # small steps: the curve between waypoints stays inside the ring
+        r = rng.uniform(r0, r1)
+        body.location = (cx + r * math.cos(math.radians(a)), cy + r * math.sin(math.radians(a)), rng.uniform(z0, z1))
         body.rotation_euler = (0, 0, math.radians(a + 90))
         body.keyframe_insert("location", frame=1 + k * FPS)
         body.keyframe_insert("rotation_euler", frame=1 + k * FPS)
