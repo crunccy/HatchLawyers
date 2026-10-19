@@ -25,7 +25,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   classic Roblox studs not LEGO, natural tropical wilderness, one continuous flat sand surface for Megalodon, spawn SW,
   purple escape portal NE). New folder `environment-redesign/ocean_shore_v2/`; v1 (`ocean_shore/`) stays as the backup.
   Layout first, then detailed modeling after crnuch's approval. Blender only. Don't redesign Ocean Shore meanwhile.
-  Layout done 2026-10-19 (waiting for approval).
+  Layout approved 2026-10-19; detailed pass done (waiting for approval).
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -243,6 +243,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
   plank seams on the dock showed the water (dark sub-deck); the beam read as a solid plank in stills (fainter);
   sign boards clipped low roofs (now on the eaves); the NE path ran through the lifeguard tower (re-routed).
 - **Left:** crnuch's approval of Ocean Shore (and Food Court); Space Base is the last island.
+## 2026-10-19 — crnuch, local session: Ocean Shore v2 — DETAILED pass (Blender)
+- **crnuch's call:** the Ocean Shore v2 layout approved; detailed modeling started.
+- **New pieces** (`environment-redesign/ocean_shore_v2/osv2_detail.py`):
+  - landscape: stacked-stone cliff columns (moss caps + drips, vines, plants on top); palms in 5 styles (leaflet
+    fronds, coconuts, young + dead fronds); bushes, hibiscus, grass
+  - sea life: brain, tube, staghorn and fan coral; seaweed, conches, sand dollars
+  - water: foam outlines, a 3-step cascade with a foam landing + mist, edge falls with lip foam + spray
+  - the shipwreck (ribs, keel, torn sail, ropes, barrels + crates); dock torches + rope rails
+- **Scenery** (the layout, sand, his box, eggs, spawn and portal unchanged):
+  - continuous cliff massifs (a smooth height profile, columns joined by connectors, terraces, boulders)
+  - the NW high cascade, 6 foam-edged pools with coral gardens, 4 edge falls (W under an arch, E, a double SE)
+  - 8 shoreline inlets on the margin, the N sea arch, the W cave, the E wreck, ~150 plants
+  - a dirt band + roots under the rim, floating islets, drifting clouds
+- **Checks** all still green (his box 100% open sand, 896/896 charges clear, eggs 24.2-68.5 studs from the edge vs
+  20.7, spawn → portal level, no safe bypass, scenery 18+ studs out of his reach).
+- **Ambience** in the .blend (`osv2_ambience.py`, no clips): wind, water, cascade splashes + mist, edge spray,
+  pool sparkles, portal motes + glow, torch flicker (< 3 Hz), clouds, islets, 6 gulls, Megalodon's idle.
+- **Audio picks** (CC0, licence read on each page): waves, seagulls, wind, tropical birds, waterfalls, rock
+  splashes.
+- **Doc** `OCEAN_SHORE_V2.md`: deliverables, audit, checks, asset catalog, 14 Roblox integration considerations,
+  answers to the brief's approval questions, weaknesses.
+- 511k tris + 298k studs, 9.0 MB .blend. Fixed in review:
+  - the cliffs read as separate pillars (now continuous massifs)
+  - the studded dirt chunks looked like LEGO (soil stays smooth)
+  - an islet was too close to the island
+  - the doorway vortex overlapped the round one (now one door shape)
+- **Waiting for crnuch's approval**, then the other five islands follow this benchmark.
+
 ## 2026-10-19 — crnuch, local session: Ocean Shore v2 — audit + LAYOUT for approval (Blender)
 - **crnuch's brief** (+ concept image `environment-redesign/references/ocean_shore_concept.webp`): redesign Ocean
   Shore as a natural tropical wilderness in **classic Roblox studs, not LEGO**, around the real Megalodon mechanics;

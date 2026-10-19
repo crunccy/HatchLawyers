@@ -31,7 +31,7 @@ environment-redesign/
   food_court/                     World 4: fc_parts.py, fc_build.py, fc_ambience.py, food_court.blend, FOOD_COURT.md, renders/
   ocean_shore/                    World 5: os_parts.py, os_build.py, os_ambience.py, ocean_shore.blend, OCEAN_SHORE.md, renders/
   space_base/                     World 6: sb_parts.py, sb_build.py, sb_ambience.py, space_base.blend, SPACE_BASE.md, renders/
-  ocean_shore_v2/                 Ocean Shore REDESIGN (crnuch's brief, classic studs not LEGO): osv2_parts.py, osv2_build.py, OCEAN_SHORE_V2.md, renders/ - layout waiting for approval
+  ocean_shore_v2/                 Ocean Shore REDESIGN (crnuch's brief, classic studs not LEGO): osv2_parts.py, osv2_build.py, OCEAN_SHORE_V2.md, osv2_detail.py, osv2_ambience.py, renders/ - layout approved, detailed pass waiting for approval
   <island>/                       later: one folder per island, each its own .blend (independent, exportable)
 ```
 Each island is its own `.blend` and collection, so new islands can be added without touching the others.

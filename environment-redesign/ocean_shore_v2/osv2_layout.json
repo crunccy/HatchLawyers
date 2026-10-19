@@ -38,7 +38,7 @@
    "what": "purple vortex in a ring of craggy rock, flush with the sand (no stairs)"
   },
   {
-   "name": "Waterfall (175 deg)",
+   "name": "Waterfall off the edge (175 deg)",
    "blender_xy": [
     -186.4,
     21.3
@@ -47,43 +47,31 @@
     -186.4,
     -21.3
    ],
-   "what": "a pool spilling over the island edge"
+   "what": "a pool spilling over the island edge, foam + spray"
   },
   {
-   "name": "Waterfall (128 deg)",
+   "name": "Waterfall off the edge (326 deg)",
    "blender_xy": [
-    -132.7,
-    174.8
+    172.5,
+    -111.3
    ],
    "roblox_xz": [
-    -132.7,
-    -174.8
+    172.5,
+    111.3
    ],
-   "what": "a pool spilling over the island edge"
+   "what": "a pool spilling over the island edge, foam + spray"
   },
   {
-   "name": "Waterfall (336 deg)",
+   "name": "Waterfall off the edge (22 deg)",
    "blender_xy": [
-    173.5,
-    -72.3
+    200.0,
+    85.8
    ],
    "roblox_xz": [
-    173.5,
-    72.3
+    200.0,
+    -85.8
    ],
-   "what": "a pool spilling over the island edge"
-  },
-  {
-   "name": "Waterfall (16 deg)",
-   "blender_xy": [
-    206.4,
-    64.2
-   ],
-   "roblox_xz": [
-    206.4,
-    -64.2
-   ],
-   "what": "a pool spilling over the island edge"
+   "what": "a pool spilling over the island edge, foam + spray"
   },
   {
    "name": "Rock pools",
@@ -95,43 +83,55 @@
     0,
     0
    ],
-   "what": "five turquoise pools in rock pockets round the edge (scenery, not playable)"
+   "what": "six turquoise pools in rock pockets round the edge, sand banks, foam, coral gardens (scenery)"
   },
   {
-   "name": "Rock arch",
+   "name": "The high cascade",
    "blender_xy": [
-    -15.4,
-    151.1
+    -178.3,
+    116.4
    ],
    "roblox_xz": [
-    -15.4,
-    -151.1
+    -178.3,
+    -116.4
    ],
-   "what": "a natural sea arch on the north rim"
+   "what": "a waterfall dropping ~38 studs in three steps from the NW cliffs into a pool"
+  },
+  {
+   "name": "Sea arch",
+   "blender_xy": [
+    -15.6,
+    153.1
+   ],
+   "roblox_xz": [
+    -15.6,
+    -153.1
+   ],
+   "what": "a big natural arch on the north rim"
   },
   {
    "name": "Coastal cave",
    "blender_xy": [
-    -154.9,
-    -33.6
+    -154.6,
+    -51.3
    ],
    "roblox_xz": [
-    -154.9,
-    33.6
+    -154.6,
+    51.3
    ],
-   "what": "a cave mouth in the west cliff"
+   "what": "a dark cave mouth in the west cliffs (scenery: not enterable)"
   },
   {
    "name": "Shipwreck",
    "blender_xy": [
-    181.8,
-    30.5
+    178.3,
+    17.5
    ],
    "roblox_xz": [
-    181.8,
-    -30.5
+    178.3,
+    -17.5
    ],
-   "what": "a broken hull beached on the east rocks"
+   "what": "a heeled-over wreck on the east rocks: ribs, torn sail, spilled barrels + crates"
   }
  ],
  "egg_regions": [
@@ -204,323 +204,323 @@
  "egg_spots": [
   {
    "blender_xy": [
-    -75.2,
-    20.6
+    -65.8,
+    18.9
    ],
    "roblox_xz": [
-    -75.2,
-    -20.6
+    -65.8,
+    -18.9
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -62.4,
+    38.3
+   ],
+   "roblox_xz": [
+    -62.4,
+    -38.3
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -64.7,
+    28.4
+   ],
+   "roblox_xz": [
+    -64.7,
+    -28.4
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -100.0,
+    37.8
+   ],
+   "roblox_xz": [
+    -100.0,
+    -37.8
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
     -73.3,
-    53.3
+    45.0
    ],
    "roblox_xz": [
     -73.3,
-    -53.3
+    -45.0
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -82.8,
-    13.4
+    -82.0,
+    8.9
    ],
    "roblox_xz": [
-    -82.8,
-    -13.4
+    -82.0,
+    -8.9
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -87.0,
-    37.2
+    103.9,
+    -1.2
    ],
    "roblox_xz": [
-    -87.0,
-    -37.2
-   ],
-   "region": "Palm Clearing"
-  },
-  {
-   "blender_xy": [
-    -71.6,
-    29.5
-   ],
-   "roblox_xz": [
-    -71.6,
-    -29.5
-   ],
-   "region": "Palm Clearing"
-  },
-  {
-   "blender_xy": [
-    -74.8,
-    41.9
-   ],
-   "roblox_xz": [
-    -74.8,
-    -41.9
-   ],
-   "region": "Palm Clearing"
-  },
-  {
-   "blender_xy": [
-    74.0,
-    -17.3
-   ],
-   "roblox_xz": [
-    74.0,
-    17.3
+    103.9,
+    1.2
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    74.4,
-    -7.8
+    91.4,
+    -29.8
    ],
    "roblox_xz": [
-    74.4,
-    7.8
+    91.4,
+    29.8
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    104.0,
-    -5.4
+    77.4,
+    -29.4
    ],
    "roblox_xz": [
-    104.0,
-    5.4
+    77.4,
+    29.4
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    89.2,
-    -2.7
+    105.2,
+    -34.4
    ],
    "roblox_xz": [
-    89.2,
-    2.7
+    105.2,
+    34.4
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    64.9,
-    -8.0
+    110.9,
+    -24.6
    ],
    "roblox_xz": [
-    64.9,
-    8.0
+    110.9,
+    24.6
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    79.6,
-    -41.8
+    95.5,
+    2.5
    ],
    "roblox_xz": [
-    79.6,
-    41.8
+    95.5,
+    -2.5
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    3.7,
-    -60.5
+    4.6,
+    -59.5
    ],
    "roblox_xz": [
-    3.7,
-    60.5
+    4.6,
+    59.5
    ],
    "region": "Shell Beach"
   },
   {
    "blender_xy": [
-    9.3,
-    -72.6
+    -17.9,
+    -65.7
    ],
    "roblox_xz": [
-    9.3,
-    72.6
+    -17.9,
+    65.7
    ],
    "region": "Shell Beach"
   },
   {
    "blender_xy": [
-    -12.5,
-    -49.4
-   ],
-   "roblox_xz": [
-    -12.5,
-    49.4
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -0.5,
-    -45.7
-   ],
-   "roblox_xz": [
-    -0.5,
-    45.7
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -9.9,
-    -81.0
-   ],
-   "roblox_xz": [
-    -9.9,
-    81.0
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -18.8,
-    -72.4
-   ],
-   "roblox_xz": [
-    -18.8,
-    72.4
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -22.8,
-    94.8
-   ],
-   "roblox_xz": [
-    -22.8,
-    -94.8
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    -48.8,
-    87.2
-   ],
-   "roblox_xz": [
-    -48.8,
-    -87.2
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    -44.9,
-    66.8
-   ],
-   "roblox_xz": [
-    -44.9,
+    20.3,
     -66.8
    ],
+   "roblox_xz": [
+    20.3,
+    66.8
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    11.4,
+    -51.5
+   ],
+   "roblox_xz": [
+    11.4,
+    51.5
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    3.2,
+    -81.4
+   ],
+   "roblox_xz": [
+    3.2,
+    81.4
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -1.8,
+    -67.3
+   ],
+   "roblox_xz": [
+    -1.8,
+    67.3
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -42.7,
+    76.4
+   ],
+   "roblox_xz": [
+    -42.7,
+    -76.4
+   ],
    "region": "Driftwood Dunes"
   },
   {
    "blender_xy": [
-    -27.6,
-    63.9
+    -53.2,
+    66.6
    ],
    "roblox_xz": [
-    -27.6,
-    -63.9
+    -53.2,
+    -66.6
    ],
    "region": "Driftwood Dunes"
   },
   {
    "blender_xy": [
-    -58.9,
-    80.5
+    -25.1,
+    96.1
    ],
    "roblox_xz": [
-    -58.9,
-    -80.5
+    -25.1,
+    -96.1
    ],
    "region": "Driftwood Dunes"
   },
   {
    "blender_xy": [
-    58.4,
-    63.3
+    -53.7,
+    79.7
    ],
    "roblox_xz": [
-    58.4,
-    -63.3
+    -53.7,
+    -79.7
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -45.1,
+    96.5
+   ],
+   "roblox_xz": [
+    -45.1,
+    -96.5
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    74.8,
+    64.2
+   ],
+   "roblox_xz": [
+    74.8,
+    -64.2
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    77.8,
-    55.1
+    92.7,
+    73.6
    ],
    "roblox_xz": [
-    77.8,
-    -55.1
+    92.7,
+    -73.6
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    55.4,
-    86.1
+    67.1,
+    69.5
    ],
    "roblox_xz": [
-    55.4,
-    -86.1
+    67.1,
+    -69.5
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    81.2,
-    76.7
+    63.5,
+    90.6
    ],
    "roblox_xz": [
-    81.2,
-    -76.7
+    63.5,
+    -90.6
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    94.1,
-    68.8
+    59.6,
+    80.3
    ],
    "roblox_xz": [
-    94.1,
-    -68.8
+    59.6,
+    -80.3
    ],
    "region": "Shipwreck Shore"
   }
  ],
  "checks": {
-  "sand_decor": "small walk-through decor on the sand (shells, starfish, pebbles, tufts, tiny coral, flat driftwood, patches): at most 2.2 studs tall, collision off in Roblox",
+  "sand_decor": "small walk-through decor on the sand (shells, starfish, pebbles, tufts, tiny coral, flat driftwood, patches): at most 2.1 studs tall, collision off in Roblox",
   "box_open_sand": "3233/3233 sample points (4-stud grid) are open sand",
   "charge_lanes": "896/896 sampled charges (20-wide lanes) run clear to their end; 350 of them get the full 130 studs (the rest stop at the box edge, as BossService clamps)",
   "egg_edge_clearance": {
-   "Palm Clearing": "56.9 studs to the sand edge (drops scatter at most 20.7)",
-   "Coral Flats": "32.9 studs to the sand edge (drops scatter at most 20.7)",
-   "Shell Beach": "36.5 studs to the sand edge (drops scatter at most 20.7)",
-   "Driftwood Dunes": "36.1 studs to the sand edge (drops scatter at most 20.7)",
-   "Shipwreck Shore": "65.4 studs to the sand edge (drops scatter at most 20.7)"
+   "Palm Clearing": "43.5 studs to the sand edge (drops scatter at most 20.7)",
+   "Coral Flats": "24.2 studs to the sand edge (drops scatter at most 20.7)",
+   "Shell Beach": "34.7 studs to the sand edge (drops scatter at most 20.7)",
+   "Driftwood Dunes": "32.1 studs to the sand edge (drops scatter at most 20.7)",
+   "Shipwreck Shore": "68.5 studs to the sand edge (drops scatter at most 20.7)"
   },
   "spawn_safe": "spawn pad 77 studs outside the box (his reach past it: 17.0)",
   "portal_threat": "portal 45 studs outside the box: the last ~15 studs of the approach are inside his 60-stud trigger, but he can't follow onto the portal",
@@ -554,5 +554,92 @@
   "HitboxWidth": 14.080000000000002,
   "Height": 25.6,
   "TriggerRange": 60
+ },
+ "fx": {
+  "fall_landings": [
+   [
+    -165.1,
+    108.2,
+    0.8
+   ]
+  ],
+  "edge_lips": [
+   [
+    -186.4,
+    21.3,
+    0.6,
+    175
+   ],
+   [
+    172.5,
+    -111.3,
+    0.6,
+    326
+   ],
+   [
+    154.1,
+    -138.7,
+    0.6,
+    317
+   ],
+   [
+    200.0,
+    85.8,
+    0.6,
+    22
+   ]
+  ],
+  "gull_rings": [
+   [
+    0,
+    20,
+    150,
+    46
+   ],
+   [
+    -120,
+    120,
+    60,
+    38
+   ],
+   [
+    140,
+    -60,
+    70,
+    34
+   ]
+  ],
+  "pools": [
+   [
+    -157.1,
+    103.1,
+    15
+   ],
+   [
+    -159.5,
+    19.0,
+    15
+   ],
+   [
+    159.5,
+    -102.6,
+    17
+   ],
+   [
+    168.2,
+    73.0,
+    13
+   ],
+   [
+    -10.5,
+    -145.9,
+    11
+   ],
+   [
+    -44.7,
+    142.7,
+    10
+   ]
+  ]
  }
 }

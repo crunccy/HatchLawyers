@@ -26,7 +26,7 @@ K.GLOWS.update({"glow_portal": ((190, 110, 255), 3.0), "glow_lantern": ((255, 19
 
 # looks that carry studs (broad terrain + structural tops); everything else stays smooth
 STUD_LOOKS = {"sand", "sand_light", "sand_dark", "wet_sand", "moss", "moss_dark", "rock_grey", "rock_grey_dark",
-              "rock_grey_light", "dock_wood", "dock_wood_dark", "dirt_rim", "spawn_white"}
+              "rock_grey_light", "dock_wood", "dock_wood_dark", "spawn_white"}  # (natural soil - dirt_rim - stays smooth)
 
 
 # ------------------------------------------------------------------ rock + terrain
