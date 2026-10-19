@@ -5,6 +5,7 @@
 # The Blender geometry is built as before (the build scripts read objects back), only nothing is saved.
 #   box     ["b", group, look, px, py, pz, sx, sy, sz, ry]          a brick turned ry degrees about Y
 #   box     ["B", group, look, px, py, pz, sx, sy, sz, r00..r22]    any other turn (upright rings, statues)
+#   (since 2026-10-19 the kit is voxel: an island exports as "b" boxes + "B" statue blocks + "t" text only)
 #   cyl     ["c", group, look, px, py, pz, h, d]                    an upright cylinder (Roblox Cylinder, axis turned up)
 #   cyl     ["C", group, look, px, py, pz, len, d, r00..r22]        a cylinder along the matrix's X (upright discs)
 #   wedge   ["w", group, look, px, py, pz, sx, sy, sz, hx, hz]      a WedgePart: sx along the ridge, sz across, its high
@@ -199,9 +200,11 @@ def disc_v(self, cx, cy, cz, r, depth, look, rot=0.0, segs=32):
     return _orig["disc_v"](self, cx, cy, cz, r, depth, look, rot, segs)
 
 
-for _n, _f in (("brick", brick), ("prism", prism), ("cyl", cyl), ("ring", ring), ("wedge", wedge), ("pyramid", pyramid),
-               ("cone", cone), ("sphere", sphere), ("ring_v", ring_v), ("disc_v", disc_v)):
-    setattr(K.Mesh, _n, _f)
+# Since the kit went VOXEL (crnuch's call 2026-10-19, "studded voxel on everything"), every primitive (prism, cyl, ring,
+# wedge, pyramid, cone, sphere, ring_v, disc_v) builds itself out of Mesh.brick calls - so recording BRICKS alone gives the
+# whole island, stepped exactly as in Blender, with no smooth Cylinder / Ball / WedgePart parts. (The older per-primitive
+# recorders above are kept for reference but no longer installed: they would record every round piece twice.)
+K.Mesh.brick = brick
 
 _orig_label = K.label3d
 

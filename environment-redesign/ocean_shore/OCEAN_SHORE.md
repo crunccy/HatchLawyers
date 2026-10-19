@@ -84,10 +84,10 @@ island's Bounds: see `../README.md` → "Notes for Stage 7".
 | Landmarks | OCEAN SHORE gate (giant surfboards + driftwood beam), Big Blue the whale fountain, THE SHARK DOCK, the lagoon, shell-keystone RETURN HOME portal, statue plinths |
 | Eggs | Ocean eggs + spot rings |
 
-Round things are studded voxel rounds (stacked rings with studs on each exposed ledge); only flames, buoy lights
-and coral tips are smooth balls. Static props avoid the leaf looks, because the wind sways those looks' studs
-(sea greens are `kelp` / `seafoam`). Totals: 579k tris + 238k raised studs (one 48-tri stud mesh, instanced;
-8.6 MB .blend).
+Everything is studded voxel (crnuch's call 2026-10-19: "studded voxel on everything"; rebuilt that day with the voxel
+kit): round things are pixel circles / voxel balls, flames, buoy lights and coral tips included, and the kit's stud pass
+studs every exposed top. Totals (voxel rebuild 2026-10-19): 918k tris + 504k raised studs (one 48-tri stud mesh, instanced; 13.0 MB .blend); 25,919
+Roblox parts in the voxel export.
 
 ## Ambience
 ### Visual (`os_ambience.py`, in the .blend: no preview clips, crnuch's call 2026-10-19)

@@ -22,6 +22,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
+- [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
+      exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
+      with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
 - [ ] **Redesign islands in the place, not wired yet** (built 2026-10-19, `Workspace.WorldRedesign`): next = the
       Stage 7 wiring (Travel to each island's arrival, EggSpots + ZoneService, boss arenas, RETURN HOME, the hub's
       firm lots), raised studs (StudTop tags), a space skybox for Space Base. Check fps / memory on a phone: the place
@@ -256,6 +259,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (10.9 MB). Studs cast no shadows (as the Roblox stud tiles: CastShadow = false). Ground views take ~1-4 min each on
   this Mac now. `Island.keep_views_clear(CAMS)` keeps groves out of the ground cameras' foregrounds (a Brainrot grove
   had landed in front of the boulevard camera).
+- **Merged with mr.robe's work from the same afternoon** (Ocean Shore, Space Base, the islands built into the place):
+  - Ocean Shore (918k tris + 504k studs, 13.0 MB) and Space Base (1.01M + 383k, 13.4 MB) rebuilt + re-rendered voxel
+  - `kit/hl_export.py` now records BRICKS only (every voxel primitive is bricks; its old Cylinder / Ball / WedgePart
+    recorders would have exported every round piece twice, and crashed on the frames' new `rot` argument)
+  - all seven `tools/zones/redesign/*.json` re-exported voxel: 165k parts in all (hub 37.0k, BB 18.2k, PP 19.9k,
+    BR 18.2k, FC 21.9k, OS 25.9k, SB 23.4k) vs 108k pre-voxel. **Not rebuilt into the place** (open item)
+  - the stud pass skips `Sky_*` backdrops (Space Base's far planet + moon: 1,000+ studs out, as the exporter does)
 
 ## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 4 — Food Court (Blender)
 - **crnuch's call:** Brainrot Zone approved.

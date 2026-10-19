@@ -64,14 +64,14 @@ or MP4 clips (they cost ~20 min per island).
   set each boss's arena box directly (e.g. a per-boss `Arena`) rather than tune Bounds + Margin. (Found 2026-10-19:
   the docs' "suggested Bounds" for Briefcase Bay and Pet Park mean this area too.)
 - **Moving scenery** (turning signs, floating cubes, clouds) is client-only motion, like `WorldLife`; its studs ride
-  with it (`K.STUD_GROUP` in the kit).
+  with it (each object owns its stud instancers, `K.studs_done`).
 
 
 ## Building into the place (2026-10-19)
-Every island build script can also be exported as Roblox PARTS: `kit/hl_export.py` records each kit primitive
-(brick → Part, cylinder → Cylinder, ring → boxes round the circle, prism → rows of boxes with a stepped edge, gable →
-two WedgeParts, upright rings → turned boxes, sign text → SurfaceGui text, statues → their own blocks; studs and bosses
-are left out) and `kit/export_island.py` runs the build with it, saving nothing to the island's .blend / layout JSON:
+Every island build script can also be exported as Roblox PARTS: `kit/hl_export.py` records every brick the build
+makes (since the voxel kit, 2026-10-19, every round / sloped shape IS bricks, so the export is all stepped boxes: no
+Cylinder, Ball or WedgePart parts), sign text → SurfaceGui text and statues → their own blocks; studs and bosses are
+left out. `kit/export_island.py` runs the build with it, saving nothing to the island's .blend / layout JSON:
 ```bash
 "/c/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --python environment-redesign/kit/export_island.py -- ocean_shore os_build.py OceanShore
 ```
@@ -80,6 +80,9 @@ are left out) and `kit/export_island.py` runs the build with it, saving nothing 
 object, BrickStuds plastic, Neon glows, Glass water without collision; ZFight passes at the end). Re-export + rebuild
 an island after changing its Blender script. Where they stand: the hub at (3600, 150, -1200), the egg islands on a ring
 of 760 round it (Briefcase Bay NE, Pet Park E, Brainrot Zone SE, Food Court SW, Ocean Shore W, Space Base NW).
-Parts: hub 27.6k, Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot Zone 10.9k, Food Court 13.9k, Ocean Shore 17.1k, Space Base 13.3k.
+Parts in the place now (built 2026-10-19 from the PRE-voxel exports): hub 27.6k, Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot
+Zone 10.9k, Food Court 13.9k, Ocean Shore 17.1k, Space Base 13.3k. The voxel exports in `tools/zones/redesign/` (2026-10-19,
+all bricks) are bigger: hub 37.0k, Briefcase Bay 18.2k, Pet Park 19.9k, Brainrot Zone 18.2k, Food Court 21.9k, Ocean Shore
+25.9k, Space Base 23.4k (165k vs 108k): the place is NOT rebuilt from them yet.
 Meshes named `Sky_*` (far Blender-only backdrops like Space Base's starfield) are not exported.
 Admin `/island <name>` (AdminCommands) drops you on an island's south side in a playtest.

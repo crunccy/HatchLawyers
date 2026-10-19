@@ -83,7 +83,8 @@ needs the area set directly (e.g. a per-boss `Arena` box): see `../README.md` â†
 | Landmarks | SPACE BASE airlock gate, Mission Control's hologram fountain + hologram planet, THE ECLIPSE RING, ringed-planet RETURN HOME portal, statue plinths |
 | Eggs | Space eggs + spot rings |
 
-Totals: 404k tris + 197k raised studs; 6.0 MB .blend; 13,283 Roblox parts.
+Totals (voxel rebuild 2026-10-19, crnuch's call "studded voxel on everything"): 1.01M tris + 383k raised studs; 13.4 MB
+.blend; 23,386 Roblox parts in the voxel export (the place still holds the 13,283-part pre-voxel build).
 
 ## Ambience
 ### Visual (`sb_ambience.py`, in the .blend: no preview clips, crnuch's call 2026-10-19)

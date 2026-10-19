@@ -213,14 +213,17 @@ def studs_done(target_collection=None, name="Studs"):
     skip = {"Kit_Sources", "Presentation"}
     objs = [o for o in bpy.context.scene.objects if o.type == "MESH" and not o.name.startswith(("Studs_", "StudSource_"))
             and not any(c.name in skip or "Labels" in c.name or c.name == "Lighting" for c in o.users_collection)]
+    occluders = list(objs)
+    objs = [o for o in objs if not o.name.startswith("Sky_")]  # (far Blender-only backdrops, 1000+ studs out: sub-pixel studs)
     verts, polys, data = [], [], []
-    for o in objs:
+    for o in occluders:
         mw = o.matrix_world
         base = len(verts)
         co = [mw @ v.co for v in o.data.vertices]
         verts.extend(co)
         polys.extend([[base + i for i in p.vertices] for p in o.data.polygons])
-        data.append((o, co))
+        if o in objs:
+            data.append((o, co))
     bvh = BVHTree.FromPolygons(verts, polys)
     UP = Vector((0, 0, 1))
 
