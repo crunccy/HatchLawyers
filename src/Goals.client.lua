@@ -1,8 +1,9 @@
 --!strict
 -- Goals card on the right edge: the player's 3 short-term goals with progress bars
 -- (server: GoalService, mirrored in the "Goals" attribute). Tap the header to fold it away.
--- Look (UI pass 2026-10-09): the game's dark studded panel + purple header with the target icon, like the Shop /
--- LAWYERS panels; opted out of UISkin (NoSkin) so it keeps it.
+-- Look (UI overhaul part 2, 2026-10-18): a Skin card - charcoal studded body, purple striped header with the glossy
+-- Goals icon over its left end; each goal in white stroked text over a real progress bar (black track, lime fill,
+-- "2/5" on the bar; gold + DONE! when finished). Opted out of UISkin (NoSkin).
 
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -17,13 +18,9 @@ local GREEN = Color3.fromRGB(98, 205, 48)
 local TRACK = Color3.fromRGB(24, 22, 36)
 local PURPLE = Color3.fromRGB(176, 52, 255)
 local PANEL = Color3.fromRGB(46, 44, 66)
-local SOFT = Color3.fromRGB(225, 220, 250)
 local Icons = (require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("HudMenu")) :: any).Icons
 local Skin = require(game:GetService("ReplicatedStorage").Shared:WaitForChild("Skin")) :: any
 PANEL = Skin.Panel
-local FONT = Font.fromEnum(Enum.Font.FredokaOne)
-local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium) -- descriptions / small print (Shared.UIFonts)
-local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy) -- big moments (Shared.UIFonts)
 local ROWS = 3
 
 local function make(class: string, props: { [string]: any }, children: { Instance }?): any
@@ -48,31 +45,21 @@ local function stroke(thickness: number): UIStroke
 	return make("UIStroke", { Color = BLACK, Thickness = thickness, ApplyStrokeMode = Enum.ApplyStrokeMode.Border })
 end
 
-local function text(props: { [string]: any }, maxSize: number): TextLabel
-	props.BackgroundTransparency = 1
-	props.FontFace = props.FontFace or FONT
-	props.TextScaled = true
-	props.TextColor3 = props.TextColor3 or WHITE
-	return make("TextLabel", props, {
-		make("UITextSizeConstraint", { MaxTextSize = maxSize }),
-		make("UIStroke", { Color = BLACK, Thickness = if maxSize >= 20 then 2.5 else 1.5, LineJoinMode = Enum.LineJoinMode.Round }),
-	})
-end
-
+local W = 250 -- card width
+local HEAD_H = 40
+local ROW_H = 58
 local gui = make("ScreenGui", { Name = "Goals", ResetOnSpawn = false, DisplayOrder = 13, Parent = player:WaitForChild("PlayerGui") })
+gui:SetAttribute("NoSkin", true)
 local card = make("Frame", {
 	Name = "Card",
 	AnchorPoint = Vector2.new(1, 0.5),
 	Position = UDim2.new(1, -14, 0.5, -20),
-	Size = UDim2.fromOffset(220, 40 + ROWS * 52),
+	Size = UDim2.fromOffset(W, HEAD_H + 10 + ROWS * ROW_H),
 	BackgroundColor3 = PANEL,
 	Parent = gui,
 }, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }) })
 card:SetAttribute("NoSkin", true)
-make("ImageLabel", {
-	Name = "Studs", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Image = "rbxassetid://114488299634202", -- studs (tools/ui_textures.py)
-	ImageTransparency = 0.9, ScaleType = Enum.ScaleType.Tile, TileSize = UDim2.fromOffset(30, 30), Parent = card,
-}, { corner(14) })
+Skin.studs(card, 0.92, nil, 28)
 -- Phones: shrink the card on short screens so it clears the lawyer panel, and start folded on
 -- very short ones (tap GOALS to open).
 local cardScale = make("UIScale", { Parent = card })
@@ -82,44 +69,58 @@ local function fitCard()
 	if height < 200 then
 		height = 720 -- not a real screen size yet (or a broken viewport): assume a normal one
 	end
-	cardScale.Scale = math.clamp(height / 640, 0.6, 1)
+	cardScale.Scale = math.clamp(height / 680, 0.58, 1)
 end
 fitCard()
 if workspace.CurrentCamera then
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitCard)
 end
+local purple = Skin.Palette.Purple
 local header = make("TextButton", {
 	Name = "Header",
-	Size = UDim2.new(1, 0, 0, 34),
+	Position = UDim2.fromOffset(3, 3),
+	Size = UDim2.new(1, -6, 0, HEAD_H),
 	BackgroundColor3 = WHITE,
 	Text = "",
-	AutoButtonColor = true,
+	AutoButtonColor = false,
 	Parent = card,
-}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({ -- the Skin window-header look (2026-10-11 UI pass)
-		ColorSequenceKeypoint.new(0, Skin.Palette.Purple.light), ColorSequenceKeypoint.new(0.55, Skin.Palette.Purple.base),
-		ColorSequenceKeypoint.new(1, Skin.Palette.Purple.base:Lerp(Skin.Palette.Purple.dark, 0.25)),
+}, { corner(8), make("UIStroke", { Color = purple.dark, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+	make("UIGradient", { Rotation = 90, Color = ColorSequence.new({ -- the Skin window-header look
+		ColorSequenceKeypoint.new(0, purple.light), ColorSequenceKeypoint.new(0.55, purple.base),
+		ColorSequenceKeypoint.new(1, purple.base:Lerp(purple.dark, 0.25)),
 	}) }) })
-header.AutoButtonColor = false
 Skin.studs(header, 0.86, nil, 22)
 Skin.shineBands(header, 0.84)
-make("ImageLabel", {
-	Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -6, 0.5, -2), Size = UDim2.fromOffset(46, 46),
-	BackgroundTransparency = 1, Image = Icons.Goals, ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = header,
+make("Frame", { -- ink divider under the header
+	Name = "Divider", Position = UDim2.fromOffset(0, HEAD_H + 4), Size = UDim2.new(1, 0, 0, 3), BackgroundColor3 = Skin.Ink,
+	BorderSizePixel = 0, Parent = card,
 })
-local headerText = text({ Position = UDim2.fromOffset(36, 0), Size = UDim2.new(1, -44, 1, 0), FontFace = TITLE, Text = "GOALS", ZIndex = 3, Parent = header }, 24)
+make("ImageLabel", {
+	Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, 16, 0.5, -3), Size = UDim2.fromOffset(60, 60),
+	BackgroundTransparency = 1, Image = Icons.Goals, ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Parent = header,
+})
+local headerText = Skin.text({ Name = "Title", Position = UDim2.fromOffset(50, 2), Size = UDim2.new(1, -60, 1, -4), Text = "GOALS",
+	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = header }, 28, 3)
+local fold = Skin.text({ Name = "Fold", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = UDim2.fromOffset(26, 26),
+	Text = "-", ZIndex = 3, Parent = header }, 26, 3)
 
-type Row = { frame: Frame, label: TextLabel, fill: Frame, count: TextLabel }
+type Row = { frame: Frame, label: TextLabel, fill: Frame, fillGrad: UIGradient, count: TextLabel, last: number? }
 local rows: { Row } = {}
+local LIME = { Color3.fromRGB(190, 255, 140), Color3.fromRGB(70, 210, 40) }
+local GOLDS = { Color3.fromRGB(255, 236, 140), Color3.fromRGB(240, 170, 20) }
 for i = 1, ROWS do
-	local frame = make("Frame", { Name = "Goal" .. i, Position = UDim2.fromOffset(10, 40 + (i - 1) * 52), Size = UDim2.new(1, -20, 0, 46), BackgroundTransparency = 1, Parent = card })
-	local label = text({ FontFace = BODY, Size = UDim2.new(1, 0, 0, 22), TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, Parent = frame }, 16)
-	local track = make("Frame", { Position = UDim2.fromOffset(0, 26), Size = UDim2.new(1, -46, 0, 14), BackgroundColor3 = TRACK, Parent = frame }, { corner(7), stroke(2) })
-	local fill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.fromRGB(92, 240, 60), Parent = track }, {
-		corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(170, 255, 140), Color3.fromRGB(60, 190, 40)) }),
-	})
-	local count = text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 22), Size = UDim2.fromOffset(42, 22), TextXAlignment = Enum.TextXAlignment.Right, Parent = frame }, 16)
-	rows[i] = { frame = frame, label = label, fill = fill, count = count }
+	local frame = make("Frame", { Name = "Goal" .. i, Position = UDim2.fromOffset(12, HEAD_H + 12 + (i - 1) * ROW_H), Size = UDim2.new(1, -24, 0, ROW_H - 6),
+		BackgroundTransparency = 1, Parent = card })
+	local label = Skin.text({ Name = "Text", FontFace = Skin.Fonts.Body, Size = UDim2.new(1, 0, 0, 24), TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = frame }, 18, 2)
+	local track = make("Frame", { Name = "Track", Position = UDim2.fromOffset(0, 28), Size = UDim2.new(1, 0, 0, 20), BackgroundColor3 = TRACK,
+		Parent = frame }, { corner(10), stroke(3) })
+	local fill = make("Frame", { Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = WHITE, BorderSizePixel = 0, Parent = track }, { corner(10) })
+	local fillGrad = make("UIGradient", { Rotation = 90, Color = ColorSequence.new(LIME[1], LIME[2]), Parent = fill })
+	make("Frame", { Name = "Shine", Position = UDim2.new(0, 4, 0, 3), Size = UDim2.new(1, -8, 0.32, 0), BackgroundColor3 = WHITE,
+		BackgroundTransparency = 0.55, BorderSizePixel = 0, Parent = fill }, { corner(4) })
+	local count = Skin.text({ Name = "Count", Size = UDim2.fromScale(1, 1), Text = "", ZIndex = 3, Parent = track }, 16, 2)
+	rows[i] = { frame = frame, label = label, fill = fill, fillGrad = fillGrad, count = count }
 end
 
 local folded = false
@@ -135,12 +136,20 @@ local function render()
 		row.frame.Visible = goal ~= nil and not folded
 		if goal then
 			row.label.Text = goal.Text
-			row.count.Text = string.format("%d/%d", goal.Progress, goal.Target)
-			TweenService:Create(row.fill, TweenInfo.new(0.35, Enum.EasingStyle.Quad), { Size = UDim2.fromScale(math.clamp(goal.Progress / math.max(goal.Target, 1), 0, 1), 1) }):Play()
+			local frac = math.clamp(goal.Progress / math.max(goal.Target, 1), 0, 1)
+			local complete = frac >= 1
+			row.count.Text = if complete then "DONE!" else string.format("%d/%d", goal.Progress, goal.Target)
+			row.fillGrad.Color = if complete then ColorSequence.new(GOLDS[1], GOLDS[2]) else ColorSequence.new(LIME[1], LIME[2])
+			TweenService:Create(row.fill, TweenInfo.new(0.45, Enum.EasingStyle.Quad), { Size = UDim2.fromScale(frac, 1) }):Play()
+			if row.last and goal.Progress > row.last then -- progress made: a little pop on the bar
+				Skin.pop(row.fill.Parent :: GuiObject, 0.9)
+			end
+			row.last = goal.Progress
 		end
 	end
-	card.Size = if folded then UDim2.fromOffset(220, 34) else UDim2.fromOffset(220, 40 + ROWS * 52)
-	headerText.Text = if folded then "GOALS +" else "GOALS"
+	card.Size = if folded then UDim2.fromOffset(W, HEAD_H + 6) else UDim2.fromOffset(W, HEAD_H + 10 + ROWS * ROW_H)
+	fold.Text = if folded then "+" else "-"
+	headerText.Text = "GOALS"
 end
 
 header.Activated:Connect(function()

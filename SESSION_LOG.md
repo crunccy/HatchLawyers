@@ -12,8 +12,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **crnuch (local), since 2026-10-18:** the game-wide UI overhaul - every screen, HUD tile, toast, prompt, world sign
   and minigame screen onto `Shared.Skin` + the glossy PNG icons. Audit + plan: docs/UI_OVERHAUL.md. Figma design
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
+  Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 
 ## Open items
+- [ ] **UI overhaul part 2 at phone size** (crnuch): Device emulator, landscape - HUD tiles (2 columns), coins
+      bottom-left vs the thumbstick, egg bag, Goals (folded), hint toast, zone arrival banner. Only checked by layout
+      maths (2026-10-18 entry).
 - [ ] **Map + model art pass: eye-check in a real playtest** (built 2026-10-16, entries below; Studio-only screenshots so far) - phone size too.
 - [ ] **crnuch's bug report (2026-10-16, from a playtest).** All 7 fixed (entries below). Still to do: crnuch's eye-check
       in Studio of 1 / 3 / 7 (that session's viewport didn't render, so no screenshots). 6 was eye-checked 2026-10-18.
@@ -153,6 +157,56 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: UI overhaul, part 2 (Skin v2 + the HUD rebuilt)
+- **Skin v2** (`ReplicatedStorage.Shared.Skin`, every old function unchanged): `Skin.Motion` (one table for hover /
+  press / pop / toast / banner / blur numbers), `Skin.Lime`, `Skin.hudTile` (88 px square: gradient + studs, white rim,
+  ink outline + lip, two twinkling sparkles, the PNG icon over the top edge, the label over the bottom edge, red badge
+  + red "!" top-right, hover x1.08 / press x0.9, wiggle while a badge shows), `Skin.toast` (icon + white Fredoka +
+  ink stroke over a soft shadow band, ALL-CAPS words in lime via `Skin.highlight`, slide-down + fade; with `Hold` it
+  leaves by itself), `Skin.counter` (icon + big stroked number, count-up, pop on a gain), `Skin.banner` (zone
+  arrival: a wood plank on two ropes, red NOW ENTERING ribbon with tails, swings in as a damped pendulum, one at a
+  time), `Skin.prompt` + `Skin.installPrompts()` (custom ProximityPrompt: white key cap E / X / TAP, a 16-segment
+  lime hold ring, object + action on a charcoal plate; touch / click holds it), `Skin.sparkle`, `Skin.overlay`,
+  `Skin.icon` (HudMenu.Icons key -> id). **The world blurs behind every `Skin.window`** (`Skin.blurFor`: one local
+  `Lighting.SkinWindowBlur`, watches each window's Enabled). `Skin.ribbon` defaults to **red** (Shop still passes Gold).
+- **HUD rebuilt on it** (live in Studio): `HudMenu.button` draws `Skin.hudTile`s in 2 columns (same API: setBadge /
+  setAlert / setNote / HudMenu.wait; colours by entry in `TILE_COLORS`: Daily pink, Lawyers purple, Shop green,
+  Rebirth gold, Travel sky; the DAILY timer shows as the tile's label in lime). `Hud`: coins are a `Skin.counter`
+  bottom-left with no panel, case results float up above it (2 at a time on screens < 520 px tall), the hint is a
+  `Skin.toast` top-centre with an icon by topic (gavel / eggs / upgrades / lawyers / goals); Hud also calls
+  `Skin.installPrompts()`. `Goals`: charcoal card, striped purple header + Goals PNG, white text, real bars (lime,
+  gold + DONE! when finished, "n/m" on the bar, a pop on progress). `Zones`: the egg bag is a Skin plate with the
+  Eggs PNG, one chip per slot (Empty / Filled in the egg's colour / Golden with a sparkle), the count (orange when
+  full), a chip pops when an egg lands; the zone name is `Skin.banner`; Zones' notes are `Skin.toast`.
+- **Playtested at 1429x776** (crnuch's account): all 5 tiles clicked with the mouse and open their screens (Shop,
+  LAWYERS, Rebirth, Travel, Daily); badges / "!" visible; blur 14 with Shop / Travel open, 0 when closed; coin
+  count-up + WIN floater; Goals bars (1/2 = half); bag chips with a Briefcase, golden Food and Pet egg (set locally);
+  the real Briefcase Bay arrival banner (teleported in) settles at 126-238 px, under the hint toast (60-108).
+  The prompt was checked as a 2D preview (E + TAP, ring lit); a first ring (clipped half gradients) didn't draw and
+  was replaced by segments. **Not checked in the world**: no prompt is `Style = Custom` yet (part 3) - and
+  BillboardGuis with AlwaysOnTop didn't show in the MCP's screen_capture at all (name tags, AlwaysOnTop = false, do).
+- **Phone size: not playtested.** Studio's Device emulator can't be driven from the MCP (no
+  StudioDeviceEmulatorService access) and the window can't be resized from here. Checked by layout maths at 844x390
+  instead: menu 0.56x (y 95-303), coins 0.62x (y 334-377), bag 0.51x (x 278-566), Goals 0.58x and folded, toast
+  fits at ~0.9x, banner 0.75x - no overlaps; the case-result floaters were capped (above). The dynamic thumbstick
+  shares the bottom-left with the coins. Needs crnuch's eye-check in the emulator (open item).
+- Found: the old `UISkin` auto-skin only honours `NoSkin` on objects *below* the ScreenGui (not on the ScreenGui), so
+  it repainted the banner plank charcoal - every v2 root frame sets `NoSkin` now. The MCP's `execute_luau` VM can't
+  make visible BillboardGuis (debug billboards it parented never drew), so test world UI through the game's own scripts.
+- Pushed with `ScriptEditorService:UpdateSourceAsync` from a localhost file server (python http.server, port 8769),
+  after checking each live script still matched the snapshot. src/Skin.lua, HudMenu.lua, Hud.client.lua,
+  Goals.client.lua, Zones.client.lua == live; snapshot re-exported on port 8768 (8767 is still taken by the other
+  worktree's receiver), only these 5 changed; `run_checks.py` ALL PASSED.
+- **Left for part 3** (docs/UI_OVERHAUL.md §3): world prompts (set `Style = Custom` on the 15 prompts + eye-check
+  in the world), egg odds boards, License gate / upgrade prompts, Zones' GOLDEN EGG! + upgrade banners, Daily
+  Rewards + LAWYERS windows (not `Skin.window`, so no blur yet), Rebirth (Supreme) and FirmStageUp (R), Big Case,
+  minigames (Gavel Bonk / Lucky Briefcase), Travel map + trip captions, hatch reveal card, Shop red ribbons, Skills,
+  Merger, Floors, Manager, Courtroom, Arcade, Boss UI, desk progress bars, world signs (`Skin.sign`), then retire
+  UIKit / UISkin.
+- CLAUDE.md still says the HUD tiles are "one column" (Art direction → UI); it's 2 columns now - not edited here
+  (this session was limited to the files above), fix it with the next CLAUDE.md change.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
 
 ## 2026-10-18 — crnuch, local session: UI overhaul, part 1 (reference analysis, audit, icons live, Figma design system)
 - **Brief** (crnuch): every interface restyled to the reference recordings (Desktop "Screen Recording 2026-10-18 at

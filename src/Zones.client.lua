@@ -6,6 +6,8 @@
 --   * the License Office boards / prompts, the hub teleport pads and your incubators say what they'd do for you
 --   * the carried-eggs counter (bottom centre, "Bag"; its size is the Briefcase upgrade), a green line home to your incubator while you carry eggs, the zone's name
 --     when you walk in, golden-egg alerts, and the server's short notes
+--   UI overhaul part 2 (2026-10-18): the bag is egg chips on a Skin plate (Eggs icon, Empty / Filled / Golden, a chip
+--   pops when an egg lands), the zone name is Skin.banner (the NOW ENTERING plank), notes are Skin.toast.
 -- Map pieces are found by tag (ZoneEgg / LicenseGate / UpgradeBoard / Incubator) because the map streams.
 
 local CollectionService = game:GetService("CollectionService")
@@ -19,6 +21,8 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config")) :: any
 local Formulas = require(Shared:WaitForChild("Formulas")) :: any
 local UIKit = require(Shared:WaitForChild("UIKit")) :: any
+local Skin = require(Shared:WaitForChild("Skin")) :: any
+local Icons = (require(Shared:WaitForChild("HudMenu")) :: any).Icons
 local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Zones") :: RemoteEvent
 
 local player = Players.LocalPlayer
@@ -122,22 +126,13 @@ local function pop(obj: GuiObject, hold: number)
 	end)
 end
 
-local toastY = 0.24
-local function toast(text: string, color: Color3?, hold: number?)
-	local f = Instance.new("Frame")
-	f.AnchorPoint = Vector2.new(0.5, 0)
-	f.Position = UDim2.fromScale(0.5, toastY)
-	f.Size = UDim2.new(0.56, 0, 0, 56)
-	f.BackgroundColor3 = color or Color3.fromRGB(52, 112, 222)
-	f.Parent = gui
-	local c = Instance.new("UISizeConstraint")
-	c.MaxSize = Vector2.new(560, 66)
-	c.Parent = f
-	UIKit.corner(f, 16)
-	UIKit.outline(f, 4)
-	UIKit.shade(f, 1.05, 0.72)
-	label(f, text, UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.94, 0.66), WHITE, 2.5)
-	pop(f, hold or 2.6)
+-- a short note under the HUD hint (Skin.toast: icon + white stroked text, CAPS words in lime); one at a time
+local lastToast: any = nil
+local function toast(text: string, icon: string?, hold: number?)
+	if lastToast then
+		lastToast.destroy()
+	end
+	lastToast = Skin.toast({ Parent = gui, Text = text, Icon = icon or Icons.Eggs, Hold = hold or 2.6, Position = UDim2.fromScale(0.5, 0.34) })
 end
 
 -- big centred banner (zone names, golden alerts)
@@ -156,29 +151,45 @@ local function banner(title: string, sub: string, color: Color3, hold: number)
 	pop(f, hold)
 end
 
------------------------------------------------------------------- bag counter (bottom centre)
-local bag = Instance.new("Frame")
-bag.Name = "Bag"
-bag.AnchorPoint = Vector2.new(0.5, 1)
-bag.Position = UDim2.new(0.5, 0, 1, -18)
-bag.Size = UDim2.fromOffset(190, 52)
-bag.BackgroundColor3 = Color3.fromRGB(150, 88, 44)
-bag.Visible = false
-bag.Parent = gui
-UIKit.corner(bag, 16)
-UIKit.outline(bag, 4)
-UIKit.shade(bag, 1.08, 0.72)
-local bagIcons = Instance.new("Frame")
-bagIcons.BackgroundTransparency = 1
-bagIcons.Position = UDim2.fromScale(0.05, 0.12)
-bagIcons.Size = UDim2.fromScale(0.55, 0.76)
-bagIcons.Parent = bag
-local bagLayout = Instance.new("UIListLayout")
-bagLayout.FillDirection = Enum.FillDirection.Horizontal
-bagLayout.Padding = UDim.new(0, 3)
-bagLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-bagLayout.Parent = bagIcons
-local bagText = label(bag, "0/1", UDim2.fromScale(0.8, 0.5), UDim2.fromScale(0.36, 0.7), WHITE, 2.5)
+------------------------------------------------------------------ egg bag (bottom centre)
+-- The Eggs icon, one chip per carry slot (Empty = a dark slot with a solid rim, Filled = the egg in its colour,
+-- Golden = a gold egg with a sparkle), then the count. A chip pops when an egg lands in it.
+local CHIP_W, CHIP_H, CHIP_GAP = 30, 40, 5
+local bag = Skin.make("Frame", {
+	Name = "Bag", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16), Size = UDim2.fromOffset(190, 58),
+	BackgroundColor3 = Skin.Panel, Visible = false, Parent = gui,
+}, { Skin.corner(14) })
+bag:SetAttribute("NoSkin", true)
+local bagStroke = Skin.stroke(4)
+bagStroke.Parent = bag
+Skin.studs(bag, 0.92, nil, 24)
+local bagScale = Skin.make("UIScale", { Parent = bag })
+Skin.make("ImageLabel", {
+	Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, 14, 0.5, -4), Size = UDim2.fromOffset(78, 78),
+	BackgroundTransparency = 1, Image = Icons.Eggs, ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = bag,
+})
+local bagIcons = Skin.make("Frame", {
+	Name = "Chips", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 60, 0.5, 0), Size = UDim2.fromOffset(CHIP_W, CHIP_H),
+	BackgroundTransparency = 1, ZIndex = 2, Parent = bag,
+}, {
+	Skin.make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, CHIP_GAP),
+		VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
+})
+local bagText = Skin.text({
+	Name = "Count", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -12, 0.5, 0), Size = UDim2.fromOffset(66, 34),
+	Text = "0/1", ZIndex = 3, Parent = bag,
+}, 30, 3)
+local function fitBag()
+	local cam = workspace.CurrentCamera
+	local vp = if cam then cam.ViewportSize else Vector2.new(1280, 720)
+	if vp.Y < 200 then
+		vp = Vector2.new(1280, 720)
+	end
+	bagScale.Scale = math.clamp(math.min(vp.Y / 760, (vp.X * 0.5) / math.max(bag.Size.X.Offset, 1)), 0.5, 1)
+end
+if workspace.CurrentCamera then
+	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitBag)
+end
 
 local function eggColor(egg: string, golden: boolean): Color3
 	if golden then
@@ -191,6 +202,37 @@ local function eggColor(egg: string, golden: boolean): Color3
 	return (def and def.Color) or WHITE
 end
 
+-- one carry slot: Empty / Filled (the egg in its colour) / Golden
+local function eggChip(item: { egg: string, golden: boolean }?, order: number): Frame
+	local slot = Skin.make("Frame", {
+		Name = "Chip" .. order, Size = UDim2.fromOffset(CHIP_W, CHIP_H), BackgroundColor3 = Skin.PanelDeep, LayoutOrder = order, ZIndex = 2,
+	}, { Skin.corner(9) })
+	local rim = Skin.stroke(2.5, if item and item.golden then Color3.fromRGB(255, 205, 50) elseif item then INK else Color3.fromRGB(74, 77, 102))
+	rim.Parent = slot
+	if item then
+		local c = eggColor(item.egg, item.golden)
+		local sw = Skin.swatch(c)
+		local egg = Skin.make("Frame", {
+			Name = "Egg", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.53), Size = UDim2.fromOffset(CHIP_W - 8, CHIP_H - 10),
+			BackgroundColor3 = WHITE, ZIndex = 3, Parent = slot,
+		}, {
+			Skin.make("UICorner", { CornerRadius = UDim.new(0.5, 0) }), Skin.stroke(2),
+			Skin.make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.5, sw.base), ColorSequenceKeypoint.new(1, sw.dark),
+			}) }),
+		})
+		Skin.make("Frame", { -- shine
+			Name = "Shine", Position = UDim2.fromScale(0.2, 0.14), Size = UDim2.fromScale(0.3, 0.26), BackgroundColor3 = WHITE,
+			BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 4, Parent = egg,
+		}, { Skin.make("UICorner", { CornerRadius = UDim.new(0.5, 0) }) })
+		if item.golden then
+			Skin.sparkle(slot, UDim2.fromScale(0.82, 0.18), 12, 5, math.random() * 1.5)
+		end
+	end
+	return slot
+end
+
+local lastCarried = 0
 local function refreshBag()
 	local list = carried()
 	local max = (attr("ZoneCarryMax") :: number?) or 1
@@ -200,24 +242,21 @@ local function refreshBag()
 		end
 	end
 	for i = 1, max do
-		local item = list[i]
-		local e = Instance.new("Frame")
-		e.Size = UDim2.new(0, 22, 0, 28)
-		e.BackgroundColor3 = if item then eggColor(item.egg, item.golden) else Color3.fromRGB(90, 60, 40)
-		e.BackgroundTransparency = if item then 0 else 0.3
-		e.Parent = bagIcons
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0.5, 0)
-		corner.Parent = e
-		local s = Instance.new("UIStroke")
-		s.Color = INK
-		s.Thickness = 2
-		s.Parent = e
+		local chip = eggChip(list[i], i)
+		chip.Parent = bagIcons
+		if list[i] and i > lastCarried then
+			Skin.pop(chip, 0.2) -- the egg just landed in this slot
+		end
 	end
-	bag.Size = UDim2.fromOffset(math.max(150, 70 + max * 25 + 60), 52)
+	lastCarried = #list
+	bagIcons.Size = UDim2.fromOffset(max * CHIP_W + (max - 1) * CHIP_GAP, CHIP_H)
+	bag.Size = UDim2.fromOffset(60 + max * (CHIP_W + CHIP_GAP) + 80, 58)
 	bagText.Text = #list .. "/" .. max
+	local full = #list >= max
+	bagText.TextColor3 = if full then Color3.fromRGB(255, 170, 40) else WHITE
+	bagStroke.Color = if full then Color3.fromRGB(255, 140, 30) else Skin.Ink
 	bag.Visible = #list > 0 or (attr("ZoneLicense") ~= nil and (attr("ZoneCarry") :: number? or 1) > 1)
-	bag.BackgroundColor3 = if #list >= max then Color3.fromRGB(220, 90, 50) else Color3.fromRGB(150, 88, 44)
+	fitBag()
 end
 player:GetAttributeChangedSignal("Carried"):Connect(refreshBag)
 player:GetAttributeChangedSignal("ZoneCarryMax"):Connect(refreshBag)
@@ -578,7 +617,8 @@ task.spawn(function()
 				if b and root.Position.X >= b[1] and root.Position.X <= b[3] and root.Position.Z >= b[2] and root.Position.Z <= b[4] then
 					now = z.Id
 					if insideZone ~= z.Id then
-						banner(string.upper(z.Name), "Buy " .. eggName(z.Egg) .. "s and carry them home!", if z.Egg == "Briefcase" then GOLD else Color3.fromRGB(255, 170, 110), 2.6)
+						Skin.banner({ Title = string.upper(z.Name), Sub = "Buy " .. eggName(z.Egg) .. "s and carry them home!",
+							Color = if z.Egg == "Briefcase" then GOLD else Color3.fromRGB(255, 196, 140), Icon = Icons.Travel })
 					end
 				end
 			end
@@ -671,7 +711,7 @@ local boughtCount = 0
 Remote.OnClientEvent:Connect(function(kind: string, info: any)
 	if kind == "Note" then
 		SND.note:Play()
-		toast(info, Color3.fromRGB(120, 80, 220))
+		toast(info, Icons.Goals)
 	elseif kind == "Alert" then
 		SND.alert:Play()
 		banner("GOLDEN EGG!", info.text, GOLD, 4)
@@ -680,7 +720,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		boughtCount += 1
 		local full = info.count >= info.max
 		local text = if full then "Arms full! Take your eggs home to your INCUBATOR" elseif boughtCount <= 3 then "Got an egg! Carry it home to your INCUBATOR" else "Carrying " .. info.count .. "/" .. info.max
-		toast(text, if info.golden then Color3.fromRGB(230, 170, 20) else GREEN, if boughtCount <= 3 or full then 3 else 1.4)
+		toast(text, Icons.Eggs, if boughtCount <= 3 or full then 3 else 1.4)
 	elseif kind == "Upgraded" then
 		SND.upgrade:Play()
 		banner(string.upper(UPGRADE[info.kind] and UPGRADE[info.kind].title or "UPGRADE"), info.text, GREEN, 3)

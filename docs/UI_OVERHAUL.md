@@ -57,20 +57,22 @@ ticket (Arcade + Gavel Bonk / Lucky Briefcase), Briefcase (Carry upgrade), Lock 
 ## 3. Audit — every player-facing surface
 Layer: **Skin** = built on `Shared.Skin` (reference style) · **UIKit** = old screen auto-restyled by `UISkin.client`
 · **Own** = hand-rolled styling. Action: R = rebuild on Skin, S = restyle details, ✓ = already close.
+**Done (part 2, 2026-10-18)** = rebuilt on Skin v2, live in Studio, playtested at 1429x776 (phone size by layout maths only -
+see SESSION_LOG).
 
 | Surface | Script (StarterPlayerScripts unless noted) | Shown when | Layer | Action |
 | --- | --- | --- | --- | --- |
-| HUD menu column (Daily, Lawyers, Shop, Rebirth, Travel) | Shared.HudMenu | always | Own | R: square glossy tiles + new PNGs + badges |
-| Coin counter | Hud | always | Own | R: bottom-left, money icon, no panel, count-up |
-| Hint toast ("A lawyer is waiting…") | Hud / Guide | events | Own | R: Skin toast (slide in, icon, white + stroke) |
-| Goals card | Goals | always | Skin+UIKit | R: header + PNG, readable rows, progress bars |
-| Daily Rewards window + reward toast | Rewards | join / tile | Skin | S: header PNG, blur |
-| Egg bag counter (0/12) | Zones ("Bag") | always | Own | R: egg-slot chips, eggs PNG, fill pop |
-| Egg prompts, odds boards, locked-egg toast | Zones | in zones | Own/World | R: custom prompt + board restyle |
-| Zone arrival / zone name / License gate + upgrade prompts | Zones | entering a zone | Own/World | R: arrival banner, prompts |
+| HUD menu column (Daily, Lawyers, Shop, Rebirth, Travel) | Shared.HudMenu | always | Skin | **Done**: `Skin.hudTile`, 88 px, 2 columns (Daily pink, Lawyers purple, Shop green, Rebirth gold, Travel sky), red badge / "!", DAILY timer as a lime label; all 5 clicked open in a playtest |
+| Coin counter | Hud | always | Skin | **Done**: `Skin.counter` bottom-left, Money PNG, no panel, count-up + pop; case results float up above it |
+| Hint toast ("A lawyer is waiting…") | Hud | events | Skin | **Done**: `Skin.toast` top-centre (y 62), icon by topic, CAPS words lime, gold STEP n/5 kept |
+| Goals card | Goals | always | Skin | **Done**: charcoal card, purple striped header + Goals PNG, white text, real bars (lime, gold + DONE! when finished, n/m on the bar) |
+| Daily Rewards window + reward toast | Rewards | join / tile | Skin | S: header PNG, blur (its window isn't a `Skin.window`, so no blur yet) |
+| Egg bag counter (0/12) | Zones ("Bag") | always | Skin | **Done**: Skin plate, Eggs PNG, chips Empty / Filled / Golden (sparkle), count (orange when full), chip pops on pickup |
+| Egg prompts, odds boards, locked-egg toast | Zones | in zones | Own/World | Zones' notes / "Got an egg!" toasts are `Skin.toast` now (done); R left: custom prompt (flip Style), board restyle |
+| Zone arrival / zone name / License gate + upgrade prompts | Zones | entering a zone | Skin/World | Arrival **done**: `Skin.banner` (wood plank, red NOW ENTERING ribbon, Travel PNG, swing-in); R left: gate / upgrade prompts, GOLDEN EGG! + upgrade banners |
 | Hatch screen, reveal, title cards, HatchBanner, HatchAnnounce | Eggs, Shared.HatchFx | hatching | Own (cinematic) | S: reveal card + names on Skin type; keep the cinematic |
 | Incubator billboards | Eggs | at firm | World | S |
-| LAWYERS panel (slots, office card, CLIENTS, BENCH, sell/lock) | Lawyers | tile | Skin | S + fix the short bench grid (open item) |
+| LAWYERS panel (slots, office card, CLIENTS, BENCH, sell/lock) | Lawyers | tile | Skin | S + fix the short bench grid (open item); its window isn't a `Skin.window` - no blur yet |
 | Skills | Skills | office card | Skin | S |
 | Mutation Machine (Merger) | Merger | at machine | Skin | S: header PNG |
 | Office upgrade celebrations | Shared.UpgradeFx | upgrading | Own | S |
@@ -89,7 +91,7 @@ Layer: **Skin** = built on `Shared.Skin` (reference style) · **UIKit** = old sc
 | Desk progress bars | DeskProgress | cases | World | S |
 | Boss UI | Bosses | zone bosses | Own | S |
 | World signs: lot signs, leaderboards, shop/merger stalls, portal, booths, gates | Workspace SurfaceGuis (~60) | world | World | S: one sign style per kind (CLAUDE.md) |
-| ProximityPrompts (15) | Workspace | near objects | Roblox default | R: one custom prompt (Style = Custom) |
+| ProximityPrompts (15) | Workspace | near objects | Roblox default | R: `Skin.prompt` is built + installed (Hud calls `Skin.installPrompts()`); part 3 sets `Style = Custom` on each prompt and playtests it in the world |
 | Old skin inventory | SkinInventory (disabled) | — | — | skip |
 
 Out of scope: Roblox's own core UI (chat, top bar, leaderboard), Freecam.
@@ -113,7 +115,9 @@ Out of scope: Roblox's own core UI (chat, top bar, leaderboard), Freecam.
      show the same fill; the egg art doesn't scale with a resized Egg Slot instance; Empty slots should be a solid
      rim, not dashed. Not mocked: Shop open, zone arrival in context, minigame result, phone size.
 2. **Icons to Roblox** — done 2026-10-18 (table above).
-3. **Skin v2**: tokens + new pieces (`Skin.hudTile`, `Skin.toast`, `Skin.prompt`, `Skin.sign`, `Skin.counter`,
-   `Skin.blur`), all motion from one tween table.
+3. **Skin v2** — done 2026-10-18 (part 2): `Skin.Motion` (one motion table), `Skin.Lime`, `Skin.hudTile`, `Skin.toast`
+   (+ `Skin.highlight`), `Skin.counter`, `Skin.banner`, `Skin.prompt` + `Skin.installPrompts`, `Skin.sparkle`,
+   `Skin.overlay`, `Skin.icon`, world blur behind every `Skin.window` (`Skin.blurFor`), red default ribbon. Not built:
+   `Skin.sign` (world signs, part 3).
 4. Rebuild the R rows, then the S rows, screen by screen; each one playtested at desktop + phone size.
 5. Retire UIKit / UISkin once nothing relies on them.

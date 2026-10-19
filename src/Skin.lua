@@ -15,9 +15,12 @@
 -- descriptions. White text always gets an ink stroke (2-5 px by size) so it reads on any colour.
 -- Build new screens with Skin.window / section / grid / card / button / ribbon / sideTab. (UIKit still auto-skins
 -- the older screens until each one is rebuilt with this.)
+-- v2 (UI overhaul part 2, 2026-10-18, docs/UI_OVERHAUL.md): hudTile, toast, counter, banner, prompt; the world
+-- blurs while any Skin.window is open; ribbons are red by default. Motion numbers for all of them: Skin.Motion.
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
 
 local Skin = {}
 
@@ -51,6 +54,7 @@ Skin.White = Color3.new(1, 1, 1)
 Skin.Panel = hex("2C2E3E")
 Skin.PanelDeep = hex("1D1E2A")
 Skin.TextSoft = hex("C9CCE0")
+Skin.Lime = hex("7DFF3C") -- highlighted words, progress fills, the "value" in an info line
 
 -- each colour: base (the fill), light (top of the gradient / glow), dark (bottom, lips, borders)
 export type Swatch = { base: Color3, light: Color3, dark: Color3 }
@@ -108,6 +112,16 @@ function Skin.stroke(px: number, color: Color3?, transparency: number?): UIStrok
 	})
 end
 local corner, stroke = Skin.corner, Skin.stroke
+
+-- v2 motion, one table (the Figma components' motion specs): hover / press scales and tween times
+Skin.Motion = {
+	Hover = 1.08, Press = 0.9, -- HUD tiles
+	PopFrom = 0.4, PopTime = 0.38, -- Skin.pop, counter pop
+	ToastIn = 0.32, ToastOut = 0.2, ToastDrop = 26, -- slide-down distance (px)
+	BannerIn = 0.55, BannerOut = 0.35, BannerHold = 2.6,
+	Blur = 14, BlurTime = 0.25, -- world blur behind an open window
+	PromptIn = 0.22,
+}
 
 local function tween(obj: Instance, t: number, props: { [string]: any }, style: Enum.EasingStyle?, dir: Enum.EasingDirection?): Tween
 	local tw = TweenService:Create(obj, TweenInfo.new(t, style or Enum.EasingStyle.Quad, dir or Enum.EasingDirection.Out), props)
@@ -423,6 +437,7 @@ function Skin.window(opts: { [string]: any }): Window
 		end
 		gui.Enabled = true
 		playSfx("open")
+		Skin.blurFor(gui)
 		dim.BackgroundTransparency = 1
 		tween(dim, 0.2, { BackgroundTransparency = 0.35 })
 		scale.Scale = 0.7 * fit()
@@ -541,7 +556,7 @@ end
 
 -- a tilted tag pinned to a corner ("BEST VALUE!", "NEW!", "OWNED")
 function Skin.ribbon(parent: GuiObject, label: string, color: string | Color3 | Swatch?, z: number?): Frame
-	local sw = Skin.swatch(color or "Gold")
+	local sw = Skin.swatch(color or "Red") -- v2: red is the default (the reference's HOT / BEST VALUE tags)
 	local r = make("Frame", {
 		Name = "Ribbon", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 8, 0, -6), Size = UDim2.fromOffset(150, 34),
 		Rotation = 10, BackgroundColor3 = Skin.White, ZIndex = z or 20, Parent = parent,
@@ -569,6 +584,729 @@ function Skin.sideTab(rail: GuiObject, opts: { [string]: any }): TextButton
 		Text = opts.Label or "", ZIndex = 4, Parent = b }, 26, 3)
 	Skin.pressable(b, 1.1)
 	return b
+end
+
+------------------------------------------------------------------ v2: world blur behind open windows
+-- One BlurEffect in (local) Lighting, faded in while any Skin.window is open. Each window's ScreenGui is watched,
+-- so a script that closes a window by setting Enabled directly still lets the blur go.
+local blurGuis: { [ScreenGui]: boolean } = {}
+local blurEffect: BlurEffect? = nil
+local function refreshBlur()
+	local any = false
+	for g in blurGuis do
+		if g.Parent and g.Enabled then
+			any = true
+			break
+		end
+	end
+	if not blurEffect or not blurEffect.Parent then
+		blurEffect = make("BlurEffect", { Name = "SkinWindowBlur", Size = 0, Enabled = true, Parent = Lighting })
+	end
+	tween(blurEffect :: BlurEffect, Skin.Motion.BlurTime, { Size = if any then Skin.Motion.Blur else 0 })
+end
+function Skin.blurFor(gui: ScreenGui)
+	if not blurGuis[gui] then
+		blurGuis[gui] = true
+		gui:GetPropertyChangedSignal("Enabled"):Connect(refreshBlur)
+		gui.AncestryChanged:Connect(function()
+			if not gui.Parent then
+				blurGuis[gui] = nil
+				refreshBlur()
+			end
+		end)
+	end
+	refreshBlur()
+end
+
+------------------------------------------------------------------ v2: shared bits
+-- an icon by HudMenu.Icons key ("Money", "Eggs" ...) or an image id; HudMenu is looked up lazily (it requires Skin)
+function Skin.icon(name: string?): string
+	if not name or name == "" then
+		return ""
+	end
+	if string.find(name, "://", 1, true) then
+		return name
+	end
+	local m = script.Parent:FindFirstChild("HudMenu")
+	if m and m:IsA("ModuleScript") then
+		local ok, hm = pcall(require, m)
+		if ok and type(hm) == "table" and (hm :: any).Icons and (hm :: any).Icons[name] then
+			return (hm :: any).Icons[name]
+		end
+	end
+	return name
+end
+
+-- RichText: the phrase (or, with none, every ALL-CAPS word of 2+ letters) in lime; "" = none. Leaves tags alone.
+function Skin.highlight(s: string, phrase: string?, color: Color3?): string
+	if phrase == "" then
+		return s -- "" = no highlighting
+	end
+	local open = string.format('<font color="#%s">', (color or Skin.Lime):ToHex())
+	if phrase then
+		local i, j = string.find(s, phrase, 1, true)
+		if i then
+			return string.sub(s, 1, i - 1) .. open .. phrase .. "</font>" .. string.sub(s, (j :: number) + 1)
+		end
+		return s
+	end
+	return (string.gsub(s, "([^<]*)(<?[^>]*>?)", function(plain: string, tag: string)
+		return (string.gsub(plain, "(%u%u[%u%d']*!?)", open .. "%1</font>")) .. tag
+	end))
+end
+
+-- a full-screen overlay ScreenGui shared by the v2 pieces that float above everything (toasts, banners, prompts)
+local overlays: { [string]: ScreenGui } = {}
+function Skin.overlay(name: string, displayOrder: number): ScreenGui
+	local g = overlays[name]
+	if g and g.Parent then
+		return g
+	end
+	local player = game:GetService("Players").LocalPlayer
+	g = make("ScreenGui", {
+		Name = name, ResetOnSpawn = false, DisplayOrder = displayOrder, IgnoreGuiInset = true,
+		ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = player:WaitForChild("PlayerGui"),
+	})
+	;(g :: ScreenGui):SetAttribute("SkinBuilt", true)
+	overlays[name] = g :: ScreenGui
+	return g :: ScreenGui
+end
+
+-- a little four-point sparkle (two crossed bars) that twinkles on its own
+function Skin.sparkle(parent: GuiObject, pos: UDim2, px: number, z: number, delay: number?): Frame
+	local s = make("Frame", {
+		Name = "Sparkle", AnchorPoint = Vector2.new(0.5, 0.5), Position = pos, Size = UDim2.fromOffset(px, px),
+		BackgroundTransparency = 1, Rotation = 0, ZIndex = z, Interactable = false, Parent = parent,
+	})
+	for _, sz in { Vector2.new(0.26, 1), Vector2.new(1, 0.26) } do
+		make("Frame", {
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(sz.X, sz.Y),
+			BackgroundColor3 = Skin.White, BorderSizePixel = 0, ZIndex = z, Interactable = false, Parent = s,
+		}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
+	end
+	local sc = make("UIScale", { Scale = 0.5, Parent = s })
+	task.spawn(function()
+		task.wait(delay or 0)
+		while s.Parent do
+			tween(sc, 0.45, { Scale = 1 }, Enum.EasingStyle.Sine)
+			tween(s, 0.9, { Rotation = s.Rotation + 45 }, Enum.EasingStyle.Sine)
+			task.wait(0.45)
+			tween(sc, 0.45, { Scale = 0.35 }, Enum.EasingStyle.Sine)
+			task.wait(1.4 + math.random() * 1.2)
+		end
+	end)
+	return s
+end
+
+------------------------------------------------------------------ v2: HUD tile
+-- The reference's square HUD tile: gradient + studs, white inner rim, ink outline + lip, sparkle glints, the PNG
+-- icon overflowing the top, the label overlapping the bottom edge, a red badge top-right. Hover x1.08, press x0.9.
+-- opts: Name, Parent, Label, Icon (HudMenu.Icons key or id), Color (swatch / name / Color3), Size (px, 88),
+-- LayoutOrder, Position, AnchorPoint.
+export type HudTile = {
+	holder: Frame,
+	button: TextButton,
+	icon: ImageLabel,
+	label: TextLabel,
+	setBadge: (string?) -> (),
+	setAlert: (boolean) -> (),
+	setNote: (string?) -> (),
+	setLabel: (string) -> (),
+}
+function Skin.hudTile(opts: { [string]: any }): HudTile
+	local px = opts.Size or 88
+	local sw = Skin.swatch(opts.Color or "Sky")
+	local name = opts.Name or "Tile"
+	local holder = make("Frame", {
+		Name = name, Size = UDim2.fromOffset(px, px), Position = opts.Position, AnchorPoint = opts.AnchorPoint,
+		BackgroundTransparency = 1, LayoutOrder = opts.LayoutOrder, Parent = opts.Parent,
+	})
+	holder:SetAttribute("NoSkin", true)
+	local button = make("TextButton", {
+		Name = name .. "Button", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Skin.White, AutoButtonColor = false,
+		Text = "", ZIndex = 2, Parent = holder,
+	}, {
+		corner(14), stroke(4),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.5, sw.base),
+			ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.5)),
+		}) }),
+	})
+	button:SetAttribute("NoSkin", true)
+	Skin.studs(button, 0.84, nil, 22)
+	Skin.gloss(button, 0.3)
+	make("Frame", { -- the dark underside
+		Name = "Lip", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, math.floor(px * 0.13)),
+		BackgroundColor3 = sw.dark, BackgroundTransparency = 0.15, BorderSizePixel = 0, ZIndex = 2, Interactable = false, Parent = button,
+	}, { corner(14) })
+	make("Frame", { -- white inner rim
+		Name = "Rim", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 1, -8), BackgroundTransparency = 1,
+		ZIndex = 3, Interactable = false, Parent = button,
+	}, { corner(10), make("UIStroke", { Thickness = 2.5, Color = Skin.White, Transparency = 0.12 }) })
+	Skin.sparkle(button, UDim2.fromScale(0.2, 0.22), math.floor(px * 0.17), 3, 0)
+	Skin.sparkle(button, UDim2.fromScale(0.84, 0.6), math.floor(px * 0.11), 3, 1.1)
+	local icon = make("ImageLabel", {
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.38), Size = UDim2.fromScale(1.08, 1.08),
+		BackgroundTransparency = 1, Image = Skin.icon(opts.Icon), ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Interactable = false, Parent = button,
+	})
+	local labelText = opts.Label or ""
+	local label = text({
+		Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, -3), Size = UDim2.new(1, 18, 0, math.floor(px * 0.34)),
+		Text = labelText, ZIndex = 6, Parent = button,
+	}, math.floor(px * 0.3), 3)
+	-- red badge (a count or "!") top-right; the alert is the same red "!" (beside the badge if both show)
+	local function redDot(dotName: string): (Frame, TextLabel)
+		local d = make("Frame", {
+			Name = dotName, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(30, 30),
+			BackgroundColor3 = Skin.White, Visible = false, ZIndex = 8, Parent = button,
+		}, {
+			make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(3),
+			make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Skin.Palette.Red.light, Skin.Palette.Red.base) }),
+		})
+		local t = text({ Size = UDim2.new(1, -4, 1, -4), Position = UDim2.fromOffset(2, 2), Text = "", ZIndex = 9, Parent = d }, 20, 2)
+		return d, t
+	end
+	local badge, badgeText = redDot("Badge")
+	local alert, alertText = redDot("Alert")
+	alertText.Text = "!"
+
+	local scale = Skin.pressable(button, Skin.Motion.Hover)
+	button.MouseEnter:Connect(function()
+		tween(icon, 0.2, { Rotation = -8 }, Enum.EasingStyle.Back)
+	end)
+	button.MouseLeave:Connect(function()
+		tween(icon, 0.2, { Rotation = 0 })
+	end)
+	-- wiggle now and then while something waits inside
+	task.spawn(function()
+		while holder.Parent do
+			task.wait(3.4)
+			if (badge.Visible or alert.Visible) and button.GuiState ~= Enum.GuiState.Hover then
+				for _, r in { 10, -9, 6, -4, 0 } do
+					tween(button, 0.07, { Rotation = r })
+					task.wait(0.07)
+				end
+			end
+		end
+	end)
+	local function placeDots()
+		alert.Position = if badge.Visible then UDim2.new(1, -36, 0, 6) else UDim2.new(1, -6, 0, 6)
+	end
+	local _ = scale -- (pressable drives it)
+	return {
+		holder = holder, button = button, icon = icon, label = label,
+		setBadge = function(t: string?)
+			local was = badge.Visible
+			badge.Visible = t ~= nil
+			badgeText.Text = t or ""
+			if t and not was then
+				Skin.pop(badge, 0.3)
+			end
+			placeDots()
+		end,
+		setAlert = function(on: boolean)
+			local was = alert.Visible
+			alert.Visible = on
+			if on and not was then
+				Skin.pop(alert, 0.3)
+			end
+			placeDots()
+		end,
+		-- a timer / short note shows as the label, in lime (the reference's gift countdown); nil = the label again
+		setNote = function(t: string?)
+			label.Text = t or labelText
+			label.TextColor3 = if t then Skin.Lime else Skin.White
+		end,
+		setLabel = function(t: string)
+			labelText = t
+			label.Text = t
+		end,
+	}
+end
+
+------------------------------------------------------------------ v2: toast
+-- An info line: icon + white Fredoka with an ink stroke, a word in lime, over a soft shadow band (no panel).
+-- Slides down + fades in; with Hold it leaves by itself, without it the caller drives set / show / hide.
+-- opts: Text, Highlight (phrase; default = the ALL-CAPS words), Icon, Parent (ScreenGui/GuiObject; default a shared
+-- overlay), Position (top-centre), TextSize (24), Hold (s), Name.
+export type Toast = {
+	frame: Frame,
+	set: (string, string?, string?) -> (),
+	show: () -> (),
+	hide: () -> (),
+	destroy: () -> (),
+	isShown: () -> boolean,
+}
+function Skin.toast(opts: { [string]: any }): Toast
+	local parent = opts.Parent or Skin.overlay("SkinToasts", 22)
+	local home: UDim2 = opts.Position or UDim2.new(0.5, 0, 0, 64)
+	local size = opts.TextSize or 24
+	local frame = make("Frame", {
+		Name = opts.Name or "Toast", AnchorPoint = Vector2.new(0.5, 0), Position = home, Size = UDim2.fromOffset(10, size + 20),
+		BackgroundTransparency = 1, Visible = false, ZIndex = 30, Parent = parent,
+	})
+	frame:SetAttribute("NoSkin", true)
+	local fit = make("UIScale", { Parent = frame })
+	local band = make("Frame", {
+		Name = "Band", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(200, size + 24),
+		BackgroundColor3 = Skin.Ink, BackgroundTransparency = 0.45, BorderSizePixel = 0, ZIndex = 30, Interactable = false, Parent = frame,
+	}, {
+		make("UICorner", { CornerRadius = UDim.new(1, 0) }),
+		make("UIGradient", { Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.16, 0.2), NumberSequenceKeypoint.new(0.84, 0.2), NumberSequenceKeypoint.new(1, 1),
+		}) }),
+	})
+	local row = make("Frame", {
+		Name = "Row", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0, 1),
+		AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1, ZIndex = 31, Parent = frame,
+	}, {
+		make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center,
+			Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	local icon = make("ImageLabel", {
+		Name = "Icon", Size = UDim2.fromOffset(size + 22, size + 22), BackgroundTransparency = 1, Image = Skin.icon(opts.Icon),
+		Visible = opts.Icon ~= nil, ScaleType = Enum.ScaleType.Fit, LayoutOrder = 1, ZIndex = 32, Parent = row,
+	})
+	local label = make("TextLabel", {
+		Name = "Label", Size = UDim2.fromScale(0, 1), AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1,
+		FontFace = Skin.Fonts.Title, TextSize = size, TextColor3 = Skin.White, RichText = true, Text = "", LayoutOrder = 2,
+		ZIndex = 32, Parent = row,
+	})
+	local labelStroke = make("UIStroke", { Thickness = 3, Color = Skin.Ink, LineJoinMode = Enum.LineJoinMode.Round, Parent = label })
+	local pulse = make("UIScale", { Parent = row })
+
+	local alpha = make("NumberValue", { Value = 1 })
+	local function applyAlpha(a: number)
+		label.TextTransparency = a
+		labelStroke.Transparency = a
+		icon.ImageTransparency = a
+		band.BackgroundTransparency = 0.45 + 0.55 * a
+	end
+	alpha.Changed:Connect(applyAlpha)
+	applyAlpha(1)
+	-- phones: shrink to fit the screen width
+	local function refit()
+		local cam = workspace.CurrentCamera
+		local vw = if cam then cam.ViewportSize.X else 1280
+		local natural = row.AbsoluteSize.X / math.max(fit.Scale * pulse.Scale, 0.01)
+		band.Size = UDim2.fromOffset(natural + 90, size + 24)
+		fit.Scale = math.clamp((vw * 0.94) / math.max(natural + 40, 1), 0.45, 1)
+	end
+	row:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		task.defer(refit)
+	end)
+
+	local shown = false
+	local token = 0
+	local function show()
+		if shown then
+			return
+		end
+		shown = true
+		token += 1
+		frame.Visible = true
+		frame.Position = home - UDim2.fromOffset(0, Skin.Motion.ToastDrop)
+		tween(frame, Skin.Motion.ToastIn, { Position = home }, Enum.EasingStyle.Back)
+		tween(alpha, Skin.Motion.ToastIn * 0.8, { Value = 0 })
+	end
+	local function hide()
+		if not shown then
+			return
+		end
+		shown = false
+		token += 1
+		local my = token
+		tween(frame, Skin.Motion.ToastOut, { Position = home - UDim2.fromOffset(0, 12) }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		tween(alpha, Skin.Motion.ToastOut, { Value = 1 })
+		task.delay(Skin.Motion.ToastOut, function()
+			if token == my then
+				frame.Visible = false
+			end
+		end)
+	end
+	local current = ""
+	local function set(s: string, phrase: string?, iconName: string?)
+		local rich = Skin.highlight(s, phrase)
+		if iconName ~= nil then
+			icon.Image = Skin.icon(iconName)
+			icon.Visible = iconName ~= ""
+		end
+		if rich ~= current then
+			current = rich
+			label.Text = rich
+			if shown then
+				pulse.Scale = 1.07
+				tween(pulse, 0.3, { Scale = 1 }, Enum.EasingStyle.Back)
+			end
+		end
+	end
+	local handle: Toast = {
+		frame = frame, set = set, show = show, hide = hide,
+		destroy = function()
+			frame:Destroy()
+			alpha:Destroy()
+		end,
+		isShown = function()
+			return shown
+		end,
+	}
+	if opts.Text then
+		set(opts.Text, opts.Highlight)
+	end
+	if opts.Hold then
+		show()
+		task.delay(opts.Hold, function()
+			hide()
+			task.wait(Skin.Motion.ToastOut + 0.05)
+			handle.destroy()
+		end)
+	end
+	return handle
+end
+
+------------------------------------------------------------------ v2: counter
+-- A currency counter with no panel: big glossy icon + a big stroked number that counts up, popping on a gain.
+-- opts: Parent, Name, Icon, Position, AnchorPoint, Height (52), Width (300), Value, Format (number -> string),
+-- TextColor, ZIndex.
+export type Counter = { frame: Frame, label: TextLabel, icon: ImageLabel, set: (number) -> (), pop: () -> (), value: () -> number }
+function Skin.counter(opts: { [string]: any }): Counter
+	local h = opts.Height or 52
+	local fmt = opts.Format or function(n: number): string
+		return tostring(math.floor(n))
+	end
+	local z = opts.ZIndex or 3
+	local frame = make("Frame", {
+		Name = opts.Name or "Counter", AnchorPoint = opts.AnchorPoint, Position = opts.Position,
+		Size = UDim2.fromOffset(opts.Width or 300, h), BackgroundTransparency = 1, ZIndex = z, Parent = opts.Parent,
+	})
+	frame:SetAttribute("NoSkin", true)
+	local popScale = make("UIScale", { Parent = frame })
+	local icon = make("ImageLabel", {
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, math.floor(h * 0.6), 0.5, 0),
+		Size = UDim2.fromOffset(math.floor(h * 1.3), math.floor(h * 1.3)), BackgroundTransparency = 1, Image = Skin.icon(opts.Icon),
+		ScaleType = Enum.ScaleType.Fit, ZIndex = z + 1, Parent = frame,
+	})
+	local label = text({
+		Name = "Amount", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, math.floor(h * 1.25), 0.5, 0),
+		Size = UDim2.new(1, -math.floor(h * 1.25), 1, 0), Text = fmt(opts.Value or 0), TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = opts.TextColor or Skin.White, ZIndex = z + 1, Parent = frame,
+	}, math.floor(h * 0.86), math.max(3, math.floor(h / 12)))
+	local current = opts.Value or 0
+	local function pop()
+		popScale.Scale = 1.16
+		tween(popScale, Skin.Motion.PopTime, { Scale = 1 }, Enum.EasingStyle.Back)
+		icon.Rotation = -14
+		tween(icon, 0.4, { Rotation = 0 }, Enum.EasingStyle.Back)
+	end
+	return {
+		frame = frame, label = label, icon = icon, pop = pop,
+		set = function(v: number)
+			if v == current then
+				return
+			end
+			local from = current
+			current = v
+			Skin.countTo(label, from, v, fmt, 0.6)
+			if v > from then
+				pop()
+			end
+		end,
+		value = function()
+			return current
+		end,
+	}
+end
+
+------------------------------------------------------------------ v2: arrival banner
+-- The zone-arrival sign: a wooden plank hanging on two ropes with a red NOW ENTERING ribbon; it swings in from
+-- above, hangs, and swings back up. One at a time (a new one replaces the old).
+-- opts: Title, Sub, Ribbon ("NOW ENTERING"), Icon (default Travel), Color (title colour), Hold (s).
+local currentBanner: Frame? = nil
+function Skin.banner(opts: { [string]: any }): Frame
+	local gui = Skin.overlay("SkinBanners", 21)
+	if currentBanner then
+		currentBanner:Destroy()
+	end
+	local W, H = 540, 112
+	local wood = { light = hex("D68C46"), base = hex("B8743A"), dark = hex("7A4622") }
+	-- the pivot's centre is the plank's top edge, so rotating it swings the plank like a hanging sign
+	local pivot = make("Frame", {
+		Name = "ArrivalBanner", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -H * 1.6),
+		Size = UDim2.fromOffset(W, H * 2), BackgroundTransparency = 1, ZIndex = 40, Parent = gui,
+	})
+	pivot:SetAttribute("NoSkin", true) -- StarterPlayerScripts.UISkin (old auto-skin) must leave it alone
+	currentBanner = pivot
+	local fitScale = make("UIScale", { Parent = pivot })
+	local cam = workspace.CurrentCamera
+	if cam then
+		fitScale.Scale = math.clamp(math.min(cam.ViewportSize.X / (W + 120), cam.ViewportSize.Y / 520), 0.5, 1)
+	end
+	for _, x in { 0.18, 0.82 } do -- ropes up off the top of the screen
+		make("Frame", {
+			Name = "Rope", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(x, 0, 0.5, 6), Size = UDim2.new(0, 6, 0.5, 400),
+			BackgroundColor3 = hex("5A3A1E"), BorderSizePixel = 0, ZIndex = 40, Parent = pivot,
+		}, { stroke(2) })
+	end
+	local plank = make("Frame", {
+		Name = "Plank", Position = UDim2.fromScale(0, 0.5), Size = UDim2.fromScale(1, 0.5), BackgroundColor3 = Skin.White,
+		ZIndex = 41, Parent = pivot,
+	}, {
+		corner(12), stroke(5),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, wood.light), ColorSequenceKeypoint.new(0.6, wood.base), ColorSequenceKeypoint.new(1, wood.base:Lerp(wood.dark, 0.5)),
+		}) }),
+	})
+	Skin.studs(plank, 0.86, nil, 26)
+	for i, y in { 0.36, 0.7 } do -- plank seams
+		make("Frame", {
+			Name = "Seam" .. i, Position = UDim2.new(0, 10, y, 0), Size = UDim2.new(1, -20, 0, 3), BackgroundColor3 = wood.dark,
+			BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 41, Parent = plank,
+		})
+	end
+	make("Frame", {
+		Name = "Lip", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 12),
+		BackgroundColor3 = wood.dark, BackgroundTransparency = 0.2, BorderSizePixel = 0, ZIndex = 41, Parent = plank,
+	}, { corner(12) })
+	for _, x in { 0.18, 0.82 } do -- nails
+		make("Frame", {
+			Name = "Nail", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, 14), Size = UDim2.fromOffset(12, 12),
+			BackgroundColor3 = hex("C9CCE0"), ZIndex = 42, Parent = plank,
+		}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
+	end
+	make("ImageLabel", {
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, 6, 0.55, 0), Size = UDim2.fromOffset(96, 96),
+		BackgroundTransparency = 1, Image = Skin.icon(opts.Icon or "Travel"), ScaleType = Enum.ScaleType.Fit, ZIndex = 44, Parent = plank,
+	})
+	text({
+		Name = "Title", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 10, 0.5, if opts.Sub then -6 else 4),
+		Size = UDim2.new(1, -120, 0, 58), Text = opts.Title or "", TextColor3 = opts.Color or Skin.White, ZIndex = 43, Parent = plank,
+	}, 54, 5)
+	if opts.Sub then
+		text({
+			Name = "Sub", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 10, 1, -14), Size = UDim2.new(1, -130, 0, 24),
+			Text = opts.Sub, FontFace = Skin.Fonts.Body, ZIndex = 43, Parent = plank,
+		}, 22, 2)
+	end
+	-- red ribbon pinned over the top edge, with folded tails
+	local ribbon = make("Frame", {
+		Name = "Ribbon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -2), Size = UDim2.fromOffset(250, 38),
+		Rotation = -3, BackgroundColor3 = Skin.White, ZIndex = 46, Parent = plank,
+	}, {
+		corner(5), stroke(3),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Skin.Palette.Red.light, Skin.Palette.Red.base) }),
+	})
+	for _, side in { -1, 1 } do
+		make("Frame", {
+			Name = "Tail", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5 + side * 0.52, 0, 0.62, 0), Size = UDim2.fromOffset(34, 28),
+			Rotation = side * 8, BackgroundColor3 = Skin.Palette.Red.dark, ZIndex = 45, Parent = ribbon,
+		}, { corner(4), stroke(3) })
+	end
+	text({ Size = UDim2.new(1, -16, 1, -8), Position = UDim2.fromOffset(8, 4), Text = opts.Ribbon or "NOW ENTERING", ZIndex = 47, Parent = ribbon }, 24, 3)
+
+	-- swing in: drop from above, then a damped pendulum
+	local y = UDim2.new(0.5, 0, 0, 126) -- plank top (+ its ribbon) under the HUD hint toast
+	pivot.Rotation = -16
+	tween(pivot, Skin.Motion.BannerIn, { Position = y }, Enum.EasingStyle.Back)
+	task.spawn(function()
+		for _, r in { 9, -5, 3, -1.5, 0 } do
+			if currentBanner ~= pivot then
+				return
+			end
+			tween(pivot, 0.3, { Rotation = r }, Enum.EasingStyle.Sine)
+			task.wait(0.3)
+		end
+	end)
+	task.delay(opts.Hold or Skin.Motion.BannerHold, function()
+		if currentBanner ~= pivot then
+			return
+		end
+		tween(pivot, Skin.Motion.BannerOut, { Position = UDim2.new(0.5, 0, 0, -H * 1.6), Rotation = 8 }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+		task.wait(Skin.Motion.BannerOut + 0.05)
+		if currentBanner == pivot then
+			currentBanner = nil
+		end
+		pivot:Destroy()
+	end)
+	return pivot
+end
+
+------------------------------------------------------------------ v2: world prompt
+-- The custom ProximityPrompt look (for prompts with Style = Custom): a white key cap (E / X / TAP) with a lime
+-- hold ring, the action in white Fredoka + stroke, the object name small above it, on a charcoal studded plate.
+-- Skin.installPrompts() draws every Custom prompt for this player (call once from a client script). The hold ring is
+-- 16 segments round the cap lighting up clockwise (a clipped-gradient ring didn't draw in Roblox, 2026-10-18).
+local ProximityPromptService = game:GetService("ProximityPromptService")
+local UserInputService = game:GetService("UserInputService")
+
+local function keyText(prompt: ProximityPrompt, inputType: Enum.ProximityPromptInputType): string
+	if inputType == Enum.ProximityPromptInputType.Touch then
+		return "TAP"
+	elseif inputType == Enum.ProximityPromptInputType.Gamepad then
+		local n = prompt.GamepadKeyCode.Name
+		return (string.gsub(n, "^Button", ""))
+	end
+	local k = prompt.KeyboardKeyCode
+	local s = UserInputService:GetStringForKeyCode(k)
+	return if s and s ~= "" then string.upper(s) else k.Name
+end
+
+function Skin.prompt(prompt: ProximityPrompt, inputType: Enum.ProximityPromptInputType, parent: Instance?): () -> ()
+	local K = 58 -- key cap
+	local RING = K + 18
+	local bb = make("BillboardGui", {
+		Name = "SkinPrompt", AlwaysOnTop = true, Size = UDim2.fromOffset(300, RING + 8),
+		SizeOffset = Vector2.new(prompt.UIOffset.X / 300, prompt.UIOffset.Y / (RING + 8)), LightInfluence = 0, ResetOnSpawn = false,
+		Active = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Adornee = prompt.Parent :: any,
+		Parent = parent or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"),
+	})
+	local root = make("Frame", { Name = "Root", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Parent = bb })
+	local rootScale = make("UIScale", { Scale = 0.6, Parent = root })
+	-- plate behind the text (fixed layout: the object name small on top, the action big under it)
+	local plate = make("Frame", {
+		Name = "Plate", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, RING / 2 + 4, 0.5, 0), Size = UDim2.fromOffset(236, K - 4),
+		BackgroundColor3 = Skin.Panel, ZIndex = 1, Parent = root,
+	}, { corner(10), stroke(4) })
+	Skin.studs(plate, 0.92, nil, 24)
+	local textX = RING / 2 + 8
+	local object = text({
+		Name = "Object", Position = UDim2.fromOffset(textX, 5), Size = UDim2.new(1, -textX - 10, 0, 16), Text = prompt.ObjectText,
+		FontFace = Skin.Fonts.Body, TextColor3 = Skin.TextSoft, TextXAlignment = Enum.TextXAlignment.Left,
+		Visible = prompt.ObjectText ~= "", ZIndex = 2, Parent = plate,
+	}, 16, 0)
+	local action = text({
+		Name = "Action", Position = UDim2.fromOffset(textX, if prompt.ObjectText ~= "" then 20 else 11), Size = UDim2.new(1, -textX - 10, 0, 28),
+		Text = prompt.ActionText, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = plate,
+	}, 26, 3)
+	-- key cap + ring
+	local keyHolder = make("Frame", {
+		Name = "Key", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, RING / 2 + 4, 0.5, 0), Size = UDim2.fromOffset(RING, RING),
+		BackgroundTransparency = 1, ZIndex = 3, Parent = root,
+	})
+	local keyScale = make("UIScale", { Parent = keyHolder })
+	make("Frame", { -- dark ring track
+		Name = "Track", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, -8, 1, -8),
+		BackgroundTransparency = 1, ZIndex = 3, Parent = keyHolder,
+	}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 7, Color = Skin.Ink, Transparency = 0.25 }) })
+	-- the hold ring: 16 segments around the cap that light up lime, clockwise from the top
+	local SEGMENTS = 16
+	local segs: { Frame } = {}
+	local radius = RING / 2 - 6
+	for i = 1, SEGMENTS do
+		local a = math.rad((i - 0.5) / SEGMENTS * 360)
+		segs[i] = make("Frame", {
+			Name = "Seg" .. i, AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.5, math.sin(a) * radius, 0.5, -math.cos(a) * radius), Size = UDim2.fromOffset(7, 11),
+			Rotation = math.deg(a), BackgroundColor3 = Skin.Lime, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 4, Parent = keyHolder,
+		}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
+	end
+	local function setProgress(p: number)
+		local lit = math.floor(math.clamp(p, 0, 1) * SEGMENTS + 0.5)
+		for i, seg in segs do
+			seg.BackgroundTransparency = if i <= lit then 0 else 1
+		end
+	end
+	setProgress(0)
+	local cap = make("TextButton", {
+		Name = "Cap", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(K - 14, K - 14),
+		BackgroundColor3 = Skin.White, AutoButtonColor = false, Text = "", ZIndex = 5, Parent = keyHolder,
+	}, {
+		corner(10), stroke(3),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Skin.White, hex("D9DCEA")) }),
+	})
+	make("Frame", {
+		Name = "Lip", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 6),
+		BackgroundColor3 = hex("9A9EB8"), BorderSizePixel = 0, ZIndex = 5, Parent = cap,
+	}, { corner(10) })
+	local key = keyText(prompt, inputType)
+	make("TextLabel", {
+		Name = "KeyText", Size = UDim2.new(1, -6, 1, -8), Position = UDim2.fromOffset(3, 1), BackgroundTransparency = 1,
+		FontFace = Skin.Fonts.Title, TextScaled = true, TextColor3 = Skin.Ink, Text = key, ZIndex = 6, Parent = cap,
+	}, { make("UITextSizeConstraint", { MaxTextSize = if #key > 1 then 18 else 30 }) })
+
+	local conns: { RBXScriptConnection } = {}
+	local holdTween: Tween? = nil
+	local progress = make("NumberValue", { Value = 0 })
+	table.insert(conns, progress.Changed:Connect(setProgress))
+	table.insert(conns, prompt.PromptButtonHoldBegan:Connect(function()
+		if holdTween then
+			holdTween:Cancel()
+		end
+		tween(keyScale, 0.08, { Scale = 0.9 })
+		if prompt.HoldDuration > 0 then
+			progress.Value = 0
+			holdTween = TweenService:Create(progress, TweenInfo.new(prompt.HoldDuration, Enum.EasingStyle.Linear), { Value = 1 })
+			;(holdTween :: Tween):Play()
+		end
+	end))
+	table.insert(conns, prompt.PromptButtonHoldEnded:Connect(function()
+		if holdTween then
+			holdTween:Cancel()
+		end
+		tween(keyScale, 0.25, { Scale = 1 }, Enum.EasingStyle.Back)
+		tween(progress, 0.15, { Value = 0 })
+	end))
+	table.insert(conns, prompt.Triggered:Connect(function()
+		keyScale.Scale = 1.2
+		tween(keyScale, 0.3, { Scale = 1 }, Enum.EasingStyle.Back)
+	end))
+	table.insert(conns, prompt:GetPropertyChangedSignal("ActionText"):Connect(function()
+		action.Text = prompt.ActionText
+	end))
+	table.insert(conns, prompt:GetPropertyChangedSignal("ObjectText"):Connect(function()
+		object.Text = prompt.ObjectText
+		object.Visible = prompt.ObjectText ~= ""
+		action.Position = UDim2.fromOffset(textX, if prompt.ObjectText ~= "" then 20 else 11)
+	end))
+	-- touch / click: hold the cap (or the plate) to hold the prompt
+	if inputType == Enum.ProximityPromptInputType.Touch or prompt.ClickablePrompt then
+		local hit = make("TextButton", {
+			Name = "Hit", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", ZIndex = 9, Parent = root,
+		})
+		local holding = false
+		table.insert(conns, hit.InputBegan:Connect(function(input: InputObject)
+			if (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1)
+				and input.UserInputState ~= Enum.UserInputState.Change then
+				holding = true
+				prompt:InputHoldBegin()
+			end
+		end))
+		table.insert(conns, hit.InputEnded:Connect(function(input: InputObject)
+			if holding and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1) then
+				holding = false
+				prompt:InputHoldEnd()
+			end
+		end))
+	end
+	tween(rootScale, Skin.Motion.PromptIn, { Scale = 1 }, Enum.EasingStyle.Back)
+	return function()
+		for _, c in conns do
+			c:Disconnect()
+		end
+		if holdTween then
+			holdTween:Cancel()
+		end
+		progress:Destroy()
+		local t = tween(rootScale, 0.12, { Scale = 0.5 }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		t.Completed:Once(function()
+			bb:Destroy()
+		end)
+	end
+end
+
+local promptsInstalled = false
+function Skin.installPrompts()
+	if promptsInstalled then
+		return
+	end
+	promptsInstalled = true
+	ProximityPromptService.PromptShown:Connect(function(prompt: ProximityPrompt, inputType: Enum.ProximityPromptInputType)
+		if prompt.Style ~= Enum.ProximityPromptStyle.Custom then
+			return
+		end
+		local cleanup = Skin.prompt(prompt, inputType)
+		prompt.PromptHidden:Wait()
+		cleanup()
+	end)
 end
 
 return Skin

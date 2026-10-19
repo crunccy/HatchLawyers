@@ -7,6 +7,9 @@
 -- 2026-10-12 (mr.robe, user's call): the coin counter sits in the top bar strip (IgnoreGuiInset; Roblox's own
 -- buttons are at its left / right ends) and the hints right under it, so they block less of the view; the
 -- "Case coins float up by your money" legend is gone.
+-- 2026-10-18 UI overhaul part 2 (docs/UI_OVERHAUL.md): the coins are a Skin.counter bottom-left with no panel (the
+-- reference's currency), case results float up beside it, and the hint is a Skin.toast top-centre (icon + white
+-- stroked text, the key words in lime). This script also installs Skin's custom world prompt (Style = Custom ones).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -50,78 +53,36 @@ local function corner(radius: number): UICorner
 	return make("UICorner", { CornerRadius = UDim.new(0, radius) })
 end
 
+local Skin = require(ReplicatedStorage.Shared:WaitForChild("Skin")) :: any
 local gui = make("ScreenGui", { Name = "Hud", ResetOnSpawn = false, IgnoreGuiInset = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling })
-local PILL_TOP = 4 -- in the top bar strip, between Roblox's buttons
-local PILL_MID = PILL_TOP + 27
+gui:SetAttribute("NoSkin", true)
+local COIN_H = 54 -- coin counter height (px)
+local COIN_PAD = 18 -- from the screen's left / bottom edge
 
--- Coin counter: dark pill with a gold rim, the real coin image (Shared.HudMenu.Icons) hanging off its left end,
--- big white outlined money (UI pass 2026-10-09; opted out of UISkin so it keeps this look)
+-- Coin counter: the glossy money icon + a big stroked number, no panel, bottom-left; counts up and pops on a gain
 local Icons = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons
-local coinLabel = make("TextLabel", {
-	Position = UDim2.fromOffset(58, 4),
-	Size = UDim2.new(1, -72, 1, -8),
-	BackgroundTransparency = 1,
-	FontFace = FONT,
-	TextScaled = true,
-	TextColor3 = WHITE,
-	TextXAlignment = Enum.TextXAlignment.Center,
-	Text = "0",
-	ZIndex = 3,
-}, {
-	make("UITextSizeConstraint", { MaxTextSize = 36 }),
-	make("UIStroke", { Color = BLACK, Thickness = 3, LineJoinMode = Enum.LineJoinMode.Round }),
+local coins = Skin.counter({
+	Parent = gui, Name = "Coins", Icon = Icons.Money, AnchorPoint = Vector2.new(0, 1),
+	Position = UDim2.new(0, COIN_PAD, 1, -COIN_PAD), Height = COIN_H, Width = 340,
+	Value = player:GetAttribute("Coins") or 0, Format = Formulas.formatCoins,
 })
-local coinPill = make("Frame", {
-	Name = "Coins",
-	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, PILL_TOP),
-	Size = UDim2.fromOffset(240, 54),
-	BackgroundColor3 = WHITE, -- (the gradient below carries the colour)
-	Parent = gui,
-}, {
-	corner(27),
-	make("UIStroke", { Color = GOLD, Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-	make("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(78, 72, 112), Color3.fromRGB(34, 32, 50)) }),
-	make("ImageLabel", {
-		Name = "CoinIcon",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.new(0, 22, 0.5, 0),
-		Size = UDim2.fromOffset(62, 62),
-		BackgroundTransparency = 1,
-		Image = Icons.Coin,
-		ScaleType = Enum.ScaleType.Fit,
-		ZIndex = 4,
-	}),
-	coinLabel,
-})
-coinPill:SetAttribute("NoSkin", true)
+local coinScale = make("UIScale", { Parent = coins.frame }) -- phones: smaller with the screen
+local function fitCoins()
+	local camera = workspace.CurrentCamera
+	local h = if camera then camera.ViewportSize.Y else 720
+	coinScale.Scale = if h < 200 then 1 else math.clamp(h / 760, 0.62, 1)
+end
+fitCoins()
+if workspace.CurrentCamera then
+	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitCoins)
+end
 
--- Hint banner (tutorial nudges)
--- (RichText: tutorial hints start with a gold "STEP n/5"; long hints shrink to fit instead of spilling out)
-local hint = make("TextLabel", {
-	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, PILL_TOP + 62),
-	Size = UDim2.new(0.92, 0, 0, 44),
-	BackgroundColor3 = INK,
-	BackgroundTransparency = 0.1,
-	FontFace = FONT,
-	TextScaled = true,
-	TextWrapped = true,
-	RichText = true,
-	TextColor3 = WHITE,
-	Visible = false,
-	Parent = gui,
-}, {
-	corner(12),
-	make("UIStroke", { Color = BLACK, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-	make("UISizeConstraint", { MaxSize = Vector2.new(560, 44) }),
-	make("UITextSizeConstraint", { MaxTextSize = 19 }),
-	make("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4) }),
-})
+-- Hint toast (tutorial nudges): top-centre under Roblox's top bar; tutorial hints start with a gold "STEP n/5"
+local hint = Skin.toast({ Parent = gui, Name = "Hint", Position = UDim2.new(0.5, 0, 0, 62), TextSize = 24 })
 
 -- Tutorial hint: "STEP 2/5  text" with the step in gold.
 local function step(n: number, text: string): string
-	return string.format('<font color="#FFD23C">STEP %d/%d</font>   %s', n, Config.Tutorial.Steps, text)
+	return string.format('<font color="#FFD23C">STEP %d/%d</font>   %s', n, Config.Tutorial.Steps, Skin.highlight(text))
 end
 
 -- The office the tutorial case is in (it isn't always the selected one). Only asked before the first case
@@ -138,16 +99,15 @@ local function tutorialDesk(firm: Instance?): Instance?
 	return nil
 end
 
--- Case results: small labeled numbers that fade in beside the coin counter, drift down and fade out
+-- Case results: small labeled numbers that fade in just above the coin counter, drift up and fade out
 -- (no big pop-up). Colour = how the case ended.
 local RESULT_STYLE = {
 	Win = { label = "WIN", color = Color3.fromRGB(110, 230, 90), hex = "#6EE65A" },
 	Settlement = { label = "SETTLED", color = Color3.fromRGB(255, 175, 50), hex = "#FFAF32" },
 	Mistrial = { label = "MISTRIAL", color = Color3.fromRGB(120, 180, 255), hex = "#78B4FF" },
 }
--- A little feed: the newest number starts level with the coin pill (right of it) and pushes older ones down
--- (the pill is at the top edge now), so numbers arriving together never overlap. Each fades in, drifts down
--- and fades out (FLOAT_LIFE s).
+-- A little feed: the newest number starts just above the coin counter and pushes older ones up, so numbers
+-- arriving together never overlap. Each fades in, drifts up and fades out (FLOAT_LIFE s).
 local FLOAT_LIFE, FLOAT_GAP, FLOAT_MAX = 2.2, 26, 6
 type Floater = { label: TextLabel, stroke: UIStroke, born: number, offset: number }
 local floaters: { Floater } = {}
@@ -167,7 +127,7 @@ RunService.RenderStepped:Connect(function(dt)
 		local alpha = if age < 0.2 then 1 - age / 0.2 elseif age > FLOAT_LIFE - 0.6 then (age - (FLOAT_LIFE - 0.6)) / 0.6 else 0
 		f.label.TextTransparency = alpha
 		f.stroke.Transparency = alpha
-		f.label.Position = UDim2.new(0.5, 126, 0, PILL_MID + age * 10 + f.offset)
+		f.label.Position = UDim2.new(0, COIN_PAD + 8, 1, -(COIN_PAD + COIN_H * coinScale.Scale + 6) - age * 10 - f.offset)
 	end
 end)
 
@@ -176,8 +136,8 @@ local function floatResult(outcome: string, payout: number, big: boolean)
 	local text = if payout > 0 then string.format("+%s  %s", Formulas.formatCoins(payout), style.label) else style.label .. " - case reruns"
 	local l = make("TextLabel", {
 		Name = "ResultNumber",
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0.5, 126, 0, PILL_MID), -- right of the coin pill, level with it
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, COIN_PAD + 8, 1, -(COIN_PAD + COIN_H + 6)), -- just above the coin counter
 		Size = UDim2.fromOffset(260, if big then 30 else 24),
 		BackgroundTransparency = 1,
 		FontFace = FONT,
@@ -188,10 +148,13 @@ local function floatResult(outcome: string, payout: number, big: boolean)
 		Text = text,
 		ZIndex = 6,
 		Parent = gui,
-	}, { make("UIStroke", { Color = BLACK, Thickness = 2, Transparency = 1 }) })
+	}, { make("UIStroke", { Color = BLACK, Thickness = 2.5, Transparency = 1, LineJoinMode = Enum.LineJoinMode.Round }) })
 	local stroke = l:FindFirstChildOfClass("UIStroke") :: UIStroke
 	table.insert(floaters, 1, { label = l, stroke = stroke, born = os.clock(), offset = -FLOAT_GAP })
-	while #floaters > FLOAT_MAX do
+	-- short (phone) screens: fewer at once so the stack never climbs into the menu tiles above the coins
+	local camera = workspace.CurrentCamera
+	local maxShown = if camera and camera.ViewportSize.Y >= 200 and camera.ViewportSize.Y < 520 then 2 else FLOAT_MAX
+	while #floaters > maxShown do
 		local oldest = table.remove(floaters) :: Floater
 		oldest.label:Destroy()
 	end
@@ -199,16 +162,11 @@ end
 
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Coin counter rolls up instead of jumping.
-local shownCoins = make("NumberValue", { Value = player:GetAttribute("Coins") or 0 })
-shownCoins.Changed:Connect(function(value: number)
-	coinLabel.Text = Formulas.formatCoins(value)
-end)
-coinLabel.Text = Formulas.formatCoins(shownCoins.Value)
+-- Coin counter counts up instead of jumping (Skin.counter).
 player:GetAttributeChangedSignal("Coins"):Connect(function()
-	local target = player:GetAttribute("Coins") or 0
-	TweenService:Create(shownCoins, TweenInfo.new(0.6, Enum.EasingStyle.Quad), { Value = target }):Play()
+	coins.set(player:GetAttribute("Coins") or 0)
 end)
+Skin.installPrompts() -- the custom world prompt for every Style = Custom ProximityPrompt (UI overhaul part 3 flips them)
 
 local function getFirm(): Instance?
 	local plotName = player:GetAttribute("Plot")
@@ -217,12 +175,28 @@ local function getFirm(): Instance?
 	return plot and plot:FindFirstChild("Firm")
 end
 
+-- the toast's icon, by what the hint is about
+local function hintIcon(s: string): string
+	local l = string.lower(s)
+	if string.find(l, "court", 1, true) or string.find(l, "case", 1, true) then
+		return Icons.Gavel
+	elseif string.find(l, "egg", 1, true) or string.find(l, "incubator", 1, true) then
+		return Icons.Eggs
+	elseif string.find(l, "upgrade", 1, true) or string.find(l, "expand", 1, true) then
+		return Icons.Upgrades
+	elseif string.find(l, "lawyer", 1, true) or string.find(l, "office", 1, true) or string.find(l, "manager", 1, true)
+		or string.find(l, "client", 1, true) then
+		return Icons.Lawyers
+	end
+	return Icons.Goals
+end
+
 local onLastStep = false -- showing STEP 5/5 right now
 local tutorialDoneUntil = 0 -- show the "tutorial complete" line until this os.clock()
 
 local function refresh()
 	if not player:GetAttribute("Desk1Level") then
-		hint.Visible = false
+		hint.hide()
 		return
 	end
 	local coins = player:GetAttribute("Coins") or 0
@@ -288,8 +262,13 @@ local function refresh()
 	if os.clock() < tutorialDoneUntil then
 		hintText = '<font color="#FFD23C">TUTORIAL COMPLETE!</font>   Win cases, upgrade offices and hatch lawyers!'
 	end
-	hint.Text = hintText or ""
-	hint.Visible = hintText ~= nil
+	if hintText then
+		-- tutorial lines carry their own tags (gold STEP, lime words); plain hints get their CAPS words in lime
+		hint.set(hintText, if string.find(hintText, "<font", 1, true) then "" else nil, hintIcon(hintText))
+		hint.show()
+	else
+		hint.hide()
+	end
 end
 
 -- hints only change a few times a second: no need to rebuild them every frame (perf 2026-10-09)
@@ -304,9 +283,6 @@ CaseResult.OnClientEvent:Connect(function(result: { outcome: string, payout: num
 	-- a small coloured number beside the coin counter (bigger for Epic / Legendary clients)
 	floatResult(result.outcome, result.payout, (result.clientTier or 0) >= 4)
 	if result.payout > 0 then
-		local pulse = TweenService:Create(coinPill, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, true), {
-			Size = UDim2.fromOffset(250, 60),
-		})
-		pulse:Play()
+		coins.pop()
 	end
 end)
