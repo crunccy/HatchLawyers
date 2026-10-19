@@ -19,6 +19,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
   session (waiting for approval); Space Base next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
+- **mr.robe (local), since 2026-10-19:** world redesign island 6 — **Space Base** (Blender, same kit + deliverables as
+  islands 1-5), then exported into `Workspace.WorldRedesign` (its ring slot) - user's call ("model the space base
+  island"). Don't build Space Base meanwhile.
 
 ## Open items
 - [ ] **Redesign islands in the place, not wired yet** (built 2026-10-19, `Workspace.WorldRedesign`): next = the
