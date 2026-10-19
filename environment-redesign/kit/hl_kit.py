@@ -162,10 +162,17 @@ def stud_mesh(segs=3):
 STUDS = {}  # (group, look) -> [(x, y, z, rz)]
 STUD_GROUP = None  # set to an object's name while building something that MOVES as one object (the drifting
 #                    Clouds_Islets): its studs get their own instancers parented to it, so they ride along
+SWAYING = ("Vegetation", "Street_Trees")  # the meshes the ambience's wind sways (hl_ambience.wind)
+CANOPY_LOOKS = ("leaf", "leaf_light", "leaf_deep", "blossom", "blossom_light")  # (= hl_ambience.CANOPY_LOOKS)
 
 
-def add_studs(look, pts):
-    STUDS.setdefault((STUD_GROUP, look), []).extend(pts)
+def add_studs(look, pts, owner=None):
+    """owner = the Mesh's name. The wind sways every Studs_<canopy look>, so a hedge / planter in a canopy look on a
+    mesh that doesn't sway gets its studs in Studs_Still_<look> (else they'd sway off the still leaves)."""
+    group = STUD_GROUP
+    if group is None and owner and owner not in SWAYING and look in CANOPY_LOOKS:
+        group = "Still"
+    STUDS.setdefault((group, look), []).extend(pts)
 
 
 def studs_done(target_collection, name="Studs"):
@@ -293,7 +300,7 @@ class Mesh:
                 for j in range(ny):
                     lx, ly = (i + 0.5) - nx / 2, (j + 0.5) - ny / 2
                     pts.append((cx + lx * c - ly * s, cy + lx * s + ly * c, z0 + h, rad(rot)))
-            add_studs(stud_look or look, pts)
+            add_studs(stud_look or look, pts, self.name)
 
     def prism(self, pts, z0, z1, look, studs=False, stud_rot=0.0):
         """Vertical prism over a CCW polygon [(x, y)]; studs=True fills its top with the 1-stud grid (inside test)."""
@@ -307,7 +314,7 @@ class Mesh:
             j = (i + 1) % n
             self._face((bot[i], bot[j], top[j], top[i]), mi)
         if studs:
-            add_studs(look, grid_in_polygon(pts, z1))
+            add_studs(look, grid_in_polygon(pts, z1), self.name)
 
     def cyl(self, cx, cy, r, z0, z1, look, segs=24, bevel=0.0, studs=False):
         mi = self._mi(look)
@@ -325,7 +332,7 @@ class Mesh:
                 self._face((a[i], a[j], bb[j], bb[i]), mi)
         if studs:
             pts = [(cx + (r - 0.5) * math.cos(TAU * i / segs), cy + (r - 0.5) * math.sin(TAU * i / segs)) for i in range(segs)]
-            add_studs(look, grid_in_polygon(pts, z1))
+            add_studs(look, grid_in_polygon(pts, z1), self.name)
 
     def ring(self, r0, r1, z0, z1, look, segs=96, a0=0.0, a1=360.0, cx=0.0, cy=0.0, studs=False):
         mi = self._mi(look)
@@ -352,7 +359,7 @@ class Mesh:
                 for k in range(cnt):
                     a = rad(a0 + (a1 - a0) * (k + 0.5) / cnt)
                     pts.append((cx + (r + 0.5) * math.cos(a), cy + (r + 0.5) * math.sin(a), z1, a))
-            add_studs(look, pts)
+            add_studs(look, pts, self.name)
 
     def wedge(self, cx, cy, z0, sx, sy, h, look, rot=0.0, ridge="x"):
         """A gable: ridge along local x (default) at the top middle."""
@@ -957,4 +964,4 @@ def voxel_round(F, lx, ly, z0, radius_at, h, look, step=1.0, studs=True, segs=28
                     if inner < d < r - 0.35:
                         wx, wy = F.p(lx + px, ly + py)
                         pts.append((wx, wy, z0 + (k + 1) * step + F.z, rad(F.rot)))
-            add_studs(lk, pts)
+            add_studs(lk, pts, F.m.name)

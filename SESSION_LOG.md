@@ -20,8 +20,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
-- [ ] **World redesign: rebuild the hub, Briefcase Bay and Pet Park .blends** (`-- norender` + their ambience, no
-      clips) so their drifting clouds carry their studs (kit fix 2026-10-19, Brainrot entry). Renders are unaffected.
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -167,6 +165,27 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: world redesign — hub / Briefcase Bay / Pet Park .blends rebuilt (studs ride their objects)
+- **Rebuilt** `central_hub.blend`, `briefcase_bay.blend`, `pet_park.blend` (build `-- norender`, then the ambience with
+  no stills / clips). The approved JPG renders are untouched; the layout JSONs came out identical.
+- **Hub clouds:** `hub_build.py` built its clouds inline, so it now sets `K.STUD_GROUP` round them like `Island.clouds`.
+- **New kit fix, found while verifying:** hedges / planters / rooftop gardens in a canopy look (`leaf`, `leaf_light`)
+  on meshes that don't sway put their studs in the swaying `Studs_leaf*`, so those studs swayed off still leaves:
+  - worst case the hub's two example firms' roof planters (z 37, up to 0.5 stud); Pet Park buildings up to 0.2
+  - `hl_kit.add_studs` now gets the owning mesh's name. A canopy look on a mesh not in `K.SWAYING`
+    (Vegetation, Street_Trees) goes to `Studs_Still_<look>`, which the wind never touches.
+  - **A new island whose ambience sways another mesh must add that mesh's name to `K.SWAYING`.**
+  - Brainrot already passed this check, so its .blend wasn't rebuilt.
+- **Verified headless** on all three (+ Brainrot):
+  - `Studs_Clouds_Islets_*` exist and are parented to `Clouds_Islets`
+  - at frame 240 they sit exactly at the cloud's drift
+  - no island-wide stud sits on a cloud face
+  - no swaying stud sits on a still object's face above z 4.5
+  - `run_checks` passes
+- Still open, not fixed: on the hub, 1810 `grass` and 122 `rock` studs on Vegetation pieces above z 4.5 stay put
+  while the wind sways them (grass-topped mounds / rocks: at most ~0.13 stud at those heights). Brainrot has a few
+  (`violet`, `rock`).
 
 ## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 3 — Brainrot Zone (Blender)
 - **crnuch's call:** Pet Park approved.

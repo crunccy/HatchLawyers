@@ -580,6 +580,7 @@ LAYOUT["services"].append({"name": "Arcade Pier", "roblox_xz": [0, round(-py0, 1
 
 # ------------------------------------------------------------------ sky: voxel clouds + floating islets
 sk = K.Mesh("Clouds_Islets", C["Hub_Sky"])
+K.STUD_GROUP = sk.name  # (the ambience drifts this object: its studs ride on it, as in Island.clouds)
 for i in range(22):
     a = rng.uniform(0, 360)
     r = rng.uniform(400, 640)
@@ -598,6 +599,7 @@ for i in range(10):
     sk.brick(x, y, z - s * 0.4, s * 1.3, s * 1.0, s * 0.4, "dirt", rot=a, studs=False)
     sk.cone(x, y, s * 0.6, z - s * 0.4, z - s * 1.6, "rock", segs=6)
     K.tree_round(K.Frame(sk, x, y, 0, z=z + 2.5), 0, 0, 0.8) if i % 2 == 0 else K.tree_pine(K.Frame(sk, x, y, 0, z=z + 2.5), 0, 0, 0.8)
+K.STUD_GROUP = None
 sk.done()
 
 K.add_studs("grass", K.grid_in_polygon([(x * 0.995, y * 0.995) for x, y in top], 0.0, keep=lambda x, y: not covered(x, y, ground_only=True)))
