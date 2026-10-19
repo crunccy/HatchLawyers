@@ -28,8 +28,10 @@ characters use `MaterialService.BrickStuds` (a normal map, 0.5-stud spacing, doc
 exist anywhere yet.
 
 Proposed technique (to confirm with a test patch before rolling out):
-1. **Stud tiles from Blender** (`tools/blender/stud_tiles.py`, new): one stud = a low cylinder with a small bevel,
-   ~12-16 sides; baked into tile meshes (e.g. 4x4, 8x8, 16x16 studs) plus edge/corner strips, so a big surface is a
+1. **Stud tiles from Blender** (`tools/blender/stud_tiles.py`): one stud shaped like **Roblox's own stud** (crnuch's call:
+   "look like the roblox studs", not round LEGO ones) - a low rounded square with slanted sides, top 0.46 wide, foot
+   0.60, 0.10 tall - as real raised geometry (60 tris; 24 in the low version). Studio side-by-side with the flat
+   texture: `art/studs/studio_compare_3d_vs_texture.jpg`; baked into tile meshes (e.g. 4x4, 8x8, 16x16 studs) plus edge/corner strips, so a big surface is a
    handful of MeshParts, not thousands of stud instances. LOD variants: full, 8-sided, none.
 2. **Collision stays the existing Parts.** Stud tiles sit on top as `CanCollide = false`, `CanQuery = false`,
    `CanTouch = false`, `CastShadow = false` MeshParts in a separate `Studs` folder per area, so gameplay, prompts and
@@ -38,7 +40,7 @@ Proposed technique (to confirm with a test patch before rolling out):
    low graphics quality); beyond it the base Part keeps its flat stud look so the far view still reads as studded.
    StreamingEnabled-friendly.
 4. **One stud scale for the world: 1-stud spacing** (crnuch's call 2026-10-18), same grid as the old `TopSurface = Studs`
-   texture. Stud = 0.6 wide, 0.2 tall (LEGO proportions on a 1-stud pitch). Characters keep their finer 0.5 studs
+   texture. Characters keep their finer 0.5 studs
    (small objects; the rule says no stud clutter on tiny things).
 5. **Uploads by crnuch** (place owner) - meshes uploaded from another account fail to load (CLAUDE.md).
 6. **Rollout order:** test patch (one plot + the hub plaza) -> check look + frame time at high and low graphics ->
