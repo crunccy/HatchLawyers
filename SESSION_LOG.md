@@ -14,7 +14,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
-  deliverables in `environment-redesign/`. Stage 1 audit + Stage 2 hub blockout first, then crnuch's approval.
+  deliverables in `environment-redesign/`. Stage 1 audit + Stage 2 hub blockout DONE 2026-10-18, waiting for
+  crnuch's approval of `environment-redesign/central_hub/blockout/LAYOUT.md` before any detailed modeling.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
@@ -163,6 +164,25 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: world redesign Stage 1 (audit) + Stage 2 (central hub blockout)
+- crnuch's brief: a floating-island universe (hub + six egg islands), **Blender only** until approved; no Studio,
+  gameplay or map changes (user's call). The studded-brick rule (docs/ART_STYLE_STUDS.md) was meant to come with
+  this brief and applies to it. The raised-stud test patch from earlier today stays live as it was approved.
+- **Audit** (`environment-redesign/01_AUDIT.md`), verified in code + the live place (read-only queries, one
+  measuring playtest):
+  - 8 plots (56 × 56)
+  - max firm 53 wide × ~141 deep from the street edge, Supreme Tower spire ~161 up
+  - players spawn at their firm
+  - eggs hatch only in firms; travel blocked while carrying; bosses knock carried eggs loose
+  - Upgrade prompts must sit under `Workspace.Zones` (`ZoneService.hookPrompts`)
+- **Hub blockout** (`environment-redesign/central_hub/blockout/`): `hub_blockout.py` builds the .blend (0.5 MB),
+  `hub_layout.json` and 3 JPEG renders (aerial, plaza ground view, labelled top-down). Layout from crnuch's
+  ChatGPT reference image, with the real 8 plots (56 × 145 lots at r 148-293, facing the centre), services on an
+  r 102 ring, the License Building north, the Arcade Pier bridge south. LAYOUT.md has every position (Roblox
+  coords) and 5 decisions for crnuch (firm orientation, hub Egg Incubator, License vs Upgrades split, the return
+  trip from separate islands, the Arcade Pier).
+- Open: Git LFS isn't installed (fine while files are small); the reference image isn't in the repo yet.
 
 ## 2026-10-18 — crnuch, local session: raised studs, test patch (Plaza + one plot)
 - **Stud shape = Roblox's own** (crnuch's call: "look like the roblox studs", not round LEGO ones): a low rounded

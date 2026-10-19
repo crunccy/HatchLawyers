@@ -46,6 +46,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
 | Zones map: reference breakdown + rules (lane of zones, walls, decoration, scattered eggs) | [docs/ZONES_REFERENCE.md](docs/ZONES_REFERENCE.md), shots in `references/zones-ref-*.webp` |
+| World redesign (floating islands, Blender only until approved): audit, hub blockout, stages | [environment-redesign/README.md](environment-redesign/README.md) |
 | Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
 | Eggs v5: Blender eggs, hatch, incubator (pipeline, upload, install) | [docs/EGGS_V5.md](docs/EGGS_V5.md) |
 | UI overhaul (2026-10-18): reference analysis, audit of every UI surface, icon ids, plan | [docs/UI_OVERHAUL.md](docs/UI_OVERHAUL.md); Figma design system: figma.com/design/PtgoaIbriizMlKEDFVxc8Q (Starter plan: Figma MCP = 20 calls/month) |
