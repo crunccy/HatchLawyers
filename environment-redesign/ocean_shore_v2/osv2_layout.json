@@ -204,323 +204,323 @@
  "egg_spots": [
   {
    "blender_xy": [
-    -92.5,
-    22.4
+    -75.2,
+    20.6
    ],
    "roblox_xz": [
-    -92.5,
-    -22.4
+    -75.2,
+    -20.6
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -74.7,
-    49.3
+    -73.3,
+    53.3
    ],
    "roblox_xz": [
-    -74.7,
-    -49.3
+    -73.3,
+    -53.3
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -84.3,
-    8.6
+    -82.8,
+    13.4
    ],
    "roblox_xz": [
-    -84.3,
-    -8.6
+    -82.8,
+    -13.4
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -84.4,
-    46.1
+    -87.0,
+    37.2
    ],
    "roblox_xz": [
-    -84.4,
-    -46.1
+    -87.0,
+    -37.2
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -65.1,
-    39.0
+    -71.6,
+    29.5
    ],
    "roblox_xz": [
-    -65.1,
-    -39.0
+    -71.6,
+    -29.5
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    -98.2,
-    38.5
+    -74.8,
+    41.9
    ],
    "roblox_xz": [
-    -98.2,
-    -38.5
+    -74.8,
+    -41.9
    ],
    "region": "Palm Clearing"
   },
   {
    "blender_xy": [
-    90.8,
-    -31.6
+    74.0,
+    -17.3
    ],
    "roblox_xz": [
-    90.8,
-    31.6
+    74.0,
+    17.3
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    92.5,
-    -6.8
+    74.4,
+    -7.8
    ],
    "roblox_xz": [
-    92.5,
-    6.8
+    74.4,
+    7.8
    ],
    "region": "Coral Flats"
   },
   {
    "blender_xy": [
-    69.3,
-    -10.4
+    104.0,
+    -5.4
    ],
    "roblox_xz": [
-    69.3,
-    10.4
+    104.0,
+    5.4
    ],
    "region": "Coral Flats"
-  },
-  {
-   "blender_xy": [
-    68.3,
-    0.3
-   ],
-   "roblox_xz": [
-    68.3,
-    -0.3
-   ],
-   "region": "Coral Flats"
-  },
-  {
-   "blender_xy": [
-    100.4,
-    -35.7
-   ],
-   "roblox_xz": [
-    100.4,
-    35.7
-   ],
-   "region": "Coral Flats"
-  },
-  {
-   "blender_xy": [
-    81.6,
-    -0.7
-   ],
-   "roblox_xz": [
-    81.6,
-    0.7
-   ],
-   "region": "Coral Flats"
-  },
-  {
-   "blender_xy": [
-    9.9,
-    -89.0
-   ],
-   "roblox_xz": [
-    9.9,
-    89.0
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -3.9,
-    -59.8
-   ],
-   "roblox_xz": [
-    -3.9,
-    59.8
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -14.4,
-    -69.7
-   ],
-   "roblox_xz": [
-    -14.4,
-    69.7
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    15.7,
-    -63.4
-   ],
-   "roblox_xz": [
-    15.7,
-    63.4
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    8.9,
-    -57.4
-   ],
-   "roblox_xz": [
-    8.9,
-    57.4
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    10.2,
-    -76.5
-   ],
-   "roblox_xz": [
-    10.2,
-    76.5
-   ],
-   "region": "Shell Beach"
-  },
-  {
-   "blender_xy": [
-    -30.7,
-    100.0
-   ],
-   "roblox_xz": [
-    -30.7,
-    -100.0
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    -38.7,
-    66.2
-   ],
-   "roblox_xz": [
-    -38.7,
-    -66.2
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    -42.2,
-    86.4
-   ],
-   "roblox_xz": [
-    -42.2,
-    -86.4
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    -29.2,
-    79.9
-   ],
-   "roblox_xz": [
-    -29.2,
-    -79.9
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    -31.9,
-    90.4
-   ],
-   "roblox_xz": [
-    -31.9,
-    -90.4
-   ],
-   "region": "Driftwood Dunes"
-  },
-  {
-   "blender_xy": [
-    63.9,
-    76.6
-   ],
-   "roblox_xz": [
-    63.9,
-    -76.6
-   ],
-   "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
     89.2,
-    86.7
+    -2.7
    ],
    "roblox_xz": [
     89.2,
-    -86.7
+    2.7
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    64.9,
+    -8.0
+   ],
+   "roblox_xz": [
+    64.9,
+    8.0
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    79.6,
+    -41.8
+   ],
+   "roblox_xz": [
+    79.6,
+    41.8
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    3.7,
+    -60.5
+   ],
+   "roblox_xz": [
+    3.7,
+    60.5
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    9.3,
+    -72.6
+   ],
+   "roblox_xz": [
+    9.3,
+    72.6
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -12.5,
+    -49.4
+   ],
+   "roblox_xz": [
+    -12.5,
+    49.4
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -0.5,
+    -45.7
+   ],
+   "roblox_xz": [
+    -0.5,
+    45.7
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -9.9,
+    -81.0
+   ],
+   "roblox_xz": [
+    -9.9,
+    81.0
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -18.8,
+    -72.4
+   ],
+   "roblox_xz": [
+    -18.8,
+    72.4
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -22.8,
+    94.8
+   ],
+   "roblox_xz": [
+    -22.8,
+    -94.8
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -48.8,
+    87.2
+   ],
+   "roblox_xz": [
+    -48.8,
+    -87.2
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -44.9,
+    66.8
+   ],
+   "roblox_xz": [
+    -44.9,
+    -66.8
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -27.6,
+    63.9
+   ],
+   "roblox_xz": [
+    -27.6,
+    -63.9
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -58.9,
+    80.5
+   ],
+   "roblox_xz": [
+    -58.9,
+    -80.5
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    58.4,
+    63.3
+   ],
+   "roblox_xz": [
+    58.4,
+    -63.3
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    76.7,
-    88.9
+    77.8,
+    55.1
    ],
    "roblox_xz": [
-    76.7,
-    -88.9
+    77.8,
+    -55.1
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    56.1,
-    84.4
+    55.4,
+    86.1
    ],
    "roblox_xz": [
-    56.1,
-    -84.4
+    55.4,
+    -86.1
    ],
    "region": "Shipwreck Shore"
   },
   {
    "blender_xy": [
-    68.5,
-    55.9
+    81.2,
+    76.7
    ],
    "roblox_xz": [
-    68.5,
-    -55.9
+    81.2,
+    -76.7
+   ],
+   "region": "Shipwreck Shore"
+  },
+  {
+   "blender_xy": [
+    94.1,
+    68.8
+   ],
+   "roblox_xz": [
+    94.1,
+    -68.8
    ],
    "region": "Shipwreck Shore"
   }
  ],
  "checks": {
-  "sand_decor": "small walk-through decor on the sand (shells, starfish, pebbles, tufts, tiny coral, flat driftwood, patches): at most 2.1 studs tall, collision off in Roblox",
+  "sand_decor": "small walk-through decor on the sand (shells, starfish, pebbles, tufts, tiny coral, flat driftwood, patches): at most 2.2 studs tall, collision off in Roblox",
   "box_open_sand": "3233/3233 sample points (4-stud grid) are open sand",
   "charge_lanes": "896/896 sampled charges (20-wide lanes) run clear to their end; 350 of them get the full 130 studs (the rest stop at the box edge, as BossService clamps)",
   "egg_edge_clearance": {
-   "Palm Clearing": "45.3 studs to the sand edge (drops scatter at most 20.7)",
-   "Coral Flats": "38.1 studs to the sand edge (drops scatter at most 20.7)",
-   "Shell Beach": "26.5 studs to the sand edge (drops scatter at most 20.7)",
-   "Driftwood Dunes": "29.8 studs to the sand edge (drops scatter at most 20.7)",
-   "Shipwreck Shore": "70.8 studs to the sand edge (drops scatter at most 20.7)"
+   "Palm Clearing": "56.9 studs to the sand edge (drops scatter at most 20.7)",
+   "Coral Flats": "32.9 studs to the sand edge (drops scatter at most 20.7)",
+   "Shell Beach": "36.5 studs to the sand edge (drops scatter at most 20.7)",
+   "Driftwood Dunes": "36.1 studs to the sand edge (drops scatter at most 20.7)",
+   "Shipwreck Shore": "65.4 studs to the sand edge (drops scatter at most 20.7)"
   },
   "spawn_safe": "spawn pad 77 studs outside the box (his reach past it: 17.0)",
   "portal_threat": "portal 45 studs outside the box: the last ~15 studs of the approach are inside his 60-stud trigger, but he can't follow onto the portal",

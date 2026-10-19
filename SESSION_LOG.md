@@ -263,6 +263,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `beam`, `frond`); `K.studs_done(only=)` filter + world-grid studs on big organic faces.
 - Renders: aerial (the concept's angle), top-down, gameplay diagram, spawn / eggs / boss / portal views.
   **Waiting for crnuch's approval: no detailed modeling until then.**
+- **crnuch's note on the layout:** "the portal frame looks slightly detached and could use more detail". The ring sat
+  above its base with the rocks apart: now a rock arch planted on two buttress legs (its ends gripped, the vortex a
+  door shape down to the ground: still a level walk-in), runes, a moss cap + vines, a crystal keystone, crystals,
+  coral, ferns, a studded stone base, stepping stones, two palms leaning over. Checks unchanged (all pass).
 
 ## 2026-10-19 — crnuch, local session: world redesign — studded voxel on EVERYTHING (kit + all five areas rebuilt)
 - **crnuch's call:** "when i say i want studded voxel on everything i genuinely mean everything". Recorded in

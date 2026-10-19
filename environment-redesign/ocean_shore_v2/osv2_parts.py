@@ -236,20 +236,79 @@ def spawn_pad(m, x, y, z):
     m.cyl(x, y, 2.4, z + 0.5, z + 0.6, "spawn_white", segs=24)
 
 
+def _shard(m, base, h, lean_x, lean_y, w, look):
+    """A crystal shard: a tapering beam pair (wide foot, thin tip), leaning."""
+    tip = (base[0] + lean_x, base[1] + lean_y, base[2] + h)
+    mid = (base[0] + lean_x * 0.55, base[1] + lean_y * 0.55, base[2] + h * 0.55)
+    m.beam(base, mid, w, w, look)
+    m.beam(mid, tip, w * 0.55, w * 0.55, look)
+
+
 def escape_portal(m, x, y, z, rot=0.0):
-    """The ESCAPE portal: a tall ring of craggy rock blocks wrapped in glowing purple, a swirling vortex, glowing
-    rune stones, flush with the sand (no stairs: the walk-in is level)."""
-    m.cyl(x, y, 13, z - 0.4, z + 0.3, "rock_grey_dark", segs=40)
-    m.ring(10, 12.6, z + 0.3, z + 0.45, "glow_portal", cx=x, cy=y, segs=40)
-    cz = z + 13.5
-    m.ring_v(x, y, cz, 9.5, 12.5, 3.2, ["rock_grey", "rock_grey_dark", "rock_grey_light"], rot=rot, segs=20, gap=0.25)
-    m.ring_v(x, y, cz, 9.0, 9.6, 3.6, "glow_portal", rot=rot, segs=28, gap=0.05)
-    m.disc_v(x, y, cz, 9.0, 0.6, "portal_vortex", rot=rot, segs=40)
-    c, s = math.cos(math.radians(rot)), math.sin(math.radians(rot))
-    for sgn in (-1, 1):  # framing boulders + glowing rune stones at its feet
-        bx, by = x + c * sgn * 15, y + s * sgn * 15
-        rock_cluster(m, bx, by, z, 7, 9, grass=True, n=2, rot=rot)
-        m.brick(x + c * sgn * 11, y + s * sgn * 11, z + 0.3, 1.6, 1.6, 2.6, "glow_portal", rot=rot + 15, bevel=0.3)
+    """The ESCAPE portal (front = local -y, toward the island's middle): a natural rock ARCH planted on two craggy
+    buttress legs, a purple vortex down to the ground (a level walk-in, no stairs), glowing runes on the arch, a moss cap
+    with hanging vines, a purple crystal keystone, crystals + coral + ferns at its feet, a studded stone base with
+    stepping stones leading in, two palms leaning over it."""
+    F = K.Frame(m, x, y, rot)
+    W = lambda lx, ly: F.p(lx, ly)
+    c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
+    # the base: an irregular studded stone platform, barely above the sand (a 0.15 lip: walk straight on)
+    base = []
+    for i in range(16):
+        a = 2 * math.pi * i / 16
+        rr = 1 + 0.12 * math.sin(3 * a + 1.3)
+        base.append(W(17 * rr * math.cos(a), 12 * rr * math.sin(a) + 1.5))
+    m.slab(base, z - 0.5, z + 0.15, "rock_grey_dark", chamfer=0.12, top="rock_grey")
+    for k, ly in enumerate((-15.5, -20.5, -25.5, -30.5)):  # stepping stones leading in (flush)
+        m.rock(*W((k % 2) * 1.6 - 0.8, ly), z - 0.3, 4.2, 3.4, 0.38, "rock_grey_light", rot=rot + k * 17, jitter=0.12, taper=0.05)
+    m.ring(9.5, 11.5, z + 0.15, z + 0.3, "glow_portal", cx=x, cy=y, segs=40, a0=rot + 200, a1=rot + 340)  # glow on the floor in front
+    # the arch (open at the bottom: the vortex reaches the ground)
+    cz = z + 12.6
+    A0, A1 = -38.0, 218.0
+    F.ring_v(0, 0, cz, 9.8, 13.0, 3.8, ["rock_grey", "rock_grey_dark", "rock_grey_light", "rock_grey"], segs=17, gap=0.3, a0=A0, a1=A1)
+    F.ring_v(0, 0, cz, 9.1, 9.9, 4.2, "glow_portal", segs=30, gap=0.04, a0=A0, a1=A1)
+    F.ring_v(0, 0, cz, 12.8, 13.8, 3.0, ["moss", "moss_dark"], segs=10, gap=0.2, a0=45, a1=135)  # the moss cap
+    for k in range(9):  # glowing runes on both faces of the arch
+        a = math.radians(A0 + 12 + k * (A1 - A0 - 24) / 8)
+        for fy in (-2.0, 2.0):
+            F.brick(11.4 * math.cos(a), fy, cz + 11.4 * math.sin(a) - 0.55, 1.1, 0.3, 1.1, "glow_portal", rot=0, bevel=0.1)
+    # the vortex: a disc + the doorway below it (a keyhole of purple), a bright core and swirl arcs on its face
+    # (one door shape, no overlapping layers: a half-disc on top of the doorway)
+    F.ring_v(0, 0, cz, 0.02, 9.2, 0.5, "portal_vortex", segs=24, gap=0.0, a0=0, a1=180)
+    F.brick(0, 0, z + 0.15, 2 * 9.2, 0.5, cz - z - 0.15, "portal_vortex", bevel=0.0)
+    zb = cz - 9.5 * math.sin(math.radians(38))
+    for sgn in (-1, 1):  # the glow band carries on down both sides of the doorway to the ground
+        F.brick(sgn * 9.55, 0, z + 0.15, 0.7, 4.2, zb - z - 0.15, "glow_portal", bevel=0.05)
+    F.disc_v(0, -0.32, cz - 0.5, 2.6, 0.2, "glow_portal", segs=24)
+    for r0, a0, a1 in ((4.6, 20, 200), (6.8, 200, 380), (3.4, 110, 290)):
+        F.ring_v(0, -0.36, cz - 0.5, r0, r0 + 0.45, 0.16, "glow_portal", segs=12, gap=0.05, a0=a0, a1=a1)
+    # the legs: craggy buttresses gripping both ends of the arch, a wider foot rock outside each
+    for sgn in (-1, 1):
+        lx = sgn * 11.4
+        m.rock(*W(lx, 0), z - 0.4, 6.2, 5.6, 6.4, "rock_grey_dark", rot=rot + sgn * 8, jitter=0.12, taper=0.08)
+        m.rock(*W(lx + sgn * 0.6, 0.4), z + 5.6, 5.0, 4.8, 3.6, "rock_grey", top="moss", rot=rot - sgn * 10, jitter=0.15)
+        m.rock(*W(lx + sgn * 4.6, 1.0), z - 0.4, 6.4, 6.8, 4.6, "rock_grey", top="moss", rot=rot + sgn * 25, jitter=0.2)
+        m.rock(*W(lx + sgn * 7.8, 3.2), z - 0.4, 4.4, 4.6, 2.6, "rock_grey_light", top="moss_dark", rot=rot + sgn * 40, jitter=0.25)
+        m.rock(*W(lx - sgn * 0.4, -3.6), z - 0.4, 3.2, 2.6, 2.2, "rock_grey_light", rot=rot + sgn * 15, jitter=0.25)
+        for k in range(3):  # glowing crystals at the feet
+            bx, by = W(sgn * (8.2 + k * 1.3), -4.2 - k * 0.8)
+            _shard(m, (bx, by, z + 0.1), 2.6 + k * 0.9, sgn * 0.6 * c, sgn * 0.6 * s_, 0.8, "glow_portal")
+        P_ = W(sgn * 15.5, -3.5)
+        coral(m, P_[0], P_[1], z + 0.15, 0.9, "coral_pink" if sgn < 0 else "coral_purple")
+        fern_bush(m, *W(sgn * 18.5, 2.5), z + 0.1, 1.1)
+        for k in range(3):
+            shell(m, *W(sgn * (5 + k * 2.2), -9 - k * 1.5), z + 0.15, 1.0)
+        palm(m, *W(sgn * 13.5, 7.5), z + 0.1, h=19 + sgn * 2, lean=rot + 90 + 180 + sgn * 25, kind="curve")
+    # the keystone: a cluster of purple crystals on the top of the arch
+    top = W(0, 0)
+    for k, (lx, h, lean) in enumerate(((0, 5.0, 0), (-1.4, 3.6, -1.0), (1.4, 3.8, 1.0), (-0.6, 2.6, -0.4), (0.8, 2.8, 0.6))):
+        bx, by = W(lx, 0.2 * (k % 2))
+        _shard(m, (bx, by, cz + 13.2), h, lean * c, lean * s_, 1.1 if k == 0 else 0.8, "glow_portal")
+    m.rock(*top, cz + 12.6, 4.2, 3.6, 1.4, "rock_grey_dark", top="moss", rot=rot, jitter=0.1, taper=0.2)
+    for k, a in enumerate((58, 74, 92, 108, 124)):  # vines draping over the front of the arch
+        ar = math.radians(a)
+        vx, vy = W(13.2 * math.cos(ar), -1.6)
+        vine(m, vx, vy, cz + 13.2 * math.sin(ar), 3.5 + (k % 3) * 1.6, rot - 90)
 
 
 def boss_pad(m, x, y, z):
