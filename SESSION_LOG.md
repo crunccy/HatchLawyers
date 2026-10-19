@@ -13,12 +13,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   and minigame screen onto `Shared.Skin` + the glossy PNG icons. Audit + plan: docs/UI_OVERHAUL.md. Figma design
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
-- **crnuch (local), since 2026-10-18:** raised-stud test patch (docs/ART_STYLE_STUDS.md): Blender stud tiles, laid
-  on the hub Plaza + one plot, client distance LOD. Don't add raised studs elsewhere meanwhile.
 
 ## Open items
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
-      1-stud spacing chosen; test patch (one plot + hub plaza) in progress.
+      Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
+      size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
 - [ ] **UI overhaul part 2 at phone size** (crnuch): Device emulator, landscape - HUD tiles (2 columns), coins
       bottom-left vs the thumbstick, egg bag, Goals (folded), hint toast, zone arrival banner. Only checked by layout
       maths (2026-10-18 entry).
@@ -161,6 +160,21 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: raised studs, test patch (Plaza + one plot)
+- **Stud shape = Roblox's own** (crnuch's call: "look like the roblox studs", not round LEGO ones): a low rounded
+  square with slanted sides, 1-stud pitch, real geometry. Blender: `tools/blender/stud_tiles.py` ->
+  `tools/zones/stud_tiles.json` (+ preview `art/studs/`). crnuch OK'd it from a Studio side-by-side.
+- **Uploaded from crnuch's Studio** (CreateAssetAsync): 20 tile meshes -> `ReplicatedStorage.Studs.Tiles`
+  (`tools/zones/BuildStudTiles.lua`, kit kept in ServerStorage: StudTileData / StudTileUpload / StudTileAssets).
+- **New client script `StarterPlayerScripts.Studs`** (src/Studs.client.lua) + **`Config.Studs`** (merged into live
+  Config: it was unchanged since the last snapshot) + a config check. Parts tagged `StudTop` get studs on open cells
+  near the camera. Tagged: Plaza (312 bricks) + Plot1 Base / Paths.
+- Bugs found in playtest and fixed: rays passed through the firm (CanQuery off) -> switched to a part-bounds index;
+  Terrain's box covered the whole map -> skipped.
+- Playtested on PC: studs stop cleanly at the firm, 0 overlaps over 2,418 plot studs; fps same with the layer on
+  and off (Studio throttled, weak signal). Phone / low tiles not eye-checked. Snapshot re-exported (113 scripts);
+  `run_checks.py` ALL PASSED. Claim released.
 
 ## 2026-10-18 — crnuch, local session: studded-brick art rule recorded
 - crnuch set a **non-negotiable art rule**: the whole map is a studded toy-brick world with real raised 3D studs (not

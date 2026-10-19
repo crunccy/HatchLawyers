@@ -22,7 +22,7 @@ circular studs**. That look is the game's identity.
   phones; decorative studs separate from gameplay collision.
 - **Standard:** every island belongs to the same colorful, detailed, polished, unmistakably studded universe.
 
-## How it maps onto this game (proposed, not built yet)
+## How it maps onto this game
 Where we are on 2026-10-18: the map is Plastic Parts with `TopSurface = Studs` (flat texture, 1-stud spacing); the
 characters use `MaterialService.BrickStuds` (a normal map, 0.5-stud spacing, docs/CHARACTER_STYLE.md). No raised studs
 exist anywhere yet.
@@ -45,3 +45,23 @@ Proposed technique (to confirm with a test patch before rolling out):
 5. **Uploads by crnuch** (place owner) - meshes uploaded from another account fail to load (CLAUDE.md).
 6. **Rollout order:** test patch (one plot + the hub plaza) -> check look + frame time at high and low graphics ->
    hub/plaza/street -> the six zones -> firms (x8 per server, watch the budget) -> props/decor -> far scenery (LOD only).
+
+## Status (2026-10-18): test patch live
+- **Live in Studio:** the 20 tile meshes (10 grids 8x8 ... 1x1, `full` 60 tris/stud + `low` 24) uploaded by crnuch
+  -> `ReplicatedStorage.Studs.Tiles`; `StarterPlayerScripts.Studs` (src/Studs.client.lua); `Config.Studs`.
+  Re-upload kit in ServerStorage: `StudTileData` (the JSON), `StudTileUpload` (tools/zones/BuildStudTiles.lua),
+  `StudTileAssets` (ids). New stud shape: re-run stud_tiles.py, refresh StudTileData, delete StudTileAssets, re-run.
+- **Tagged `StudTop`:** the hub Plaza's 312 up-facing bricks (Floor + Rim) and Plot1's Base + 4 Paths.
+- **How a face is studded:** a stud goes in a cell only if no visible anchored part reaches into the stud's space,
+  tested on part BOUNDS kept in a client-side index - not rays or spatial queries, because ~90% of firm parts have
+  CanQuery off (rays went straight through them in the first try). Terrain is skipped (its box is the whole map).
+  Chunks of 32 studs show within 140 studs of the camera (80 on phones / low graphics, which also get the `low`
+  tiles); a part's flat stud texture turns Smooth only while raised studs cover it.
+- **Playtested (crnuch's Studio, PC, high detail):** Plaza + a claimed plot with a full firm: studs stop cleanly at
+  the firm walls, bushes and paths; 0 parts reach into any of 2,418 plot studs; ~13.7k studs / ~820k tris shown near
+  the camera; fps the same with the layer on and off (but Studio was throttled at ~15 fps in the background, so
+  that's a weak signal). Shots: `art/studs/playtest_plaza.jpg`, `art/studs/playtest_plot_lawn.jpg`.
+- **Not checked yet:** the `low` tiles on a real phone / the Device emulator; frame time with Studio in front; 8 firms.
+- **Rollout notes:** tag the 8 plots (any plot can be claimed: Plot1 is tagged, the test ran on Plot2 by a runtime
+  tag), then the street, zones, decor. `touched()` loops over every studded face per added part - fine for 300 faces,
+  index it by grid before tagging thousands. Watch the triangle count: ~60 tris per stud.

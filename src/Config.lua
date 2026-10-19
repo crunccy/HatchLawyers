@@ -1209,6 +1209,22 @@ Config.Bosses = {
 	},
 }
 
+-- Raised studs (docs/ART_STYLE_STUDS.md; StarterPlayerScripts.Studs, client only). Parts tagged Tag get Roblox-shaped
+-- 3D studs on their top face near the camera; past the radius the flat stud texture stays.
+Config.Studs = {
+	Tag = "StudTop",
+	Radius = 140, -- studs from the camera's focus: chunks inside show raised studs (PC)
+	RadiusLow = 80, -- phones / low graphics (they also get the 8-sided "low" tiles)
+	Hysteresis = 16, -- a shown chunk hides only past Radius + this (no flicker at the edge)
+	LowQualityLevel = 3, -- a saved graphics level at or below this counts as low (Automatic doesn't)
+	ChunkSize = 32, -- studs per side of a show / hide chunk
+	CheckEvery = 0.3, -- seconds between distance checks
+	BuildPerStep = 6, -- chunks revealed per check at most (spreads the first build)
+	Foot = 0.3, -- half a stud's foot width, and Height its height above the face (tools/blender/stud_tiles.py):
+	Height = 0.1, -- a cell gets no stud if a visible anchored part reaches into that space
+	RebuildDelay = 1.5, -- seconds things must settle after parts appear / go before the faces they touch are redone
+}
+
 local function deepFreeze(t: { [any]: any })
 	for _, v in t do
 		if type(v) == "table" and not table.isfrozen(v) then

@@ -182,6 +182,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   references): a sci-fi pad + light column + floating halo (FloatRing1-3 turned by the client). The trip itself is
   `Shared.TravelFx`: one animation per destination, growing down the lane (zone 1 a beam-up ... Space Base a hyperspace
   tunnel flight); it sets a local `Traveling` attribute (Bosses.client skips its ragdoll meanwhile).
+- `ReplicatedStorage.Studs.Tiles` + `StarterPlayerScripts.Studs` (2026-10-18): the RAISED studs (docs/ART_STYLE_STUDS.md).
+  Tag an up-facing part `StudTop` and the client lays Roblox-shaped 3D stud tiles on its open top cells near the
+  camera (no collision, nothing replicates); `Config.Studs`. Covered cells are found from part bounds, not rays
+  (most firm parts are CanQuery off). Tiles from `tools/blender/stud_tiles.py` -> `tools/zones/BuildStudTiles.lua`.
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the
   back via CarryPose. Made in Blender: `tools/blender/briefcases.py` → `tools/zones/BuildBriefcases.lua`.
 - `ReplicatedStorage.Remotes` — mr.robe: CaseResult, TrainLawyer, UpgradeDesk, AttendCourt, AnswerEvidence.

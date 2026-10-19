@@ -309,6 +309,15 @@ check("client tiers have positive weights and case lengths", function()
 	end
 end)
 
+check("raised studs: sane radii and the Blender stud's size", function()
+	local S = Config.Studs
+	assert(S and type(S.Tag) == "string", "Config.Studs.Tag")
+	assert(S.RadiusLow > 0 and S.RadiusLow <= S.Radius, "RadiusLow must be 0 < RadiusLow <= Radius")
+	assert(S.ChunkSize >= 8 and S.CheckEvery > 0 and S.BuildPerStep >= 1, "chunking")
+	-- tools/blender/stud_tiles.py: foot 0.60 wide (half 0.3), 0.10 tall on a 1-stud pitch
+	assert(S.Foot > 0 and S.Foot < 0.5 and S.Height > 0 and S.Height < 0.5, "Foot / Height must fit a 1-stud cell")
+end)
+
 ------------------------------------------------------------------ report
 print(string.format("%d checks passed, %d failed", passed, #failures))
 for _, f in failures do
