@@ -21,6 +21,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   benchmark the other islands get redone to (one at a time, when crnuch asks); Space Base done 2026-10-19 by mr.robe's session (waiting for approval): all six
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
+- **crnuch (local), since 2026-10-19:** BRIEFCASE BAY v2 redesign in Blender on the Ocean Shore v2 benchmark
+  (`environment-redesign/briefcase_bay_v2/`; v1 in `briefcase_bay/` stays untouched as the backup): audit, then a
+  layout for crnuch's approval, built round The Senior Partner's real numbers. Don't redesign Briefcase Bay meanwhile.
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
