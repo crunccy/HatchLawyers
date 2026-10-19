@@ -13,10 +13,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   and minigame screen onto `Shared.Skin` + the glossy PNG icons. Audit + plan: docs/UI_OVERHAUL.md. Figma design
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
+- **crnuch (local), since 2026-10-18:** raised-stud test patch (docs/ART_STYLE_STUDS.md): Blender stud tiles, laid
+  on the hub Plaza + one plot, client distance LOD. Don't add raised studs elsewhere meanwhile.
 
 ## Open items
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
-      Decide the stud scale, then a test patch (one plot + hub plaza) before any rollout. Not started.
+      1-stud spacing chosen; test patch (one plot + hub plaza) in progress.
 - [ ] **UI overhaul part 2 at phone size** (crnuch): Device emulator, landscape - HUD tiles (2 columns), coins
       bottom-left vs the thumbstick, egg bag, Goals (folded), hint toast, zone arrival banner. Only checked by layout
       maths (2026-10-18 entry).

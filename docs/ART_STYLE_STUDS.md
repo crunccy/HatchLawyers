@@ -37,7 +37,9 @@ Proposed technique (to confirm with a test patch before rolling out):
 3. **Distance / phone LOD:** a client script shows stud tiles only near the camera (radius set in Config, smaller on
    low graphics quality); beyond it the base Part keeps its flat stud look so the far view still reads as studded.
    StreamingEnabled-friendly.
-4. **One stud scale everywhere** (decision pending: 1-stud spacing like the map today, or 0.5 like the characters).
+4. **One stud scale for the world: 1-stud spacing** (crnuch's call 2026-10-18), same grid as the old `TopSurface = Studs`
+   texture. Stud = 0.6 wide, 0.2 tall (LEGO proportions on a 1-stud pitch). Characters keep their finer 0.5 studs
+   (small objects; the rule says no stud clutter on tiny things).
 5. **Uploads by crnuch** (place owner) - meshes uploaded from another account fail to load (CLAUDE.md).
 6. **Rollout order:** test patch (one plot + the hub plaza) -> check look + frame time at high and low graphics ->
    hub/plaza/street -> the six zones -> firms (x8 per server, watch the budget) -> props/decor -> far scenery (LOD only).
