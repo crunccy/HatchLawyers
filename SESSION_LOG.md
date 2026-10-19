@@ -24,7 +24,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **crnuch (local), since 2026-10-19:** BRIEFCASE BAY v2 redesign in Blender on the Ocean Shore v2 benchmark
   (`environment-redesign/briefcase_bay_v2/`; v1 in `briefcase_bay/` stays untouched as the backup): audit, then a
   layout for crnuch's approval, built round The Senior Partner's real numbers. Don't redesign Briefcase Bay meanwhile.
-  Audit + layout done 2026-10-19 (waiting for crnuch's approval; the detailed pass after it).
+  Layout approved 2026-10-19 (crnuch: keep the skyline); detailed pass in progress.
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -206,6 +206,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
     Floor under it back toward the player; an invisible wall at the playable edge (OSv2's moss ring is walkable today).
 - **For crnuch to decide:** keep the skyline + harbour + monuments as Briefcase Bay's identity in the ring, or go
   all-natural like Ocean Shore (the layout stays either way).
+- **crnuch's call:** layout APPROVED, keep the skyline; detailed pass next.
 - **Kit:** `bbv2_parts.py` (tower, lighthouse, ferry, giant briefcase / gavel, welcome arch, ball tree, lamp, bench,
   hedge, path, scales pad, lawn decor); Ocean Shore v2's pieces reused unchanged (rock looks recoloured to limestone
   for this island only).
