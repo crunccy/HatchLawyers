@@ -83,6 +83,7 @@ of 760 round it (Briefcase Bay NE, Pet Park E, Brainrot Zone SE, Food Court SW, 
 Parts in the place now (built 2026-10-19 from the PRE-voxel exports): hub 27.6k, Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot
 Zone 10.9k, Food Court 13.9k, Ocean Shore 17.1k, Space Base 13.3k. The voxel exports in `tools/zones/redesign/` (2026-10-19,
 all bricks) are bigger: hub 37.0k, Briefcase Bay 18.2k, Pet Park 19.9k, Brainrot Zone 18.2k, Food Court 21.9k, Ocean Shore
-25.9k, Space Base 23.4k (165k vs 108k): the place is NOT rebuilt from them yet.
+25.9k, Space Base 23.4k (165k vs 108k): the place is NOT rebuilt from them yet - crnuch's call 2026-10-19: leave it
+until parts vs meshes is decided.
 Meshes named `Sky_*` (far Blender-only backdrops like Space Base's starfield) are not exported.
 Admin `/island <name>` (AdminCommands) drops you on an island's south side in a playtest.

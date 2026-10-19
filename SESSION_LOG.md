@@ -25,6 +25,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
       with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
+      **crnuch's call 2026-10-19: leave the place as it is until we decide parts vs meshes.** Don't rebuild meanwhile.
 - [ ] **Redesign islands in the place, not wired yet** (built 2026-10-19, `Workspace.WorldRedesign`): next = the
       Stage 7 wiring (Travel to each island's arrival, EggSpots + ZoneService, boss arenas, RETURN HOME, the hub's
       firm lots), raised studs (StudTop tags), a space skybox for Space Base. Check fps / memory on a phone: the place
