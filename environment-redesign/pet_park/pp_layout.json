@@ -1,0 +1,431 @@
+{
+ "island": "Pet Park",
+ "radius_xy": [
+  170,
+  190
+ ],
+ "places": [
+  {
+   "name": "The pond + giant corgi",
+   "blender_xy": [
+    0,
+    -25
+   ],
+   "roblox_xz": [
+    0,
+    25
+   ],
+   "what": "landmark: a corgi statue on its island, a bridge from the south, lily pads"
+  },
+  {
+   "name": "Arrival pad",
+   "blender_xy": [
+    0,
+    -161
+   ],
+   "roblox_xz": [
+    0,
+    161
+   ],
+   "what": "where Travel lands players"
+  },
+  {
+   "name": "PET PARK gate",
+   "blender_xy": [
+    0,
+    -127
+   ],
+   "roblox_xz": [
+    0,
+    127
+   ],
+   "what": "the bone arch"
+  },
+  {
+   "name": "Paw Clinic",
+   "blender_xy": [
+    -118,
+    52
+   ],
+   "roblox_xz": [
+    -118,
+    -52
+   ],
+   "what": "vet (decor)"
+  },
+  {
+   "name": "Fluff & Puff",
+   "blender_xy": [
+    118,
+    52
+   ],
+   "roblox_xz": [
+    118,
+    -52
+   ],
+   "what": "grooming salon (decor)"
+  },
+  {
+   "name": "The Barkery",
+   "blender_xy": [
+    -66,
+    -128
+   ],
+   "roblox_xz": [
+    -66,
+    128
+   ],
+   "what": "dog bakery caf\u00e9 (decor)"
+  },
+  {
+   "name": "RETURN HOME portal",
+   "blender_xy": [
+    0,
+    156
+   ],
+   "roblox_xz": [
+    0,
+    -156
+   ],
+   "what": "home WITH eggs, past the boss (crnuch's call)"
+  },
+  {
+   "name": "Bunny topiary",
+   "blender_xy": [
+    -40,
+    148
+   ],
+   "roblox_xz": [
+    -40,
+    -148
+   ],
+   "what": "sculpture by the arena's north exit"
+  },
+  {
+   "name": "Giant cat",
+   "blender_xy": [
+    40,
+    148
+   ],
+   "roblox_xz": [
+    40,
+    -148
+   ],
+   "what": "sculpture by the arena's north exit"
+  },
+  {
+   "name": "BARK COURT (boss arena)",
+   "blender_xy": [
+    0,
+    78
+   ],
+   "roblox_xz": [
+    0,
+    -78
+   ],
+   "what": "open floor r 54: Barrister Bulldog (34-stud bark ring, 60-stud trigger)"
+  },
+  {
+   "name": "Dog Meadow (egg meadow)",
+   "blender_xy": [
+    -102,
+    -28
+   ],
+   "roblox_xz": [
+    -102,
+    28
+   ],
+   "what": "fenced egg field"
+  },
+  {
+   "name": "Cat Garden (egg meadow)",
+   "blender_xy": [
+    100,
+    -22
+   ],
+   "roblox_xz": [
+    100,
+    22
+   ],
+   "what": "fenced egg field"
+  },
+  {
+   "name": "Bunny Hills (egg meadow)",
+   "blender_xy": [
+    72,
+    -115
+   ],
+   "roblox_xz": [
+    72,
+    115
+   ],
+   "what": "fenced egg field"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -126.1,
+    -23.2
+   ],
+   "roblox_xz": [
+    -126.1,
+    23.2
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -68.6,
+    -33.0
+   ],
+   "roblox_xz": [
+    -68.6,
+    33.0
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -96.6,
+    2.1
+   ],
+   "roblox_xz": [
+    -96.6,
+    -2.1
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -87.1,
+    -53.3
+   ],
+   "roblox_xz": [
+    -87.1,
+    53.3
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -72.0,
+    -16.0
+   ],
+   "roblox_xz": [
+    -72.0,
+    16.0
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -87.2,
+    -2.4
+   ],
+   "roblox_xz": [
+    -87.2,
+    2.4
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -90.1,
+    -25.5
+   ],
+   "roblox_xz": [
+    -90.1,
+    25.5
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    -84.8,
+    -10.2
+   ],
+   "roblox_xz": [
+    -84.8,
+    10.2
+   ],
+   "where": "Dog Meadow"
+  },
+  {
+   "blender_xy": [
+    108.2,
+    -16.2
+   ],
+   "roblox_xz": [
+    108.2,
+    16.2
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    77.5,
+    -36.0
+   ],
+   "roblox_xz": [
+    77.5,
+    36.0
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    87.9,
+    -17.3
+   ],
+   "roblox_xz": [
+    87.9,
+    17.3
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    107.2,
+    -47.6
+   ],
+   "roblox_xz": [
+    107.2,
+    47.6
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    121.8,
+    -31.8
+   ],
+   "roblox_xz": [
+    121.8,
+    31.8
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    96.7,
+    -4.9
+   ],
+   "roblox_xz": [
+    96.7,
+    4.9
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    86.4,
+    -36.0
+   ],
+   "roblox_xz": [
+    86.4,
+    36.0
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    94.3,
+    -33.7
+   ],
+   "roblox_xz": [
+    94.3,
+    33.7
+   ],
+   "where": "Cat Garden"
+  },
+  {
+   "blender_xy": [
+    69.0,
+    -118.5
+   ],
+   "roblox_xz": [
+    69.0,
+    118.5
+   ],
+   "where": "Bunny Hills"
+  },
+  {
+   "blender_xy": [
+    59.6,
+    -104.5
+   ],
+   "roblox_xz": [
+    59.6,
+    104.5
+   ],
+   "where": "Bunny Hills"
+  },
+  {
+   "blender_xy": [
+    70.8,
+    -101.4
+   ],
+   "roblox_xz": [
+    70.8,
+    101.4
+   ],
+   "where": "Bunny Hills"
+  },
+  {
+   "blender_xy": [
+    73.3,
+    -128.5
+   ],
+   "roblox_xz": [
+    73.3,
+    128.5
+   ],
+   "where": "Bunny Hills"
+  },
+  {
+   "blender_xy": [
+    40.7,
+    101.5
+   ],
+   "roblox_xz": [
+    40.7,
+    -101.5
+   ],
+   "where": "BARK COURT (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -40.7,
+    101.5
+   ],
+   "roblox_xz": [
+    -40.7,
+    -101.5
+   ],
+   "where": "BARK COURT (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -40.7,
+    54.5
+   ],
+   "roblox_xz": [
+    -40.7,
+    -54.5
+   ],
+   "where": "BARK COURT (bonus, inside the boss arena)"
+  },
+  {
+   "blender_xy": [
+    40.7,
+    54.5
+   ],
+   "roblox_xz": [
+    40.7,
+    -54.5
+   ],
+   "where": "BARK COURT (bonus, inside the boss arena)"
+  }
+ ]
+}

@@ -15,8 +15,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
-  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay done,
-  waiting for crnuch's approval; Pet Park next.
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay approved,
+  Pet Park done (waiting for approval); Brainrot next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
@@ -165,6 +165,24 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 2 — Pet Park (Blender)
+- **crnuch's calls:**
+  - Briefcase Bay approved; its north parks stay the danger fields near the boss
+  - no ambience stills **or** MP4 clips from now on: static renders + the animated .blend only
+- **Shared kit** `kit/hl_world.py`: the themeable pieces every island shares (marquee / board / wood sign, arrival
+  pad, RETURN HOME portal with an island-themed ring + keystone and the same green home field everywhere, open boss
+  floor, themed voxel eggs + spot rings, winding Catmull-Rom paths).
+- **Pet Park** (`environment-redesign/pet_park/`; doc `PET_PARK.md`):
+  - route arrival → bone gate → winding path → pond with a 23-stud giant corgi + bridge → Dog Meadow / Cat Garden /
+    Bunny Hills egg meadows → BARK COURT (Barrister Bulldog at 3.5×) → paw RETURN HOME
+  - PAW CLINIC / FLUFF & PUFF / THE BARKERY; 24 egg spots; the Pet egg design (sky blue, paw prints)
+  - 416k tris + 236k studs; 7 renders
+  - ambience in the .blend: sway, petals + leaves, butterflies with clearances checked per prop, water, glows, boss
+    idle
+  - audio picks: CC0, checked
+- Fixed in review: the corgi too small for a headline landmark (now 1.7×); a blossom canopy filling the pond view
+  (an open lawn there now).
 
 ## 2026-10-18 — crnuch, local session: world redesign Stage 5, island 1 — Briefcase Bay (Blender)
 - crnuch skipped the hub clip re-render ("just begin with the next island"). The hub fixes (arch straddling the belt,

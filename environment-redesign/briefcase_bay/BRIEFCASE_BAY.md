@@ -1,4 +1,4 @@
-# World 1 — Briefcase Bay (Stage 5, 2026-10-18) · presented for crnuch's approval
+# World 1 — Briefcase Bay (Stage 5, 2026-10-18) · APPROVED by crnuch 2026-10-18
 
 A bright business and legal district on its own floating island: blue-glass towers, office parks, a harbour, and the
 boss's boardroom plaza. Built in the shared kit (`../kit/hl_kit.py` + `hl_island.py`), in the hub's style.
@@ -49,10 +49,8 @@ ARRIVAL (south) ──> BRIEFCASE BAY gate ──> boulevard + cross street ─�
 | TriggerRange 60, WalkSpeed 38 (> players' 32) | | You can't outrun it straight across. The cone + windup is the skill test, as today |
 | Suggested `Bounds` | Blender x −60…60, y 10…130 (Roblox z −130…−10) | Keeps it inside the arena |
 
-**For crnuch:** with the boss on the arena's south rim, players in the two north parks (y −7…−37) are 25–55 studs
-away, inside its 60-stud trigger. Either:
-- (a) accept it: the north parks become the "danger" fields, or
-- (b) keep it ≥ 60 from them (e.g. Bounds y ≥ 30, or `StayNearMiddle`).
+**crnuch's call (2026-10-18): (a)**, the north parks stay the "danger" fields: with the boss on the arena's south
+rim they're inside its 60-stud trigger (25–55 studs away). Bounds stay as suggested above.
 
 ## Egg spots — 24 (gold rings in the ground; example briefcase eggs on every third spot)
 | Where | Spots | Note |
@@ -139,6 +137,5 @@ Roblox equivalents are as in the hub table:
 - **Faceless towers:** the towers read as stylised glass boxes from the ground (no interiors behind the glass).
 - **Plain ferry:** the Bay Ferry is simple.
 - **Untouched south lawns:** the south lawns are only groves and hills.
-- **North parks vs the boss:** they sit inside the boss's trigger range (a gameplay call, above).
 - **Reference check:** compared by eye to crnuch's reference thumbnail (a dense blue skyline). Ours is less dense
   by design: 12 buildings, so the parks and the arena stay readable.
