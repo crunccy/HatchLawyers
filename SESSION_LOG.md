@@ -19,6 +19,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
   session (waiting for approval); Space Base next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
+- **mr.robe (local), since 2026-10-19:** building the redesign islands INTO the place (user's call on mr.robe's PC:
+  "just build them"): hub + the five finished islands as new floating islands in `Workspace.WorldRedesign`, east of
+  today's map (x ~3600). Today's hub / lane / gameplay stay untouched and unwired. Don't build islands in Studio meanwhile.
 
 ## Open items
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
