@@ -203,12 +203,15 @@ def _stud_sources():
     return get
 
 
-def studs_done(target_collection=None, name="Studs"):
+def studs_done(target_collection=None, name="Studs", only=None):
     """THE STUD PASS (crnuch's call 2026-10-19: studded voxel on EVERYTHING): raised studs on every exposed top face of
     every mesh object in the scene - terrain, paths, buildings, props, eggs, liquids, clouds, bosses, statues.
     A grid point is studded unless something sits on it or hangs just above it (rays against all the geometry, at
     the stud's centre and four corners); overlapping coplanar tops are deduped. Each object gets its OWN instancers,
-    parented to it (Studs_<object>_<look>), so studs ride whatever moves: wind, drift, turning signs, boss idles."""
+    parented to it (Studs_<object>_<look>), so studs ride whatever moves: wind, drift, turning signs, boss idles.
+    only(obj, look_name) -> bool limits which tops get studs (the classic-Roblox style: broad terrain + structural
+    surfaces only; water, glow and natural details stay smooth - crnuch's Ocean Shore v2 brief). Big organic faces
+    (more than 4 corners, e.g. a sand plateau) are studded on the WORLD grid, so the studs line up island-wide."""
     from mathutils.bvhtree import BVHTree
     skip = {"Kit_Sources", "Presentation"}
     objs = [o for o in bpy.context.scene.objects if o.type == "MESH" and not o.name.startswith(("Studs_", "StudSource_"))
@@ -257,8 +260,24 @@ def studs_done(target_collection=None, name="Studs"):
             n = (r3 @ p.normal)
             if n.length == 0 or n.z / n.length < 0.995:
                 continue
+            look = me.materials[p.material_index] if me.materials else None
+            if look is None or (only and not only(o, look.name)):
+                continue
             vs = [co[i] for i in p.vertices]
             z = sum(v.z for v in vs) / len(vs)
+            if len(vs) > 4:  # a big organic face: the world grid, inside its outline
+                xs_, ys_ = [v.x for v in vs], [v.y for v in vs]
+                poly = [(v.x, v.y) for v in vs]
+                gx = math.floor(min(xs_)) + 0.5
+                while gx < max(xs_):
+                    gy = math.floor(min(ys_)) + 0.5
+                    while gy < max(ys_):
+                        if _inside(poly, gx, gy) and free(gx, gy, z) and \
+                                all(free(gx + a * 0.27, gy + b * 0.27, z) for a in (-1, 1) for b in (-1, 1)) and not dupe(gx, gy, z):
+                            per.setdefault(look.name, (look, []))[1].append((gx, gy, z, 0.0))
+                        gy += 1.0
+                    gx += 1.0
+                continue
             best, ex = 0.0, None
             for k in range(len(vs)):
                 e = vs[(k + 1) % len(vs)] - vs[k]
@@ -278,9 +297,6 @@ def studs_done(target_collection=None, name="Studs"):
             nu, nv = max(1, int(w + 0.35)), max(1, int(d + 0.35))
             uc, vc = (max(us) + min(us)) / 2, (max(vv) + min(vv)) / 2
             rect = len(vs) == 4 and abs(w * d - abs(sum(uv[k][0] * uv[(k + 1) % 4][1] - uv[(k + 1) % 4][0] * uv[k][1] for k in range(4)) / 2)) < 0.02 * w * d + 1e-6
-            look = me.materials[p.material_index] if me.materials else None
-            if look is None:
-                continue
             rz = math.atan2(uy, ux)
             for i in range(nu):
                 for j in range(nv):

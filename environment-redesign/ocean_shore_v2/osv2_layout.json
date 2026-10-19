@@ -1,0 +1,558 @@
+{
+ "island": "Ocean Shore v2 (layout for approval)",
+ "places": [
+  {
+   "name": "Megalodon's start pad",
+   "blender_xy": [
+    0.0,
+    10.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -10.0
+   ],
+   "what": "a subtle ring of sunken flat stones flush with the sand (he leaves it to hunt)"
+  },
+  {
+   "name": "SPAWN (arrival pad, safe zone)",
+   "blender_xy": [
+    -169.4,
+    -158.6
+   ],
+   "roblox_xz": [
+    -169.4,
+    158.6
+   ],
+   "what": "classic blue-and-white spawn pad at the end of a lantern-lit boardwalk"
+  },
+  {
+   "name": "ESCAPE PORTAL (RETURN HOME)",
+   "blender_xy": [
+    146.7,
+    146.7
+   ],
+   "roblox_xz": [
+    146.7,
+    -146.7
+   ],
+   "what": "purple vortex in a ring of craggy rock, flush with the sand (no stairs)"
+  },
+  {
+   "name": "Waterfall (175 deg)",
+   "blender_xy": [
+    -186.4,
+    21.3
+   ],
+   "roblox_xz": [
+    -186.4,
+    -21.3
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Waterfall (128 deg)",
+   "blender_xy": [
+    -132.7,
+    174.8
+   ],
+   "roblox_xz": [
+    -132.7,
+    -174.8
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Waterfall (336 deg)",
+   "blender_xy": [
+    173.5,
+    -72.3
+   ],
+   "roblox_xz": [
+    173.5,
+    72.3
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Waterfall (16 deg)",
+   "blender_xy": [
+    206.4,
+    64.2
+   ],
+   "roblox_xz": [
+    206.4,
+    -64.2
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Rock pools",
+   "blender_xy": [
+    0,
+    0
+   ],
+   "roblox_xz": [
+    0,
+    0
+   ],
+   "what": "five turquoise pools in rock pockets round the edge (scenery, not playable)"
+  },
+  {
+   "name": "Rock arch",
+   "blender_xy": [
+    -15.4,
+    151.1
+   ],
+   "roblox_xz": [
+    -15.4,
+    -151.1
+   ],
+   "what": "a natural sea arch on the north rim"
+  },
+  {
+   "name": "Coastal cave",
+   "blender_xy": [
+    -154.9,
+    -33.6
+   ],
+   "roblox_xz": [
+    -154.9,
+    33.6
+   ],
+   "what": "a cave mouth in the west cliff"
+  },
+  {
+   "name": "Shipwreck",
+   "blender_xy": [
+    181.8,
+    30.5
+   ],
+   "roblox_xz": [
+    181.8,
+    -30.5
+   ],
+   "what": "a broken hull beached on the east rocks"
+  }
+ ],
+ "egg_regions": [
+  {
+   "name": "Palm Clearing",
+   "blender_xy": [
+    -82,
+    32
+   ],
+   "roblox_xz": [
+    -82,
+    -32
+   ],
+   "radius": 26,
+   "risk": "west, under the palm cliffs: mid risk"
+  },
+  {
+   "name": "Coral Flats",
+   "blender_xy": [
+    86,
+    -18
+   ],
+   "roblox_xz": [
+    86,
+    18
+   ],
+   "radius": 26,
+   "risk": "east, by the coral pools: mid risk"
+  },
+  {
+   "name": "Shell Beach",
+   "blender_xy": [
+    4,
+    -66
+   ],
+   "roblox_xz": [
+    4,
+    66
+   ],
+   "radius": 24,
+   "risk": "south, nearest the spawn: the safer start"
+  },
+  {
+   "name": "Driftwood Dunes",
+   "blender_xy": [
+    -38,
+    82
+   ],
+   "roblox_xz": [
+    -38,
+    -82
+   ],
+   "radius": 22,
+   "risk": "north, on Megalodon's patrol line: high risk"
+  },
+  {
+   "name": "Shipwreck Shore",
+   "blender_xy": [
+    74,
+    76
+   ],
+   "roblox_xz": [
+    74,
+    -76
+   ],
+   "radius": 22,
+   "risk": "north-east, on the way to the portal: high risk"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -92.5,
+    22.4
+   ],
+   "roblox_xz": [
+    -92.5,
+    -22.4
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -74.7,
+    49.3
+   ],
+   "roblox_xz": [
+    -74.7,
+    -49.3
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -84.3,
+    8.6
+   ],
+   "roblox_xz": [
+    -84.3,
+    -8.6
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -84.4,
+    46.1
+   ],
+   "roblox_xz": [
+    -84.4,
+    -46.1
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -65.1,
+    39.0
+   ],
+   "roblox_xz": [
+    -65.1,
+    -39.0
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    -98.2,
+    38.5
+   ],
+   "roblox_xz": [
+    -98.2,
+    -38.5
+   ],
+   "region": "Palm Clearing"
+  },
+  {
+   "blender_xy": [
+    90.8,
+    -31.6
+   ],
+   "roblox_xz": [
+    90.8,
+    31.6
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    92.5,
+    -6.8
+   ],
+   "roblox_xz": [
+    92.5,
+    6.8
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    69.3,
+    -10.4
+   ],
+   "roblox_xz": [
+    69.3,
+    10.4
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    68.3,
+    0.3
+   ],
+   "roblox_xz": [
+    68.3,
+    -0.3
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    100.4,
+    -35.7
+   ],
+   "roblox_xz": [
+    100.4,
+    35.7
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    81.6,
+    -0.7
+   ],
+   "roblox_xz": [
+    81.6,
+    0.7
+   ],
+   "region": "Coral Flats"
+  },
+  {
+   "blender_xy": [
+    9.9,
+    -89.0
+   ],
+   "roblox_xz": [
+    9.9,
+    89.0
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -3.9,
+    -59.8
+   ],
+   "roblox_xz": [
+    -3.9,
+    59.8
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -14.4,
+    -69.7
+   ],
+   "roblox_xz": [
+    -14.4,
+    69.7
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    15.7,
+    -63.4
+   ],
+   "roblox_xz": [
+    15.7,
+    63.4
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    8.9,
+    -57.4
+   ],
+   "roblox_xz": [
+    8.9,
+    57.4
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    10.2,
+    -76.5
+   ],
+   "roblox_xz": [
+    10.2,
+    76.5
+   ],
+   "region": "Shell Beach"
+  },
+  {
+   "blender_xy": [
+    -30.7,
+    100.0
+   ],
+   "roblox_xz": [
+    -30.7,
+    -100.0
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -38.7,
+    66.2
+   ],
+   "roblox_xz": [
+    -38.7,
+    -66.2
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -42.2,
+    86.4
+   ],
+   "roblox_xz": [
+    -42.2,
+    -86.4
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -29.2,
+    79.9
+   ],
+   "roblox_xz": [
+    -29.2,
+    -79.9
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    -31.9,
+    90.4
+   ],
+   "roblox_xz": [
+    -31.9,
+    -90.4
+   ],
+   "region": "Driftwood Dunes"
+  },
+  {
+   "blender_xy": [
+    63.9,
+    76.6
+   ],
+   "roblox_xz": [
+    63.9,
+    -76.6
+   ],
+   "region": "Shipwreck Shore"
+  },
+  {
+   "blender_xy": [
+    89.2,
+    86.7
+   ],
+   "roblox_xz": [
+    89.2,
+    -86.7
+   ],
+   "region": "Shipwreck Shore"
+  },
+  {
+   "blender_xy": [
+    76.7,
+    88.9
+   ],
+   "roblox_xz": [
+    76.7,
+    -88.9
+   ],
+   "region": "Shipwreck Shore"
+  },
+  {
+   "blender_xy": [
+    56.1,
+    84.4
+   ],
+   "roblox_xz": [
+    56.1,
+    -84.4
+   ],
+   "region": "Shipwreck Shore"
+  },
+  {
+   "blender_xy": [
+    68.5,
+    55.9
+   ],
+   "roblox_xz": [
+    68.5,
+    -55.9
+   ],
+   "region": "Shipwreck Shore"
+  }
+ ],
+ "checks": {
+  "sand_decor": "small walk-through decor on the sand (shells, starfish, pebbles, tufts, tiny coral, flat driftwood, patches): at most 2.1 studs tall, collision off in Roblox",
+  "box_open_sand": "3233/3233 sample points (4-stud grid) are open sand",
+  "charge_lanes": "896/896 sampled charges (20-wide lanes) run clear to their end; 350 of them get the full 130 studs (the rest stop at the box edge, as BossService clamps)",
+  "egg_edge_clearance": {
+   "Palm Clearing": "45.3 studs to the sand edge (drops scatter at most 20.7)",
+   "Coral Flats": "38.1 studs to the sand edge (drops scatter at most 20.7)",
+   "Shell Beach": "26.5 studs to the sand edge (drops scatter at most 20.7)",
+   "Driftwood Dunes": "29.8 studs to the sand edge (drops scatter at most 20.7)",
+   "Shipwreck Shore": "70.8 studs to the sand edge (drops scatter at most 20.7)"
+  },
+  "spawn_safe": "spawn pad 77 studs outside the box (his reach past it: 17.0)",
+  "portal_threat": "portal 45 studs outside the box: the last ~15 studs of the approach are inside his 60-stud trigger, but he can't follow onto the portal",
+  "spawn_to_portal": "reachable on level ground",
+  "no_safe_bypass": "no walkable route avoids his reach (every route crosses his box)",
+  "box_on_sand": "all four box corners are on sand",
+  "egg_spots": "28 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
+ },
+ "boss": {
+  "box_blender": [
+   -120.0,
+   -100.0,
+   120.0,
+   110.0
+  ],
+  "box_roblox_xz": [
+   -120.0,
+   -110.0,
+   120.0,
+   100.0
+  ],
+  "Scale": 3.2,
+  "WalkSpeed": 42,
+  "Chase": 0.95,
+  "AttackEvery": 2.8,
+  "Windup": 1.0,
+  "Length": 130,
+  "Width": 20,
+  "LineSpeed": 150,
+  "Dizzy": 2,
+  "HitboxWidth": 14.080000000000002,
+  "Height": 25.6,
+  "TriggerRange": 60
+ }
+}

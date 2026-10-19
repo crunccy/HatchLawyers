@@ -25,6 +25,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   classic Roblox studs not LEGO, natural tropical wilderness, one continuous flat sand surface for Megalodon, spawn SW,
   purple escape portal NE). New folder `environment-redesign/ocean_shore_v2/`; v1 (`ocean_shore/`) stays as the backup.
   Layout first, then detailed modeling after crnuch's approval. Blender only. Don't redesign Ocean Shore meanwhile.
+  Layout done 2026-10-19 (waiting for approval).
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -242,6 +243,27 @@ Claim big work here before starting (who · what · since), push the claim, remo
   plank seams on the dock showed the water (dark sub-deck); the beam read as a solid plank in stills (fainter);
   sign boards clipped low roofs (now on the eaves); the NE path ran through the lifeguard tower (re-routed).
 - **Left:** crnuch's approval of Ocean Shore (and Food Court); Space Base is the last island.
+## 2026-10-19 — crnuch, local session: Ocean Shore v2 — audit + LAYOUT for approval (Blender)
+- **crnuch's brief** (+ concept image `environment-redesign/references/ocean_shore_concept.webp`): redesign Ocean
+  Shore as a natural tropical wilderness in **classic Roblox studs, not LEGO**, around the real Megalodon mechanics;
+  layout first, detailed modeling only after approval. Recorded in docs/ART_STYLE_STUDS.md + CLAUDE.md.
+- **Audit (code = authority):** Megalodon 25.6 tall / 14.8 wide; hitbox 14 wide; Line 130 x 20 at 150 studs/s,
+  Windup 1.0, Dizzy 2, every 2.8 s within 60; walks 42; targets the NEAREST player in the zone (docs/BOSSES.md says egg
+  carriers: the code doesn't); goals clamped to Bounds - Margin; idle patrol ±12 round the box's middle; drops scatter
+  up to 20.7 studs (12 eggs), clamped to Bounds - 4, raycast onto Floor/Path; 14 eggs max; no travel while carrying.
+- **Layout** (`environment-redesign/ocean_shore_v2/`; doc `OCEAN_SHORE_V2.md`): one flat studded sand plateau round
+  Megalodon's 240 x 210 box; spawn on a lantern boardwalk SW (77 studs out of reach); a level purple escape portal NE
+  in craggy rocks; his start pad = a ring of sunken stones; 5 egg regions / 28 candidate spots on the open sand; cliffs,
+  pools, waterfalls, ~50 palms, a sea arch, a cave and a shipwreck all 18+ studs clear of his reach.
+- **Measured checks** (the build computes them): his box 100% open sand; 896/896 sampled charges clear (350 full
+  130); eggs 26.5-70.8 studs from the edge vs 20.7 scatter; spawn → portal walkable; no route avoids his reach.
+  Pending (needs Roblox): his patrol band + arena box (code), warning readability over decor, Floor tagging for drops,
+  the portal's home-with-eggs rule.
+- **Kit:** `kit/hl_classic.py` (ClassicMesh: the smooth Roblox-Part primitives back + cohesive `slab`, faceted `rock`,
+  `beam`, `frond`); `K.studs_done(only=)` filter + world-grid studs on big organic faces.
+- Renders: aerial (the concept's angle), top-down, gameplay diagram, spawn / eggs / boss / portal views.
+  **Waiting for crnuch's approval: no detailed modeling until then.**
+
 ## 2026-10-19 — crnuch, local session: world redesign — studded voxel on EVERYTHING (kit + all five areas rebuilt)
 - **crnuch's call:** "when i say i want studded voxel on everything i genuinely mean everything". Recorded in
   docs/ART_STYLE_STUDS.md ("Everything means everything") + CLAUDE.md: no smooth round or sloped shape on any object,
