@@ -1,4 +1,4 @@
-# Central hub — Stage 2 blockout (2026-10-18) · WAITING FOR crnuch's APPROVAL
+# Central hub — Stage 2 blockout (2026-10-18) · APPROVED by crnuch 2026-10-18
 
 A dimensionally accurate blockout: colour-coded volumes, no final art and no studs yet. It follows crnuch's approved
 reference: a round floating island; the spawn plaza with a statue fountain in the middle; a main avenue up to the
@@ -105,4 +105,10 @@ field. It is the brightest object on the island by design.
 5. **Arcade Pier:** keep it as a bridge-linked pier off the south edge (mr.robe's booths go on it)?
 6. Please save the reference image(s) into `environment-redesign/references/`.
 
-STOP: no detailed modeling until crnuch approves this layout.
+## crnuch's decisions (2026-10-18, binding)
+1. Firms face the centre (layout as built).
+2. The hub Egg Incubator is a **landmark only**: hatching stays in each firm's two incubators.
+3. License and Upgrades are **split** as in the reference: the Law License Building sells licenses; Upgrades sells
+   Carry + Speed.
+4. Each egg island gets a **return portal past its boss**: carrying eggs out still means getting past the boss.
+5. The Arcade Pier stays a bridge-linked pier off the south edge.

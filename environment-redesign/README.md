@@ -8,8 +8,8 @@ pitch, Roblox's own stud shape).
 | Stage | What | Status |
 | --- | --- | --- |
 | 1 | Repository audit | **Done**: [01_AUDIT.md](01_AUDIT.md) |
-| 2 | Central hub blockout + aerial / top-down renders | **Done, waiting for approval**: [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
-| 3 | Hub detailed modeling | not started (needs approval) |
+| 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
+| 3 | Hub detailed modeling | **in progress** |
 | 4 | Hub ambience (animations, audio research) | not started |
 | 5 | The six egg islands, one at a time | not started |
 | 6 | All-islands presentation | not started |

@@ -14,8 +14,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
-  deliverables in `environment-redesign/`. Stage 1 audit + Stage 2 hub blockout DONE 2026-10-18, waiting for
-  crnuch's approval of `environment-redesign/central_hub/blockout/LAYOUT.md` before any detailed modeling.
+  deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stage 3 (hub detailed modeling) in progress.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
