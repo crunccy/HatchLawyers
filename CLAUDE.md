@@ -234,6 +234,11 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   stage (`Config.Floors.Slots`) and runs them; panels `StarterPlayerScripts.Floors`; lasting bonuses
   `Server.FloorBonuses` (through `FirmFeatures.buffSources`). The Supreme Tower is hollow (its bands are floors).
   New building fronts must keep the rooms' slots clear (or move the slots).
+- WORLD REDESIGN IN THE PLACE (2026-10-19, user's call "just build them"): `Workspace.WorldRedesign` holds the redesign
+  hub + five egg islands as studded Parts (~95k), east of today's map (hub at (3600, 150, -1200), islands on a ring of
+  760). Built by `tools/zones/BuildRedesignIsland.lua` from `tools/zones/redesign/<Island>.json` (exported from the Blender
+  build scripts by `environment-redesign/kit/export_island.py`). NOT wired yet: no eggs, bosses, travel or firms there;
+  today's hub + lane still run the game. Visit with admin `/island <name>`. environment-redesign/README.md has the details.
 - ARCADE PIER (2026-10-13): `Workspace.ArcadePier` north of the hub (the land ends at z 168), booth games run by
   `ServerScriptService.ArcadeServer` (+ `Games`), `StarterPlayerScripts.Arcade`, `ReplicatedStorage.ArcadeClient`,
   `Config.Arcade`. Map from Blender (`tools/blender/arcade_pier.py`). See src/Arcade/README.md.

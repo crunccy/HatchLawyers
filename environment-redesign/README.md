@@ -13,7 +13,7 @@ pitch, Roblox's own stud shape).
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
 | 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **approved**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court **done, waiting for approval**: [food_court/FOOD_COURT.md](food_court/FOOD_COURT.md) · Ocean Shore **done, waiting for approval** (mr.robe's session): [ocean_shore/OCEAN_SHORE.md](ocean_shore/OCEAN_SHORE.md) · Space Base next |
 | 6 | All-islands presentation | not started |
-| 7 | Roblox integration plan (plan only) | not started |
+| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + the five finished islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). Wiring plan: not written |
 
 ## Layout
 ```
@@ -59,3 +59,19 @@ or MP4 clips (they cost ~20 min per island).
 - **Moving scenery** (turning signs, floating cubes, clouds) is client-only motion, like `WorldLife`; its studs ride
   with it (`K.STUD_GROUP` in the kit).
 
+
+## Building into the place (2026-10-19)
+Every island build script can also be exported as Roblox PARTS: `kit/hl_export.py` records each kit primitive
+(brick → Part, cylinder → Cylinder, ring → boxes round the circle, prism → rows of boxes with a stepped edge, gable →
+two WedgeParts, upright rings → turned boxes, sign text → SurfaceGui text, statues → their own blocks; studs and bosses
+are left out) and `kit/export_island.py` runs the build with it, saving nothing to the island's .blend / layout JSON:
+```bash
+"/c/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --python environment-redesign/kit/export_island.py -- ocean_shore os_build.py OceanShore
+```
+→ `tools/zones/redesign/<Island>.json` (Roblox space). In Studio (Edit mode, the JSON served on 8766),
+`tools/zones/BuildRedesignIsland.lua` builds it into `Workspace.WorldRedesign.<Island>` (one Model per Blender
+object, BrickStuds plastic, Neon glows, Glass water without collision; ZFight passes at the end). Re-export + rebuild
+an island after changing its Blender script. Where they stand: the hub at (3600, 150, -1200), the egg islands on a ring
+of 760 round it (Briefcase Bay NE, Pet Park E, Brainrot Zone SE, Food Court SW, Ocean Shore W; Space Base's slot NW).
+Parts: hub 27.6k, Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot Zone 10.9k, Food Court 13.9k, Ocean Shore 17.1k.
+Admin `/island <name>` (AdminCommands) drops you on an island's south side in a playtest.

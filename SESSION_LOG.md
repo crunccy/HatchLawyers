@@ -19,11 +19,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
   session (waiting for approval); Space Base next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
-- **mr.robe (local), since 2026-10-19:** building the redesign islands INTO the place (user's call on mr.robe's PC:
-  "just build them"): hub + the five finished islands as new floating islands in `Workspace.WorldRedesign`, east of
-  today's map (x ~3600). Today's hub / lane / gameplay stay untouched and unwired. Don't build islands in Studio meanwhile.
 
 ## Open items
+- [ ] **Redesign islands in the place, not wired yet** (built 2026-10-19, `Workspace.WorldRedesign`): next = the
+      Stage 7 wiring (Travel to each island's arrival, EggSpots + ZoneService, boss arenas, RETURN HOME, the hub's
+      firm lots), raised studs (StudTop tags), Space Base (not modelled yet). Check fps / memory on a phone: the place
+      went from ~19.5k to ~115k parts (all islands stream; move them to ServerStorage if it hurts).
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -169,6 +170,23 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — mr.robe, local session: the redesign islands built into the place
+- **User's call** (on mr.robe's PC, after Ocean Shore): "just build them" — the islands go into the game now, without
+  waiting for approval. Heads-up for crnuch: this is Stage 7 started on that call; today's hub, lane and gameplay are
+  untouched, the islands sit beside them, unwired.
+- **Pipeline:** `environment-redesign/kit/hl_export.py` records every kit primitive of an island's build script as a
+  Roblox part (bricks, cylinders, rings as boxes, prisms as rows of boxes, gables as WedgeParts, upright rings, sign
+  text, statues; studs + bosses left out); `kit/export_island.py` runs a build with it (saving nothing to the .blend)
+  → `tools/zones/redesign/<Island>.json`; `tools/zones/BuildRedesignIsland.lua` builds `Workspace.WorldRedesign.<Island>`.
+- **Live in Studio:** hub 27.6k parts at (3600, 150, -1200); Briefcase Bay 11.5k, Pet Park 13.9k, Brainrot Zone
+  10.9k, Food Court 13.9k, Ocean Shore 17.1k on a ring of 760 round it (~95k parts; the place had ~19.5k). Each built
+  in 2-6 s, ZFight passes included. Checked: the overview and Ocean Shore's gate match the Blender renders.
+- **`/island <name>`** (AdminCommands, src + live, snapshot re-exported): streams the island in and drops you on its
+  south side. Playtested: `;island ocean` landed on Ocean Shore's path (Running on Plastic), all 17,138 parts
+  streamed, no game errors in the output.
+- **Not done:** the wiring (Travel, eggs, bosses, RETURN HOME, firms on the hub), raised studs, Space Base, a phone
+  fps check (open items).
 
 ## 2026-10-19 — mr.robe, local session: world redesign Stage 5, island 5 — Ocean Shore (Blender)
 - **User's call** (on mr.robe's PC): "do what mr blox was doing, save the current version as a new copy and then add
