@@ -22,6 +22,19 @@ circular studs**. That look is the game's identity.
   phones; decorative studs separate from gameplay collision.
 - **Standard:** every island belongs to the same colorful, detailed, polished, unmistakably studded universe.
 
+## Classic Roblox studs, NOT LEGO (crnuch's Ocean Shore redesign brief, 2026-10-19, later the same day)
+This refines the "everything" call below. The look is **retro Roblox surface studs on cohesive, detailed, stylized
+terrain**, not a LEGO diorama, a Minecraft island or a pile of stacked toy bricks:
+- **Large cohesive terrain meshes** (sand, cliffs, terraces) with classic studded surfaces. Don't build the island
+  from hundreds of small stacked bricks, and don't give every terrain layer thick seams.
+- **Studs on broad terrain and structural surfaces** (sand, grass, rock tops, docks, platforms): shallow, round,
+  recognisable Roblox studs, one consistent spacing, visible at the gameplay camera. Optimise far surfaces.
+- **Unstudded:** smooth water, glowing energy (portals, glows) and selected natural details (palm fronds, coral,
+  shells, foliage).
+- Detail comes from the natural environment (cliffs, palms, coral, driftwood, waterfalls), not decorative buildings.
+- Ocean Shore v2 (`environment-redesign/ocean_shore_v2/`) is the benchmark; the other islands follow only after
+  crnuch approves it. Until then they keep the voxel builds from earlier on 2026-10-19.
+
 ## "Everything" means everything (crnuch's call, 2026-10-19)
 After the floating-island renders crnuch clarified: *"when i say i want studded voxel on everything i genuinely mean
 everything"*. So the "suitable architecture" / "no stud clutter on tiny objects" wording above is too narrow:

@@ -21,6 +21,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
+- **crnuch (local), since 2026-10-19:** OCEAN SHORE v2 redesign in Blender (crnuch's brief + concept image:
+  classic Roblox studs not LEGO, natural tropical wilderness, one continuous flat sand surface for Megalodon, spawn SW,
+  purple escape portal NE). New folder `environment-redesign/ocean_shore_v2/`; v1 (`ocean_shore/`) stays as the backup.
+  Layout first, then detailed modeling after crnuch's approval. Blender only. Don't redesign Ocean Shore meanwhile.
+
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
