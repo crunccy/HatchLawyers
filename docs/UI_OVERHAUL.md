@@ -1,0 +1,103 @@
+# UI overhaul (2026-10-18) — reference analysis, audit, plan
+
+crnuch's brief: every interface in the game restyled to the reference recording's design language, using the
+glossy PNG icons in `art/icons/hud_navigation_glossy/`. **Copy the look, not the features**: no battle pass, no
+event pass, no new menus. Design pass in Figma first (crnuch asked for it), then Studio.
+
+## 1. Reference analysis (Desktop recordings 2026-10-18 7.07.09 / 7.07.21, 9 s + 68 s)
+One game ("Halloween Event Pass", "Item Index", "Shop"). What it does, measured off the frames:
+
+| Element | Reference |
+| --- | --- |
+| Window body | Charcoal `#2E2E34`, an embossed lego-tile pattern at ~8% (not dots), 3-4 px near-black outline, radius ~6 (almost square). The world behind is **blurred** while a window is open. |
+| Header | Full-width colour bar per window (Shop = lime `#5BFF3A`→`#2ED61C`, Index = sky `#6CCBFF`→`#3BA4F0` with 2 wide diagonal white shine bands), same tile pattern. Icon on the left (big, glossy, overlaps the bar edge), title in a heavy rounded sans, white, 4-5 px black stroke. |
+| Close | Red square (`#E3262B`, darker red inset border), white X with black stroke, sits inside the header's right end. |
+| Section titles | `-- PASSES --` yellow `#FFE13A` (or the section's colour) with black stroke, centred. |
+| Product cards | Full-bleed saturated gradient per category (money = green, speed = blue, passes = purple→blue / orange), tile pattern, sunburst rays + soft glow behind a big item picture, name/amount white + stroke over the picture. Price = a **wide lime bar** (black outline, Robux glyph + number) with a **purple gift square** beside it. Bigger "deal" cards span 2 columns. |
+| Ribbons | Red slanted tags `HOT`, `BEST VALUE`, `POPULAR`, `NEW`, white heavy text, pinned over a card's top-left, rotated ~-6°. |
+| Index tiles | Solid rarity colour (grey / green / blue / purple / gold), tile pattern, diagonal gloss; "???" silhouettes; selected = white 3 px border. Progress = black track, lime fill, white "1/8". |
+| Side tabs | Coloured stacked tabs outside the window's right edge (World / Limited / Halloween), active one bright, others dimmed. |
+| HUD | Left column of **square** tiles (~72 px): gradient fill (rainbow / sky), white inner border + black outer outline, sparkle glints, the PNG icon fills the tile, the label overlaps the tile's bottom edge (white + stroke). Red circle badge (`!` or a count) top-right. Currencies bottom-left: icon + big white number with stroke, **no panel**. Top-centre info line: white + stroke, the value in green. Toggles: green square knob. |
+| Motion | Windows pop in (scale ~0.85→1, back-out ~0.25 s) and the blur fades in; tiles grow on hover (~1.06); prices squish on press; the cursor list scrolls smoothly. |
+
+Our `Shared.Skin` (2026-10-10) already follows most of this (built from an earlier recording of the same kind).
+Gaps that are still visible in the game (playtest 2026-10-18, 1429x776):
+- HUD tiles are wide labelled bars with low-res Creator Store icons (gavel, stall, trophy for Rebirth).
+- Money is a dark pill top-centre; the reference has no panel.
+- The top hint toast is grey text on a black bar.
+- Goals card: UIKit's old purple bar with grey title + grey body text (low contrast).
+- The egg bag (`Zones` "Bag", 0/12 bottom-centre) is a brown pill of dark circles — the "egg buttons at the bottom".
+- World prompts are all Roblox's default grey ProximityPrompt (15 in Workspace).
+- No blur behind open windows.
+
+## 2. Icons (art/icons/hud_navigation_glossy, 1254 px PNGs, NOT on Roblox yet)
+Roblox caps images at 1024 px; upload 512 px copies **from crnuch's account** (the place owner; Studio on the Mac
+is signed in as crnuch, checked 2026-10-18). Record the ids in `HudMenu.Icons` (+ a table in this doc).
+
+| PNG | Used for |
+| --- | --- |
+| daily-gift | DAILY tile, Daily Rewards header, playtime-gift toast |
+| goals | Goals card header |
+| lawyers | LAWYERS tile + panel header, "lawyer waiting" toast |
+| shop | SHOP tile + Shop header, egg-shop prompts |
+| rebirth | REBIRTH tile + the Rebirth (Supreme.client) screen |
+| travel | TRAVEL tile, travel map header, travel confirm, zone-arrival banner |
+| money | coin counter, coin packs, payout pop-ups |
+| eggs | egg bag counter, hatch screen, odds boards, egg prompts |
+| merge | Mutation Machine (Merger) header + prompt |
+| upgrades | office upgrade / Skills / zone Carry + Speed upgrades |
+| vip | Shop passes section, VIP floors (Floors) |
+| index | the LAWYERS panel's collection / odds tab heading (no new Index menu) |
+| settings, codes, achievements, friends | **unused** — the game has no settings, codes, achievements or friends menu, and the brief says no new features. Kept for later. |
+
+Missing subjects (proposed, same glossy style, to make next): Courtroom/gavel (court, Big Case), Minigame/arcade
+ticket (Arcade + Gavel Bonk / Lucky Briefcase), Briefcase (Carry upgrade), Lock (locked zones / eggs).
+
+## 3. Audit — every player-facing surface
+Layer: **Skin** = built on `Shared.Skin` (reference style) · **UIKit** = old screen auto-restyled by `UISkin.client`
+· **Own** = hand-rolled styling. Action: R = rebuild on Skin, S = restyle details, ✓ = already close.
+
+| Surface | Script (StarterPlayerScripts unless noted) | Shown when | Layer | Action |
+| --- | --- | --- | --- | --- |
+| HUD menu column (Daily, Lawyers, Shop, Rebirth, Travel) | Shared.HudMenu | always | Own | R: square glossy tiles + new PNGs + badges |
+| Coin counter | Hud | always | Own | R: bottom-left, money icon, no panel, count-up |
+| Hint toast ("A lawyer is waiting…") | Hud / Guide | events | Own | R: Skin toast (slide in, icon, white + stroke) |
+| Goals card | Goals | always | Skin+UIKit | R: header + PNG, readable rows, progress bars |
+| Daily Rewards window + reward toast | Rewards | join / tile | Skin | S: header PNG, blur |
+| Egg bag counter (0/12) | Zones ("Bag") | always | Own | R: egg-slot chips, eggs PNG, fill pop |
+| Egg prompts, odds boards, locked-egg toast | Zones | in zones | Own/World | R: custom prompt + board restyle |
+| Zone arrival / zone name / License gate + upgrade prompts | Zones | entering a zone | Own/World | R: arrival banner, prompts |
+| Hatch screen, reveal, title cards, HatchBanner, HatchAnnounce | Eggs, Shared.HatchFx | hatching | Own (cinematic) | S: reveal card + names on Skin type; keep the cinematic |
+| Incubator billboards | Eggs | at firm | World | S |
+| LAWYERS panel (slots, office card, CLIENTS, BENCH, sell/lock) | Lawyers | tile | Skin | S + fix the short bench grid (open item) |
+| Skills | Skills | office card | Skin | S |
+| Mutation Machine (Merger) | Merger | at machine | Skin | S: header PNG |
+| Office upgrade celebrations | Shared.UpgradeFx | upgrading | Own | S |
+| Shop | Shop | tile / stall | Skin | S: header PNG, red ribbons, gift squares stay off (no gifting feature) |
+| Rebirth screen | Supreme | tile | Skin (partial) | R |
+| Firm stage-up | FirmStageUp | stage up | UIKit | R |
+| Travel map + travel confirm | Travel | tile / portal | Skin | S: header PNG, locked cards |
+| Trip animation captions | Shared.TravelFx | travelling | Own | S: destination sign card |
+| Courtroom (attend button, evidence, verdict) | Courtroom, AttendCourt | court case | Skin | S |
+| Big Case (banner, toast, showdown) | BigCase | event | Own | R |
+| Minigames: Gavel Bonk, Lucky Briefcase (prompt, countdown, score, result) | Minigames, MinigameClient.* | hub spots | UIKit/Own | R |
+| Arcade booths (Lie Detector, Briefcase Stack, Filing Frenzy) | Arcade, ArcadeClient.Kit + games | pier booths | Skin | S |
+| Upstairs rooms panels + toast | Floors | rooms | Skin | S |
+| Manager | Manager | manager NPC | Skin | S |
+| Name tags (lawyers, clients) | LawyerTags | always | World | ✓ (Steal-a-Brainrot style is the user's call) |
+| Desk progress bars | DeskProgress | cases | World | S |
+| Boss UI | Bosses | zone bosses | Own | S |
+| World signs: lot signs, leaderboards, shop/merger stalls, portal, booths, gates | Workspace SurfaceGuis (~60) | world | World | S: one sign style per kind (CLAUDE.md) |
+| ProximityPrompts (15) | Workspace | near objects | Roblox default | R: one custom prompt (Style = Custom) |
+| Old skin inventory | SkinInventory (disabled) | — | — | skip |
+
+Out of scope: Roblox's own core UI (chat, top bar, leaderboard), Freecam.
+
+## 4. Plan
+1. **Figma**: one design-system page (tokens, HUD tile, window, card, buttons, ribbon, toast, prompt, egg bag,
+   travel sign, minigame result) using the PNGs; crnuch signs it off.
+2. **Icons to Roblox** (12 used, 512 px), ids into `HudMenu.Icons`.
+3. **Skin v2**: tokens + new pieces (`Skin.hudTile`, `Skin.toast`, `Skin.prompt`, `Skin.sign`, `Skin.counter`,
+   `Skin.blur`), all motion from one tween table.
+4. Rebuild the R rows, then the S rows, screen by screen; each one playtested at desktop + phone size.
+5. Retire UIKit / UISkin once nothing relies on them.

@@ -9,6 +9,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
   Don't build any of these meanwhile; MinigameService / Gavel Bonk / Lucky Briefcase stay as they are.
+- **crnuch (local), since 2026-10-18:** the game-wide UI overhaul - every screen, HUD tile, toast, prompt, world sign
+  and minigame screen onto `Shared.Skin` + the glossy PNG icons. Audit + plan: docs/UI_OVERHAUL.md. Figma design
+  pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
 
 ## Open items
 - [ ] **Map + model art pass: eye-check in a real playtest** (built 2026-10-16, entries below; Studio-only screenshots so far) - phone size too.
