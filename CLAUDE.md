@@ -48,6 +48,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Zones map: reference breakdown + rules (lane of zones, walls, decoration, scattered eggs) | [docs/ZONES_REFERENCE.md](docs/ZONES_REFERENCE.md), shots in `references/zones-ref-*.webp` |
 | Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
 | Eggs v5: Blender eggs, hatch, incubator (pipeline, upload, install) | [docs/EGGS_V5.md](docs/EGGS_V5.md) |
+| UI overhaul (2026-10-18): reference analysis, audit of every UI surface, icon ids, plan | [docs/UI_OVERHAUL.md](docs/UI_OVERHAUL.md); Figma design system: figma.com/design/PtgoaIbriizMlKEDFVxc8Q (Starter plan: Figma MCP = 20 calls/month) |
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
 | Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
 | Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |

@@ -30,24 +30,25 @@ Gaps that are still visible in the game (playtest 2026-10-18, 1429x776):
 - World prompts are all Roblox's default grey ProximityPrompt (15 in Workspace).
 - No blur behind open windows.
 
-## 2. Icons (art/icons/hud_navigation_glossy, 1254 px PNGs, NOT on Roblox yet)
-Roblox caps images at 1024 px; upload 512 px copies **from crnuch's account** (the place owner; Studio on the Mac
-is signed in as crnuch, checked 2026-10-18). Record the ids in `HudMenu.Icons` (+ a table in this doc).
+## 2. Icons (art/icons/hud_navigation_glossy, 1254 px PNGs)
+**Uploaded 2026-10-18** as 512 px copies from crnuch's Studio (the place owner; all 12 preload "Success"). Live in
+`HudMenu.Icons` (keys below). Re-pointed keys: Gift, Goals, Coin (= Money), Travel, Cart (= Shop), Shop.
 
-| PNG | Used for |
-| --- | --- |
-| daily-gift | DAILY tile, Daily Rewards header, playtime-gift toast |
-| goals | Goals card header |
-| lawyers | LAWYERS tile + panel header, "lawyer waiting" toast |
-| shop | SHOP tile + Shop header, egg-shop prompts |
-| rebirth | REBIRTH tile + the Rebirth (Supreme.client) screen |
-| travel | TRAVEL tile, travel map header, travel confirm, zone-arrival banner |
-| money | coin counter, coin packs, payout pop-ups |
-| eggs | egg bag counter, hatch screen, odds boards, egg prompts |
-| merge | Mutation Machine (Merger) header + prompt |
-| upgrades | office upgrade / Skills / zone Carry + Speed upgrades |
-| vip | Shop passes section, VIP floors (Floors) |
-| index | the LAWYERS panel's collection / odds tab heading (no new Index menu) |
+| PNG | HudMenu.Icons key | rbxassetid | Used for |
+| --- | --- | --- | --- |
+| daily-gift | Gift | 71088033804308 | DAILY tile ✓, Daily Rewards header, playtime-gift toast |
+| goals | Goals | 80785439188685 | Goals card header ✓ |
+| lawyers | Lawyers | 77103986819765 | LAWYERS tile ✓ + panel header, "lawyer waiting" toast |
+| shop | Shop, Cart | 124064224555649 | SHOP tile ✓ + Shop header, egg-shop prompts |
+| rebirth | Rebirth | 110198988697226 | REBIRTH tile ✓ + the Rebirth (Supreme.client) header |
+| travel | Travel | 106112864052258 | TRAVEL tile ✓, travel map header, travel confirm, zone-arrival banner |
+| money | Money, Coin | 136795484498427 | coin counter ✓, coin rewards, coin packs, payout pop-ups |
+| eggs | Eggs | 124018472915561 | egg bag counter, hatch screen, odds boards, egg prompts |
+| merge | Merge | 71805052134273 | Mutation Machine (Merger) header + prompt |
+| upgrades | Upgrades | 132845927465164 | office upgrade / Skills / zone Carry + Speed upgrades |
+| vip | VIP | 84591968949157 | Shop passes section, VIP floors (Floors) |
+| index | Index | 105898194017543 | the LAWYERS panel's collection / odds tab heading (no new Index menu) |
+✓ = seen on screen in a playtest 2026-10-18 (HUD tiles, coin counter, Goals header). The panel headers use the same keys but weren't opened.
 | settings, codes, achievements, friends | **unused** — the game has no settings, codes, achievements or friends menu, and the brief says no new features. Kept for later. |
 
 Missing subjects (proposed, same glossy style, to make next): Courtroom/gavel (court, Big Case), Minigame/arcade
@@ -94,9 +95,24 @@ Layer: **Skin** = built on `Shared.Skin` (reference style) · **UIKit** = old sc
 Out of scope: Roblox's own core UI (chat, top bar, leaderboard), Freecam.
 
 ## 4. Plan
-1. **Figma**: one design-system page (tokens, HUD tile, window, card, buttons, ribbon, toast, prompt, egg bag,
-   travel sign, minigame result) using the PNGs; crnuch signs it off.
-2. **Icons to Roblox** (12 used, 512 px), ids into `HudMenu.Icons`.
+1. **Figma** — https://www.figma.com/design/PtgoaIbriizMlKEDFVxc8Q (crnuch's drafts, Starter plan: 3 pages max,
+   and the MCP allows **20 calls a month** for a View seat - used up 2026-10-18, so further Figma work by Claude
+   waits for next month or a Full seat). Built:
+   - **Foundations**: variables `HAL UI` (40 colours = `Skin.Palette` swatches, surfaces, text, `Config.RarityColors`;
+     descriptions name the Luau token), text styles (Title XL/L/M, Label S, Number L/M, Moment XL, Body M/S;
+     Nunito stands in for Builder Sans), effect styles (Lip/Ink 4, Shadow/Window, Glow/Gloss), the 12 icons as
+     `Icon/<name>` components + the studs tile.
+   - **Components**: Button (6 colours x L/M), Close, Badge (Count / Alert), HUD Tile (6 colours, Icon swap, Label,
+     badge toggle), Ribbon (red), Progress Bar, Money Counter (no panel, lime number), Section Title, Egg Slot
+     (Empty / Filled / Golden), Window (6 header colours, Icon swap, Title), Product Card (4 colours, Picture swap,
+     Amount, ribbon toggle), Toast (Plain / Notice), World Prompt (custom ProximityPrompt + hold ring), Arrival
+     Banner. Each component's description has its motion spec + the Roblox function it maps to.
+   - **Screens**: "HUD — Hub (1280x720)" on a real plaza capture: 2-column glossy tiles, money bottom-left, toast
+     top-centre, Goals card, egg bag, prompt.
+   - Known file defects (out of calls to fix; build them right in Studio instead): the Goals bars in the screen all
+     show the same fill; the egg art doesn't scale with a resized Egg Slot instance; Empty slots should be a solid
+     rim, not dashed. Not mocked: Shop open, zone arrival in context, minigame result, phone size.
+2. **Icons to Roblox** — done 2026-10-18 (table above).
 3. **Skin v2**: tokens + new pieces (`Skin.hudTile`, `Skin.toast`, `Skin.prompt`, `Skin.sign`, `Skin.counter`,
    `Skin.blur`), all motion from one tween table.
 4. Rebuild the R rows, then the S rows, screen by screen; each one playtested at desktop + phone size.

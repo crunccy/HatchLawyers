@@ -474,7 +474,7 @@ shade:SetAttribute("NoSkin", true)
 
 -- HUD button: the LAWYERS tile in the shared left-edge menu column (Shared.HudMenu, real gavel icon)
 local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
-local menuEntry = HudMenu.button({ name = "Lawyers", label = "LAWYERS", icon = "Gavel", color = PURPLE, order = 2 })
+local menuEntry = HudMenu.button({ name = "Lawyers", label = "LAWYERS", icon = "Lawyers", color = PURPLE, order = 2 })
 local openButton = menuEntry.button
 
 -- the panel
@@ -500,7 +500,7 @@ make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4),
 Skin.studs(header, 0.86, nil, 26)
 Skin.shineBands(header, 0.84)
 make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = UDim2.fromOffset(58, 58), BackgroundTransparency = 1,
-	Image = HudMenu.Icons.Gavel, ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Parent = header })
+	Image = HudMenu.Icons.Lawyers, ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Parent = header })
 Skin.text({ Position = UDim2.fromOffset(80, 6), Size = UDim2.fromOffset(300, 58), FontFace = Skin.Fonts.Title, Text = "Lawyers",
 	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 54, 5)
 local countLabel = text({ Position = UDim2.fromOffset(330, 22), Size = UDim2.new(1, -440, 0, 32), Text = "", TextColor3 = Color3.fromRGB(255, 230, 120), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4, Parent = header }, 24)

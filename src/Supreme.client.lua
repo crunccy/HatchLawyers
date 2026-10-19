@@ -78,7 +78,7 @@ local function squish(gui: GuiObject)
 end
 
 ------------------------------------------------------------------ the tile
-local menuEntry = HudMenu.button({ name = "Supreme", label = "REBIRTH", icon = "Trophy", color = Color3.fromRGB(255, 160, 30), order = 4 })
+local menuEntry = HudMenu.button({ name = "Supreme", label = "REBIRTH", icon = "Rebirth", color = Color3.fromRGB(255, 160, 30), order = 4 })
 
 ------------------------------------------------------------------ the panel
 local gui = make("ScreenGui", { Name = "Supreme", ResetOnSpawn = false, DisplayOrder = 32, Enabled = false, IgnoreGuiInset = true, Parent = player:WaitForChild("PlayerGui") })
@@ -97,7 +97,7 @@ local header = make("Frame", { Size = UDim2.new(1, 0, 0, 70), BackgroundColor3 =
 	corner(10), make("UIGradient", { Color = ColorSequence.new(PURPLE, PURPLE_DARK) }),
 })
 make("Frame", { Position = UDim2.new(0, 0, 1, -10), Size = UDim2.new(1, 0, 0, 10), BackgroundColor3 = PURPLE_DARK, BorderSizePixel = 0, ZIndex = 2, Parent = header })
-make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(58, 58), BackgroundTransparency = 1, Image = HudMenu.Icons.Trophy, ZIndex = 3, Parent = header })
+make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(58, 58), BackgroundTransparency = 1, Image = HudMenu.Icons.Rebirth, ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = header })
 text({ Position = UDim2.fromOffset(76, 8), Size = UDim2.new(1, -170, 0, 54), FontFace = TITLE, Text = "Rebirth", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = header }, 44)
 local closeButton = make("TextButton", {
 	AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -12, 0.5, 0), Size = UDim2.fromOffset(60, 54), BackgroundColor3 = RED, Text = "", AutoButtonColor = true, ZIndex = 3, Parent = header,

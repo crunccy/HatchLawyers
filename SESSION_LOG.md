@@ -154,6 +154,31 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-18 — crnuch, local session: UI overhaul, part 1 (reference analysis, audit, icons live, Figma design system)
+- **Brief** (crnuch): every interface restyled to the reference recordings (Desktop "Screen Recording 2026-10-18 at
+  7.07.09 / 7.07.21") with the glossy PNG icons - look only, no features from the references (no event pass, no
+  gifting, no settings / codes / achievements / friends menus). Claim stays up under **In progress**.
+- **docs/UI_OVERHAUL.md**: the reference measured element by element, the icon -> use map, the full audit of every
+  UI surface (script, trigger, styling layer, R / S action), the plan. Found: StarterGui is empty (all UI is built by
+  scripts); 15 world ProximityPrompts on Roblox's default grey style; UISkin/UIKit still auto-restyle the older
+  screens (Goals body text, FirmStageUp, Minigames, Zones).
+- **Icons live in Studio:** the 12 used PNGs uploaded as 512 px copies from crnuch's Studio (place owner); ids in
+  `HudMenu.Icons` (re-pointed Gift / Goals / Coin / Travel / Cart / Shop; new Lawyers, Rebirth, Money, Eggs, Merge,
+  Upgrades, VIP, Index). Lawyers + Supreme (Rebirth) tiles and headers switched to the new keys. Playtested: all five
+  HUD tiles, the coin counter and the Goals header show the new art (headers of closed panels not opened).
+  src/HudMenu.lua, Lawyers.client.lua, Supreme.client.lua == live; snapshot re-exported (111 scripts);
+  `run_checks.py` ALL PASSED.
+- **Figma** https://www.figma.com/design/PtgoaIbriizMlKEDFVxc8Q - tokens, text + effect styles, icon components,
+  15 components and the hub HUD screen (details + known defects in docs/UI_OVERHAUL.md §4). **The Figma MCP is
+  capped at 20 calls / month on crnuch's Starter plan View seat - used up today**; Studio work doesn't need it.
+- **Heads-up:** a snapshot receiver from another session was still listening on port 8767 (worktree
+  `.claude/worktrees/dazzling-kalam-6f4931`, started 18:06) and caught a first export, so that worktree's `studio/`
+  now holds today's live scripts. Its process was left running; this session exported on `--port 8768`.
+- Left (in order, docs/UI_OVERHAUL.md §3-4): Skin v2 pieces (`hudTile`, `toast`, `prompt`, `banner`, `counter`,
+  blur), then the R rows (HUD column as square tiles, coin counter, toast, Goals, egg bag, prompts, zone arrival,
+  Big Case, minigames, Rebirth, FirmStageUp), then the S rows; each playtested at desktop + phone size.
+- Signed: Claude (Opus 5.5) for crnuch, local session.
+
 ## 2026-10-18 — crnuch, local session: glossy HUD icon art
 - Added the 16-icon glossy HUD revision under `art/icons/hud_navigation_glossy/`, including transparent PNGs,
   an overview, a browser review page, and a manifest. The latest art incorporates the requested yellow Daily Gift,

@@ -17,20 +17,31 @@ local UIFonts = require(script.Parent:WaitForChild("UIFonts")) :: any
 
 local HudMenu = {}
 
--- Free Creator Store images (decals resolved to their image ids with InsertService). Cartoon, transparent PNGs.
+-- 2026-10-18 UI overhaul: the glossy icon set (art/icons/hud_navigation_glossy, 512 px copies uploaded by crnuch).
+-- Keys whose meaning matched were re-pointed (Gift, Goals, Coin, Travel, Cart, Shop); the rest are new.
+-- Gavel / Trophy / Star / Scales / MoneyBag / GiftPink are still the older Creator Store images (court, rewards).
 HudMenu.Icons = {
+	Gift = "rbxassetid://71088033804308", -- glossy: daily-gift (yellow box, blue bow)
+	Goals = "rbxassetid://80785439188685", -- glossy: goals (clipboard + tick)
+	Lawyers = "rbxassetid://77103986819765", -- glossy: lawyers (brick lawyer, briefcase)
+	Shop = "rbxassetid://124064224555649", -- glossy: shop (basket of gifts)
+	Cart = "rbxassetid://124064224555649", -- = Shop (the Shop window's header used Cart)
+	Rebirth = "rbxassetid://110198988697226", -- glossy: rebirth (purple loop + star)
+	Travel = "rbxassetid://106112864052258", -- glossy: travel (gold portal)
+	Money = "rbxassetid://136795484498427", -- glossy: money (cash stack + coins)
+	Coin = "rbxassetid://136795484498427", -- = Money (the coin counter + coin rewards)
+	Eggs = "rbxassetid://124018472915561", -- glossy: eggs (cracked star egg)
+	Merge = "rbxassetid://71805052134273", -- glossy: merge (two lawyers -> one; the Mutation Machine)
+	Upgrades = "rbxassetid://132845927465164", -- glossy: upgrades (arrow + bolt)
+	VIP = "rbxassetid://84591968949157", -- glossy: vip (crown)
+	Index = "rbxassetid://105898194017543", -- glossy: index (law book)
+	-- older Creator Store images
 	Gavel = "rbxassetid://18523351330", -- "gavel colored"
-	Shop = "rbxassetid://97374789643367", -- striped-awning shop stall
-	Cart = "rbxassetid://124554934201130", -- red shopping cart
-	Gift = "rbxassetid://114994847107226", -- red gift box, gold bow
 	GiftPink = "rbxassetid://114440493073627", -- outlined pink gift
-	Coin = "rbxassetid://8875273942", -- stack of outlined cartoon coins ("Coins Cartoon1.V45")
 	MoneyBag = "rbxassetid://5636506602",
-	Goals = "rbxassetid://12600726983", -- target + arrow ("for in-game quest button")
 	Star = "rbxassetid://15589354284", -- glossy yellow star
 	Trophy = "rbxassetid://114221933505948", -- outlined cartoon trophy
 	Scales = "rbxassetid://135009805354492", -- orange scales of justice
-	Travel = "rbxassetid://136144875676517", -- the Travel Portal (art/icons/travel.png, Blender; uploaded by crnuch 2026-10-13)
 }
 HudMenu.Studs = "rbxassetid://114488299634202" -- tools/ui_textures.py
 
