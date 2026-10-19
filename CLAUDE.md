@@ -124,9 +124,14 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   (`settings().Rendering.QualityLevel` in the Client) — Studio's Automatic level throttles particles so hard
   that effects look missing. A ViewportFrame skips Transparency = 1 parts *and their decals* (use 0.99).
   Egg machine effects: `require(game.ServerStorage.EggMachineFx:Clone()).apply()`.
-- **Builds:** plain Parts, **Plastic with `TopSurface = Studs`** (every part of the map — Ground, Plaza, Trees,
-  IslandDecor, EggPads — is built this way; Smooth tops or textured MeshParts look out of place), bright world
-  colors (see `tools/firm_pieces.py` "v4" palette), anchored, chunky — every player gets a firm, ×8 per server.
+- **STUDDED BRICK WORLD — non-negotiable (crnuch's call 2026-10-18): [docs/ART_STYLE_STUDS.md](docs/ART_STYLE_STUDS.md).**
+  Real raised 3D studs (not textures) on terrain, roads, roofs, platforms, props; one stud scale everywhere; reusable
+  stud assets from Blender; decorative studs separate from collision; LOD for distance + phones. Never smooth the
+  geometry or drop the studs; no plain Roblox parts, no smooth low-poly. Read that doc before building anything.
+- **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
+  IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
+  far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),
+  anchored, chunky — every player gets a firm, ×8 per server.
   Studio's command bar caches required modules: after editing a ModuleScript, re-require a fresh clone.
 - **Z-fighting (flicker where Part faces overlap):** `ReplicatedStorage.Shared.ZFight` finds and fixes it (`scan` / `fix`,
   per model - models stored at the same spot clash with each other). Every Part builder ends with up to 3 `fix` passes on

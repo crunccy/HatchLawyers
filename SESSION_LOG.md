@@ -15,6 +15,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 
 ## Open items
+- [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
+      Decide the stud scale, then a test patch (one plot + hub plaza) before any rollout. Not started.
 - [ ] **UI overhaul part 2 at phone size** (crnuch): Device emulator, landscape - HUD tiles (2 columns), coins
       bottom-left vs the thumbstick, egg bag, Goals (folded), hint toast, zone arrival banner. Only checked by layout
       maths (2026-10-18 entry).
@@ -157,6 +159,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-18 — crnuch, local session: studded-brick art rule recorded
+- crnuch set a **non-negotiable art rule**: the whole map is a studded toy-brick world with real raised 3D studs (not
+  textures), one stud scale, Blender-made reusable stud assets, LOD for distance/phones, studs off the collision.
+  Written up in **docs/ART_STYLE_STUDS.md** (directive + how it maps onto the game + proposed rollout); CLAUDE.md's
+  "Builds" rule now points there (`TopSurface = Studs` is only the far fallback now).
+- Nothing built, nothing changed in Studio. Next: pick the stud scale, then a test patch.
 
 ## 2026-10-18 — crnuch, local session: UI overhaul, part 2 (Skin v2 + the HUD rebuilt)
 - **Skin v2** (`ReplicatedStorage.Shared.Skin`, every old function unchanged): `Skin.Motion` (one table for hover /
