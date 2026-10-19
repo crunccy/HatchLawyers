@@ -1,4 +1,4 @@
-# World 3 — Brainrot Zone (Stage 5, 2026-10-19) · waiting for crnuch's approval
+# World 3 — Brainrot Zone (Stage 5, 2026-10-19) · APPROVED by crnuch 2026-10-19
 
 The game's "Brainrot Boulevard" zone as a surreal neon island at dusk: a zig-zag neon boulevard lined with giant
 statues of the game's own brainrot lawyers, glowing skyscrapers, a melting mall, a twisting tower, floating cubes and
@@ -51,14 +51,14 @@ ARRIVAL (south) ──> glitched BRAINROT BOULEVARD gate ──> zig-zag NEON BO
 | --- | --- | --- |
 | Size | Scale 3.4 → ~19 studs tall, 24 wide | Placed in the .blend at that scale (`Boss_JudgeMartello`, at (6, 86)) |
 | Attack | **Slam**, Radius 26, Windup 1.1 s, every 3 s, hop 6 high; it lands where you WERE when it jumped; WalkSpeed 40 | Open floor r 52 = two slam radii: in the 1.1 s windup a player runs ~35 studs (more than 26), and no wall is in the way |
-| Suggested `Bounds` | Blender x −37…37, y 43…117 (Roblox x −37…37, z −117…−43, island-local) | The largest square inside the floor circle: Martello stays on the checkerboard, but his 26-stud slam still reaches the rim |
-| Field distances (TriggerRange 60) | Upside-Down Park's west edge is ~43 studs from his nearest reach | **Inside** the trigger: the island's one danger field, kept small (4 eggs), like Briefcase Bay's north parks. Glitch Garden (~85) and Wobble Square (~100) are safe. The boulevard's last stretch is inside it by design |
+| Suggested boss area | Blender x −37…37, y 43…117 (Roblox x −37…37, z −117…−43, island-local) | The largest square inside the floor circle: Martello stays on the checkerboard, but his 26-stud slam still reaches the rim. (BossService derives the area from the zone's `Bounds` minus `Margin`: integration sets it directly, `../README.md` → "Notes for Stage 7") |
+| Field distances (TriggerRange 60) | Upside-Down Park's west edge is ~43 studs from his nearest point | Inside the trigger, so he turns and hops toward you there, but BossService clamps a Slam's landing to his area: it lands ~17 studs short, a scare, not a hit (corrected 2026-10-19). Kept small (4 eggs). Glitch Garden (~85) and Wobble Square (~100) are out of range. **The real danger is crossing the pit** to RETURN HOME. The boulevard's last stretch is inside his reach by design |
 
 ## Egg spots — 24
 | Where | Spots |
 | --- | --- |
 | Glitch Garden / Wobble Square | 8 each |
-| Upside-Down Park (danger field) | 4 |
+| Upside-Down Park (inside his trigger) | 4 |
 | THE GAVEL PIT (bonus, inside the arena) | 4 |
 
 - Spots are sampled on open ground inside each field, clear of props, ≥ 7 studs apart.

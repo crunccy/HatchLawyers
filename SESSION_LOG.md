@@ -15,8 +15,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
-  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay + Pet
-  Park approved, Brainrot Zone done (waiting for approval); Food Court next.
+  `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
+  Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore next.
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
 ## Open items
@@ -165,6 +165,33 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: world redesign Stage 5, island 4 — Food Court (Blender)
+- **crnuch's call:** Brainrot Zone approved.
+- **Food Court** (`environment-redesign/food_court/`; doc `FOOD_COURT.md`), an oversized food festival:
+  - route arrival → ketchup + mustard bottle gate holding a giant hot dog → orange path past a giant burger, a
+    fries box, food trucks and statues of the game's Food lawyers (Chili Prosecutor, Dragon Fruit Duke, Grand
+    Gâteau) → THE FOOD COURT PLAZA (soda-cup fountain, 8 stalls with giant food on their roofs, seating, string
+    lights) → Picnic Park / Dessert Garden / Veggie Patch egg fields → THE CHEESE BOARD (Big Cheese at 3.2×) →
+    cherry-keystone RETURN HOME
+  - six restaurants (BURGER BARN, PIZZA PALACE, FRY FACTORY, DONUT DINER, TACO TOWER, NOODLE HOUSE), soda +
+    chocolate waterfalls (angles picked clear of everything), fruit orchards; 24 egg spots; the Food egg (bun body,
+    frosting cap, sprinkles)
+  - Big Cheese check: a long 72 × 130 board so his 110-stud roll fits along it; the board ends are computed from the
+    portal stairs. Fields are out of his reach (attacks are clamped to his area); crossing the board is the danger
+  - 439k tris + 224k studs; 7 renders; ambience in the .blend: steam (stall vents, factory), smoke (oven, grill),
+    three turning signs carrying their own studs, soda / chocolate flow, twinkling lights, Big Cheese's wobble,
+    orchard wind
+  - audio picks (restaurant crowd, kitchen, sizzle, cash register): CC0, licence read on each page (via curl:
+    WebFetch couldn't reach freesound.org today)
+- **Kit:** `animate_water(..., highlight=)` (soda / chocolate sheen instead of water blue); `pivot_to` moves a
+  turning object's own stud instancers too; `choco*` liquids nearly opaque.
+- **Found + fixed:** BossService clamps Slam landings and Line rolls to the boss's area (`Bounds` minus `Margin`), so
+  Brainrot's Upside-Down Park is a scare, not a hit (doc corrected), and island arenas need their area set directly
+  at integration (README → "Notes for Stage 7").
+- **Fixed in review:** a peach horizon flooded the aerial (back to blue); the plaza camera sat inside a stall; steam
+  from the counters would have hit the stall roofs (now from roof vents); the soda pours read as posts (thinner, foam
+  splashes); the hot dog's sausage hid behind its bun; too many bottle lamps at the plaza entrance.
 
 ## 2026-10-19 — crnuch, local session: world redesign — hub / Briefcase Bay / Pet Park .blends rebuilt (studs ride their objects)
 - **Rebuilt** `central_hub.blend`, `briefcase_bay.blend`, `pet_park.blend` (build `-- norender`, then the ambience with

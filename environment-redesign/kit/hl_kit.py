@@ -78,7 +78,7 @@ def mat(name):
         rgb = GLASS[name]
         bsdf.inputs["Base Color"].default_value = (*lin(rgb), 1)
         bsdf.inputs["Roughness"].default_value = 0.08
-        a = 0.55 if name.startswith("glass") else (0.6 if name.startswith("portal_") else 0.82)
+        a = 0.55 if name.startswith("glass") else (0.6 if name.startswith("portal_") else (0.97 if name.startswith("choco") else 0.82))
         bsdf.inputs["Alpha"].default_value = a
         if name.startswith("portal_") or name.startswith("goo"):
             bsdf.inputs["Emission Color"].default_value = (*lin(rgb), 1)

@@ -103,7 +103,7 @@ def wind(object_names):
 
 
 # ------------------------------------------------------------------ water + glows
-def animate_water(name, falling):
+def animate_water(name, falling, highlight=(0.75, 0.9, 1.0)):
     m = bpy.data.materials.get(name)
     if not m:
         return
@@ -135,7 +135,7 @@ def animate_water(name, falling):
     ramp.color_ramp.elements[0].position = 0.45 if falling else 0.5
     ramp.color_ramp.elements[0].color = base
     ramp.color_ramp.elements[1].position = 0.8 if falling else 0.72
-    ramp.color_ramp.elements[1].color = (0.75, 0.9, 1.0, 1)
+    ramp.color_ramp.elements[1].color = (*highlight, 1)  # (foam / sheen: pale blue for water, cream for soda ...)
     nt.links.new(tex.outputs["Fac"], ramp.inputs["Fac"])
     nt.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
     nt.links.new(ramp.outputs["Color"], bsdf.inputs["Emission Color"])
@@ -157,10 +157,11 @@ def breathe(name, base, amp, speed, phase=0.0, square=False):
 # ------------------------------------------------------------------ motion
 def pivot_to(ob, x, y, z):
     """Re-centre a mesh object (built in world coords) on (x, y, z) so it can turn / bob about that point."""
-    for v in ob.data.vertices:
-        v.co.x -= x
-        v.co.y -= y
-        v.co.z -= z
+    for o in [ob] + [ch for ch in ob.children if ch.type == "MESH"]:  # (+ its own stud instancers, K.STUD_GROUP)
+        for v in o.data.vertices:
+            v.co.x -= x
+            v.co.y -= y
+            v.co.z -= z
     ob.location = (x, y, z)
 
 

@@ -11,7 +11,7 @@ pitch, Roblox's own stud shape).
 | 2 | Central hub blockout + aerial / top-down renders | **Approved 2026-10-18** (+ 5 decisions): [central_hub/blockout/LAYOUT.md](central_hub/blockout/LAYOUT.md) |
 | 3 | Hub detailed modeling | **Done 2026-10-18**: [central_hub/STAGE3.md](central_hub/STAGE3.md) + the shared kit [kit/hl_kit.py](kit/hl_kit.py) |
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
-| 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **done, waiting for approval**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court next |
+| 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **approved**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court **done, waiting for approval**: [food_court/FOOD_COURT.md](food_court/FOOD_COURT.md) · Ocean Shore next |
 | 6 | All-islands presentation | not started |
 | 7 | Roblox integration plan (plan only) | not started |
 
@@ -27,6 +27,8 @@ environment-redesign/
   central_hub/                    Stage 3: hub_parts.py, hub_build.py, showcase.py, central_hub.blend, STAGE3.md, renders/
   briefcase_bay/                  World 1: bb_parts.py, bb_build.py, bb_ambience.py, briefcase_bay.blend, BRIEFCASE_BAY.md, renders/
   pet_park/                       World 2: pp_parts.py, pp_build.py, pp_ambience.py, pet_park.blend, PET_PARK.md, renders/
+  brainrot_zone/                  World 3: br_parts.py, br_build.py, br_ambience.py, brainrot_zone.blend, BRAINROT_ZONE.md, renders/
+  food_court/                     World 4: fc_parts.py, fc_build.py, fc_ambience.py, food_court.blend, FOOD_COURT.md, renders/
   <island>/                       later: one folder per island, each its own .blend (independent, exportable)
 ```
 Each island is its own `.blend` and collection, so new islands can be added without touching the others.
@@ -45,3 +47,13 @@ scripts are the source of truth and big `.blend`s can stay local.
 
 **Previews (crnuch's call 2026-10-19):** islands ship static renders + the animated .blend only - no ambience stills
 or MP4 clips (they cost ~20 min per island).
+
+## Notes for Stage 7 (integration)
+- **Boss areas:** each island doc gives a suggested boss area (the box the boss may stand in). Today BossService
+  derives that area from the zone's `Bounds` shrunk by `Config.Bosses.Margin` (40 along / 10 across), and clamps
+  every Slam landing and Line roll to it. On an island the zone's Bounds is the whole island, so integration should
+  set each boss's arena box directly (e.g. a per-boss `Arena`) rather than tune Bounds + Margin. (Found 2026-10-19:
+  the docs' "suggested Bounds" for Briefcase Bay and Pet Park mean this area too.)
+- **Moving scenery** (turning signs, floating cubes, clouds) is client-only motion, like `WorldLife`; its studs ride
+  with it (`K.STUD_GROUP` in the kit).
+

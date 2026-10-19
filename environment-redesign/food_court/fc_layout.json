@@ -1,0 +1,653 @@
+{
+ "island": "Food Court (game zone: Food Court)",
+ "radius_xy": [
+  175,
+  215
+ ],
+ "places": [
+  {
+   "name": "THE FOOD COURT PLAZA",
+   "blender_xy": [
+    0,
+    -40
+   ],
+   "roblox_xz": [
+    0,
+    40
+   ],
+   "what": "tablecloth floor, a giant soda-cup fountain, 8 food stalls, seating, string lights"
+  },
+  {
+   "name": "Arrival pad",
+   "blender_xy": [
+    0,
+    -199
+   ],
+   "roblox_xz": [
+    0,
+    199
+   ],
+   "what": "where Travel lands players"
+  },
+  {
+   "name": "FOOD COURT gate",
+   "blender_xy": [
+    0,
+    -167
+   ],
+   "roblox_xz": [
+    0,
+    167
+   ],
+   "what": "ketchup + mustard bottles holding a giant hot dog"
+  },
+  {
+   "name": "BURGER BARN",
+   "blender_xy": [
+    -118,
+    62
+   ],
+   "roblox_xz": [
+    -118,
+    -62
+   ],
+   "what": "red barn diner; its giant burger sign turns"
+  },
+  {
+   "name": "PIZZA PALACE",
+   "blender_xy": [
+    138,
+    26
+   ],
+   "roblox_xz": [
+    138,
+    -26
+   ],
+   "what": "crenellated pizzeria; a pizza slice turns on the roof; oven smoke"
+  },
+  {
+   "name": "FRY FACTORY",
+   "blender_xy": [
+    -128,
+    -92
+   ],
+   "roblox_xz": [
+    -128,
+    92
+   ],
+   "what": "sawtooth-roof factory, a fries box on the roof, chimney steam"
+  },
+  {
+   "name": "DONUT DINER",
+   "blender_xy": [
+    105,
+    -118
+   ],
+   "roblox_xz": [
+    105,
+    118
+   ],
+   "what": "retro pink diner; its donut sign turns"
+  },
+  {
+   "name": "TACO TOWER",
+   "blender_xy": [
+    -82,
+    150
+   ],
+   "roblox_xz": [
+    -82,
+    -150
+   ],
+   "what": "three stacked storeys, a giant taco on top"
+  },
+  {
+   "name": "NOODLE HOUSE",
+   "blender_xy": [
+    86,
+    150
+   ],
+   "roblox_xz": [
+    86,
+    -150
+   ],
+   "what": "two-tier roof, lanterns, a giant noodle bowl"
+  },
+  {
+   "name": "Food trucks",
+   "blender_xy": [
+    0,
+    -120
+   ],
+   "roblox_xz": [
+    0,
+    120
+   ],
+   "what": "ICE CREAM + HOT DOGS trucks parked by the south path"
+  },
+  {
+   "name": "RETURN HOME portal",
+   "blender_xy": [
+    0,
+    180
+   ],
+   "roblox_xz": [
+    0,
+    -180
+   ],
+   "what": "home WITH eggs, past the boss (crnuch's call)"
+  },
+  {
+   "name": "Giant burger",
+   "blender_xy": [
+    -52,
+    -70
+   ],
+   "roblox_xz": [
+    -52,
+    70
+   ],
+   "what": "giant food sculpture"
+  },
+  {
+   "name": "Giant fries box",
+   "blender_xy": [
+    52,
+    -72
+   ],
+   "roblox_xz": [
+    52,
+    72
+   ],
+   "what": "giant food sculpture"
+  },
+  {
+   "name": "Lawn pizza",
+   "blender_xy": [
+    -42,
+    18
+   ],
+   "roblox_xz": [
+    -42,
+    -18
+   ],
+   "what": "a whole pizza lying on the lawn (walkable)"
+  },
+  {
+   "name": "Lawn pizza",
+   "blender_xy": [
+    44,
+    2
+   ],
+   "roblox_xz": [
+    44,
+    -2
+   ],
+   "what": "a whole pizza lying on the lawn (walkable)"
+  },
+  {
+   "name": "Statue: ChiliProsecutor",
+   "blender_xy": [
+    -40,
+    -140
+   ],
+   "roblox_xz": [
+    -40,
+    140
+   ],
+   "what": "the game's ChiliProsecutor lawyer at 4.0x on a plinth"
+  },
+  {
+   "name": "Statue: DragonFruitDuke",
+   "blender_xy": [
+    36,
+    -110
+   ],
+   "roblox_xz": [
+    36,
+    110
+   ],
+   "what": "the game's DragonFruitDuke lawyer at 3.6x on a plinth"
+  },
+  {
+   "name": "Statue: GrandGateauJustice",
+   "blender_xy": [
+    -58,
+    0
+   ],
+   "roblox_xz": [
+    -58,
+    0
+   ],
+   "what": "the game's GrandGateauJustice lawyer at 2.3x on a plinth"
+  },
+  {
+   "name": "THE CHEESE BOARD (boss arena)",
+   "blender_xy": [
+    0,
+    87
+   ],
+   "roblox_xz": [
+    0,
+    -87
+   ],
+   "what": "open wooden board 72 x 130: Big Cheese rolls 110 studs along it"
+  },
+  {
+   "name": "Picnic Park (egg field)",
+   "blender_xy": [
+    -112,
+    -10
+   ],
+   "roblox_xz": [
+    -112,
+    10
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Dessert Garden (egg field)",
+   "blender_xy": [
+    112,
+    -40
+   ],
+   "roblox_xz": [
+    112,
+    40
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Veggie Patch (egg field)",
+   "blender_xy": [
+    92,
+    75
+   ],
+   "roblox_xz": [
+    92,
+    -75
+   ],
+   "what": "egg field"
+  },
+  {
+   "name": "Soda falls",
+   "blender_xy": [
+    -102.0,
+    -125.9
+   ],
+   "roblox_xz": [
+    -102.0,
+    125.9
+   ],
+   "what": "an orange-soda pond, stream and waterfall"
+  },
+  {
+   "name": "Chocolate falls",
+   "blender_xy": [
+    122.5,
+    -89.0
+   ],
+   "roblox_xz": [
+    122.5,
+    89.0
+   ],
+   "what": "a chocolate pond, stream and waterfall"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -121.5,
+    -15.2
+   ],
+   "roblox_xz": [
+    -121.5,
+    15.2
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -106.9,
+    -27.8
+   ],
+   "roblox_xz": [
+    -106.9,
+    27.8
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -106.5,
+    -17.8
+   ],
+   "roblox_xz": [
+    -106.5,
+    17.8
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -138.6,
+    0.4
+   ],
+   "roblox_xz": [
+    -138.6,
+    -0.4
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -122.9,
+    -7.9
+   ],
+   "roblox_xz": [
+    -122.9,
+    7.9
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -123.9,
+    14.6
+   ],
+   "roblox_xz": [
+    -123.9,
+    -14.6
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -83.8,
+    -3.2
+   ],
+   "roblox_xz": [
+    -83.8,
+    3.2
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    -94.5,
+    -32.2
+   ],
+   "roblox_xz": [
+    -94.5,
+    32.2
+   ],
+   "where": "Picnic Park"
+  },
+  {
+   "blender_xy": [
+    85.8,
+    -49.0
+   ],
+   "roblox_xz": [
+    85.8,
+    49.0
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    120.6,
+    -56.4
+   ],
+   "roblox_xz": [
+    120.6,
+    56.4
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    134.8,
+    -50.2
+   ],
+   "roblox_xz": [
+    134.8,
+    50.2
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    99.6,
+    -16.7
+   ],
+   "roblox_xz": [
+    99.6,
+    16.7
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    119.8,
+    -27.8
+   ],
+   "roblox_xz": [
+    119.8,
+    27.8
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    133.7,
+    -31.6
+   ],
+   "roblox_xz": [
+    133.7,
+    31.6
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    124.7,
+    -18.5
+   ],
+   "roblox_xz": [
+    124.7,
+    18.5
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    100.8,
+    -25.3
+   ],
+   "roblox_xz": [
+    100.8,
+    25.3
+   ],
+   "where": "Dessert Garden"
+  },
+  {
+   "blender_xy": [
+    100.2,
+    77.2
+   ],
+   "roblox_xz": [
+    100.2,
+    -77.2
+   ],
+   "where": "Veggie Patch"
+  },
+  {
+   "blender_xy": [
+    85.6,
+    74.2
+   ],
+   "roblox_xz": [
+    85.6,
+    -74.2
+   ],
+   "where": "Veggie Patch"
+  },
+  {
+   "blender_xy": [
+    86.2,
+    89.9
+   ],
+   "roblox_xz": [
+    86.2,
+    -89.9
+   ],
+   "where": "Veggie Patch"
+  },
+  {
+   "blender_xy": [
+    94.0,
+    71.4
+   ],
+   "roblox_xz": [
+    94.0,
+    -71.4
+   ],
+   "where": "Veggie Patch"
+  },
+  {
+   "blender_xy": [
+    -22,
+    47
+   ],
+   "roblox_xz": [
+    -22,
+    -47
+   ],
+   "where": "THE CHEESE BOARD (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    22,
+    47
+   ],
+   "roblox_xz": [
+    22,
+    -47
+   ],
+   "where": "THE CHEESE BOARD (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    -22,
+    127
+   ],
+   "roblox_xz": [
+    -22,
+    -127
+   ],
+   "where": "THE CHEESE BOARD (bonus, on the boss arena)"
+  },
+  {
+   "blender_xy": [
+    22,
+    127
+   ],
+   "roblox_xz": [
+    22,
+    -127
+   ],
+   "where": "THE CHEESE BOARD (bonus, on the boss arena)"
+  }
+ ],
+ "fx": {
+  "steam": [
+   [
+    27.91,
+    -28.74,
+    11.6
+   ],
+   [
+    18.54,
+    -16.29,
+    11.6
+   ],
+   [
+    -11.26,
+    -12.09,
+    11.6
+   ],
+   [
+    -23.71,
+    -21.46,
+    11.6
+   ],
+   [
+    -27.91,
+    -51.26,
+    11.6
+   ],
+   [
+    -18.54,
+    -63.71,
+    11.6
+   ],
+   [
+    11.26,
+    -67.91,
+    11.6
+   ],
+   [
+    23.71,
+    -58.54,
+    11.6
+   ],
+   [
+    -139.0,
+    -83.52,
+    22.6
+   ]
+  ],
+  "smoke": [
+   [
+    145.56,
+    18.27,
+    19.4
+   ],
+   [
+    -106,
+    -36,
+    4.2
+   ]
+  ],
+  "spinners": [
+   {
+    "name": "Spin_BurgerSign",
+    "pivot": [
+     -108.8,
+     78.6,
+     18.0
+    ],
+    "seconds_per_turn": 9.0
+   },
+   {
+    "name": "Spin_PizzaSlice",
+    "pivot": [
+     141.93,
+     26.74,
+     11.6
+    ],
+    "seconds_per_turn": 12.0
+   },
+   {
+    "name": "Spin_DonutSign",
+    "pivot": [
+     92.4,
+     -130.46,
+     20.6
+    ],
+    "seconds_per_turn": 10.0
+   }
+  ]
+ }
+}
