@@ -23,10 +23,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
-- **mr.robe (local), since 2026-10-20:** the CENTRAL HUB redone to the v2 standard (user's call: "also change the main
-  island to v2"): `environment-redesign/central_hub_v2/` (classic Roblox studs, cohesive terrain, the approved hub layout
-  kept), v1 kept; then built into `Workspace.WorldRedesign.CentralHub` (v1 hub model to `ServerStorage.Old_WorldRedesign_v1`).
-  Backup tag `backup-2026-10-20-before-hub-v2`. Don't redo the hub meanwhile.
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
@@ -203,6 +199,20 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — mr.robe, local session: the central hub redone to v2 (+ into the place)
+- **User's call:** "also change the main island to v2". Backup first: tag `backup-2026-10-20-before-hub-v2` (pushed).
+- **`environment-redesign/central_hub_v2/hubv2_build.py`** (doc `HUB_V2.md`): crnuch's approved hub (Stage 3
+  `hub_build.py` + `hub_parts.py`, LAYOUT.md + his 5 decisions) kept exactly, rebuilt to the v2 standard: every mesh a
+  ClassicMesh (smooth Roblox shapes), one cohesive grass top over a chunky dirt band + the v2 islands' layered rock
+  underside (craggy faces, hanging rocks with gold crystals, vines), classic ball trees, cloud puffs + rock islets, studs
+  only on broad terrain / paving / decks / roofs. 332k raised studs in the .blend; renders `renders/hubv2_*.jpg`. v1 untouched.
+- **`hl_export.py`** skips the hub's example firms (`Plot*_Firm_EXAMPLE`, scale only: FirmBuilder builds the real ones);
+  the v1 hub in the place had them as Parts.
+- **Into the place:** v1 hub model to `ServerStorage.Old_WorldRedesign_v1` (all seven v1 models now kept there);
+  `Workspace.WorldRedesign.CentralHub` = the v2 hub, 20,229 parts (WorldRedesign 112.7k in all). Playtested: `;island hub`
+  lands on its south avenue, standing (Running on Plastic). Not wired to gameplay (today's hub still runs firms + spawn).
+- **Left:** crnuch's review; an ambience pass; the hub's wiring (firms / spawn / services onto it) is a later step.
 
 ## 2026-10-20 — mr.robe, local session: the rest of the islands redone to v2 + all six v2 islands in the place
 - **User's call** (mr.robe's PC, after seeing crnuch's Ocean Shore v2 + Briefcase Bay v2): "do the same for the rest of

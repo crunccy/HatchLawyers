@@ -65,7 +65,8 @@ def _matrix(xb, yb):
 
 def _on(self):
     # (Sky_* = far Blender-only backdrops; Preview eggs, egg-spot markers, diagram overlays + labels = presentation only)
-    return self.name not in SKIP_MESHES and not self.name.startswith(("Sky_", "Preview", "Egg_Spot", "Diagram", "Label"))
+    return (self.name not in SKIP_MESHES and not self.name.startswith(("Sky_", "Preview", "Egg_Spot", "Diagram", "Label"))
+            and "_Firm_EXAMPLE" not in self.name)  # (the hub's example firms show scale only: FirmBuilder builds the real ones)
 
 
 def _box(self, cx, cy, zc, sx, sy, h, look, rot):

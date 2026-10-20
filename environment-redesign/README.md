@@ -122,3 +122,7 @@ and `tools/zones/BuildIslandWiring.lua` reads the v2 layouts (spawn pad = Arriva
 walk-in ReturnHome box, odds board where the dock meets the floor). `kit/hl_export.py` now records the classic kit too
 (smooth primitives as real Parts; slabs / rocks / beams / fronds approximated as boxes) and skips presentation meshes
 (preview eggs, egg-spot markers, diagram overlays, labels).
+- **The hub too (2026-10-20):** `central_hub_v2/` = crnuch's approved hub layout and Stage 3 buildings rebuilt in the
+  classic kit (cohesive grass top, the v2 islands' layered rock underside, ball trees, cloud puffs, studs on broad tops
+  only): [HUB_V2.md](central_hub_v2/HUB_V2.md). In the place since 2026-10-20 (`Workspace.WorldRedesign.CentralHub`,
+  20.2k parts, without the example firms); the v1 hub model is in `ServerStorage.Old_WorldRedesign_v1`.

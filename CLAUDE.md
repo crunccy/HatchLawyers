@@ -250,7 +250,7 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   build scripts by `environment-redesign/kit/export_island.py`). Visit with admin `/island <name>`. **Since 2026-10-20 the six
   islands are the V2 versions** (Ocean Shore v2 = crnuch's benchmark, Briefcase Bay v2 = crnuch's, Pet Park / Brainrot
   Zone / Food Court / Space Base v2 = mr.robe's session on the shared frame `environment-redesign/kit/hl_v2.py`); the v1
-  island models are kept in `ServerStorage.Old_WorldRedesign_v1`. The hub is still the v1 export.
+  island models are kept in `ServerStorage.Old_WorldRedesign_v1`. **The hub is v2 too since 2026-10-20** (`environment-redesign/central_hub_v2/`: crnuch's approved layout in the classic kit; its example firms are not exported); v1 hub in storage.
   **Wired behind a switch (2026-10-20), and the switch is ON (mr.robe's call 2026-10-20, "turn it on"):**
   `Config.Zones.Islands.Enabled = true` = eggs / Travel / RETURN HOME on the islands; set it false to go back to the
   lane (bosses still guard the lane either way). `Server.ZoneMap` decides the map (the lane `Workspace.Zones`, or `Workspace.IslandWiring` when on);
