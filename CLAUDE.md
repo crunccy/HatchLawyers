@@ -248,8 +248,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   hub + all six egg islands as studded Parts (~108k), east of today's map (hub at (3600, 150, -1200), islands on a ring of
   760). Built by `tools/zones/BuildRedesignIsland.lua` from `tools/zones/redesign/<Island>.json` (exported from the Blender
   build scripts by `environment-redesign/kit/export_island.py`). Visit with admin `/island <name>`.
-  **Wired behind an OFF switch (2026-10-20):** `Config.Zones.Islands.Enabled = false` = the live game on the lane, as
-  before. `Server.ZoneMap` decides the map (the lane `Workspace.Zones`, or `Workspace.IslandWiring` when on);
+  **Wired behind a switch (2026-10-20), and the switch is ON (mr.robe's call 2026-10-20, "turn it on"):**
+  `Config.Zones.Islands.Enabled = true` = eggs / Travel / RETURN HOME on the islands; set it false to go back to the
+  lane (bosses still guard the lane either way). `Server.ZoneMap` decides the map (the lane `Workspace.Zones`, or `Workspace.IslandWiring` when on);
   ZoneService (eggs) and TravelServer (trips + each island's RETURN HOME portal, which sends you home WITH your eggs)
   read through it. `Workspace.IslandWiring.<ZoneId>` = EggSpots / Arrival / ReturnHome / OddsBoard per island, built
   by `tools/zones/BuildIslandWiring.lua` from the islands' layout JSONs (re-run it after rebuilding an island). In

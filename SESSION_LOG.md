@@ -44,8 +44,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
       with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
       **crnuch's call 2026-10-19: leave the place as it is until we decide parts vs meshes.** Don't rebuild meanwhile.
-- [ ] **Redesign islands in the place: eggs / Travel / RETURN HOME wired behind the OFF switch (2026-10-20)**
-      (`Config.Zones.Islands.Enabled`, Studio `/islands on`). Still to wire: boss arenas (after crnuch's boss overhaul
+- [ ] **Redesign islands in the place: eggs / Travel / RETURN HOME wired, switch ON since 2026-10-20** (mr.robe's
+      call; `Config.Zones.Islands.Enabled = true` in Studio - players get it at the next PUBLISH). Egg runs have no
+      boss danger until the bosses are wired. Still to wire: boss arenas (after crnuch's boss overhaul
       releases BossService), the hub's firm lots, the zone banner + Travel map "you are here" (lane Bounds), raised
       studs (StudTop tags), a space skybox for Space Base; then decide when to flip the switch for real (both users).
       Re-run BuildIslandWiring after any island rebuild (v2 layouts). Check fps / memory on a phone: the place
@@ -195,6 +196,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — mr.robe, local session: the islands switch turned ON
+- **User's call** (mr.robe, after hearing the trade-offs: no bosses on the islands yet, v1 islands, crnuch's "leave
+  the place as it is" call, phone fps unchecked): "turn it on". **Heads-up for crnuch:** in Studio the egg zones now
+  run on the redesign islands (eggs, Travel, RETURN HOME); the lane keeps its bosses but no eggs. Nothing reaches
+  players until someone publishes. To undo: `Config.Zones.Islands.Enabled = false` (src + live).
+- Stopped the user's running playtest (they said to), wrote Config (live == snapshot checked first), checked in a
+  fresh playtest with no commands: 84 eggs on the islands, 0 on the lane, 6/6 RETURN HOME prompts on. Snapshot
+  re-exported. (Studio's `/islands off` can't override the Config switch while it's on.)
 
 ## 2026-10-20 — mr.robe, local session: the redesign islands wired into the egg zones, behind an OFF switch
 - **User's call** (mr.robe's PC): "wire them up", then, told about crnuch's boss claim + his "leave the place as it

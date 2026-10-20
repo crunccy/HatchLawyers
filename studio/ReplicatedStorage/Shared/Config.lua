@@ -1151,7 +1151,8 @@ Config.Zones = {
 	-- the redesign islands (2026-10-20, mr.robe's session, user's call: wired in "behind an off switch"). false = the
 	-- live game runs on today's lane, exactly as before. true = eggs, Travel and RETURN HOME use the islands
 	-- (Workspace.IslandWiring, Server.ZoneMap); bosses stay on the lane. In Studio, the admin /islands on|off tries it.
-	Islands = { Enabled = false },
+	-- ON since 2026-10-20 (mr.robe's call: "turn it on"). Set false to put the egg zones back on the lane.
+	Islands = { Enabled = true },
 }
 
 -- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from
