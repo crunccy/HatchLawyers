@@ -1204,7 +1204,9 @@ Config.Bosses = {
 		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
 			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
 			Attack = "Line", Length = 110, Width = 22, LineSpeed = 120, Color = Color3.fromRGB(255, 200, 60),
-			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 } },
+			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 },
+			-- WHEEL SPLIT (2+ players): cheese wedges pop off the wheel and tumble down a Lane at up to Max other players
+			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 110, Length = 100 } },
 		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
 			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.8, Windup = 1.0,
 			Attack = "Line", Length = 130, Width = 20, LineSpeed = 150, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),

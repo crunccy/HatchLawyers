@@ -114,7 +114,7 @@ This one IS a gameplay change (crnuch's call, overriding the brief's "no gamepla
 | **The Senior Partner** | **PAPER STORM** - the briefcase bursts open at the top of the swing and lobs a bundle of case files at each other player (**built**, section 6) | Disc r 10 at their spot, lands with the swing |
 | Barrister Bulldog | ECHO BARK - the bark's sound wave travels to each other player and goes off round them | Disc r 12, lands with the bark |
 | Judge Martello | GAVEL RAIN - as he lands, a mini gavel drops on each other player's spot | Disc r 12, lands with the slam |
-| Prosecutor Big Cheese | WHEEL SPLIT - two cheese wedges peel off the wheel and roll down lanes at the others | Lane, 12 wide, at 110 studs/s |
+| **Prosecutor Big Cheese** | **WHEEL SPLIT** - two cheese wedges pop off the wheel and tumble down lanes at the others (**built**, section 7) | Lane, 12 wide, at 110 studs/s |
 | Chief Justice Eclipse | GAVEL VOLLEY (Ring turns) - each orbiting gavel locks onto a different player and slams down; the Pull already catches everyone within 44 | Disc r 10 under each, lands with the ring |
 
 Megalodon's Feeding Frenzy and the Senior Partner's Paper Storm (section 6) are built and live; the
@@ -240,12 +240,85 @@ studs takes 0.31 s at base speed, so standing still is the only way to be caught
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=SeniorPartner check stills frames`, then
   `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title] SeniorPartner`.
 
-## 7. Status
+## 7. Prosecutor Big Cheese: CHEESE ROLL + WHEEL SPLIT (2026-10-20, waiting for crnuch's approval)
+### His real timeline (BossService "Line" + Config.Bosses.List[4])
+| Phase | Server | Duration |
+| --- | --- | --- |
+| trigger | nearest non-ignored player within `TriggerRange` 60, `AttackEvery` 3.5 s after the last recover | - |
+| windup | `Yaw` snaps toward the target, he stands; the lane warning (Width 22, to where he'll stop) | **1.2 s** |
+| roll ("attack") | From -> To linear at 120 studs/s, up to 110 studs (shorter at the zone's edge); anyone within 11 studs of his middle is hit, every 0.05 s | **max(0.25, dist / 120)** = up to 0.917 s |
+| recover | stands (no dizzy) | **0.6 s** |
+A 6.4 x 3.2 = 20.5-stud wheel (radius 10.24 studs). Before: a sine tip (yaw 90 deg) in 0.72 s, the roll by distance
+(`POSES.BigCheese`), and in the recover the wheel UNWOUND backwards while standing still; his block rim corners sank
+up to 1.2 studs into the floor every turn, and his arms + sword swept through the floor as he rolled.
+
+### Model v2 (`tools/blender/bosses.py`, 47 blocks, 3 -> 5 groups; same blocks, same places)
+`Lids` (his smug half-shut eyelids: they snap open) and `Moustache` (twirls, flutters). Other five export byte-identical.
+
+### The roll is code, the rest is clips
+- **Roll** (Bosses.client, as before but exact): the wheel turns by the distance really travelled / (R x Scale), about
+  the boss's X axis, so it never slips whatever the roll's length. Plus the clip's **Roll** channel (the windup's
+  burnout spin in place); the recover's **Unroll** channel (0..1) turns it to the nearest upright angle while it's in
+  the air (no more slipping backwards on the spot).
+- **RollLift** (new in `Shared.BossAnims`): the block wheel isn't round - at each roll angle its lowest corner reaches up
+  to 0.39 model units (1.2 studs) past the radius. The engine measures that from the model (72 angles) and the client
+  lifts the root by it: the corners never sink into the floor, and the wheel BUMPS like a brick wheel would.
+- **Arms tucked**: for the roll his arms slide into the wheel (only the cocktail stick pokes out of his face, turning
+  like an axle pin), and pop back out in the hop. The clipping check counts an arm inside the wheel then as a FOLD
+  (hidden by design), not a clip (`check_fold` in `boss_clips/big_cheese.py`).
+
+### Storyboard (times from the start of each server state; the lane warnings are untouched)
+**A. ANTICIPATION (windup, 1.2 s)**
+| t (s) | Beat |
+| --- | --- |
+| 0.00-0.12 | NOTICE: his lids snap wide open, a smug bounce (squash 0.94 -> 1.06); a deliberate turn (code: 0.06 hold, 0.28) |
+| 0.12-0.42 | EN GARDE: the cocktail-stick sword up in a salute (a gleam off the olive), the moustache twirled; the left arm out |
+| 0.40-0.64 | THE TIP: a hop (root +1.0) with a quarter turn in the air onto his edge (back-out), lands at 0.62 with a squash 0.8 that jiggles (5 Hz, decaying): a dust ring |
+| 0.62-0.78 | WEDGES (2+ players): two wedges pop off his top (crumbs) and land at the starts of their lanes; his arms slide into the wheel |
+| 0.72-0.86 | ROCK BACK: he rolls back a little (-0.35 rad), squashed, eyes wide again |
+| 0.86-1.20 | BURNOUT: spins in place, faster and faster (one whole turn), dust + crumbs flung out behind, gears grinding; the moustache bristles |
+
+**B. ATTACK (the roll)**
+| Part | Beat |
+| --- | --- |
+| launch 0-0.2 s | pops forward stretched along the run (1.28) and lands on it, a dust ring at the start |
+| loop | rolling (code) with the bump, a small bounce, stretched 1.1 +- 0.04, a slight wobble, the moustache fluttering; dust + crumbs behind, speed streaks |
+| brake last 0.2 s | squashes along the run against the stop (0.82), a dust plume thrown forward |
+
+**D. RECOVERY (0.6 s)**
+| t (s) | Beat |
+| --- | --- |
+| 0.00-0.14 | SETTLE: a coin-wobble about the run as it stops (decaying), a dust ring |
+| 0.12-0.42 | HOP UPRIGHT: up 1.2, turns back to face the front and rolls to upright in the air (Unroll), arms pop out |
+| 0.42-0.60 | LANDING: a squash 0.8 that jiggles, a boing, a smug moustache twirl |
+
+### WHEEL SPLIT (2+ players; section 4)
+`Config.Bosses.List[4].Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 110, Length = 100 }` - the
+Lane add-on the Megalodon uses (server unchanged). The wedges pop off as he lands on his edge (0.62), wait at their
+lane's start, and tumble end over end down the lanes from the moment he starts rolling, leaving crumbs; they crumble
+at the end. Lane 12 wide: a player at base speed is out of it in 0.19 s.
+
+### Built (2026-10-20)
+- **Clips** (`tools/blender/boss_clips/big_cheese.py`, preview `big_cheese_preview.py`): windup 37 frames, charge_launch
+  7, charge_loop 7 (loops), charge_brake 7, recover 19 -> `src/BossAnims.lua` (+ his `RollLift`, 72 values). The
+  Megalodon's and the Partner's clips are unchanged.
+- **Clipping check:** worst 0.27 studs (the salute arm against the rim, one frame) on a 20-stud boss; the floor:
+  0.06 studs at worst (the bump keeps the corners out of it); folds (arms tucked in the wheel): by design.
+- **Client** (`src/Bosses.client.lua`): the code roll + RollLift + Unroll, `cheeseFx` (olive gleam, landing dust, the
+  wedges popping off / waiting / tumbling / crumbling, burnout dust + crumbs, launch ring, the roll's trail, the brake
+  plume, the stop and the hop's landing; sounds from the licensed set). **Config:** his `Crowd`.
+- **Review page for approval:** https://claude.ai/artifact/7FKSXgNPpwP2Wnt8WHpmW3 (source `art/bosses/big_cheese/review.html`).
+- **Preview:** `art/bosses/big_cheese/` (`board_*.png`, `big_cheese_roll.mp4`, `..._halfspeed.mp4`,
+  `big_cheese_gameplay_view.mp4`, `big_cheese_roll.blend`).
+- Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=BigCheese check stills frames`, then
+  `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title] BigCheese`.
+
+## 8. Status
 | Boss | Storyboard | Blender clips | Preview | Client | In Studio |
 | --- | --- | --- | --- | --- | --- |
 | Magistrate Megalodon | done | done | done | done | **live** (3-player test to do) |
 | The Senior Partner | done | done | done | done | **live** (3-player test to do) |
 | Barrister Bulldog | - | - | - | - | - |
 | Judge Martello | - | - | - | - | - |
-| Prosecutor Big Cheese | - | - | - | - | - |
+| Prosecutor Big Cheese | done | done | done | in `src/` | waiting for approval |
 | Chief Justice Eclipse | - | - | - | - | - |

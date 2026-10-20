@@ -22,6 +22,10 @@
 --     The Senior Partner (2026-10-19): the BRIEFCASE SWING (glasses push, stomp, the case overhead, the lid bursts and
 --     papers swirl, the sweep, the case strikes the ground, the yank) and the PAPER STORM crowd add-on (bundles of
 --     case files lobbed onto the other players' warning discs, landing with the swing).
+--     Prosecutor Big Cheese (2026-10-20): the CHEESE ROLL (salute, the tip onto its edge, a burnout, the roll, a hop
+--     back upright). The ROLL is code: the wheel turns by the distance really travelled (+ the clip's Roll channel),
+--     lifted by BossAnims RollLift so its block corners bump over the floor; the recover's Unroll channel stands it
+--     upright. The WHEEL SPLIT crowd add-on: cheese wedges pop off and tumble down lanes at the other players.
 -- No text anywhere (user's call): no names, no labels, no messages.
 
 local Debris = game:GetService("Debris")
@@ -116,13 +120,18 @@ local SOUNDS = {
 	grab = { "rbxassetid://15675024286", 0.55, 1.1 }, -- whoosh
 	-- the Senior Partner's Briefcase Swing
 	glint = { "rbxassetid://15675059323", 0.3, 1.5 }, -- a bright click: the glasses pushed up / the clasp's gleam
-	stomp = { "rbxassetid://9114753510", 0.55, 0.55, 0.5 }, -- a low thud as he plants his stance
+	stomp = { "rbxassetid://9114753510", 0.55, 0.55, 0.5 }, -- a low thud as he plants his stance (the cheese lands on its edge)
 	lift = { "rbxassetid://15675024286", 0.5, 0.75 }, -- the case swung up
 	lidpop = { "rbxassetid://15675046931", 0.45, 0.8 }, -- the lid bursts open
 	papers = { "rbxassetid://15675037413", 0.6, 0.9 }, -- papers flying
 	swing = { "rbxassetid://15674975792", 0.8, 1.15, 0.6 }, -- the big sweep
 	crack = { "rbxassetid://9113959343", 0.6, 0.7, 0.8 }, -- the ground cracks under the case
 	yank = { "rbxassetid://9113959332", 0.4, 0.85, 0.5 }, -- the case pulled out of the ground
+	-- Big Cheese's Cheese Roll
+	pop = { "rbxassetid://15675055424", 0.6, 0.85 }, -- a wedge pops off the wheel
+	burnout = { "rbxassetid://9116494032", 0.5, 0.7, 0.4 }, -- gears grinding: the wheel spins in place
+	boing = { "rbxassetid://15675055424", 0.7, 0.55 }, -- the hop back upright lands
+	crumble = { "rbxassetid://9113959343", 0.4, 1.3, 0.4 }, -- a wedge crumbles at its lane's end
 }
 local function playAt(pos: Vector3, kind: string)
 	local def = SOUNDS[kind]
@@ -201,6 +210,7 @@ type Boss = {
 	sheets: { BasePart }, -- the papers swirling round him in the windup
 	bundles: { BasePart }, -- the Paper Storm's case files in flight (+ their shadows)
 	strikeAt: Vector3?, -- where the case hit the ground
+	wedges: { BasePart }, -- Big Cheese's Wheel Split wedges
 }
 local bosses: { [Configuration]: Boss } = {}
 local ragdolled = false -- (the local player is lying limp: no pulls - see ragdoll below)
@@ -272,14 +282,14 @@ local function build(s: Configuration)
 		phase = 0, walk = 0, seenState = (attr(s, "StateStart") :: number?) or 0, warn = nil, warnKind = nil,
 		stars = nil, lastRoll = 0, trailAt = 0, clipW = 0, lastClip = nil, turnStart = 0, turnFrom = 0, glow = glow,
 		glowNow = 0, squashed = false, fired = {}, fxAt = 0, lanes = {}, laneFrom = Vector3.zero, sharks = {}, runFx = nil,
-		paperSpin = 0, sheets = {}, bundles = {}, strikeAt = nil }
+		paperSpin = 0, sheets = {}, bundles = {}, strikeAt = nil, wedges = {} }
 end
 
 local function remove(s: Instance)
 	local b = bosses[s :: Configuration]
 	if b then
 		b.model:Destroy()
-		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx }, b.sheets, b.bundles } do
+		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx }, b.sheets, b.bundles, b.wedges } do
 			for _, p in list do
 				p:Destroy()
 			end
@@ -1315,6 +1325,220 @@ local function partnerFx(b: Boss, state: string, e: number, total: number, pos: 
 	end
 end
 
+------------------------------------------------------------------ Big Cheese's effects (docs/BOSS_ANIMATION.md section 7)
+local CHEESE = Color3.fromRGB(255, 204, 70)
+local CHEESE_R = 3.2 -- the wheel's radius in model units (tools/blender/bosses.py R)
+local WEDGE_OFF = 0.62 -- windup t the wedges pop off (tools/blender/boss_clips/big_cheese.py)
+
+-- the block wheel's lift at this roll (BossAnims RollLift: evenly spaced over a turn), model units
+local function rollLift(anim: any, roll: number): number
+	local L = anim.RollLift
+	if not L then
+		return 0
+	end
+	local n = #L
+	local f = (roll % (math.pi * 2)) / (math.pi * 2) * n
+	local i = math.floor(f) % n
+	return L[i + 1] + (L[(i + 1) % n + 1] - L[i + 1]) * (f - math.floor(f))
+end
+
+local function crumbs(sc: number): { [string]: any }
+	local k = sc / 3.2
+	return { Texture = TEX.dot, Color = ColorSequence.new(CHEESE), Lifetime = NumberRange.new(0.35, 0.55),
+		Speed = NumberRange.new(14, 24), EmissionDirection = Enum.NormalId.Front, SpreadAngle = Vector2.new(35, 35),
+		Acceleration = Vector3.new(0, -110, 0), Rotation = NumberRange.new(0, 360), RotSpeed = NumberRange.new(-200, 200),
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8 * k), NumberSequenceKeypoint.new(1, 0.5 * k) }) }
+end
+
+-- the roll's trail: dust + crumbs behind the wheel, speed streaks, a plume thrown forward on the brake
+local function makeCheeseRunFx(sc: number): BasePart
+	local holder = part({ Size = Vector3.new(6 * sc, 1, 2 * sc), Transparency = 1 })
+	local k = sc / 3.2
+	local dust = sandPuff(sc, NumberRange.new(8, 14), Enum.NormalId.Back, Vector2.new(25, 25))
+	dust.Color = ColorSequence.new(DUST)
+	local trail = emitter(dust)
+	trail.Name, trail.Rate = "Dust", 35
+	trail.Shape = Enum.ParticleEmitterShape.Box
+	trail.Parent = holder
+	local bits = emitter(crumbs(sc))
+	bits.Name, bits.Rate, bits.EmissionDirection = "Crumbs", 30, Enum.NormalId.Back
+	bits.Parent = holder
+	local streaks = emitter({ Texture = TEX.streak, Color = ColorSequence.new(Color3.new(1, 1, 1)), LightEmission = 0.3,
+		Lifetime = NumberRange.new(0.1, 0.16), Speed = NumberRange.new(60, 90), EmissionDirection = Enum.NormalId.Back,
+		Orientation = Enum.ParticleOrientation.VelocityParallel, Shape = Enum.ParticleEmitterShape.Box,
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5 * k), NumberSequenceKeypoint.new(1, 0.2 * k) }),
+		Squash = NumberSequence.new(-1.2), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) }) })
+	streaks.Name, streaks.Rate = "Streaks", 40
+	streaks.Parent = holder
+	local plume = sandPuff(sc, NumberRange.new(16, 26), Enum.NormalId.Front, Vector2.new(30, 20))
+	plume.Color = ColorSequence.new(DUST)
+	local brake = emitter(plume)
+	brake.Name, brake.Rate = "Plume", 80
+	brake.Parent = holder
+	for _, em in holder:GetChildren() do
+		(em :: ParticleEmitter).Enabled = false
+	end
+	holder.Parent = visuals
+	return holder
+end
+
+-- a Wheel Split wedge: a wedge of cheese with its rind (moved as one)
+local function makeWedge(sc: number): BasePart
+	local k = sc / 3.2
+	local w = Instance.new("WedgePart")
+	w.Anchored, w.CanCollide, w.CanQuery, w.CanTouch, w.CastShadow = true, false, false, false, false
+	w.Size = Vector3.new(3.6, 3.4, 6) * k
+	w.Color = CHEESE
+	w.Material = Enum.Material.SmoothPlastic
+	local rind = part({ Size = Vector3.new(3.7, 3.5, 0.5) * k, Color = Color3.fromRGB(232, 168, 40) })
+	rind.Name = "Rind"
+	rind.Parent = w
+	w.Parent = visuals
+	return w
+end
+
+local function poseWedge(w: BasePart, at: Vector3, dir: Vector3, tumble: number, size: number, sc: number)
+	local k = sc / 3.2
+	local cf = CFrame.lookAt(at, at + dir) * CFrame.Angles(-tumble, 0, 0)
+	w.CFrame = cf
+	local rind = w:FindFirstChild("Rind") :: BasePart?
+	if rind then
+		rind.CFrame = cf * CFrame.new(0, 0, 3.0 * k)
+	end
+	w.Transparency = if size < 0.05 then 1 else 0
+	if rind then
+		rind.Transparency = w.Transparency
+	end
+end
+
+-- Big Cheese's one-shot and repeating effects, by state and time into it (e); timings match his Blender clips
+local function cheeseFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number)
+	local s = b.state
+	local k = sc / 3.2
+	local look = Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
+	local up = Vector3.new(0, 1, 0)
+	local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+	local ground = Vector3.new(pos.X, floorY + 0.5, pos.Z)
+	local speed = (attr(s, "CrowdSpeed") :: number?) or 110
+	local function once(key: string): boolean
+		if b.fired[key] then
+			return false
+		end
+		b.fired[key] = true
+		return true
+	end
+	local function laneAt(i: number, along: number): (Vector3, Vector3, number)
+		local d = Vector3.new(b.lanes[i].X - b.laneFrom.X, 0, b.lanes[i].Z - b.laneFrom.Z)
+		local dir = if d.Magnitude > 0.1 then d.Unit else look
+		return Vector3.new(b.laneFrom.X, floorY + 1.7 * k, b.laneFrom.Z) + dir * along, dir, d.Magnitude
+	end
+	if state == "windup" then
+		if once("notice") then
+			playAt(pos + Vector3.new(0, 7 * sc, 0), "glint")
+			b.lanes, b.laneFrom = {}, pos
+			for i = 1, (attr(s, "CrowdN") :: number?) or 0 do
+				local lane = attr(s, "Crowd" .. i) :: Vector3?
+				if lane then
+					table.insert(b.lanes, lane)
+				end
+			end
+		end
+		if e >= 0.26 and once("salute") then -- en garde: a gleam off the olive
+			local olive = blockOf(b, "Olive")
+			if olive then
+				burstAt(olive.CFrame, { Texture = TEX.star, Color = ColorSequence.new(Color3.fromRGB(255, 240, 160)), LightEmission = 0.3,
+					Lifetime = NumberRange.new(0.25, 0.3), Speed = NumberRange.new(0, 0), RotSpeed = NumberRange.new(200, 260),
+					Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.4, 2.6 * k), NumberSequenceKeypoint.new(1, 0) }) }, 1)
+				playAt(olive.Position, "glint")
+			end
+		end
+		if e >= WEDGE_OFF and once("tip") then -- he lands on his edge; the wedges pop off the top
+			dustPuff(sc, NumberRange.new(12, 18), Vector2.new(85, 85), 12, ground)
+			playAt(ground, "stomp")
+			if #b.lanes > 0 then
+				playAt(pos + Vector3.new(0, 6.4 * sc, 0), "pop")
+				local top = pos + Vector3.new(0, 6.4 * sc, 0)
+				burstAt(CFrame.lookAt(top, top + up), crumbs(sc), 10)
+				for _ = 1, #b.lanes do
+					table.insert(b.wedges, makeWedge(sc))
+				end
+			end
+		end
+		if e >= 0.86 and once("burnout") then
+			playAt(ground, "burnout")
+		end
+		if e >= 0.86 and os.clock() - b.fxAt > 0.05 then -- burnout: crumbs + dust flung out behind the spinning wheel
+			b.fxAt = os.clock()
+			local back = ground - look * 1.2 * sc
+			local props = sandPuff(sc, NumberRange.new(12, 20), Enum.NormalId.Front, Vector2.new(25, 20))
+			props.Color = ColorSequence.new(DUST)
+			burstAt(CFrame.lookAt(back, back - look + Vector3.new(0, 0.35, 0)), props, 2)
+			burstAt(CFrame.lookAt(back, back - look + Vector3.new(0, 0.6, 0)), crumbs(sc), 2)
+		end
+		for i, w in b.wedges do -- arcing off the top to the lane's start, then waiting
+			local top = pos + Vector3.new(0, 6.4 * sc, 0)
+			local rest, dir = laneAt(i, 7)
+			local a = math.clamp((e - WEDGE_OFF) / 0.3, 0, 1)
+			poseWedge(w, top:Lerp(rest, a) + Vector3.new(0, 9 * k * math.sin(math.pi * a), 0), dir, a * 4, 1, sc)
+		end
+	elseif state == "attack" then
+		if once("launch") then
+			shockwave(ground, 16, CHEESE, 0)
+			dustPuff(sc, NumberRange.new(14, 22), Vector2.new(80, 80), 14, ground)
+			b.runFx = b.runFx or makeCheeseRunFx(sc)
+		end
+		local fx = b.runFx
+		if fx then
+			fx.CFrame = CFrame.lookAt(ground + Vector3.new(0, 1, 0), ground + Vector3.new(0, 1, 0) + look)
+			local braking = e > total - 0.2
+			for _, em in fx:GetChildren() do
+				local pe = em :: ParticleEmitter
+				pe.Enabled = if em.Name == "Plume" then braking else not braking
+			end
+		end
+		for i, w in b.wedges do -- tumbling down the lanes; they crumble at the end
+			local _, _, len = laneAt(i, 0)
+			local travel = math.max(0, (len - 7) / speed)
+			local along = 7 + speed * math.min(e, travel)
+			local at, dir = laneAt(i, along)
+			local gone = math.clamp((e - travel) / 0.15, 0, 1)
+			poseWedge(w, at + Vector3.new(0, 1.2 * k * math.abs(math.sin(along / 3)), 0), dir, along / 3, 1 - gone, sc)
+			if e < travel and os.clock() - b.fxAt > 0.08 then
+				burstAt(CFrame.lookAt(at, at - dir + Vector3.new(0, 0.8, 0)), crumbs(sc * 0.7), 2)
+			elseif e >= travel and once("crumble" .. i) then
+				burstAt(CFrame.lookAt(at, at + up), crumbs(sc), 12)
+				playAt(at, "crumble")
+			end
+		end
+		if os.clock() - b.fxAt > 0.08 then
+			b.fxAt = os.clock()
+		end
+	else
+		if b.runFx then
+			for _, em in b.runFx:GetChildren() do
+				(em :: ParticleEmitter).Enabled = false
+			end
+		end
+		if state == "recover" then
+			if once("stop") then
+				shockwave(ground, 10, DUST, 0)
+				dustPuff(sc, NumberRange.new(10, 16), Vector2.new(70, 70), 10, ground)
+				playAt(ground, "stomp")
+			end
+			if e >= 0.42 and once("land") then -- the hop back upright lands
+				dustPuff(sc, NumberRange.new(10, 16), Vector2.new(85, 85), 10, ground)
+				playAt(ground, "boing")
+			end
+		end
+	end
+	if state ~= "windup" and state ~= "attack" and #b.wedges > 0 then
+		for _, w in b.wedges do
+			w:Destroy()
+		end
+		b.wedges = {}
+	end
+end
+
 -- dizzy stars circling over its head (the Megalodon after a charge)
 local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
 	if not on then
@@ -1495,6 +1719,22 @@ RunService.Heartbeat:Connect(function(dt)
 				b.paperSpin += dt * (0.9 + 6.1 * swirl)
 				rots.Papers = CFrame.Angles(0, b.paperSpin, 0) * CFrame.new(0, (math.sin(t * 2) * 0.15 + 1.1 * swirl) * sc, 0)
 				partnerFx(b, state, t - t0, t1 - t0, pos, sc, t, swirl)
+			elseif b.kind == "BigCheese" then
+				-- THE ROLL (code): the distance really rolled (+ the clip's Roll: the burnout), upright again with Unroll
+				local roll = fxNow.Roll or 0
+				if state == "attack" then
+					local from = (attr(s, "From") :: Vector3?) or pos
+					roll = Vector3.new(pos.X - from.X, 0, pos.Z - from.Z).Magnitude / (CHEESE_R * sc)
+					b.lastRoll = roll
+				elseif state == "recover" then
+					local target = math.round(b.lastRoll / (math.pi * 2)) * math.pi * 2
+					roll = b.lastRoll + (target - b.lastRoll) * (fxNow.Unroll or 0)
+				end
+				if roll ~= 0 then
+					rots.Torso = CFrame.Angles(-roll, 0, 0) * (rots.Torso or CFrame.identity)
+					rootOff = rootOff * CFrame.new(0, rollLift(anim, roll), 0) -- (its block corners bump over the floor)
+				end
+				cheeseFx(b, state, t - t0, t1 - t0, pos, sc, t)
 			end
 		end
 		local root = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0) * CFrame.new(rootOff.Position * sc) * rootOff.Rotation

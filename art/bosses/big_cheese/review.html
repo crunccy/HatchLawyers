@@ -1,0 +1,209 @@
+<title>Big Cheese Cheese Roll</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column review sheet - the preview on top, the phase ruler drawn to the server's seconds, the storyboard, then the decisions. Game UI language: chunky rounded panels, ink outlines, Food Court reds and cheese yellow. */
+:root {
+  --bg: #fdf6e3;
+  --panel: #ffffff;
+  --ink: #282834;
+  --muted: #5d6474;
+  --line: #e6d3c0;
+  --ocean: #b8471f;
+  --electric: #ffc93c;
+  --sand: #e2ca96;
+  --green: #4fae2a;
+  --orange: #f29a12;
+  --red: #e04848;
+  --chip: #fbe7b5;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1610; --panel: #271f17; --ink: #f6efe6; --muted: #bba994; --line: #45382a;
+    --ocean: #ff8a6a; --electric: #ffd166; --sand: #c9b07a; --green: #6fcf48; --orange: #f5ac3a; --red: #f06a6a;
+    --chip: #3a2d20; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1c1610; --panel: #271f17; --ink: #f6efe6; --muted: #bba994; --line: #45382a;
+  --ocean: #ff8a6a; --electric: #ffd166; --sand: #c9b07a; --green: #6fcf48; --orange: #f5ac3a; --red: #f06a6a;
+  --chip: #3a2d20; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 700; }
+h2 { font-size: 24px; font-weight: 600; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--display); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; color: var(--ocean); }
+header { display: grid; gap: 10px; }
+.lede { color: var(--muted); font-size: 17px; }
+.panel { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab {
+  font-family: var(--display); font-weight: 600; font-size: 15px; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--panel); color: var(--ink); padding: 7px 16px; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--ink); color: var(--panel); }
+.tab:focus-visible, .shot:focus-visible { outline: 3px solid var(--electric); outline-offset: 2px; }
+video { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; background: #000; display: block; }
+.caption { color: var(--muted); font-size: 14px; }
+/* the phase ruler: widths are the server's seconds */
+.ruler { display: flex; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); font-family: var(--display); font-weight: 600; font-size: 13px; }
+.ruler div { padding: 8px 8px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1d2430; }
+.ruler .wind { flex: 1.2; background: #ffd34d; }
+.ruler .charge { flex: 0.917; background: #f0544a; }
+.ruler .recover { flex: 0.6; background: #b8e59a; }
+.scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.shot { display: grid; gap: 6px; margin: 0; min-width: 0; }
+.shot img { border-radius: 10px; border: 2px solid var(--line); aspect-ratio: 16 / 9; object-fit: cover; width: 100%; cursor: zoom-in; }
+.shot figcaption { font-size: 14px; }
+.shot .t { font-family: var(--mono); font-size: 12px; color: var(--ocean); font-variant-numeric: tabular-nums; }
+.phase { display: grid; gap: 14px; }
+.phase h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.pill { font-family: var(--mono); font-size: 12px; background: var(--chip); color: var(--ink); border-radius: 999px; padding: 2px 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1.5px solid var(--line); vertical-align: top; }
+th { font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--muted); }
+.tablebox { overflow-x: auto; }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: -1px; margin-right: 6px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.ask { border-color: var(--orange); }
+.ask ol { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+code { font-family: var(--mono); font-size: 13px; background: var(--chip); border-radius: 6px; padding: 1px 6px; overflow-wrap: anywhere; }
+dialog { border: none; padding: 0; background: transparent; max-width: min(96vw, 1280px); }
+dialog img { border-radius: 12px; display: block; }
+dialog::backdrop { background: rgba(10, 16, 24, .82); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Boss attack overhaul · boss 3 of 6 · for your approval, not in Studio yet</span>
+    <h1>Prosecutor Big Cheese: Cheese Roll</h1>
+    <p class="lede">His roll, rebuilt on the Megalodon benchmark with every beat keyed in Blender to the server's own timing. With two or more players in the Food Court, two cheese wedges also pop off him and tumble down lanes at the others. That's the <strong>Wheel Split</strong>.</p>
+  </header>
+
+  <section class="panel" aria-label="Preview videos">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-cine" aria-selected="true" data-src="big_cheese_roll.mp4" data-cap="Cinematic cut: front three-quarter on the salute, the tip and the burnout, a camera tracking the roll, then close on the stop and the hop back upright. Real speed.">Cinematic</button>
+      <button class="tab" role="tab" id="tab-slow" aria-selected="false" data-src="big_cheese_roll_halfspeed.mp4" data-cap="The same cut at half speed, for checking frame by frame. The burned-in frame number is the 30 fps preview frame.">Half speed</button>
+      <button class="tab" role="tab" id="tab-game" aria-selected="false" data-src="big_cheese_gameplay_view.mp4" data-cap="Gameplay view of three players. Green is his target and steps out of the roll lane. Orange steps out of its wedge lane. Red stays put, a wedge tumbles into them and their eggs go flying.">Gameplay view (3 players)</button>
+    </div>
+    <video id="player" src="big_cheese_roll.mp4" controls loop muted playsinline preload="metadata"></video>
+    <p class="caption" id="cap">Cinematic cut: front three-quarter on the salute, the tip and the burnout, a camera tracking the roll, then close on the stop and the hop back upright. Real speed.</p>
+    <div>
+      <div class="ruler" aria-label="Server phases to scale">
+        <div class="wind">Windup 1.2 s</div><div class="charge">Roll 0.92 s</div><div class="recover">Recover 0.6 s</div>
+      </div>
+      <div class="scale"><span>0</span><span>1.2</span><span>2.12</span><span>2.72 s</span></div>
+    </div>
+    <p class="caption">Widths are the server's real seconds (BossService "Line" + Config): a 110-stud roll at 120 studs/s. The roll itself is worked out in the game from the distance he has really travelled, so his face never slips on the floor, whatever length the roll is.</p>
+  </section>
+
+  <section class="phase" aria-labelledby="sb">
+    <h2 id="sb">Storyboard</h2>
+
+    <h3>A · Anticipation <span class="pill">windup 0 – 1.2 s</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_01_notice.png" alt="Big Cheese with his eyelids snapped wide open" loading="lazy"><figcaption><span class="t">0.06 s</span> Notice: his smug lids snap wide open with a little bounce, and he turns to face his target.</figcaption></figure>
+      <figure class="shot"><img src="board_02_en_garde.png" alt="Big Cheese saluting with the cocktail-stick sword" loading="lazy"><figcaption><span class="t">0.30 s</span> En garde: the cocktail-stick sword goes up in a salute. The olive gleams and he twirls his moustache.</figcaption></figure>
+      <figure class="shot"><img src="board_03_tip_hop.png" alt="The wheel in the air, turning onto its edge" loading="lazy"><figcaption><span class="t">0.52 s</span> The tip: he hops and makes a quarter turn in the air onto his edge.</figcaption></figure>
+      <figure class="shot"><img src="board_04_lands_on_edge_wedges.png" alt="The wheel landing on its edge, a wedge flying off the top" loading="lazy"><figcaption><span class="t">0.66 s</span> He lands with a jiggly squash and a dust ring. With 2+ players, two wedges pop off his top, and his arms tuck into the wheel.</figcaption></figure>
+      <figure class="shot"><img src="board_05_rock_back.png" alt="The wheel rocked back, crumbs falling" loading="lazy"><figcaption><span class="t">0.84 s</span> Rock back: he rolls back a little, loading up.</figcaption></figure>
+      <figure class="shot"><img src="board_06_burnout.png" alt="The wheel spinning in place, dust and crumbs flying behind" loading="lazy"><figcaption><span class="t">1.12 s</span> Burnout: he spins in place, faster and faster, with dust and crumbs flung out behind. One whole turn, so the roll starts upright.</figcaption></figure>
+      <figure class="shot"><img src="board_13_gameplay_warnings.png" alt="High view of the main lane and two smaller wedge lanes" loading="lazy"><figcaption><span class="t">0.90 s</span> From a player's height: his 22-wide lane plus a 12-wide wedge lane for each other player. All show from the windup's first frame.</figcaption></figure>
+    </div>
+
+    <h3>B · Attack <span class="pill">roll, linear on the server's path</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_07_launch.png" alt="The wheel bursting forward with a dust ring" loading="lazy"><figcaption><span class="t">+0.05 s</span> Launch: he pops forward, stretched along the run, with a dust ring at the start.</figcaption></figure>
+      <figure class="shot"><img src="board_08_roll.png" alt="The wheel rolling with speed streaks and crumbs, a wedge tumbling" loading="lazy"><figcaption><span class="t">+0.45 s</span> Roll: his block rim bumps over the floor like a brick wheel would, with crumbs and dust behind and speed streaks.</figcaption></figure>
+      <figure class="shot"><img src="board_14_gameplay_wheel_split.png" alt="High view mid-roll with wedges tumbling down their lanes" loading="lazy"><figcaption><span class="t">+0.40 s</span> Wheel Split: the wedges tumble end over end down their lanes at 110 studs/s and crumble at the end.</figcaption></figure>
+      <figure class="shot"><img src="board_09_brake.png" alt="The wheel squashed against its stop, dust thrown forward" loading="lazy"><figcaption><span class="t">last 0.2 s</span> Brake: he squashes along the run as he digs in and throws a plume of dust forward.</figcaption></figure>
+    </div>
+
+    <h3>D · Recovery <span class="pill">recover 0.6 s</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_10_wobble.png" alt="The wheel wobbling like a coin as it stops" loading="lazy"><figcaption><span class="t">0.06 s</span> Settle: he wobbles like a coin coming to rest.</figcaption></figure>
+      <figure class="shot"><img src="board_11_hop_upright.png" alt="The wheel in the air, turning back to face the front" loading="lazy"><figcaption><span class="t">0.28 s</span> Hop upright: he hops, turns back to face the front and rolls upright in the air, and his arms pop back out.</figcaption></figure>
+      <figure class="shot"><img src="board_12_landing_twirl.png" alt="Big Cheese landed upright, twirling his moustache" loading="lazy"><figcaption><span class="t">0.50 s</span> Landing: a jiggly squash, a boing, then a smug moustache twirl.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="crowd">
+    <h2 id="crowd">Wheel Split (2+ players)</h2>
+    <p>With one player in the zone nothing changes. With two or more, the server picks up to two other players within 90 studs as the windup begins and marks a 12-wide lane at each one. The wedges pop off as he lands on his edge, wait at the lane starts, and tumble down the lanes from the moment he starts rolling. A player at base speed is out of a lane in 0.19 s. A hit works like any other hit. This uses the same lane add-on as the Megalodon's sand sharks, so the server code didn't change.</p>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <h2>What changed</h2>
+      <ul>
+        <li><strong>Model:</strong> 3 to 5 moving parts with the same 47 blocks: his eyelids and moustache now move on their own.</li>
+        <li><strong>Animation:</strong> five Blender clips (windup, launch, roll loop, brake, recover) with squash, stretch and cheesy jiggle. Before, his rim corners sank up to 1.2 studs into the floor every turn, his arms and sword swept through it, and after a roll he unwound backwards on the spot. Now the wheel bumps over its corners, his arms tuck in, and he hops back upright.</li>
+        <li><strong>Effects:</strong> the olive's gleam, landing dust, wedges popping off and crumbling, burnout dust and crumbs, a launch ring, the roll's trail and the brake plume. All use textures the game already has.</li>
+        <li><strong>Sound:</strong> a glint, a thud on landing, a wedge pop, grinding gears for the burnout, the roll whoosh, a boing on the hop, and a crumble. All come from the game's licensed set.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Checked</h2>
+      <ul>
+        <li><strong>Timing:</strong> clip lengths match Config (windup 1.2) and BossService (recover 0.6), and the automated check covers it.</li>
+        <li><strong>Clipping:</strong> every block was tested against every other part, every frame. The worst left is 0.27 studs (the salute arm against his rim, for one frame) on a 20-stud boss. Nothing goes more than 0.06 studs into the floor.</li>
+        <li><strong>Arms tucked in the wheel</strong> while he rolls are hidden by design and counted separately.</li>
+        <li><strong>The other bosses:</strong> the Megalodon's and the Senior Partner's models and clips are unchanged.</li>
+        <li><strong>Repo checks:</strong> all Luau compiles, 42 config checks pass and the sim tests pass.</li>
+        <li><strong>Not tested yet:</strong> a live playtest in Studio. That happens after approval.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel ask" aria-labelledby="dec">
+    <h2 id="dec">For your call</h2>
+    <ol>
+      <li><strong>Approve the Cheese Roll</strong> as it is, or send notes (beat, pose or timing, using the storyboard times).</li>
+      <li><strong>Wheel Split:</strong> 12-wide lanes, up to two other players, within 90 studs, 110 studs/s.</li>
+      <li><strong>After approval:</strong> rebuild the boss models in Studio, add the new clips, update the client script and Config, then playtest.</li>
+    </ol>
+  </section>
+</div>
+
+<dialog id="zoom" aria-label="Storyboard frame"><img id="zoomImg" alt=""></dialog>
+
+<script>
+(function () {
+  var player = document.getElementById("player");
+  var cap = document.getElementById("cap");
+  var tabs = document.querySelectorAll(".tab");
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      tabs.forEach(function (o) { o.setAttribute("aria-selected", o === t ? "true" : "false"); });
+      player.src = t.dataset.src;
+      cap.textContent = t.dataset.cap;
+      player.play().catch(function () {});
+    });
+  });
+  var dlg = document.getElementById("zoom");
+  var zi = document.getElementById("zoomImg");
+  document.querySelectorAll(".shot img").forEach(function (img) {
+    img.tabIndex = 0;
+    function open() { zi.src = img.src; zi.alt = img.alt; if (dlg.showModal) dlg.showModal(); }
+    img.addEventListener("click", open);
+    img.addEventListener("keydown", function (e) { if (e.key === "Enter") open(); });
+  });
+  dlg.addEventListener("click", function () { dlg.close(); });
+})();
+</script>

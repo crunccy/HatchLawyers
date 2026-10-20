@@ -34,8 +34,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
   The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
-  **Prosecutor Big Cheese (Cheese Roll + Wheel Split) in progress since 2026-10-20** (crnuch local, side session):
-  bosses.py / boss_anims.py / Bosses.client / BossService / Config boss entries claimed until it's presented.
+  **Prosecutor Big Cheese (Cheese Roll + Wheel Split): built in `src/` 2026-10-20, waiting for crnuch's approval**
+  (review page in the 2026-10-20 entry); bosses.py / boss_anims.py / Bosses.client / Config boss entries stay claimed.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
@@ -198,6 +198,26 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — crnuch, local session (side session): Prosecutor Big Cheese's CHEESE ROLL + WHEEL SPLIT (Blender + src/)
+- Third boss of the overhaul (crnuch: "make the food guy next"). docs/BOSS_ANIMATION.md **section 7**: his real timeline
+  (Line: windup 1.2, roll up to 110 studs at 120 = 0.92 s, no dizzy, recover 0.6), the storyboard, what was built.
+- **Model v2** (`tools/blender/bosses.py`): `Lids` + `Moustache` groups (same 47 blocks). Other five byte-identical.
+- **The roll stays code, now exact** (client): distance / (R x Scale) + the clip's `Roll` channel (the burnout), the
+  recover's `Unroll` channel stands him upright in a hop (he used to unwind backwards on the spot). New per-boss
+  **`RollLift`** in `Shared.BossAnims` (72 values the engine measures from the model): the block wheel's corners used
+  to sink up to 1.2 studs into the floor every turn; now it bumps over them. Arms tuck into the wheel for the roll.
+- **Engine** (`tools/blender/boss_anims.py`): `check_fold` per boss (state / time aware), `ROLL_LIFT` export; new
+  `tools/blender/boss_clips/big_cheese.py` + `_preview.py`. Megalodon + Partner clip data unchanged.
+- **Clips** windup 37 / launch 7 / loop 7 / brake 7 / recover 19 frames. Clipping worst 0.27 studs (one frame) on a
+  20-stud boss; the floor 0.06 at worst.
+- **src/ (NOT in Studio - waits for approval):** `Bosses.client.lua` (roll + RollLift + Unroll, `cheeseFx`: olive
+  gleam, landing dust, wedges pop off / wait / tumble / crumble, burnout dust + crumbs, launch ring, roll trail, brake
+  plume, stop + hop landing), `Config.lua` (his `Crowd`: Lane, Max 2, Range 90, Width 12, Speed 110, Length 100 - the
+  server's existing Lane add-on, no BossService change), `src/BossAnims.lua`.
+- **Preview + review page:** `art/bosses/big_cheese/`; https://claude.ai/artifact/7FKSXgNPpwP2Wnt8WHpmW3 (private).
+- **Next (after approval):** `tools/zones/BuildBosses.lua` (v2 model), replace `Shared.BossAnims`, `Bosses` (client) and
+  `Shared.Config` from `src/` (re-export the snapshot first), playtest (watch the bump and the hop at the zone floor).
 
 ## 2026-10-20 — crnuch, local session (side session): The Senior Partner's Briefcase Swing pushed to Studio
 - **crnuch approved** the Briefcase Swing + Paper Storm (2026-10-19 entry below). Pushed: `ReplicatedStorage.Bosses`

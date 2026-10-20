@@ -283,11 +283,19 @@ for (x, z, s) in ((-1.9, 4.6, 0.6), (1.7, 1.6, 0.7), (-1.5, 1.4, 0.5), (2.1, 4.4
     for y in (1.16, -1.16):
         box("Hole", x, y, z, s, 0.06, s, HOLE, tag="nocollide")
 eyes(0, 1.18, 3.85, 0.5, 0.75)
+box("Smirk", 0.25, 1.21, 2.7, 0.8, 0.08, 0.15, BLACK, ry=-10, tag="nocollide")
+# v2 (2026-10-20, docs/BOSS_ANIMATION.md): the lids and the moustache are groups of their own so the Cheese Roll can
+# open his eyes wide and twirl / bristle the moustache (same blocks, same places)
+GROUP = "Lids"  # smug half-shut eyes
+groups["Lids"] = dict(joint=(0, 1.2, 4.35), parent="Torso")
 for sx in (-1, 1):
-    box("Lid", sx * 0.75, 1.2, 4.25, 0.7, 0.08, 0.2, RIND, tag="nocollide")  # smug half-shut eyes
+    box("Lid", sx * 0.75, 1.2, 4.25, 0.7, 0.08, 0.2, RIND, tag="nocollide")
+GROUP = "Moustache"
+groups["Moustache"] = dict(joint=(0, 1.22, 3.2), parent="Torso")
+for sx in (-1, 1):
     box("Moustache", sx * 0.55, 1.22, 3.1, 0.9, 0.1, 0.22, BLACK, ry=sx * -12, tag="nocollide")
     box("MoustacheCurl", sx * 1.05, 1.22, 3.25, 0.22, 0.1, 0.35, BLACK, tag="nocollide")
-box("Smirk", 0.25, 1.21, 2.7, 0.8, 0.08, 0.15, BLACK, ry=-10, tag="nocollide")
+GROUP = "Torso"
 box("TieKnot", 0, 1.22, 2.15, 0.35, 0.1, 0.3, RED, tag="nocollide")
 box("Tie", 0, 1.22, 1.35, 0.32, 0.1, 0.8, RED, tag="nocollide")
 for side, g in ((-1, "ArmL"), (1, "ArmR")):

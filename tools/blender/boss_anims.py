@@ -6,7 +6,7 @@
 # GROUP at its joint, execs the boss's files in this namespace, bakes the preview at the SERVER's exact timing, and
 # exports every boss's clips to tools/zones/boss_anims.json + src/BossAnims.lua (ReplicatedStorage.Shared.BossAnims,
 # generated; other bosses' clips already in the JSON are kept as they are).
-# Bosses: Megalodon (FIN CHARGE, the benchmark), SeniorPartner (BRIEFCASE SWING).
+# Bosses: Megalodon (FIN CHARGE, the benchmark), SeniorPartner (BRIEFCASE SWING), BigCheese (CHEESE ROLL).
 # Args after --:  boss=<Model> (default Megalodon)
 #                 check   -> per-frame clipping check (every block of a group vs every other group's blocks)
 #                 stills  -> <OUT_DIR>/board_*.png (storyboard frames)
@@ -32,13 +32,20 @@ ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 FRAMES_DIR = os.environ.get("BOSS_FRAMES", os.path.join(REPO, "_boss_frames"))
 FPS = 30
 BOSS = next((a.split("=", 1)[1] for a in ARGS if a.startswith("boss=")), "Megalodon")
-SPECS = {"Megalodon": "megalodon", "SeniorPartner": "senior_partner"}  # boss -> its files in tools/blender/boss_clips/
+SPECS = {"Megalodon": "megalodon", "SeniorPartner": "senior_partner", "BigCheese": "big_cheese"}  # boss -> its files in tools/blender/boss_clips/
 SPEC_DIR = os.path.join(REPO, "tools", "blender", "boss_clips")
 TURN = (0.04, 0.2)  # the client's whip-round turn in the windup: hold, then back-out over this long (a spec may change it)
 LEAD = ("Torso", 0.35)  # which group leads the turn, and by how much of the angle still to go
 FX_CHANNELS = ()
 CHECK_SKIP_PARTS, CHECK_SKIP_GROUPS = (), ()  # blocks / groups the clipping check leaves out (they sit inside by design)
 CHECK_FOLDS = ()  # (group, group) pairs whose overlap is a joint's fold (a leg top inside the hips): reported apart
+
+
+def check_fold(ga, gb, state, tl):  # a spec may replace this (a fold only in some states / times)
+    return (ga, gb) in CHECK_FOLDS or (gb, ga) in CHECK_FOLDS
+
+
+ROLL_LIFT = None  # a rolling boss (Big Cheese): how far its block wheel lifts at each roll angle (exported RollLift)
 
 rng = random.Random(7)
 
@@ -163,6 +170,8 @@ def export():
         fx = {k: [round(f["fx"][k], 4) for f in frames] for k in frames[0]["fx"]}
         out["clips"][name] = {"length": round(length, 4), "loop": loops, "frames": n, "groups": groups,
                               "root": [round(x, 4) for x in root], "fx": fx}
+    if ROLL_LIFT:
+        out["rolllift"] = [round(x, 4) for x in ROLL_LIFT]
     if TURN != (0.04, 0.2) or LEAD != ("Torso", 0.35):  # (the client's default turn; a boss that turns differently carries it)
         out["turn"] = [round(TURN[0], 4), round(TURN[1], 4), LEAD[0], round(LEAD[1], 4)]
     path = os.path.join(REPO, "tools", "zones", "boss_anims.json")
@@ -182,11 +191,14 @@ def write_luau(allc):
          "-- Channels are stored as comma strings (a few thousand numbers) and unpacked once on require.",
          "-- Turn? = { Hold, Time, Lead, LeadBy }: the windup's turn (hold, then back-out over Time; group Lead leads it by",
          "-- LeadBy of the angle left). Without it: 0.04 / 0.2, the Torso by 0.35 (the Megalodon's whip-round).",
+         "-- RollLift? = a rolling boss's lift (model units) at evenly spaced roll angles over a turn: its block wheel bumps.",
          "", "local function unpack(s: string): { number }", "\tlocal t = {}", "\tfor _, v in string.split(s, \",\") do",
          "\t\ttable.insert(t, tonumber(v) :: number)", "\tend", "\treturn t", "end", "", "local Anims = {"]
     for boss, d in allc.items():
         L.append("\t%s = {" % boss)
         L.append("\t\tFps = %d," % d["fps"])
+        if "rolllift" in d:
+            L.append('\t\tRollLift = unpack("%s"),' % ",".join(fmt(x) for x in d["rolllift"]))
         if "turn" in d:
             L.append('\t\tTurn = { Hold = %s, Time = %s, Lead = "%s", LeadBy = %s },' % (fmt(d["turn"][0]), fmt(d["turn"][1]), d["turn"][2], fmt(d["turn"][3])))
         L.append("\t\tClips = {")
@@ -540,16 +552,17 @@ def clip_check():
         SC.frame_set(f0)
         for a, b in pairs:
             base[(a.name, b.name)] = max(base.get((a.name, b.name), 0.0), depth(a, b))
-    worst = {}
+    worst, folds = {}, {}
     for fr in range(SC.frame_start, SC.frame_end + 1):
         SC.frame_set(fr)
-        st = boss_state(fr / FPS)[0]
+        st, tl = boss_state(fr / FPS)[0:2]
         for a, b in pairs:
             d = depth(a, b) - base[(a.name, b.name)]
             if d > 0.25:
                 key = (a.parent.name, a.name, b.parent.name, b.name)
-                if d > worst.get(key, (0, 0, ""))[0]:
-                    worst[key] = (d, fr, st)
+                into = folds if check_fold(key[0][2:], key[2][2:], st, tl) else worst
+                if d > into.get(key, (0, 0, ""))[0]:
+                    into[key] = (d, fr, st)
     sink = (0.0, 0, "", "")  # the deepest any block goes into the ground (the floor is z = 0) in the clips
     for fr in range(SC.frame_start, SC.frame_end + 1):
         if boss_state(fr / FPS)[0] == "walk":
@@ -560,17 +573,13 @@ def clip_check():
             if -z > sink[0]:
                 sink = (-z, fr, boss_state(fr / FPS)[0], o.parent.name + "/" + o.name)
     print("ground: deepest %.2f studs below the floor, frame %d (%s) %s" % sink)
-    def fold(k):
-        return (k[0][2:], k[2][2:]) in CHECK_FOLDS or (k[2][2:], k[0][2:]) in CHECK_FOLDS
-    folds = {k: v for k, v in worst.items() if fold(k)}
-    worst = {k: v for k, v in worst.items() if not fold(k)}
     for k, (d, fr, st) in sorted(worst.items(), key=lambda kv: -kv[1][0])[:25]:
         print("CLIP %.2f studs  frame %d (%s)  %s/%s into %s/%s" % (d, fr, st, k[0], k[1], k[2], k[3]))
     print("clip check: %d pairs over 0.25 studs" % len(worst))
     if folds:
         k, (d, fr, st) = max(folds.items(), key=lambda kv: kv[1][0])
-        print("folds (hidden joint overlaps, %s): deepest %.2f studs, frame %d (%s) %s/%s into %s/%s"
-              % (", ".join("-".join(f) for f in CHECK_FOLDS), d, fr, st, k[0], k[1], k[2], k[3]))
+        print("folds (hidden by design: a joint's fold, a tucked limb): deepest %.2f studs, frame %d (%s) %s/%s into %s/%s"
+              % (d, fr, st, k[0], k[1], k[2], k[3]))
 
 
 # ===================================================================================== run

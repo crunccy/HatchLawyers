@@ -17,6 +17,8 @@ PHASES = {
     "SeniorPartner": [(0.0, "walk"), (0.5, "WINDUP  1.2 s  (warning on the floor)"),
                       (1.7, "ATTACK  0.45 s  (the hit: its first frame; the case lands at +0.05)"),
                       (2.15, "RECOVER  0.6 s"), (2.75, "walk")],
+    "BigCheese": [(0.0, "walk"), (0.5, "WINDUP  1.2 s  (warning on the floor)"), (1.7, "ROLL  110 studs @ 120/s = 0.92 s"),
+                  (2.617, "RECOVER  0.6 s"), (3.217, "walk")],
 }[BOSS]
 
 files = sorted(glob.glob(os.path.join(src, "f_*.png")))
