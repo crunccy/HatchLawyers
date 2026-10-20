@@ -23,6 +23,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
+- **mr.robe (local), since 2026-10-20:** wiring the redesign islands into the egg-zone gameplay BEHIND AN OFF SWITCH
+  (user's call): `Config.Zones.Islands.Enabled = false` keeps the live game on the lane; new `Server.ZoneMap`,
+  `Workspace.IslandWiring` markers (egg spots, arrival, RETURN HOME, odds boards), ZoneService + TravelServer read
+  through ZoneMap, admin `/islands on|off` (Studio only). No boss changes (crnuch's boss claim), no island rebuilds
+  (crnuch's call). Backup: tag `backup-2026-10-20-before-island-wiring` + `ServerStorage.Backups_2026-10-20`.
+  Don't edit ZoneService / TravelServer / AdminCommands meanwhile.
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
