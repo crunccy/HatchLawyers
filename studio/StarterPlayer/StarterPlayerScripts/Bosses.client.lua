@@ -19,6 +19,9 @@
 --     tools/blender/boss_anims.py; Megalodon first) plays them for windup / attack / dizzy / recover instead of its
 --     POSES function (cross-faded): squash + stretch, the whip-round turn, the glowing fin, its own effects, and the
 --     CROWD add-on (Config.Bosses.List[n].Crowd: sand-shark fins down extra warning lanes at other players).
+--     The Senior Partner (2026-10-19): the BRIEFCASE SWING (glasses push, stomp, the case overhead, the lid bursts and
+--     papers swirl, the sweep, the case strikes the ground, the yank) and the PAPER STORM crowd add-on (bundles of
+--     case files lobbed onto the other players' warning discs, landing with the swing).
 -- No text anywhere (user's call): no names, no labels, no messages.
 
 local Debris = game:GetService("Debris")
@@ -111,6 +114,15 @@ local SOUNDS = {
 	pull = { "rbxassetid://9045751375", 0.4, 0.7, 2.0 },
 	land = { "rbxassetid://9114753510", 0.35, 1.6, 0.5 },
 	grab = { "rbxassetid://15675024286", 0.55, 1.1 }, -- whoosh
+	-- the Senior Partner's Briefcase Swing
+	glint = { "rbxassetid://15675059323", 0.3, 1.5 }, -- a bright click: the glasses pushed up / the clasp's gleam
+	stomp = { "rbxassetid://9114753510", 0.55, 0.55, 0.5 }, -- a low thud as he plants his stance
+	lift = { "rbxassetid://15675024286", 0.5, 0.75 }, -- the case swung up
+	lidpop = { "rbxassetid://15675046931", 0.45, 0.8 }, -- the lid bursts open
+	papers = { "rbxassetid://15675037413", 0.6, 0.9 }, -- papers flying
+	swing = { "rbxassetid://15674975792", 0.8, 1.15, 0.6 }, -- the big sweep
+	crack = { "rbxassetid://9113959343", 0.6, 0.7, 0.8 }, -- the ground cracks under the case
+	yank = { "rbxassetid://9113959332", 0.4, 0.85, 0.5 }, -- the case pulled out of the ground
 }
 local function playAt(pos: Vector3, kind: string)
 	local def = SOUNDS[kind]
@@ -185,6 +197,10 @@ type Boss = {
 	laneFrom: Vector3,
 	sharks: { BasePart },
 	runFx: BasePart?, -- the charge's trail emitters
+	paperSpin: number, -- the Senior Partner's ankle papers (spun by code; the clip's Swirl channel speeds them up)
+	sheets: { BasePart }, -- the papers swirling round him in the windup
+	bundles: { BasePart }, -- the Paper Storm's case files in flight (+ their shadows)
+	strikeAt: Vector3?, -- where the case hit the ground
 }
 local bosses: { [Configuration]: Boss } = {}
 local ragdolled = false -- (the local player is lying limp: no pulls - see ragdoll below)
@@ -255,14 +271,15 @@ local function build(s: Configuration)
 	bosses[s] = { state = s, model = m, kind = m.Name, groups = list, yaw = (attr(s, "Yaw") :: number?) or 0,
 		phase = 0, walk = 0, seenState = (attr(s, "StateStart") :: number?) or 0, warn = nil, warnKind = nil,
 		stars = nil, lastRoll = 0, trailAt = 0, clipW = 0, lastClip = nil, turnStart = 0, turnFrom = 0, glow = glow,
-		glowNow = 0, squashed = false, fired = {}, fxAt = 0, lanes = {}, laneFrom = Vector3.zero, sharks = {}, runFx = nil }
+		glowNow = 0, squashed = false, fired = {}, fxAt = 0, lanes = {}, laneFrom = Vector3.zero, sharks = {}, runFx = nil,
+		paperSpin = 0, sheets = {}, bundles = {}, strikeAt = nil }
 end
 
 local function remove(s: Instance)
 	local b = bosses[s :: Configuration]
 	if b then
 		b.model:Destroy()
-		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx } } do
+		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx }, b.sheets, b.bundles } do
 			for _, p in list do
 				p:Destroy()
 			end
@@ -616,7 +633,8 @@ end
 
 -- The warning on the floor for this attack, in the boss's colour (each piece sized every frame by poseWarn):
 -- Cone = a fan; Ring / Slam = a disc with an edge (Slam's at the landing spot); Line = a strip to where it'll stop,
--- with arrows; Pull = a disc, its deadly white middle and a swirl.
+-- with arrows; Pull = a disc, its deadly white middle and a swirl. A Disc crowd add-on adds a disc + edge round each
+-- other player's spot (Crowd1..CrowdN).
 local function makeWarn(b: Boss)
 	clearWarn(b)
 	local s = b.state
@@ -663,6 +681,14 @@ local function makeWarn(b: Boss)
 			end
 		end
 	end
+	if attr(s, "CrowdShape") == "Disc" then
+		for i = 1, (attr(s, "CrowdN") :: number?) or 0 do
+			add("CrowdDisc", { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, 2, 2), Transparency = 0.65 }, { Crowd = i })
+			for k = 0, 23 do
+				add("CrowdEdge", { Size = Vector3.new(1.6, 0.16, 0.8), Transparency = 0.3 }, { Crowd = i, Angle = k / 24 * math.pi * 2, Step = math.pi * 2 / 24 })
+			end
+		end
+	end
 	for _, p in list do
 		p.Parent = visuals
 	end
@@ -679,9 +705,32 @@ local function poseWarn(b: Boss, pos: Vector3, yaw: number, grow: number, t: num
 	local kind = b.warnKind
 	local floorY = ((attr(s, "FloorY") :: number?) or pos.Y) + 0.09
 	local pulse = 0.5 + 0.5 * math.sin(t * 18)
+	-- the crowd add-on's discs (round where each other player stood)
+	local crowdR = ((attr(s, "CrowdRadius") :: number?) or 10) * grow
+	for _, p in b.warn do
+		local i = p:GetAttribute("Crowd") :: number?
+		if not i then
+			continue
+		end
+		local c = (attr(s, "Crowd" .. i) :: Vector3?) or pos
+		local floor = CFrame.new(c.X, floorY, c.Z)
+		if p.Name == "CrowdDisc" then
+			p.Size = Vector3.new(p.Size.X, crowdR * 2, crowdR * 2)
+			p.CFrame = floor * CFrame.Angles(0, 0, math.pi / 2)
+			p.Transparency = 0.6 + 0.2 * pulse
+		else
+			local a = (p:GetAttribute("Angle") :: number?) or 0
+			p.Size = Vector3.new(math.max(1.4, crowdR * math.pi * 2 / 24 * 1.05), p.Size.Y, p.Size.Z)
+			p.CFrame = floor * CFrame.Angles(0, a, 0) * CFrame.new(0, 0.02, -crowdR)
+			p.Transparency = 0.15 + 0.35 * pulse
+		end
+	end
 	if kind == "Line" then
 		local laneCache = {}
 		for _, p in b.warn do
+			if p:GetAttribute("Crowd") then
+				continue
+			end
 			local lane = (p:GetAttribute("Lane") :: number?) or 0
 			local info = laneCache[lane]
 			if not info then
@@ -716,6 +765,9 @@ local function poseWarn(b: Boss, pos: Vector3, yaw: number, grow: number, t: num
 	local inner = (attr(s, "Inner") :: number?) or 0
 	local floor = CFrame.new(centre.X, floorY, centre.Z) * CFrame.Angles(0, yaw, 0)
 	for _, p in b.warn do
+		if p:GetAttribute("Crowd") then
+			continue
+		end
 		local a = (p:GetAttribute("Angle") :: number?) or 0
 		local step = (p:GetAttribute("Step") :: number?) or 0.1
 		if p.Name == "WarnRay" then
@@ -758,8 +810,8 @@ local function shockwave(origin: Vector3, radius: number, color: Color3, delay: 
 	end)
 end
 
-local function paperBurst(at: Vector3, look: Vector3)
-	for i = 1, 14 do
+local function paperBurst(at: Vector3, look: Vector3, count: number?)
+	for i = 1, count or 14 do
 		local p = part({ Size = Vector3.new(0.9, 0.05, 1.1), Color = Color3.fromRGB(250, 250, 250), Anchored = false, Massless = true })
 		p.CFrame = CFrame.new(at + Vector3.new(math.random() - 0.5, math.random() * 0.5, math.random() - 0.5)) * CFrame.Angles(math.random() * 6, math.random() * 6, math.random() * 6)
 		p.Parent = visuals
@@ -796,7 +848,9 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	local floorY = (attr(s, "FloorY") :: number?) or origin.Y
 	local at = Vector3.new(origin.X, floorY, origin.Z)
 	local shakeRadius = radius * 1.6
-	if kind == "Cone" then
+	if kind == "Cone" and ANIMS[b.kind] then
+		return -- (a boss with Blender clips plays its own swing effects, timed to them: partnerFx)
+	elseif kind == "Cone" then
 		local front = at + Vector3.new(0, 1, 0) + look * 4.5 * ((attr(s, "Scale") :: number?) or 1)
 		task.delay(0.16, function()
 			paperBurst(front + Vector3.new(0, 1, 0), look)
@@ -1047,6 +1101,220 @@ local function megalodonFx(b: Boss, state: string, e: number, total: number, pos
 	end
 end
 
+------------------------------------------------------------------ the Senior Partner's effects (docs/BOSS_ANIMATION.md section 6)
+local DUST = Color3.fromRGB(214, 190, 150)
+local MANILA = Color3.fromRGB(236, 206, 130)
+local PAPER = Color3.fromRGB(250, 250, 250)
+-- (tools/blender/boss_clips/senior_partner.py: the case hits the ground at attack + STRIKE; the lid bursts at STORM_OPEN)
+local STRIKE, STORM_OPEN = 0.05, 0.78
+
+local function dustPuff(sc: number, speed: NumberRange, spread: Vector2, count: number, at: Vector3)
+	local props = sandPuff(sc, speed, Enum.NormalId.Front, spread)
+	props.Color = ColorSequence.new(DUST)
+	burstAt(CFrame.lookAt(at, at + Vector3.new(0, 1, 0)), props, count)
+end
+
+local function clods(sc: number, count: number, at: Vector3)
+	local k = sc / 3.5
+	burstAt(CFrame.lookAt(at, at + Vector3.new(0, 1, 0)), { Texture = TEX.dot, Color = ColorSequence.new(Color3.fromRGB(150, 110, 70)),
+		Lifetime = NumberRange.new(0.45, 0.65), Speed = NumberRange.new(18, 30), EmissionDirection = Enum.NormalId.Front,
+		SpreadAngle = Vector2.new(55, 55), Acceleration = Vector3.new(0, -120, 0),
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.1 * k), NumberSequenceKeypoint.new(1, 0.6 * k) }) }, count)
+end
+
+-- a Paper Storm bundle of case files (a manila folder, its pages, a red string) + its shadow on the floor
+local function makeBundle(sc: number, from: Vector3, to: Vector3): BasePart
+	local k = sc / 3.5
+	local folder = part({ Size = Vector3.new(4.2, 1.3, 3.0) * k, Color = MANILA })
+	for name, props in { Pages = { Size = Vector3.new(3.8, 1.5, 2.7) * k, Color = PAPER },
+		String = { Size = Vector3.new(0.35, 1.6, 3.1) * k, Color = Color3.fromRGB(200, 40, 44) },
+		Shadow = { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, 2, 2), Color = Color3.fromRGB(30, 30, 40), Transparency = 1 } } do
+		local p = part(props)
+		p.Name = name
+		p.Parent = folder
+	end
+	folder:SetAttribute("From", from)
+	folder:SetAttribute("To", to)
+	folder.Parent = visuals
+	return folder
+end
+
+-- a = 0 (leaves the open case) .. 1 (lands on the disc's centre, as the windup ends): a high arc, tumbling
+local function poseBundle(f: BasePart, a: number, sc: number, floorY: number)
+	local k = sc / 3.5
+	local from, to = f:GetAttribute("From") :: Vector3, f:GetAttribute("To") :: Vector3
+	local target = Vector3.new(to.X, floorY + 1.0 * k, to.Z)
+	local cf = CFrame.new(from:Lerp(target, a) + Vector3.new(0, 30 * k * math.sin(math.pi * a), 0)) * CFrame.Angles(a * 7, a * 3, a * 2)
+	f.CFrame = cf
+	for _, p in f:GetChildren() do
+		if p.Name == "Shadow" then
+			local d = (3 + 7 * a) * k
+			local sp = p :: BasePart
+			sp.Size = Vector3.new(0.1, d, d)
+			sp.CFrame = CFrame.new(to.X, floorY + 0.12, to.Z) * CFrame.Angles(0, 0, math.pi / 2)
+			sp.Transparency = 1 - 0.45 * a
+		elseif p:IsA("BasePart") then
+			p.CFrame = cf * CFrame.new(if p.Name == "Pages" then 0.1 * k else 0, 0, 0)
+		end
+	end
+end
+
+-- a block of the boss by name (FindFirstChild(name, true) could find a group Model of the same name: CaseLid)
+local function blockOf(b: Boss, name: string): BasePart?
+	for _, g in b.groups do
+		for _, p in g.parts do
+			if p.Name == name then
+				return p
+			end
+		end
+	end
+	return nil
+end
+
+-- the Senior Partner's one-shot and per-frame effects, by state and time into it (e); timings match his Blender clips
+local function partnerFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number, swirl: number)
+	local s = b.state
+	local k = sc / 3.5
+	local look = Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
+	local right = Vector3.new(-look.Z, 0, look.X)
+	local up = Vector3.new(0, 1, 0)
+	local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+	local ground = Vector3.new(pos.X, floorY + 0.5, pos.Z)
+	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(255, 120, 60)
+	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local function once(key: string): boolean
+		if b.fired[key] then
+			return false
+		end
+		b.fired[key] = true
+		return true
+	end
+	local function clear(list: { BasePart })
+		for _, p in list do
+			p:Destroy()
+		end
+		table.clear(list)
+	end
+	-- the swirl: sheets whirling round him while the clip's Swirl channel is up; the strike blows them forward
+	if state == "windup" or (state == "attack" and e < STRIKE + 0.5) then
+		if state == "windup" and swirl > 0.05 and #b.sheets == 0 then
+			for i = 1, 10 do
+				local p = part({ Size = Vector3.new(2.2, 0.1, 2.8) * k, Color = if i % 4 == 0 then MANILA else PAPER })
+				p.Parent = visuals
+				table.insert(b.sheets, p)
+			end
+		end
+		local ts = if state == "attack" then math.max(0, e - STRIKE) else 0
+		for i, p in b.sheets do
+			local a = t * (4.2 + (i % 3) * 0.6) + i * math.pi * 2 / 10
+			local rad = (11 + (i % 4) * 2.2) * k
+			local at = ground + Vector3.new(math.cos(a) * rad, (2 + ((i * 7.3) % 26) * swirl + 2.5 * math.sin(t * 5 + i)) * k, math.sin(a) * rad)
+			local size = math.min(1, swirl * 1.5)
+			if ts > 0 then
+				at += look * 40 * k * ts + Vector3.new(0, (10 * ts - 18 * ts * ts) * k, 0)
+				size = math.max(0, 1 - ts / 0.5)
+			end
+			p.Size = Vector3.new(2.2, 0.1, 2.8) * k * math.max(size, 0.02)
+			p.Transparency = if size < 0.02 then 1 else 0
+			p.CFrame = CFrame.new(at) * CFrame.Angles(t * 6 + i, a, t * 4 + i * 0.5)
+		end
+	elseif #b.sheets > 0 then
+		clear(b.sheets)
+	end
+	if state == "windup" then
+		if e >= 0.22 and once("glasses") then -- the glasses pushed up the nose
+			playAt(pos + Vector3.new(0, 9 * sc, 0), "glint")
+		end
+		if e >= 0.42 and once("stomp") then -- he plants his stance
+			local foot = ground + right * 0.85 * sc - look * 0.6 * sc
+			dustPuff(sc, NumberRange.new(8, 14), Vector2.new(80, 80), 8, foot)
+			playAt(foot, "stomp")
+		end
+		if e >= 0.55 and once("lift") then
+			playAt(pos + Vector3.new(0, 8 * sc, 0), "lift")
+		end
+		if e >= STORM_OPEN - 0.06 and once("lid") then -- the lid bursts open at the top: papers fly
+			local lid = blockOf(b, "CaseLid")
+			local at = if lid then lid.Position else pos + Vector3.new(0, 12 * sc, 0)
+			paperBurst(at, up, 16)
+			playAt(at, "lidpop")
+			playAt(at, "papers")
+			-- PAPER STORM: a bundle of case files for each other player's disc
+			if attr(s, "CrowdShape") == "Disc" then
+				for i = 1, (attr(s, "CrowdN") :: number?) or 0 do
+					local c = attr(s, "Crowd" .. i) :: Vector3?
+					if c then
+						table.insert(b.bundles, makeBundle(sc, at, c))
+					end
+				end
+			end
+		end
+		if e >= 0.88 and once("gleam") then -- a cartoon gleam off the clasp at the top of the raise
+			local clasp = blockOf(b, "CaseClasp")
+			if clasp then
+				burstAt(clasp.CFrame, { Texture = TEX.star, Color = ColorSequence.new(Color3.fromRGB(255, 236, 150)), LightEmission = 0.3,
+					Lifetime = NumberRange.new(0.25, 0.3), Speed = NumberRange.new(0, 0), Rotation = NumberRange.new(0, 90),
+					RotSpeed = NumberRange.new(200, 260), Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0),
+						NumberSequenceKeypoint.new(0.4, 3.2 * k), NumberSequenceKeypoint.new(1, 0) }) }, 1)
+				playAt(clasp.Position, "glint")
+			end
+		end
+		if e >= 1.06 and once("swing") then
+			playAt(pos + Vector3.new(0, 8 * sc, 0), "swing")
+		end
+		local span = math.max(0.1, total - STORM_OPEN)
+		for _, f in b.bundles do
+			poseBundle(f, math.clamp((e - STORM_OPEN) / span, 0, 1), sc, floorY)
+		end
+	elseif state == "attack" then
+		if once("landed") and #b.bundles > 0 then -- the bundles land with the swing (the server's hit is now)
+			local r = (attr(s, "CrowdRadius") :: number?) or 10
+			for _, f in b.bundles do
+				local c = f:GetAttribute("To") :: Vector3
+				local at = Vector3.new(c.X, floorY + 0.5, c.Z)
+				paperBurst(at + up, up, 12)
+				shockwave(at, r, color, 0)
+				dustPuff(sc, NumberRange.new(12, 18), Vector2.new(85, 85), 10, at)
+				playAt(at, "papers")
+				playAt(at, "slam")
+				if me and (me.Position - at).Magnitude < r * 1.4 then
+					shake(0.25, 0.35)
+				end
+			end
+			clear(b.bundles)
+		end
+		if e >= STRIKE and once("strike") then -- the case hits the ground: ring, dust, clods, a fan of paperwork
+			local radius = (attr(s, "Radius") :: number?) or 45
+			local lid = blockOf(b, "CaseLid")
+			local at = if lid then Vector3.new(lid.Position.X, floorY + 0.5, lid.Position.Z) else ground + look * 3 * sc
+			b.strikeAt = at
+			shockwave(at, radius * 0.55, color, 0)
+			shockwave(at, radius * 0.35, Color3.new(1, 1, 1), 0.06)
+			dustPuff(sc, NumberRange.new(18, 28), Vector2.new(85, 85), 18, at)
+			clods(sc, 10, at)
+			paperBurst(at + up * 2 * k, look, 24)
+			playAt(at, "slam")
+			playAt(at, "crack")
+			playAt(at, "papers")
+			if me and (me.Position - at).Magnitude < radius * 1.6 then
+				shake(0.3, 0.45)
+			end
+		end
+	elseif state == "recover" then
+		if e >= 0.08 and once("yank") and b.strikeAt then -- the case pulled out of the ground
+			dustPuff(sc, NumberRange.new(8, 14), Vector2.new(60, 60), 8, b.strikeAt)
+			clods(sc, 5, b.strikeAt)
+			playAt(b.strikeAt, "yank")
+		end
+		if e >= 0.3 and once("tidy") then -- glasses pushed straight again
+			playAt(pos + Vector3.new(0, 9 * sc, 0), "glint")
+		end
+	end
+	if state ~= "windup" and #b.bundles > 0 then
+		clear(b.bundles)
+	end
+end
+
 -- dizzy stars circling over its head (the Megalodon after a charge)
 local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
 	if not on then
@@ -1166,12 +1434,14 @@ RunService.Heartbeat:Connect(function(dt)
 		local lead = 0
 		if anim and state == "windup" then
 			-- the whip-round: holds a beat (the sniff), then turns to its target with an overshoot; the head leads
+			-- (BossAnims Turn: a boss may turn slower and lead with another group - the Senior Partner's head)
 			if b.turnStart ~= t0 then
 				b.turnStart, b.turnFrom = t0, b.yaw
 			end
+			local turn = anim.Turn
 			local d = (yaw - b.turnFrom + math.pi) % (math.pi * 2) - math.pi
-			b.yaw = b.turnFrom + d * backOut((t - t0 - 0.04) / 0.2)
-			lead = 0.35 * ((yaw - b.yaw + math.pi) % (math.pi * 2) - math.pi)
+			b.yaw = b.turnFrom + d * backOut((t - t0 - (if turn then turn.Hold else 0.04)) / (if turn then turn.Time else 0.2))
+			lead = (if turn then turn.LeadBy else 0.35) * ((yaw - b.yaw + math.pi) % (math.pi * 2) - math.pi)
 		else
 			b.yaw = lerpAngle(b.yaw, yaw, math.min(1, dt * (if state == "windup" then 12 else 6)))
 		end
@@ -1202,12 +1472,14 @@ RunService.Heartbeat:Connect(function(dt)
 			b.clipW = math.clamp(b.clipW + (if clipPose then dt else -dt) / CLIP_FADE, 0, 1)
 			local cp = clipPose or b.lastClip
 			local glow = 0
+			local fxNow: { [string]: number } = {}
 			if cp and b.clipW > 0 then
 				local mixed = mixPose({ root = rootOff, scale = Vector3.one, rots = rots, fx = {} }, cp, ease(b.clipW))
-				rootOff, rots, squash, glow = mixed.root, mixed.rots, mixed.scale, mixed.fx.FinGlow or 0
+				rootOff, rots, squash, glow, fxNow = mixed.root, mixed.rots, mixed.scale, mixed.fx.FinGlow or 0, mixed.fx
 			end
 			if lead ~= 0 then
-				rots.Torso = (rots.Torso or CFrame.identity) * CFrame.Angles(0, lead, 0)
+				local g = if anim.Turn then anim.Turn.Lead else "Torso"
+				rots[g] = (rots[g] or CFrame.identity) * CFrame.Angles(0, lead, 0)
 			end
 			if math.abs(glow - b.glowNow) > 0.01 then
 				b.glowNow = glow
@@ -1217,6 +1489,12 @@ RunService.Heartbeat:Connect(function(dt)
 			end
 			if b.kind == "Megalodon" then
 				megalodonFx(b, state, t - t0, t1 - t0, pos, sc, t)
+			elseif b.kind == "SeniorPartner" then
+				-- the papers at his ankles whirl faster and rise with the clip's Swirl channel (spun here, every state)
+				local swirl = fxNow.Swirl or 0
+				b.paperSpin += dt * (0.9 + 6.1 * swirl)
+				rots.Papers = CFrame.Angles(0, b.paperSpin, 0) * CFrame.new(0, (math.sin(t * 2) * 0.15 + 1.1 * swirl) * sc, 0)
+				partnerFx(b, state, t - t0, t1 - t0, pos, sc, t, swirl)
 			end
 		end
 		local root = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0) * CFrame.new(rootOff.Position * sc) * rootOff.Rotation

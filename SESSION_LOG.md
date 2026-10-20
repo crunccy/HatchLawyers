@@ -27,13 +27,16 @@ Claim big work here before starting (who · what · since), push the claim, remo
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
-  **The Senior Partner (Briefcase Swing + Paper Storm): built in `src/` 2026-10-19, waiting for crnuch's approval**
-  (review page in the 2026-10-19 entry); bosses.py / boss_anims.py / Bosses.client / BossService / Config boss
-  entries stay claimed until it's approved and pushed to Studio.
+  The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
       Servers > 3 players: the two non-targets get warning lanes + sand sharks; a player who stays in a lane is hit.
+- [ ] **Senior Partner 3-player playtest (Paper Storm)** - live 2026-10-20, only played solo. Same setup (Test >
+      Clients and Servers > 3 players, in Briefcase Bay): the two non-targets get 10-stud discs, the bundles land as the
+      swing hits; a player who stays in a disc is hit.
+- [ ] **Megalodon recover clip: left fin 0.56 studs into the body / 0.48 into the snout** for a couple of frames (the
+      glasses push since round 3's fin re-seat). `boss_anims.py -- check` shows it; fix in boss_clips/megalodon.py.
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
       with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
@@ -187,6 +190,20 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — crnuch, local session (side session): The Senior Partner's Briefcase Swing pushed to Studio
+- **crnuch approved** the Briefcase Swing + Paper Storm (2026-10-19 entry below). Pushed: `ReplicatedStorage.Bosses`
+  rebuilt with `tools/zones/BuildBosses.lua` (Partner 72 parts / 12 groups, the other five unchanged; 126 z-fight
+  nudges), `Shared.BossAnims`, `StarterPlayerScripts.Bosses`, `Server.BossService`, `Shared.Config` replaced from `src/`
+  (snapshot re-exported first: the live scripts matched the Megalodon push exactly, so no merge was needed). Each is one
+  ChangeHistory step. Snapshot re-exported after: only those four scripts changed; `src/` == live for all four.
+- **Playtested (1 player):** windup -> attack -> recover -> walk on the clips; the case reaches the zone floor at
+  attack +0.09 s; lid opens 78 deg; paper bursts and rings fire; no script errors. **Bug found + fixed** before it
+  stayed live: the client looked up `FindFirstChild("CaseLid", true)`, which found the CaseLid GROUP Model, so the lid
+  burst and the strike effects errored; now `blockOf(b, name)` searches the boss's parts.
+- **Heads-up:** ports 8766 / 8767 on crnuch's Mac are held by old python servers from earlier sessions (Oct 16 / 18);
+  this session used 8769 (`receive_snapshot.py --port 8769` + ExportSnapshot with PORT 8769) and 8770 (file server).
+- Open: the 3-player Paper Storm playtest (Open items).
 
 ## 2026-10-19 — crnuch, local session (side session): The Senior Partner's BRIEFCASE SWING + PAPER STORM (Blender + src/)
 - Second boss of the attack-animation overhaul, on the Megalodon benchmark. docs/BOSS_ANIMATION.md **section 6** =

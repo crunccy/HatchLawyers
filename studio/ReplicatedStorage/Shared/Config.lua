@@ -1185,11 +1185,14 @@ Config.Bosses = {
 	-- attack also aims a ranged add-on at up to Max OTHER players within Range studs (warned from the same windup,
 	-- aimed where they stood when it began). One player in the zone: nothing changes.
 	--   Shape "Lane": Width studs wide, from the boss toward them (+20 past, at most Length), travelling at Speed
+	--   Shape "Disc": Radius studs round where they stood, landing as the windup ends (with the main attack)
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
 			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
 			Attack = "Cone", Radius = 45, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
-			Hitbox = { HalfWidth = 3.3, Back = 1.4, Front = 1.8, Height = 11.5 } },
+			Hitbox = { HalfWidth = 3.3, Back = 1.4, Front = 1.8, Height = 11.5 },
+			-- PAPER STORM (2+ players): a bundle of case files lobbed onto up to Max other players' spots
+			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 10 } },
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
 			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
 			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90),

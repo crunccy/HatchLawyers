@@ -117,7 +117,7 @@ This one IS a gameplay change (crnuch's call, overriding the brief's "no gamepla
 | Prosecutor Big Cheese | WHEEL SPLIT - two cheese wedges peel off the wheel and roll down lanes at the others | Lane, 12 wide, at 110 studs/s |
 | Chief Justice Eclipse | GAVEL VOLLEY (Ring turns) - each orbiting gavel locks onto a different player and slams down; the Pull already catches everyone within 44 | Disc r 10 under each, lands with the ring |
 
-Megalodon's Feeding Frenzy (live) and the Senior Partner's Paper Storm (section 6, waiting for approval) are built; the
+Megalodon's Feeding Frenzy and the Senior Partner's Paper Storm (section 6) are built and live; the
 other four are proposals that get built with their animation passes.
 
 ## 5. Megalodon benchmark: what was built (2026-10-19)
@@ -156,7 +156,7 @@ other four are proposals that get built with their animation passes.
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- check stills frames` (frames go to
   `$BOSS_FRAMES` or `_boss_frames/`), then `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title]`.
 
-## 6. The Senior Partner: BRIEFCASE SWING + PAPER STORM (2026-10-19, waiting for crnuch's approval)
+## 6. The Senior Partner: BRIEFCASE SWING + PAPER STORM (2026-10-19; APPROVED + LIVE in Studio 2026-10-20)
 ### His real timeline (BossService "Cone" + Config.Bosses.List[1])
 | Phase | Server | Duration |
 | --- | --- | --- |
@@ -225,8 +225,13 @@ studs takes 0.31 s at base speed, so standing still is the only way to be caught
   Found and fixed on the way: the glasses push swung the sleeve through the cheek and jacket (now the head turns into
   the hand, the arm comes in only when raised), the torso-led turn swung the case into his legs (now the head leads),
   the stance sank a toe, the moustache flapped into the face, the pendulum dipped the case into the ground.
-- **Not checked yet:** the case reaching the floor in the GAME depends on the zone floor height (`FloorY`), same as the
-  model's feet; to eye-check in a playtest.
+- **LIVE in Studio since 2026-10-20** (crnuch approved): `ReplicatedStorage.Bosses` rebuilt (Partner 72 parts / 12 groups,
+  the other five unchanged), `Shared.BossAnims`, `Bosses` (client), `Server.BossService`, `Shared.Config` replaced from
+  `src/` (the live scripts matched the last push exactly, so no merge was needed). 1-player playtest: windup -> attack ->
+  recover -> walk all on the clips, the case reaches the zone floor at attack +0.09 s (0.5 studs into it), the lid opens
+  to 78 deg, paper bursts + rings fire, no script errors. The playtest caught one bug, fixed before going live:
+  `FindFirstChild("CaseLid", true)` found the GROUP Model of that name (now `blockOf`). The 3-player Paper Storm
+  playtest is still to do.
 - **Review page for approval:** https://claude.ai/artifact/RNpXrekSGvU3QnjdRBuses (crnuch's private artifact; source
   `art/bosses/senior_partner/review.html`).
 - **Preview:** `art/bosses/senior_partner/` - `board_*.png` (15 frames), `senior_partner_swing.mp4`, `..._halfspeed.mp4`,
@@ -239,7 +244,7 @@ studs takes 0.31 s at base speed, so standing still is the only way to be caught
 | Boss | Storyboard | Blender clips | Preview | Client | In Studio |
 | --- | --- | --- | --- | --- | --- |
 | Magistrate Megalodon | done | done | done | done | **live** (3-player test to do) |
-| The Senior Partner | done | done | done | in `src/` | waiting for approval |
+| The Senior Partner | done | done | done | done | **live** (3-player test to do) |
 | Barrister Bulldog | - | - | - | - | - |
 | Judge Martello | - | - | - | - | - |
 | Prosecutor Big Cheese | - | - | - | - | - |

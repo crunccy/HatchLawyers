@@ -1159,6 +1159,18 @@ local function poseBundle(f: BasePart, a: number, sc: number, floorY: number)
 	end
 end
 
+-- a block of the boss by name (FindFirstChild(name, true) could find a group Model of the same name: CaseLid)
+local function blockOf(b: Boss, name: string): BasePart?
+	for _, g in b.groups do
+		for _, p in g.parts do
+			if p.Name == name then
+				return p
+			end
+		end
+	end
+	return nil
+end
+
 -- the Senior Partner's one-shot and per-frame effects, by state and time into it (e); timings match his Blender clips
 local function partnerFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number, swirl: number)
 	local s = b.state
@@ -1222,7 +1234,7 @@ local function partnerFx(b: Boss, state: string, e: number, total: number, pos: 
 			playAt(pos + Vector3.new(0, 8 * sc, 0), "lift")
 		end
 		if e >= STORM_OPEN - 0.06 and once("lid") then -- the lid bursts open at the top: papers fly
-			local lid = b.model:FindFirstChild("CaseLid", true) :: BasePart?
+			local lid = blockOf(b, "CaseLid")
 			local at = if lid then lid.Position else pos + Vector3.new(0, 12 * sc, 0)
 			paperBurst(at, up, 16)
 			playAt(at, "lidpop")
@@ -1238,7 +1250,7 @@ local function partnerFx(b: Boss, state: string, e: number, total: number, pos: 
 			end
 		end
 		if e >= 0.88 and once("gleam") then -- a cartoon gleam off the clasp at the top of the raise
-			local clasp = b.model:FindFirstChild("CaseClasp", true) :: BasePart?
+			local clasp = blockOf(b, "CaseClasp")
 			if clasp then
 				burstAt(clasp.CFrame, { Texture = TEX.star, Color = ColorSequence.new(Color3.fromRGB(255, 236, 150)), LightEmission = 0.3,
 					Lifetime = NumberRange.new(0.25, 0.3), Speed = NumberRange.new(0, 0), Rotation = NumberRange.new(0, 90),
@@ -1273,7 +1285,7 @@ local function partnerFx(b: Boss, state: string, e: number, total: number, pos: 
 		end
 		if e >= STRIKE and once("strike") then -- the case hits the ground: ring, dust, clods, a fan of paperwork
 			local radius = (attr(s, "Radius") :: number?) or 45
-			local lid = b.model:FindFirstChild("CaseLid", true) :: BasePart?
+			local lid = blockOf(b, "CaseLid")
 			local at = if lid then Vector3.new(lid.Position.X, floorY + 0.5, lid.Position.Z) else ground + look * 3 * sc
 			b.strikeAt = at
 			shockwave(at, radius * 0.55, color, 0)
