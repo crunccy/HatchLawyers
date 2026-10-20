@@ -16,6 +16,7 @@ import hl_kit as K
 import hl_classic as CL
 import hl_island as HI
 import bbv2_parts as P
+import bbv2_detail as DT
 OP, OD = P.OP, P.OD
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -232,8 +233,8 @@ P.welcome_sign(lm, 0.0, SP_NECK[1] + 2.0, SAND_Z + 0.04, 0.0, C["BBV2_Landmarks"
 note("SPAWN (arrival terrace, safe zone)", *SPAWN, "classic blue-and-white spawn pad on a round limestone terrace, lamp posts + benches; the BRIEFCASE BAY arch over the way in")
 lm.slab(rect(*PO_NECK), SAND_Z - 0.6, SAND_Z + 0.04, "paving_dark", chamfer=0.1, top="paving")
 lm.slab(circle(*PO_C, PO_R, 48), SAND_Z - 0.6, SAND_Z + 0.05, "paving_dark", chamfer=0.15, top="paving")
-OP.escape_portal(lm, *PORTAL, SAND_Z + 0.05, rot=PORTAL_DEG - 90)
-note("ESCAPE PORTAL (RETURN HOME)", *PORTAL, "the purple vortex in a limestone arch on a round plaza, flush with the lawn (a level walk-in)")
+DT.escape_portal_bb(lm, lm, *PORTAL, SAND_Z + 0.05, rot=PORTAL_DEG - 90)
+note("ESCAPE PORTAL (RETURN HOME)", *PORTAL, "the purple vortex in a gold-trimmed limestone arch with a gold briefcase keystone, on a round plaza flush with the lawn (a level walk-in)")
 lm.done()
 HI.boss(C["BBV2_Landmarks"], "SeniorPartner", 0.0, 0.0, z=SAND_Z + 0.1, scale=SENIOR["Scale"], facing=180)
 
@@ -338,7 +339,8 @@ wat = CL.ClassicMesh("Water", C["BBV2_Water"])
 foam = CL.ClassicMesh("Foam_Mist", C["BBV2_Water"])
 veg = CL.ClassicMesh("Vegetation", C["Vegetation"])
 used = []
-LAYOUT["fx"] = {"fall_landings": [], "edge_lips": [], "pools": [], "beacons": []}
+LAYOUT["fx"] = {"fall_landings": [], "edge_lips": [], "pools": [], "aviation": [], "lighthouse": None, "fountain": [], "blossoms": [],
+                "butterfly_rings": [], "gull_rings": [], "boss_pad": [BOSS_PAD[0], BOSS_PAD[1], SAND_Z]}
 
 
 def clear_of_reach(x, y, r=0.0):
@@ -394,31 +396,55 @@ for i in range(len(bay_pts)):  # the quay: a limestone ring round the basin
 wat.slab(bay_pts, -0.6, 0.8, "bay_deep", chamfer=0.08, top="bay")
 OD.foam_outline(foam, bay_pts, 0.8)
 used.append((bx, by, 36))
-for k in range(10):  # bollards + lamp posts on the quay (the inner side, facing the Green)
-    a = math.pi * (0.15 + 0.7 * k / 9) + math.pi
-    qx = bx + tx_ * 33 * math.cos(a) + nx_ * 20.4 * math.sin(a)
-    qy = by + ty_ * 33 * math.cos(a) + ny_ * 20.4 * math.sin(a)
-    if k % 3 == 0:
+for k in range(16):  # the quay's furniture round the inner side: bollards, lamps, lifebuoy stands
+    a = math.pi * (0.06 + 0.88 * k / 15) + math.pi
+    qx = bx + tx_ * 35.6 * math.cos(a) + nx_ * 21.6 * math.sin(a)
+    qy = by + ty_ * 35.6 * math.cos(a) + ny_ * 21.6 * math.sin(a)
+    face = math.degrees(math.atan2(by - qy, bx - qx))
+    if k % 4 == 0:
         P.lamp_post(sc, qx, qy, 1.2, 6.5)
+    elif k % 4 == 2 and k != 6:
+        DT.lifebuoy_stand(sc, qx, qy, 1.2, face - 90)
     else:
-        sc.cyl(qx, qy, 0.55, 1.2, 2.2, "lamp_post", segs=10)
-        sc.cyl(qx, qy, 0.7, 2.0, 2.3, "lamp_post", segs=10)
+        DT.bollard(sc, qx, qy, 1.2)
+for k, (da, dw) in enumerate(((0.62, 1.0), (0.7, 0.4), (0.78, -0.6))):  # cargo on the quay's far end
+    a = math.pi * da + math.pi
+    cx0 = bx + tx_ * 37.5 * math.cos(a) + nx_ * 23 * math.sin(a)
+    cy0 = by + ty_ * 37.5 * math.cos(a) + ny_ * 23 * math.sin(a)
+    (OD.crate if k % 2 == 0 else OD.barrel)(sc, cx0, cy0, 1.2)
 pier0 = (bx - nx_ * 19.5 + tx_ * 6, by - ny_ * 19.5 + ty_ * 6)
 pier1 = (bx + nx_ * 2 + tx_ * 6, by + ny_ * 2 + ty_ * 6)
 OP.spawn_dock(sc, *pier0, *pier1, 1.6, width=5.0)
-P.ferry(sc, bx + nx_ * -4 - tx_ * 8, by + ny_ * -4 - ty_ * 8, 0.8, rot=BAY_DEG + 90)
+for t in (0.35, 0.95):  # bollards along the pier
+    for sgn in (-1, 1):
+        DT.bollard(sc, pier0[0] + (pier1[0] - pier0[0]) * t + tx_ * sgn * 3.1, pier0[1] + (pier1[1] - pier0[1]) * t + ty_ * sgn * 3.1, 1.6)
+fpos = (bx + nx_ * -4 - tx_ * 9.5, by + ny_ * -4 - ty_ * 9.5)
+boats = CL.ClassicMesh("Boats", C["BBV2_Water"])  # (their own object: they bob in the ambience)
+DT.ferry2(boats, *fpos, 0.8, BAY_DEG + 90, C["BBV2_Scenery"])
+OD.rope(sc, (pier0[0] - tx_ * 2.6 + nx_ * 3, pier0[1] - ty_ * 2.6 + ny_ * 3, 2.6), (fpos[0] + nx_ * 6 - tx_ * 2, fpos[1] + ny_ * 6 - ty_ * 2, 2.4), 0.6)
+DT.sailboat(boats, bx + nx_ * 4 + tx_ * 18, by + ny_ * 4 + ty_ * 18, 0.8, BAY_DEG + 70)
+for k, (dn, dt) in enumerate(((10, -18), (6, 22), (13, 2))):
+    DT.buoy(boats, bx + nx_ * dn + tx_ * dt, by + ny_ * dn + ty_ * dt, 0.8)
+boats.done()
+LAYOUT["fx"]["ferry"] = [round(fpos[0], 1), round(fpos[1], 1), 0.8]
 note("The Bay", bx, by, "a sheltered harbour basin: a limestone quay with bollards + lamps, a pier, the Bay Ferry; spills over the edge (scenery)")
 ex, ey = polar(r_isl(BAY_DEG + 4) - 0.6, BAY_DEG + 4)
 mx, my = bx + nx_ * 17, by + ny_ * 17
 wat.beam((mx, my, 0.75), (ex, ey, 0.72), 9, 0.3, "bay")
 OD.edge_fall(wat, foam, ex, ey, 0.7, -80, BAY_DEG + 4, width=10)
 LAYOUT["fx"]["edge_lips"].append([round(ex, 1), round(ey, 1), 0.7, BAY_DEG + 4])
-hx, hy = polar(r_isl(BAY_DEG - 22) - 10, BAY_DEG - 22)
-OD.cliff_column(sc, veg, hx, hy, 0.4, 5, 15, 13, BAY_DEG, plants=False)
-P.lighthouse(sc, hx, hy, 5.8, 28)
-used.append((hx, hy, 12))
-LAYOUT["fx"]["beacons"].append([round(hx, 1), round(hy, 1), 5.8 + 28 + 2])
-note("Lighthouse", hx, hy, "a red-and-white lighthouse on the bay's headland (scenery)")
+hx, hy = polar(r_isl(BAY_DEG - 22) - 11, BAY_DEG - 22)
+OD.cliff_column(sc, veg, hx, hy, 0.4, 5, 17, 15, BAY_DEG, plants=False)
+for k in range(5):  # rocks round its headland
+    a = math.radians(BAY_DEG - 22 + 180 + (k - 2) * 38)
+    OD.cliff_column(sc, veg, hx + math.cos(a) * 10, hy + math.sin(a) * 10, 0.4, rng.uniform(2, 4), rng.uniform(4, 6), rng.uniform(3, 5), math.degrees(a), plants=k % 2 == 0)
+beam_m = CL.ClassicMesh("Lighthouse_Beam", C["Environmental_Effects"])
+lantern = DT.lighthouse2(sc, beam_m, hx, hy, 5.4, 28, BAY_DEG - 22)
+beam_ob = beam_m.done()
+beam_ob.hide_render = True  # (a night-time light: shown in the viewport + swept by the ambience, not in daylight stills)
+used.append((hx, hy, 18))
+LAYOUT["fx"]["lighthouse"] = [round(v, 1) for v in lantern] + [BAY_DEG - 22]
+note("Lighthouse", hx, hy, "a red-and-white lighthouse on the bay's headland with the keeper's cottage; its beam sweeps out to sea (scenery)")
 
 # pools in rock pockets (water, foam, lily pads), the falls they feed
 POOLS = {140: (14, 0.3, None), 196: (13, 0.42, None), 14: (12, 0.42, 7), 236: (9, 0.36, None)}
@@ -484,27 +510,78 @@ note("Rock arch", ax, ay, "a natural limestone arch on the south-west rim")
 
 # the monuments: the giant briefcase greets arrivals (SW of the spawn), the giant gavel by the portal (NE)
 gx, gy, _ = push_out(250, 0.3, 14)
-P.giant_briefcase(sc, gx, gy, 0.6, rot=250 - 90 + 20)
+DT.giant_briefcase2(sc, veg, gx, gy, 0.6, 250 - 90 + 20, C["BBV2_Scenery"])
 used.append((gx, gy, 16))
 note("Giant briefcase", gx, gy, "the zone's emblem on a limestone plinth, beside the arrival terrace (scenery)")
 gx, gy, _ = push_out(64, 0.3, 14)
-P.giant_gavel(sc, gx, gy, 0.6, rot=64 - 90 - 15)
+DT.giant_gavel2(sc, veg, gx, gy, 0.6, 64 - 90 - 15, C["BBV2_Scenery"])
 used.append((gx, gy, 16))
 note("Giant gavel", gx, gy, "a giant gavel on its sound block, beside the portal (scenery)")
 
-# the skyline: classic glass towers on the back ring (N), behind the front cliffs, tallest behind the portal's shoulders
-TOWERS = [(58, 0.9, 16, 14, 52, "tower_glass"), (72, 0.78, 18, 16, 74, "tower_glass_teal"), (106, 0.74, 20, 18, 92, "tower_glass"),
-          (120, 0.86, 16, 16, 66, "tower_glass_dark"), (40, 0.95, 14, 13, 40, "tower_glass_teal"), (132, 0.98, 14, 14, 50, "tower_glass")]
-for deg, f, w, d, h, glass in TOWERS:
-    tx, ty, _ = push_out(deg, f, max(w, d) * 0.75)
-    P.tower(sky, tx, ty, 0.6, w, d, h, rot=deg - 90, glass=glass)
-    used.append((tx, ty, max(w, d) * 0.8))
-    LAYOUT["fx"]["beacons"].append([round(tx, 1), round(ty, 1), round(0.6 + h + 0.5 + h * 0.12 + 0.4, 1)])
-note("The skyline", 0, 200, "six classic glass towers on the back ring behind the cliffs (scenery: the firms the bay is named for)")
+# the skyline: six classic glass towers (fictional firms) on two raised limestone SHELVES either side of the portal, so the
+# city rises out of the back cliffs and the portal sits in the notch between them; planted terraces step down in front
+SHELF_Z = 11.0
+SHELVES = [(28.0, 80.0), (100.0, 136.0)]
+SHELF_IN = 0.52
+
+
+def shelf_r(deg):
+    return rg(deg) + 4 + (ring_w(deg) - 8) * SHELF_IN, r_isl(deg) - 1.5
+
+
+def in_shelf(x, y, pad=0.0):
+    deg = math.degrees(math.atan2(y - CENTER[1], x - CENTER[0])) % 360
+    r = math.hypot(x - CENTER[0], y - CENTER[1])
+    for a0, a1 in SHELVES:
+        if a0 + pad * 0.4 <= deg <= a1 - pad * 0.4:
+            r0, r1 = shelf_r(deg)
+            if r0 + pad <= r <= r1 - pad * 0.3:
+                return True
+    return False
+
+
+for a0, a1 in SHELVES:
+    n = int((a1 - a0) / 2)
+    inner = [polar(shelf_r(a0 + (a1 - a0) * i / n)[0], a0 + (a1 - a0) * i / n) for i in range(n + 1)]
+    outer = [polar(shelf_r(a0 + (a1 - a0) * i / n)[1], a0 + (a1 - a0) * i / n) for i in range(n, -1, -1)]
+    sc.slab(inner + outer, 0.4, SHELF_Z, "rock_grey", chamfer=0.4, top="moss")
+    d = a0 + 1.5
+    while d < a1 - 1:  # the shelf's face: craggy limestone columns a little proud of it, moss caps, plants on top
+        x, y = polar(shelf_r(d)[0] + 1.5, d)
+        OD.cliff_column(sc, veg, x, y, 0.4, SHELF_Z + rng.uniform(0.4, 2.6), rng.uniform(9, 13), rng.uniform(6, 9), d + 90 + rng.uniform(-8, 8),
+                        plants=rng.random() < 0.6)
+        d += rng.uniform(3.6, 4.6)
+    for d in (a0, a1):  # its two ends
+        for f in (0.62, 0.76, 0.9):
+            r0, r1 = shelf_r(d)
+            x, y = polar(r0 + (r1 - r0) * (f - SHELF_IN) / (1 - SHELF_IN), d)
+            OD.cliff_column(sc, veg, x, y, 0.4, SHELF_Z + rng.uniform(0.5, 3), rng.uniform(9, 12), rng.uniform(8, 11), d + rng.uniform(-10, 10))
+    d = a0 + 3
+    while d < a1 - 2:  # planted terraces stepping down in front of it
+        x, y = ring_pt(d, rng.uniform(0.28, 0.4))
+        w = rng.uniform(9, 13)
+        if clear_of_reach(x, y, w / 2 + 2) and not any(math.hypot(x - ux, y - uy) < ur + w * 0.3 for ux, uy, ur in used):
+            OD.cliff_column(sc, veg, x, y, 0.4, rng.uniform(4.5, 7.5), w, w * rng.uniform(0.75, 0.95), d + 90 + rng.uniform(-10, 10))
+            used.append((x, y, w * 0.5))
+        d += rng.uniform(6, 8)
+TOWERS = [(37, 0.82, 16, 16, 46, "pyramid", "tower_glass_teal", "AMICUS"),
+          (53, 0.8, 18, 14, 62, "briefcase", "tower_glass", "DOCKET & CO"),
+          (70, 0.8, 20, 18, 80, "stepped", "tower_glass_teal", "VERDICT"),
+          (110, 0.8, 20, 20, 96, "round", "tower_glass", "LEXICON LAW"),
+          (123, 0.8, 22, 14, 70, "twin", "tower_glass_dark", "HABEAS"),
+          (133, 0.86, 16, 15, 54, "slab", "tower_glass", "CASEWORKS")]
+for deg, f, w, d, h, style, glass, name in TOWERS:
+    r0, r1 = shelf_r(deg)
+    tx, ty = polar(r0 + (r1 - r0) * (f - SHELF_IN) / (1 - SHELF_IN), deg)
+    av = DT.tower2(sky, tx, ty, SHELF_Z, w, d, h, deg - 90, style, glass, name, C["BBV2_Skyline"])
+    used.append((tx, ty, max(w, d) * 0.85))
+    LAYOUT["fx"]["aviation"].append([round(v, 1) for v in av])
+note("The skyline", 0, 200, "six classic glass towers (AMICUS, DOCKET & CO, VERDICT, LEXICON LAW, HABEAS, CASEWORKS: fictional firms) "
+     "on two raised limestone shelves either side of the portal (scenery)")
 
 # the cliff massifs: a continuous wall of limestone round the outer ring (low S so the aerial sees in, tall behind the
 # skyline's feet + the cascade), columns joined by connector blocks; a front row of grass-topped terraces; boulders
-ANCH = [(0, 14), (24, 16), (44, 18), (66, 16), (80, 8), (84, 0), (96, 0), (100, 10), (116, 22), (140, 36), (160, 30), (186, 24),
+ANCH = [(0, 14), (20, 16), (26, 0), (138, 0), (140, 36), (160, 30), (186, 24),
         (212, 16), (236, 10), (254, 7), (260, 0), (280, 0), (288, 6), (300, 0), (352, 0), (356, 10), (360, 14)]
 
 
@@ -566,30 +643,67 @@ while placed < 230 and tries < 9000:
         continue
     if any(math.hypot(x - ux, y - uy) < ur * 0.75 for ux, uy, ur in used):
         continue
+    on_shelf = in_shelf(x, y, 3)
+    if in_shelf(x, y, -1) and not on_shelf:
+        continue  # (nothing half-buried on the shelf's lip)
+    z = SHELF_Z if on_shelf else 0.6
     roll = rng.random()
     by_water = any(math.hypot(x - px_, y - py_) < r_ + 14 for px_, py_, r_ in LAYOUT["fx"]["pools"]) or math.hypot(x - BAY_C[0], y - BAY_C[1]) < 48
-    if roll < 0.28:
-        if by_water or rng.random() < 0.3:
-            OD.palm2(veg, x, y, 0.6, lean=math.degrees(math.atan2(CENTER[1] - y, CENTER[0] - x)) + rng.uniform(-50, 50))
+    if roll < 0.3:
+        if by_water and not on_shelf:
+            OD.palm2(veg, x, y, z, lean=math.degrees(math.atan2(CENTER[1] - y, CENTER[0] - x)) + rng.uniform(-50, 50))
         else:
-            P.round_tree(veg, x, y, 0.6, rng.uniform(0.9, 1.25), blossom=rng.random() < 0.3)
+            kind = rng.choice(("conifer", "conifer", "oak")) if on_shelf else rng.choice(("oak", "oak", "oak", "blossom", "blossom", "conifer"))
+            top = DT.park_tree(veg, x, y, z, rng.uniform(0.9, 1.25), kind)
+            if kind == "blossom":
+                LAYOUT["fx"]["blossoms"].append([round(x, 1), round(y, 1), round(top - 4, 1)])
         used.append((x, y, 4.5))
     elif roll < 0.5:
-        OD.bush(veg, x, y, 0.6, rng.uniform(0.8, 1.3))
+        OD.bush(veg, x, y, z, rng.uniform(0.8, 1.3))
     elif roll < 0.62:
-        OD.hibiscus(veg, x, y, 0.6, rng.uniform(0.8, 1.1))
+        OD.hibiscus(veg, x, y, z, rng.uniform(0.8, 1.1))
     elif roll < 0.76:
-        OP.fern_bush(veg, x, y, 0.6, rng.uniform(0.8, 1.3))
+        OP.fern_bush(veg, x, y, z, rng.uniform(0.8, 1.3))
     else:
-        OD.grass_clump(veg, x, y, 0.6, rng.uniform(0.9, 1.3))
+        OD.grass_clump(veg, x, y, z, rng.uniform(0.9, 1.3))
     placed += 1
 for deg in (SPAWN_DEG, PORTAL_DEG):  # trees flanking the two lobes
     for sgn in (-1, 1):
         for k in range(2):
             x, y = ring_pt(deg + sgn * rng.uniform(10, 16), rng.uniform(0.25, 0.6))
-            if clear_of_reach(x, y, 5) and green_sd(x, y) > 10 and not any(math.hypot(x - ux, y - uy) < ur * 0.7 for ux, uy, ur in used):
-                P.round_tree(veg, x, y, 0.6, rng.uniform(1.0, 1.3), blossom=(k == 1))
+            if clear_of_reach(x, y, 5) and green_sd(x, y) > 10 and not in_shelf(x, y, -2) and not any(math.hypot(x - ux, y - uy) < ur * 0.7 for ux, uy, ur in used):
+                top = DT.park_tree(veg, x, y, 0.6, rng.uniform(1.0, 1.3), "blossom" if k == 1 else "oak")
+                if k == 1:
+                    LAYOUT["fx"]["blossoms"].append([round(x, 1), round(y, 1), round(top - 4, 1)])
                 used.append((x, y, 5))
+# the arrival's surroundings: flower beds, topiary + lamps either side of the terrace, the welcome fountain to its east
+for sgn in (-1, 1):
+    DT.flower_bed(sc, veg, sgn * 27, SP_C[1] + 3, 0.6, 7.0, 3.4, sgn * 20)
+    DT.flower_bed(sc, veg, sgn * 24, SP_C[1] - 13, 0.6, 6.0, 3.0, -sgn * 30)
+    DT.topiary(sc, sgn * 21, SP_NECK[1] + 4, 0.6)
+    DT.topiary(sc, sgn * 22, SP_C[1] - 20, 0.6)
+    P.lamp_post(sc, sgn * 31, SP_C[1] - 5, 0.6, 7.0)
+    LAYOUT["fx"]["butterfly_rings"].append([sgn * 26, SP_C[1] - 4, 6, 12, 2.5, 6.0])
+fx_, fy_, _ = push_out(298, 0.42, 12)
+LAYOUT["fx"]["fountain"] = DT.fountain(sc, wat, foam, fx_, fy_, 0.6)
+LAYOUT["fx"]["fountain_centre"] = [round(fx_, 1), round(fy_, 1)]
+used.append((fx_, fy_, 12))
+note("Welcome fountain", fx_, fy_, "a limestone fountain with a gold briefcase spouting four arcs, between the arrival terrace and the bay (scenery)")
+for sgn in (-1, 1):  # the portal plaza's sides
+    LAYOUT["fx"]["butterfly_rings"].append([sgn * 30, PO_C[1] - 4, 5, 10, 2.5, 6.0])
+# park furniture along the ring just outside the hedges: lamp posts + benches facing the lawn
+deg = 2.0
+while deg < 360:
+    if not near_lobe(deg, 14) and abs((deg - BAY_DEG + 180) % 360 - 180) > 22:
+        x, y = polar(rg(deg) + 6.5, deg)
+        if not any(math.hypot(x - ux, y - uy) < ur * 0.8 for ux, uy, ur in used) and not in_shelf(x, y, -3):
+            if int(deg) % 2 == 0:
+                P.lamp_post(sc, x, y, 0.6, 7.0)
+            else:
+                P.bench(sc, x, y, 0.6, deg + 90)
+    deg += rng.uniform(9, 13)
+LAYOUT["fx"]["gull_rings"] = [[round(BAY_C[0], 1), round(BAY_C[1], 1), 20, 38], [round(lantern[0], 1), round(lantern[1], 1), 18, 46],
+                              [-196, 30, 28, 44], [192, 40, 22, 50]]
 sc.done()
 sky.done()
 wat.done()
@@ -626,7 +740,7 @@ isl.done()
 K.studs_done(C["Briefcase_Bay_V2"], only=lambda o, look: look in P.STUD_LOOKS and not o.name.startswith(("Sky_", "Preview", "Egg_Spot", "Label", "Diagram")))
 
 # ------------------------------------------------------------------ gameplay checks (measured on the built geometry)
-objs = [o for o in scene.objects if o.type == "MESH" and not o.name.startswith(("Studs_", "StudSource_", "Sky_", "Preview", "Egg_Spot", "Boss_", "Green_Decor"))]
+objs = [o for o in scene.objects if o.type == "MESH" and not o.name.startswith(("Studs_", "StudSource_", "Sky_", "Preview", "Egg_Spot", "Boss_", "Green_Decor", "Lighthouse_Beam"))]
 _dec = bpy.data.objects["Green_Decor"]
 DECOR_H = max(v.co.z for v in _dec.data.vertices) - SAND_Z
 LAYOUT["checks"]["green_decor"] = (f"small walk-through decor on the Green (daisies, flower tufts, papers, pebbles, flat stones, colour patches, the path): "
@@ -766,6 +880,11 @@ LAYOUT["checks"]["box_on_lawn"] = "all four box corners are on the lawn" if corn
 pocket = max(box_dist(*polar(rg(d), d)) for d in range(360))
 LAYOUT["checks"]["edge_in_reach"] = (f"the Green's edge is {min(box_dist(*polar(rg(d), d)) for d in range(360)):.0f}-{pocket:.0f} studs from his box, all round: "
                                      f"every place on the lawn is inside his 45-stud swing (no safe strip, no safe corner)")
+gull_min = min(green_sd(cx + (r + 8) * math.cos(t), cy + (r + 8) * math.sin(t)) for cx, cy, r, h in LAYOUT["fx"]["gull_rings"]
+               for t in [2 * math.pi * i / 72 for i in range(72)])
+_pet = [green_sd(x, y) for x, y, z in LAYOUT["fx"]["blossoms"]]
+LAYOUT["checks"]["ambience_off_the_lawn"] = (f"gulls circle at least {gull_min:.0f} studs outside the lawn's edge; blossom petals fall from trees "
+                                             f"{min(_pet):.0f}+ studs outside it; only his own papers move over his lawn")
 LAYOUT["checks"]["egg_spots"] = f"{len(spots)} candidate spots in {len(REGIONS)} regions (the zone shows at most 14 eggs at once)"
 print("[bbv2] checks:", json.dumps(LAYOUT["checks"], indent=1))
 
@@ -843,6 +962,7 @@ CAMS = {
     "ground_eggs": (("Cam_Ground_Eggs", (-128, -70, SAND_Z + 8), (-40, 10, SAND_Z + 3), 24), 1920, 1080),
     "boss_view": (("Cam_Boss_View", (10, 30, SAND_Z + 50), (-8, -96, SAND_Z), 22), 1920, 1080),  # (over his shoulder)
     "ground_portal": (("Cam_Ground_Portal", (-34, PO_C[1] - 58, SAND_Z + 9), (0, PORTAL[1], SAND_Z + 12), 26), 1920, 1080),
+    "bay": (("Cam_Bay", (150, -250, 70), (60, -60, 5), 24), 1920, 1080),  # (the bay, the lighthouse + the arrival side)
 }
 only = next((a.split("=", 1)[1].split(",") for a in argv if a.startswith("only=")), None)
 if "norender" not in argv:

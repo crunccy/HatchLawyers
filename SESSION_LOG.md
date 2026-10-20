@@ -24,7 +24,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **crnuch (local), since 2026-10-19:** BRIEFCASE BAY v2 redesign in Blender on the Ocean Shore v2 benchmark
   (`environment-redesign/briefcase_bay_v2/`; v1 in `briefcase_bay/` stays untouched as the backup): audit, then a
   layout for crnuch's approval, built round The Senior Partner's real numbers. Don't redesign Briefcase Bay meanwhile.
-  Layout approved 2026-10-19 (crnuch: keep the skyline); detailed pass in progress.
+  Layout approved 2026-10-19 (crnuch: keep the skyline); detailed pass done 2026-10-19 (waiting for approval).
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -180,6 +180,30 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: Briefcase Bay v2 — DETAILED pass (Blender)
+- **crnuch's call:** the Briefcase Bay v2 layout approved, keep the skyline; detailed modelling started.
+- **New pieces** (`environment-redesign/briefcase_bay_v2/bbv2_detail.py`):
+  - the skyline: six towers, each its own silhouette, on a podium with a colonnade, a revolving door and a gold name
+    (fictional firms): AMICUS (glass pyramid), DOCKET & CO (a gold briefcase on the roof), VERDICT (setbacks),
+    LEXICON LAW (a glass cylinder + dome), HABEAS (twin shafts + skybridge), CASEWORKS (crown frame + helipad);
+  - the portal dressed for the bay (gold trim, a gold briefcase keystone, lamps, topiary, flower beds);
+  - the harbour: the Bay Ferry (rails, cabin, wheelhouse, lifebuoys, funnel, its name), a sailboat, buoys, bollards
+    with rope, lifebuoy stands, cargo; the lighthouse with the keeper's cottage and its beam;
+  - the welcome fountain (a gold briefcase spouting four arcs); park trees (oak / blossom / conifer), topiary, kerbed
+    flower beds; the monuments with stitching, a luggage tag, papers and plaques.
+- **Scenery** (layout, lawn, his box, eggs, spawn + portal unchanged): the towers stand on two raised limestone
+  shelves either side of the portal (craggy faces, planted terraces in front); lamp posts + benches face the lawn
+  from outside the hedges; flower beds, topiary and lamps round the arrival terrace.
+- **Checks** all still green (box 100% open lawn, 0 hidden warning points, no safe bypass, spawn → portal level);
+  new: nothing that moves passes over his lawn but his own papers (gulls 4+ studs outside its edge).
+- **Ambience** in the .blend (`bbv2_ambience.py`, no clips): wind, water, boats bobbing, cascade splash + mist, edge
+  spray, fountain splashes, sparkles, portal motes, tower crowns + aviation lights (0.5 Hz) + lantern, the lighthouse
+  beam sweeping the sea side (hidden in stills), blossom petals, butterflies, 8 gulls, papers at his ankles.
+- **Audio picks** (CC0, licence read on each freesound page): city-park bed, birds, harbour lapping, a distant
+  foghorn, the fountain, paper rustles; gulls, falls and wind reuse Ocean Shore v2's picks.
+- 546k tris + 326k studs, 8.6 MB .blend, 8 renders (a new bay view). **Fixed in review:** the lighthouse beam read as a
+  solid plank in daylight stills (hidden in renders, kept for the ambience); two gull circles crossed the lawn's edge.
 
 ## 2026-10-19 — crnuch, local session: Briefcase Bay v2 — audit + LAYOUT for approval (Blender)
 - **crnuch's call:** redo Briefcase Bay on the Ocean Shore v2 benchmark (audit, then a layout for approval).

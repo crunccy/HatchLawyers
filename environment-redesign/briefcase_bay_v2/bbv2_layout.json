@@ -23,7 +23,7 @@
     0.0,
     -167.0
    ],
-   "what": "the purple vortex in a limestone arch on a round plaza, flush with the lawn (a level walk-in)"
+   "what": "the purple vortex in a gold-trimmed limestone arch with a gold briefcase keystone, on a round plaza flush with the lawn (a level walk-in)"
   },
   {
    "name": "The Senior Partner's start pad",
@@ -52,14 +52,14 @@
   {
    "name": "Lighthouse",
    "blender_xy": [
-    105.7,
-    -156.7
+    105.1,
+    -155.8
    ],
    "roblox_xz": [
-    105.7,
-    156.7
+    105.1,
+    155.8
    ],
-   "what": "a red-and-white lighthouse on the bay's headland (scenery)"
+   "what": "a red-and-white lighthouse on the bay's headland with the keeper's cottage; its beam sweeps out to sea (scenery)"
   },
   {
    "name": "Waterfall off the edge (14 deg)",
@@ -155,7 +155,19 @@
     0,
     -200
    ],
-   "what": "six classic glass towers on the back ring behind the cliffs (scenery: the firms the bay is named for)"
+   "what": "six classic glass towers (AMICUS, DOCKET & CO, VERDICT, LEXICON LAW, HABEAS, CASEWORKS: fictional firms) on two raised limestone shelves either side of the portal (scenery)"
+  },
+  {
+   "name": "Welcome fountain",
+   "blender_xy": [
+    76.2,
+    -143.2
+   ],
+   "roblox_xz": [
+    76.2,
+    143.2
+   ],
+   "what": "a limestone fountain with a gold briefcase spouting four arcs, between the arrival terrace and the bay (scenery)"
   }
  ],
  "egg_regions": [
@@ -228,298 +240,298 @@
  "egg_spots": [
   {
    "blender_xy": [
-    -56.3,
-    -52.9
+    -41.8,
+    -60.1
    ],
    "roblox_xz": [
-    -56.3,
-    52.9
+    -41.8,
+    60.1
    ],
    "region": "Welcome Lawn"
   },
   {
    "blender_xy": [
-    -11.0,
-    -58.1
+    -28.5,
+    -66.6
    ],
    "roblox_xz": [
-    -11.0,
-    58.1
+    -28.5,
+    66.6
    ],
    "region": "Welcome Lawn"
   },
   {
    "blender_xy": [
-    -55.5,
-    -64.0
+    -24.7,
+    -42.1
    ],
    "roblox_xz": [
-    -55.5,
-    64.0
+    -24.7,
+    42.1
    ],
    "region": "Welcome Lawn"
   },
   {
    "blender_xy": [
-    -33.0,
-    -64.6
+    -15.5,
+    -45.3
    ],
    "roblox_xz": [
-    -33.0,
-    64.6
+    -15.5,
+    45.3
    ],
    "region": "Welcome Lawn"
   },
   {
    "blender_xy": [
-    -24.5,
-    -36.5
+    -11.4,
+    -59.9
    ],
    "roblox_xz": [
-    -24.5,
-    36.5
+    -11.4,
+    59.9
    ],
    "region": "Welcome Lawn"
   },
   {
    "blender_xy": [
-    -50.7,
-    -39.8
+    -44.9,
+    -40.5
    ],
    "roblox_xz": [
-    -50.7,
-    39.8
+    -44.9,
+    40.5
    ],
    "region": "Welcome Lawn"
   },
   {
    "blender_xy": [
-    69.0,
-    -36.5
+    58.7,
+    -46.0
    ],
    "roblox_xz": [
-    69.0,
-    36.5
+    58.7,
+    46.0
    ],
    "region": "Harbour Green"
   },
   {
    "blender_xy": [
-    54.0,
-    -53.1
+    81.4,
+    -56.0
    ],
    "roblox_xz": [
-    54.0,
-    53.1
+    81.4,
+    56.0
    ],
    "region": "Harbour Green"
   },
   {
    "blender_xy": [
-    78.1,
-    -28.1
+    71.9,
+    -26.6
    ],
    "roblox_xz": [
-    78.1,
-    28.1
+    71.9,
+    26.6
    ],
    "region": "Harbour Green"
   },
   {
    "blender_xy": [
-    69.9,
-    -50.4
+    47.6,
+    -37.5
    ],
    "roblox_xz": [
-    69.9,
-    50.4
+    47.6,
+    37.5
    ],
    "region": "Harbour Green"
   },
   {
    "blender_xy": [
-    76.1,
-    -57.2
+    67.2,
+    -56.0
    ],
    "roblox_xz": [
-    76.1,
-    57.2
+    67.2,
+    56.0
    ],
    "region": "Harbour Green"
   },
   {
    "blender_xy": [
-    -90.8,
-    25.5
+    -79.2,
+    33.5
    ],
    "roblox_xz": [
-    -90.8,
-    -25.5
+    -79.2,
+    -33.5
    ],
    "region": "Cascade Lawn"
   },
   {
    "blender_xy": [
-    -62.7,
-    48.1
+    -65.8,
+    37.4
    ],
    "roblox_xz": [
-    -62.7,
-    -48.1
+    -65.8,
+    -37.4
    ],
    "region": "Cascade Lawn"
   },
   {
    "blender_xy": [
-    -45.1,
-    31.8
+    -88.9,
+    32.0
    ],
    "roblox_xz": [
-    -45.1,
-    -31.8
+    -88.9,
+    -32.0
    ],
    "region": "Cascade Lawn"
   },
   {
    "blender_xy": [
-    -77.7,
-    26.5
+    -81.7,
+    14.5
    ],
    "roblox_xz": [
-    -77.7,
-    -26.5
+    -81.7,
+    -14.5
    ],
    "region": "Cascade Lawn"
   },
   {
    "blender_xy": [
-    -72.1,
-    12.0
+    -53.3,
+    43.2
    ],
    "roblox_xz": [
-    -72.1,
-    -12.0
+    -53.3,
+    -43.2
    ],
    "region": "Cascade Lawn"
   },
   {
    "blender_xy": [
-    -72.8,
-    37.9
+    -86.5,
+    44.5
    ],
    "roblox_xz": [
-    -72.8,
-    -37.9
+    -86.5,
+    -44.5
    ],
    "region": "Cascade Lawn"
   },
   {
    "blender_xy": [
-    53.4,
-    3.2
+    53.1,
+    5.8
    ],
    "roblox_xz": [
-    53.4,
-    -3.2
+    53.1,
+    -5.8
    ],
    "region": "Ledger Row"
   },
   {
    "blender_xy": [
-    69.1,
-    11.7
+    69.3,
+    17.2
    ],
    "roblox_xz": [
-    69.1,
-    -11.7
+    69.3,
+    -17.2
    ],
    "region": "Ledger Row"
   },
   {
    "blender_xy": [
-    41.2,
-    -4.4
+    46.1,
+    -7.0
    ],
    "roblox_xz": [
-    41.2,
-    4.4
+    46.1,
+    7.0
    ],
    "region": "Ledger Row"
   },
   {
    "blender_xy": [
-    53.9,
-    -11.5
+    65.0,
+    4.9
    ],
    "roblox_xz": [
-    53.9,
-    11.5
+    65.0,
+    -4.9
    ],
    "region": "Ledger Row"
   },
   {
    "blender_xy": [
-    48.8,
-    18.8
+    61.1,
+    -11.0
    ],
    "roblox_xz": [
-    48.8,
-    -18.8
+    61.1,
+    11.0
    ],
    "region": "Ledger Row"
   },
   {
    "blender_xy": [
-    14.4,
-    48.8
+    36.4,
+    77.5
    ],
    "roblox_xz": [
-    14.4,
-    -48.8
+    36.4,
+    -77.5
    ],
    "region": "Skyline Lawn"
   },
   {
    "blender_xy": [
-    29.8,
-    56.7
+    39.0,
+    55.4
    ],
    "roblox_xz": [
-    29.8,
-    -56.7
+    39.0,
+    -55.4
    ],
    "region": "Skyline Lawn"
   },
   {
    "blender_xy": [
-    8.0,
-    72.6
+    36.1,
+    43.6
    ],
    "roblox_xz": [
-    8.0,
-    -72.6
+    36.1,
+    -43.6
    ],
    "region": "Skyline Lawn"
   },
   {
    "blender_xy": [
-    45.5,
-    55.6
+    15.8,
+    77.9
    ],
    "roblox_xz": [
-    45.5,
-    -55.6
+    15.8,
+    -77.9
    ],
    "region": "Skyline Lawn"
   },
   {
    "blender_xy": [
-    29.7,
-    80.2
+    25.2,
+    79.1
    ],
    "roblox_xz": [
-    29.7,
-    -80.2
+    25.2,
+    -79.1
    ],
    "region": "Skyline Lawn"
   }
@@ -532,9 +544,9 @@
   "egg_edge_clearance": {
    "Welcome Lawn": "33.7 studs to the Green's edge (drops scatter at most 20.7)",
    "Harbour Green": "32.3 studs to the Green's edge (drops scatter at most 20.7)",
-   "Cascade Lawn": "32.0 studs to the Green's edge (drops scatter at most 20.7)",
-   "Ledger Row": "35.1 studs to the Green's edge (drops scatter at most 20.7)",
-   "Skyline Lawn": "39.6 studs to the Green's edge (drops scatter at most 20.7)"
+   "Cascade Lawn": "32.1 studs to the Green's edge (drops scatter at most 20.7)",
+   "Ledger Row": "34.5 studs to the Green's edge (drops scatter at most 20.7)",
+   "Skyline Lawn": "40.5 studs to the Green's edge (drops scatter at most 20.7)"
   },
   "drops_today_3_eggs": "hit anywhere on the Green carrying 3: 96.0% of eggs land on the lawn (the rest only from hits within ~16 studs of its edge)",
   "drops_today_12_eggs": "hit anywhere on the Green carrying 12: 94.2% of eggs land on the lawn (the rest only from hits within ~21 studs of its edge)",
@@ -544,6 +556,7 @@
   "no_safe_bypass": "no walkable route avoids his reach (every route crosses his swing)",
   "box_on_lawn": "all four box corners are on the lawn",
   "edge_in_reach": "the Green's edge is 32-44 studs from his box, all round: every place on the lawn is inside his 45-stud swing (no safe strip, no safe corner)",
+  "ambience_off_the_lawn": "gulls circle at least 4 studs outside the lawn's edge; blossom petals fall from trees 16+ studs outside it; only his own papers move over his lawn",
   "egg_spots": "27 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
  },
  "boss": {
@@ -633,42 +646,236 @@
     9
    ]
   ],
-  "beacons": [
+  "aviation": [
    [
-    105.7,
-    -156.7,
-    35.8
+    167.9,
+    126.5,
+    61.5
    ],
    [
-    106.1,
-    169.8,
-    59.7
+    122.5,
+    162.6,
+    73.2
    ],
    [
-    56.2,
-    173.0,
-    84.4
+    63.3,
+    173.8,
+    98.3
    ],
    [
-    -53.3,
-    185.8,
-    104.5
+    -69.1,
+    189.8,
+    119.0
    ],
    [
-    -104.7,
-    181.4,
-    75.4
+    -118.7,
+    171.0,
+    88.0
    ],
    [
-    165.0,
-    138.4,
-    46.3
-   ],
-   [
-    -152.3,
-    169.2,
-    57.5
+    -151.0,
+    169.0,
+    68.0
    ]
+  ],
+  "lighthouse": [
+   105.1,
+   -155.8,
+   36.1,
+   304.0
+  ],
+  "fountain": [
+   [
+    81.2,
+    -138.1,
+    1.6
+   ],
+   [
+    71.1,
+    -138.1,
+    1.6
+   ],
+   [
+    71.1,
+    -148.3,
+    1.6
+   ],
+   [
+    81.2,
+    -148.3,
+    1.6
+   ]
+  ],
+  "blossoms": [
+   [
+    -52.8,
+    -173.5,
+    13.3
+   ],
+   [
+    83.2,
+    146.9,
+    11.1
+   ],
+   [
+    46.1,
+    -162.2,
+    11.1
+   ],
+   [
+    -84.6,
+    -167.2,
+    10.2
+   ],
+   [
+    61.2,
+    -151.0,
+    9.8
+   ],
+   [
+    -41.5,
+    147.1,
+    9.6
+   ],
+   [
+    -176.3,
+    105.7,
+    12.3
+   ],
+   [
+    183.2,
+    5.9,
+    14.6
+   ],
+   [
+    154.3,
+    -18.0,
+    12.1
+   ],
+   [
+    23.6,
+    -156.8,
+    11.8
+   ],
+   [
+    50.8,
+    -152.3,
+    13.4
+   ],
+   [
+    79.5,
+    -144.8,
+    12.1
+   ],
+   [
+    -75.4,
+    -167.7,
+    9.8
+   ],
+   [
+    191.4,
+    62.3,
+    10.6
+   ],
+   [
+    -163.2,
+    27.7,
+    11.1
+   ],
+   [
+    -26.3,
+    146.6,
+    10.8
+   ],
+   [
+    -154.7,
+    6.4,
+    10.7
+   ],
+   [
+    -32.4,
+    -164.9,
+    14.1
+   ],
+   [
+    -35.3,
+    163.5,
+    15.1
+   ]
+  ],
+  "butterfly_rings": [
+   [
+    -26,
+    -170.0,
+    6,
+    12,
+    2.5,
+    6.0
+   ],
+   [
+    26,
+    -170.0,
+    6,
+    12,
+    2.5,
+    6.0
+   ],
+   [
+    -30,
+    159.0,
+    5,
+    10,
+    2.5,
+    6.0
+   ],
+   [
+    30,
+    159.0,
+    5,
+    10,
+    2.5,
+    6.0
+   ]
+  ],
+  "gull_rings": [
+   [
+    160.0,
+    -107.9,
+    20,
+    38
+   ],
+   [
+    105.1,
+    -155.8,
+    18,
+    46
+   ],
+   [
+    -196,
+    30,
+    28,
+    44
+   ],
+   [
+    192,
+    40,
+    22,
+    50
+   ]
+  ],
+  "boss_pad": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "ferry": [
+   151.4,
+   -113.6,
+   0.8
+  ],
+  "fountain_centre": [
+   76.2,
+   -143.2
   ]
  }
 }
