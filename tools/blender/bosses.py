@@ -6,7 +6,17 @@
 # Works in its own scene "Bosses". Units: 1 Blender m = 1 stud; feet on z = 0; bosses FACE +Y (= Roblox -Z).
 import bpy, math, json, os
 
-REPO = r"C:\Users\siddi\OneDrive\Documents\HatchLawyers"
+def find_repo():
+    env = os.environ.get("HATCH_REPO")
+    if env:
+        return env
+    try:
+        return os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+    except NameError:
+        return r"C:\Users\siddi\OneDrive\Documents\HatchLawyers"
+
+
+REPO = find_repo()
 OUT_JSON = os.path.join(REPO, "tools", "zones", "bosses.json")
 OUT_PNG = os.path.join(REPO, "art", "bosses", "preview.png")
 
@@ -276,7 +286,12 @@ MODELS["BigCheese"] = dict(root=P, groups=groups, height=2 * R)
 # ======================================================================== Magistrate Megalodon (Ocean Shore)
 # an enormous shark walking upright on stubby legs in a navy magistrate's robe with a gold chain of office; jagged
 # teeth, little reading glasses, a gavel in one fin, a glowing lantern fish dangling from a badge. It CHARGES.
+# v2 (2026-10-19, the attack-animation overhaul, docs/BOSS_ANIMATION.md): the body is split at the mouth line so the
+# whole upper head HINGES open at the back (a real chomp - a gullet slab inside shows when it opens), and the dorsal
+# Fin (with a FinGlow shell the client lights up), the Glasses, each Eye (they spin when dizzy), the Lure and the
+# Cape (the robe's back panel) are groups of their own. The robe stops at the mouth line so nothing clips the hinge.
 SHARK, SHARK2, BELLY, NAVY, GUM = (110, 132, 162), (90, 110, 140), (236, 238, 244), (30, 42, 92), (190, 50, 60)
+GULLET, ELECTRIC = (110, 24, 40), (120, 220, 255)
 P = bpy.data.objects.new("Megalodon", None)
 sc.collection.objects.link(P)
 P.location = (34, 0, 0)
@@ -288,27 +303,47 @@ for side, g in ((-1, "LegL"), (1, "LegR")):
     box("Leg", side * 0.85, 0, 0.4, 1.0, 1.0, 1.25, SHARK)
 GROUP = "Torso"
 groups["Torso"] = dict(joint=(0, 0, 1.6), parent="")
-box("Body", 0, 0, 1.4, 3.3, 2.9, 5.0, SHARK)
-box("Head", 0, 0.1, 6.4, 2.7, 2.7, 1.1, SHARK)
-box("Crown", 0, 0, 7.5, 1.8, 2.0, 0.5, SHARK)
+box("Body", 0, 0, 1.4, 3.3, 2.9, 3.6, SHARK)
+box("Gullet", 0, 0.05, 5.0, 2.7, 2.5, 0.05, GULLET, tag="nocollide")
 box("Belly", 0, 1.46, 1.6, 2.4, 0.12, 3.0, BELLY, tag="nocollide")
-box("Mouth", 0, 1.5, 4.55, 2.4, 0.1, 1.0, GUM, tag="nocollide")
+box("MouthLow", 0, 1.5, 4.55, 2.4, 0.1, 0.5, GUM, tag="nocollide")
 for i in range(6):
-    x = -1.0 + i * 0.4
-    box("ToothTop", x, 1.56, 5.15, 0.3, 0.1, 0.38, WHITE, ry=45, tag="nocollide")
-    box("ToothBottom", x + 0.2, 1.56, 4.55, 0.26, 0.1, 0.34, WHITE, ry=45, tag="nocollide")
-eyes(0, 1.47, 6.0, 0.45, 0.85)
+    box("ToothBottom", -0.8 + i * 0.4, 1.56, 4.6, 0.26, 0.1, 0.34, WHITE, ry=45, tag="nocollide")
 for sx in (-1, 1):
-    box("GlassRim", sx * 0.85, 1.52, 5.85, 0.75, 0.08, 0.1, GOLD, tag="nocollide")
-box("DorsalFin", 0, -1.3, 5.6, 0.45, 1.8, 1.8, SHARK2, rx=-35)
-for sx in (-1, 1):
-    box("RobeSide", sx * 1.72, 0, 1.4, 0.2, 3.0, 4.4, NAVY)
-box("RobeBack", 0, -1.52, 1.4, 3.6, 0.2, 4.4, NAVY)
+    box("RobeSide", sx * 1.72, 0, 1.4, 0.2, 3.0, 3.6, NAVY)
 box("Chain", 0, 1.5, 3.7, 2.6, 0.1, 0.2, GOLD, tag="nocollide")
 box("Medallion", 0, 1.55, 3.05, 0.7, 0.12, 0.7, GOLD, tag="nocollide")
 box("Badge", -0.95, 1.52, 2.6, 0.45, 0.1, 0.45, GOLD, tag="nocollide")
+GROUP = "Cape"
+groups["Cape"] = dict(joint=(0, -1.52, 5.0), parent="Torso")
+box("RobeBack", 0, -1.52, 1.4, 3.4, 0.2, 3.6, NAVY)  # (3.4 wide: swept-back fins clear it)
+GROUP = "Lure"
+groups["Lure"] = dict(joint=(-0.95, 1.7, 2.6), parent="Torso")
 box("LureStalk", -0.95, 1.7, 1.85, 0.08, 0.08, 0.75, (60, 60, 70), tag="nocollide")
 box("Lure", -0.95, 1.75, 1.45, 0.45, 0.45, 0.45, (120, 220, 255), tag="neon")
+GROUP = "Head"
+groups["Head"] = dict(joint=(0, -1.45, 5.05), parent="Torso")
+box("Snout", 0, 0, 5.05, 3.3, 2.9, 1.35, SHARK)
+box("Palate", 0, 0.05, 5.05, 2.7, 2.5, 0.05, GULLET, tag="nocollide")
+box("Head", 0, 0.1, 6.4, 2.7, 2.7, 1.1, SHARK)
+box("Crown", 0, 0, 7.5, 1.8, 2.0, 0.5, SHARK)
+box("MouthTop", 0, 1.5, 5.05, 2.4, 0.1, 0.5, GUM, tag="nocollide")
+for i in range(6):
+    box("ToothTop", -1.0 + i * 0.4, 1.56, 5.12, 0.3, 0.1, 0.38, WHITE, ry=45, tag="nocollide")
+for side, g in ((-1, "EyeL"), (1, "EyeR")):
+    GROUP = g
+    groups[g] = dict(joint=(side * 0.85, 1.47, 6.225), parent="Head")
+    box("Eye", side * 0.85, 1.47, 6.0, 0.45, 0.1, 0.45, (24, 24, 30), tag="nocollide")
+    box("Glint", side * 0.85 + 0.099, 1.5, 6.2475, 0.135, 0.06, 0.135, (255, 255, 255), tag="nocollide")
+GROUP = "Glasses"
+groups["Glasses"] = dict(joint=(0, 1.52, 5.9), parent="Head")
+for sx in (-1, 1):
+    box("GlassRim", sx * 0.85, 1.52, 5.85, 0.75, 0.08, 0.1, GOLD, tag="nocollide")
+box("GlassBridge", 0, 1.52, 5.87, 0.95, 0.06, 0.06, GOLD, tag="nocollide")
+GROUP = "Fin"
+groups["Fin"] = dict(joint=(0, -1.25, 6.0), parent="Head")
+box("DorsalFin", 0, -1.3, 5.6, 0.45, 1.8, 1.8, SHARK2, rx=-35)
+box("FinGlow", 0, -1.3, 5.5, 0.62, 2.0, 2.0, ELECTRIC, rx=-35, tag="glow")
 GROUP = "Tail"
 groups["Tail"] = dict(joint=(0, -1.4, 1.8), parent="Torso")
 box("Tail", 0, -2.3, 0.9, 0.4, 1.8, 1.8, SHARK2, rx=30)

@@ -48,6 +48,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Zones map: reference breakdown + rules (lane of zones, walls, decoration, scattered eggs) | [docs/ZONES_REFERENCE.md](docs/ZONES_REFERENCE.md), shots in `references/zones-ref-*.webp` |
 | World redesign (floating islands, Blender only until approved): audit, hub blockout, stages | [environment-redesign/README.md](environment-redesign/README.md) |
 | Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
+| Boss attack animation overhaul + crowd attacks (Megalodon first) | [docs/BOSS_ANIMATION.md](docs/BOSS_ANIMATION.md) |
 | Eggs v5: Blender eggs, hatch, incubator (pipeline, upload, install) | [docs/EGGS_V5.md](docs/EGGS_V5.md) |
 | UI overhaul (2026-10-18): reference analysis, audit of every UI surface, icon ids, plan | [docs/UI_OVERHAUL.md](docs/UI_OVERHAUL.md); Figma design system: figma.com/design/PtgoaIbriizMlKEDFVxc8Q (Starter plan: Figma MCP = 20 calls/month) |
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
@@ -170,6 +171,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   `tools/blender/bosses.py` → `tools/zones/BuildBosses.lua`). `Server.BossService` runs them (state in
   `ReplicatedStorage.BossStates`, `Remotes.Bosses`), `StarterPlayerScripts.Bosses` draws them; `Config.Bosses`.
   Sounds: `rbxasset://sounds/swoosh.wav` is NOT approved for this place - use the game's licensed ids.
+  **Attack animation overhaul (2026-10-19, docs/BOSS_ANIMATION.md):** attacks are Blender CLIPS
+  (`tools/blender/boss_anims.py` -> `Shared.BossAnims`, generated; the client cross-fades them with its POSES), checked
+  for clipping per frame and for timing against Config by run_checks. **Crowd add-ons** (`Config.Bosses.List[n].Crowd`,
+  crnuch's call): with 2+ players a boss also aims a warned ranged attack at up to 2 others; 1 player = no change.
 - `ReplicatedStorage.EggModels` (v5 meshes) + `Shared.EggLook` — every egg the game shows (zones, loose, carried, the hatch)
   comes from `EggLook.build(egg, golden, height, simple)` / `EggLook.buildHatch`. The hatch (StarterPlayerScripts.Eggs, v5) plays in the
   world at the incubator for every rarity (`Shared.HatchFx` = the VFX kit + rarity ladder, `Shared.Incubator` = the

@@ -15,6 +15,10 @@
 --     LooseEgg appears there once it has landed). Nothing carried: a bump and a boing.
 --   * LOOSE EGGS (tag "LooseEgg"): bob, spin slowly and glow so they read as "grab me"; blink in their last 5 s.
 --   * GRAB ("Grab"): the egg hops into the grabber's arms.
+--   * BLENDER CLIPS (2026-10-19, docs/BOSS_ANIMATION.md): a boss with clips in Shared.BossAnims (made by
+--     tools/blender/boss_anims.py; Megalodon first) plays them for windup / attack / dizzy / recover instead of its
+--     POSES function (cross-faded): squash + stretch, the whip-round turn, the glowing fin, its own effects, and the
+--     CROWD add-on (Config.Bosses.List[n].Crowd: sand-shark fins down extra warning lanes at other players).
 -- No text anywhere (user's call): no names, no labels, no messages.
 
 local Debris = game:GetService("Debris")
@@ -26,6 +30,11 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
+-- the bosses' Blender clips (generated); a boss without clips keeps its POSES function
+local animsOk, animsLib = pcall(function()
+	return require(Shared:WaitForChild("BossAnims", 15) :: ModuleScript)
+end)
+local ANIMS: { [string]: any } = if animsOk and type(animsLib) == "table" then animsLib else {}
 local CFG = Config.Bosses
 if not CFG then
 	return
@@ -60,6 +69,11 @@ local function easeOut(a: number): number
 	return 1 - (1 - a) * (1 - a)
 end
 
+local function backOut(a: number): number -- overshoots a little, then settles
+	a = math.clamp(a, 0, 1) - 1
+	return 1 + 2.70158 * a * a * a + 1.70158 * a * a
+end
+
 local function lerpAngle(a: number, b: number, t: number): number
 	local d = (b - a + math.pi) % (math.pi * 2) - math.pi
 	return a + d * t
@@ -89,6 +103,11 @@ local SOUNDS = {
 	hit = { "rbxassetid://9114753510", 0.8, 1.2, 0.6 }, -- hammer on wood
 	boing = { "rbxassetid://15675055424", 0.7, 0.65 }, -- a low cute pop
 	charge = { "rbxassetid://15674975792", 0.8, 0.85 }, -- a big whoosh
+	sniff = { "rbxassetid://9112872239", 0.35, 0.7 }, -- a low bubble: the Megalodon smells eggs
+	scrape = { "rbxassetid://9113959343", 0.35, 0.55, 0.4 }, -- a gritty crack, low and short: a paw scrape
+	launch = { "rbxassetid://9119293555", 0.6, 1.25, 0.9 }, -- a quick splash as it explodes forward
+	skid = { "rbxassetid://9119293555", 0.55, 0.7, 1.0 }, -- a low splash as it skids to a stop
+	shakeoff = { "rbxassetid://9119293555", 0.4, 1.6, 0.5 }, -- the wet-dog shake
 	pull = { "rbxassetid://9045751375", 0.4, 0.7, 2.0 },
 	land = { "rbxassetid://9114753510", 0.35, 1.6, 0.5 },
 	grab = { "rbxassetid://15675024286", 0.55, 1.1 }, -- whoosh
@@ -137,7 +156,7 @@ local function eggColor(egg: string, golden: boolean): Color3
 end
 
 ------------------------------------------------------------------ the bosses
-type Group = { name: string, joint: CFrame, parent: string, parts: { BasePart }, rest: { CFrame }, depth: number }
+type Group = { name: string, joint: CFrame, parent: string, parts: { BasePart }, rest: { CFrame }, sizes: { Vector3 }, depth: number }
 type Boss = {
 	state: Configuration,
 	model: Model,
@@ -152,6 +171,20 @@ type Boss = {
 	stars: { BasePart }?, -- dizzy stars over its head
 	lastRoll: number, -- how far a roll turned it (Big Cheese), unwound in the recover
 	trailAt: number, -- when the last trail puff went out (Line attacks)
+	-- Blender clips (ANIMS):
+	clipW: number, -- 0 = its POSES function .. 1 = the clip (cross-fade)
+	lastClip: any?, -- the last clip pose (faded out of after the recover)
+	turnStart: number, -- the windup the whip-round turn is for
+	turnFrom: number, -- the yaw it turned from
+	glow: { BasePart }, -- parts named FinGlow (lit by the clip's FinGlow channel)
+	glowNow: number,
+	squashed: boolean, -- its parts are resized (squash / stretch) right now
+	fired: { [string]: boolean }, -- one-shot effects already played in this state
+	fxAt: number, -- when the last repeating effect went out
+	lanes: { Vector3 }, -- this attack's crowd lanes (ends)
+	laneFrom: Vector3,
+	sharks: { BasePart },
+	runFx: BasePart?, -- the charge's trail emitters
 }
 local bosses: { [Configuration]: Boss } = {}
 local ragdolled = false -- (the local player is lying limp: no pulls - see ragdoll below)
@@ -185,14 +218,20 @@ local function build(s: Configuration)
 		return CFrame.new(cf.Position * scale) * cf.Rotation
 	end
 	local byName: { [string]: Group } = {}
+	local glow = {}
 	for _, g in m:GetChildren() do
 		if g:IsA("Model") then
 			local grp: Group = { name = g.Name, joint = scaled((g:GetAttribute("Joint") :: CFrame?) or CFrame.new()),
-				parent = (g:GetAttribute("Parent") :: string?) or "", parts = {}, rest = {}, depth = 0 }
+				parent = (g:GetAttribute("Parent") :: string?) or "", parts = {}, rest = {}, sizes = {}, depth = 0 }
 			for _, p in g:GetDescendants() do
 				if p:IsA("BasePart") then
 					p.Size *= scale
 					table.insert(grp.parts, p)
+					table.insert(grp.sizes, p.Size)
+					if p.Name == "FinGlow" then
+						p.Transparency = 1 -- (lit by the clip)
+						table.insert(glow, p)
+					end
 					table.insert(grp.rest, scaled(p.CFrame)) -- (the library sits at the origin: CFrames are in boss space)
 				end
 			end
@@ -215,14 +254,15 @@ local function build(s: Configuration)
 	-- (parented only while it's near the camera and posed - see the frame loop)
 	bosses[s] = { state = s, model = m, kind = m.Name, groups = list, yaw = (attr(s, "Yaw") :: number?) or 0,
 		phase = 0, walk = 0, seenState = (attr(s, "StateStart") :: number?) or 0, warn = nil, warnKind = nil,
-		stars = nil, lastRoll = 0, trailAt = 0 }
+		stars = nil, lastRoll = 0, trailAt = 0, clipW = 0, lastClip = nil, turnStart = 0, turnFrom = 0, glow = glow,
+		glowNow = 0, squashed = false, fired = {}, fxAt = 0, lanes = {}, laneFrom = Vector3.zero, sharks = {}, runFx = nil }
 end
 
 local function remove(s: Instance)
 	local b = bosses[s :: Configuration]
 	if b then
 		b.model:Destroy()
-		for _, list in { b.warn or {}, b.stars or {} } do
+		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx } } do
 			for _, p in list do
 				p:Destroy()
 			end
@@ -425,6 +465,9 @@ POSES.Megalodon = function(b, state, a, t, idle)
 		Tail = CFrame.Angles(0, tail, 0),
 		ArmL = CFrame.Angles(fins, 0, -0.15),
 		ArmR = CFrame.Angles(-fins, 0, 0.15),
+		-- (v2 groups: the robe's back panel trails, the lure fish swings)
+		Cape = CFrame.Angles(-0.06 * w - 0.05 * math.abs(sw) * w, 0, 0),
+		Lure = CFrame.Angles(0.05 + 0.05 * math.abs(math.cos(b.phase)) * w, 0, -0.12 * math.sin(b.phase - 0.6) * w),
 	}
 end
 
@@ -461,6 +504,100 @@ POSES.Eclipse = function(b, state, a, t, idle)
 		Gavels = CFrame.Angles(0, spin, 0),
 		Torso = CFrame.Angles(0, 0, math.sin(t * 0.8) * 0.03),
 	}
+end
+
+------------------------------------------------------------------ Blender clips (Shared.BossAnims, docs/BOSS_ANIMATION.md)
+-- A clip frame = each group's rotation (+ offset, model units) at its joint, the root's offset + tilt, its SQUASH
+-- (sx, sy, sz around the feet) and fx channels (FinGlow). Walk / idle stay the POSES; the clip states cross-fade in
+-- and out over CLIP_FADE s.
+local CLIP_FADE = 0.1
+type ClipPose = { root: CFrame, scale: Vector3, rots: { [string]: CFrame }, fx: { [string]: number } }
+
+local function clipFrame(ch: any, i: number, sc: number): CFrame
+	local px, py, pz = 0, 0, 0
+	local P = ch.P
+	if P then
+		px, py, pz = P[i * 3 + 1] * sc, P[i * 3 + 2] * sc, P[i * 3 + 3] * sc
+	end
+	local R = ch.R
+	if R then
+		local k = i * 4
+		return CFrame.new(px, py, pz, R[k + 1], R[k + 2], R[k + 3], R[k + 4])
+	end
+	return CFrame.new(px, py, pz)
+end
+
+local function sampleClip(anim: any, name: string, t: number, sc: number): ClipPose?
+	local clip = anim.Clips[name]
+	if not clip then
+		return nil
+	end
+	local n = clip.Frames
+	local f = t * anim.Fps
+	f = if clip.Loop then f % (n - 1) else math.clamp(f, 0, n - 1)
+	local i0 = math.floor(f)
+	local i1 = math.min(i0 + 1, n - 1)
+	local a = f - i0
+	local rots = {}
+	for g, ch in clip.Groups do
+		rots[g] = clipFrame(ch, i0, sc):Lerp(clipFrame(ch, i1, sc), a)
+	end
+	local R = clip.Root
+	local k0, k1 = i0 * 10, i1 * 10
+	local r0 = CFrame.new(R[k0 + 1], R[k0 + 2], R[k0 + 3], R[k0 + 4], R[k0 + 5], R[k0 + 6], R[k0 + 7])
+	local r1 = CFrame.new(R[k1 + 1], R[k1 + 2], R[k1 + 3], R[k1 + 4], R[k1 + 5], R[k1 + 6], R[k1 + 7])
+	local s0, s1 = Vector3.new(R[k0 + 8], R[k0 + 9], R[k0 + 10]), Vector3.new(R[k1 + 8], R[k1 + 9], R[k1 + 10])
+	local fx = {}
+	for name2, v in clip.Fx do
+		fx[name2] = v[i0 + 1] + (v[i1 + 1] - v[i0 + 1]) * a
+	end
+	return { root = r0:Lerp(r1, a), scale = s0:Lerp(s1, a), rots = rots, fx = fx }
+end
+
+local function mixPose(x: ClipPose, y: ClipPose, w: number): ClipPose
+	local rots = {}
+	for g, cf in x.rots do
+		rots[g] = cf:Lerp(y.rots[g] or CFrame.identity, w)
+	end
+	for g, cf in y.rots do
+		if not rots[g] then
+			rots[g] = CFrame.identity:Lerp(cf, w)
+		end
+	end
+	local fx = {}
+	for k, v in x.fx do
+		fx[k] = v + ((y.fx[k] or 0) - v) * w
+	end
+	for k, v in y.fx do
+		if fx[k] == nil then
+			fx[k] = v * w
+		end
+	end
+	return { root = x.root:Lerp(y.root, w), scale = x.scale:Lerp(y.scale, w), rots = rots, fx = fx }
+end
+
+-- the clip pose for a state (nil = not a clip state). A charge = launch (its first 0.2 s), the loop, then the brake
+-- (its last 0.2 s); a short charge splits its time between launch and brake.
+local function clipPoseFor(anim: any, state: string, e: number, total: number, sc: number): ClipPose?
+	if state == "attack" then
+		if not anim.Clips.charge_loop then
+			return sampleClip(anim, "attack", e, sc)
+		end
+		local lt = math.min(0.2, total / 2)
+		if e < lt then
+			return sampleClip(anim, "charge_launch", e, sc)
+		end
+		local loop = sampleClip(anim, "charge_loop", (e - lt) % anim.Clips.charge_loop.Length, sc) :: ClipPose
+		local bt = e - (total - lt)
+		if bt > 0 then
+			local brake = sampleClip(anim, "charge_brake", bt + (0.2 - lt), sc) :: ClipPose
+			return mixPose(loop, brake, math.clamp(bt / 0.06, 0, 1))
+		end
+		return loop
+	elseif state == "windup" or state == "dizzy" or state == "recover" then
+		return sampleClip(anim, state, e, sc)
+	end
+	return nil
 end
 
 ------------------------------------------------------------------ warnings + attack effects
@@ -505,11 +642,14 @@ local function makeWarn(b: Boss)
 			add("WarnEdge", { Size = Vector3.new(1.5, 0.16, 0.8), Transparency = 0.3 }, { Angle = -angle / 2 + angle * i / 23, Step = angle / 23 })
 		end
 	elseif kind == "Line" then
-		add("WarnStrip", { Size = Vector3.new(1, 0.1, 1), Transparency = 0.65 })
-		add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = -1 })
-		add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = 1 })
-		for i = 1, 3 do
-			add("WarnArrow", { Size = Vector3.new(1, 0.14, 1.4), Transparency = 0.25, Color = Color3.new(1, 1, 1) }, { Index = i })
+		-- lane 0 = its own charge / roll; 1..CrowdN = the crowd add-on's lanes at other players
+		for lane = 0, (attr(s, "CrowdN") :: number?) or 0 do
+			add("WarnStrip", { Size = Vector3.new(1, 0.1, 1), Transparency = 0.65 }, { Lane = lane })
+			add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = -1, Lane = lane })
+			add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = 1, Lane = lane })
+			for i = 1, 3 do
+				add("WarnArrow", { Size = Vector3.new(1, 0.14, 1.4), Transparency = 0.25, Color = Color3.new(1, 1, 1) }, { Index = i, Lane = lane })
+			end
 		end
 	else
 		add("WarnDisc", { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, 2, 2), Transparency = 0.65 })
@@ -540,14 +680,20 @@ local function poseWarn(b: Boss, pos: Vector3, yaw: number, grow: number, t: num
 	local floorY = ((attr(s, "FloorY") :: number?) or pos.Y) + 0.09
 	local pulse = 0.5 + 0.5 * math.sin(t * 18)
 	if kind == "Line" then
-		local target = (attr(s, "Target") :: Vector3?) or pos
-		local d = Vector3.new(target.X - pos.X, 0, target.Z - pos.Z)
-		local len = math.max(1, d.Magnitude) * grow
-		local width = (attr(s, "Width") :: number?) or 10
-		local dir = if d.Magnitude > 0.1 then d.Unit else Vector3.new(-math.sin(yaw), 0, -math.cos(yaw))
-		local start = Vector3.new(pos.X, floorY, pos.Z)
-		local base = CFrame.lookAt(start, start + dir)
+		local laneCache = {}
 		for _, p in b.warn do
+			local lane = (p:GetAttribute("Lane") :: number?) or 0
+			local info = laneCache[lane]
+			if not info then
+				local target = (attr(s, if lane == 0 then "Target" else "Crowd" .. lane) :: Vector3?) or pos
+				local d = Vector3.new(target.X - pos.X, 0, target.Z - pos.Z)
+				local dir = if d.Magnitude > 0.1 then d.Unit else Vector3.new(-math.sin(yaw), 0, -math.cos(yaw))
+				local start = Vector3.new(pos.X, floorY, pos.Z)
+				info = { base = CFrame.lookAt(start, start + dir), len = math.max(1, d.Magnitude) * grow,
+					width = (attr(s, if lane == 0 then "Width" else "CrowdWidth") :: number?) or 10 }
+				laneCache[lane] = info
+			end
+			local base, len, width = info.base, info.len, info.width
 			if p.Name == "WarnStrip" then
 				p.Size = Vector3.new(width, 0.1, len)
 				p.CFrame = base * CFrame.new(0, 0, -len / 2)
@@ -685,6 +831,222 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	end
 end
 
+------------------------------------------------------------------ the Megalodon's effects (docs/BOSS_ANIMATION.md)
+-- Built-in smoke + the game's uploaded VFX textures (Models - Effects/ASSET_IDS.md). Kept light for phones: short
+-- lives, a few dozen particles a second while it runs.
+local SAND = Color3.fromRGB(226, 202, 150)
+local ELECTRIC = Color3.fromRGB(120, 220, 255)
+local TEX = {
+	smoke = "rbxasset://textures/particles/smoke_main.dds",
+	streak = "rbxassetid://86651092788757", -- vfx_beam_streak
+	dot = "rbxassetid://115135517607406", -- fx_dot
+	spark = "rbxassetid://78182597037425", -- vfx_spark
+	star = "rbxassetid://90593358027334", -- vfx_star_flare
+}
+
+local function emitter(props: { [string]: any }): ParticleEmitter
+	local em = Instance.new("ParticleEmitter")
+	em.Rate = 0
+	em.LightEmission = 0
+	em.LockedToPart = false
+	for k, v in props do
+		(em :: any)[k] = v
+	end
+	return em
+end
+
+-- a one-off burst at a frame (EmissionDirection is relative to it: Front = its LookVector)
+local function burstAt(cf: CFrame, props: { [string]: any }, count: number)
+	local holder = part({ Size = Vector3.new(0.2, 0.2, 0.2), Transparency = 1, CFrame = cf })
+	holder.Parent = visuals
+	local em = emitter(props)
+	em.Parent = holder
+	em:Emit(count)
+	Debris:AddItem(holder, 2)
+end
+
+local function sandPuff(sc: number, speed: NumberRange, dirn: Enum.NormalId, spread: Vector2): { [string]: any }
+	local k = sc / 3.2
+	return { Texture = TEX.smoke, Color = ColorSequence.new(SAND), Lifetime = NumberRange.new(0.35, 0.6), Speed = speed,
+		EmissionDirection = dirn, SpreadAngle = spread, Acceleration = Vector3.new(0, -30, 0), Drag = 3,
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.6 * k), NumberSequenceKeypoint.new(1, 3.8 * k) }),
+		Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1) }),
+		Rotation = NumberRange.new(0, 360), RotSpeed = NumberRange.new(-90, 90) }
+end
+
+local function splashDrops(sc: number): { [string]: any }
+	local k = sc / 3.2
+	return { Texture = TEX.dot, Color = ColorSequence.new(Color3.fromRGB(160, 230, 255)), LightEmission = 0.3,
+		Lifetime = NumberRange.new(0.35, 0.55), Speed = NumberRange.new(18, 28), EmissionDirection = Enum.NormalId.Top,
+		SpreadAngle = Vector2.new(70, 70), Acceleration = Vector3.new(0, -110, 0),
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9 * k), NumberSequenceKeypoint.new(1, 0.3 * k) }),
+		Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 0.8) }) }
+end
+
+-- the charge's trail: sand from the feet, speed streaks round the body, water-like spray off the sides, and the
+-- brake's plume thrown forward (one holder that rides along with it; emitters switched by state)
+local function makeRunFx(sc: number): BasePart
+	local holder = part({ Size = Vector3.new(6 * sc, 6 * sc, 2 * sc), Transparency = 1 })
+	local k = sc / 3.2
+	local trail = emitter(sandPuff(sc, NumberRange.new(10, 18), Enum.NormalId.Back, Vector2.new(25, 25)))
+	trail.Name, trail.Rate = "Sand", 45
+	trail.Shape = Enum.ParticleEmitterShape.Box
+	trail.Parent = holder
+	local streaks = emitter({ Texture = TEX.streak, Color = ColorSequence.new(Color3.new(1, 1, 1)), LightEmission = 0.3,
+		Lifetime = NumberRange.new(0.1, 0.16), Speed = NumberRange.new(60, 90), EmissionDirection = Enum.NormalId.Back,
+		Orientation = Enum.ParticleOrientation.VelocityParallel, Shape = Enum.ParticleEmitterShape.Box,
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5 * k), NumberSequenceKeypoint.new(1, 0.2 * k) }),
+		Squash = NumberSequence.new(-1.2),
+		Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) }) })
+	streaks.Name, streaks.Rate = "Streaks", 50
+	streaks.Parent = holder
+	local spray = emitter(splashDrops(sc))
+	spray.Name, spray.Rate = "Spray", 40
+	spray.SpreadAngle = Vector2.new(80, 20)
+	spray.Parent = holder
+	local plume = emitter(sandPuff(sc, NumberRange.new(16, 26), Enum.NormalId.Front, Vector2.new(30, 20)))
+	plume.Name, plume.Rate = "Plume", 90
+	plume.Parent = holder
+	for _, em in holder:GetChildren() do
+		(em :: ParticleEmitter).Enabled = false
+	end
+	holder.Parent = visuals
+	return holder
+end
+
+-- a Feeding Frenzy sand shark: a dorsal fin cutting the sand with a glowing edge (one part + an edge, moved as one)
+local function makeShark(color: Color3): BasePart
+	local fin = part({ Size = Vector3.new(0.9, 4.2, 4.2), Color = Color3.fromRGB(90, 110, 140), Material = Enum.Material.SmoothPlastic })
+	local edge = part({ Size = Vector3.new(1.1, 1, 1), Color = color, Material = Enum.Material.Neon })
+	edge.Name = "Edge"
+	edge.Parent = fin
+	fin.Parent = visuals
+	return fin
+end
+
+local function poseShark(fin: BasePart, at: Vector3, dir: Vector3, sink: number, t: number)
+	local base = CFrame.lookAt(at, at + dir) * CFrame.Angles(0, 0, math.sin(t * 22) * 0.15)
+	fin.CFrame = base * CFrame.new(0, 1 - sink, 0) * CFrame.Angles(math.rad(-35), 0, 0)
+	local edge = fin:FindFirstChild("Edge") :: BasePart?
+	if edge then
+		edge.CFrame = base * CFrame.new(0, 3.4 - sink, 1.6)
+	end
+end
+
+-- the Megalodon's one-shot and repeating effects, by state and time into it (e); timings match its Blender clips
+local function megalodonFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number)
+	local s = b.state
+	local look = Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
+	local right = Vector3.new(-look.Z, 0, look.X)
+	local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+	local ground = Vector3.new(pos.X, floorY + 0.5, pos.Z)
+	local function once(key: string): boolean
+		if b.fired[key] then
+			return false
+		end
+		b.fired[key] = true
+		return true
+	end
+	local speed = (attr(s, "CrowdSpeed") :: number?) or 120
+	-- the sand sharks (crowd lanes)
+	local function sharkAt(i: number, along: number): (Vector3, Vector3)
+		local d = Vector3.new(b.lanes[i].X - b.laneFrom.X, 0, b.lanes[i].Z - b.laneFrom.Z)
+		local dir = if d.Magnitude > 0.1 then d.Unit else look
+		return Vector3.new(b.laneFrom.X, floorY, b.laneFrom.Z) + dir * along, dir
+	end
+	if state == "windup" then
+		if once("sniff") then
+			playAt(pos + Vector3.new(0, 7 * sc, 0), "sniff")
+			b.lanes, b.laneFrom = {}, pos
+			for i = 1, (attr(s, "CrowdN") :: number?) or 0 do
+				local lane = attr(s, "Crowd" .. i) :: Vector3?
+				if lane then
+					table.insert(b.lanes, lane)
+				end
+			end
+		end
+		for i, at in { 0.4, 0.57 } do -- two paw scrapes: sand kicked out BEHIND it, low (never over the warning)
+			if e >= at and once("scrape" .. i) then
+				local foot = ground + right * 0.85 * sc - look * 1.0 * sc
+				burstAt(CFrame.lookAt(foot, foot - look + Vector3.new(0, 0.4, 0)), sandPuff(sc, NumberRange.new(9, 16), Enum.NormalId.Front, Vector2.new(25, 20)), 6)
+				playAt(foot, "scrape")
+			end
+		end
+		if e >= 0.6 and os.clock() - b.fxAt > 0.05 and b.glow[1] then -- electric crackle off the glowing fin
+			b.fxAt = os.clock()
+			burstAt(b.glow[1].CFrame, { Texture = TEX.spark, Color = ColorSequence.new(ELECTRIC), LightEmission = 0.3,
+				Lifetime = NumberRange.new(0.12, 0.22), Speed = NumberRange.new(6, 14), SpreadAngle = Vector2.new(180, 180),
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9 * sc / 3.2), NumberSequenceKeypoint.new(1, 0) }) }, 2)
+		end
+		if e >= 0.45 and #b.lanes > 0 then -- the sand sharks burst out of the sand at its feet and wait
+			if once("sharks") then
+				for i = 1, #b.lanes do
+					local at = sharkAt(i, 7)
+					burstAt(CFrame.lookAt(at, at + Vector3.new(0, 1, 0)), sandPuff(sc, NumberRange.new(8, 15), Enum.NormalId.Front, Vector2.new(40, 40)), 7)
+					table.insert(b.sharks, makeShark(ELECTRIC))
+				end
+			end
+			for i, fin in b.sharks do
+				local at, dir = sharkAt(i, 7)
+				poseShark(fin, at, dir, 5 - 5 * backOut((e - 0.45) / 0.18), t)
+			end
+		end
+	elseif state == "attack" then
+		if once("launch") then
+			shockwave(ground, 18, ELECTRIC, 0)
+			burstAt(CFrame.lookAt(ground, ground + Vector3.new(0, 1, 0)), sandPuff(sc, NumberRange.new(14, 22), Enum.NormalId.Front, Vector2.new(80, 80)), 14)
+			playAt(ground, "launch")
+			b.runFx = b.runFx or makeRunFx(sc)
+		end
+		local fx = b.runFx
+		if fx then
+			fx.CFrame = CFrame.lookAt(ground + Vector3.new(0, 3 * sc, 0), ground + Vector3.new(0, 3 * sc, 0) + look)
+			local braking = e > total - 0.2
+			for _, em in fx:GetChildren() do
+				local on = if em.Name == "Plume" then braking else not braking
+				;(em :: ParticleEmitter).Enabled = on
+			end
+		end
+		for i, fin in b.sharks do -- racing down the lanes, a wake of sand behind each
+			local d = Vector3.new(b.lanes[i].X - b.laneFrom.X, 0, b.lanes[i].Z - b.laneFrom.Z).Magnitude
+			local travel = math.max(0, (d - 7) / speed)
+			local at, dir = sharkAt(i, 7 + speed * math.min(e, travel))
+			poseShark(fin, at, dir, 5 * math.clamp((e - travel) / 0.2, 0, 1) ^ 3, t)
+			if e < travel and os.clock() - b.fxAt > 0.06 then
+				burstAt(CFrame.lookAt(at, at - dir + Vector3.new(0, 0.6, 0)), sandPuff(sc * 0.7, NumberRange.new(6, 11), Enum.NormalId.Front, Vector2.new(50, 15)), 2)
+			end
+		end
+		if os.clock() - b.fxAt > 0.06 then
+			b.fxAt = os.clock()
+		end
+	else
+		if b.runFx then
+			for _, em in b.runFx:GetChildren() do
+				(em :: ParticleEmitter).Enabled = false
+			end
+		end
+		if state == "dizzy" and once("stop") then -- the skid stops: a small ring + dust thrown forward
+			shockwave(ground, 10, SAND, 0)
+			burstAt(CFrame.lookAt(ground + look * sc, ground + look * 2 * sc + Vector3.new(0, 0.5, 0)), sandPuff(sc, NumberRange.new(10, 18), Enum.NormalId.Front, Vector2.new(60, 25)), 10)
+			playAt(ground, "skid")
+			local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+			if me and (me.Position - ground).Magnitude < 30 then
+				shake(0.2, 0.3)
+			end
+		elseif state == "recover" and e >= 0.05 and once("shakeoff") then -- the wet-dog shake flings drops
+			local head = ground + Vector3.new(0, 6 * sc, 0)
+			burstAt(CFrame.lookAt(head, head + Vector3.new(0, 1, 0)), splashDrops(sc), 10)
+			playAt(head, "shakeoff")
+		end
+		if #b.sharks > 0 and state ~= "windup" then
+			for _, fin in b.sharks do
+				fin:Destroy()
+			end
+			b.sharks = {}
+		end
+	end
+end
+
 -- dizzy stars circling over its head (the Megalodon after a charge)
 local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
 	if not on then
@@ -701,7 +1063,19 @@ local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
 	if not b.stars then
 		b.stars = {}
 		for _ = 1, 3 do
-			local p = part({ Size = Vector3.new(1, 1, 1) * sc * 0.4, Color = Color3.fromRGB(255, 230, 80), Material = Enum.Material.Neon })
+			-- a spinning gold cartoon star (the uploaded star flare on a billboard; the part only carries it)
+			local p = part({ Size = Vector3.new(0.2, 0.2, 0.2), Transparency = 1 })
+			local gui = Instance.new("BillboardGui")
+			gui.Size = UDim2.fromScale(sc * 1.1, sc * 1.1)
+			gui.LightInfluence = 0
+			gui.Parent = p
+			local img = Instance.new("ImageLabel")
+			img.Name = "Star"
+			img.BackgroundTransparency = 1
+			img.Size = UDim2.fromScale(1, 1)
+			img.Image = TEX.star
+			img.ImageColor3 = Color3.fromRGB(255, 220, 70)
+			img.Parent = gui
 			p.Parent = visuals
 			table.insert(b.stars :: { BasePart }, p)
 		end
@@ -709,7 +1083,11 @@ local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
 	local top = pos + Vector3.new(0, ((b.model:GetAttribute("Height") :: number?) or 8) * sc + sc, 0)
 	for i, p in b.stars :: { BasePart } do
 		local a = t * 5 + i * math.pi * 2 / 3
-		p.CFrame = CFrame.new(top + Vector3.new(math.cos(a), 0, math.sin(a)) * sc * 1.2) * CFrame.Angles(t * 4, t * 3, 0)
+		p.CFrame = CFrame.new(top + Vector3.new(math.cos(a), 0.2 * math.sin(t * 7 + i), math.sin(a)) * sc * 1.3)
+		local img = p:FindFirstChild("Star", true) :: ImageLabel?
+		if img then
+			img.Rotation = (t * 220 + i * 40) % 360
+		end
 	end
 end
 
@@ -738,6 +1116,7 @@ RunService.Heartbeat:Connect(function(dt)
 		-- react to a new state once (warning on windup, effects on attack)
 		if t0 ~= b.seenState then
 			b.seenState = t0
+			b.fired = {}
 			if state == "windup" then
 				makeWarn(b)
 				playAt(pos + Vector3.new(0, 5, 0), "windup")
@@ -783,14 +1162,26 @@ RunService.Heartbeat:Connect(function(dt)
 			moving = true
 		end
 		b.walk += ((if moving then 1 else 0) - b.walk) * math.min(1, dt * 6)
-		b.yaw = lerpAngle(b.yaw, yaw, math.min(1, dt * (if state == "windup" then 12 else 6)))
+		local anim = ANIMS[b.kind]
+		local lead = 0
+		if anim and state == "windup" then
+			-- the whip-round: holds a beat (the sniff), then turns to its target with an overshoot; the head leads
+			if b.turnStart ~= t0 then
+				b.turnStart, b.turnFrom = t0, b.yaw
+			end
+			local d = (yaw - b.turnFrom + math.pi) % (math.pi * 2) - math.pi
+			b.yaw = b.turnFrom + d * backOut((t - t0 - 0.04) / 0.2)
+			lead = 0.35 * ((yaw - b.yaw + math.pi) % (math.pi * 2) - math.pi)
+		else
+			b.yaw = lerpAngle(b.yaw, yaw, math.min(1, dt * (if state == "windup" then 12 else 6)))
+		end
 		if state == "windup" then
 			poseWarn(b, pos, yaw, 0.45 + 0.55 * easeOut(a / 0.4), t)
 		elseif state == "attack" and b.warnKind == "Pull" then
 			poseWarn(b, pos, yaw, 1, t)
 		end
 		-- a roll / charge leaves a trail of puffs in its colour
-		if state == "attack" and kind == "Line" and moving and os.clock() - b.trailAt > 0.07 then
+		if state == "attack" and kind == "Line" and moving and not anim and os.clock() - b.trailAt > 0.07 then
 			b.trailAt = os.clock()
 			sparkBurst(pos + Vector3.new(0, 1.5, 0), (attr(s, "Color") :: Color3?) or Color3.new(1, 1, 1), 5)
 		end
@@ -801,18 +1192,63 @@ RunService.Heartbeat:Connect(function(dt)
 			rootOff, rots = pose(b, state, a, t, (attr(s, "Idle") :: string?) or "")
 		end
 		local sc = (attr(s, "Scale") :: number?) or 1 -- (bobs and trembles grow with the boss)
+		local squash = Vector3.one
+		if anim then
+			-- the Blender clip for this state, cross-faded with the POSES above
+			local clipPose = clipPoseFor(anim, state, t - t0, t1 - t0, sc)
+			if clipPose then
+				b.lastClip = clipPose
+			end
+			b.clipW = math.clamp(b.clipW + (if clipPose then dt else -dt) / CLIP_FADE, 0, 1)
+			local cp = clipPose or b.lastClip
+			local glow = 0
+			if cp and b.clipW > 0 then
+				local mixed = mixPose({ root = rootOff, scale = Vector3.one, rots = rots, fx = {} }, cp, ease(b.clipW))
+				rootOff, rots, squash, glow = mixed.root, mixed.rots, mixed.scale, mixed.fx.FinGlow or 0
+			end
+			if lead ~= 0 then
+				rots.Torso = (rots.Torso or CFrame.identity) * CFrame.Angles(0, lead, 0)
+			end
+			if math.abs(glow - b.glowNow) > 0.01 then
+				b.glowNow = glow
+				for _, p in b.glow do
+					p.Transparency = 1 - 0.6 * glow
+				end
+			end
+			if b.kind == "Megalodon" then
+				megalodonFx(b, state, t - t0, t1 - t0, pos, sc, t)
+			end
+		end
 		local root = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0) * CFrame.new(rootOff.Position * sc) * rootOff.Rotation
+		-- squash / stretch (clips): part positions and sizes scaled round its feet in its own axes
+		local squashed = math.abs(squash.X - 1) + math.abs(squash.Y - 1) + math.abs(squash.Z - 1) > 0.006
 		local world: { [string]: CFrame } = {}
 		for _, g in b.groups do
-			local parentCF = if g.parent ~= "" and world[g.parent] then world[g.parent] else root
+			local parentCF = if g.parent ~= "" and world[g.parent] then world[g.parent] else CFrame.identity
 			local rot = rots[g.name]
 			local w = if rot then parentCF * g.joint * rot * g.joint:Inverse() else parentCF
 			world[g.name] = w
 			for i, p in g.parts do
+				local l = w * g.rest[i]
 				table.insert(parts, p)
-				table.insert(frames, w * g.rest[i])
+				if squashed then
+					table.insert(frames, root * CFrame.new(l.Position * squash) * l.Rotation)
+					local size = g.sizes[i]
+					p.Size = Vector3.new(size.X * (l.XVector * squash).Magnitude, size.Y * (l.YVector * squash).Magnitude,
+						size.Z * (l.ZVector * squash).Magnitude)
+				else
+					table.insert(frames, root * l)
+				end
 			end
 		end
+		if b.squashed and not squashed then -- back to its real size
+			for _, g in b.groups do
+				for i, p in g.parts do
+					p.Size = g.sizes[i]
+				end
+			end
+		end
+		b.squashed = squashed
 	end
 	if #parts > 0 then
 		workspace:BulkMoveTo(parts, frames, Enum.BulkMoveMode.FireCFrameChanged)

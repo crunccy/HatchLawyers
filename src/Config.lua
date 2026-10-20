@@ -1181,6 +1181,10 @@ Config.Bosses = {
 	--   "Slam"  hops onto where the target stood when it jumped (HopHeight model units high) and lands: Radius round it
 	--   "Line"  rolls / charges Length studs at the target at LineSpeed: Width studs wide; Dizzy s helpless after
 	--   "Pull"  drags everyone within Radius toward it at PullSpeed for PullTime s; the middle (Inner) is a hit
+	-- Crowd (optional; crnuch's call 2026-10-19, docs/BOSS_ANIMATION.md section 4): with 2+ players in its zone, each
+	-- attack also aims a ranged add-on at up to Max OTHER players within Range studs (warned from the same windup,
+	-- aimed where they stood when it began). One player in the zone: nothing changes.
+	--   Shape "Lane": Width studs wide, from the boss toward them (+20 past, at most Length), travelling at Speed
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
 			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
@@ -1201,7 +1205,9 @@ Config.Bosses = {
 		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
 			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.8, Windup = 1.0,
 			Attack = "Line", Length = 130, Width = 20, LineSpeed = 150, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
-			Hitbox = { HalfWidth = 2.2, Back = 2.4, Front = 1.8, Height = 8 } },
+			Hitbox = { HalfWidth = 2.2, Back = 2.4, Front = 1.8, Height = 8 },
+			-- FEEDING FRENZY (2+ players): sand-shark fins race down a Lane at up to Max other players
+			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 120, Length = 110 } },
 		{ Zone = "SpaceBase", Model = "Eclipse", Name = "Chief Justice Eclipse", Difficulty = "Extreme",
 			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.5, Windup = 1.4,
 			Attack = { "Pull", "Ring" }, Radius = 44, Inner = 12, PullTime = 2, PullSpeed = 16, RingRadius = 38,

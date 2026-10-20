@@ -25,7 +25,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
-  then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py meanwhile.
+  then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
+  Megalodon benchmark + its crowd attack done 2026-10-19 in Blender + `src/` (NOT in Studio): waiting for approval.
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -181,6 +182,32 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session: boss attack animation overhaul — Megalodon benchmark (Blender + src/)
+- crnuch's brief: overhaul all six bosses' attacks (anticipation / attack / impact / recovery, squash + stretch,
+  secondary motion, effects, sound) with no gameplay change; Megalodon first, the rest after approval. Mid-session,
+  crnuch's call: **bosses must threaten every player on the island at once** (1 player = dangerous but manageable,
+  3 players = it reaches all three) - a gameplay change, designed for all six, built for Megalodon.
+- **Audit + storyboard + crowd design:** docs/BOSS_ANIMATION.md (how bosses really work: Blender block groups posed
+  by `POSES` sine functions in Bosses.client, no rigs; Megalodon's real timeline; the frame-by-frame storyboard;
+  section 4 = the six crowd add-ons). Note for crnuch: the server targets the NEAREST player, not "the one carrying
+  eggs" as the brief says - left as is (a targeting change; say if you want it).
+- **Model v2** (`tools/blender/bosses.py`): Megalodon split into 13 groups (jaw hinge, fin + FinGlow, eyes, glasses,
+  lure, cape); bosses.py now finds the repo on any machine. Other five bosses export byte-identical.
+  `tools/zones/BuildBosses.lua`: new `glow` tag (Neon, hidden until the client lights it).
+- **Clips + preview** (`tools/blender/boss_anims.py`, `tools/blender/encode_preview.py`): six clips keyed to the
+  server timing, exported to `src/BossAnims.lua` (= `Shared.BossAnims`, generated); a per-frame clipping check (worst
+  left 0.33 studs, one frame); storyboard + 3 MP4s + the .blend in `art/bosses/megalodon/`.
+- **src/ (NOT in Studio - waits for approval):** `Bosses.client.lua` (generic clip player, squash, glow, whip-round
+  turn, frenzy lanes + sand sharks, sand / streak / spray / plume effects, star dizzy), `BossService.lua` (generic
+  Crowd add-on, Lane shape: sand-shark fins race at up to 2 other players within 90 studs, 12 wide, 120 studs/s,
+  warned from the same 1 s windup), `Config.lua` (Megalodon `Crowd`). Checks: two new config_tests (crowd fairness,
+  clip lengths vs Config / BossService); `run_checks.py` bundles BossAnims. All checks green.
+- **Heads-up (gameplay):** the Crowd add-on changes `BossService` (mr.robe's core) - only when 2+ players are in a
+  boss's zone; nothing else in the boss AI moved.
+- **Review page:** https://claude.ai/artifact/1V8cbTiD2YNckxRuVkfGQp (private to crnuch; share it for mr.robe).
+- **Next:** crnuch reviews the preview; on approval push the five files to Studio (doc section 5 "To install"),
+  playtest 1 vs 3 players, then the other five bosses one by one (+ their crowd add-ons).
 
 ## 2026-10-19 — crnuch, local session: Briefcase Bay v2 — DETAILED pass (Blender)
 - **crnuch's call:** the Briefcase Bay v2 layout approved, keep the skyline; detailed modelling started.

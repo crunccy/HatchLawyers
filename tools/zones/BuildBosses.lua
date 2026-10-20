@@ -45,13 +45,20 @@ for name, def in data do
 		p.Color = Color3.fromRGB(b.c[1], b.c[2], b.c[3])
 		p.TopSurface = Enum.SurfaceType.Smooth
 		p.BottomSurface = Enum.SurfaceType.Smooth
-		if b.t == "neon" then
+		if b.t == "glow" then
+			-- (a glow shell the client lights during an attack, e.g. the Megalodon's FinGlow: hidden until then)
+			p.Material = Enum.Material.Neon
+			p.Transparency = 1
+			p.CastShadow = false
+		elseif b.t == "neon" then
 			p.Material = Enum.Material.Neon -- (glowing bits: the Eclipse's corona, the shark's lantern fish)
 		else
 			p.Material = Enum.Material.Plastic
 			p.MaterialVariant = "BrickStuds"
 		end
-		p.CastShadow = p.Size.Magnitude > 1.2
+		if b.t ~= "glow" then
+			p.CastShadow = p.Size.Magnitude > 1.2
+		end
 		p.Parent = groups[b.g] or m
 	end
 	m.WorldPivot = CFrame.new()

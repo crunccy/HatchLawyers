@@ -1,0 +1,225 @@
+<title>Megalodon Fin Charge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column review sheet - the preview on top, the phase ruler drawn to the server's seconds, the storyboard, then the decisions. Game UI language: chunky rounded panels, ink outlines, Ocean Shore blues. */
+:root {
+  --bg: #eaf4fb;
+  --panel: #ffffff;
+  --ink: #282834;
+  --muted: #5d6474;
+  --line: #c9d9e6;
+  --ocean: #2e8fd6;
+  --electric: #5ac8ff;
+  --sand: #e2ca96;
+  --green: #4fae2a;
+  --orange: #f29a12;
+  --red: #e04848;
+  --chip: #dcecf8;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1a24; --panel: #172532; --ink: #eaf2f8; --muted: #9fb0c0; --line: #2a3d4f;
+    --ocean: #5fb4ef; --electric: #7fd6ff; --sand: #c9b07a; --green: #6fcf48; --orange: #f5ac3a; --red: #f06a6a;
+    --chip: #203648; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1a24; --panel: #172532; --ink: #eaf2f8; --muted: #9fb0c0; --line: #2a3d4f;
+  --ocean: #5fb4ef; --electric: #7fd6ff; --sand: #c9b07a; --green: #6fcf48; --orange: #f5ac3a; --red: #f06a6a;
+  --chip: #203648; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 700; }
+h2 { font-size: 24px; font-weight: 600; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--display); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; color: var(--ocean); }
+header { display: grid; gap: 10px; }
+.lede { color: var(--muted); font-size: 17px; }
+.panel { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab {
+  font-family: var(--display); font-weight: 600; font-size: 15px; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--panel); color: var(--ink); padding: 7px 16px; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--ink); color: var(--panel); }
+.tab:focus-visible, .shot:focus-visible { outline: 3px solid var(--electric); outline-offset: 2px; }
+video { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; background: #000; display: block; }
+.caption { color: var(--muted); font-size: 14px; }
+/* the phase ruler: widths are the server's seconds */
+.ruler { display: flex; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); font-family: var(--display); font-weight: 600; font-size: 13px; }
+.ruler div { padding: 8px 8px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1d2430; }
+.ruler .wind { flex: 1.0; background: #ffd34d; }
+.ruler .charge { flex: 0.867; background: #7fd6ff; }
+.ruler .dizzy { flex: 2.0; background: #ffe9a6; }
+.ruler .recover { flex: 0.6; background: #b8e59a; }
+.scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.shot { display: grid; gap: 6px; margin: 0; min-width: 0; }
+.shot img { border-radius: 10px; border: 2px solid var(--line); aspect-ratio: 16 / 9; object-fit: cover; width: 100%; cursor: zoom-in; }
+.shot figcaption { font-size: 14px; }
+.shot .t { font-family: var(--mono); font-size: 12px; color: var(--ocean); font-variant-numeric: tabular-nums; }
+.phase { display: grid; gap: 14px; }
+.phase h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.pill { font-family: var(--mono); font-size: 12px; background: var(--chip); color: var(--ink); border-radius: 999px; padding: 2px 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1.5px solid var(--line); vertical-align: top; }
+th { font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--muted); }
+.tablebox { overflow-x: auto; }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: -1px; margin-right: 6px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.ask { border-color: var(--orange); }
+.ask ol { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+code { font-family: var(--mono); font-size: 13px; background: var(--chip); border-radius: 6px; padding: 1px 6px; overflow-wrap: anywhere; }
+dialog { border: none; padding: 0; background: transparent; max-width: min(96vw, 1280px); }
+dialog img { border-radius: 12px; display: block; }
+dialog::backdrop { background: rgba(10, 16, 24, .82); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Boss attack overhaul · benchmark 1 of 6 · for crnuch's approval</span>
+    <h1>Magistrate Megalodon: Fin Charge</h1>
+    <p class="lede">The new charge, with every beat keyed in Blender to the server's own timing. When two or more players are on the island, he now runs a <strong>Feeding Frenzy</strong> as well. None of this is in Studio yet; it goes in once you approve it.</p>
+  </header>
+
+  <section class="panel" aria-label="Preview videos">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-cine" aria-selected="true" data-src="megalodon_fin_charge.mp4" data-cap="Cinematic cut: close on the turn and coil, a camera tracking the run, close again on the skid, dizzy and recovery. Real speed.">Cinematic</button>
+      <button class="tab" role="tab" id="tab-slow" aria-selected="false" data-src="megalodon_fin_charge_halfspeed.mp4" data-cap="The same cut at half speed, for checking frame by frame. The burned-in frame number is the 30 fps preview frame.">Half speed</button>
+      <button class="tab" role="tab" id="tab-game" aria-selected="false" data-src="megalodon_gameplay_view.mp4" data-cap="Gameplay view of three players. Green is his target and steps out of the charge strip. Orange steps out of its frenzy lane. Red stays put and the sand shark catches them, and their eggs go flying.">Gameplay view (3 players)</button>
+    </div>
+    <video id="player" src="megalodon_fin_charge.mp4" controls loop muted playsinline preload="metadata"></video>
+    <p class="caption" id="cap">Cinematic cut: close on the turn and coil, a camera tracking the run, close again on the skid, dizzy and recovery. Real speed.</p>
+    <div>
+      <div class="ruler" aria-label="Server phases to scale">
+        <div class="wind">Windup 1.0 s</div><div class="charge">Charge 0.87 s</div><div class="dizzy">Dizzy 2.0 s</div><div class="recover">Recover 0.6 s</div>
+      </div>
+      <div class="scale"><span>0</span><span>1.0</span><span>1.87</span><span>3.87</span><span>4.47 s</span></div>
+    </div>
+    <p class="caption">Widths are the server's real seconds (BossService "Line" + Config): a 130-stud charge at 150 studs/s. The Blender preview runs on this exact timeline, and the game's clips are exported from the same keys.</p>
+  </section>
+
+  <section class="phase" aria-labelledby="sb">
+    <h2 id="sb">Storyboard</h2>
+
+    <h3>A · Anticipation <span class="pill">windup 0 – 1.0 s</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_01_detect.png" alt="Megalodon still facing sideways, snout lifted in a sniff" loading="lazy"><figcaption><span class="t">0.02 s</span> Detect: the snout jerks up in a sniff while he still faces the old way.</figcaption></figure>
+      <figure class="shot"><img src="board_02_turn_hop.png" alt="Megalodon mid-hop, whipping round to face his target" loading="lazy"><figcaption><span class="t">0.12 s</span> The turn: he whips round with a little hop and overshoots by about 8°. The head leads.</figcaption></figure>
+      <figure class="shot"><img src="board_03_coil_scrape.png" alt="Megalodon crouching with the right foot scraping back" loading="lazy"><figcaption><span class="t">0.40 s</span> Coil and dig: he squashes into a crouch, sweeps his fins back and scrapes the sand like a bull.</figcaption></figure>
+      <figure class="shot"><img src="board_04_fin_glow_grin.png" alt="Megalodon crouched with a toothy grin, dorsal fin glowing blue" loading="lazy"><figcaption><span class="t">0.70 s</span> Fin glow: the dorsal fin lights electric blue and crackles. His jaw parts in a grin and he starts to tremble.</figcaption></figure>
+      <figure class="shot"><img src="board_05_final_sink.png" alt="Megalodon at the lowest point of his crouch" loading="lazy"><figcaption><span class="t">0.97 s</span> Final sink: one last drop to load the spring.</figcaption></figure>
+      <figure class="shot"><img src="board_15_gameplay_warnings.png" alt="Top view of the three floor warnings: the charge strip and two frenzy lanes" loading="lazy"><figcaption><span class="t">0.70 s</span> From a player's height: the 20-wide charge strip plus a 12-wide frenzy lane for each other player. All three show from the windup's first frame, and nothing covers them.</figcaption></figure>
+    </div>
+
+    <h3>B · Attack <span class="pill">charge, linear on the server's path</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_06_launch.png" alt="Megalodon stretched forward at the instant of launch" loading="lazy"><figcaption><span class="t">+0.05 s</span> Launch: the squash snaps to a stretch in 2 frames, the jaw opens wide and a ring and a dust burst go off at the start.</figcaption></figure>
+      <figure class="shot"><img src="board_07_run.png" alt="Megalodon sprinting, cape streaming, speed streaks around him" loading="lazy"><figcaption><span class="t">+0.40 s</span> Run: a two-stride cycle with chomping jaws, fins swept back and the cape streaming. Speed streaks, sand from his feet and spray off his sides.</figcaption></figure>
+      <figure class="shot"><img src="board_16_gameplay_frenzy.png" alt="Gameplay view mid-charge with sand sharks racing down lanes" loading="lazy"><figcaption><span class="t">+0.40 s</span> Feeding Frenzy: sand-shark fins race down the lanes at 120 studs/s while he charges.</figcaption></figure>
+      <figure class="shot"><img src="board_08_brake.png" alt="Megalodon leaning back with feet ploughing forward" loading="lazy"><figcaption><span class="t">last 0.2 s</span> Brake: he leans back hard and his feet plough forward, throwing a sand plume ahead.</figcaption></figure>
+    </div>
+
+    <h3>C · Impact and D · Recovery <span class="pill">dizzy 2.0 s · recover 0.6 s</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_09_skid_settle.png" alt="Megalodon pitching forward as he stops, squashed" loading="lazy"><figcaption><span class="t">dizzy 0.10 s</span> Skid settle: he overshoots forward, squashes on the stop and rocks back.</figcaption></figure>
+      <figure class="shot"><img src="board_10_glasses.png" alt="Megalodon's glasses popping up off his face" loading="lazy"><figcaption><span class="t">dizzy 0.25 s</span> His glasses jump up and land crooked.</figcaption></figure>
+      <figure class="shot"><img src="board_11_dizzy.png" alt="Megalodon swaying with spinning eyes and gold stars over his head" loading="lazy"><figcaption><span class="t">dizzy 1.0 s</span> Dizzy: his body circles and his head lolls. His eyes spin opposite ways and gold stars orbit his head.</figcaption></figure>
+      <figure class="shot"><img src="board_12_shake_off.png" alt="Megalodon shaking his head like a wet dog" loading="lazy"><figcaption><span class="t">recover 0.12 s</span> Wet-dog shake: a fast shake that flings drops, with the cape and lure flicking.</figcaption></figure>
+      <figure class="shot"><img src="board_13_glasses_fix.png" alt="Megalodon raising his left fin to his glasses" loading="lazy"><figcaption><span class="t">recover 0.40 s</span> He straightens his glasses with his left fin and snaps his jaw shut.</figcaption></figure>
+      <figure class="shot"><img src="board_14_gavel_tap.png" alt="Megalodon tapping his gavel, chest puffed" loading="lazy"><figcaption><span class="t">recover 0.50 s</span> Chest puff and a gavel tap, then back to stalking.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="crowd">
+    <h2 id="crowd">More players, more danger</h2>
+    <p>With one player on the island nothing changes. With two or more, each attack also aims a ranged add-on at up to two other players within 90 studs. It is warned from the same windup and narrower than the main attack, and it aims where they stood, so moving dodges it. A hit works like any other hit. The other five are proposals, built with each boss's own animation pass.</p>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Boss</th><th>Crowd add-on</th><th>Shape</th><th>State</th></tr></thead>
+        <tbody>
+          <tr><td>Magistrate Megalodon</td><td>Feeding Frenzy: sand-shark fins race down a lane at each other player</td><td>Lane 12 wide, 120 studs/s</td><td><strong>Built</strong> (src/)</td></tr>
+          <tr><td>The Senior Partner</td><td>Paper Storm: the briefcase bursts open and lobs case files at the others</td><td>Disc r 10, lands with the swing</td><td>Proposal</td></tr>
+          <tr><td>Barrister Bulldog</td><td>Echo Bark: the sound wave travels to each other player and goes off around them</td><td>Disc r 12, with the bark</td><td>Proposal</td></tr>
+          <tr><td>Judge Martello</td><td>Gavel Rain: a mini gavel drops on each other player's spot</td><td>Disc r 12, with the slam</td><td>Proposal</td></tr>
+          <tr><td>Prosecutor Big Cheese</td><td>Wheel Split: two cheese wedges peel off and roll at the others</td><td>Lane 12 wide, 110 studs/s</td><td>Proposal</td></tr>
+          <tr><td>Chief Justice Eclipse</td><td>Gavel Volley: each orbiting gavel locks onto a different player (the Pull already reaches everyone within 44)</td><td>Disc r 10 under each</td><td>Proposal</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <h2>What changed</h2>
+      <ul>
+        <li><strong>Model:</strong> Megalodon went from 6 to 13 moving parts: a hinged jaw with a gullet inside, the dorsal fin with a glow shell, both eyes, glasses, lure and cape.</li>
+        <li><strong>Animation:</strong> six Blender clips (windup, launch, run loop, brake, dizzy, recover) with squash and stretch. The game cross-fades into them from the walk.</li>
+        <li><strong>Effects:</strong> sand puffs, speed streaks, side spray, launch ring, skid plume, fin sparks, wet-dog drops and gold dizzy stars, all from textures the game already has. Nothing new to upload.</li>
+        <li><strong>Sound:</strong> sniff, paw scrape, launch splash, skid and shake-off, all from the game's licensed set.</li>
+        <li><strong>Gameplay:</strong> no change for one player. The Feeding Frenzy only adds attacks when 2+ players are present.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Checked</h2>
+      <ul>
+        <li><strong>Timing:</strong> clip lengths match Config (windup 1.0, dizzy 2.0) and BossService (recover 0.6). A new automated check fails if they drift.</li>
+        <li><strong>Clipping:</strong> every block was tested against every other part, every frame. The worst left is 0.33 studs on a 26-stud boss, for one frame. Four real clips were found and fixed (tail, dorsal fin, cape, glasses fin).</li>
+        <li><strong>Fair:</strong> the warnings appear on the windup's first frame and dust stays low and behind him. A player at base speed clears a frenzy lane in 0.19 s.</li>
+        <li><strong>Repo checks:</strong> all Luau compiles, 42 config checks pass and the sim tests pass.</li>
+        <li><strong>Not tested yet:</strong> a live playtest in Studio. That happens after approval.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel ask" aria-labelledby="dec">
+    <h2 id="dec">Your call</h2>
+    <ol>
+      <li><strong>Approve Megalodon?</strong> If yes, it goes into Studio for a 1-player and a 3-player playtest, then the same treatment for the other five, one at a time.</li>
+      <li><strong>Targeting:</strong> your brief says he turns to "the player carrying eggs". Today he targets the <em>nearest</em> player. Keep nearest, or prefer egg carriers? Switching is a small server change.</li>
+      <li><strong>The five crowd add-ons above:</strong> OK as designed, or change any of them?</li>
+    </ol>
+  </section>
+</div>
+
+<dialog id="zoom" aria-label="Storyboard frame"><img id="zoomImg" alt=""></dialog>
+
+<script>
+(function () {
+  var player = document.getElementById("player");
+  var cap = document.getElementById("cap");
+  var tabs = document.querySelectorAll(".tab");
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      tabs.forEach(function (o) { o.setAttribute("aria-selected", o === t ? "true" : "false"); });
+      player.src = t.dataset.src;
+      cap.textContent = t.dataset.cap;
+      player.play().catch(function () {});
+    });
+  });
+  var dlg = document.getElementById("zoom");
+  var zi = document.getElementById("zoomImg");
+  document.querySelectorAll(".shot img").forEach(function (img) {
+    img.tabIndex = 0;
+    function open() { zi.src = img.src; zi.alt = img.alt; if (dlg.showModal) dlg.showModal(); }
+    img.addEventListener("click", open);
+    img.addEventListener("keydown", function (e) { if (e.key === "Enter") open(); });
+  });
+  dlg.addEventListener("click", function () { dlg.close(); });
+})();
+</script>

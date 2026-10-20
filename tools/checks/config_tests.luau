@@ -318,6 +318,46 @@ check("raised studs: sane radii and the Blender stud's size", function()
 	assert(S.Foot > 0 and S.Foot < 0.5 and S.Height > 0 and S.Height < 0.5, "Foot / Height must fit a 1-stud cell")
 end)
 
+check("boss crowd add-ons: narrower than the main attack and dodgeable in the windup", function()
+	-- docs/BOSS_ANIMATION.md section 4: with 2+ players a boss also aims at others; one player sees no change
+	for _, b in Config.Bosses.List do
+		local c = b.Crowd
+		if c then
+			assert(c.Shape == "Lane", b.Model .. ": Crowd.Shape must be Lane (Disc not built yet)")
+			assert(c.Max >= 1 and c.Max <= 3, b.Model .. ": Crowd.Max 1..3 (the state has Crowd1..3)")
+			assert(c.Range > 0 and c.Length > 0 and c.Speed > 0, b.Model .. ": Crowd Range / Length / Speed")
+			assert(c.Width > 0 and c.Width <= (b.Width or math.huge), b.Model .. ": a crowd lane is never wider than the main one")
+			-- a player at base speed (32) gets out of the lane's half-width well inside the windup
+			assert(c.Width / 2 / 32 < b.Windup * 0.5, b.Model .. ": Crowd.Width too wide to dodge in the windup")
+		end
+	end
+end)
+
+check("boss clips match the server's timing (Shared.BossAnims vs Config.Bosses + BossService)", function()
+	for _, b in Config.Bosses.List do
+		local anim = BossAnims[b.Model]
+		if anim then
+			local c = anim.Clips
+			assert(c.windup and math.abs(c.windup.Length - b.Windup) < 1e-3,
+				b.Model .. ": the windup clip must last Windup (" .. b.Windup .. " s)")
+			assert(c.recover and math.abs(c.recover.Length - 0.6) < 1e-3, b.Model .. ": the recover clip must last 0.6 s (BossService)")
+			if b.Dizzy then
+				assert(c.dizzy and math.abs(c.dizzy.Length - b.Dizzy) < 1e-3, b.Model .. ": the dizzy clip must last Dizzy")
+			end
+			if b.Attack == "Line" then
+				assert(c.charge_launch and c.charge_loop and c.charge_brake, b.Model .. ": a Line boss needs launch / loop / brake")
+				assert(c.charge_loop.Loop, b.Model .. ": charge_loop must loop")
+			end
+			for name, clip in c do
+				assert(#clip.Root == clip.Frames * 10, b.Model .. "." .. name .. ": Root frames")
+				for g, ch in clip.Groups do
+					assert(not ch.R or #ch.R == clip.Frames * 4, b.Model .. "." .. name .. "." .. g .. ": rotation frames")
+				end
+			end
+		end
+	end
+end)
+
 ------------------------------------------------------------------ report
 print(string.format("%d checks passed, %d failed", passed, #failures))
 for _, f in failures do
