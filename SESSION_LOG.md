@@ -29,6 +29,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
   The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
   Prosecutor Big Cheese (Cheese Roll + Wheel Split) APPROVED + LIVE 2026-10-20. Next: Bulldog, Martello, Eclipse.
+- **crnuch (local), since 2026-10-20:** WORLD AMBIENCE & ATMOSPHERE overhaul of the six boss zones - client-side only
+  (ambient particles, fog / Atmosphere, per-zone lighting + colour grading, optional ambient loops from Shared.Sfx).
+  No map / model / boss / gameplay changes. One controller (`StarterPlayerScripts.Ambience` + `Shared.AmbiencePresets`)
+  owns zone lighting; TravelFx / hatch stages keep their save-restore. Pet Park prototype first, then the other five
+  after crnuch approves. Don't add zone lighting / atmosphere scripts meanwhile.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
