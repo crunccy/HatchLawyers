@@ -303,6 +303,14 @@ def clip_recover(t):
     return p
 
 
+def cheek(p):
+    """The cheek flaps follow HALF the jaw's opening (and roll), so the side of the mouth stays closed."""
+    g = p["g"]
+    if "Cheek" in g:
+        g["Cheek"][0], g["Cheek"][1] = g["Head"][0] * 0.5, g["Head"][1] * 0.5
+    return p
+
+
 CLIPS = {  # name -> (function, length s, loops)
     "windup": (clip_windup, WINDUP, False),
     "charge_launch": (clip_launch, 0.2, False),
@@ -341,7 +349,7 @@ def export():
     out = {"fps": FPS, "clips": {}}
     for name, (fn, length, loops) in CLIPS.items():
         n = int(round(length * FPS)) + 1
-        frames = [fn(min(length, i / FPS)) for i in range(n)]
+        frames = [cheek(fn(min(length, i / FPS))) for i in range(n)]
         groups = {}
         for g in GROUPS:
             rot, pos = [], []
@@ -819,6 +827,7 @@ def bake():
             pose = fn(tl)
             if state == "windup" and tl < 0.1:
                 pose = lerp_pose(walk_pose(phase, walk_amt, T), pose, ramp(tl, 0, 0.1))
+        cheek(pose)
         if state == "windup":  # the head leads the turn
             pose["g"]["Torso"][2] += 0.35 * (0.0 - yaw)
         BOSS_E.location = pos
@@ -954,7 +963,7 @@ def clip_check():
     """Max depth (studs) any block of one group goes into another group's block, per state, beyond the rest pose's own
     overlap (joints overlap at rest by design). Prints the worst offenders."""
     parts = [o for o in bpy.data.objects if o.parent and o.parent.name.startswith("G_") and o.type == "MESH"
-             and o.name.split(".")[0] != "FinGlow"]
+             and o.name.split(".")[0] != "FinGlow" and o.parent.name != "G_Cheek"]  # (cheek flaps sit inside by design)
     pts = [Vector((x, y, z)) for x in (-0.5, 0, 0.5) for y in (-0.5, 0, 0.5) for z in (-0.5, 0, 0.5)]
 
     hinge = 0.6 * SCALE  # (points this close to either group's joint are the hinge's own overlap)

@@ -287,7 +287,8 @@ MODELS["BigCheese"] = dict(root=P, groups=groups, height=2 * R)
 # an enormous shark walking upright on stubby legs in a navy magistrate's robe with a gold chain of office; jagged
 # teeth, little reading glasses, a gavel in one fin, a glowing lantern fish dangling from a badge. It CHARGES.
 # v2 (2026-10-19, the attack-animation overhaul, docs/BOSS_ANIMATION.md): the body is split at the mouth line so the
-# whole upper head HINGES open at the back (a real chomp - a gullet slab inside shows when it opens), and the dorsal
+# whole upper head HINGES open at the back (a real chomp: a mouth cavity with 3D teeth, cheek flaps keep the sides
+# closed), and the dorsal
 # Fin (with a FinGlow shell the client lights up), the Glasses, each Eye (they spin when dizzy), the Lure and the
 # Cape (the robe's back panel) are groups of their own. The robe stops at the mouth line so nothing clips the hinge.
 SHARK, SHARK2, BELLY, NAVY, GUM = (110, 132, 162), (90, 110, 140), (236, 238, 244), (30, 42, 92), (190, 50, 60)
@@ -303,12 +304,19 @@ for side, g in ((-1, "LegL"), (1, "LegR")):
     box("Leg", side * 0.85, 0, 0.4, 1.0, 1.0, 1.25, SHARK)
 GROUP = "Torso"
 groups["Torso"] = dict(joint=(0, 0, 1.6), parent="")
-box("Body", 0, 0, 1.4, 3.3, 2.9, 3.6, SHARK)
-box("Gullet", 0, 0.05, 5.0, 2.7, 2.5, 0.05, GULLET, tag="nocollide")
+# the mouth (v3, 2026-10-19, crnuch: "teeth 3D and inside its mouth"): a real cavity cut into the front (x +-1.2,
+# 0.5 deep), red gums, a dark throat, and 3D teeth (diamond prisms half sunk into the gums) along both jaws
+box("Body", 0, 0, 1.4, 3.3, 2.9, 3.2, SHARK)
+box("JawBack", 0, -0.25, 4.6, 2.4, 2.4, 0.45, SHARK)
+for sx in (-1, 1):
+    box("CheekLow", sx * 1.425, 0, 4.6, 0.45, 2.9, 0.45, SHARK)
+    box("GumSide", sx * 1.18, 1.2, 4.6, 0.04, 0.5, 0.45, GUM, tag="nocollide")
+box("Throat", 0, 0.97, 4.6, 2.4, 0.04, 0.45, GULLET, tag="nocollide")
+box("GumLow", 0, 1.2, 4.6, 2.4, 0.5, 0.05, GUM, tag="nocollide")
+box("Gullet", 0, -0.2, 5.05, 2.7, 2.3, 0.03, GULLET, tag="nocollide")
 box("Belly", 0, 1.46, 1.6, 2.4, 0.12, 3.0, BELLY, tag="nocollide")
-box("MouthLow", 0, 1.5, 4.55, 2.4, 0.1, 0.5, GUM, tag="nocollide")
-for i in range(6):
-    box("ToothBottom", -0.8 + i * 0.4, 1.56, 4.6, 0.26, 0.1, 0.34, WHITE, ry=45, tag="nocollide")
+for i in range(4):
+    box("ToothBottom", -0.675 + i * 0.45, 1.22, 4.48, 0.34, 0.36, 0.34, WHITE, ry=45, tag="nocollide")
 for sx in (-1, 1):
     box("RobeSide", sx * 1.72, 0, 1.4, 0.2, 3.0, 3.6, NAVY)
 box("Chain", 0, 1.5, 3.7, 2.6, 0.1, 0.2, GOLD, tag="nocollide")
@@ -323,13 +331,26 @@ box("LureStalk", -0.95, 1.7, 1.85, 0.08, 0.08, 0.75, (60, 60, 70), tag="nocollid
 box("Lure", -0.95, 1.75, 1.45, 0.45, 0.45, 0.45, (120, 220, 255), tag="neon")
 GROUP = "Head"
 groups["Head"] = dict(joint=(0, -1.45, 5.05), parent="Torso")
-box("Snout", 0, 0, 5.05, 3.3, 2.9, 1.35, SHARK)
-box("Palate", 0, 0.05, 5.05, 2.7, 2.5, 0.05, GULLET, tag="nocollide")
+box("Snout", 0, 0, 5.5, 3.3, 2.9, 0.9, SHARK)
+box("JawTop", 0, -0.25, 5.05, 2.4, 2.4, 0.45, SHARK)
+for sx in (-1, 1):
+    box("CheekTop", sx * 1.425, 0, 5.05, 0.45, 2.9, 0.45, SHARK)
+    box("GumSide", sx * 1.18, 1.2, 5.05, 0.04, 0.5, 0.45, GUM, tag="nocollide")
+box("Throat", 0, 0.97, 5.05, 2.4, 0.04, 0.45, GULLET, tag="nocollide")
+box("GumTop", 0, 1.2, 5.45, 2.4, 0.5, 0.05, GUM, tag="nocollide")
+box("Palate", 0, -0.2, 5.02, 2.7, 2.3, 0.03, GULLET, tag="nocollide")
 box("Head", 0, 0.1, 6.4, 2.7, 2.7, 1.1, SHARK)
 box("Crown", 0, 0, 7.5, 1.8, 2.0, 0.5, SHARK)
-box("MouthTop", 0, 1.5, 5.05, 2.4, 0.1, 0.5, GUM, tag="nocollide")
-for i in range(6):
-    box("ToothTop", -1.0 + i * 0.4, 1.56, 5.12, 0.3, 0.1, 0.38, WHITE, ry=45, tag="nocollide")
+for i in range(5):
+    box("ToothTop", -0.9 + i * 0.45, 1.22, 5.27, 0.36, 0.36, 0.36, WHITE, ry=45, tag="nocollide")
+# the cheeks (crnuch: "the top head still connected to the bottom when it yells"): a skin flap each side on the jaw
+# hinge, turned by HALF the head's angle (the clips key it), so it fills the side gap whenever the mouth opens and
+# hides inside the head + body when it's shut. 1.6 tall covers the gap up to a 0.5 rad jaw.
+GROUP = "Cheek"
+groups["Cheek"] = dict(joint=(0, -1.45, 5.05), parent="Torso")
+for sx in (-1, 1):
+    box("CheekFlap", sx * 1.55, -0.075, 4.25, 0.18, 2.75, 1.6, SHARK)
+GROUP = "Head"
 for side, g in ((-1, "EyeL"), (1, "EyeR")):
     GROUP = g
     groups[g] = dict(joint=(side * 0.85, 1.47, 6.225), parent="Head")

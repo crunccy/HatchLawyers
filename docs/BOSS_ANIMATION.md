@@ -123,6 +123,10 @@ with their animation passes once crnuch approves.
 - **Model v2** (`tools/blender/bosses.py`, 41 -> 47 blocks, 6 -> 13 groups): the jaw hinge (Head over Torso, a
   gullet + palate inside), Fin + FinGlow shell (tag `glow`: Neon, hidden until lit), EyeL / EyeR, Glasses, Lure, Cape.
   The robe stops at the mouth line and the cape is 3.4 wide so nothing clips. The other five export unchanged.
+  **Round 2 (crnuch):** the mouth is a real cavity (x +-1.2, 0.5 deep; gums, throat) with 3D teeth (diamond prisms
+  half sunk in the gums, 5 top / 4 bottom, interleaved), and a `Cheek` group (a skin flap each side on the jaw hinge,
+  keyed to HALF the head's angle by `cheek()` in boss_anims.py) keeps the head joined to the body when it opens
+  (covers the side gap up to a 0.5 rad jaw; hidden inside when shut). 58 blocks / 14 groups.
 - **Clips** (`tools/blender/boss_anims.py`): windup 31 frames, charge_launch 7, charge_loop 8 (loops), charge_brake 7,
   dizzy 61, recover 19, at 30 fps -> `tools/zones/boss_anims.json` + `src/BossAnims.lua` (39 KB).
 - **Review page for approval:** https://claude.ai/artifact/1V8cbTiD2YNckxRuVkfGQp (crnuch's private artifact; source

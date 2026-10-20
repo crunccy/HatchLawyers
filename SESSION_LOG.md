@@ -205,6 +205,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   clip lengths vs Config / BossService); `run_checks.py` bundles BossAnims. All checks green.
 - **Heads-up (gameplay):** the Crowd add-on changes `BossService` (mr.robe's core) - only when 2+ players are in a
   boss's zone; nothing else in the boss AI moved.
+- **Round 2 (crnuch: "teeth 3D and inside its mouth", "top head still connected to the bottom when it yells"):**
+  a real mouth cavity with 3D teeth in gums, and cheek flaps (new `Cheek` group, half the jaw angle) that close the
+  sides when it opens. Re-rendered previews + `mouth_*.png` close-ups; checks green.
 - **Review page:** https://claude.ai/artifact/1V8cbTiD2YNckxRuVkfGQp (private to crnuch; share it for mr.robe).
 - **Next:** crnuch reviews the preview; on approval push the five files to Studio (doc section 5 "To install"),
   playtest 1 vs 3 players, then the other five bosses one by one (+ their crowd add-ons).
