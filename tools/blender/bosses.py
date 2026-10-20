@@ -371,7 +371,9 @@ box("Tail", 0, -2.3, 0.9, 0.4, 1.8, 1.8, SHARK2, rx=30)
 for side, g in ((-1, "ArmL"), (1, "ArmR")):
     GROUP = g
     groups[g] = dict(joint=(side * 1.75, 0.2, 5.0), parent="Torso")
-    box("Fin", side * 1.95, 0.2, 3.1, 0.35, 1.3, 2.0, SHARK2, ry=side * 18)
+    # (round 3, crnuch: "the fins are detached" - they used to tilt top-OUT, leaving the root ~0.3 off the body;
+    # now the root sinks into the shoulder and the tip flares out, like a pectoral fin)
+    box("Fin", side * 1.85, 0.2, 3.1, 0.35, 1.3, 2.0, SHARK2, ry=-side * 15)
 GROUP = "ArmR"
 box("GavelHandle", 2.15, 0.9, 2.7, 0.25, 1.6, 0.25, (122, 70, 34))
 box("GavelHead", 2.15, 1.7, 2.45, 0.7, 0.7, 1.2, (150, 92, 46))

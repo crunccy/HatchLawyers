@@ -26,9 +26,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
-  Megalodon benchmark + its crowd attack done 2026-10-19 in Blender + `src/` (NOT in Studio): waiting for approval.
+  Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
 
 ## Open items
+- [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
+      Servers > 3 players: the two non-targets get warning lanes + sand sharks; a player who stays in a lane is hit.
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
       with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
@@ -209,8 +211,17 @@ Claim big work here before starting (who · what · since), push the claim, remo
   a real mouth cavity with 3D teeth in gums, and cheek flaps (new `Cheek` group, half the jaw angle) that close the
   sides when it opens. Re-rendered previews + `mouth_*.png` close-ups; checks green.
 - **Review page:** https://claude.ai/artifact/1V8cbTiD2YNckxRuVkfGQp (private to crnuch; share it for mr.robe).
-- **Next:** crnuch reviews the preview; on approval push the five files to Studio (doc section 5 "To install"),
-  playtest 1 vs 3 players, then the other five bosses one by one (+ their crowd add-ons).
+- **Round 3 (crnuch: "the shark's fins are detached"):** the side fins tilted top-OUT in the original model, so their
+  root floated ~1 stud off the body; now the root sinks into the shoulder and the tip flares out (`ry = -side * 15`).
+  The glasses-push path widened to match.
+- **APPROVED (crnuch) and pushed to Studio:** `ReplicatedStorage.Bosses` rebuilt (Megalodon 58 blocks / 14 groups,
+  other five unchanged), new `ReplicatedStorage.Shared.BossAnims`, and `Bosses` (client) / `Server.BossService` /
+  `Shared.Config` replaced from `src/` (live scripts matched the snapshot exactly, so no merge was needed).
+  Targeting stays NEAREST player (crnuch's call). Snapshot re-exported (114 scripts; only these four changed).
+- **Playtested (1 player):** walk -> windup -> charge -> dizzy -> walk all on the clips (squash to 0.88, fin glow to
+  0.41 transparency, jaw to 24 deg), fin roots stay 0.21 studs inside the body all the time, no errors / warnings
+  from any script (client + server). **3-player test skipped** (crnuch) - open item above.
+- **Next:** the other five bosses one by one, each with its crowd add-on (docs/BOSS_ANIMATION.md section 4).
 
 ## 2026-10-19 — crnuch, local session: Briefcase Bay v2 — DETAILED pass (Blender)
 - **crnuch's call:** the Briefcase Bay v2 layout approved, keep the skyline; detailed modelling started.

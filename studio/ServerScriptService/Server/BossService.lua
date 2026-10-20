@@ -10,6 +10,10 @@
 --   "Pull" = drags everyone within Radius in for PullTime s; its middle (Inner) is a hit (Chief Justice Eclipse)
 -- A boss whose Attack is a list takes turns. State attributes add AttackKind (this attack) and Target (where a
 -- Slam lands / a Line ends).
+-- CROWD add-ons (Config.Bosses.List[n].Crowd, crnuch's call 2026-10-19): with 2+ players in its zone, every attack
+-- also aims at up to Crowd.Max OTHER players within Crowd.Range (nearest first, skipping anyone it ignores or who is
+-- safe after a hit) - warned from the same windup (state attributes CrowdN + Crowd1..3 = each lane's end, CrowdWidth,
+-- CrowdSpeed) and aimed where they stood when the windup began. One player in the zone: nothing changes.
 -- Hits are decided HERE, from where everyone stands at that moment (never the client's word). TOUCHING the boss's
 -- body (its Hitbox) is a hit too. A hit RAGDOLLS the player (their client, RagdollTime s, flung away) and knocks
 -- every egg they carry out of their arms (ZoneService.dropAll: loose eggs anyone can grab); then they can't be hit
@@ -250,6 +254,63 @@ local function hitShape(b: Boss, kind: string, centre: Vector3, radius: number)
 	end
 end
 
+-- the crowd add-on's targets for this attack: up to Crowd.Max other players near it (see the header)
+local function crowdTargets(b: Boss, here: Vector3, target: BasePart): { Vector3 }
+	local crowd = b.def.Crowd
+	local ends = {}
+	if not crowd then
+		return ends
+	end
+	local t = now()
+	local list = {}
+	for _, p in playersInZone(b) do
+		local d = flat(p.root.Position - here).Magnitude
+		if p.root ~= target and d <= crowd.Range and d > 1 and (b.ignore[p.player] or 0) <= t and (safeUntil[p.player] or 0) <= t then
+			table.insert(list, { root = p.root, d = d })
+		end
+	end
+	table.sort(list, function(x, y)
+		return x.d < y.d
+	end)
+	for i = 1, math.min(crowd.Max, #list) do
+		local dir = flat(list[i].root.Position - here).Unit
+		local len = math.min(crowd.Length, list[i].d + 20)
+		local e = here + dir * len
+		-- (inside the zone's land, a few studs off its edges)
+		table.insert(ends, Vector3.new(math.clamp(e.X, b.bounds[1] + 4, b.bounds[3] - 4), here.Y, math.clamp(e.Z, b.bounds[2] + 4, b.bounds[4] - 4)))
+	end
+	return ends
+end
+
+local function setCrowd(b: Boss, ends: { Vector3 })
+	b.state:SetAttribute("CrowdN", #ends)
+	for i = 1, 3 do
+		b.state:SetAttribute("Crowd" .. i, ends[i])
+	end
+end
+
+-- a Lane add-on: a sand-shark fin (the client draws it) leaves the boss when the attack starts and races to the
+-- lane's end at Crowd.Speed; anyone within Width / 2 of it is hit
+local function runLane(b: Boss, from: Vector3, to: Vector3)
+	local crowd = b.def.Crowd
+	local d = flat(to - from)
+	if d.Magnitude < 8 then
+		return
+	end
+	local dir = d.Unit
+	local start = now()
+	local travel = (d.Magnitude - 7) / crowd.Speed
+	while now() - start <= travel do
+		local pos = from + dir * (7 + crowd.Speed * (now() - start))
+		for _, p in playersInZone(b) do
+			if flat(p.root.Position - pos).Magnitude <= crowd.Width / 2 then
+				hit(b, p.player, p.root, pos, dir)
+			end
+		end
+		task.wait(0.05)
+	end
+end
+
 local function attack(b: Boss, here: Vector3, target: BasePart)
 	local def = b.def
 	local kind = nextAttackKind(b)
@@ -275,9 +336,14 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		dir = if dir.Magnitude > 0.1 then dir.Unit else Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
 		local goal = clampToArea(b, here.X + dir.X * def.Length, here.Z + dir.Z * def.Length)
 		b.state:SetAttribute("Target", goal)
+		local lanes = crowdTargets(b, here, target)
+		setCrowd(b, lanes)
 		stand(b, here)
 		setState(b, "windup", def.Windup)
 		task.wait(def.Windup)
+		for _, e in lanes do
+			task.spawn(runLane, b, here, e)
+		end
 		local duration = math.max(0.25, flat(goal - here).Magnitude / def.LineSpeed)
 		setMove(b, here, goal, duration)
 		setState(b, "attack", duration)
@@ -316,6 +382,7 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		hitShape(b, kind, here, if kind == "Ring" then (def.RingRadius or def.Radius) else def.Radius)
 		task.wait(0.45)
 	end
+	setCrowd(b, {})
 	setState(b, "recover", 0.6)
 	task.wait(0.6)
 	b.nextAttack = now() + def.AttackEvery
@@ -411,7 +478,8 @@ function BossService.start()
 		for k, v in { Model = def.Model, Zone = def.Zone, Attack = firstAttack, AttackKind = firstAttack, Radius = def.Radius or 10,
 			Angle = def.Angle or 360, Windup = def.Windup, Color = def.Color, FloorY = floorY, Scale = def.Scale or 1,
 			RingRadius = def.RingRadius or def.Radius or 10, Length = def.Length or 0, Width = def.Width or 0,
-			Inner = def.Inner or 0, PullSpeed = def.PullSpeed or 0, HopHeight = def.HopHeight or 0 } do
+			Inner = def.Inner or 0, PullSpeed = def.PullSpeed or 0, HopHeight = def.HopHeight or 0, CrowdN = 0,
+			CrowdWidth = def.Crowd and def.Crowd.Width or 0, CrowdSpeed = def.Crowd and def.Crowd.Speed or 0 } do
 			state:SetAttribute(k, v)
 		end
 		local shift = rng:NextNumber(-40, 40) -- (somewhere along the middle of the lane)

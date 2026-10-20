@@ -147,7 +147,9 @@ with their animation passes once crnuch approves.
   in its own axes round the feet, fx channels), the whip-round turn (code: 0.04 s hold, back-out over 0.2 s, the head
   leads), the frenzy lanes in the warning, sand sharks, and the effects (section 3 C). Other bosses are untouched.
 - **Server** (`src/BossService.lua` + `src/Config.lua`): the generic Crowd add-on, Lane shape (Megalodon only).
-- **Not in Studio yet** - waiting for crnuch's approval of the preview. To install: run `tools/zones/BuildBosses.lua`
+- **Round 3 (crnuch):** the side fins now root INTO the shoulder (they tilted top-out and floated ~1 stud off).
+- **LIVE in Studio since 2026-10-19** (crnuch approved; targeting stays nearest player). 1-player playtest clean;
+  the 3-player Feeding Frenzy playtest is still to do. How it was installed: run `tools/zones/BuildBosses.lua`
   (the v2 model), add `src/BossAnims.lua` as `ReplicatedStorage.Shared.BossAnims`, 3-way merge `src/Bosses.client.lua`,
   `src/BossService.lua`, `src/Config.lua`, then playtest with 1 and 3 players (`QualityLevel` high for particles).
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- check stills frames` (frames go to
@@ -156,7 +158,7 @@ with their animation passes once crnuch approves.
 ## 6. Status
 | Boss | Storyboard | Blender clips | Preview | Client | In Studio |
 | --- | --- | --- | --- | --- | --- |
-| Magistrate Megalodon | done | done | done | done (`src/`) | waits for approval |
+| Magistrate Megalodon | done | done | done | done | **live** (3-player test to do) |
 | The Senior Partner | - | - | - | - | - |
 | Barrister Bulldog | - | - | - | - | - |
 | Judge Martello | - | - | - | - | - |
