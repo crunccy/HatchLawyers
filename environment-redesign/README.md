@@ -13,7 +13,7 @@ pitch, Roblox's own stud shape).
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
 | 5 | The six egg islands, one at a time | Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **approved**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court **done, waiting for approval**: [food_court/FOOD_COURT.md](food_court/FOOD_COURT.md) · Ocean Shore **done, waiting for approval** (mr.robe's session): [ocean_shore/OCEAN_SHORE.md](ocean_shore/OCEAN_SHORE.md) · Space Base **done, waiting for approval** (mr.robe's session): [space_base/SPACE_BASE.md](space_base/SPACE_BASE.md) · all six modelled |
 | 6 | All-islands presentation | not started |
-| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + all six islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). Wiring plan: not written |
+| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + all six islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). **Wired behind an off switch 2026-10-20** (eggs, Travel, RETURN HOME; bosses + hub firms not yet): see "Wiring" below |
 
 ## Layout
 ```
@@ -89,3 +89,22 @@ all bricks) are bigger: hub 37.0k, Briefcase Bay 18.2k, Pet Park 19.9k, Brainrot
 until parts vs meshes is decided.
 Meshes named `Sky_*` (far Blender-only backdrops like Space Base's starfield) are not exported.
 Admin `/island <name>` (AdminCommands) drops you on an island's south side in a playtest.
+
+## Wiring (2026-10-20, behind an off switch)
+The islands in the place can run the egg zones (user's call on mr.robe's PC: "behind an off switch").
+- **The switch:** `Config.Zones.Islands.Enabled` (false = the live game on today's lane, unchanged). In Studio,
+  admin `/islands on|off` flips it for one playtest (workspace attribute `IslandsOn`).
+- **`Server.ZoneMap`** picks the map: `Workspace.Zones.<Id>` (the lane) or `Workspace.IslandWiring.<Id>`.
+  ZoneService grows its eggs on that map's EggSpots and rebinds when the switch flips; TravelServer lands trips on its
+  Arrival; each island's **ReturnHome** trigger (walk into the RETURN HOME ring, or its prompt) sends you to your firm
+  WITH your eggs (Travel itself still refuses while carrying).
+- **`tools/zones/BuildIslandWiring.lua`** builds `Workspace.IslandWiring` from the v1 layout JSONs (the islands
+  in the place are v1): 24 egg spots, the arrival (facing north), the RETURN HOME trigger in the portal ring, an odds
+  board beside the arrival (tag ZoneOddsBoard). Re-run it whenever an island is rebuilt (for v2: point its MAP at
+  `bbv2_layout.json` / `osv2_layout.json` once those islands are built into the place).
+- **Not wired yet:** the bosses (BossService still guards the lane; crnuch's boss overhaul owns those files), firms on
+  the hub island (firms stay on today's hub; RETURN HOME goes there), the zone-name banner + Travel map's "you are
+  here" (both use the lane's Bounds), a space skybox for Space Base.
+- Playtested 2026-10-20: off = 84 eggs on the lane; `/islands on` = 14 eggs on each island, lane empty; Travel to
+  Ocean Shore landed on its arrival facing north; bought an egg there; Travel home refused (carrying); the RETURN HOME
+  ring sent the player to their firm still carrying it; `/islands off` = back to the lane.

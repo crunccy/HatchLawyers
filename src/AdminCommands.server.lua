@@ -9,6 +9,8 @@
 --   /eggs <count> [egg] [golden]     put real eggs in your arms (up to 30, past your carry limit) to hatch at the
 --                                    incubator - normal random odds, real lawyers
 --   /coins <amount>                  add coins (1e9, 5m, 2b, 3t, 1qd ... work)
+--   /islands on|off                  (Studio only) run the egg zones on the redesign islands instead of the lane, for
+--                                    this playtest (Server.ZoneMap; the real switch is Config.Zones.Islands.Enabled)
 --   /island [name]                   visit a world-redesign island (Workspace.WorldRedesign, built 2026-10-19 from
 --                                    environment-redesign/; nothing is wired there yet). Reset to come back.
 --   /help                            this list
@@ -108,7 +110,7 @@ end
 local COMMANDS: { [string]: (player: Player, args: { string }) -> () } = {}
 
 COMMANDS.help = function(player)
-	note(player, "/hatch <rarity> [egg] [golden] (preview)  |  /eggs <count> [egg] [golden]  |  /coins <amount>  |  /island [name]")
+	note(player, "/hatch <rarity> [egg] [golden] (preview)  |  /eggs <count> [egg] [golden]  |  /coins <amount>  |  /island [name]  |  /islands on|off")
 end
 
 COMMANDS.hatch = function(player, args)
@@ -230,6 +232,22 @@ COMMANDS.island = function(player, args)
 	hrp.AssemblyLinearVelocity = Vector3.zero
 	hrp.CFrame = CFrame.new(ground + Vector3.new(0, 5, 0))
 	note(player, "Welcome to " .. target.Name .. " (reset to go back)")
+end
+
+-- /islands on|off (Studio only): the egg zones on the redesign islands for this playtest (Server.ZoneMap reads the
+-- workspace attribute IslandsOn; ZoneService + TravelServer rebind). Live servers only follow Config.Zones.Islands.
+COMMANDS.islands = function(player, args)
+	if not RunService:IsStudio() then
+		note(player, "Only in Studio. The live switch is Config.Zones.Islands.Enabled")
+		return
+	end
+	local word = args[1] and string.lower(args[1])
+	if word ~= "on" and word ~= "off" then
+		note(player, "Islands are " .. (if workspace:GetAttribute("IslandsOn") then "ON" else "OFF") .. ".  /islands on  or  /islands off")
+		return
+	end
+	workspace:SetAttribute("IslandsOn", word == "on")
+	note(player, if word == "on" then "Egg zones now on the islands: TRAVEL to one, RETURN HOME with your eggs" else "Egg zones back on the lane")
 end
 
 local lastRun: { [Player]: number } = {}

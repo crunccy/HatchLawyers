@@ -207,7 +207,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   - `Eggs.EggServer` — egg rolls, equip, sell duplicates, NEW-badge count.
   - `Dev.EconomySim` (+ disabled `RunEconomySim`) — authoritative 24 h economy sim.
   - `AdminCommands` — chat commands for crnuch + mr_blox174 (and anyone in a Studio playtest): `/hatch <rarity> [egg] [golden]`
-    (a preview hatch, nothing saved), `/eggs <count> [egg] [golden]`, `/coins <amount>`, `/help` (`;` works too).
+    (a preview hatch, nothing saved), `/eggs <count> [egg] [golden]`, `/coins <amount>`, `/island <name>` (visit a
+    redesign island), `/islands on|off` (Studio only: egg zones on the islands), `/help` (`;` works too).
 - `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (THE lawyer screen since
   2026-10-09: office slots bar, office card with upgrade/skills/unseat, CLIENTS tab to assign, BENCH tab to place/
   swap/merge; `SkinInventory` is disabled), `ClientWalk`, `AssignClients` (only the [E] prompts now), `Guide`.
@@ -246,8 +247,15 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - WORLD REDESIGN IN THE PLACE (2026-10-19, user's call "just build them"): `Workspace.WorldRedesign` holds the redesign
   hub + all six egg islands as studded Parts (~108k), east of today's map (hub at (3600, 150, -1200), islands on a ring of
   760). Built by `tools/zones/BuildRedesignIsland.lua` from `tools/zones/redesign/<Island>.json` (exported from the Blender
-  build scripts by `environment-redesign/kit/export_island.py`). NOT wired yet: no eggs, bosses, travel or firms there;
-  today's hub + lane still run the game. Visit with admin `/island <name>`. environment-redesign/README.md has the details.
+  build scripts by `environment-redesign/kit/export_island.py`). Visit with admin `/island <name>`.
+  **Wired behind an OFF switch (2026-10-20):** `Config.Zones.Islands.Enabled = false` = the live game on the lane, as
+  before. `Server.ZoneMap` decides the map (the lane `Workspace.Zones`, or `Workspace.IslandWiring` when on);
+  ZoneService (eggs) and TravelServer (trips + each island's RETURN HOME portal, which sends you home WITH your eggs)
+  read through it. `Workspace.IslandWiring.<ZoneId>` = EggSpots / Arrival / ReturnHome / OddsBoard per island, built
+  by `tools/zones/BuildIslandWiring.lua` from the islands' layout JSONs (re-run it after rebuilding an island). In
+  Studio, admin `/islands on|off` flips it for a playtest. Bosses stay on the lane (not wired); no hub firms yet.
+  Before-wiring copies: `ServerStorage.Backups_2026-10-20`, git tag `backup-2026-10-20-before-island-wiring`.
+  environment-redesign/README.md has the details.
 - ARCADE PIER (2026-10-13): `Workspace.ArcadePier` north of the hub (the land ends at z 168), booth games run by
   `ServerScriptService.ArcadeServer` (+ `Games`), `StarterPlayerScripts.Arcade`, `ReplicatedStorage.ArcadeClient`,
   `Config.Arcade`. Map from Blender (`tools/blender/arcade_pier.py`). See src/Arcade/README.md.

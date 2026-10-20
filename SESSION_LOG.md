@@ -23,12 +23,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
-- **mr.robe (local), since 2026-10-20:** wiring the redesign islands into the egg-zone gameplay BEHIND AN OFF SWITCH
-  (user's call): `Config.Zones.Islands.Enabled = false` keeps the live game on the lane; new `Server.ZoneMap`,
-  `Workspace.IslandWiring` markers (egg spots, arrival, RETURN HOME, odds boards), ZoneService + TravelServer read
-  through ZoneMap, admin `/islands on|off` (Studio only). No boss changes (crnuch's boss claim), no island rebuilds
-  (crnuch's call). Backup: tag `backup-2026-10-20-before-island-wiring` + `ServerStorage.Backups_2026-10-20`.
-  Don't edit ZoneService / TravelServer / AdminCommands meanwhile.
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
@@ -50,9 +44,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
       with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
       **crnuch's call 2026-10-19: leave the place as it is until we decide parts vs meshes.** Don't rebuild meanwhile.
-- [ ] **Redesign islands in the place, not wired yet** (built 2026-10-19, `Workspace.WorldRedesign`): next = the
-      Stage 7 wiring (Travel to each island's arrival, EggSpots + ZoneService, boss arenas, RETURN HOME, the hub's
-      firm lots), raised studs (StudTop tags), a space skybox for Space Base. Check fps / memory on a phone: the place
+- [ ] **Redesign islands in the place: eggs / Travel / RETURN HOME wired behind the OFF switch (2026-10-20)**
+      (`Config.Zones.Islands.Enabled`, Studio `/islands on`). Still to wire: boss arenas (after crnuch's boss overhaul
+      releases BossService), the hub's firm lots, the zone banner + Travel map "you are here" (lane Bounds), raised
+      studs (StudTop tags), a space skybox for Space Base; then decide when to flip the switch for real (both users).
+      Re-run BuildIslandWiring after any island rebuild (v2 layouts). Check fps / memory on a phone: the place
       went from ~19.5k to ~128k parts (all islands stream; move them to ServerStorage if it hurts).
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
@@ -199,6 +195,27 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — mr.robe, local session: the redesign islands wired into the egg zones, behind an OFF switch
+- **User's call** (mr.robe's PC): "wire them up", then, told about crnuch's boss claim + his "leave the place as it
+  is" call, picked "behind an off switch" and "make sure the previous version is saved".
+- **Saved first:** git tag `backup-2026-10-20-before-island-wiring` (pushed) + `ServerStorage.Backups_2026-10-20`
+  (disabled copies of ZoneService, TravelServer, AdminCommands, Config as they were).
+- **Heads-up (ZoneService = the egg loop; Config):** new `Server.ZoneMap` (src/ZoneMap.lua) picks the map; ZoneService
+  reads its zones through it (`bindZones`, rebinds on a flip; floor raycasts / drop bounds use the island when on);
+  TravelServer lands on ZoneMap's Arrival and hooks each island's ReturnHome (home WITH eggs; `move()` shared);
+  `Config.Zones.Islands = { Enabled = false }`; AdminCommands `/islands on|off` (Studio only). **With the switch off
+  nothing changes** (playtested: 84 eggs on the lane, none on the islands).
+- **Live Config had moved** since the snapshot (crnuch's Big Cheese `Crowd` line): 3-way merged (git merge-file, no
+  conflicts) - his line kept, only the Islands line added. No boss files touched (his claim), no island rebuilt (his call).
+- **`tools/zones/BuildIslandWiring.lua`** → `Workspace.IslandWiring.<ZoneId>` (egg spots, arrival, RETURN HOME trigger
+  in the portal ring, odds board), from the v1 layout JSONs. First run put the triggers on top of the portals (the
+  raycast hit the ring): now set from the island's origin (y 168.8, the ring's middle).
+- **Playtested** (`;islands on`): 14 eggs on each island, lane empty, 6 RETURN HOME prompts on; Travel to Ocean Shore =
+  its arrival, facing north; bought an Ocean egg there (real coins); Travel home refused while carrying; the RETURN HOME
+  ring sent the player to their firm still carrying it; `;islands off` = back to the lane. The account's carried Space
+  egg was set aside for the test and put back (Carried now Space + the Ocean egg bought). No game errors in the output.
+- Snapshot re-exported (it also picked up crnuch's live Bosses.client / BossAnims / Config edits from his side session).
 
 ## 2026-10-20 — crnuch, local session (side session): Big Cheese's Cheese Roll pushed to Studio
 - **crnuch approved** the Cheese Roll + Wheel Split (entry below). Snapshot re-exported first (nothing had changed
