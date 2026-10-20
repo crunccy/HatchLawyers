@@ -1148,6 +1148,10 @@ Config.Zones = {
 	-- StarterPlayerScripts.Travel; replaced the six hub teleport pads). Cooldown: seconds between trips.
 	-- BlockWhileCarrying: no travel (zones or home) while you carry eggs - the walk home past the bosses is the game.
 	Travel = { Cooldown = 3, BlockWhileCarrying = true },
+	-- the redesign islands (2026-10-20, mr.robe's session, user's call: wired in "behind an off switch"). false = the
+	-- live game runs on today's lane, exactly as before. true = eggs, Travel and RETURN HOME use the islands
+	-- (Workspace.IslandWiring, Server.ZoneMap); bosses stay on the lane. In Studio, the admin /islands on|off tries it.
+	Islands = { Enabled = false },
 }
 
 -- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from

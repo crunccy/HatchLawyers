@@ -1741,6 +1741,7 @@ RunService.Heartbeat:Connect(function(dt)
 		-- squash / stretch (clips): part positions and sizes scaled round its feet in its own axes
 		local squashed = math.abs(squash.X - 1) + math.abs(squash.Y - 1) + math.abs(squash.Z - 1) > 0.006
 		local world: { [string]: CFrame } = {}
+		local first = #frames + 1
 		for _, g in b.groups do
 			local parentCF = if g.parent ~= "" and world[g.parent] then world[g.parent] else CFrame.identity
 			local rot = rots[g.name]
@@ -1756,6 +1757,22 @@ RunService.Heartbeat:Connect(function(dt)
 						size.Z * (l.ZVector * squash).Magnitude)
 				else
 					table.insert(frames, root * l)
+				end
+			end
+		end
+		if anim and anim.RollLift then
+			-- a rolling block wheel never dips into the floor: squash resizes each block along its own axes, which
+			-- overstates a block that's turned AND squashed (the burnout, the roll), so lift it by what's left over
+			local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+			local low = math.huge
+			for i = first, #frames do
+				local cf, size = frames[i], parts[i].Size
+				low = math.min(low, cf.Y - 0.5 * (math.abs(cf.XVector.Y) * size.X + math.abs(cf.YVector.Y) * size.Y + math.abs(cf.ZVector.Y) * size.Z))
+			end
+			if low < floorY then
+				local up = Vector3.new(0, floorY - low, 0)
+				for i = first, #frames do
+					frames[i] += up
 				end
 			end
 		end

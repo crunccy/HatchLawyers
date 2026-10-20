@@ -1148,6 +1148,10 @@ Config.Zones = {
 	-- StarterPlayerScripts.Travel; replaced the six hub teleport pads). Cooldown: seconds between trips.
 	-- BlockWhileCarrying: no travel (zones or home) while you carry eggs - the walk home past the bosses is the game.
 	Travel = { Cooldown = 3, BlockWhileCarrying = true },
+	-- the redesign islands (2026-10-20, mr.robe's session, user's call: wired in "behind an off switch"). false = the
+	-- live game runs on today's lane, exactly as before. true = eggs, Travel and RETURN HOME use the islands
+	-- (Workspace.IslandWiring, Server.ZoneMap); bosses stay on the lane. In Studio, the admin /islands on|off tries it.
+	Islands = { Enabled = false },
 }
 
 -- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from
@@ -1204,7 +1208,9 @@ Config.Bosses = {
 		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
 			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
 			Attack = "Line", Length = 110, Width = 22, LineSpeed = 120, Color = Color3.fromRGB(255, 200, 60),
-			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 } },
+			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 },
+			-- WHEEL SPLIT (2+ players): cheese wedges pop off the wheel and tumble down a Lane at up to Max other players
+			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 110, Length = 100 } },
 		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
 			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.8, Windup = 1.0,
 			Attack = "Line", Length = 130, Width = 20, LineSpeed = 150, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),

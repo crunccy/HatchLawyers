@@ -12,6 +12,8 @@
 --     gate's LicensePrompt. The License opens the next zone (its gate turns see-through on that player's screen;
 --     the server also refuses to sell eggs in a zone the player has no License for). Prestige resets the License.
 --   * TELEPORT pads at the hub (TeleportPrompt, attribute Zone) go to a zone's Arrival spot (if licensed).
+--   * THE MAP (2026-10-20): zones are read through Server.ZoneMap - today's lane (Workspace.Zones), or, behind the off
+--     switch (Config.Zones.Islands.Enabled / Studio's /islands on), the redesign islands (Workspace.IslandWiring).
 --   * WALK SPEED comes from the Speed level (Config.Zones.Speed, base 32 = the game's doubled speed).
 --   * LOOSE EGGS: a zone boss's hit (Server.BossService) knocks every carried egg out (ZoneService.dropAll); anyone
 --     who walks into a loose egg takes it for free (docs/BOSSES.md).
@@ -27,6 +29,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local Config = require(ReplicatedStorage.Shared.Config) :: any
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
 local PlayerData = require(script.Parent.PlayerData)
+local ZoneMap = require(script.Parent.ZoneMap) -- (lane or redesign islands; 2026-10-20, off = the lane as before)
 local EggLook = require(ReplicatedStorage.Shared:WaitForChild("EggLook")) :: any
 
 local Remote = ReplicatedStorage.Remotes:WaitForChild("Zones") :: RemoteEvent
@@ -271,10 +274,16 @@ local function floorAt(zone: Zone, x: number, z: number): number
 			table.insert(include, f)
 		end
 	end
+	local island = ZoneMap.ground(zone.folder) -- (island mode: the whole island is the floor)
+	if island then
+		table.insert(include, island)
+	end
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = include
-	local hit = workspace:Raycast(Vector3.new(x, 60, z), Vector3.new(0, -120, 0), params)
+	local top = if island then (zone.folder:GetAttribute("BoundsMax") :: Vector3? or Vector3.new(0, 60, 0)).Y + 20 else 60
+	params.RespectCanCollide = island ~= nil
+	local hit = workspace:Raycast(Vector3.new(x, top, z), Vector3.new(0, if island then -top - 120 else -120, 0), params)
 	return if hit then hit.Position.Y else 0
 end
 
@@ -294,6 +303,10 @@ function ZoneService.dropAll(player: Player, zoneId: string, from: Vector3): { {
 	z.Carried = {}
 	ZoneService.sync(player)
 	local b = zone.def.Bounds
+	local lo, hi = zone.folder:GetAttribute("BoundsMin") :: Vector3?, zone.folder:GetAttribute("BoundsMax") :: Vector3?
+	if lo and hi then -- (island mode: the island's own box)
+		b = { lo.X, lo.Z, hi.X, hi.Z }
+	end
 	local minX, maxX = math.min(b[1], b[3]) + 4, math.max(b[1], b[3]) - 4
 	local minZ, maxZ = math.min(b[2], b[4]) + 4, math.max(b[2], b[4]) - 4
 	local now = workspace:GetServerTimeNow()
@@ -566,13 +579,23 @@ local function hookPrompts()
 	end
 end
 
-function ZoneService.start()
-	local root = workspace:FindFirstChild("Zones")
+-- (re)reads every zone's folder + egg spots from the current map (Server.ZoneMap: the lane, or the redesign islands
+-- behind the off switch). Called once at start, and again when the map flips: that zone's eggs go and new ones fill
+-- the new spots. (Loose eggs a boss knocked out stay where they are until they expire.)
+local function bindZones()
+	for _, zone in zones do
+		for _, m in zone.eggs do
+			m:Destroy()
+		end
+	end
+	table.clear(zones)
+	table.clear(zoneById)
+	local root = workspace:FindFirstChild(if ZoneMap.islandsOn() then "IslandWiring" else "Zones")
 	if not root then
-		warn("[ZoneService] Workspace.Zones not found: no egg zones")
+		warn("[ZoneService] Workspace." .. (if ZoneMap.islandsOn() then "IslandWiring" else "Zones") .. " not found: no egg zones")
 	end
 	for _, def in CFG.List do
-		local folder = root and root:FindFirstChild(def.Id)
+		local folder = ZoneMap.folder(def.Id)
 		local spotsFolder = folder and folder:FindFirstChild("EggSpots")
 		if folder and spotsFolder then
 			local spots = {}
@@ -586,6 +609,10 @@ function ZoneService.start()
 			zoneById[def.Id] = zone
 		end
 	end
+end
+
+function ZoneService.start()
+	bindZones()
 	hookPrompts()
 
 	-- buying: one prompt per egg, found through the tag so eggs spawned later are covered too
@@ -626,11 +653,18 @@ function ZoneService.start()
 	end
 
 	-- fill every zone right away, then keep topping them up
-	for _, zone in zones do
-		for _ = 1, zone.def.MaxEggs do
-			spawnEgg(zone)
+	local function fillAll()
+		for _, zone in zones do
+			for _ = 1, zone.def.MaxEggs do
+				spawnEgg(zone)
+			end
 		end
 	end
+	fillAll()
+	ZoneMap.changed:Connect(function()
+		bindZones()
+		fillAll()
+	end)
 	task.spawn(function()
 		while true do
 			task.wait(1)

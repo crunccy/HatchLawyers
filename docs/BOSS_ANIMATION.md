@@ -240,7 +240,7 @@ studs takes 0.31 s at base speed, so standing still is the only way to be caught
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=SeniorPartner check stills frames`, then
   `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title] SeniorPartner`.
 
-## 7. Prosecutor Big Cheese: CHEESE ROLL + WHEEL SPLIT (2026-10-20, waiting for crnuch's approval)
+## 7. Prosecutor Big Cheese: CHEESE ROLL + WHEEL SPLIT (2026-10-20; APPROVED + LIVE in Studio 2026-10-20)
 ### His real timeline (BossService "Line" + Config.Bosses.List[4])
 | Phase | Server | Duration |
 | --- | --- | --- |
@@ -310,6 +310,13 @@ at the end. Lane 12 wide: a player at base speed is out of it in 0.19 s.
 - **Review page for approval:** https://claude.ai/artifact/7FKSXgNPpwP2Wnt8WHpmW3 (source `art/bosses/big_cheese/review.html`).
 - **Preview:** `art/bosses/big_cheese/` (`board_*.png`, `big_cheese_roll.mp4`, `..._halfspeed.mp4`,
   `big_cheese_gameplay_view.mp4`, `big_cheese_roll.blend`).
+- **LIVE in Studio since 2026-10-20** (crnuch approved): `ReplicatedStorage.Bosses` rebuilt (Big Cheese 47 parts / 5
+  groups, the rest unchanged), `Shared.BossAnims`, `Bosses` (client), `Shared.Config` from `src/`. 1-player playtest:
+  walk -> windup -> roll -> recover -> walk on the clips, no script errors. **The playtest found** the wheel dipping
+  0.35-0.38 studs into the floor in the burnout and the roll (Blender: 0.06): the client's squash resizes each block
+  along its own axes, which overstates a block that's turned AND squashed. Fixed in the client: a rolling boss
+  (`RollLift`) is lifted by whatever its lowest corner would go below `FloorY` (8 multiplies a block). After: lowest
+  corner 0.00 all through, the bump up to 0.65 studs.
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=BigCheese check stills frames`, then
   `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title] BigCheese`.
 
@@ -320,5 +327,5 @@ at the end. Lane 12 wide: a player at base speed is out of it in 0.19 s.
 | The Senior Partner | done | done | done | done | **live** (3-player test to do) |
 | Barrister Bulldog | - | - | - | - | - |
 | Judge Martello | - | - | - | - | - |
-| Prosecutor Big Cheese | done | done | done | in `src/` | waiting for approval |
+| Prosecutor Big Cheese | done | done | done | done | **live** (3-player test to do) |
 | Chief Justice Eclipse | - | - | - | - | - |

@@ -34,8 +34,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
   The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
-  **Prosecutor Big Cheese (Cheese Roll + Wheel Split): built in `src/` 2026-10-20, waiting for crnuch's approval**
-  (review page in the 2026-10-20 entry); bosses.py / boss_anims.py / Bosses.client / Config boss entries stay claimed.
+  Prosecutor Big Cheese (Cheese Roll + Wheel Split) APPROVED + LIVE 2026-10-20. Next: Bulldog, Martello, Eclipse.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
@@ -43,6 +42,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] **Senior Partner 3-player playtest (Paper Storm)** - live 2026-10-20, only played solo. Same setup (Test >
       Clients and Servers > 3 players, in Briefcase Bay): the two non-targets get 10-stud discs, the bundles land as the
       swing hits; a player who stays in a disc is hit.
+- [ ] **Big Cheese 3-player playtest (Wheel Split)** - live 2026-10-20, only played solo. In the Food Court with 3
+      players: the two non-targets get 12-wide lanes, wedges pop off as he lands on his edge and tumble down them.
 - [ ] **Megalodon recover clip: left fin 0.56 studs into the body / 0.48 into the snout** for a couple of frames (the
       glasses push since round 3's fin re-seat). `boss_anims.py -- check` shows it; fix in boss_clips/megalodon.py.
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -198,6 +199,20 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — crnuch, local session (side session): Big Cheese's Cheese Roll pushed to Studio
+- **crnuch approved** the Cheese Roll + Wheel Split (entry below). Snapshot re-exported first (nothing had changed
+  since the Partner push); pushed: `ReplicatedStorage.Bosses` rebuilt (Big Cheese 47 parts / 5 groups, the rest
+  unchanged), `Shared.BossAnims`, `StarterPlayerScripts.Bosses`, `Shared.Config` from `src/`. Each replace checked the
+  live script still matched the last push first (mr.robe is editing the same place: island wiring).
+- **Playtested (1 player):** the whole roll on the clips, no script errors. **Found + fixed:** the wheel dipped 0.35-0.38
+  studs into the floor in the burnout and the roll (the client's squash resizes each block along its own axes, which
+  overstates a block that's turned AND squashed); a rolling boss is now lifted by whatever its lowest corner would go
+  below `FloorY`. After: lowest corner 0.00 throughout, the bump up to 0.65 studs.
+- **Heads-up / merge:** mr.robe's session added `Config.Zones.Islands = { Enabled = false }` in Studio right after my
+  Config push (on top of it, no conflict); `src/Config.lua` now = live. Snapshot re-exported after: it also carries
+  mr.robe's live island-wiring scripts (ZoneMap, ZoneService, TravelServer, AdminCommands, Backups_2026-10-20).
+- Open: the 3-player Wheel Split playtest (Open items).
 
 ## 2026-10-20 — crnuch, local session (side session): Prosecutor Big Cheese's CHEESE ROLL + WHEEL SPLIT (Blender + src/)
 - Third boss of the overhaul (crnuch: "make the food guy next"). docs/BOSS_ANIMATION.md **section 7**: his real timeline

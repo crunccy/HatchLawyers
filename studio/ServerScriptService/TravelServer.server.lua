@@ -20,6 +20,8 @@ local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
 local Server = ServerScriptService:WaitForChild("Server")
 local PlayerData = require(Server:WaitForChild("PlayerData") :: ModuleScript) :: any
 local PlotService = require(Server:WaitForChild("PlotService") :: ModuleScript) :: any
+-- (2026-10-20) the lane or the redesign islands, behind the off switch: Config.Zones.Islands.Enabled / Studio /islands
+local ZoneMap = require(Server:WaitForChild("ZoneMap") :: ModuleScript) :: any
 
 local TRAVEL = (Config.Zones and Config.Zones.Travel) or {}
 local COOLDOWN = TRAVEL.Cooldown or 3
@@ -56,13 +58,24 @@ local function destination(player: Player, target: string): (CFrame?, Color3?)
 		return nil, nil
 	end
 	local def = zoneDef(target)
-	local zones = workspace:FindFirstChild("Zones")
-	local folder = def and zones and zones:FindFirstChild(def.Id)
+	local folder = def and ZoneMap.folder(def.Id) -- (Workspace.Zones.<Id>, or Workspace.IslandWiring.<Id> when on)
 	local arrival = folder and folder:FindFirstChild("Arrival") :: BasePart?
 	if not arrival then
 		return nil, nil
 	end
 	return CFrame.new(arrival.Position + Vector3.new(0, 3, 0)) * arrival.CFrame.Rotation * CFrame.Angles(0, math.rad(90), 0), def.Color
+end
+
+-- stream the destination in first (phones stream a small radius), then move - like PlotService does for firms
+local function move(player: Player, character: Model, root: BasePart, cf: CFrame, color: Color3?): (boolean, string?)
+	pcall(player.RequestStreamAroundAsync, player, cf.Position, 5)
+	if player.Character ~= character or not character.Parent then
+		return false, "loading"
+	end
+	Effects.burst(root.Position, "tier", color) -- a pop where you left, for anyone watching ...
+	character:PivotTo(cf)
+	task.delay(0.15, Effects.burst, cf.Position - Vector3.new(0, 2, 0), "tier", color) -- ... and where you land
+	return true, nil
 end
 
 local function travel(player: Player, target: unknown): (boolean, string?)
@@ -97,18 +110,66 @@ local function travel(player: Player, target: unknown): (boolean, string?)
 		return false, "missing"
 	end
 	lastTrip[player] = t
-	-- stream the destination in first (phones stream a small radius), then move - like PlotService does for firms
-	pcall(player.RequestStreamAroundAsync, player, cf.Position, 5)
-	if player.Character ~= character or not character.Parent then
-		return false, "loading"
-	end
-	Effects.burst(root.Position, "tier", color) -- a pop where you left, for anyone watching ...
-	character:PivotTo(cf)
-	task.delay(0.15, Effects.burst, cf.Position - Vector3.new(0, 2, 0), "tier", color) -- ... and where you land
-	return true, nil
+	return move(player, character, root, cf, color)
 end
 
 (Travel :: RemoteFunction).OnServerInvoke = travel
 Players.PlayerRemoving:Connect(function(player)
 	lastTrip[player] = nil
+end)
+
+-- RETURN HOME (2026-10-20; only while the redesign islands are switched on): each island's portal
+-- (Workspace.IslandWiring.<Id>.ReturnHome, built by tools/zones/BuildIslandWiring.lua) sends you to your firm WITH your
+-- eggs - the walk past the island's boss is the price (environment-redesign/central_hub/blockout/LAYOUT.md, decision 4).
+-- Walk into it or use its prompt. The usual cooldown applies; carrying never blocks it.
+local function returnHome(player: Player)
+	if not ZoneMap.islandsOn() then
+		return
+	end
+	local t = os.clock()
+	if t - (lastTrip[player] or 0) < COOLDOWN then
+		return
+	end
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not character or not root then
+		return
+	end
+	local cf, color = destination(player, "Home")
+	if not cf then
+		return
+	end
+	lastTrip[player] = t
+	move(player, character, root, cf, color)
+end
+
+local returnPrompts: { ProximityPrompt } = {}
+local function hookReturn(part: Instance)
+	if not part:IsA("BasePart") or part.Name ~= "ReturnHome" then
+		return
+	end
+	local prompt = part:FindFirstChild("ReturnPrompt") :: ProximityPrompt?
+	if prompt then
+		prompt.Enabled = ZoneMap.islandsOn()
+		prompt.Triggered:Connect(returnHome)
+		table.insert(returnPrompts, prompt)
+	end
+	part.Touched:Connect(function(hit)
+		local player = Players:GetPlayerFromCharacter(hit.Parent)
+		if player then
+			returnHome(player)
+		end
+	end)
+end
+local wiring = workspace:FindFirstChild("IslandWiring")
+if wiring then
+	for _, d in wiring:GetDescendants() do
+		hookReturn(d)
+	end
+	wiring.DescendantAdded:Connect(hookReturn)
+end
+ZoneMap.changed:Connect(function(on: boolean)
+	for _, prompt in returnPrompts do
+		prompt.Enabled = on
+	end
 end)
