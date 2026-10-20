@@ -18,13 +18,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
   Park + Brainrot Zone approved, Food Court done (waiting for approval); Ocean Shore done 2026-10-19 by mr.robe's
   session (waiting for approval), then redesigned as Ocean Shore v2 by crnuch's session = APPROVED 2026-10-19 as the
-  benchmark the other islands get redone to (one at a time, when crnuch asks); Space Base done 2026-10-19 by mr.robe's session (waiting for approval): all six
+  benchmark the other islands get redone to (one at a time, when crnuch asks; Briefcase Bay v2 APPROVED 2026-10-19);
+  Space Base done 2026-10-19 by mr.robe's session (waiting for approval): all six
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
-- **crnuch (local), since 2026-10-19:** BRIEFCASE BAY v2 redesign in Blender on the Ocean Shore v2 benchmark
-  (`environment-redesign/briefcase_bay_v2/`; v1 in `briefcase_bay/` stays untouched as the backup): audit, then a
-  layout for crnuch's approval, built round The Senior Partner's real numbers. Don't redesign Briefcase Bay meanwhile.
-  Layout approved 2026-10-19 (crnuch: keep the skyline); detailed pass done 2026-10-19 (waiting for approval).
 
 ## Open items
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -204,6 +201,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   foghorn, the fountain, paper rustles; gulls, falls and wind reuse Ocean Shore v2's picks.
 - 546k tris + 326k studs, 8.6 MB .blend, 8 renders (a new bay view). **Fixed in review:** the lighthouse beam read as a
   solid plank in daylight stills (hidden in renders, kept for the ambience); two gull circles crossed the lawn's edge.
+- **crnuch's call: Briefcase Bay v2 APPROVED** (2026-10-19). The other islands follow the benchmark one at a time when
+  crnuch asks (not started); the claim is released.
 
 ## 2026-10-19 — crnuch, local session: Briefcase Bay v2 — audit + LAYOUT for approval (Blender)
 - **crnuch's call:** redo Briefcase Bay on the Ocean Shore v2 benchmark (audit, then a layout for approval).

@@ -1,4 +1,4 @@
-# Briefcase Bay v2 — DETAILED (2026-10-19) · layout approved (keep the skyline); detailed pass waiting for approval
+# Briefcase Bay v2 — DETAILED (2026-10-19) · APPROVED by crnuch 2026-10-19
 
 The second island redone to the **Ocean Shore v2 benchmark** (approved by crnuch 2026-10-19):
 - classic Roblox studs, not LEGO;
