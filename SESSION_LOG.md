@@ -37,8 +37,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Studio by 3-way merge). Visual + crowd add-ons only (no damage / economy retune). Don't touch `Bosses.client` /
   bosses.py / boss_anims.py / BossService crowd code meanwhile; the v2-islands move in `BossService.start` is fine
   (we 3-way merge).
-- **mr.robe (local), since 2026-10-20:** zone bosses onto the v2 egg islands (`BuildIslandWiring` boss-area attributes +
-  `BossService` reading them through `Server.ZoneMap`) + the v2 egg-buy check. Don't edit BossService's `start` meanwhile.
 - **crnuch (local), since 2026-10-20:** WORLD AMBIENCE & ATMOSPHERE overhaul of the six boss zones - client-side only
   (ambient particles, fog / Atmosphere, per-zone lighting + colour grading, optional ambient loops from Shared.Sfx).
   No map / model / boss / gameplay changes. One controller (`StarterPlayerScripts.Ambience` + `Shared.AmbiencePresets`)
@@ -60,16 +58,19 @@ Claim big work here before starting (who · what · since), push the claim, remo
       exports (smooth Cylinders / Balls / Wedges). Rebuild each island from the voxel JSONs in `tools/zones/redesign/`
       with `BuildRedesignIsland.lua` (about 165k parts vs 108k: check the part budget first, or move to meshes).
       **crnuch's call 2026-10-19: leave the place as it is until we decide parts vs meshes.** Don't rebuild meanwhile.
-- [ ] **Redesign islands in the place: eggs / Travel / RETURN HOME wired, switch ON since 2026-10-20** (mr.robe's
-      call; `Config.Zones.Islands.Enabled = true` in Studio - players get it at the next PUBLISH). Egg runs have no
-      boss danger until the bosses are wired. Still to wire: boss arenas (after crnuch's boss overhaul
-      releases BossService), the hub's firm lots, the zone banner + Travel map "you are here" (lane Bounds), raised
-      studs (StudTop tags), a space skybox for Space Base; then decide when to flip the switch for real (both users).
-      The six islands are the v2 versions since 2026-10-20 (entry below); still to check: buying an egg on a v2
-      island with Studio in FRONT (the 2026-10-20 test couldn't: no prompts showed with Studio in the background), the
-      four new v2 islands' ambience passes, crnuch's review of them.
+- [ ] **Redesign islands in the place: eggs / Travel / RETURN HOME + the BOSSES wired, switch ON since 2026-10-20**
+      (mr.robe's call; `Config.Zones.Islands.Enabled = true` in Studio - players get it at the next PUBLISH). Buying an
+      egg on a v2 island checked with Studio in front (2026-10-20, entry below). Still to wire: the hub's firm lots,
+      the zone banner + Travel map "you are here" (lane Bounds), raised studs (StudTop tags), a space skybox for Space
+      Base; then decide when to flip the switch for real (both users). Still to check: the four new v2 islands'
+      ambience passes, crnuch's review of them, a 3-player boss playtest on the islands (crowd add-ons), the lane path
+      with the switch OFF after the BossService change (code moved, not changed; not playtested).
       Re-run BuildIslandWiring after any island rebuild (v2 layouts). Check fps / memory on a phone: the place
       went from ~19.5k to ~128k parts (all islands stream; move them to ServerStorage if it hurts).
+- [ ] **Who made the un-logged live BossService edits?** (found 2026-10-20 by mr.robe's island-bosses session; not in
+      any branch, not the Bulldog/Martello/Eclipse session): a `"Beam"` attack kind and a SeniorPartner `Slam` variant (he
+      stands still and the briefcase stamps the spot). Both are dormant - no `Config.Bosses` entry uses them. Kept in the
+      3-way merge; whoever owns them: log them, or remove them if they were an experiment.
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -215,6 +216,42 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — mr.robe, local session: the zone bosses onto the v2 islands + buying an egg on a v2 island
+- **User's call (mr.robe):** put the bosses on the v2 egg islands, and check egg buying there. BossService was under
+  crnuch's boss-animation claim: mr.robe's call that mr.robe's sessions may change it (noted on the claim). Backup
+  first: tag `backup-2026-10-20-before-island-bosses` (pushed) + `ServerStorage.Backups_2026-10-20.BossService_before_island_bosses`
+  / `ZoneMap_before_island_bosses`.
+- **Heads-up for crnuch (BossService):** `start()` is split into `laneHome` (the old lane code, moved unchanged),
+  `islandHome` and `spawnAll(folder)`. With `ZoneMap.islandsOn()` each boss walks its island's box (`BossAreaMin` /
+  `BossAreaMax`, no Margin: the box IS its walk area), starts on `BossStart`, gets FloorY from a raycast into the island,
+  and its zone (`playersInZone`, crowd clamps) is the island's `BoundsMin` / `BoundsMax`. `alongX` = the box's longer
+  side. Bosses respawn on a `ZoneMap.changed` flip. Attack code, timings and the per-boss state attributes untouched.
+- **`tools/zones/BuildIslandWiring.lua`:** sets those three attributes from each layout's `boss.box_roblox_xz` + its
+  "<Boss>'s start pad" place (Y = the island floor under the pad). Re-run in Studio: every existing marker came out
+  identical (checked part by part). The six boxes are flat (floor 0.96-1.3 above each island's origin, no gaps).
+- **3-way merge:** live BossService had moved since the snapshot - un-logged edits (open item): a `"Beam"` attack, a
+  SeniorPartner Slam variant, and a quick islands branch in `start()` (area = egg-spot spread, floor = arrival - 0.6).
+  `git merge-file`: the two attack changes kept; the two conflicts were only that islands branch, replaced by mine.
+  Written with a guard (only if the live source still matched the snapshot). `ZoneMap`: header comment only.
+  Messaged the Bulldog/Martello/Eclipse session (it hadn't touched BossService; its crowd change is outside `start`).
+- **Playtested** (Studio, switch on): all six bosses spawn on their islands, in their box, FloorY 151.1. Travel (the
+  real remote) to each island = its arrival pad. Baited each boss: Cone / Ring / Slam / Line / Line / Pull + Ring all
+  fired, ~100 attacks sampled every 0.1 s with **0 positions or targets outside the box**; standing outside the box,
+  Martello's slam, Big Cheese's roll and the Megalodon's charge stopped on the box edge; the player never fell off.
+  **Buying:** with Studio in front the egg prompt shows on a v2 island ("Buy Egg · Space Egg · 9.78M"); a real E press
+  bought it (`Zones.Carried` 0 -> 1, the egg left its spot). That egg was then knocked out by the Eclipse (eggs spawn
+  inside the boss boxes - working as designed) and expired. Second run in Briefcase Bay: E bought a Briefcase egg, then
+  walking into the RETURN HOME portal sent the player to their firm's SpawnPoint still carrying it. No BossService /
+  ZoneService / Travel warnings or script errors in the log. Test scripts lived only in the playtest; edit place clean.
+  The test account (mr_blox174) now carries 1 Briefcase egg (real coins).
+- **Not tested:** the lane with the switch off (laneHome is the old code moved; can't flip in Studio while Config is
+  on), 3 players on an island (crowd add-ons).
+- `run_checks.py` ALL PASSED (287 Luau files, 42 Config checks, 32 sim tests). Snapshot re-exported (124 scripts; it
+  also picked up other sessions' live edits: Sfx, AmbiencePresets, ArcadeClient.Kit, Bosses / Zones / Sounds / BigCase /
+  Eggs / Lawyers / FirmStageUp / Merger / Rewards clients, new ZoneMusic). Players get the bosses on the islands at
+  the next PUBLISH. (Windows note: `run_checks.py --luau-dir` doesn't find `.exe`s; put the Luau folder on PATH and
+  set `PYTHONUTF8=1`.)
 
 ## 2026-10-20 — crnuch, local session (side session): world ambience — shared system + PET PARK PROTOTYPE (for approval)
 - **crnuch's brief:** premium ambience + atmosphere for the six boss zones, environmental VFX + lighting only (no map /

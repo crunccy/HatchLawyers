@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 local UIKit = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("UIKit"))
+local Sfx = require(ReplicatedStorage.Shared:WaitForChild("Sfx"))
 local StageUp = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("FirmStageUp") :: RemoteEvent
 
 local player = Players.LocalPlayer
@@ -77,6 +78,7 @@ end
 local toastY = 0.2
 StageUp.OnClientEvent:Connect(function(info)
 	if info.kind == "Stage" then
+		Sfx.play("officeUpgrade", { gap = 1.5 })
 		local f = panel(UDim2.fromScale(0.5, 0.32), UDim2.fromScale(0.5, 0.38))
 		local burst = UIKit.burst(f, UIKit.Colors.Gold, 520)
 		burst.ZIndex = 0
@@ -86,6 +88,7 @@ StageUp.OnClientEvent:Connect(function(info)
 		popAndFade(f, 4.5)
 	elseif info.kind == "Area" or info.kind == "Need" then
 		local good = info.kind == "Area"
+		Sfx.play(if good then "areaUnlock" else "error", { gap = if good then 1.5 else 0.8, volume = if good then 1 else 0.65 })
 		local f = Instance.new("Frame")
 		f.AnchorPoint = Vector2.new(0.5, 0)
 		f.Position = UDim2.fromScale(0.5, toastY)

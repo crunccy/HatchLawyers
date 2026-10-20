@@ -11,13 +11,13 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local Effects = require(Shared:WaitForChild("Effects") :: ModuleScript) :: any
 local HatchFx = require(Shared:WaitForChild("HatchFx") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 
 local player = Players.LocalPlayer
 local Kit = {}
@@ -178,42 +178,11 @@ function Kit.tween(o: Instance, t: number, props: { [string]: any }, style: Enum
 	return tw
 end
 
------------------------------------------------------------------- sounds (licensed ids, the same set as Shared.Sfx: Roblox UI pack, Pro Sound Effects, APM)
-local SOUNDS = {
-	tick = { id = "rbxassetid://15675032796", volume = 0.3, speed = 1.1 }, -- UI small click
-	tap = { id = "rbxassetid://15675055424", volume = 0.4, speed = 1.1 }, -- UI cute pop
-	good = { id = "rbxassetid://15675059323", volume = 0.5, speed = 1.1 }, -- UI bright click
-	perfect = { id = "rbxassetid://15675043410", volume = 0.5, speed = 1.15 }, -- UI tonal stinger
-	bad = { id = "rbxassetid://15675075163", volume = 0.45, speed = 1 }, -- UI delete
-	thud = { id = "rbxassetid://9114753510", volume = 0.55, speed = 1.1, cut = 0.5 }, -- PSE hammer on wood
-	win = { id = "rbxassetid://1844278029", volume = 0.45, speed = 1, cut = 2.4 },
-	big = { id = "rbxassetid://9045751375", volume = 0.5, speed = 1 },
-}
-local sounds: { [string]: Sound } = {}
+------------------------------------------------------------------ sounds share the game's volume and overlap limits
 function Kit.sound(name: string)
-	local info = SOUNDS[name]
-	if not info then
-		return
-	end
-	local s = sounds[name]
-	if not s then
-		s = Instance.new("Sound")
-		s.Name = "Arcade_" .. name
-		s.SoundId = info.id
-		s.PlaybackSpeed = info.speed
-		s.SoundGroup = SoundService:FindFirstChild("SFX") :: SoundGroup?
-		s.Parent = SoundService
-		sounds[name] = s
-	end
-	local snd = s :: Sound
-	snd.Volume = info.volume
-	snd.TimePosition = 0
-	snd:Play()
-	local cut = (info :: any).cut
-	if cut then
-		task.delay(cut, function()
-			Kit.tween(snd, 0.4, { Volume = 0 })
-		end)
+	local cue = ({ tick = "click", tap = "pop", good = "clickBright", perfect = "stinger", bad = "error", thud = "bonk", win = "rewardClaim", big = "areaUnlock" })[name]
+	if cue then
+		Sfx.play(cue, { gap = if name == "tick" then 0.18 else 0.12, volume = if name == "tick" then 0.65 else 1 })
 	end
 end
 

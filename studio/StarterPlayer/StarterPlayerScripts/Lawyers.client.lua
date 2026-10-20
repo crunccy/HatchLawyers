@@ -38,6 +38,7 @@ local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
 local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local PlaceLawyer = Remotes:WaitForChild("PlaceLawyer") :: RemoteFunction
 local OpenLawyerPicker = Remotes:WaitForChild("OpenLawyerPicker") :: RemoteEvent
@@ -951,6 +952,7 @@ local function doAssign(c: Client)
 	local ok, reason = AssignClient:InvokeServer(c.Id, selectedOffice)
 	busy = false
 	if ok then
+		Sfx.play("caseBegin", { gap = 0.35 })
 		flash(string.format("%s → Office %d!", c.Name or "Client", selectedOffice), GREEN)
 		focusClient = nil
 		-- one client per assignment (user's call): close, the Manager is the one who assigns everyone
@@ -1459,6 +1461,9 @@ unseatButton.Activated:Connect(function()
 		end
 	end
 	busy = false
+	if ok then
+		Sfx.play(if o.queued and isBusy(o) then "notify" else "lawyerUnequip", { gap = 0.3 })
+	end
 	flash(msg or (if ok then "Done!" else "Can't do that"), if ok then GREEN else RED)
 	render()
 end)
@@ -1483,6 +1488,7 @@ placeButton.Activated:Connect(function()
 	local ok, msg, queued = PlaceLawyer:InvokeServer(selectedOffice, pick.Uid)
 	busy = false
 	if ok then
+		Sfx.play(if queued then "notify" else "lawyerEquip", { gap = 0.3 })
 		flash(msg or string.format("%s → Office %d!", lawyerName(pick.Id, pick.Stars), selectedOffice), if queued then Color3.fromRGB(215, 160, 255) else GREEN)
 		benchPick = nil
 		if not queued then
@@ -1507,6 +1513,7 @@ bestButton.Activated:Connect(function()
 	busy = false
 	flash(msg or (if ok then "Done!" else "Can't do that"), if ok then GREEN else RED)
 	if ok then
+		Sfx.play("lawyerEquip", { gap = 0.3 })
 		benchPick = nil
 		previewKey = nil
 	end
@@ -1519,6 +1526,7 @@ local function doSell(uids: { string }, label: string)
 	local ok, coins, count = SellLawyers:InvokeServer(uids)
 	busy = false
 	if ok then
+		Sfx.play("coins", { gap = 0.4 })
 		flash(string.format("Sold %s for %s coins!", label, Formulas.formatCoins(coins :: number)), GOLD)
 		Effects.guiBurst(gui, UDim2.fromOffset(sellButton.AbsolutePosition.X + sellButton.AbsoluteSize.X / 2, sellButton.AbsolutePosition.Y), 260, GOLD, 1.2, 25)
 		benchPick = nil

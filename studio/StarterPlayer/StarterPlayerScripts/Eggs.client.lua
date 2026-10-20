@@ -1055,7 +1055,7 @@ local function cookPhase(sp: Spot, egg: Model, tier: any, fxColor: any, watch: b
 		HatchFx.light(at, rgbOf(fxColor), 20, 1.8, 0.6)
 		if watch then
 			HatchFx.shake(3.2, 14, 0.01, 0.5)
-			hatchCue:Fire("beat", 0)
+			hatchCue:Fire("shake", 0)
 		end
 	end
 	if inc then
@@ -1147,7 +1147,7 @@ local function crashDown(sp: Spot, h: any, top: Vector3, tier: any, fxColor: any
 	HatchFx.light(at, rgbOf(fxColor), 18, 1.8, 0.6)
 	if watch then
 		HatchFx.shake(4.2, 15, 0.01, 0.6)
-		hatchCue:Fire("beat", 0)
+		hatchCue:Fire("shake", 0)
 	end
 end
 
@@ -1745,6 +1745,7 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 		height = if tier.fancy then 5.4 else 4.6
 		local colour
 		m, colour, stop = riseLawyer(sp, result.skinId, height, rarityName)
+		hatchCue:Fire("lawyer", 0)
 		camTo(shot(sp, if tier.fancy then 11 else 9.2, 3.6, height * 0.28), 3)
 		task.wait(0.9)
 		colour()
@@ -1840,7 +1841,7 @@ local function playBanner(i: any)
 	bannerOdds.Text = oddsText(i)
 	bannerScale.Scale = math.clamp(workspace.CurrentCamera.ViewportSize.X / 900, 0.55, 1)
 	tween(banner, 0.45, { Position = UDim2.new(0.5, 0, 0, 18) }, Enum.EasingStyle.Back)
-	hatchCue:Fire("burst", i.rarity or 1, rarityName)
+	hatchCue:Fire("announcement", i.rarity or 1, rarityName)
 	local t0 = os.clock()
 	while os.clock() - t0 < 4.6 do
 		local t = os.clock() - t0
@@ -2070,7 +2071,10 @@ equipButton.Activated:Connect(function()
 	end
 	local pick = current
 	if pick.emptyOffice and pick.uid then
-		PlaceLawyer:InvokeServer(pick.emptyOffice, pick.uid)
+		local ok = PlaceLawyer:InvokeServer(pick.emptyOffice, pick.uid)
+		if ok then
+			hatchCue:Fire("equip", 0)
+		end
 		close()
 	else
 		close()

@@ -11,6 +11,7 @@ local UserInputService = game:GetService("UserInputService")
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Formulas = require(ReplicatedStorage.Shared:WaitForChild("Formulas"))
 local ArtAssets = require(ReplicatedStorage.Shared:WaitForChild("ArtAssets")) :: any
+local Sfx = require(ReplicatedStorage.Shared:WaitForChild("Sfx")) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local ClaimDaily = Remotes:WaitForChild("ClaimDaily") :: RemoteFunction
 local Activity = Remotes:WaitForChild("Activity") :: RemoteEvent
@@ -361,6 +362,7 @@ claimButton.Activated:Connect(function()
 	claiming = true
 	local result = ClaimDaily:InvokeServer()
 	if typeof(result) == "table" and result.ok then
+		Sfx.play("rewardClaim", { gap = 1 })
 		showToast("DAY " .. result.day .. " REWARD!", result.text)
 	elseif typeof(result) == "table" then
 		claimMessage = string.upper(result.reason or "Try again")

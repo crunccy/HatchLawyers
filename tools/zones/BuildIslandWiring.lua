@@ -1,7 +1,9 @@
 -- tools/zones/BuildIslandWiring.lua - builds Workspace.IslandWiring: the gameplay markers that let the egg zones run on
 -- the redesign islands (Workspace.WorldRedesign) when they're switched on (Server.ZoneMap; Config.Zones.Islands.Enabled,
 -- or Studio's admin /islands on). 2026-10-20, mr.robe's session (user's call: wire them "behind an off switch").
--- One folder per zone Id (attributes Zone, Island, BoundsMin / BoundsMax) holding:
+-- One folder per zone Id (attributes Zone, Island, BoundsMin / BoundsMax; and for the zone boss, Server.BossService:
+-- BossAreaMin / BossAreaMax = the box its middle may walk in (the layout's boss.box_roblox_xz, which the island keeps
+-- clear of scenery out to box + reach), Y = the island floor, and BossStart = its start pad) holding:
 --   EggSpots    invisible 3x1x3 Parts on the island's 24 egg spots (where ZoneService grows its eggs)
 --   Arrival     where Travel lands you (turned so you face north, up the island's route)
 --   ReturnHome  an invisible upright trigger in the RETURN HOME portal's ring + ReturnPrompt (TravelServer sends you
@@ -99,6 +101,25 @@ for _, row in MAP do
 	folder:SetAttribute("BoundsMin", boxCf.Position - boxSize / 2)
 	folder:SetAttribute("BoundsMax", boxCf.Position + boxSize / 2)
 
+	-- the boss's box + start pad (places "<Boss>'s start pad"; the box's middle if a layout has none)
+	local bossBox = layout.boss and layout.boss.box_roblox_xz
+	local bossNote = "no boss box"
+	if bossBox then
+		local st = { (bossBox[1] + bossBox[3]) / 2, (bossBox[2] + bossBox[4]) / 2 }
+		for _, pl in layout.places do
+			if string.match(pl.name, "start pad$") then
+				st = pl.roblox_xz
+			end
+		end
+		local s = ground(st[1], st[2])
+		local c1 = origin:PointToWorldSpace(Vector3.new(bossBox[1], 0, bossBox[2]))
+		local c2 = origin:PointToWorldSpace(Vector3.new(bossBox[3], 0, bossBox[4]))
+		folder:SetAttribute("BossAreaMin", Vector3.new(math.min(c1.X, c2.X), s.Y, math.min(c1.Z, c2.Z)))
+		folder:SetAttribute("BossAreaMax", Vector3.new(math.max(c1.X, c2.X), s.Y, math.max(c1.Z, c2.Z)))
+		folder:SetAttribute("BossStart", s)
+		bossNote = ("boss box %.0f x %.0f, start %s"):format(math.abs(c2.X - c1.X), math.abs(c2.Z - c1.Z), tostring(s))
+	end
+
 	local spots = Instance.new("Folder")
 	spots.Name = "EggSpots"
 	spots.Parent = folder
@@ -190,6 +211,6 @@ for _, row in MAP do
 	end
 
 	folder.Parent = root
-	table.insert(report, ("%s -> %s: %d egg spots, arrival %s"):format(zoneId, islandName, #layout.egg_spots, tostring(a)))
+	table.insert(report, ("%s -> %s: %d egg spots, arrival %s, %s"):format(zoneId, islandName, #layout.egg_spots, tostring(a), bossNote))
 end
 return "IslandWiring:\n" .. table.concat(report, "\n")

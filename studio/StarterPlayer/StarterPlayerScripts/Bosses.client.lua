@@ -33,10 +33,12 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 -- the bosses' Blender clips (generated); a boss without clips keeps its POSES function
 local animsOk, animsLib = pcall(function()
 	return require(Shared:WaitForChild("BossAnims", 15) :: ModuleScript)
@@ -133,20 +135,30 @@ local SOUNDS = {
 	boing = { "rbxassetid://15675055424", 0.7, 0.55 }, -- the hop back upright lands
 	crumble = { "rbxassetid://9113959343", 0.4, 1.3, 0.4 }, -- a wedge crumbles at its lane's end
 }
+local bossSoundTimes: { [string]: number } = {}
+local activeBossSounds = 0
 local function playAt(pos: Vector3, kind: string)
 	local def = SOUNDS[kind]
-	if not def then
+	local now = os.clock()
+	if not def or activeBossSounds >= 5 or now - (bossSoundTimes[kind] or 0) < 0.12 then
 		return
 	end
+	bossSoundTimes[kind] = now
 	local a = Instance.new("Attachment")
 	a.WorldPosition = pos
 	a.Parent = workspace.Terrain
 	local s = Instance.new("Sound")
 	s.SoundId = def[1]
-	s.Volume = def[2]
+	s.Volume = def[2] * 0.55
 	s.PlaybackSpeed = def[3]
+	s.SoundGroup = Sfx.group()
+	activeBossSounds += 1
+	s.Destroying:Once(function()
+		activeBossSounds = math.max(0, activeBossSounds - 1)
+	end)
+	s.RollOffMode = Enum.RollOffMode.InverseTapered
 	s.RollOffMinDistance = 14
-	s.RollOffMaxDistance = 160
+	s.RollOffMaxDistance = 130
 	s.Parent = a
 	s:Play()
 	if def[4] then
@@ -409,16 +421,17 @@ POSES.JudgeMartello = function(b, state, a, t, idle)
 	local arms = math.sin(t * 9) * 0.35 * w
 	local torsoX = math.sin(t * 2) * 0.04 * (1 - w)
 	if state == "windup" then
-		local arc = math.sin(math.pi * math.clamp(a, 0, 1))
-		rootY = arc * ((attr(b.state, "HopHeight") :: number?) or 6)
-		torsoX = -0.35 * arc
-		legs = -0.9 * arc
-		arms = 2.6 * arc
+		local e = easeOut(a / 0.7)
+		rootY = 0.2 * e
+		torsoX = 0.18 * e
+		legs = -0.25 * e
+		arms = 2.5 * e -- gavel winds up for a forward sweep
 	elseif state == "attack" then
-		local e = 1 - easeOut(a * 2)
-		rootY = -0.35 * e -- (the squash on landing)
-		legs = 0.5 * e
-		arms = 1.2 * e
+		local e = easeOut(a * 3)
+		rootY = 0.2 * (1 - e)
+		torsoX = -0.45 * e
+		legs = 0.3 * e
+		arms = 2.5 - 2.2 * e
 	end
 	return CFrame.new(0, rootY, 0), {
 		LegL = CFrame.Angles(legs + sw * 0.2 * w, 0, 0),
@@ -439,20 +452,18 @@ POSES.BigCheese = function(b, state, a, t, idle)
 	local arm = math.sin(t * 3) * 0.2
 	if state == "windup" then
 		local e = easeOut(a / 0.6)
-		torso = CFrame.Angles(0.12 * e, e * math.pi / 2, 0)
-		if a > 0.6 then
-			rootOff *= CFrame.new(math.sin(t * 60) * 0.05, 0, 0)
-		end
-		arm = 1.4 * e
+		torso = CFrame.Angles(-0.25 * e, 0, math.sin(t * 24) * 0.1 * e)
+		rootOff *= CFrame.new(0, -0.35 * e, 0)
+		arm = 2.1 * e -- winds up like a spring before the cheese burst
 	elseif state == "attack" then
-		local from = (attr(s, "From") :: Vector3?) or Vector3.zero
-		local dist = Vector3.new(posAt(s, now()).X - from.X, 0, posAt(s, now()).Z - from.Z).Magnitude
-		b.lastRoll = (dist / (3.2 * ((attr(s, "Scale") :: number?) or 1))) % (math.pi * 2)
-		torso = CFrame.Angles(-b.lastRoll, 0, 0) * CFrame.Angles(0, math.pi / 2, 0)
-		arm = 0
+		local pop = math.sin(math.pi * math.clamp(a, 0, 1))
+		rootOff *= CFrame.new(0, 0.6 * pop, 0)
+		torso = CFrame.Angles(-0.35 * pop, 0, math.sin(t * 18) * 0.14 * pop)
+		arm = 2.1 * (1 - easeOut(a * 2))
 	elseif state == "recover" then
 		local e = 1 - ease(a)
-		torso = CFrame.Angles(-b.lastRoll * e, 0, 0) * CFrame.Angles(0, math.pi / 2 * e, 0)
+		torso = CFrame.Angles(-0.1 * e, 0, 0)
+		arm = 0.2 * e
 	end
 	return rootOff, {
 		Torso = torso,
@@ -476,8 +487,9 @@ POSES.Megalodon = function(b, state, a, t, idle)
 		fins = -0.6 * e
 		tail = math.sin(t * 20) * 0.5
 	elseif state == "attack" then
-		torsoX, fins, legs = -0.5, -0.9, 0.8
-		tail = math.sin(t * 25) * 0.6
+		torsoX, torsoY, fins, legs = -0.2, math.sin(t * 8) * 0.22, math.sin(t * 14) * 0.8, 0.5
+		rootOff *= CFrame.new(0, 0.25 + math.sin(t * 10) * 0.15, 0)
+		tail = math.sin(t * 14) * 0.7
 	elseif state == "dizzy" then
 		torsoZ = math.sin(t * 5) * 0.18
 		torsoY = math.sin(t * 3) * 0.25
@@ -669,8 +681,8 @@ local function makeWarn(b: Boss)
 		for i = 0, 23 do
 			add("WarnEdge", { Size = Vector3.new(1.5, 0.16, 0.8), Transparency = 0.3 }, { Angle = -angle / 2 + angle * i / 23, Step = angle / 23 })
 		end
-	elseif kind == "Line" then
-		-- lane 0 = its own charge / roll; 1..CrowdN = the crowd add-on's lanes at other players
+	elseif kind == "Line" or kind == "Beam" then
+		-- lane 0 = its own charge / roll / beam; 1..CrowdN = the crowd add-on's lanes at other players
 		for lane = 0, (attr(s, "CrowdN") :: number?) or 0 do
 			add("WarnStrip", { Size = Vector3.new(1, 0.1, 1), Transparency = 0.65 }, { Lane = lane })
 			add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = -1, Lane = lane })
@@ -735,7 +747,7 @@ local function poseWarn(b: Boss, pos: Vector3, yaw: number, grow: number, t: num
 			p.Transparency = 0.15 + 0.35 * pulse
 		end
 	end
-	if kind == "Line" then
+	if kind == "Line" or kind == "Beam" then
 		local laneCache = {}
 		for _, p in b.warn do
 			if p:GetAttribute("Crowd") then
@@ -863,7 +875,7 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	elseif kind == "Cone" then
 		local front = at + Vector3.new(0, 1, 0) + look * 4.5 * ((attr(s, "Scale") :: number?) or 1)
 		task.delay(0.16, function()
-			paperBurst(front + Vector3.new(0, 1, 0), look)
+			if b.kind ~= "JudgeMartello" then paperBurst(front + Vector3.new(0, 1, 0), look) end
 			sparkBurst(front, color, 18)
 			shockwave(front, radius * 0.55, color, 0)
 			playAt(front, "slam")
@@ -876,6 +888,27 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 		sparkBurst(at + Vector3.new(0, 2, 0), color, 30)
 		playAt(at, "slam")
 		shakeRadius = radius * 1.8
+	elseif kind == "Beam" then
+		local goal = (attr(s, "Target") :: Vector3?) or at
+		local delta = Vector3.new(goal.X - at.X, 0, goal.Z - at.Z)
+		local dir = if delta.Magnitude > 0.1 then delta.Unit else look
+		local width = (attr(s, "Width") :: number?) or 16
+		local duration = math.max(0.35, ((attr(s, "StateEnd") :: number?) or 0) - ((attr(s, "StateStart") :: number?) or 0))
+		local bolt = part({ Size = Vector3.new(width, 1.1, 5), Color = color, Material = Enum.Material.Neon, Transparency = 0.15 })
+		bolt.Parent = visuals
+		playAt(at + Vector3.new(0, 6, 0), "charge")
+		task.spawn(function()
+			local started = now()
+			while bolt.Parent and now() - started < duration do
+				local travel = delta.Magnitude * math.clamp((now() - started) / duration, 0, 1)
+				local center = at + dir * travel + Vector3.new(0, 2.2, 0)
+				bolt.CFrame = CFrame.lookAt(center, center + dir)
+				RunService.Heartbeat:Wait()
+			end
+			bolt:Destroy()
+			shockwave(goal, width * 0.7, color, 0)
+		end)
+		shakeRadius = width * 2
 	elseif kind == "Line" then
 		playAt(at + Vector3.new(0, 4, 0), "charge")
 		shakeRadius = ((attr(s, "Width") :: number?) or 10) * 1.5
@@ -886,6 +919,7 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 		local r = (attr(s, "RingRadius") :: number?) or radius
 		shockwave(at, r, color, 0.05)
 		shockwave(at, r * 0.75, Color3.new(1, 1, 1), 0.15)
+		if b.kind == "BigCheese" then sparkBurst(at + Vector3.new(0, 4, 0), color, 32) end
 		playAt(at + Vector3.new(0, 4, 0), if b.kind == "BarristerBulldog" then "bark" else "slam")
 		shakeRadius = r * 1.6
 	end
@@ -1655,6 +1689,9 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 		b.walk += ((if moving then 1 else 0) - b.walk) * math.min(1, dt * 6)
 		local anim = ANIMS[b.kind]
+		if (b.kind == "BigCheese" or b.kind == "Megalodon") and (state == "windup" or state == "attack" or state == "recover" or state == "dizzy") then
+			anim = nil -- new burst / whirlpool moves use their purpose-built poses, not the old rolling / charging clips
+		end
 		local lead = 0
 		if anim and state == "windup" then
 			-- the whip-round: holds a beat (the sniff), then turns to its target with an overshoot; the head leads
@@ -1711,15 +1748,15 @@ RunService.Heartbeat:Connect(function(dt)
 					p.Transparency = 1 - 0.6 * glow
 				end
 			end
-			if b.kind == "Megalodon" then
+			if b.kind == "Megalodon" and anim then
 				megalodonFx(b, state, t - t0, t1 - t0, pos, sc, t)
-			elseif b.kind == "SeniorPartner" then
+			elseif b.kind == "SeniorPartner" and kind ~= "Slam" then
 				-- the papers at his ankles whirl faster and rise with the clip's Swirl channel (spun here, every state)
 				local swirl = fxNow.Swirl or 0
 				b.paperSpin += dt * (0.9 + 6.1 * swirl)
 				rots.Papers = CFrame.Angles(0, b.paperSpin, 0) * CFrame.new(0, (math.sin(t * 2) * 0.15 + 1.1 * swirl) * sc, 0)
 				partnerFx(b, state, t - t0, t1 - t0, pos, sc, t, swirl)
-			elseif b.kind == "BigCheese" then
+			elseif b.kind == "BigCheese" and anim then
 				-- THE ROLL (code): the distance really rolled (+ the clip's Roll: the burnout), upright again with Unroll
 				local roll = fxNow.Roll or 0
 				if state == "attack" then

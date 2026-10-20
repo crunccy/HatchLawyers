@@ -27,12 +27,18 @@
 --   plus its fixed settings (Model, Zone, Attack, Radius, Angle, Windup, Color, Scale = how much bigger than the model).
 -- Remotes.Bosses, server -> all clients: ("Hit", { userId, from, away, eggs = { { egg, golden, at } }, t, ragdoll })
 -- ("Grab", { userId, at, egg, golden }).
+-- WHERE (2026-10-20, mr.robe's session): Server.ZoneMap picks the map. On the lane (switch off) a boss lives in
+-- Workspace.Zones.<Id> (Config Bounds less Margin, the zone's Floor). With the redesign islands on it lives on its island
+-- (Workspace.IslandWiring.<Id>, tools/zones/BuildIslandWiring.lua): it walks the box the island keeps clear for it
+-- (BossAreaMin / BossAreaMax), starts on its start pad (BossStart), and everyone on the island (BoundsMin / BoundsMax)
+-- counts as in its zone. A flip of the switch (Studio's /islands) moves every boss over.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config) :: any
 local ZoneService = require(script.Parent.ZoneService) :: any
+local ZoneMap = require(script.Parent.ZoneMap) :: any
 
 local CFG = Config.Bosses
 local BossService = {}
@@ -341,16 +347,42 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		-- jumps at where the target stands NOW and comes down there at the end of the windup (moving dodges it)
 		local spot = clampToArea(b, target.Position.X, target.Position.Z)
 		b.state:SetAttribute("Target", spot)
-		b.airborne = true
-		setMove(b, here, spot, def.Windup)
+		if def.Model == "SeniorPartner" then
+			-- The briefcase stamps the marked spot while the partner stays put.
+			stand(b, here)
+		else
+			b.airborne = true
+			setMove(b, here, spot, def.Windup)
+		end
 		setState(b, "windup", def.Windup)
 		task.wait(def.Windup)
 		b.airborne = false
-		stand(b, spot)
+		if def.Model ~= "SeniorPartner" then stand(b, spot) end
 		setState(b, "attack", 0.45)
 		hitShape(b, "Ring", spot, def.Radius)
-		releaseCrowd(b, spot, crowd)
+		releaseCrowd(b, if def.Model == "SeniorPartner" then here else spot, crowd)
 		task.wait(0.45)
+	elseif kind == "Beam" then
+		-- Eclipse projects a warned beam; the boss holds position while the hit travels outward.
+		local dir = flat(target.Position - here)
+		dir = if dir.Magnitude > 0.1 then dir.Unit else Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
+		local goal = clampToArea(b, here.X + dir.X * def.Length, here.Z + dir.Z * def.Length)
+		b.state:SetAttribute("Target", goal)
+		stand(b, here)
+		setState(b, "windup", def.Windup)
+		task.wait(def.Windup)
+		local duration = math.max(0.35, flat(goal - here).Magnitude / def.LineSpeed)
+		setState(b, "attack", duration)
+		local start = now()
+		while now() - start < duration do
+			local beamAt = here + dir * math.min(flat(goal - here).Magnitude, def.LineSpeed * (now() - start))
+			for _, p in playersInZone(b) do
+				if flat(p.root.Position - beamAt).Magnitude <= def.Width / 2 then
+					hit(b, p.player, p.root, beamAt, dir)
+				end
+			end
+			task.wait(0.05)
+		end
 	elseif kind == "Line" then
 		-- rolls / charges straight at the target, Length studs (shorter at the zone's edge), Width wide
 		local dir = flat(target.Position - here)
@@ -438,58 +470,84 @@ local function run(b: Boss)
 end
 
 ------------------------------------------------------------------ start
-function BossService.start()
-	if not CFG then
-		return
-	end
-	local remotes = ReplicatedStorage:WaitForChild("Remotes")
-	Remote = remotes:FindFirstChild("Bosses") :: RemoteEvent
-	if not Remote then
-		Remote = Instance.new("RemoteEvent")
-		Remote.Name = "Bosses"
-		Remote.Parent = remotes
-	end
-	local old = ReplicatedStorage:FindFirstChild("BossStates")
-	if old then
-		old:Destroy()
-	end
-	local folder = Instance.new("Folder")
-	folder.Name = "BossStates"
-	folder.Parent = ReplicatedStorage
+-- where a boss lives (see WHERE in the header): its zone's land, where it may walk, the floor height, where it starts
+type Home = { bounds: { number }, area: { number }, alongX: boolean, floorY: number, start: Vector3 }
 
-	ZoneService.onGrab = function(player: Player, at: Vector3, egg: string, golden: boolean)
-		Remote:FireAllClients("Grab", { userId = player.UserId, at = at, egg = egg, golden = golden })
-	end
-
+-- on the lane: Workspace.Zones.<Id>, Config Bounds less Margin, somewhere along the middle
+local function laneHome(def: any): Home?
 	local zonesRoot = workspace:FindFirstChild("Zones")
+	local zoneDef = nil
+	for _, z in Config.Zones.List do
+		if z.Id == def.Zone then
+			zoneDef = z
+		end
+	end
+	local zoneFolder = zonesRoot and zonesRoot:FindFirstChild(def.Zone)
+	if not zoneDef or not zoneFolder then
+		return nil -- (its zone isn't built yet)
+	end
+	local bb = zoneDef.Bounds
+	local bounds = { math.min(bb[1], bb[3]), math.min(bb[2], bb[4]), math.max(bb[1], bb[3]), math.max(bb[2], bb[4]) }
+	-- Margin.X keeps it off the zone's ends (along the lane), Margin.Z off the walls (across) - named from when the
+	-- lane ran along X; the zone's longer side is "along"
+	local alongX = (bounds[3] - bounds[1]) >= (bounds[4] - bounds[2])
+	local mAlong, mAcross = CFG.Margin.X, CFG.Margin.Z
+	local area = if alongX
+		then { bounds[1] + mAlong, bounds[2] + mAcross, bounds[3] - mAlong, bounds[4] - mAcross }
+		else { bounds[1] + mAcross, bounds[2] + mAlong, bounds[3] - mAcross, bounds[4] - mAlong }
+	-- the floor height in the middle of the zone
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { zoneFolder:FindFirstChild("Floor") or zoneFolder }
+	local cx, cz = (area[1] + area[3]) / 2, (area[2] + area[4]) / 2
+	local ray = workspace:Raycast(Vector3.new(cx, 60, cz), Vector3.new(0, -120, 0), params)
+	local floorY = if ray then ray.Position.Y else 0
+	local shift = rng:NextNumber(-40, 40) -- (somewhere along the middle of the lane)
+	local start = if alongX then Vector3.new(cx + shift, floorY, cz) else Vector3.new(cx, floorY, cz + shift)
+	return { bounds = bounds, area = area, alongX = alongX, floorY = floorY, start = start }
+end
+
+-- on its redesign island: Workspace.IslandWiring.<Id>'s BossAreaMin / BossAreaMax / BossStart / BoundsMin / BoundsMax
+local function islandHome(def: any): Home?
+	local folder = ZoneMap.folder(def.Zone)
+	local island = folder and ZoneMap.ground(folder)
+	if not folder or not island then
+		return nil -- (its island isn't built / wired yet)
+	end
+	local lo, hi, st = folder:GetAttribute("BossAreaMin"), folder:GetAttribute("BossAreaMax"), folder:GetAttribute("BossStart")
+	local bmin, bmax = folder:GetAttribute("BoundsMin"), folder:GetAttribute("BoundsMax")
+	if typeof(lo) ~= "Vector3" or typeof(hi) ~= "Vector3" or typeof(st) ~= "Vector3" or typeof(bmin) ~= "Vector3" or typeof(bmax) ~= "Vector3" then
+		warn("[BossService] IslandWiring." .. def.Zone .. " has no boss area: re-run tools/zones/BuildIslandWiring.lua")
+		return nil
+	end
+	local area = { lo.X, lo.Z, hi.X, hi.Z }
+	-- the island floor under its start pad
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { island }
+	params.RespectCanCollide = true
+	local ray = workspace:Raycast(st + Vector3.new(0, 40, 0), Vector3.new(0, -80, 0), params)
+	local floorY = if ray then ray.Position.Y else st.Y
+	return {
+		bounds = { bmin.X, bmin.Z, bmax.X, bmax.Z },
+		area = area,
+		alongX = (area[3] - area[1]) >= (area[4] - area[2]),
+		floorY = floorY,
+		start = Vector3.new(st.X, floorY, st.Z),
+	}
+end
+
+-- puts every boss in its home on the current map (again when the map flips: the old bosses' loops end with their state)
+local function spawnAll(folder: Folder)
+	folder:ClearAllChildren()
+	local islands = ZoneMap.islandsOn()
 	for _, def in CFG.List do
-		local zoneDef = nil
-		for _, z in Config.Zones.List do
-			if z.Id == def.Zone then
-				zoneDef = z
-			end
+		local home = if islands then islandHome(def) else laneHome(def)
+		if not home then
+			continue
 		end
-		local zoneFolder = zonesRoot and zonesRoot:FindFirstChild(def.Zone)
-		if not zoneDef or not zoneFolder then
-			continue -- (its zone isn't built yet)
-		end
-		local bb = zoneDef.Bounds
-		local bounds = { math.min(bb[1], bb[3]), math.min(bb[2], bb[4]), math.max(bb[1], bb[3]), math.max(bb[2], bb[4]) }
-		-- Margin.X keeps it off the zone's ends (along the lane), Margin.Z off the walls (across) - named from when the
-		-- lane ran along X; the zone's longer side is "along"
-		local alongX = (bounds[3] - bounds[1]) >= (bounds[4] - bounds[2])
-		local mAlong, mAcross = CFG.Margin.X, CFG.Margin.Z
-		local area = if alongX
-			then { bounds[1] + mAlong, bounds[2] + mAcross, bounds[3] - mAlong, bounds[4] - mAcross }
-			else { bounds[1] + mAcross, bounds[2] + mAlong, bounds[3] - mAcross, bounds[4] - mAlong }
+		local bounds, area, alongX, floorY = home.bounds, home.area, home.alongX, home.floorY
 		local areaUV = if alongX then { area[1], area[2], area[3], area[4] } else { area[2], area[1], area[4], area[3] }
-		-- the floor height in the middle of the zone
-		local params = RaycastParams.new()
-		params.FilterType = Enum.RaycastFilterType.Include
-		params.FilterDescendantsInstances = { zoneFolder:FindFirstChild("Floor") or zoneFolder }
-		local cx, cz = (area[1] + area[3]) / 2, (area[2] + area[4]) / 2
-		local ray = workspace:Raycast(Vector3.new(cx, 60, cz), Vector3.new(0, -120, 0), params)
-		local floorY = if ray then ray.Position.Y else 0
 
 		local state = Instance.new("Configuration")
 		state.Name = def.Model
@@ -502,8 +560,7 @@ function BossService.start()
 			CrowdShape = def.Crowd and def.Crowd.Shape or "", CrowdRadius = def.Crowd and def.Crowd.Radius or 0 } do
 			state:SetAttribute(k, v)
 		end
-		local shift = rng:NextNumber(-40, 40) -- (somewhere along the middle of the lane)
-		local start = if alongX then Vector3.new(cx + shift, floorY, cz) else Vector3.new(cx, floorY, cz + shift)
+		local start = home.start
 		local b: Boss = {
 			def = def, bounds = bounds, area = area, alongX = alongX, areaUV = areaUV, floorY = floorY, state = state,
 			from = start, to = start, moveStart = 0, moveEnd = 0, yaw = math.pi / 2, dirX = -1, zig = 1,
@@ -532,6 +589,35 @@ function BossService.start()
 			end
 		end)
 	end
+end
+
+function BossService.start()
+	if not CFG then
+		return
+	end
+	local remotes = ReplicatedStorage:WaitForChild("Remotes")
+	Remote = remotes:FindFirstChild("Bosses") :: RemoteEvent
+	if not Remote then
+		Remote = Instance.new("RemoteEvent")
+		Remote.Name = "Bosses"
+		Remote.Parent = remotes
+	end
+	local old = ReplicatedStorage:FindFirstChild("BossStates")
+	if old then
+		old:Destroy()
+	end
+	local folder = Instance.new("Folder")
+	folder.Name = "BossStates"
+	folder.Parent = ReplicatedStorage
+
+	ZoneService.onGrab = function(player: Player, at: Vector3, egg: string, golden: boolean)
+		Remote:FireAllClients("Grab", { userId = player.UserId, at = at, egg = egg, golden = golden })
+	end
+
+	spawnAll(folder)
+	ZoneMap.changed:Connect(function()
+		spawnAll(folder)
+	end)
 
 	Players.PlayerRemoving:Connect(function(player)
 		safeUntil[player] = nil

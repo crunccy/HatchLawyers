@@ -259,11 +259,12 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   island models are kept in `ServerStorage.Old_WorldRedesign_v1`. **The hub is v2 too since 2026-10-20** (`environment-redesign/central_hub_v2/`: crnuch's approved layout in the classic kit; its example firms are not exported); v1 hub in storage.
   **Wired behind a switch (2026-10-20), and the switch is ON (mr.robe's call 2026-10-20, "turn it on"):**
   `Config.Zones.Islands.Enabled = true` = eggs / Travel / RETURN HOME on the islands; set it false to go back to the
-  lane (bosses still guard the lane either way). `Server.ZoneMap` decides the map (the lane `Workspace.Zones`, or `Workspace.IslandWiring` when on);
-  ZoneService (eggs) and TravelServer (trips + each island's RETURN HOME portal, which sends you home WITH your eggs)
-  read through it. `Workspace.IslandWiring.<ZoneId>` = EggSpots / Arrival / ReturnHome / OddsBoard per island, built
-  by `tools/zones/BuildIslandWiring.lua` from the islands' layout JSONs (re-run it after rebuilding an island). In
-  Studio, admin `/islands on|off` flips it for a playtest. Bosses stay on the lane (not wired); no hub firms yet.
+  lane. `Server.ZoneMap` decides the map (the lane `Workspace.Zones`, or `Workspace.IslandWiring` when on);
+  ZoneService (eggs), TravelServer (trips + each island's RETURN HOME portal, which sends you home WITH your eggs) and
+  BossService (since 2026-10-20: each boss walks its island's `BossAreaMin` / `BossAreaMax` box from its `BossStart`
+  pad) read through it. `Workspace.IslandWiring.<ZoneId>` = EggSpots / Arrival / ReturnHome / OddsBoard + those boss
+  attributes per island, built by `tools/zones/BuildIslandWiring.lua` from the islands' layout JSONs (re-run it after
+  rebuilding an island). In Studio, admin `/islands on|off` flips it for a playtest. No hub firms yet.
   Before-wiring copies: `ServerStorage.Backups_2026-10-20`, git tag `backup-2026-10-20-before-island-wiring`.
   environment-redesign/README.md has the details.
 - ARCADE PIER (2026-10-13): `Workspace.ArcadePier` north of the hub (the land ends at z 168), booth games run by

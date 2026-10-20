@@ -715,7 +715,7 @@ local function merge()
 	local nextStars = (stars or 1) + 1
 	local mut = Config.Lawyers.Mutations[nextStars]
 	local burstColor = if mut then mut.Color else Color3.fromRGB(255, 205, 60) -- (the window already shows the mutated lawyer)
-	Sfx.play("hit")
+	Sfx.play("lawyerMerge")
 	Effects.guiBurst(gui, UDim2.fromOffset(resultBox.AbsolutePosition.X + resultBox.AbsoluteSize.X / 2, resultBox.AbsolutePosition.Y + resultBox.AbsoluteSize.Y / 2), 420, burstColor, 1.8, 3)
 	local resultScale = resultBox:FindFirstChildOfClass("UIScale") or make("UIScale", { Parent = resultBox })
 	resultScale.Scale = 1.25

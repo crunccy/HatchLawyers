@@ -1,8 +1,6 @@
 --!strict
--- Sound effects, driven by events other scripts already send. Every sound comes from Shared.Sfx (the licensed
--- catalogue: Roblox UI pack, Pro Sound Effects, APM Music - 2026-10-16, replaced the one built-in ping).
--- Background cases only get a quiet coin toss so 5 lawyers don't spam stings; the big sounds are for court
--- verdicts and special moments. Also here: a click on every button tap. Volume: the SFX SoundGroup.
+-- Local sound cues from existing game events. Shared.Sfx holds the curated uploaded library,
+-- balancing, cooldowns, and concurrency limits. Background cases stay quiet.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -42,10 +40,10 @@ CaseResult.OnClientEvent:Connect(function(result: { [string]: any })
 	if courtOpen() and result.desk == player:GetAttribute("SelectedDesk") then
 		play("gavel")
 		if result.outcome == "Win" then
-			task.delay(0.5, play, if special then "big" else "win")
+			task.delay(0.35, play, if special then "stinger" else "caseComplete")
 		end
 	elseif result.outcome == "Win" and special then
-		play("big", 2)
+		play("caseComplete", 1)
 	elseif (result.payout or 0) > 0 then
 		play("coin", 0.4)
 	end
@@ -60,31 +58,44 @@ end)
 -- rewards, goals, prestige
 local RewardGranted = Remotes:WaitForChild("RewardGranted") :: RemoteEvent
 RewardGranted.OnClientEvent:Connect(function(info: { [string]: any })
-	play(if info.kind == "Prestige" then "big" else "win", 1)
+	play(if info.kind == "Prestige" then "rebirth" else "rewardClaim", 1)
 end)
 
 -- HatchCue (a local bindable): the Eggs script - "beat" on every crack round of the 3D egg (value = round), "burst"
 -- the moment it shatters (value = rarity, third arg = rarity name); TravelFx - "charge" pings while the portal charges,
 -- "whoosh" as you vanish, "burst" on landing; UpgradeFx - "burst".
-local MYTHIC = { Mythic = true, Supreme = true }
+local RARITY_CUE = {
+	Common = "revealCommon", Uncommon = "revealUncommon", Rare = "revealRare",
+	Epic = "revealEpic", Legendary = "revealLegendary", Mythic = "revealMythic", Supreme = "revealSupreme",
+}
 task.spawn(function()
 	local cue = ReplicatedStorage:WaitForChild("HatchCue") :: BindableEvent
 	cue.Event:Connect(function(kind: string, value: number, rarityName: string?)
 		if kind == "beat" then
-			Sfx.play(if value % 2 == 0 then "crack" else "crack2", { speed = 0.9 + value * 0.07, volume = 0.7 + value * 0.06, gap = 0.05 })
+			if value == 0 then
+				Sfx.play("eggAppear", { gap = 0.2 })
+			else
+				Sfx.play(if value % 2 == 0 then "crack" else "crack2", { speed = 0.94 + math.min(value, 6) * 0.04, volume = 0.6, gap = 0.1 })
+			end
+		elseif kind == "shake" then
+			Sfx.play("eggShake", { gap = 0.8 })
 		elseif kind == "charge" then
-			Sfx.play("clickBright", { speed = 0.9 + value * 0.12, volume = 0.8 + value * 0.05, gap = 0.05 })
+			Sfx.play("clickBright", { speed = 0.95 + value * 0.08, volume = 0.55, gap = 0.1 })
 		elseif kind == "whoosh" then
-			Sfx.play("whooshBig")
+			Sfx.play("travel")
 		elseif kind == "burst" then
 			if rarityName then
-				Sfx.play("pop", { speed = 0.8 })
-			end
-			if rarityName and MYTHIC[rarityName] then
-				Sfx.play("fanfare")
+				Sfx.play("eggBreak")
+				Sfx.play(RARITY_CUE[rarityName] or "revealCommon", { gap = 0.3 })
 			else
-				play(if value >= 3 then "big" else "win")
+				Sfx.play("travelArrival", { gap = 0.5 })
 			end
+		elseif kind == "announcement" then
+			Sfx.play("notify", { gap = 1 })
+		elseif kind == "lawyer" then
+			Sfx.play("eggLawyer", { gap = 0.5 })
+		elseif kind == "equip" then
+			Sfx.play("lawyerEquip", { gap = 0.3 })
 		end
 	end)
 end)
@@ -102,9 +113,9 @@ player.AttributeChanged:Connect(function(name)
 		return
 	end
 	if name:match("^Desk%d+Level$") then
-		play("stinger")
+		play("officeUpgrade")
 	elseif name:match("^Desk%d+Tier$") or name == "DeskCount" then
-		play("big", 1)
+		play("lawyerUnlock", 1)
 	end
 end)
 for name, value in player:GetAttributes() do

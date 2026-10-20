@@ -528,7 +528,7 @@ local function buildSpot(fx: ZoneFx, a: Anchor)
 	fx.spots[a] = list
 	if Presets.QUALITY[quality].Glows then
 		for _, g in fx.preset.Glows or {} do
-			if g.Where == a.kind and not fx.glows[a] then
+			if g.Where == a.kind and (g.Only == nil or anyIn(a.names, g.Only)) and not fx.glows[a] then
 				local p = holder("Glow_" .. a.kind, CFrame.new(a.centre.X, a.hi.Y + (g.Lift or 2), a.centre.Z), Vector3.new(1, 1, 1))
 				local light = Instance.new("PointLight")
 				light.Color = g.Color or Color3.new(1, 1, 1)

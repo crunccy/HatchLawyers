@@ -5,10 +5,11 @@
 --   ON: the redesign islands, Workspace.IslandWiring.<Id> = the gameplay markers built beside each island of
 --       Workspace.WorldRedesign by tools/zones/BuildIslandWiring.lua: EggSpots (Parts), Arrival (Part), ReturnHome
 --       (Part + ReturnPrompt; TravelServer sends you home WITH your eggs), OddsBoard (tag ZoneOddsBoard). Each folder
---       carries attributes Island (the island model's name), BoundsMin / BoundsMax (Vector3, the island's box).
+--       carries attributes Island (the island model's name), BoundsMin / BoundsMax (Vector3, the island's box), and for
+--       the zone boss BossAreaMin / BossAreaMax (the box it walks, Y = the floor) + BossStart (its start pad).
 -- The switch: Config.Zones.Islands.Enabled (the real one) or, in Studio only, workspace attribute IslandsOn (the admin
--- /islands on|off, for testing in a playtest). ZoneService (eggs) and TravelServer (trips) read their folders here and
--- rebind when the mode flips (ZoneMap.changed). Bosses stay on the lane either way (BossService is untouched).
+-- /islands on|off, for testing in a playtest). ZoneService (eggs), TravelServer (trips) and BossService (the zone
+-- bosses, since 2026-10-20) read their folders here and rebind when the mode flips (ZoneMap.changed).
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")

@@ -13,7 +13,7 @@ pitch, Roblox's own stud shape).
 | 4 | Hub ambience (animations, audio research) | **Done 2026-10-18** (crnuch moved on to the islands): [central_hub/AMBIENCE.md](central_hub/AMBIENCE.md) (+ the WorldAmbience design), [central_hub/AUDIO.md](central_hub/AUDIO.md) |
 | 5 | The six egg islands, one at a time | **v2 (the Ocean Shore v2 benchmark), all six done 2026-10-20**: Ocean Shore v2 + Briefcase Bay v2 (crnuch, approved), [Pet Park v2](pet_park_v2/PET_PARK_V2.md) · [Brainrot Zone v2](brainrot_zone_v2/BRAINROT_ZONE_V2.md) · [Food Court v2](food_court_v2/FOOD_COURT_V2.md) · [Space Base v2](space_base_v2/SPACE_BASE_V2.md) (mr.robe's session on `kit/hl_v2.py`, waiting for approval) · v1: Briefcase Bay **approved**: [briefcase_bay/BRIEFCASE_BAY.md](briefcase_bay/BRIEFCASE_BAY.md) · Pet Park **approved**: [pet_park/PET_PARK.md](pet_park/PET_PARK.md) · Brainrot Zone **approved**: [brainrot_zone/BRAINROT_ZONE.md](brainrot_zone/BRAINROT_ZONE.md) · Food Court **done, waiting for approval**: [food_court/FOOD_COURT.md](food_court/FOOD_COURT.md) · Ocean Shore **done, waiting for approval** (mr.robe's session): [ocean_shore/OCEAN_SHORE.md](ocean_shore/OCEAN_SHORE.md) · Space Base **done, waiting for approval** (mr.robe's session): [space_base/SPACE_BASE.md](space_base/SPACE_BASE.md) · all six modelled |
 | 6 | All-islands presentation | not started |
-| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + all six islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). **Wired behind an off switch 2026-10-20** (eggs, Travel, RETURN HOME; bosses + hub firms not yet): see "Wiring" below |
+| 7 | Roblox integration | **Started 2026-10-19** (user's call on mr.robe's PC, "just build them"): the hub + all six islands are built into the place as studded Parts in `Workspace.WorldRedesign`, east of today's map, not wired to gameplay yet (see "Building into the place" below). **Wired behind an off switch 2026-10-20** (eggs, Travel, RETURN HOME, and the bosses since later that day; hub firms not yet): see "Wiring" below |
 
 ## Layout
 ```
@@ -102,8 +102,11 @@ The islands in the place can run the egg zones (user's call on mr.robe's PC: "be
   in the place are v1): 24 egg spots, the arrival (facing north), the RETURN HOME trigger in the portal ring, an odds
   board beside the arrival (tag ZoneOddsBoard). Re-run it whenever an island is rebuilt (for v2: point its MAP at
   `bbv2_layout.json` / `osv2_layout.json` once those islands are built into the place).
-- **Not wired yet:** the bosses (BossService still guards the lane; crnuch's boss overhaul owns those files), firms on
-  the hub island (firms stay on today's hub; RETURN HOME goes there), the zone-name banner + Travel map's "you are
+- **The bosses (2026-10-20, mr.robe's session):** BossService reads ZoneMap too. On the islands each boss walks the box
+  its island keeps clear for it (the layout's `boss.box_roblox_xz` -> IslandWiring attributes `BossAreaMin` /
+  `BossAreaMax`, Y = the floor), starts on its start pad (`BossStart`), and everyone on the island (`BoundsMin` /
+  `BoundsMax`) is in its zone. Slams / rolls / charges are clamped to the box, so attacks stay on the island.
+- **Not wired yet:** firms on the hub island (firms stay on today's hub; RETURN HOME goes there), the zone-name banner + Travel map's "you are
   here" (both use the lane's Bounds), a space skybox for Space Base.
 - Playtested 2026-10-20: off = 84 eggs on the lane; `/islands on` = 14 eggs on each island, lane empty; Travel to
   Ocean Shore landed on its arrival facing north; bought an egg there; Travel home refused (carrying); the RETURN HOME

@@ -12,12 +12,12 @@ local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Puppet = require(Shared:WaitForChild("Puppet") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 local BigCase = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("BigCase") :: RemoteEvent
 
 local CFG = Config.BigCase
@@ -43,29 +43,11 @@ local function now(): number
 	return workspace:GetServerTimeNow()
 end
 
----------------------------------------------------------------- sounds (same licensed ids as Sounds)
-local sfx: { [string]: Sound } = {}
-for name, info in {
-	siren = { id = "rbxassetid://9045751375", volume = 0.55, speed = 1 },
-	win = { id = "rbxassetid://1844278029", volume = 0.5, speed = 1 },
-	gavel = { id = "rbxassetid://9125574353", volume = 0.8, speed = 1 },
-	tap = { id = "rbxassetid://15675055424", volume = 0.35, speed = 1.15 }, -- UI cute pop
-	wrong = { id = "rbxassetid://15675075163", volume = 0.45, speed = 1 }, -- UI delete
-} do
-	local s = Instance.new("Sound")
-	s.Name = "BigCase_" .. name
-	s.SoundId = info.id
-	s.Volume = info.volume
-	s.PlaybackSpeed = info.speed
-	s.SoundGroup = SoundService:FindFirstChild("SFX") :: SoundGroup?
-	s.Parent = SoundService
-	sfx[name] = s
-end
+---------------------------------------------------------------- sounds (shared balanced catalogue)
 local function play(name: string)
-	local s = sfx[name]
-	if s then
-		s.TimePosition = 0
-		s:Play()
+	local cue = ({ siren = "courtAlert", win = "caseComplete", gavel = "gavel", tap = "clickBright", wrong = "error" })[name]
+	if cue then
+		Sfx.play(cue, { gap = if name == "tap" then 0.12 else 0.2, volume = if name == "tap" then 0.7 else 1 })
 	end
 end
 
@@ -436,6 +418,7 @@ local function buildMash(sd: Active)
 		bars[tostring(info.userId)] = { fill = fill, count = count }
 	end
 	local button = bigButton("OBJECTION!", RED, UDim2.new(0.5, 0, 1, -50), Vector2.new(300, 90))
+	button:SetAttribute("NoClick", true) -- the timed tap has its own short cue
 	text({ AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 4), Size = UDim2.fromOffset(300, 16), Text = "TAP! (or mash SPACE)", FontFace = BODY, ZIndex = 2, Parent = stage }, 14)
 
 	local function redraw()
