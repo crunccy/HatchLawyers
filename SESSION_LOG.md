@@ -28,6 +28,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
   The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
+  **Prosecutor Big Cheese (Cheese Roll + Wheel Split) in progress since 2026-10-20** (crnuch local, side session):
+  bosses.py / boss_anims.py / Bosses.client / BossService / Config boss entries claimed until it's presented.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
