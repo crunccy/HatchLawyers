@@ -1,0 +1,609 @@
+{
+ "island": "Food_Court_V2",
+ "places": [
+  {
+   "name": "SPAWN (arrival pad, safe zone)",
+   "blender_xy": [
+    -169.4,
+    -158.6
+   ],
+   "roblox_xz": [
+    -169.4,
+    158.6
+   ],
+   "what": "the classic blue-and-white spawn pad at the end of a condiment-lamp boardwalk"
+  },
+  {
+   "name": "ESCAPE PORTAL (RETURN HOME)",
+   "blender_xy": [
+    146.7,
+    146.7
+   ],
+   "roblox_xz": [
+    146.7,
+    -146.7
+   ],
+   "what": "purple vortex in a ring of craggy rock, flush with the floor (no stairs)"
+  },
+  {
+   "name": "Prosecutor Big Cheese's start pad",
+   "blender_xy": [
+    0.0,
+    10.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -10.0
+   ],
+   "what": "a subtle ring of sunken flat stones flush with the floor"
+  },
+  {
+   "name": "Fall off the edge (330 deg)",
+   "blender_xy": [
+    174.2,
+    -95.6
+   ],
+   "roblox_xz": [
+    174.2,
+    95.6
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "BURGER BARN",
+   "blender_xy": [
+    -61.6,
+    157.4
+   ],
+   "roblox_xz": [
+    -61.6,
+    -157.4
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "PIZZA PALACE",
+   "blender_xy": [
+    71.2,
+    151.1
+   ],
+   "roblox_xz": [
+    71.2,
+    -151.1
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "DONUT DINER",
+   "blender_xy": [
+    -159.4,
+    5.0
+   ],
+   "roblox_xz": [
+    -159.4,
+    -5.0
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "TACO TOWER",
+   "blender_xy": [
+    -143.7,
+    143.8
+   ],
+   "roblox_xz": [
+    -143.7,
+    -143.8
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "Giant burger",
+   "blender_xy": [
+    82.3,
+    -137.6
+   ],
+   "roblox_xz": [
+    82.3,
+    137.6
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "Giant fries",
+   "blender_xy": [
+    159.9,
+    -23.2
+   ],
+   "roblox_xz": [
+    159.9,
+    23.2
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "Soda-cup fountain",
+   "blender_xy": [
+    4.9,
+    146.6
+   ],
+   "roblox_xz": [
+    4.9,
+    -146.6
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  },
+  {
+   "name": "Giant ice cream",
+   "blender_xy": [
+    145.5,
+    -126.0
+   ],
+   "roblox_xz": [
+    145.5,
+    126.0
+   ],
+   "what": "scenery round the tablecloth, out of Big Cheese's reach"
+  }
+ ],
+ "egg_regions": [
+  {
+   "name": "Picnic Corner",
+   "blender_xy": [
+    -74,
+    30
+   ],
+   "roblox_xz": [
+    -74,
+    -30
+   ],
+   "radius": 26,
+   "risk": "west, by the cake cliffs: mid risk"
+  },
+  {
+   "name": "Dessert Spot",
+   "blender_xy": [
+    4,
+    -64
+   ],
+   "roblox_xz": [
+    4,
+    64
+   ],
+   "radius": 24,
+   "risk": "south, nearest the spawn: the safer start"
+  },
+  {
+   "name": "Salad Bowl",
+   "blender_xy": [
+    80,
+    -20
+   ],
+   "roblox_xz": [
+    80,
+    20
+   ],
+   "radius": 26,
+   "risk": "east, by the soda pools: mid risk"
+  },
+  {
+   "name": "Snack Trail",
+   "blender_xy": [
+    -34,
+    80
+   ],
+   "roblox_xz": [
+    -34,
+    -80
+   ],
+   "radius": 22,
+   "risk": "north, on Big Cheese's roll line: high risk"
+  },
+  {
+   "name": "Sundae Row",
+   "blender_xy": [
+    70,
+    74
+   ],
+   "roblox_xz": [
+    70,
+    -74
+   ],
+   "radius": 22,
+   "risk": "north-east, on the way to the portal: high risk"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -81.3,
+    31.4
+   ],
+   "roblox_xz": [
+    -81.3,
+    -31.4
+   ],
+   "region": "Picnic Corner"
+  },
+  {
+   "blender_xy": [
+    -93.5,
+    46.8
+   ],
+   "roblox_xz": [
+    -93.5,
+    -46.8
+   ],
+   "region": "Picnic Corner"
+  },
+  {
+   "blender_xy": [
+    -74.0,
+    11.3
+   ],
+   "roblox_xz": [
+    -74.0,
+    -11.3
+   ],
+   "region": "Picnic Corner"
+  },
+  {
+   "blender_xy": [
+    -86.7,
+    21.9
+   ],
+   "roblox_xz": [
+    -86.7,
+    -21.9
+   ],
+   "region": "Picnic Corner"
+  },
+  {
+   "blender_xy": [
+    -56.5,
+    25.2
+   ],
+   "roblox_xz": [
+    -56.5,
+    -25.2
+   ],
+   "region": "Picnic Corner"
+  },
+  {
+   "blender_xy": [
+    -84.2,
+    52.9
+   ],
+   "roblox_xz": [
+    -84.2,
+    -52.9
+   ],
+   "region": "Picnic Corner"
+  },
+  {
+   "blender_xy": [
+    5.6,
+    -80.5
+   ],
+   "roblox_xz": [
+    5.6,
+    80.5
+   ],
+   "region": "Dessert Spot"
+  },
+  {
+   "blender_xy": [
+    3.2,
+    -71.1
+   ],
+   "roblox_xz": [
+    3.2,
+    71.1
+   ],
+   "region": "Dessert Spot"
+  },
+  {
+   "blender_xy": [
+    6.3,
+    -49.1
+   ],
+   "roblox_xz": [
+    6.3,
+    49.1
+   ],
+   "region": "Dessert Spot"
+  },
+  {
+   "blender_xy": [
+    -10.7,
+    -70.4
+   ],
+   "roblox_xz": [
+    -10.7,
+    70.4
+   ],
+   "region": "Dessert Spot"
+  },
+  {
+   "blender_xy": [
+    -11.4,
+    -58.2
+   ],
+   "roblox_xz": [
+    -11.4,
+    58.2
+   ],
+   "region": "Dessert Spot"
+  },
+  {
+   "blender_xy": [
+    18.7,
+    -82.1
+   ],
+   "roblox_xz": [
+    18.7,
+    82.1
+   ],
+   "region": "Dessert Spot"
+  },
+  {
+   "blender_xy": [
+    92.2,
+    -22.6
+   ],
+   "roblox_xz": [
+    92.2,
+    22.6
+   ],
+   "region": "Salad Bowl"
+  },
+  {
+   "blender_xy": [
+    87.6,
+    3.6
+   ],
+   "roblox_xz": [
+    87.6,
+    -3.6
+   ],
+   "region": "Salad Bowl"
+  },
+  {
+   "blender_xy": [
+    68.2,
+    1.1
+   ],
+   "roblox_xz": [
+    68.2,
+    -1.1
+   ],
+   "region": "Salad Bowl"
+  },
+  {
+   "blender_xy": [
+    83.9,
+    -43.3
+   ],
+   "roblox_xz": [
+    83.9,
+    43.3
+   ],
+   "region": "Salad Bowl"
+  },
+  {
+   "blender_xy": [
+    70.4,
+    -34.2
+   ],
+   "roblox_xz": [
+    70.4,
+    34.2
+   ],
+   "region": "Salad Bowl"
+  },
+  {
+   "blender_xy": [
+    73.1,
+    -22.2
+   ],
+   "roblox_xz": [
+    73.1,
+    22.2
+   ],
+   "region": "Salad Bowl"
+  },
+  {
+   "blender_xy": [
+    -48.7,
+    66.0
+   ],
+   "roblox_xz": [
+    -48.7,
+    -66.0
+   ],
+   "region": "Snack Trail"
+  },
+  {
+   "blender_xy": [
+    -30.3,
+    66.4
+   ],
+   "roblox_xz": [
+    -30.3,
+    -66.4
+   ],
+   "region": "Snack Trail"
+  },
+  {
+   "blender_xy": [
+    -51.1,
+    89.7
+   ],
+   "roblox_xz": [
+    -51.1,
+    -89.7
+   ],
+   "region": "Snack Trail"
+  },
+  {
+   "blender_xy": [
+    -40.2,
+    87.9
+   ],
+   "roblox_xz": [
+    -40.2,
+    -87.9
+   ],
+   "region": "Snack Trail"
+  },
+  {
+   "blender_xy": [
+    -21.6,
+    76.7
+   ],
+   "roblox_xz": [
+    -21.6,
+    -76.7
+   ],
+   "region": "Snack Trail"
+  },
+  {
+   "blender_xy": [
+    63.5,
+    90.8
+   ],
+   "roblox_xz": [
+    63.5,
+    -90.8
+   ],
+   "region": "Sundae Row"
+  },
+  {
+   "blender_xy": [
+    50.7,
+    83.7
+   ],
+   "roblox_xz": [
+    50.7,
+    -83.7
+   ],
+   "region": "Sundae Row"
+  },
+  {
+   "blender_xy": [
+    67.0,
+    58.1
+   ],
+   "roblox_xz": [
+    67.0,
+    -58.1
+   ],
+   "region": "Sundae Row"
+  },
+  {
+   "blender_xy": [
+    50.0,
+    66.6
+   ],
+   "roblox_xz": [
+    50.0,
+    -66.6
+   ],
+   "region": "Sundae Row"
+  },
+  {
+   "blender_xy": [
+    79.4,
+    89.6
+   ],
+   "roblox_xz": [
+    79.4,
+    -89.6
+   ],
+   "region": "Sundae Row"
+  }
+ ],
+ "checks": {
+  "floor_decor": "small walk-through decor on the floor: at most 1.0 studs tall, collision off in Roblox",
+  "box_open_floor": "2958/2958 sample points (4-stud grid) in the boss's box are open floor",
+  "attack_lanes": "896/896 sampled Line lanes (22 wide) run clear; 336 reach the full 110 studs (the rest stop at the box edge)",
+  "egg_edge_clearance": {
+   "Picnic Corner": "50.4 studs to the floor edge (drops scatter at most 20.7)",
+   "Dessert Spot": "34.4 studs to the floor edge (drops scatter at most 20.7)",
+   "Salad Bowl": "44.1 studs to the floor edge (drops scatter at most 20.7)",
+   "Snack Trail": "41.1 studs to the floor edge (drops scatter at most 20.7)",
+   "Sundae Row": "63.0 studs to the floor edge (drops scatter at most 20.7)"
+  },
+  "spawn_safe": "spawn pad 84 studs outside the box (his reach past it: 21.6)",
+  "portal_threat": "portal 52 studs outside the box: the last ~8 studs of the approach are inside his 60-stud trigger",
+  "spawn_to_portal": "reachable on level ground",
+  "no_safe_bypass": "no walkable route avoids his reach (every route crosses his box)",
+  "box_on_floor": "all four box corners are on the floor",
+  "egg_spots": "28 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
+ },
+ "boss": {
+  "box_blender": [
+   -115.0,
+   -95.0,
+   115.0,
+   105.0
+  ],
+  "box_roblox_xz": [
+   -115.0,
+   -105.0,
+   115.0,
+   95.0
+  ],
+  "reach": 21.6,
+  "Name": "Prosecutor Big Cheese",
+  "Model": "BigCheese",
+  "Scale": 3.2,
+  "WalkSpeed": 40,
+  "Chase": 0.85,
+  "AttackEvery": 3.5,
+  "Windup": 1.2,
+  "Attack": "Line",
+  "Length": 110,
+  "Width": 22,
+  "LineSpeed": 120,
+  "HitboxWidth": 21.12,
+  "Height": 20.480000000000004,
+  "TriggerRange": 60
+ },
+ "fx": {
+  "edge_lips": [
+   [
+    174.2,
+    -95.6,
+    0.6,
+    330
+   ]
+  ],
+  "pools": [
+   [
+    -156.7,
+    95.5,
+    14
+   ],
+   [
+    156.6,
+    -85.4,
+    14
+   ],
+   [
+    168.2,
+    73.0,
+    12
+   ],
+   [
+    -5.3,
+    -145.6,
+    10
+   ]
+  ],
+  "gull_rings": [],
+  "spinners": [],
+  "steam": [],
+  "motes": []
+ }
+}

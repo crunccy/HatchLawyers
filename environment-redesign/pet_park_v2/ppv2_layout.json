@@ -1,0 +1,627 @@
+{
+ "island": "Pet_Park_V2",
+ "places": [
+  {
+   "name": "SPAWN (arrival pad, safe zone)",
+   "blender_xy": [
+    -169.4,
+    -158.6
+   ],
+   "roblox_xz": [
+    -169.4,
+    158.6
+   ],
+   "what": "the classic blue-and-white spawn pad at the end of a lamp-lit boardwalk"
+  },
+  {
+   "name": "ESCAPE PORTAL (RETURN HOME)",
+   "blender_xy": [
+    146.7,
+    146.7
+   ],
+   "roblox_xz": [
+    146.7,
+    -146.7
+   ],
+   "what": "purple vortex in a ring of craggy rock, flush with the floor (no stairs)"
+  },
+  {
+   "name": "Barrister Bulldog's start pad",
+   "blender_xy": [
+    0.0,
+    10.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -10.0
+   ],
+   "what": "a subtle ring of sunken flat stones flush with the floor"
+  },
+  {
+   "name": "Duck pond + bridge",
+   "blender_xy": [
+    -160.0,
+    97.4
+   ],
+   "roblox_xz": [
+    -160.0,
+    -97.4
+   ],
+   "what": "a pond with lily pads, ducks and a little wooden bridge (scenery)"
+  },
+  {
+   "name": "Fall off the edge (330 deg)",
+   "blender_xy": [
+    174.2,
+    -95.6
+   ],
+   "roblox_xz": [
+    174.2,
+    95.6
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Giant corgi statue",
+   "blender_xy": [
+    -61.6,
+    157.4
+   ],
+   "roblox_xz": [
+    -61.6,
+    -157.4
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "Giant cat statue",
+   "blender_xy": [
+    73.1,
+    154.8
+   ],
+   "roblox_xz": [
+    73.1,
+    -154.8
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "Dog house",
+   "blender_xy": [
+    -154.6,
+    -8.5
+   ],
+   "roblox_xz": [
+    -154.6,
+    8.5
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "Dog house",
+   "blender_xy": [
+    -152.3,
+    -38.7
+   ],
+   "roblox_xz": [
+    -152.3,
+    38.7
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "Dog house",
+   "blender_xy": [
+    -154.8,
+    -73.9
+   ],
+   "roblox_xz": [
+    -154.8,
+    73.9
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "Cat tower",
+   "blender_xy": [
+    82.3,
+    -137.6
+   ],
+   "roblox_xz": [
+    82.3,
+    137.6
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "Rabbit hutch",
+   "blender_xy": [
+    159.9,
+    -23.2
+   ],
+   "roblox_xz": [
+    159.9,
+    23.2
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "THE BARKERY",
+   "blender_xy": [
+    5.3,
+    155.6
+   ],
+   "roblox_xz": [
+    5.3,
+    -155.6
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  },
+  {
+   "name": "PAW CLINIC",
+   "blender_xy": [
+    -118.2,
+    156.3
+   ],
+   "roblox_xz": [
+    -118.2,
+    -156.3
+   ],
+   "what": "scenery round the lawn, out of the bulldog's reach"
+  }
+ ],
+ "egg_regions": [
+  {
+   "name": "Fetch Field",
+   "blender_xy": [
+    -68,
+    28
+   ],
+   "roblox_xz": [
+    -68,
+    -28
+   ],
+   "radius": 24,
+   "risk": "west, by the tennis-ball pile: mid risk"
+  },
+  {
+   "name": "Bowl Green",
+   "blender_xy": [
+    0,
+    -58
+   ],
+   "roblox_xz": [
+    0,
+    58
+   ],
+   "radius": 22,
+   "risk": "south, nearest the spawn: the safer start"
+  },
+  {
+   "name": "Ball Pit Meadow",
+   "blender_xy": [
+    70,
+    -22
+   ],
+   "roblox_xz": [
+    70,
+    22
+   ],
+   "radius": 24,
+   "risk": "east, under the outcrops: mid risk"
+  },
+  {
+   "name": "Agility Lawn",
+   "blender_xy": [
+    -30,
+    72
+   ],
+   "roblox_xz": [
+    -30,
+    -72
+   ],
+   "radius": 20,
+   "risk": "north, on the bulldog's patrol line: high risk"
+  },
+  {
+   "name": "Bone Garden",
+   "blender_xy": [
+    62,
+    66
+   ],
+   "roblox_xz": [
+    62,
+    -66
+   ],
+   "radius": 20,
+   "risk": "north-east, on the way to the portal: high risk"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -63.0,
+    33.0
+   ],
+   "roblox_xz": [
+    -63.0,
+    -33.0
+   ],
+   "region": "Fetch Field"
+  },
+  {
+   "blender_xy": [
+    -76.1,
+    47.7
+   ],
+   "roblox_xz": [
+    -76.1,
+    -47.7
+   ],
+   "region": "Fetch Field"
+  },
+  {
+   "blender_xy": [
+    -69.3,
+    16.9
+   ],
+   "roblox_xz": [
+    -69.3,
+    -16.9
+   ],
+   "region": "Fetch Field"
+  },
+  {
+   "blender_xy": [
+    -70.7,
+    6.7
+   ],
+   "roblox_xz": [
+    -70.7,
+    -6.7
+   ],
+   "region": "Fetch Field"
+  },
+  {
+   "blender_xy": [
+    -78.4,
+    32.9
+   ],
+   "roblox_xz": [
+    -78.4,
+    -32.9
+   ],
+   "region": "Fetch Field"
+  },
+  {
+   "blender_xy": [
+    -88.4,
+    35.3
+   ],
+   "roblox_xz": [
+    -88.4,
+    -35.3
+   ],
+   "region": "Fetch Field"
+  },
+  {
+   "blender_xy": [
+    -14.7,
+    -62.4
+   ],
+   "roblox_xz": [
+    -14.7,
+    62.4
+   ],
+   "region": "Bowl Green"
+  },
+  {
+   "blender_xy": [
+    0.2,
+    -73.4
+   ],
+   "roblox_xz": [
+    0.2,
+    73.4
+   ],
+   "region": "Bowl Green"
+  },
+  {
+   "blender_xy": [
+    5.5,
+    -62.1
+   ],
+   "roblox_xz": [
+    5.5,
+    62.1
+   ],
+   "region": "Bowl Green"
+  },
+  {
+   "blender_xy": [
+    -10.4,
+    -53.7
+   ],
+   "roblox_xz": [
+    -10.4,
+    53.7
+   ],
+   "region": "Bowl Green"
+  },
+  {
+   "blender_xy": [
+    -10.6,
+    -74.9
+   ],
+   "roblox_xz": [
+    -10.6,
+    74.9
+   ],
+   "region": "Bowl Green"
+  },
+  {
+   "blender_xy": [
+    88.1,
+    -26.1
+   ],
+   "roblox_xz": [
+    88.1,
+    26.1
+   ],
+   "region": "Ball Pit Meadow"
+  },
+  {
+   "blender_xy": [
+    75.3,
+    -33.8
+   ],
+   "roblox_xz": [
+    75.3,
+    33.8
+   ],
+   "region": "Ball Pit Meadow"
+  },
+  {
+   "blender_xy": [
+    55.7,
+    -40.3
+   ],
+   "roblox_xz": [
+    55.7,
+    40.3
+   ],
+   "region": "Ball Pit Meadow"
+  },
+  {
+   "blender_xy": [
+    64.2,
+    -23.2
+   ],
+   "roblox_xz": [
+    64.2,
+    23.2
+   ],
+   "region": "Ball Pit Meadow"
+  },
+  {
+   "blender_xy": [
+    53.4,
+    -18.0
+   ],
+   "roblox_xz": [
+    53.4,
+    18.0
+   ],
+   "region": "Ball Pit Meadow"
+  },
+  {
+   "blender_xy": [
+    76.9,
+    -0.9
+   ],
+   "roblox_xz": [
+    76.9,
+    0.9
+   ],
+   "region": "Ball Pit Meadow"
+  },
+  {
+   "blender_xy": [
+    -34.2,
+    67.0
+   ],
+   "roblox_xz": [
+    -34.2,
+    -67.0
+   ],
+   "region": "Agility Lawn"
+  },
+  {
+   "blender_xy": [
+    -19.5,
+    62.5
+   ],
+   "roblox_xz": [
+    -19.5,
+    -62.5
+   ],
+   "region": "Agility Lawn"
+  },
+  {
+   "blender_xy": [
+    -13.5,
+    83.0
+   ],
+   "roblox_xz": [
+    -13.5,
+    -83.0
+   ],
+   "region": "Agility Lawn"
+  },
+  {
+   "blender_xy": [
+    -22.3,
+    88.0
+   ],
+   "roblox_xz": [
+    -22.3,
+    -88.0
+   ],
+   "region": "Agility Lawn"
+  },
+  {
+   "blender_xy": [
+    -43.2,
+    74.9
+   ],
+   "roblox_xz": [
+    -43.2,
+    -74.9
+   ],
+   "region": "Agility Lawn"
+  },
+  {
+   "blender_xy": [
+    62.8,
+    71.2
+   ],
+   "roblox_xz": [
+    62.8,
+    -71.2
+   ],
+   "region": "Bone Garden"
+  },
+  {
+   "blender_xy": [
+    76.2,
+    62.4
+   ],
+   "roblox_xz": [
+    76.2,
+    -62.4
+   ],
+   "region": "Bone Garden"
+  },
+  {
+   "blender_xy": [
+    69.2,
+    54.4
+   ],
+   "roblox_xz": [
+    69.2,
+    -54.4
+   ],
+   "region": "Bone Garden"
+  },
+  {
+   "blender_xy": [
+    57.8,
+    54.0
+   ],
+   "roblox_xz": [
+    57.8,
+    -54.0
+   ],
+   "region": "Bone Garden"
+  },
+  {
+   "blender_xy": [
+    54.5,
+    82.1
+   ],
+   "roblox_xz": [
+    54.5,
+    -82.1
+   ],
+   "region": "Bone Garden"
+  }
+ ],
+ "checks": {
+  "floor_decor": "small walk-through decor on the floor: at most 1.2 studs tall, collision off in Roblox",
+  "box_open_floor": "2397/2397 sample points (4-stud grid) in the boss's box are open floor",
+  "attack_area": "3520/3520 points of his Ring (r 34) cast from a 20-stud grid over the box are clear (nothing tall in his reach; points off the floor still count as open air / grass)",
+  "egg_edge_clearance": {
+   "Fetch Field": "55.7 studs to the floor edge (drops scatter at most 20.7)",
+   "Bowl Green": "42.8 studs to the floor edge (drops scatter at most 20.7)",
+   "Ball Pit Meadow": "49.7 studs to the floor edge (drops scatter at most 20.7)",
+   "Agility Lawn": "42.9 studs to the floor edge (drops scatter at most 20.7)",
+   "Bone Garden": "73.6 studs to the floor edge (drops scatter at most 20.7)"
+  },
+  "spawn_safe": "spawn pad 99 studs outside the box (his reach past it: 38.5)",
+  "portal_threat": "portal 67 studs outside the box: the last ~0 studs of the approach are inside his 60-stud trigger",
+  "spawn_to_portal": "reachable on level ground",
+  "no_safe_bypass": "no walkable route avoids his reach (every route crosses his box)",
+  "box_on_floor": "all four box corners are on the floor",
+  "egg_spots": "27 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
+ },
+ "boss": {
+  "box_blender": [
+   -100.0,
+   -88.0,
+   100.0,
+   98.0
+  ],
+  "box_roblox_xz": [
+   -100.0,
+   -98.0,
+   100.0,
+   88.0
+  ],
+  "reach": 38.5,
+  "Name": "Barrister Bulldog",
+  "Model": "BarristerBulldog",
+  "Scale": 3.5,
+  "WalkSpeed": 44,
+  "Chase": 0.9,
+  "AttackEvery": 3,
+  "Windup": 1.4,
+  "Attack": "Ring",
+  "Radius": 34,
+  "HitboxWidth": 18.2,
+  "Height": 26.599999999999998,
+  "TriggerRange": 60
+ },
+ "fx": {
+  "edge_lips": [
+   [
+    174.2,
+    -95.6,
+    0.6,
+    330
+   ]
+  ],
+  "pools": [
+   [
+    -160.0,
+    97.4,
+    15
+   ],
+   [
+    157.7,
+    -86.1,
+    14
+   ],
+   [
+    169.0,
+    66.5,
+    12
+   ],
+   [
+    -13.2,
+    -145.9,
+    10
+   ]
+  ],
+  "gull_rings": [
+   [
+    0,
+    20,
+    150,
+    40
+   ]
+  ],
+  "spinners": [],
+  "steam": [],
+  "motes": []
+ }
+}

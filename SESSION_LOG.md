@@ -23,11 +23,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
-- **mr.robe (local), since 2026-10-20:** the REST OF THE ISLANDS redone to the Ocean Shore v2 benchmark (user's call:
-  "do the same for the rest of the islands and transform them all"): Pet Park v2, Brainrot Zone v2, Food Court v2,
-  Space Base v2 in Blender (v1 kept), then all six v2 islands built into `Workspace.WorldRedesign` (v1 models moved to
-  `ServerStorage.Old_WorldRedesign_v1`) + IslandWiring rebuilt from the v2 layouts. Backup tag
-  `backup-2026-10-20-before-v2-islands`. Don't redo these islands meanwhile.
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
@@ -54,6 +49,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
       boss danger until the bosses are wired. Still to wire: boss arenas (after crnuch's boss overhaul
       releases BossService), the hub's firm lots, the zone banner + Travel map "you are here" (lane Bounds), raised
       studs (StudTop tags), a space skybox for Space Base; then decide when to flip the switch for real (both users).
+      The six islands are the v2 versions since 2026-10-20 (entry below); still to check: buying an egg on a v2
+      island with Studio in FRONT (the 2026-10-20 test couldn't: no prompts showed with Studio in the background), the
+      four new v2 islands' ambience passes, crnuch's review of them.
       Re-run BuildIslandWiring after any island rebuild (v2 layouts). Check fps / memory on a phone: the place
       went from ~19.5k to ~128k parts (all islands stream; move them to ServerStorage if it hurts).
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
@@ -201,6 +199,35 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — mr.robe, local session: the rest of the islands redone to v2 + all six v2 islands in the place
+- **User's call** (mr.robe's PC, after seeing crnuch's Ocean Shore v2 + Briefcase Bay v2): "do the same for the rest of
+  the islands and transform them all". Backup first: tag `backup-2026-10-20-before-v2-islands` (pushed).
+- **`environment-redesign/kit/hl_v2.py`** = crnuch's Ocean Shore v2 build turned into a shared frame (squircle floor +
+  lobes, body + underside, spawn dock + pad and the purple escape portal from osv2's parts, egg regions sized by
+  DROP_MAX, scenery-ring helpers keeping everything outside box + reach, the measured checks incl. a radial check for
+  Ring / Slam / Pull bosses, the diagram, the 7 renders, the benchmark-shaped layout JSON).
+- **Four v2 islands** (Blender, each with doc, .blend, layout JSON, 7 renders; v1 untouched), all checks passing:
+  - **Pet Park v2** (`pet_park_v2/`): one striped lawn, Barrister Bulldog's Ring 34 (box 200 x 186, reach 38.5);
+    mossy outcrops + park trees, duck ponds + a fall, corgi + cat statues, dog houses, the Barkery + Paw Clinic; 27 spots
+  - **Brainrot Zone v2** (`brainrot_zone_v2/`): a lilac checkerboard, Judge Martello's Slam 26 (208 x 190); purple
+    crystal cliffs, goo pools + a goo fall, the twisty tower / big screen / melty mall / upside-down house; 27 spots
+  - **Food Court v2** (`food_court_v2/`): a giant picnic tablecloth, Big Cheese's 110 x 22 roll (230 x 200, 896/896
+    lanes clear); cake cliffs with frosting + chocolate drips, soda / chocolate pools, the restaurants; 28 spots
+  - **Space Base v2** (`space_base_v2/`): a cratered moon plate, Eclipse's Pull 44 / Ring 38 (184 x 170, reach 47.8);
+    violet moon cliffs with crystals, plasma pools + a fall, the rocket / observatory / domes / factory / dish / UFO; stars; 25 spots
+  - honest gaps: no ambience pass on these four yet; not reviewed by crnuch.
+- **`hl_export.py`** records crnuch's classic kit now (smooth primitives as real Parts; slabs / rocks / beams / fronds as
+  boxes; nothing nested, so nothing doubled) and skips presentation meshes (preview eggs, egg markers, diagram overlays,
+  labels - the first export put the diagram 80 studs over each island; fixed before the final build).
+- **Into the place:** the six v1 islands moved to `ServerStorage.Old_WorldRedesign_v1`; the six v2 islands built
+  (OS v2 25.5k, BB v2 25.9k, PP 12.2k, BR 8.0k, FC 10.6k, SB 10.2k parts; WorldRedesign 120k with the hub);
+  `BuildIslandWiring.lua` reads the v2 layouts (Arrival on the spawn pad facing the island, ReturnHome = a walk-in box
+  at the portal, set from the floor height (a raycast hit the arch at first), the odds board where the dock meets the floor).
+- **Playtested** (switch on): 14 eggs on each v2 island, none on the lane; Travel to Pet Park landed on its spawn pad;
+  walking into the escape portal sent the player home. **Buying an egg on a v2 island did not trigger** in this test: no
+  ProximityPrompt showed at all with Studio in the background (it worked on v1 the day before with the same code);
+  recheck with Studio in front. Probe + test scripts lived only in the playtest; nothing left in the edit place.
 
 ## 2026-10-20 — mr.robe, local session: the islands switch turned ON
 - **User's call** (mr.robe, after hearing the trade-offs: no bosses on the islands yet, v1 islands, crnuch's "leave

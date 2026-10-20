@@ -64,7 +64,8 @@ def _matrix(xb, yb):
 
 
 def _on(self):
-    return self.name not in SKIP_MESHES and not self.name.startswith("Sky_")  # (Sky_* = far Blender-only backdrops)
+    # (Sky_* = far Blender-only backdrops; Preview eggs, egg-spot markers, diagram overlays + labels = presentation only)
+    return self.name not in SKIP_MESHES and not self.name.startswith(("Sky_", "Preview", "Egg_Spot", "Diagram", "Label"))
 
 
 def _box(self, cx, cy, zc, sx, sy, h, look, rot):
@@ -241,3 +242,176 @@ def model_from_parts(col, name, parts, x, y, z=0.0, scale=1.0, facing=0.0):
 
 
 HI.model_from_parts = model_from_parts
+
+
+# ------------------------------------------------------------------ the CLASSIC kit (Ocean Shore v2 benchmark, hl_classic)
+# (2026-10-20, mr.robe's session: "transform them all" = the v2 islands into the place.) ClassicMesh overrides the
+# primitives with SMOOTH Roblox shapes and adds organic pieces, none of which call Mesh.brick - so they get recorders
+# of their own: smooth primitives as real Cylinders / Balls / WedgeParts / turned boxes (the pre-voxel recorders' maths),
+# and approximations where Roblox has no matching Part: a slab (an organic polygon) = rows of boxes with a thin top layer
+# in its top colour; a rock (a jittered box) = a turned box + its top colour; a beam = one box along it; a frond = a few
+# thin boxes along its curve. (Exact cohesive shapes would need MeshParts uploaded by crnuch: the open parts vs meshes call.)
+import hl_classic as CL
+
+
+def _rec_band(self, pts, z0, z1, look):
+    ys = [p[1] for p in pts]
+    y0, y1 = min(ys), max(ys)
+    span = y1 - y0
+    if span <= 0.05 or z1 - z0 <= 0.01:
+        return
+    bw = max(0.5, min(2.0, span / 60.0))
+    n = max(1, int(math.ceil(span / bw)))
+    bw = span / n
+    m = len(pts)
+    for i in range(n):
+        yc = y0 + (i + 0.5) * bw
+        xi = sorted(xa + (yc - ya) * (xb - xa) / (yb - ya) for (xa, ya), (xb, yb) in zip(pts, pts[1:] + pts[:1])
+                    if (ya <= yc < yb) or (yb <= yc < ya))
+        for a, b in zip(xi[0::2], xi[1::2]):
+            if b - a > 0.05:
+                _box(self, (a + b) / 2, yc, (z0 + z1) / 2, b - a, bw + 0.02, z1 - z0, look, 0.0)
+
+
+def _rec_prism(self, pts, z0, z1, look, *a, **k):
+    _rec_band(self, list(pts), z0, z1, look)
+
+
+def _rec_slab(self, pts, z0, z1, look, chamfer=0.5, top=None):
+    pts = list(pts)
+    t = min(0.3, (z1 - z0) / 2) if top and top != look else 0.0
+    _rec_band(self, pts, z0, z1 - t, look)
+    if t:
+        _rec_band(self, pts, z1 - t, z1, top)
+
+
+def _rec_rock(self, cx, cy, z0, sx, sy, h, look, top=None, rot=0.0, jitter=0.18, taper=0.12):
+    f = 1 - taper / 2
+    if top and top != look and h > 0.6:
+        _box(self, cx, cy, z0 + (h - 0.25) / 2, sx * f, sy * f, h - 0.25, look, rot)
+        _box(self, cx, cy, z0 + h - 0.125, sx * (1 - taper), sy * (1 - taper), 0.25, top, rot)
+    else:
+        _box(self, cx, cy, z0 + h / 2, sx * f, sy * f, h, look, rot)
+
+
+def _beam_basis(p0, p1, roll=0.0):
+    dx, dy, dz = p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]
+    L = math.sqrt(dx * dx + dy * dy + dz * dz) or 1e-6
+    ax = (dx / L, dy / L, dz / L)
+    up = (0.0, 0.0, 1.0) if abs(ax[2]) < 0.95 else (1.0, 0.0, 0.0)
+    sd = _cross(ax, up)
+    sl = math.sqrt(sum(v * v for v in sd)) or 1.0
+    sd = tuple(v / sl for v in sd)
+    tp = _cross(ax, sd)
+    cr, sr = math.cos(math.radians(roll)), math.sin(math.radians(roll))
+    sd, tp = tuple(cr * sd[i] + sr * tp[i] for i in range(3)), tuple(-sr * sd[i] + cr * tp[i] for i in range(3))
+    return L, ax, sd, tp
+
+
+def _rec_beam(self, p0, p1, w, h, look, roll=0.0):
+    L, ax, sd, tp = _beam_basis(p0, p1, roll)
+    c = ((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, (p0[2] + p1[2]) / 2)
+    # box axes: X = along the beam (L), Y = its top direction (h), Z = X x Y = the side (w)
+    RECORDS.append(["B", _g(self.name), _look(look), R(c[0]), R(c[2]), R(-c[1]), R(L), R(h), R(w), *_matrix(ax, tp)])
+
+
+def _rec_frond(self, base, yaw, length, width, droop, look, lift=0.35, segs=6, tip=None):
+    cy_, sy_ = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    n = min(segs, 3)
+    pts = []
+    for k in range(n + 1):
+        t = k / n
+        d = length * t
+        pts.append((base[0] + cy_ * d, base[1] + sy_ * d, base[2] + length * lift * t - droop * t * t * length))
+    for k in range(n):
+        t = (k + 0.5) / n
+        hw = width / 2 * math.sin(math.pi * min(1.0, 0.15 + t * 0.95))
+        _rec_beam(self, pts[k], pts[k + 1], max(0.2, 2 * hw), 0.15, tip if (tip and k == n - 1) else look)
+
+
+def _rec_cyl(self, cx, cy, r, z0, z1, look, *a, **k):
+    _cylv(self, cx, cy, r, z0, z1, look)
+
+
+def _rec_ring(self, r0, r1, z0, z1, look, segs=96, a0=0.0, a1=360.0, cx=0.0, cy=0.0, *a, **k):
+    if r1 <= r0 or z1 - z0 <= 0.01:
+        return
+    frac = abs(a1 - a0) / 360.0
+    n = max(3, min(int(segs * frac), int(2 * math.pi * r1 * frac / 2.0) + 3, 64))
+    span = math.radians(a1 - a0) / n
+    for j in range(n):
+        ang = math.radians(a0) + (j + 0.5) * span
+        rm = (r0 + r1) / 2
+        _box(self, cx + rm * math.cos(ang), cy + rm * math.sin(ang), (z0 + z1) / 2, 2 * r1 * math.sin(abs(span) / 2) + 0.05, r1 - r0, z1 - z0,
+             look, math.degrees(ang) + 90)
+
+
+def _rec_wedge(self, cx, cy, z0, sx, sy, h, look, rot=0.0, ridge="x"):
+    if h <= 0.01:
+        return
+    c, s = math.cos(math.radians(rot)), math.sin(math.radians(rot))
+    for sgn in (-1, 1):
+        if ridge == "x":
+            lx, ly, w, d = 0.0, sgn * sy / 4, sx, sy / 2
+            hb = (s * sgn, -c * sgn)
+        else:
+            lx, ly, w, d = sgn * sx / 4, 0.0, sy, sx / 2
+            hb = (-c * sgn, -s * sgn)
+        wx, wy = cx + lx * c - ly * s, cy + lx * s + ly * c
+        RECORDS.append(["w", _g(self.name), _look(look), R(wx), R(z0 + h / 2), R(-wy), R(w), R(h), R(d), R(hb[0]), R(-hb[1])])
+
+
+def _rec_pyramid(self, cx, cy, z0, sx, sy, h, look, rot=0.0, top=0.0):
+    for k in range(3):
+        f = 1 - k / 3 * (1 - (top / max(sx, sy) if top > 0 else 0.15))
+        _box(self, cx, cy, z0 + (k + 0.5) * h / 3, sx * f, sy * f, h / 3, look, rot)
+
+
+def _rec_cone(self, cx, cy, r, z0, z1, look, segs=8, r1=0.0, *a, **k):
+    n = max(2, min(5, int(abs(z1 - z0) / 2.5)))
+    for j in range(n):
+        t = (j + 0.5) / n
+        _cylv(self, cx, cy, r + (r1 - r) * t, z0 + (z1 - z0) * j / n, z0 + (z1 - z0) * (j + 1) / n, look)
+
+
+def _rec_sphere(self, cx, cy, cz, rx, ry, rz, look, *a, **k):
+    RECORDS.append(["s", _g(self.name), _look(look), R(cx), R(cz), R(-cy), R(2 * (rx + ry + rz) / 3)])
+
+
+def _rec_ring_v(self, cx, cy, cz, r0, r1, depth, looks, rot=0.0, segs=24, gap=0.12, a0=0.0, a1=360.0):
+    if r1 <= r0:
+        return
+    lk = looks if isinstance(looks, (list, tuple)) else [looks]
+    c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
+    X, U = (c, s_, 0.0), (0.0, 0.0, 1.0)
+    span = (a1 - a0) / segs
+    for j in range(segs):
+        ang = math.radians(a0 + (j + 0.5) * span)
+        rm = (r0 + r1) / 2
+        T = tuple(-math.sin(ang) * X[i] + math.cos(ang) * U[i] for i in range(3))
+        N = tuple(math.cos(ang) * X[i] + math.sin(ang) * U[i] for i in range(3))
+        p = (cx + rm * math.cos(ang) * X[0], cy + rm * math.cos(ang) * X[1], cz + rm * math.sin(ang))
+        chord = max(0.05, 2 * r1 * math.sin(math.radians(abs(span)) / 2) - gap)
+        RECORDS.append(["B", _g(self.name), _look(lk[j % len(lk)]), R(p[0]), R(p[2]), R(-p[1]), R(chord), R(r1 - r0), R(depth), *_matrix(T, N)])
+
+
+def _rec_disc_v(self, cx, cy, cz, r, depth, look, rot=0.0, *a, **k):
+    c, s_ = math.cos(math.radians(rot)), math.sin(math.radians(rot))
+    RECORDS.append(["C", _g(self.name), _look(look), R(cx), R(cz), R(-cy), R(depth), R(2 * r), *_matrix((-s_, c, 0.0), (0.0, 0.0, 1.0))])
+
+
+def _classic(name, rec):
+    orig = getattr(CL.ClassicMesh, name)
+
+    def wrapped(self, *a, **k):
+        if _on(self):
+            rec(self, *a, **k)
+        return orig(self, *a, **k)
+    setattr(CL.ClassicMesh, name, wrapped)
+
+
+for _n, _r in (("prism", _rec_prism), ("cyl", _rec_cyl), ("ring", _rec_ring), ("wedge", _rec_wedge), ("pyramid", _rec_pyramid),
+               ("cone", _rec_cone), ("sphere", _rec_sphere), ("ring_v", _rec_ring_v), ("disc_v", _rec_disc_v), ("slab", _rec_slab),
+               ("rock", _rec_rock), ("beam", _rec_beam), ("frond", _rec_frond)):
+    if hasattr(CL.ClassicMesh, _n):
+        _classic(_n, _r)

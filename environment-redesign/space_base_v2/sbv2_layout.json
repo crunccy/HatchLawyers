@@ -1,0 +1,581 @@
+{
+ "island": "Space_Base_V2",
+ "places": [
+  {
+   "name": "SPAWN (arrival pad, safe zone)",
+   "blender_xy": [
+    -169.4,
+    -158.6
+   ],
+   "roblox_xz": [
+    -169.4,
+    158.6
+   ],
+   "what": "the classic blue-and-white spawn pad at the end of a beacon-lit gantry"
+  },
+  {
+   "name": "ESCAPE PORTAL (RETURN HOME)",
+   "blender_xy": [
+    146.7,
+    146.7
+   ],
+   "roblox_xz": [
+    146.7,
+    -146.7
+   ],
+   "what": "purple vortex in a ring of craggy rock, flush with the floor (no stairs)"
+  },
+  {
+   "name": "Chief Justice Eclipse's start pad",
+   "blender_xy": [
+    0.0,
+    10.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -10.0
+   ],
+   "what": "a subtle ring of sunken flat stones flush with the floor"
+  },
+  {
+   "name": "Fall off the edge (330 deg)",
+   "blender_xy": [
+    174.2,
+    -95.6
+   ],
+   "roblox_xz": [
+    174.2,
+    95.6
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Rocket + launch pad",
+   "blender_xy": [
+    -61.6,
+    157.4
+   ],
+   "roblox_xz": [
+    -61.6,
+    -157.4
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "Observatory",
+   "blender_xy": [
+    72.4,
+    153.5
+   ],
+   "roblox_xz": [
+    72.4,
+    -153.5
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "Habitat domes",
+   "blender_xy": [
+    -163.3,
+    5.0
+   ],
+   "roblox_xz": [
+    -163.3,
+    -5.0
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "Robot factory",
+   "blender_xy": [
+    -157.9,
+    157.5
+   ],
+   "roblox_xz": [
+    -157.9,
+    -157.5
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "Solar farm",
+   "blender_xy": [
+    85.4,
+    -143.0
+   ],
+   "roblox_xz": [
+    85.4,
+    143.0
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "Fuel depot",
+   "blender_xy": [
+    159.9,
+    -23.2
+   ],
+   "roblox_xz": [
+    159.9,
+    23.2
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "Satellite dish",
+   "blender_xy": [
+    5.0,
+    148.4
+   ],
+   "roblox_xz": [
+    5.0,
+    -148.4
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  },
+  {
+   "name": "UFO landing",
+   "blender_xy": [
+    155.4,
+    -135.0
+   ],
+   "roblox_xz": [
+    155.4,
+    135.0
+   ],
+   "what": "scenery round the plate, out of Eclipse's pull"
+  }
+ ],
+ "egg_regions": [
+  {
+   "name": "Crater Rim",
+   "blender_xy": [
+    -60,
+    26
+   ],
+   "roblox_xz": [
+    -60,
+    -26
+   ],
+   "radius": 22,
+   "risk": "west, by the moon-rock cliffs: mid risk"
+  },
+  {
+   "name": "Landing Lawn",
+   "blender_xy": [
+    0,
+    -52
+   ],
+   "roblox_xz": [
+    0,
+    52
+   ],
+   "radius": 20,
+   "risk": "south, nearest the spawn: the safer start"
+  },
+  {
+   "name": "Crystal Flats",
+   "blender_xy": [
+    62,
+    -14
+   ],
+   "roblox_xz": [
+    62,
+    14
+   ],
+   "radius": 22,
+   "risk": "east, by the plasma pools: mid risk"
+  },
+  {
+   "name": "Orbit Walk",
+   "blender_xy": [
+    -26,
+    66
+   ],
+   "roblox_xz": [
+    -26,
+    -66
+   ],
+   "radius": 18,
+   "risk": "north, inside his pull: high risk"
+  },
+  {
+   "name": "Nebula Patch",
+   "blender_xy": [
+    54,
+    62
+   ],
+   "roblox_xz": [
+    54,
+    -62
+   ],
+   "radius": 18,
+   "risk": "north-east, on the way to the portal: high risk"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -53.2,
+    39.9
+   ],
+   "roblox_xz": [
+    -53.2,
+    -39.9
+   ],
+   "region": "Crater Rim"
+  },
+  {
+   "blender_xy": [
+    -71.4,
+    30.7
+   ],
+   "roblox_xz": [
+    -71.4,
+    -30.7
+   ],
+   "region": "Crater Rim"
+  },
+  {
+   "blender_xy": [
+    -49.8,
+    16.3
+   ],
+   "roblox_xz": [
+    -49.8,
+    -16.3
+   ],
+   "region": "Crater Rim"
+  },
+  {
+   "blender_xy": [
+    -68.4,
+    6.0
+   ],
+   "roblox_xz": [
+    -68.4,
+    -6.0
+   ],
+   "region": "Crater Rim"
+  },
+  {
+   "blender_xy": [
+    -41.4,
+    19.4
+   ],
+   "roblox_xz": [
+    -41.4,
+    -19.4
+   ],
+   "region": "Crater Rim"
+  },
+  {
+   "blender_xy": [
+    19.0,
+    -54.7
+   ],
+   "roblox_xz": [
+    19.0,
+    54.7
+   ],
+   "region": "Landing Lawn"
+  },
+  {
+   "blender_xy": [
+    -4.2,
+    -58.1
+   ],
+   "roblox_xz": [
+    -4.2,
+    58.1
+   ],
+   "region": "Landing Lawn"
+  },
+  {
+   "blender_xy": [
+    5.5,
+    -39.7
+   ],
+   "roblox_xz": [
+    5.5,
+    39.7
+   ],
+   "region": "Landing Lawn"
+  },
+  {
+   "blender_xy": [
+    -18.0,
+    -44.4
+   ],
+   "roblox_xz": [
+    -18.0,
+    44.4
+   ],
+   "region": "Landing Lawn"
+  },
+  {
+   "blender_xy": [
+    -6.9,
+    -39.0
+   ],
+   "roblox_xz": [
+    -6.9,
+    39.0
+   ],
+   "region": "Landing Lawn"
+  },
+  {
+   "blender_xy": [
+    62.7,
+    -3.4
+   ],
+   "roblox_xz": [
+    62.7,
+    3.4
+   ],
+   "region": "Crystal Flats"
+  },
+  {
+   "blender_xy": [
+    47.8,
+    -16.8
+   ],
+   "roblox_xz": [
+    47.8,
+    16.8
+   ],
+   "region": "Crystal Flats"
+  },
+  {
+   "blender_xy": [
+    77.7,
+    -26.5
+   ],
+   "roblox_xz": [
+    77.7,
+    26.5
+   ],
+   "region": "Crystal Flats"
+  },
+  {
+   "blender_xy": [
+    61.7,
+    -29.3
+   ],
+   "roblox_xz": [
+    61.7,
+    29.3
+   ],
+   "region": "Crystal Flats"
+  },
+  {
+   "blender_xy": [
+    67.9,
+    -20.0
+   ],
+   "roblox_xz": [
+    67.9,
+    20.0
+   ],
+   "region": "Crystal Flats"
+  },
+  {
+   "blender_xy": [
+    -32.1,
+    66.6
+   ],
+   "roblox_xz": [
+    -32.1,
+    -66.6
+   ],
+   "region": "Orbit Walk"
+  },
+  {
+   "blender_xy": [
+    -21.6,
+    75.2
+   ],
+   "roblox_xz": [
+    -21.6,
+    -75.2
+   ],
+   "region": "Orbit Walk"
+  },
+  {
+   "blender_xy": [
+    -15.2,
+    62.6
+   ],
+   "roblox_xz": [
+    -15.2,
+    -62.6
+   ],
+   "region": "Orbit Walk"
+  },
+  {
+   "blender_xy": [
+    -38.0,
+    74.7
+   ],
+   "roblox_xz": [
+    -38.0,
+    -74.7
+   ],
+   "region": "Orbit Walk"
+  },
+  {
+   "blender_xy": [
+    -34.7,
+    55.1
+   ],
+   "roblox_xz": [
+    -34.7,
+    -55.1
+   ],
+   "region": "Orbit Walk"
+  },
+  {
+   "blender_xy": [
+    42.9,
+    74.7
+   ],
+   "roblox_xz": [
+    42.9,
+    -74.7
+   ],
+   "region": "Nebula Patch"
+  },
+  {
+   "blender_xy": [
+    63.2,
+    65.9
+   ],
+   "roblox_xz": [
+    63.2,
+    -65.9
+   ],
+   "region": "Nebula Patch"
+  },
+  {
+   "blender_xy": [
+    47.8,
+    63.7
+   ],
+   "roblox_xz": [
+    47.8,
+    -63.7
+   ],
+   "region": "Nebula Patch"
+  },
+  {
+   "blender_xy": [
+    52.4,
+    79.5
+   ],
+   "roblox_xz": [
+    52.4,
+    -79.5
+   ],
+   "region": "Nebula Patch"
+  },
+  {
+   "blender_xy": [
+    65.7,
+    56.9
+   ],
+   "roblox_xz": [
+    65.7,
+    -56.9
+   ],
+   "region": "Nebula Patch"
+  }
+ ],
+ "checks": {
+  "floor_decor": "small walk-through decor on the floor: at most 2.1 studs tall, collision off in Roblox",
+  "box_open_floor": "2021/2021 sample points (4-stud grid) in the boss's box are open floor",
+  "attack_area": "2880/2880 points of his Pull (r 44) cast from a 20-stud grid over the box are clear (nothing tall in his reach; points off the floor still count as open air / grass)",
+  "egg_edge_clearance": {
+   "Crater Rim": "68.7 studs to the floor edge (drops scatter at most 20.7)",
+   "Landing Lawn": "59.1 studs to the floor edge (drops scatter at most 20.7)",
+   "Crystal Flats": "62.6 studs to the floor edge (drops scatter at most 20.7)",
+   "Orbit Walk": "55.9 studs to the floor edge (drops scatter at most 20.7)",
+   "Nebula Patch": "70.4 studs to the floor edge (drops scatter at most 20.7)"
+  },
+  "spawn_safe": "spawn pad 110 studs outside the box (his reach past it: 47.8)",
+  "portal_threat": "portal 79 studs outside the box: the last ~0 studs of the approach are inside his 60-stud trigger",
+  "spawn_to_portal": "reachable on level ground",
+  "no_safe_bypass": "no walkable route avoids his reach (every route crosses his box)",
+  "box_on_floor": "all four box corners are on the floor",
+  "egg_spots": "25 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
+ },
+ "boss": {
+  "box_blender": [
+   -92.0,
+   -80.0,
+   92.0,
+   90.0
+  ],
+  "box_roblox_xz": [
+   -92.0,
+   -90.0,
+   92.0,
+   80.0
+  ],
+  "reach": 47.8,
+  "Name": "Chief Justice Eclipse",
+  "Model": "Eclipse",
+  "Scale": 3.2,
+  "WalkSpeed": 44,
+  "Chase": 0.95,
+  "AttackEvery": 2.5,
+  "Windup": 1.4,
+  "Attack": [
+   "Pull",
+   "Ring"
+  ],
+  "Radius": 44,
+  "Inner": 12,
+  "PullTime": 2,
+  "PullSpeed": 16,
+  "RingRadius": 38,
+  "HitboxWidth": 15.36,
+  "Height": 32.96,
+  "TriggerRange": 60
+ },
+ "fx": {
+  "edge_lips": [
+   [
+    174.2,
+    -95.6,
+    0.6,
+    330
+   ]
+  ],
+  "pools": [
+   [
+    -160.0,
+    97.4,
+    14
+   ],
+   [
+    158.9,
+    -86.7,
+    14
+   ],
+   [
+    168.2,
+    73.0,
+    12
+   ],
+   [
+    -5.3,
+    -145.6,
+    10
+   ]
+  ],
+  "gull_rings": [],
+  "spinners": [],
+  "steam": [],
+  "motes": []
+ }
+}

@@ -1,0 +1,585 @@
+{
+ "island": "Brainrot_Zone_V2",
+ "places": [
+  {
+   "name": "SPAWN (arrival pad, safe zone)",
+   "blender_xy": [
+    -169.4,
+    -158.6
+   ],
+   "roblox_xz": [
+    -169.4,
+    158.6
+   ],
+   "what": "the classic blue-and-white spawn pad at the end of a wobbly-lamp boardwalk"
+  },
+  {
+   "name": "ESCAPE PORTAL (RETURN HOME)",
+   "blender_xy": [
+    146.7,
+    146.7
+   ],
+   "roblox_xz": [
+    146.7,
+    -146.7
+   ],
+   "what": "purple vortex in a ring of craggy rock, flush with the floor (no stairs)"
+  },
+  {
+   "name": "Judge Martello's start pad",
+   "blender_xy": [
+    0.0,
+    10.0
+   ],
+   "roblox_xz": [
+    0.0,
+    -10.0
+   ],
+   "what": "a subtle ring of sunken flat stones flush with the floor"
+  },
+  {
+   "name": "Fall off the edge (330 deg)",
+   "blender_xy": [
+    174.2,
+    -95.6
+   ],
+   "roblox_xz": [
+    174.2,
+    95.6
+   ],
+   "what": "a pool spilling over the island edge"
+  },
+  {
+   "name": "Twisty tower",
+   "blender_xy": [
+    -61.6,
+    157.4
+   ],
+   "roblox_xz": [
+    -61.6,
+    -157.4
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  },
+  {
+   "name": "The big screen",
+   "blender_xy": [
+    71.2,
+    151.1
+   ],
+   "roblox_xz": [
+    71.2,
+    -151.1
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  },
+  {
+   "name": "Melty mall",
+   "blender_xy": [
+    -159.4,
+    5.0
+   ],
+   "roblox_xz": [
+    -159.4,
+    -5.0
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  },
+  {
+   "name": "Upside-down house",
+   "blender_xy": [
+    -148.0,
+    147.9
+   ],
+   "roblox_xz": [
+    -148.0,
+    -147.9
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  },
+  {
+   "name": "Leaning tower",
+   "blender_xy": [
+    82.3,
+    -137.6
+   ],
+   "roblox_xz": [
+    82.3,
+    137.6
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  },
+  {
+   "name": "Giant dice",
+   "blender_xy": [
+    159.9,
+    -23.2
+   ],
+   "roblox_xz": [
+    159.9,
+    23.2
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  },
+  {
+   "name": "Neon tower",
+   "blender_xy": [
+    4.9,
+    146.6
+   ],
+   "roblox_xz": [
+    4.9,
+    -146.6
+   ],
+   "what": "scenery round the floor, out of Martello's reach"
+  }
+ ],
+ "egg_regions": [
+  {
+   "name": "Dice Plaza",
+   "blender_xy": [
+    -70,
+    30
+   ],
+   "roblox_xz": [
+    -70,
+    -30
+   ],
+   "radius": 24,
+   "risk": "west, by the giant dice: mid risk"
+  },
+  {
+   "name": "Meme Meadow",
+   "blender_xy": [
+    0,
+    -60
+   ],
+   "roblox_xz": [
+    0,
+    60
+   ],
+   "radius": 22,
+   "risk": "south, nearest the spawn: the safer start"
+  },
+  {
+   "name": "Glitch Garden",
+   "blender_xy": [
+    72,
+    -20
+   ],
+   "roblox_xz": [
+    72,
+    20
+   ],
+   "radius": 24,
+   "risk": "east, by the goo pools: mid risk"
+  },
+  {
+   "name": "Upside Lane",
+   "blender_xy": [
+    -30,
+    74
+   ],
+   "roblox_xz": [
+    -30,
+    -74
+   ],
+   "radius": 20,
+   "risk": "north, under the upside-down house: high risk"
+  },
+  {
+   "name": "Neon Nook",
+   "blender_xy": [
+    64,
+    68
+   ],
+   "roblox_xz": [
+    64,
+    -68
+   ],
+   "radius": 20,
+   "risk": "north-east, on the way to the portal: high risk"
+  }
+ ],
+ "egg_spots": [
+  {
+   "blender_xy": [
+    -75.1,
+    10.5
+   ],
+   "roblox_xz": [
+    -75.1,
+    -10.5
+   ],
+   "region": "Dice Plaza"
+  },
+  {
+   "blender_xy": [
+    -61.2,
+    13.5
+   ],
+   "roblox_xz": [
+    -61.2,
+    -13.5
+   ],
+   "region": "Dice Plaza"
+  },
+  {
+   "blender_xy": [
+    -80.9,
+    27.4
+   ],
+   "roblox_xz": [
+    -80.9,
+    -27.4
+   ],
+   "region": "Dice Plaza"
+  },
+  {
+   "blender_xy": [
+    -69.4,
+    52.2
+   ],
+   "roblox_xz": [
+    -69.4,
+    -52.2
+   ],
+   "region": "Dice Plaza"
+  },
+  {
+   "blender_xy": [
+    -93.3,
+    30.2
+   ],
+   "roblox_xz": [
+    -93.3,
+    -30.2
+   ],
+   "region": "Dice Plaza"
+  },
+  {
+   "blender_xy": [
+    -67.1,
+    23.7
+   ],
+   "roblox_xz": [
+    -67.1,
+    -23.7
+   ],
+   "region": "Dice Plaza"
+  },
+  {
+   "blender_xy": [
+    15.7,
+    -44.8
+   ],
+   "roblox_xz": [
+    15.7,
+    44.8
+   ],
+   "region": "Meme Meadow"
+  },
+  {
+   "blender_xy": [
+    -1.0,
+    -73.5
+   ],
+   "roblox_xz": [
+    -1.0,
+    73.5
+   ],
+   "region": "Meme Meadow"
+  },
+  {
+   "blender_xy": [
+    7.9,
+    -67.7
+   ],
+   "roblox_xz": [
+    7.9,
+    67.7
+   ],
+   "region": "Meme Meadow"
+  },
+  {
+   "blender_xy": [
+    -19.5,
+    -67.4
+   ],
+   "roblox_xz": [
+    -19.5,
+    67.4
+   ],
+   "region": "Meme Meadow"
+  },
+  {
+   "blender_xy": [
+    13.6,
+    -59.6
+   ],
+   "roblox_xz": [
+    13.6,
+    59.6
+   ],
+   "region": "Meme Meadow"
+  },
+  {
+   "blender_xy": [
+    83.1,
+    -1.8
+   ],
+   "roblox_xz": [
+    83.1,
+    1.8
+   ],
+   "region": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    89.9,
+    -20.8
+   ],
+   "roblox_xz": [
+    89.9,
+    20.8
+   ],
+   "region": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    53.6,
+    -11.4
+   ],
+   "roblox_xz": [
+    53.6,
+    11.4
+   ],
+   "region": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    91.4,
+    -11.7
+   ],
+   "roblox_xz": [
+    91.4,
+    11.7
+   ],
+   "region": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    69.0,
+    -29.7
+   ],
+   "roblox_xz": [
+    69.0,
+    29.7
+   ],
+   "region": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    53.1,
+    -32.6
+   ],
+   "roblox_xz": [
+    53.1,
+    32.6
+   ],
+   "region": "Glitch Garden"
+  },
+  {
+   "blender_xy": [
+    -27.5,
+    78.4
+   ],
+   "roblox_xz": [
+    -27.5,
+    -78.4
+   ],
+   "region": "Upside Lane"
+  },
+  {
+   "blender_xy": [
+    -39.7,
+    84.3
+   ],
+   "roblox_xz": [
+    -39.7,
+    -84.3
+   ],
+   "region": "Upside Lane"
+  },
+  {
+   "blender_xy": [
+    -21.1,
+    90.8
+   ],
+   "roblox_xz": [
+    -21.1,
+    -90.8
+   ],
+   "region": "Upside Lane"
+  },
+  {
+   "blender_xy": [
+    -19.8,
+    67.9
+   ],
+   "roblox_xz": [
+    -19.8,
+    -67.9
+   ],
+   "region": "Upside Lane"
+  },
+  {
+   "blender_xy": [
+    -35.9,
+    66.2
+   ],
+   "roblox_xz": [
+    -35.9,
+    -66.2
+   ],
+   "region": "Upside Lane"
+  },
+  {
+   "blender_xy": [
+    51.9,
+    80.1
+   ],
+   "roblox_xz": [
+    51.9,
+    -80.1
+   ],
+   "region": "Neon Nook"
+  },
+  {
+   "blender_xy": [
+    62.1,
+    82.4
+   ],
+   "roblox_xz": [
+    62.1,
+    -82.4
+   ],
+   "region": "Neon Nook"
+  },
+  {
+   "blender_xy": [
+    71.1,
+    60.3
+   ],
+   "roblox_xz": [
+    71.1,
+    -60.3
+   ],
+   "region": "Neon Nook"
+  },
+  {
+   "blender_xy": [
+    52.5,
+    56.1
+   ],
+   "roblox_xz": [
+    52.5,
+    -56.1
+   ],
+   "region": "Neon Nook"
+  },
+  {
+   "blender_xy": [
+    81.4,
+    77.2
+   ],
+   "roblox_xz": [
+    81.4,
+    -77.2
+   ],
+   "region": "Neon Nook"
+  }
+ ],
+ "checks": {
+  "floor_decor": "small walk-through decor on the floor: at most 1.5 studs tall, collision off in Roblox",
+  "box_open_floor": "2544/2544 sample points (4-stud grid) in the boss's box are open floor",
+  "attack_area": "3520/3520 points of his Slam (r 26) cast from a 20-stud grid over the box are clear (nothing tall in his reach; points off the floor still count as open air / grass)",
+  "egg_edge_clearance": {
+   "Dice Plaza": "50.2 studs to the floor edge (drops scatter at most 20.7)",
+   "Meme Meadow": "43.1 studs to the floor edge (drops scatter at most 20.7)",
+   "Glitch Garden": "44.2 studs to the floor edge (drops scatter at most 20.7)",
+   "Upside Lane": "40.3 studs to the floor edge (drops scatter at most 20.7)",
+   "Neon Nook": "73.7 studs to the floor edge (drops scatter at most 20.7)"
+  },
+  "spawn_safe": "spawn pad 95 studs outside the box (his reach past it: 31.6)",
+  "portal_threat": "portal 63 studs outside the box: the last ~0 studs of the approach are inside his 60-stud trigger",
+  "spawn_to_portal": "reachable on level ground",
+  "no_safe_bypass": "no walkable route avoids his reach (every route crosses his box)",
+  "box_on_floor": "all four box corners are on the floor",
+  "egg_spots": "27 candidate spots in 5 regions (the zone shows at most 14 eggs at once)"
+ },
+ "boss": {
+  "box_blender": [
+   -104.0,
+   -90.0,
+   104.0,
+   100.0
+  ],
+  "box_roblox_xz": [
+   -104.0,
+   -100.0,
+   104.0,
+   90.0
+  ],
+  "reach": 31.6,
+  "Name": "Judge Martello",
+  "Model": "JudgeMartello",
+  "Scale": 3.4,
+  "WalkSpeed": 40,
+  "Chase": 0.9,
+  "AttackEvery": 3,
+  "Windup": 1.1,
+  "Attack": "Slam",
+  "Radius": 26,
+  "HopHeight": 6,
+  "HitboxWidth": 22.439999999999998,
+  "Height": 19.04,
+  "TriggerRange": 60
+ },
+ "fx": {
+  "edge_lips": [
+   [
+    174.2,
+    -95.6,
+    0.6,
+    330
+   ]
+  ],
+  "pools": [
+   [
+    -155.0,
+    94.5,
+    14
+   ],
+   [
+    155.4,
+    -84.7,
+    14
+   ],
+   [
+    168.2,
+    73.0,
+    12
+   ],
+   [
+    -5.3,
+    -145.6,
+    10
+   ]
+  ],
+  "gull_rings": [],
+  "spinners": [],
+  "steam": [],
+  "motes": []
+ }
+}

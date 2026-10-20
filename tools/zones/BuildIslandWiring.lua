@@ -19,12 +19,12 @@ local HttpService = game:GetService("HttpService")
 
 local URL: string = ARGS.url or "http://localhost:8766/"
 local MAP = { -- zone Id (Config.Zones.List) -> island model in Workspace.WorldRedesign, its layout JSON
-	{ "BriefcaseBay", "BriefcaseBay", "bb_layout.json" },
-	{ "PetPark", "PetPark", "pp_layout.json" },
-	{ "BrainrotBoulevard", "BrainrotZone", "br_layout.json" },
-	{ "FoodCourt", "FoodCourt", "fc_layout.json" },
-	{ "OceanShore", "OceanShore", "os_layout.json" },
-	{ "SpaceBase", "SpaceBase", "sb_layout.json" },
+	{ "BriefcaseBay", "BriefcaseBay", "bbv2_layout.json" },
+	{ "PetPark", "PetPark", "ppv2_layout.json" },
+	{ "BrainrotBoulevard", "BrainrotZone", "brv2_layout.json" },
+	{ "FoodCourt", "FoodCourt", "fcv2_layout.json" },
+	{ "OceanShore", "OceanShore", "osv2_layout.json" },
+	{ "SpaceBase", "SpaceBase", "sbv2_layout.json" },
 }
 local INK = Color3.fromRGB(40, 40, 52)
 local WOOD_DARK = Color3.fromRGB(122, 70, 34)
@@ -108,13 +108,33 @@ for _, row in MAP do
 		spot:SetAttribute("Where", s.where)
 	end
 
-	local arr = place("Arrival") or { 0, 0 }
+	-- v2 islands (the Ocean Shore v2 benchmark, 2026-10-20): places "SPAWN ..." (a pad on the end of a dock, out over the
+	-- drop) and "ESCAPE PORTAL (RETURN HOME)" (a level walk-in vortex on the floor); v1: "Arrival pad" + "RETURN HOME portal"
+	local v2 = place("SPAWN") ~= nil
+	local arr = place("Arrival") or place("SPAWN") or { 0, 0 }
 	local a = ground(arr[1], arr[2])
-	-- (TravelServer turns the Arrival by +90 degrees about Y, the lane's convention: -90 here = facing north, -Z)
-	marker(folder, "Arrival", Vector3.new(4, 1, 4), CFrame.new(a + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, -math.pi / 2, 0))
+	-- (TravelServer turns the Arrival by +90 degrees about Y, the lane's convention: so -90 here = facing north (v1), or,
+	-- on v2, facing the island's middle from the spawn pad)
+	local face = if v2 then CFrame.lookAt(a, Vector3.new(origin.Position.X, a.Y, origin.Position.Z)).Rotation else CFrame.new()
+	marker(folder, "Arrival", Vector3.new(4, 1, 4), CFrame.new(a + Vector3.new(0, 0.5, 0)) * face * CFrame.Angles(0, -math.pi / 2, 0))
 
-	local ret = place("RETURN HOME")
-	if ret then
+	local ret = place("RETURN HOME") or place("ESCAPE PORTAL")
+	if ret and v2 then
+		-- the vortex stands on the floor (1 stud above the island top, hl_v2 / osv2 FLOOR_Z): a walk-in trigger box round it
+		-- (set from the island's origin: a raycast would hit the portal's own rock arch)
+		local r = origin:PointToWorldSpace(Vector3.new(ret[1], 1.0, ret[2]))
+		local trigger = marker(folder, "ReturnHome", Vector3.new(11, 14, 11), CFrame.new(r + Vector3.new(0, 7, 0)))
+		trigger.CanTouch = true
+		local prompt = Instance.new("ProximityPrompt")
+		prompt.Name = "ReturnPrompt"
+		prompt.ActionText = "Return Home"
+		prompt.ObjectText = "Back to your firm, eggs and all"
+		prompt.HoldDuration = 0
+		prompt.MaxActivationDistance = 16
+		prompt.RequiresLineOfSight = false
+		prompt.Enabled = false -- (TravelServer turns it on while the islands are switched on)
+		prompt.Parent = trigger
+	elseif ret then
 		-- the portal's field stands 3 studs north of its centre, its middle 18.8 above the island top (hl_world.return_portal:
 		-- platform 4.6 + 14.2); a raycast would hit the ring's own bricks, so this is set from the island's origin
 		local r = origin:PointToWorldSpace(Vector3.new(ret[1], 18.8, ret[2] - 3))
@@ -131,8 +151,21 @@ for _, row in MAP do
 		prompt.Parent = trigger
 	end
 
-	-- the odds board: 13 studs east + 12 north of the arrival pad, facing it
+	-- the odds board, facing the arrival: v1 = 13 studs east + 12 north of the arrival pad; v2 = beside the dock where it
+	-- meets the island's floor (the spawn pad hangs out over the drop: walk from it toward the middle until the floor)
 	local bpos = ground(arr[1] + 13, arr[2] - 12) + Vector3.new(0, 7.1, 0)
+	if v2 then
+		local dir = (Vector3.new(origin.Position.X, a.Y, origin.Position.Z) - a).Unit
+		local side = Vector3.new(-dir.Z, 0, dir.X)
+		for t = 14, 140, 2 do
+			local p = a + dir * t + side * 11
+			local hit = workspace:Raycast(p + Vector3.new(0, 40, 0), Vector3.new(0, -80, 0), params)
+			if hit and hit.Position.Y > origin.Position.Y - 0.5 then
+				bpos = hit.Position + dir * 4 + Vector3.new(0, 7.1, 0)
+				break
+			end
+		end
+	end
 	local board = Instance.new("Part")
 	board.Name = "OddsBoard"
 	board.Size = Vector3.new(14, 9, 0.6)
