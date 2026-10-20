@@ -23,6 +23,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
+- **mr.robe (local), since 2026-10-20:** the REST OF THE ISLANDS redone to the Ocean Shore v2 benchmark (user's call:
+  "do the same for the rest of the islands and transform them all"): Pet Park v2, Brainrot Zone v2, Food Court v2,
+  Space Base v2 in Blender (v1 kept), then all six v2 islands built into `Workspace.WorldRedesign` (v1 models moved to
+  `ServerStorage.Old_WorldRedesign_v1`) + IslandWiring rebuilt from the v2 layouts. Backup tag
+  `backup-2026-10-20-before-v2-islands`. Don't redo these islands meanwhile.
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
