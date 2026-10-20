@@ -27,6 +27,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
+  **The Senior Partner (Briefcase Swing + Paper Storm) in progress since 2026-10-19** (crnuch local, side session):
+  bosses.py / boss_anims.py / Bosses.client / BossService / Config boss entries are claimed until it's presented.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
