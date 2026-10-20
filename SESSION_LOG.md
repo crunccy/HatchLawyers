@@ -29,6 +29,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
   The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
   Prosecutor Big Cheese (Cheese Roll + Wheel Split) APPROVED + LIVE 2026-10-20. Next: Bulldog, Martello, Eclipse.
+- **mr.robe (local), since 2026-10-20:** the LAST THREE bosses of crnuch's attack animation overhaul - Barrister
+  Bulldog, Judge Martello, Chief Justice Eclipse (user's call, mr.robe 2026-10-20: mr.robe's session does these three,
+  on crnuch's pattern: Blender clips -> `Shared.BossAnims`, client poses / fx, each one's Crowd add-on, pushed to
+  Studio by 3-way merge). Visual + crowd add-ons only (no damage / economy retune). Don't touch `Bosses.client` /
+  bosses.py / boss_anims.py / BossService crowd code meanwhile; the v2-islands move in `BossService.start` is fine
+  (we 3-way merge).
 - **crnuch (local), since 2026-10-20:** WORLD AMBIENCE & ATMOSPHERE overhaul of the six boss zones - client-side only
   (ambient particles, fog / Atmosphere, per-zone lighting + colour grading, optional ambient loops from Shared.Sfx).
   No map / model / boss / gameplay changes. One controller (`StarterPlayerScripts.Ambience` + `Shared.AmbiencePresets`)
