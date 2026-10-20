@@ -23,6 +23,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   islands modelled. Stage 7 (into the place) started 2026-10-19 on mr.robe's user's call (entries below).
   Blender only: no Studio, gameplay code or map changes (user's call). Don't start a map redesign meanwhile.
 
+- **mr.robe (local), since 2026-10-20:** the CENTRAL HUB redone to the v2 standard (user's call: "also change the main
+  island to v2"): `environment-redesign/central_hub_v2/` (classic Roblox studs, cohesive terrain, the approved hub layout
+  kept), v1 kept; then built into `Workspace.WorldRedesign.CentralHub` (v1 hub model to `ServerStorage.Old_WorldRedesign_v1`).
+  Backup tag `backup-2026-10-20-before-hub-v2`. Don't redo the hub meanwhile.
 - **crnuch (local), since 2026-10-19:** BOSS ATTACK ANIMATION OVERHAUL (visual only: no damage, targeting, timing,
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
