@@ -25,7 +25,8 @@ local function position(e: ParticleEmitter): Vector3?
 end
 
 local function add(d: Instance)
-	if not d:IsA("ParticleEmitter") or entries[d] then
+	if not d:IsA("ParticleEmitter") or entries[d] or d:GetAttribute("NoLod") then
+		-- (NoLod: the emitter's own script handles distance - StarterPlayerScripts.Ambience, 2026-10-20)
 		return
 	end
 	local entry: Entry = { emitter = d, paused = false, guard = false }

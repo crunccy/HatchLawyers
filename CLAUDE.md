@@ -49,6 +49,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | World redesign (floating islands, Blender only until approved): audit, hub blockout, stages | [environment-redesign/README.md](environment-redesign/README.md) |
 | Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
 | Boss attack animation overhaul + crowd attacks (Megalodon first) | [docs/BOSS_ANIMATION.md](docs/BOSS_ANIMATION.md) |
+| World ambience (per-zone fog, lighting, grading, ambient particles; client-only) | [docs/AMBIENCE.md](docs/AMBIENCE.md), shots in `art/ambience/` |
 | Eggs v5: Blender eggs, hatch, incubator (pipeline, upload, install) | [docs/EGGS_V5.md](docs/EGGS_V5.md) |
 | UI overhaul (2026-10-18): reference analysis, audit of every UI surface, icon ids, plan | [docs/UI_OVERHAUL.md](docs/UI_OVERHAUL.md); Figma design system: figma.com/design/PtgoaIbriizMlKEDFVxc8Q (Starter plan: Figma MCP = 20 calls/month) |
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
@@ -126,6 +127,11 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   (`settings().Rendering.QualityLevel` in the Client) — Studio's Automatic level throttles particles so hard
   that effects look missing. A ViewportFrame skips Transparency = 1 parts *and their decals* (use 0.99).
   Egg machine effects: `require(game.ServerStorage.EggMachineFx:Clone()).apply()`.
+- **Zone lighting has ONE owner (2026-10-20): `StarterPlayerScripts.Ambience`** (presets in `Shared.AmbiencePresets`,
+  docs/AMBIENCE.md). Never set zone lighting / Atmosphere from the server or a second script. A one-off effect that
+  takes the lighting (like TravelFx, the hatch stages) saves + restores it and marks itself (player attribute
+  `Traveling`, or `HatchCC` on the camera) so Ambience stays hands off; add a new marker there if you add one.
+  Keep a zone's colour in the haze + particles, not the ambient light (a green ambient turned the orange path yellow).
 - **STUDDED BRICK WORLD — non-negotiable (crnuch's call 2026-10-18): [docs/ART_STYLE_STUDS.md](docs/ART_STYLE_STUDS.md).**
   Real raised 3D studs (not textures) on terrain, roads, roofs, platforms, props; one stud scale everywhere; reusable
   stud assets from Blender; decorative studs separate from collision; LOD for distance + phones. Never smooth the

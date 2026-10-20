@@ -43,3 +43,13 @@ White + alpha (tinted in game) unless noted. Used by `ReplicatedStorage.Shared.E
 | 08 | 70806325948101 | 117870582348661 |
 | 09 | 122095088240446 | 75917243352569 |
 | 10 | 120179381084051 | 129229033357216 |
+
+## World ambience (tools/ambience_textures.py, 2026-10-20; uploaded from crnuch's Studio; used by Shared.AmbiencePresets)
+| texture | id |
+|---|---|
+| amb_leaf | 76178310925290 |
+| amb_petal | 105223361263918 |
+| amb_paper | 94602324300971 |
+| amb_mist | 127394798188063 |
+| amb_square | 81592498778194 |
+| amb_bubble | 126450061639497 |

@@ -34,6 +34,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   No map / model / boss / gameplay changes. One controller (`StarterPlayerScripts.Ambience` + `Shared.AmbiencePresets`)
   owns zone lighting; TravelFx / hatch stages keep their save-restore. Pet Park prototype first, then the other five
   after crnuch approves. Don't add zone lighting / atmosphere scripts meanwhile.
+  Shared system + Pet Park prototype LIVE in Studio 2026-10-20, waiting for crnuch's approval; then the other five.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
@@ -204,6 +205,29 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — crnuch, local session (side session): world ambience — shared system + PET PARK PROTOTYPE (for approval)
+- **crnuch's brief:** premium ambience + atmosphere for the six boss zones, environmental VFX + lighting only (no map /
+  model / boss changes). Stages 1-3 done; **stopped for crnuch's approval of Pet Park** before the other five.
+  crnuch's call: tune on the LANE Pet Park (where the Bulldog runs), check the island too. Reference: his screen
+  recording (green leaf haze, pink petals, blue fog, red embers) - stills + notes in the session notes folder.
+- **Audit:** the place's own lighting (docs/AMBIENCE.md has the numbers); Lighting is also written by TravelFx.setSky
+  and Eggs.client setSky (save + restore), HatchFx.postBegin (the place's Bloom), Skin (a Blur), MinigameClient.Scene
+  (a CC); EffectsLod paused every workspace emitter > 150 studs; WorldLife is hub-only. Ambient sound ids: Sfx only.
+- **New (live in Studio):** `StarterPlayerScripts.Ambience` (the one controller) + `Shared.AmbiencePresets` (Pet Park
+  tuned; the other five are drafts, `Draft = true`) + 6 textures (`tools/ambience_textures.py`, uploaded from
+  crnuch's Studio = his account; ids in `Models - Effects/ASSET_IDS.md`). `EffectsLod` skips `NoLod` emitters (one
+  line, 3-way checked: live == snapshot). docs/AMBIENCE.md = how it works, test hooks, tuning, per-world table.
+- **Pet Park look:** green haze in the distance only (Atmosphere D 0.38 / O 0.18, yellow-green colour + decay); ambient
+  kept near the place's own (a green ambient turned the orange path yellow - fixed); pollen + leaves in the air, falling
+  leaves / petals / fireflies on the trees, mist + glints + a quiet fountain loop on the island's ponds.
+- **Playtested** (solo, Studio in front, quality 21): zone detection lane + island; fades; no Ambience errors in the
+  log; Bulldog windup warning (orange-red ring + white centre) and the player read clearly under the haze; High 34
+  emitters ~59 particles/s, Low 14 / ~7.5 per s. Fixed in the playtest: anchors duplicated on every streaming rescan;
+  fireflies inside the wall tops; lane -> island Pet Park kept the lane's anchors; slow first scan on a streamed island.
+  Shots: `art/ambience/petpark/` (`petpark_before_after.jpg`; the eye-level shot is from one tuning step earlier).
+- **Not tested yet:** a travel / Mythic hatch during a zone fade (Stage 5), a real phone, 3+ players.
+- Snapshot re-exported (only these three scripts changed). `run_checks` all green.
 
 ## 2026-10-20 — mr.robe, local session: the central hub redone to v2 (+ into the place)
 - **User's call:** "also change the main island to v2". Backup first: tag `backup-2026-10-20-before-hub-v2` (pushed).
