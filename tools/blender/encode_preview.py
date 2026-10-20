@@ -1,9 +1,8 @@
 # tools/blender/encode_preview.py - turns the PNG frames boss_anims.py renders ("-- frames") into MP4 previews with the
 # server's phases labelled and a timer burned in (Blender's sequencer + its own FFmpeg; no ffmpeg install needed).
 # Mac: /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P tools/blender/encode_preview.py -- \
-#        <frames dir> <out.mp4> [speed=1.0] [title]
-# Phases (seconds into the preview, from boss_anims.py's timeline): walk 0, windup 0.5, charge 1.5, dizzy 2.367,
-# recover 4.367, walk 4.967.
+#        <frames dir> <out.mp4> [speed=1.0] [title] [boss=Megalodon]
+# Phases (seconds into the preview, from each boss's timeline in tools/blender/boss_clips/<boss>.py) are labelled.
 import bpy, os, sys, glob
 
 args = sys.argv[sys.argv.index("--") + 1:]
@@ -11,8 +10,14 @@ src, out = args[0], args[1]
 speed = float(args[2]) if len(args) > 2 else 1.0
 title = args[3] if len(args) > 3 else ""
 FPS = 30
-PHASES = [(0.0, "walk"), (0.5, "WINDUP  1.0 s  (warning on the floor)"), (1.5, "CHARGE  130 studs @ 150/s = 0.87 s"),
-          (2.367, "DIZZY  2.0 s"), (4.367, "RECOVER  0.6 s"), (4.967, "walk")]
+BOSS = args[4] if len(args) > 4 else "Megalodon"
+PHASES = {
+    "Megalodon": [(0.0, "walk"), (0.5, "WINDUP  1.0 s  (warning on the floor)"), (1.5, "CHARGE  130 studs @ 150/s = 0.87 s"),
+                  (2.367, "DIZZY  2.0 s"), (4.367, "RECOVER  0.6 s"), (4.967, "walk")],
+    "SeniorPartner": [(0.0, "walk"), (0.5, "WINDUP  1.2 s  (warning on the floor)"),
+                      (1.7, "ATTACK  0.45 s  (the hit: its first frame; the case lands at +0.05)"),
+                      (2.15, "RECOVER  0.6 s"), (2.75, "walk")],
+}[BOSS]
 
 files = sorted(glob.glob(os.path.join(src, "f_*.png")))
 sc = bpy.data.scenes.new("Encode")

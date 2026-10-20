@@ -104,20 +104,21 @@ This one IS a gameplay change (crnuch's call, overriding the brief's "no gamepla
   same moment as (or after) the main one. It aims where the player stood when the windup began, so moving dodges it.
   A hit is a normal hit (eggs out, ragdoll, `SafeAfterHit`, `IgnoreAfterHit`) - one hit per player per attack.
 - **Server:** generic in `BossService` - `Config.Bosses.List[n].Crowd = { Shape = "Lane" | "Disc", Max, Range, Width
-  / Radius, Speed }`; picked at the start of the windup and published as state attributes `CrowdN` + `Crowd1..3`
-  (lane ends / disc centres) so every client draws the warnings; the hits are decided on the server like the rest.
+  / Radius, Speed }`; picked at the start of the windup (every attack kind) and published as state attributes
+  `CrowdShape`, `CrowdN` + `Crowd1..3` (lane ends / disc centres) so every client draws the warnings; released as the
+  windup ends (`releaseCrowd`); the hits are decided on the server like the rest.
 
 | Boss | Crowd add-on (2+ players) | Shape |
 | --- | --- | --- |
 | **Magistrate Megalodon** | **FEEDING FRENZY** - as he coils, sand-shark fins burst out of the sand at his feet and race down a lane at each other player while he charges his own target | Lane, 12 wide, at 120 studs/s, up to 110 long |
-| The Senior Partner | PAPER STORM - the briefcase bursts open at the top of the swing and lobs a bundle of case files at each other player | Disc r 10 at their spot, lands with the swing |
+| **The Senior Partner** | **PAPER STORM** - the briefcase bursts open at the top of the swing and lobs a bundle of case files at each other player (**built**, section 6) | Disc r 10 at their spot, lands with the swing |
 | Barrister Bulldog | ECHO BARK - the bark's sound wave travels to each other player and goes off round them | Disc r 12, lands with the bark |
 | Judge Martello | GAVEL RAIN - as he lands, a mini gavel drops on each other player's spot | Disc r 12, lands with the slam |
 | Prosecutor Big Cheese | WHEEL SPLIT - two cheese wedges peel off the wheel and roll down lanes at the others | Lane, 12 wide, at 110 studs/s |
 | Chief Justice Eclipse | GAVEL VOLLEY (Ring turns) - each orbiting gavel locks onto a different player and slams down; the Pull already catches everyone within 44 | Disc r 10 under each, lands with the ring |
 
-Megalodon's Feeding Frenzy is built with this benchmark (preview + `src/`); the other five are proposals that get built
-with their animation passes once crnuch approves.
+Megalodon's Feeding Frenzy (live) and the Senior Partner's Paper Storm (section 6, waiting for approval) are built; the
+other four are proposals that get built with their animation passes.
 
 ## 5. Megalodon benchmark: what was built (2026-10-19)
 - **Model v2** (`tools/blender/bosses.py`, 41 -> 47 blocks, 6 -> 13 groups): the jaw hinge (Head over Torso, a
@@ -155,11 +156,90 @@ with their animation passes once crnuch approves.
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- check stills frames` (frames go to
   `$BOSS_FRAMES` or `_boss_frames/`), then `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title]`.
 
-## 6. Status
+## 6. The Senior Partner: BRIEFCASE SWING + PAPER STORM (2026-10-19, waiting for crnuch's approval)
+### His real timeline (BossService "Cone" + Config.Bosses.List[1])
+| Phase | Server | Duration |
+| --- | --- | --- |
+| trigger | nearest non-ignored player within `TriggerRange` 60, `AttackEvery` 3.5 s after the last recover | - |
+| windup | `Yaw` snaps toward the target, he stands; the fan warning (Radius 45, Angle 110) grows over 0.4 s and pulses | **1.2 s** |
+| attack | everyone inside the cone is hit at its **first frame** (right under him always counts), then he holds | **0.45 s** |
+| recover | stands | **0.6 s** |
+Body hitbox: HalfWidth 3.3, Back 1.4, Front 1.8, Height 11.5 model units x Scale 3.5 (+1.5 studs). Height 10.8 x 3.5 = 38
+studs; the case overhead reaches ~40. **So the case must land at attack + 0.05 s**: the swing starts in the windup's
+last 0.14 s. Before: the case went up in 0.8 s, a linear-ish slam 0.17 s AFTER the hit, a paper burst at +0.16 s.
+
+### Model v2 (`tools/blender/bosses.py`, 68 -> 72 blocks, 7 -> 12 groups; same blocks, same places)
+`Brows`, `Glasses`, `Moustache` (on the Head), `Case` (hangs from ArmR's hand on its handle: it trails, judders and
+swings like a pendulum) and `CaseLid` (the case's outer half on a hinge along its bottom: it bursts open), with the
+files inside (`Files` white + `Folder` manila, hidden until it opens). The other five bosses export byte-identical.
+
+### Storyboard (times from the start of each server state; the floor warning is untouched)
+**A. ANTICIPATION (windup, 1.2 s)**
+| t (s) | Beat |
+| --- | --- |
+| 0.00-0.34 | NOTICE: chin up ("hm?"), brows up then down into a scowl; a deliberate turn (code: holds 0.06 s, turns over 0.28 s, his HEAD leads it); the left hand pushes the glasses up the nose (they hop 0.13 and tilt), a harrumph puff (squash 1.04), the moustache twitches |
+| 0.30-0.46 | PLANTS HIS STANCE: left foot forward, right foot lifts and STOMPS back (squash 0.94, dust ring at the foot) |
+| 0.40-0.84 | RAISE: the case dips back (anticipation), then swings up over his head with a back-out overshoot; he leans back and twists the right shoulder away (torso 0.17 / -0.3); the case TRAILS on its handle and catches up; stretched tall (1.07) |
+| 0.68-1.06 | "OBJECTION!": the left arm points at his target |
+| 0.72-1.02 | PAPERS SWIRL: the lid bursts open at the top, files spray out, sheets whirl round him and rise, the ankle papers spin 8x faster; the lid snaps shut for the swing. A gleam off the gold clasp at 0.88 |
+| 0.86-1.06 | HOLD AT THE TOP: a growing tremble, the moustache bristles |
+| 1.06-1.20 | THE SWING BEGINS: a last cock back, then the sweep accelerates (ease-in), the torso untwists |
+
+**B. ATTACK (0.45 s)**
+| t (s) | Beat |
+| --- | --- |
+| 0.00-0.05 | STRIKE: the sweep across and down; the case's corner hits the ground in front of him at 0.05 (bent over 0.37, twisted 0.24 across), IMPACT SQUASH 0.84 |
+| 0.05-0.30 | IMPACT: the case judders on its handle and the lid jolts open a crack; a ring in his colour + a white one, a dust ring, dirt clods, ~24 sheets of paperwork thrown forward through the cone, the sheets that were swirling are blown forward; the moustache flaps UP, the glasses jump down the nose and go crooked, the brows shoot up; squash bounces 0.84 -> 1.03 -> 1 |
+| 0.30-0.45 | STUCK: a first tug that doesn't come free |
+
+**D. RECOVERY (0.6 s)**
+| t (s) | Beat |
+| --- | --- |
+| 0.00-0.16 | YANK: a heave back pops the case out of the ground (a puff + clods where it was), a half step back; the case swings on its handle like a pendulum (about the handle, so it never dips into the ground) |
+| 0.20-0.45 | TIDY UP: the left hand pushes the glasses straight again, brows and moustache settle |
+| 0.42-0.60 | HARRUMPH: a last chest puff, back to his stroll |
+
+**C. EFFECTS + SOUND** (`Bosses.client` `partnerFx`; licensed `Shared.Sfx` ids only): glasses click, stomp thud,
+lift whoosh, lid pop + papers, clasp glint, the big swing whoosh, the gavel knock + a ground crack + papers at the
+strike, a crack as it's yanked. The old 0.16 s-late Cone burst is skipped for a boss with clips. Shake within
+Radius x 1.6 at the strike (as before, now on the strike frame).
+
+### PAPER STORM (2+ players; section 4)
+`Config.Bosses.List[1].Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 10 }`. As the windup begins the server
+picks up to 2 other players within 90 studs and publishes where they stand (`Crowd1..N`, `CrowdShape` "Disc",
+`CrowdRadius`); every client draws a disc + edge in his colour round each spot from the first frame (1.2 s, like the
+fan). When the lid bursts (0.78) a bundle of case files (manila folder, pages, red string) arcs out of the case at
+each disc, its shadow growing under it, and lands on the centre exactly as the attack starts - the moment the server
+hits everyone within 10 studs of it (`BossService.releaseCrowd`, generic: Lane = race out, Disc = land). Walking 10
+studs takes 0.31 s at base speed, so standing still is the only way to be caught. A hit is a normal hit.
+
+### Built (2026-10-19)
+- **Engine** (`tools/blender/boss_anims.py`): now generic - each boss has `tools/blender/boss_clips/<boss>.py` (timeline
+  + clips) and `<boss>_preview.py` (scene); `boss=SeniorPartner` picks one. Megalodon's export is byte-identical.
+  New: per-boss `Turn` (hold / time / lead group, exported only when not the default), a ground check (no block below
+  the floor in a clip state), hip FOLDS reported apart (a leg top inside the hips / jacket when he bends: hidden).
+- **Clips:** windup 37 frames, attack 15, recover 19 (30 fps) -> `src/BossAnims.lua` (60 KB with both bosses).
+- **Clipping check:** worst 0.27 studs (neck into head on the glasses look-up, one frame) on a 38-stud boss; a toe dips
+  0.45 studs in the 0.1 s cross-fade from the game's walk (the walk itself does that today); the case
+  touches the ground at the strike (dips 0.2-0.45 studs into it for 0.1 s: the "thunk"); hip folds max 0.39 (hidden).
+  Found and fixed on the way: the glasses push swung the sleeve through the cheek and jacket (now the head turns into
+  the hand, the arm comes in only when raised), the torso-led turn swung the case into his legs (now the head leads),
+  the stance sank a toe, the moustache flapped into the face, the pendulum dipped the case into the ground.
+- **Not checked yet:** the case reaching the floor in the GAME depends on the zone floor height (`FloorY`), same as the
+  model's feet; to eye-check in a playtest.
+- **Review page for approval:** https://claude.ai/artifact/RNpXrekSGvU3QnjdRBuses (crnuch's private artifact; source
+  `art/bosses/senior_partner/review.html`).
+- **Preview:** `art/bosses/senior_partner/` - `board_*.png` (15 frames), `senior_partner_swing.mp4`, `..._halfspeed.mp4`,
+  `senior_partner_gameplay_view.mp4` (green = target walks out of the fan, orange sidesteps its disc, red stays and the
+  bundle lands on them), `senior_partner_swing.blend`.
+- Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=SeniorPartner check stills frames`, then
+  `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title] SeniorPartner`.
+
+## 7. Status
 | Boss | Storyboard | Blender clips | Preview | Client | In Studio |
 | --- | --- | --- | --- | --- | --- |
 | Magistrate Megalodon | done | done | done | done | **live** (3-player test to do) |
-| The Senior Partner | - | - | - | - | - |
+| The Senior Partner | done | done | done | in `src/` | waiting for approval |
 | Barrister Bulldog | - | - | - | - | - |
 | Judge Martello | - | - | - | - | - |
 | Prosecutor Big Cheese | - | - | - | - | - |

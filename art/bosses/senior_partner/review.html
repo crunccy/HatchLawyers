@@ -1,0 +1,212 @@
+<title>Senior Partner Briefcase Swing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column review sheet - the preview on top, the phase ruler drawn to the server's seconds, the storyboard, then the decisions. Game UI language: chunky rounded panels, ink outlines, Briefcase Bay oranges and the case's leather. */
+:root {
+  --bg: #fbf3ea;
+  --panel: #ffffff;
+  --ink: #282834;
+  --muted: #5d6474;
+  --line: #e6d3c0;
+  --ocean: #c4560f;
+  --electric: #ff9a3c;
+  --sand: #e2ca96;
+  --green: #4fae2a;
+  --orange: #f29a12;
+  --red: #e04848;
+  --chip: #f6e3cf;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1610; --panel: #271f17; --ink: #f6efe6; --muted: #bba994; --line: #45382a;
+    --ocean: #ff9d5c; --electric: #ffb36b; --sand: #c9b07a; --green: #6fcf48; --orange: #f5ac3a; --red: #f06a6a;
+    --chip: #3a2d20; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1c1610; --panel: #271f17; --ink: #f6efe6; --muted: #bba994; --line: #45382a;
+  --ocean: #ff9d5c; --electric: #ffb36b; --sand: #c9b07a; --green: #6fcf48; --orange: #f5ac3a; --red: #f06a6a;
+  --chip: #3a2d20; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 700; }
+h2 { font-size: 24px; font-weight: 600; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--display); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; color: var(--ocean); }
+header { display: grid; gap: 10px; }
+.lede { color: var(--muted); font-size: 17px; }
+.panel { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab {
+  font-family: var(--display); font-weight: 600; font-size: 15px; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--panel); color: var(--ink); padding: 7px 16px; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--ink); color: var(--panel); }
+.tab:focus-visible, .shot:focus-visible { outline: 3px solid var(--electric); outline-offset: 2px; }
+video { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; background: #000; display: block; }
+.caption { color: var(--muted); font-size: 14px; }
+/* the phase ruler: widths are the server's seconds */
+.ruler { display: flex; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); font-family: var(--display); font-weight: 600; font-size: 13px; }
+.ruler div { padding: 8px 8px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1d2430; }
+.ruler .wind { flex: 1.2; background: #ffd34d; }
+.ruler .charge { flex: 0.45; background: #ff9a3c; }
+.ruler .recover { flex: 0.6; background: #b8e59a; }
+.scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.shot { display: grid; gap: 6px; margin: 0; min-width: 0; }
+.shot img { border-radius: 10px; border: 2px solid var(--line); aspect-ratio: 16 / 9; object-fit: cover; width: 100%; cursor: zoom-in; }
+.shot figcaption { font-size: 14px; }
+.shot .t { font-family: var(--mono); font-size: 12px; color: var(--ocean); font-variant-numeric: tabular-nums; }
+.phase { display: grid; gap: 14px; }
+.phase h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.pill { font-family: var(--mono); font-size: 12px; background: var(--chip); color: var(--ink); border-radius: 999px; padding: 2px 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1.5px solid var(--line); vertical-align: top; }
+th { font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--muted); }
+.tablebox { overflow-x: auto; }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: -1px; margin-right: 6px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.ask { border-color: var(--orange); }
+.ask ol { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+code { font-family: var(--mono); font-size: 13px; background: var(--chip); border-radius: 6px; padding: 1px 6px; overflow-wrap: anywhere; }
+dialog { border: none; padding: 0; background: transparent; max-width: min(96vw, 1280px); }
+dialog img { border-radius: 12px; display: block; }
+dialog::backdrop { background: rgba(10, 16, 24, .82); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Boss attack overhaul · boss 2 of 6 · for your approval, not in Studio yet</span>
+    <h1>The Senior Partner: Briefcase Swing</h1>
+    <p class="lede">His swing rebuilt on the Megalodon benchmark, every beat keyed in Blender to the server's own timing. With two or more players on Briefcase Bay he also throws a <strong>Paper Storm</strong>: bundles of case files lobbed onto the other players.</p>
+  </header>
+
+  <section class="panel" aria-label="Preview videos">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-cine" aria-selected="true" data-src="senior_partner_swing.mp4" data-cap="Cinematic cut: front three-quarter on the glasses, stomp, raise and paper swirl, side-on for the sweep and the strike, then the other side for the yank and tidy-up. Real speed.">Cinematic</button>
+      <button class="tab" role="tab" id="tab-slow" aria-selected="false" data-src="senior_partner_swing_halfspeed.mp4" data-cap="The same cut at half speed, for checking frame by frame. The burned-in frame number is the 30 fps preview frame.">Half speed</button>
+      <button class="tab" role="tab" id="tab-game" aria-selected="false" data-src="senior_partner_gameplay_view.mp4" data-cap="Gameplay view of three players. Green is his target and walks out of the fan. Orange sidesteps its storm disc. Red stays put, the bundle of case files lands on them and their eggs go flying.">Gameplay view (3 players)</button>
+    </div>
+    <video id="player" src="senior_partner_swing.mp4" controls loop muted playsinline preload="metadata"></video>
+    <p class="caption" id="cap">Cinematic cut: front three-quarter on the glasses, stomp, raise and paper swirl, side-on for the sweep and the strike, then the other side for the yank and tidy-up. Real speed.</p>
+    <div>
+      <div class="ruler" aria-label="Server phases to scale">
+        <div class="wind">Windup 1.2 s</div><div class="charge">Attack 0.45 s</div><div class="recover">Recover 0.6 s</div>
+      </div>
+      <div class="scale"><span>0</span><span>1.2</span><span>1.65</span><span>2.25 s</span></div>
+    </div>
+    <p class="caption">Widths are the server's real seconds (BossService "Cone" + Config). Everyone in the 45-stud, 110° fan is hit on the attack's first frame, so the swing starts in the windup's last 0.14 s and the case hits the ground 0.05 s into the attack. Before, the slam landed about 0.17 s after the hit.</p>
+  </section>
+
+  <section class="phase" aria-labelledby="sb">
+    <h2 id="sb">Storyboard</h2>
+
+    <h3>A · Anticipation <span class="pill">windup 0 – 1.2 s</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_01_notice.png" alt="The Senior Partner lifting his chin, brows raised" loading="lazy"><figcaption><span class="t">0.07 s</span> Notice: chin up and brows up. He turns slowly, and his head leads the turn.</figcaption></figure>
+      <figure class="shot"><img src="board_02_glasses.png" alt="The Senior Partner pushing his glasses up with his left hand, scowling" loading="lazy"><figcaption><span class="t">0.26 s</span> Glasses: his left hand pushes them up his nose, they tilt, and his brows drop into a scowl. A small harrumph.</figcaption></figure>
+      <figure class="shot"><img src="board_03_stomp_stance.png" alt="The Senior Partner planting his feet with a stomp" loading="lazy"><figcaption><span class="t">0.43 s</span> Stance: left foot forward, the right foot stomps back with a puff of dust.</figcaption></figure>
+      <figure class="shot"><img src="board_04_dip_back.png" alt="The briefcase swung back behind his leg" loading="lazy"><figcaption><span class="t">0.58 s</span> Dip: the case swings back first, the anticipation before it goes up.</figcaption></figure>
+      <figure class="shot"><img src="board_05_lid_bursts_swirl.png" alt="The briefcase overhead with its lid burst open and papers flying" loading="lazy"><figcaption><span class="t">0.80 s</span> Papers swirl: at the top the lid bursts open, files spray out and sheets whirl around him.</figcaption></figure>
+      <figure class="shot"><img src="board_06_hold_objection.png" alt="The case held overhead, his left arm pointing forward" loading="lazy"><figcaption><span class="t">0.97 s</span> Hold: “Objection!” He points at his target, trembling, the case cocked behind his head.</figcaption></figure>
+      <figure class="shot"><img src="board_14_gameplay_warnings.png" alt="High view of the orange fan warning and two smaller discs" loading="lazy"><figcaption><span class="t">0.90 s</span> From a player's height: the 45-stud fan plus a 10-stud disc round each other player. All show from the windup's first frame.</figcaption></figure>
+    </div>
+
+    <h3>B · Attack <span class="pill">0.45 s, the hit is its first frame</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_07_downswing.png" alt="Side view: the case starting its sweep down from overhead" loading="lazy"><figcaption><span class="t">windup 1.12 s</span> Downswing: one last cock back, then the sweep accelerates and his torso untwists.</figcaption></figure>
+      <figure class="shot"><img src="board_08_strike.png" alt="The case hitting the ground in front of him, dust bursting" loading="lazy"><figcaption><span class="t">+0.05 s</span> Strike: the case's corner hits the ground. He squashes to 0.84 on the impact.</figcaption></figure>
+      <figure class="shot"><img src="board_09_impact_papers.png" alt="Bent over the case in a cloud of dust and paperwork, a ring spreading" loading="lazy"><figcaption><span class="t">+0.12 s</span> Impact: a ring in his colour, dust, dirt clods and a fan of paperwork thrown through the cone. His moustache flaps up and his glasses jump down his nose.</figcaption></figure>
+      <figure class="shot"><img src="board_15_gameplay_storm_lands.png" alt="High view of the bundles bursting on the two discs" loading="lazy"><figcaption><span class="t">+0.06 s</span> Paper Storm: the bundles land on the disc centres as the attack starts, the same moment the server hits.</figcaption></figure>
+      <figure class="shot"><img src="board_10_stuck_tug.png" alt="Bent over, tugging at the case" loading="lazy"><figcaption><span class="t">+0.36 s</span> Stuck: a first tug that doesn't free it.</figcaption></figure>
+    </div>
+
+    <h3>D · Recovery <span class="pill">recover 0.6 s</span></h3>
+    <div class="board">
+      <figure class="shot"><img src="board_11_yank.png" alt="Leaning back as the case comes free, dust where it was" loading="lazy"><figcaption><span class="t">0.14 s</span> Yank: a heave back pops the case free, and it swings on its handle like a pendulum.</figcaption></figure>
+      <figure class="shot"><img src="board_12_glasses_fix.png" alt="His left hand at his glasses again" loading="lazy"><figcaption><span class="t">0.33 s</span> Tidy up: he pushes his glasses straight again.</figcaption></figure>
+      <figure class="shot"><img src="board_13_harrumph.png" alt="Standing upright, chest out" loading="lazy"><figcaption><span class="t">0.50 s</span> Harrumph: a last chest puff, then back to his stroll.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="crowd">
+    <h2 id="crowd">Paper Storm (2+ players)</h2>
+    <p>With one player on the island nothing changes. With two or more, as the windup begins he picks up to two other players within 90 studs and marks a 10-stud disc where each one stands. When the lid bursts open at the top of the swing, a bundle of case files arcs out at each disc with its shadow growing underneath, and lands on the centre exactly as the swing hits. Walking out of a disc takes 0.31 s at base speed, so only someone who stands still is caught. A hit works like any other hit: eggs out, ragdoll, then safe for a few seconds.</p>
+    <p class="caption">The server side is generic now: a crowd add-on can be a Lane (the Megalodon's sand sharks) or a Disc (this), for any attack kind. The other four bosses' add-ons stay proposals until their own passes.</p>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <h2>What changed</h2>
+      <ul>
+        <li><strong>Model:</strong> 7 to 12 moving parts with the same blocks in the same places: brows, glasses, moustache, the case on its handle, and the case lid on a hinge with the files inside.</li>
+        <li><strong>Animation:</strong> three Blender clips (windup, attack, recover) with squash and stretch, a slower turn led by his head, and secondary motion on the case, lid, moustache and glasses.</li>
+        <li><strong>Effects:</strong> stomp dust, the paper swirl, a clasp gleam, the strike's rings, dust, clods and paperwork, the yank's puff, and the flying bundles. All use textures the game already has, so nothing new needs uploading.</li>
+        <li><strong>Sound:</strong> a glasses click, stomp, lift whoosh, lid pop, papers, the big swing whoosh, the gavel knock with a ground crack, and a yank crack. All come from the game's licensed set.</li>
+        <li><strong>Gameplay:</strong> no change for one player. The Paper Storm only adds danger when 2+ players are there.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Checked</h2>
+      <ul>
+        <li><strong>Timing:</strong> clip lengths match Config (windup 1.2) and BossService (attack 0.45, recover 0.6). The automated check now covers Cone bosses and the turn too.</li>
+        <li><strong>Clipping:</strong> every block was tested against every other part, every frame. The worst left is 0.27 studs on a 38-stud boss. The fixes covered the glasses push cutting through his cheek, the turn swinging the case into his legs, a toe in the ground, the moustache flapping into his face, and the case dipping into the ground on the backswing.</li>
+        <li><strong>Hidden overlaps:</strong> when he bends over, the tops of his legs go up inside his jacket (0.39 studs at most). Nothing shows through.</li>
+        <li><strong>Megalodon:</strong> its model and clips export byte-identical after the tool was made generic.</li>
+        <li><strong>Repo checks:</strong> all Luau compiles, 42 config checks pass and the sim tests pass.</li>
+        <li><strong>Not tested yet:</strong> a live playtest in Studio. That happens after approval.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel ask" aria-labelledby="dec">
+    <h2 id="dec">For your call</h2>
+    <ol>
+      <li><strong>Approve the Briefcase Swing</strong> as it is, or send notes (beat, pose or timing, using the storyboard times).</li>
+      <li><strong>Paper Storm:</strong> 10-stud discs, up to two other players, within 90 studs, landing with the swing.</li>
+      <li><strong>After approval:</strong> rebuild the boss models in Studio, add the new clips, merge the three scripts and Config, then playtest with 1 and 3 players.</li>
+    </ol>
+  </section>
+</div>
+
+<dialog id="zoom" aria-label="Storyboard frame"><img id="zoomImg" alt=""></dialog>
+
+<script>
+(function () {
+  var player = document.getElementById("player");
+  var cap = document.getElementById("cap");
+  var tabs = document.querySelectorAll(".tab");
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      tabs.forEach(function (o) { o.setAttribute("aria-selected", o === t ? "true" : "false"); });
+      player.src = t.dataset.src;
+      cap.textContent = t.dataset.cap;
+      player.play().catch(function () {});
+    });
+  });
+  var dlg = document.getElementById("zoom");
+  var zi = document.getElementById("zoomImg");
+  document.querySelectorAll(".shot img").forEach(function (img) {
+    img.tabIndex = 0;
+    function open() { zi.src = img.src; zi.alt = img.alt; if (dlg.showModal) dlg.showModal(); }
+    img.addEventListener("click", open);
+    img.addEventListener("keydown", function (e) { if (e.key === "Enter") open(); });
+  });
+  dlg.addEventListener("click", function () { dlg.close(); });
+})();
+</script>

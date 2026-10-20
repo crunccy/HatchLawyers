@@ -102,13 +102,21 @@ for side in (-1, 1):
     box("Ear", side * 1.6, 0.3, 8.6, 0.25, 0.6, 0.8, SKIN2)
 box("CombOver", 0.3, -0.1, 10.55, 2.5, 1.9, 0.22, HAIR, rx=0, ry=-7)
 eyes(0, 1.52, 8.95, 0.45, 0.65)
+box("Nose", 0, 1.7, 8.35, 0.55, 0.5, 0.6, SKIN2)
+# v2 (2026-10-19, docs/BOSS_ANIMATION.md): brows, glasses and moustache are groups of their own so the Briefcase
+# Swing can scowl, push the glasses up and make the moustache bristle (same blocks, same places)
+GROUP = "Brows"  # bushy grumpy brows (inner ends down)
+groups["Brows"] = dict(joint=(0, 1.55, 9.68), parent="Head")
 for side in (-1, 1):
-    # bushy grumpy brows (inner ends down) and half-moon glasses (only the lower rims)
     box("Brow", side * 0.7, 1.55, 9.55, 0.95, 0.16, 0.26, WHITE, ry=side * -12, tag="nocollide")
+GROUP = "Glasses"  # half-moon glasses (only the lower rims)
+groups["Glasses"] = dict(joint=(0, 1.58, 9.0), parent="Head")
+for side in (-1, 1):
     box("GlassRim", side * 0.65, 1.58, 8.78, 0.85, 0.08, 0.1, GOLD, tag="nocollide")
     box("GlassSide", side * 1.1, 1.58, 8.78, 0.08, 0.08, 0.45, GOLD, tag="nocollide")
 box("GlassBridge", 0, 1.58, 9.05, 0.45, 0.08, 0.08, GOLD, tag="nocollide")
-box("Nose", 0, 1.7, 8.35, 0.55, 0.5, 0.6, SKIN2)
+GROUP = "Moustache"  # hangs from under the nose
+groups["Moustache"] = dict(joint=(0, 1.7, 8.4), parent="Head")
 box("Moustache", 0, 1.68, 7.95, 1.7, 0.4, 0.5, WHITE)
 for side in (-1, 1):
     box("MoustacheDroop", side * 0.95, 1.62, 7.6, 0.55, 0.38, 0.75, WHITE, ry=side * 10)
@@ -124,10 +132,20 @@ box("Watch", -2.6, 0.62, 3.6, 0.65, 0.16, 0.65, GOLD)
 box("WatchFace", -2.6, 0.71, 3.7, 0.45, 0.04, 0.45, WHITE, tag="nocollide")
 GROUP = "ArmR"  # the huge battered briefcase, hanging from his hand by its handle
 box("CaseHandle", 2.6, 0, 3.3, 0.35, 1.2, 0.2, LEATHER2)
+# v2: the case swings on its handle (group Case) and its outer half opens on a hinge along the bottom (CaseLid), so
+# it can trail the swing, judder when it hits the ground and burst open at the top (papers fly out)
+GROUP = "Case"
+groups["Case"] = dict(joint=(2.6, 0, 3.4), parent="ArmR")
 for sy in (-1, 1):
     box("CaseHandlePost", 2.6, sy * 0.5, 3.05, 0.3, 0.2, 0.35, LEATHER2)
-box("Case", 2.7, 0, 0.35, 1.1, 4.2, 2.75, LEATHER)
-box("CaseBand", 2.7, 0, 2.35, 1.16, 4.26, 0.16, LEATHER2)
+box("Case", 2.425, 0, 0.35, 0.55, 4.2, 2.75, LEATHER)
+box("CaseBand", 2.41, 0, 2.35, 0.58, 4.26, 0.16, LEATHER2)
+box("Files", 2.67, 0, 0.6, 0.1, 3.7, 2.2, (250, 250, 250), tag="nocollide")  # (hidden inside until it opens)
+box("Folder", 2.66, 0.3, 0.5, 0.1, 2.8, 2.45, (236, 206, 130), tag="nocollide")
+GROUP = "CaseLid"
+groups["CaseLid"] = dict(joint=(2.7, 0, 0.35), parent="Case")
+box("CaseLid", 2.975, 0, 0.35, 0.55, 4.2, 2.75, LEATHER)
+box("CaseLidBand", 2.99, 0, 2.35, 0.58, 4.26, 0.16, LEATHER2)
 box("CasePatch", 3.27, -1.0, 0.8, 0.06, 1.0, 0.75, (150, 96, 52), tag="nocollide")
 box("CaseStrap", 3.27, 0.9, 0.35, 0.06, 0.35, 2.75, LEATHER2, tag="nocollide")
 for sy in (-1, 1):

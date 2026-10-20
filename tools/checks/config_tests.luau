@@ -318,17 +318,28 @@ check("raised studs: sane radii and the Blender stud's size", function()
 	assert(S.Foot > 0 and S.Foot < 0.5 and S.Height > 0 and S.Height < 0.5, "Foot / Height must fit a 1-stud cell")
 end)
 
-check("boss crowd add-ons: narrower than the main attack and dodgeable in the windup", function()
+check("boss crowd add-ons: smaller than the main attack and dodgeable in the windup", function()
 	-- docs/BOSS_ANIMATION.md section 4: with 2+ players a boss also aims at others; one player sees no change
 	for _, b in Config.Bosses.List do
 		local c = b.Crowd
 		if c then
-			assert(c.Shape == "Lane", b.Model .. ": Crowd.Shape must be Lane (Disc not built yet)")
+			assert(c.Shape == "Lane" or c.Shape == "Disc", b.Model .. ": Crowd.Shape must be Lane or Disc")
 			assert(c.Max >= 1 and c.Max <= 3, b.Model .. ": Crowd.Max 1..3 (the state has Crowd1..3)")
-			assert(c.Range > 0 and c.Length > 0 and c.Speed > 0, b.Model .. ": Crowd Range / Length / Speed")
-			assert(c.Width > 0 and c.Width <= (b.Width or math.huge), b.Model .. ": a crowd lane is never wider than the main one")
-			-- a player at base speed (32) gets out of the lane's half-width well inside the windup
-			assert(c.Width / 2 / 32 < b.Windup * 0.5, b.Model .. ": Crowd.Width too wide to dodge in the windup")
+			assert(c.Range > 0, b.Model .. ": Crowd.Range")
+			-- the windup is the add-on's warning too: never shorter than a second
+			assert(b.Windup >= 1, b.Model .. ": a boss with a crowd add-on needs a windup of at least 1 s")
+			if c.Shape == "Lane" then
+				assert(c.Length > 0 and c.Speed > 0, b.Model .. ": Crowd Length / Speed")
+				assert(c.Width > 0 and c.Width <= (b.Width or math.huge), b.Model .. ": a crowd lane is never wider than the main one")
+				-- a player at base speed (32) gets out of the lane's half-width well inside the windup
+				assert(c.Width / 2 / 32 < b.Windup * 0.5, b.Model .. ": Crowd.Width too wide to dodge in the windup")
+			else
+				-- smaller than the main attack's reach, and a player at base speed (32) walks out of it (from its very
+				-- centre: they stood there when it was aimed) well inside the windup
+				local main = b.RingRadius or b.Radius or math.huge
+				assert(c.Radius > 0 and c.Radius < main, b.Model .. ": a crowd disc is smaller than the main attack")
+				assert(c.Radius / 32 < b.Windup * 0.5, b.Model .. ": Crowd.Radius too big to walk out of in the windup")
+			end
 		end
 	end
 end)
@@ -347,6 +358,15 @@ check("boss clips match the server's timing (Shared.BossAnims vs Config.Bosses +
 			if b.Attack == "Line" then
 				assert(c.charge_launch and c.charge_loop and c.charge_brake, b.Model .. ": a Line boss needs launch / loop / brake")
 				assert(c.charge_loop.Loop, b.Model .. ": charge_loop must loop")
+			elseif b.Attack == "Cone" or b.Attack == "Ring" then
+				-- BossService holds a Cone / Ring attack for 0.45 s (the hit is its first frame)
+				assert(c.attack and math.abs(c.attack.Length - 0.45) < 1e-3, b.Model .. ": the attack clip must last 0.45 s (BossService)")
+			end
+			if anim.Turn then
+				assert(anim.Turn.Hold >= 0 and anim.Turn.Time > 0 and anim.Turn.Hold + anim.Turn.Time < b.Windup,
+					b.Model .. ": the turn must be done inside the windup")
+				assert(anim.Turn.Lead == nil or c.windup.Groups[anim.Turn.Lead] ~= nil or anim.Turn.Lead == "Torso",
+					b.Model .. ": Turn.Lead must be one of its groups")
 			end
 			for name, clip in c do
 				assert(#clip.Root == clip.Frames * 10, b.Model .. "." .. name .. ": Root frames")

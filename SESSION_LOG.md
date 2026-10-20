@@ -27,8 +27,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   range or hit changes). Megalodon first as the benchmark (Blender storyboard + keyframes -> client pose data),
   then the other five once crnuch approves. Don't touch `Bosses.client` poses / bosses.py / BossService meanwhile.
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
-  **The Senior Partner (Briefcase Swing + Paper Storm) in progress since 2026-10-19** (crnuch local, side session):
-  bosses.py / boss_anims.py / Bosses.client / BossService / Config boss entries are claimed until it's presented.
+  **The Senior Partner (Briefcase Swing + Paper Storm): built in `src/` 2026-10-19, waiting for crnuch's approval**
+  (review page in the 2026-10-19 entry); bosses.py / boss_anims.py / Bosses.client / BossService / Config boss
+  entries stay claimed until it's approved and pushed to Studio.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
@@ -186,6 +187,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-19 — crnuch, local session (side session): The Senior Partner's BRIEFCASE SWING + PAPER STORM (Blender + src/)
+- Second boss of the attack-animation overhaul, on the Megalodon benchmark. docs/BOSS_ANIMATION.md **section 6** =
+  his real timeline (Cone: windup 1.2, everyone in the fan hit on the attack's FIRST frame, attack 0.45, recover 0.6),
+  the frame-by-frame storyboard, the Paper Storm, what was built and checked.
+- **Model v2** (`tools/blender/bosses.py`, 68 -> 72 blocks, 12 groups): Brows, Glasses, Moustache, Case (swings on its
+  handle) and CaseLid (hinged; files inside). Other five bosses export byte-identical.
+- **Engine made generic** (`tools/blender/boss_anims.py` + `tools/blender/boss_clips/<boss>.py` / `<boss>_preview.py`,
+  arg `boss=SeniorPartner`): Megalodon's JSON + Luau export byte-identical. New: per-boss `Turn` (exported only when
+  not the default), a ground check, hip folds reported apart. `encode_preview.py` takes a 5th arg (boss phases).
+- **Clips** windup 37 / attack 15 / recover 19 frames -> `src/BossAnims.lua` (both bosses, 60 KB). The case lands at
+  attack + 0.05 s. Clipping worst 0.27 studs on a 38-stud boss (hip folds 0.39, hidden inside the jacket).
+- **src/ (NOT in Studio - waits for approval):** `Bosses.client.lua` (`partnerFx`: stomp, paper swirl, lid burst,
+  clasp gleam, strike rings / dust / clods / paperwork, yank; the Papers group spun by code from the clip's Swirl
+  channel; per-boss turn + lead group; Disc crowd warnings; flying bundles + shadows; the old 0.16 s-late Cone burst is
+  skipped for a boss with clips), `BossService.lua` (crowd add-on generic for every attack kind: `releaseCrowd`, Lane
+  or **Disc**; new state attrs `CrowdShape`, `CrowdRadius`), `Config.lua` (Partner `Crowd = { Shape = "Disc", Max = 2,
+  Range = 90, Radius = 10 }`). config_tests: Disc fairness (smaller than the main attack, walk-out < half the
+  windup), Cone attack clip = 0.45 s, the turn inside the windup. All checks green.
+- **Heads-up (gameplay, mr.robe's BossService):** with 2+ players in Briefcase Bay, bundles land on up to 2 other
+  players' spots (warned 1.2 s). Megalodon's lanes are now released by the same `releaseCrowd` (same behaviour).
+- **Preview + review page:** `art/bosses/senior_partner/` (15 storyboard frames, 3 MP4s, the .blend);
+  https://claude.ai/artifact/RNpXrekSGvU3QnjdRBuses (private to crnuch; share it for mr.robe).
+- **Found in passing (not changed):** the LIVE Megalodon's recover clip has its left fin 0.56 studs into the body /
+  0.48 into the snout for a couple of frames (the glasses push after round 3's fin re-seat); `-- check` shows it.
+- **Next (after approval):** run `tools/zones/BuildBosses.lua` (v2 Partner model), replace `Shared.BossAnims` with
+  `src/BossAnims.lua`, 3-way merge `src/Bosses.client.lua`, `src/BossService.lua`, `src/Config.lua`, playtest with
+  1 and 3 players (QualityLevel high for particles); check the case meets the zone floor at the strike.
 
 ## 2026-10-19 — crnuch, local session: boss attack animation overhaul — Megalodon benchmark (Blender + src/)
 - crnuch's brief: overhaul all six bosses' attacks (anticipation / attack / impact / recovery, squash + stretch,

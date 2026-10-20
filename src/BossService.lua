@@ -12,8 +12,10 @@
 -- Slam lands / a Line ends).
 -- CROWD add-ons (Config.Bosses.List[n].Crowd, crnuch's call 2026-10-19): with 2+ players in its zone, every attack
 -- also aims at up to Crowd.Max OTHER players within Crowd.Range (nearest first, skipping anyone it ignores or who is
--- safe after a hit) - warned from the same windup (state attributes CrowdN + Crowd1..3 = each lane's end, CrowdWidth,
--- CrowdSpeed) and aimed where they stood when the windup began. One player in the zone: nothing changes.
+-- safe after a hit) - warned from the same windup (state attributes CrowdShape, CrowdN + Crowd1..3 = each lane's end /
+-- disc's centre, CrowdWidth, CrowdSpeed, CrowdRadius) and aimed where they stood when the windup began. Released as
+-- the windup ends: a "Lane" races out from the boss (the Megalodon's sand sharks); a "Disc" lands on its centre at
+-- that moment, with the main attack (the Senior Partner's case files). One player in the zone: nothing changes.
 -- Hits are decided HERE, from where everyone stands at that moment (never the client's word). TOUCHING the boss's
 -- body (its Hitbox) is a hit too. A hit RAGDOLLS the player (their client, RagdollTime s, flung away) and knocks
 -- every egg they carry out of their arms (ZoneService.dropAll: loose eggs anyone can grab); then they can't be hit
@@ -254,7 +256,8 @@ local function hitShape(b: Boss, kind: string, centre: Vector3, radius: number)
 	end
 end
 
--- the crowd add-on's targets for this attack: up to Crowd.Max other players near it (see the header)
+-- the crowd add-on's targets for this attack: up to Crowd.Max other players near it (see the header) - a Lane's end
+-- (toward them, 20 studs past, at most Length) or a Disc's centre (where they stand)
 local function crowdTargets(b: Boss, here: Vector3, target: BasePart): { Vector3 }
 	local crowd = b.def.Crowd
 	local ends = {}
@@ -273,9 +276,11 @@ local function crowdTargets(b: Boss, here: Vector3, target: BasePart): { Vector3
 		return x.d < y.d
 	end)
 	for i = 1, math.min(crowd.Max, #list) do
-		local dir = flat(list[i].root.Position - here).Unit
-		local len = math.min(crowd.Length, list[i].d + 20)
-		local e = here + dir * len
+		local e = list[i].root.Position
+		if crowd.Shape == "Lane" then
+			local dir = flat(list[i].root.Position - here).Unit
+			e = here + dir * math.min(crowd.Length, list[i].d + 20)
+		end
 		-- (inside the zone's land, a few studs off its edges)
 		table.insert(ends, Vector3.new(math.clamp(e.X, b.bounds[1] + 4, b.bounds[3] - 4), here.Y, math.clamp(e.Z, b.bounds[2] + 4, b.bounds[4] - 4)))
 	end
@@ -311,12 +316,27 @@ local function runLane(b: Boss, from: Vector3, to: Vector3)
 	end
 end
 
+-- the crowd add-on goes off as the windup ends: lanes race out from the boss, discs land on their centres
+local function releaseCrowd(b: Boss, here: Vector3, ends: { Vector3 })
+	local crowd = b.def.Crowd
+	for _, e in ends do
+		if crowd.Shape == "Disc" then
+			hitShape(b, "Ring", e, crowd.Radius)
+		else
+			task.spawn(runLane, b, here, e)
+		end
+	end
+end
+
 local function attack(b: Boss, here: Vector3, target: BasePart)
 	local def = b.def
 	local kind = nextAttackKind(b)
 	b.yaw = yawOf(flat(target.Position - here), b.yaw)
 	b.state:SetAttribute("AttackKind", kind)
 	b.state:SetAttribute("Target", here)
+	-- (picked as the windup begins, so every client warns from its first frame)
+	local crowd = crowdTargets(b, here, target)
+	setCrowd(b, crowd)
 	if kind == "Slam" then
 		-- jumps at where the target stands NOW and comes down there at the end of the windup (moving dodges it)
 		local spot = clampToArea(b, target.Position.X, target.Position.Z)
@@ -329,6 +349,7 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		stand(b, spot)
 		setState(b, "attack", 0.45)
 		hitShape(b, "Ring", spot, def.Radius)
+		releaseCrowd(b, spot, crowd)
 		task.wait(0.45)
 	elseif kind == "Line" then
 		-- rolls / charges straight at the target, Length studs (shorter at the zone's edge), Width wide
@@ -336,14 +357,10 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		dir = if dir.Magnitude > 0.1 then dir.Unit else Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
 		local goal = clampToArea(b, here.X + dir.X * def.Length, here.Z + dir.Z * def.Length)
 		b.state:SetAttribute("Target", goal)
-		local lanes = crowdTargets(b, here, target)
-		setCrowd(b, lanes)
 		stand(b, here)
 		setState(b, "windup", def.Windup)
 		task.wait(def.Windup)
-		for _, e in lanes do
-			task.spawn(runLane, b, here, e)
-		end
+		releaseCrowd(b, here, crowd)
 		local duration = math.max(0.25, flat(goal - here).Magnitude / def.LineSpeed)
 		setMove(b, here, goal, duration)
 		setState(b, "attack", duration)
@@ -369,6 +386,7 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		setState(b, "windup", def.Windup)
 		task.wait(def.Windup)
 		setState(b, "attack", def.PullTime)
+		releaseCrowd(b, here, crowd)
 		local stop = now() + def.PullTime
 		while now() < stop do
 			hitShape(b, "Ring", here, def.Inner)
@@ -380,6 +398,7 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		task.wait(def.Windup)
 		setState(b, "attack", 0.45)
 		hitShape(b, kind, here, if kind == "Ring" then (def.RingRadius or def.Radius) else def.Radius)
+		releaseCrowd(b, here, crowd)
 		task.wait(0.45)
 	end
 	setCrowd(b, {})
@@ -479,7 +498,8 @@ function BossService.start()
 			Angle = def.Angle or 360, Windup = def.Windup, Color = def.Color, FloorY = floorY, Scale = def.Scale or 1,
 			RingRadius = def.RingRadius or def.Radius or 10, Length = def.Length or 0, Width = def.Width or 0,
 			Inner = def.Inner or 0, PullSpeed = def.PullSpeed or 0, HopHeight = def.HopHeight or 0, CrowdN = 0,
-			CrowdWidth = def.Crowd and def.Crowd.Width or 0, CrowdSpeed = def.Crowd and def.Crowd.Speed or 0 } do
+			CrowdWidth = def.Crowd and def.Crowd.Width or 0, CrowdSpeed = def.Crowd and def.Crowd.Speed or 0,
+			CrowdShape = def.Crowd and def.Crowd.Shape or "", CrowdRadius = def.Crowd and def.Crowd.Radius or 0 } do
 			state:SetAttribute(k, v)
 		end
 		local shift = rng:NextNumber(-40, 40) -- (somewhere along the middle of the lane)
