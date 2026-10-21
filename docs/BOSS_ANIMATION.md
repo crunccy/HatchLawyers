@@ -450,7 +450,8 @@ behind the collar, as at rest), the shoulders.
   No damage, timing, range or economy change.
 - **LIVE in Studio 2026-10-20** (mr.robe's session): `ReplicatedStorage.Bosses` rebuilt (Bulldog 80 parts / 14 groups,
   Martello 7 groups, Eclipse 9 groups; the other three unchanged), `Shared.BossAnims`, `Bosses` (client: 3-way merged
-  with un-logged live edits - see SESSION_LOG), `Server.BossService`, `Shared.Config`. Backups:
+  with un-logged live edits; that "Beam" experiment, which had switched the Megalodon + Big Cheese clips off, was
+  reverted the same day on mr.robe's call - see SESSION_LOG), `Server.BossService`, `Shared.Config`. Backups:
   `ServerStorage.Backups_2026-10-20.*_before_last3_boss_anims` (+ `BossModels_before_last3_boss_anims`).
 - **Playtested (1 player, on the v2 islands, QualityLevel 21)**, the crowd spots faked by a playtest-only server script
   (so the client drew each add-on solo; the server's own crowd hits not exercised): Bulldog windup 1.4 -> bark ->
@@ -465,9 +466,9 @@ behind the collar, as at rest), the shoulders.
 ## 11. Status
 | Boss | Storyboard | Blender clips | Preview | Client | In Studio |
 | --- | --- | --- | --- | --- | --- |
-| Magistrate Megalodon | done | done | done | done | **live** (3-player test to do; clips switched OFF live by an un-logged client edit - SESSION_LOG) |
+| Magistrate Megalodon | done | done | done | done | **live** (3-player test to do) |
 | The Senior Partner | done | done | done | done | **live** (3-player test to do) |
 | Barrister Bulldog | done | done | stills | done | **live** (3-player test to do) |
 | Judge Martello | done | done | stills | done | **live** (3-player test to do) |
-| Prosecutor Big Cheese | done | done | done | done | **live** (3-player test to do; clips switched OFF live by an un-logged client edit - SESSION_LOG) |
+| Prosecutor Big Cheese | done | done | done | done | **live** (3-player test to do) |
 | Chief Justice Eclipse | done | done | stills | done | **live** (3-player test to do) |

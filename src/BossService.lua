@@ -350,42 +350,16 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 		-- jumps at where the target stands NOW and comes down there at the end of the windup (moving dodges it)
 		local spot = clampToArea(b, target.Position.X, target.Position.Z)
 		b.state:SetAttribute("Target", spot)
-		if def.Model == "SeniorPartner" then
-			-- The briefcase stamps the marked spot while the partner stays put.
-			stand(b, here)
-		else
-			b.airborne = true
-			setMove(b, here, spot, def.Windup)
-		end
+		b.airborne = true
+		setMove(b, here, spot, def.Windup)
 		setState(b, "windup", def.Windup)
 		task.wait(def.Windup)
 		b.airborne = false
-		if def.Model ~= "SeniorPartner" then stand(b, spot) end
+		stand(b, spot)
 		setState(b, "attack", 0.45)
 		hitShape(b, "Ring", spot, def.Radius)
-		releaseCrowd(b, if def.Model == "SeniorPartner" then here else spot, crowd)
+		releaseCrowd(b, spot, crowd)
 		task.wait(0.45)
-	elseif kind == "Beam" then
-		-- Eclipse projects a warned beam; the boss holds position while the hit travels outward.
-		local dir = flat(target.Position - here)
-		dir = if dir.Magnitude > 0.1 then dir.Unit else Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
-		local goal = clampToArea(b, here.X + dir.X * def.Length, here.Z + dir.Z * def.Length)
-		b.state:SetAttribute("Target", goal)
-		stand(b, here)
-		setState(b, "windup", def.Windup)
-		task.wait(def.Windup)
-		local duration = math.max(0.35, flat(goal - here).Magnitude / def.LineSpeed)
-		setState(b, "attack", duration)
-		local start = now()
-		while now() - start < duration do
-			local beamAt = here + dir * math.min(flat(goal - here).Magnitude, def.LineSpeed * (now() - start))
-			for _, p in playersInZone(b) do
-				if flat(p.root.Position - beamAt).Magnitude <= def.Width / 2 then
-					hit(b, p.player, p.root, beamAt, dir)
-				end
-			end
-			task.wait(0.05)
-		end
 	elseif kind == "Line" then
 		-- rolls / charges straight at the target, Length studs (shorter at the zone's edge), Width wide
 		local dir = flat(target.Position - here)

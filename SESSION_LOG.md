@@ -73,15 +73,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
       with the switch OFF after the BossService change (code moved, not changed; not playtested).
       Re-run BuildIslandWiring after any island rebuild (v2 layouts). Check fps / memory on a phone: the place
       went from ~19.5k to ~128k parts (all islands stream; move them to ServerStorage if it hurts).
-- [ ] **Who made the un-logged live BossService edits?** (found 2026-10-20 by mr.robe's island-bosses session; not in
-      any branch, not the Bulldog/Martello/Eclipse session): a `"Beam"` attack kind and a SeniorPartner `Slam` variant (he
-      stands still and the briefcase stamps the spot). Both are dormant - no `Config.Bosses` entry uses them. Kept in the
-      3-way merge; whoever owns them: log them, or remove them if they were an experiment.
-      **The live Bosses CLIENT has un-logged edits too** (found 2026-10-20 by the Bulldog/Martello/Eclipse session, kept
-      in its 3-way merge): **crnuch's approved Megalodon + Big Cheese clips are switched OFF live** (`anim = nil` for
-      windup / attack / recover / dizzy: "new burst / whirlpool moves use their purpose-built poses" - but Config still
-      has them on Line attacks), new POSES for Martello / Big Cheese / Megalodon, the Beam drawing, and a boss sound
-      cap (5 at once, 0.12 s per kind, volume x0.55, through the SFX group). crnuch: keep or undo?
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -228,6 +219,23 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-20 — mr.robe, local session: the un-logged "Beam" boss experiment reverted
+- **mr.robe's call:** "revert the beam stuff" (and the Bulldog's bow tie moved under his chin is fine - stays). The
+  experiment was live but in no branch or log (found by the island-bosses session and this one; author unknown).
+- **Reverted** (3-way: today's live minus exactly that edit, so the island-bosses work and the last-three boss work stay):
+  `Server.BossService` - the `"Beam"` attack branch and the Senior Partner `Slam` variant (back to crnuch's Slam branch
+  exactly); `StarterPlayerScripts.Bosses` - the switch that turned **crnuch's approved Megalodon + Big Cheese clips
+  OFF** (`anim = nil`), the experiment's POSES for Martello / Big Cheese / Megalodon, the Beam warning + bolt drawing, the
+  Martello paper-burst skip and the Big Cheese ring sparks. **Kept** (not Beam): the boss sound cap from the same edit
+  (5 at once, 0.12 s per kind, volume x0.55, through the SFX group).
+- Backups first: `ServerStorage.Backups_2026-10-20.BossesClient_before_beam_revert` / `BossService_before_beam_revert`
+  (the experiment is also in git: studio/ at aac1a7e). Each replace checked the live script still matched the snapshot.
+- **Playtested** (1 player, v2 islands): Megalodon back on his clips (the fin glow lights - only his clip does that - the
+  jaw opens), Big Cheese too (his lids move, the wheel rolls, its lowest corner on the floor: 0.00). No client errors.
+  `run_checks.py` ALL PASSED; snapshot re-exported (only these two scripts + their backups changed); `src/` == live.
+- **Found, not mine:** a server error in the playtest - `GetBoundingBox is not a valid member of Part
+  "Workspace.WorldRedesign.CentralHub.Lots.Lots"` (a script treats the hub's `Lots` part as a Model; hub v2 work).
+
 ## 2026-10-20 — mr.robe, local session: the last three boss attack animations (Bulldog, Martello, Eclipse) — LIVE
 - **User's call (mr.robe):** finish crnuch's boss attack animation overhaul for the last three bosses on his pattern and
   push them live. All in docs/BOSS_ANIMATION.md **sections 8-10** (timelines, storyboards, crowd add-ons, checks).
@@ -263,7 +271,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   honours `Crowd.On` - one line, outside `start`. (2) Three new Crowd add-ons in `Config.Bosses` = gameplay with 2+
   players (your crowd design, section 4; Bulldog / Martello discs r 12, Eclipse r 10 on Ring turns). (3) **Your
   approved Megalodon + Big Cheese clips are switched OFF in the live client by someone's un-logged edit** (Open items) -
-  I kept it (3-way merge), your call. (4) Review wanted: art/bosses/barrister_bulldog/, judge_martello/, eclipse/.
+  I kept it (3-way merge), your call - **reverted later the same day on mr.robe's call (entry above)**. (4) Review
+  wanted: art/bosses/barrister_bulldog/, judge_martello/, eclipse/.
 - **Found:** on this PC the snapshot receiver silently failed 21 of 130 writes (OneDrive file locks) - CLAUDE.md now says
   to receive outside OneDrive and copy. Python isn't installed here: Blender's own `python.exe` runs the checks
   (`PYTHONUTF8=1`), the Luau CLI was downloaded to the session's scratchpad.
