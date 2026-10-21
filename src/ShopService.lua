@@ -106,6 +106,10 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 	if not (player and data) then
 		return Enum.ProductPurchaseDecision.NotProcessedYet -- not here / not loaded: Roblox retries later
 	end
+	if PlayerData.isPromo(player) then
+		-- Leave receipts pending so a promo session cannot spend Robux on a grant that is intentionally not saved.
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
 	local purchaseId = tostring(receipt.PurchaseId)
 	data.Purchases = data.Purchases or {}
 	if data.Purchases[purchaseId] then

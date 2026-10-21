@@ -142,6 +142,9 @@ end
 local function hookPurchase(c: Card)
 	local item, kind = c.item, c.kind
 	c.price.button.Activated:Connect(function()
+		if player:GetAttribute("PromoMode") == true then
+			return -- purchases persist outside the sandbox profile
+		end
 		if item.Id == 0 or pending[item.Key] or (kind == "pass" and owns(item)) then
 			return
 		end

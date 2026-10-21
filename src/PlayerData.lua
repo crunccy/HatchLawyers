@@ -12,6 +12,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
+local PromoPolicy = require(game:GetService("ServerScriptService"):WaitForChild("PromoPolicy"))
 
 -- A hatched lawyer (v12). Id: one of Config.SkinCatalog (the lawyer catalog). Stars: merge level.
 -- Skills: owned skills. PendingSkill: a rolled skill waiting for the player to pick a slot.
@@ -70,7 +71,7 @@ export type Data = {
 	Zones: { License: number, Carry: number, Speed: number, Carried: { { Egg: string, Golden: boolean? } } },
 }
 
-type Session = { data: Data, releasing: boolean }
+type Session = { data: Data, releasing: boolean, promo: boolean }
 
 local SCHEMA_VERSION = 18
 local STORE_NAME = "PlayerData"
@@ -390,6 +391,10 @@ local function acquire(dataStore: DataStore, key: string): (string, any)
 end
 
 local function write(player: Player, session: Session, release: boolean): boolean
+	-- Promo users play on a fresh in-memory template. Never touch their real save or its lock.
+	if session.promo then
+		return true
+	end
 	local dataStore = getStore()
 	if not dataStore then
 		-- Studio memory-only: nothing is ever saved, by design. Live: not saved (yet) - say so, so ShopService
@@ -483,31 +488,36 @@ end
 
 -- Yields. Returns nil (and kicks the player) if the data could not be loaded safely.
 function PlayerData.load(player: Player): Data?
+	local promo = PromoPolicy.isAllowed(player.UserId)
 	-- a quick rejoin to the SAME server: wait for the old session's last save first (audit 2026-10-12: the lock is ours
 	-- either way, so the new load read the last autosave, then the old save landed on top and cleared the lock -
 	-- a rollback waiting to happen)
 	local waitUntil = os.clock() + 30
-	while releasingIds[player.UserId] and player.Parent and os.clock() < waitUntil do
+	while not promo and releasingIds[player.UserId] and player.Parent and os.clock() < waitUntil do
 		task.wait(0.25)
 	end
-	local dataStore = getStore()
+	local dataStore = if promo then nil else getStore()
 	-- live server, DataStores down: retry like a failed load, then ask the player to rejoin - never hand them a
 	-- fresh firm that would never save (their real save is untouched either way)
 	for _ = 2, LOAD_ATTEMPTS do
+		if promo then break end
 		if dataStore or memoryOnly or player.Parent == nil then
 			break
 		end
 		task.wait(LOAD_RETRY_DELAY)
 		dataStore = getStore()
 	end
-	if not dataStore and not memoryOnly then
+	if not promo and not dataStore and not memoryOnly then
 		if player.Parent then
 			player:Kick("We couldn't load your law firm. Please rejoin in a minute!")
 		end
 		return nil
 	end
 	local data: Data? = nil
-	if dataStore then
+	if promo then
+		data = template()
+		data.Zones.License = #Config.Zones.List
+	elseif dataStore then
 		local status, saved = "error", nil
 		for attempt = 1, LOAD_ATTEMPTS do
 			status, saved = acquire(dataStore, lockKey(player))
@@ -537,8 +547,12 @@ function PlayerData.load(player: Player): Data?
 	end
 	local loaded = data :: Data
 
-	local session: Session = { data = loaded, releasing = false }
+	local session: Session = { data = loaded, releasing = false, promo = promo }
 	sessions[player] = session
+	if promo then
+		player:SetAttribute("PromoMode", true)
+		player:SetAttribute("PromoModeNotice", "Temporary promo profile: progress is never saved.")
+	end
 	if player.Parent == nil then
 		-- Left while we were loading: hand the lock straight back.
 		PlayerData.release(player)
@@ -558,6 +572,11 @@ end
 function PlayerData.get(player: Player): Data?
 	local session = sessions[player]
 	return if session and not session.releasing then session.data else nil
+end
+
+function PlayerData.isPromo(player: Player): boolean
+	local session = sessions[player]
+	return session ~= nil and session.promo
 end
 
 function PlayerData.addCoins(player: Player, amount: number)

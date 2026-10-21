@@ -15,7 +15,16 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
+## 2026-10-20 — crnuch, cloud session: isolated Promo Admin toolkit
+
+- Added a separate server-only UserId policy for `maddrummerman25` (`468598163`); promo access is not full admin.
+- Promo users load a fresh in-memory profile; profile saves and leaderboard writes are suppressed, and shop purchase prompts are disabled. Added temporary resources, egg and lawyer hatch previews, max-firm preview, all-world travel, local GUI hiding, and a free camera.
+- Added setup, revocation, and command reference in `docs/PROMO_ADMIN.md`.
+- Validation: `tools/checks/run_checks.py --luau-dir /private/tmp/hatchlawyers-luau/bin` — 215 Luau files compiled, 40 config checks passed, 32 economy simulation tests passed.
+- Studio/live place was not modified. Install and playtest remains open below.
+
 ## Open items
+- [ ] **Install + Studio playtest Promo Admin** from the `codex/promo-admin-toolkit` PR after review. Verify the allowlisted account gets a disposable profile, resources/eggs/hatch previews work, all travel destinations open, max-firm preview rebuilds, GUI restore works, free-camera restores on respawn, and ordinary users cannot use `/promo`.
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
