@@ -44,6 +44,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Carry / Speed, Shop, Mutation Machine, Big Case belt + minigames, leaderboards, Arcade booths, zone banner + "you are
   here"; old hub kept untouched as the switch-off fallback). New `Server.HubMap` + `tools/zones/BuildHubWiring.lua`;
   small 3-way-merged edits to Main, PlotService, Zones.client, Travel.client. Don't wire the hub meanwhile.
+- **mr.robe (local), since 2026-10-21:** MUTATIONS FIX + the Mutation Machine rebuilt (user's call): find + fix why
+  mutating doesn't work (server-side, `Server.LawyerService` mergeSelected / mergeInto), a new 3D-looking Mutation
+  Machine menu (`StarterPlayerScripts.Merger`) and a hatch-style animated mutation sequence (HatchFx / Effects /
+  Puppet). Don't touch `Merger.client`, the mutation code in LawyerService or `Shared.MutationLook` meanwhile.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
