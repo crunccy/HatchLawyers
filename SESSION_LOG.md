@@ -39,6 +39,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   owns zone lighting; TravelFx / hatch stages keep their save-restore. Pet Park prototype first, then the other five
   after crnuch approves. Don't add zone lighting / atmosphere scripts meanwhile.
   Shared system + Pet Park prototype LIVE in Studio 2026-10-20, waiting for crnuch's approval; then the other five.
+- **mr.robe (local), since 2026-10-20:** the HUB'S GAMEPLAY onto the v2 central hub island (user's calls: a new switch
+  `Config.Zones.Islands.Hub`, left ON in Studio; everything moves - firms, spawn, RETURN HOME, Travel portal, License /
+  Carry / Speed, Shop, Mutation Machine, Big Case belt + minigames, leaderboards, Arcade booths, zone banner + "you are
+  here"; old hub kept untouched as the switch-off fallback). New `Server.HubMap` + `tools/zones/BuildHubWiring.lua`;
+  small 3-way-merged edits to Main, PlotService, Zones.client, Travel.client. Don't wire the hub meanwhile.
 
 ## Open items
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
