@@ -6,7 +6,8 @@
 # GROUP at its joint, execs the boss's files in this namespace, bakes the preview at the SERVER's exact timing, and
 # exports every boss's clips to tools/zones/boss_anims.json + src/BossAnims.lua (ReplicatedStorage.Shared.BossAnims,
 # generated; other bosses' clips already in the JSON are kept as they are).
-# Bosses: Megalodon (FIN CHARGE, the benchmark), SeniorPartner (BRIEFCASE SWING), BigCheese (CHEESE ROLL).
+# Bosses: Megalodon (FIN CHARGE, the benchmark), SeniorPartner (BRIEFCASE SWING), BigCheese (CHEESE ROLL),
+# BarristerBulldog (OBJECTION BARK), JudgeMartello (GAVEL SLAM), Eclipse (GRAVITY PULL + GAVEL ORBIT).
 # Args after --:  boss=<Model> (default Megalodon)
 #                 check   -> per-frame clipping check (every block of a group vs every other group's blocks)
 #                 stills  -> <OUT_DIR>/board_*.png (storyboard frames)
@@ -32,7 +33,8 @@ ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 FRAMES_DIR = os.environ.get("BOSS_FRAMES", os.path.join(REPO, "_boss_frames"))
 FPS = 30
 BOSS = next((a.split("=", 1)[1] for a in ARGS if a.startswith("boss=")), "Megalodon")
-SPECS = {"Megalodon": "megalodon", "SeniorPartner": "senior_partner", "BigCheese": "big_cheese"}  # boss -> its files in tools/blender/boss_clips/
+SPECS = {"Megalodon": "megalodon", "SeniorPartner": "senior_partner", "BigCheese": "big_cheese",
+         "BarristerBulldog": "barrister_bulldog", "JudgeMartello": "judge_martello", "Eclipse": "eclipse"}  # boss -> its files in tools/blender/boss_clips/
 SPEC_DIR = os.path.join(REPO, "tools", "blender", "boss_clips")
 TURN = (0.04, 0.2)  # the client's whip-round turn in the windup: hold, then back-out over this long (a spec may change it)
 LEAD = ("Torso", 0.35)  # which group leads the turn, and by how much of the angle still to go

@@ -15,7 +15,9 @@
 -- safe after a hit) - warned from the same windup (state attributes CrowdShape, CrowdN + Crowd1..3 = each lane's end /
 -- disc's centre, CrowdWidth, CrowdSpeed, CrowdRadius) and aimed where they stood when the windup began. Released as
 -- the windup ends: a "Lane" races out from the boss (the Megalodon's sand sharks); a "Disc" lands on its centre at
--- that moment, with the main attack (the Senior Partner's case files). One player in the zone: nothing changes.
+-- that moment, with the main attack (the Senior Partner's case files, the Bulldog's echo, Martello's mini gavels, the
+-- Eclipse's volley gavels). Crowd.On ties it to one attack kind of a boss that takes turns. One player in the zone:
+-- nothing changes.
 -- Hits are decided HERE, from where everyone stands at that moment (never the client's word). TOUCHING the boss's
 -- body (its Hitbox) is a hit too. A hit RAGDOLLS the player (their client, RagdollTime s, flung away) and knocks
 -- every egg they carry out of their arms (ZoneService.dropAll: loose eggs anyone can grab); then they can't be hit
@@ -263,11 +265,12 @@ local function hitShape(b: Boss, kind: string, centre: Vector3, radius: number)
 end
 
 -- the crowd add-on's targets for this attack: up to Crowd.Max other players near it (see the header) - a Lane's end
--- (toward them, 20 studs past, at most Length) or a Disc's centre (where they stand)
-local function crowdTargets(b: Boss, here: Vector3, target: BasePart): { Vector3 }
+-- (toward them, 20 studs past, at most Length) or a Disc's centre (where they stand). A Crowd with On only goes with
+-- that attack kind (the Eclipse's Gavel Volley: its Ring turns).
+local function crowdTargets(b: Boss, here: Vector3, target: BasePart, kind: string): { Vector3 }
 	local crowd = b.def.Crowd
 	local ends = {}
-	if not crowd then
+	if not crowd or (crowd.On and crowd.On ~= kind) then
 		return ends
 	end
 	local t = now()
@@ -341,7 +344,7 @@ local function attack(b: Boss, here: Vector3, target: BasePart)
 	b.state:SetAttribute("AttackKind", kind)
 	b.state:SetAttribute("Target", here)
 	-- (picked as the windup begins, so every client warns from its first frame)
-	local crowd = crowdTargets(b, here, target)
+	local crowd = crowdTargets(b, here, target, kind)
 	setCrowd(b, crowd)
 	if kind == "Slam" then
 		-- jumps at where the target stands NOW and comes down there at the end of the windup (moving dodges it)

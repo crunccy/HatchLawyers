@@ -328,6 +328,10 @@ check("boss crowd add-ons: smaller than the main attack and dodgeable in the win
 			assert(c.Range > 0, b.Model .. ": Crowd.Range")
 			-- the windup is the add-on's warning too: never shorter than a second
 			assert(b.Windup >= 1, b.Model .. ": a boss with a crowd add-on needs a windup of at least 1 s")
+			if c.On then -- (tied to one of its attacks: it must be one it makes)
+				local kinds = if type(b.Attack) == "table" then b.Attack else { b.Attack }
+				assert(table.find(kinds, c.On) ~= nil, b.Model .. ": Crowd.On must be one of its attacks")
+			end
 			if c.Shape == "Lane" then
 				assert(c.Length > 0 and c.Speed > 0, b.Model .. ": Crowd Length / Speed")
 				assert(c.Width > 0 and c.Width <= (b.Width or math.huge), b.Model .. ": a crowd lane is never wider than the main one")
@@ -349,23 +353,44 @@ check("boss clips match the server's timing (Shared.BossAnims vs Config.Bosses +
 		local anim = BossAnims[b.Model]
 		if anim then
 			local c = anim.Clips
-			assert(c.windup and math.abs(c.windup.Length - b.Windup) < 1e-3,
-				b.Model .. ": the windup clip must last Windup (" .. b.Windup .. " s)")
-			assert(c.recover and math.abs(c.recover.Length - 0.6) < 1e-3, b.Model .. ": the recover clip must last 0.6 s (BossService)")
+			-- a boss that takes turns has a clip set per attack (windup_Pull, attack_Ring, ...); one attack: windup, ...
+			local kinds = if type(b.Attack) == "table" then b.Attack else { b.Attack }
+			local function clip(state: string, kind: string): any
+				return c[state .. "_" .. kind] or c[state]
+			end
+			for _, kind in kinds do
+				local w = clip("windup", kind)
+				assert(w and math.abs(w.Length - b.Windup) < 1e-3,
+					b.Model .. " " .. kind .. ": the windup clip must last Windup (" .. b.Windup .. " s)")
+				local r = clip("recover", kind)
+				assert(r and math.abs(r.Length - 0.6) < 1e-3, b.Model .. " " .. kind .. ": the recover clip must last 0.6 s (BossService)")
+				if kind == "Line" then
+					assert(c.charge_launch and c.charge_loop and c.charge_brake, b.Model .. ": a Line boss needs launch / loop / brake")
+					assert(c.charge_loop.Loop, b.Model .. ": charge_loop must loop")
+				elseif kind == "Pull" then
+					-- BossService drags for PullTime s
+					local a = clip("attack", kind)
+					assert(a and math.abs(a.Length - b.PullTime) < 1e-3, b.Model .. ": the Pull's attack clip must last PullTime")
+				else
+					-- BossService holds a Cone / Ring / Slam attack for 0.45 s (the hit is its first frame)
+					local a = clip("attack", kind)
+					assert(a and math.abs(a.Length - 0.45) < 1e-3, b.Model .. " " .. kind .. ": the attack clip must last 0.45 s (BossService)")
+				end
+				if kind == "Slam" then
+					-- the hop is drawn along the windup's Travel channel: from where it stood (0) to the server's spot (1)
+					local tr = w.Fx.Travel
+					assert(tr and math.abs(tr[1]) < 1e-3 and math.abs(tr[#tr] - 1) < 1e-3,
+						b.Model .. ": a Slam's windup Travel must go from 0 to 1 (it lands on the server's spot)")
+				end
+			end
 			if b.Dizzy then
 				assert(c.dizzy and math.abs(c.dizzy.Length - b.Dizzy) < 1e-3, b.Model .. ": the dizzy clip must last Dizzy")
-			end
-			if b.Attack == "Line" then
-				assert(c.charge_launch and c.charge_loop and c.charge_brake, b.Model .. ": a Line boss needs launch / loop / brake")
-				assert(c.charge_loop.Loop, b.Model .. ": charge_loop must loop")
-			elseif b.Attack == "Cone" or b.Attack == "Ring" then
-				-- BossService holds a Cone / Ring attack for 0.45 s (the hit is its first frame)
-				assert(c.attack and math.abs(c.attack.Length - 0.45) < 1e-3, b.Model .. ": the attack clip must last 0.45 s (BossService)")
 			end
 			if anim.Turn then
 				assert(anim.Turn.Hold >= 0 and anim.Turn.Time > 0 and anim.Turn.Hold + anim.Turn.Time < b.Windup,
 					b.Model .. ": the turn must be done inside the windup")
-				assert(anim.Turn.Lead == nil or c.windup.Groups[anim.Turn.Lead] ~= nil or anim.Turn.Lead == "Torso",
+				local w = clip("windup", kinds[1])
+				assert(anim.Turn.Lead == nil or w.Groups[anim.Turn.Lead] ~= nil or anim.Turn.Lead == "Torso",
 					b.Model .. ": Turn.Lead must be one of its groups")
 			end
 			for name, clip in c do

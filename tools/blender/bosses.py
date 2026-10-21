@@ -186,25 +186,44 @@ for side in (-1, 1):
     box("RobeSleeve", side * 2.4, 1.7, 2.4, 0.35, 1.4, 2.6, ROBE)
 box("RobeBack", 0, -3.45, 2.1, 5.0, 0.3, 3.3, ROBE)
 for side in (-1, 1):
-    box("Band", side * 0.24, 2.86, 2.55, 0.38, 0.1, 0.85, WIG, tag="nocollide")  # barrister's bands
-    box("BowWing", side * 0.62, 2.88, 3.55, 0.75, 0.24, 0.65, RED, ry=side * 10)
-box("BowKnot", 0, 2.92, 3.62, 0.42, 0.3, 0.5, RED)
+    box("Band", side * 0.24, 2.86, 2.0, 0.38, 0.1, 0.85, WIG, tag="nocollide")  # barrister's bands
+# v2 (2026-10-20, docs/BOSS_ANIMATION.md section 8): the bow tie, jaw, jowls, ears and wig are groups of their own so
+# the OBJECTION Bark can open a real mouth, flap the jowls and ears, blow the wig off its head and flutter the bow tie.
+# (The bow tie and bands sat 0.55 higher, inside the head, where nobody could see them: now under the chin.)
+GROUP = "BowTie"
+groups["BowTie"] = dict(joint=(0, 2.9, 3.17), parent="Torso")
+for side in (-1, 1):
+    box("BowWing", side * 0.62, 2.88, 2.85, 0.75, 0.24, 0.6, RED, ry=side * 10)
+box("BowKnot", 0, 2.92, 2.92, 0.42, 0.3, 0.46, RED)
 
 GROUP = "Head"
 groups["Head"] = dict(joint=(0, 2.4, 4.6), parent="Torso")
 box("Head", 0, 3.7, 3.5, 4.2, 3.2, 3.3, FAWN)
-box("Muzzle", 0, 5.55, 3.55, 2.9, 0.9, 1.6, CREAM)
+box("Muzzle", 0, 5.55, 4.3, 2.9, 0.9, 0.85, CREAM)  # (v2: the upper lip; the jaw below it opens)
+box("Mouth", 0, 5.15, 3.6, 2.4, 0.4, 0.7, (120, 30, 40), tag="nocollide")  # the inside of the mouth (hidden when shut)
 box("Nose", 0, 6.05, 4.7, 1.05, 0.4, 0.6, NOSE)
-for side in (-1, 1):
-    box("Jowl", side * 1.5, 5.2, 3.1, 1.05, 1.5, 1.5, FAWN2)
-    box("Tooth", side * 0.6, 6.06, 3.85, 0.32, 0.12, 0.35, WIG, tag="nocollide")
-    box("Drool", side * 1.5, 5.6, 2.75, 0.2, 0.2, 0.4, WIG, tag="nocollide")
-    box("Ear", side * 2.0, 2.9, 6.3, 0.9, 0.55, 0.9, EAR, ry=side * 25)
 for i in range(2):
     box("Wrinkle", 0, 5.32, 6.1 + i * 0.28, 2.4 - i * 0.6, 0.08, 0.13, FAWN2, tag="nocollide")
 eyes(0, 5.33, 5.4, 0.55, 1.0)
+GROUP = "Jaw"  # the underbite: hinged at its back, the fangs poke up in front of the upper lip
+groups["Jaw"] = dict(joint=(0, 5.05, 4.3), parent="Head")
+box("Jaw", 0, 5.55, 3.5, 2.6, 1.05, 0.8, CREAM)
+box("Tongue", 0, 5.5, 4.22, 1.4, 0.8, 0.1, (240, 120, 130), tag="nocollide")
+for side in (-1, 1):
+    box("Tooth", side * 0.6, 6.08, 4.05, 0.32, 0.12, 0.4, WIG, tag="nocollide")
+for side, g in ((-1, "JowlL"), (1, "JowlR")):  # they hang from the snout and flap
+    GROUP = g
+    groups[g] = dict(joint=(side * 1.5, 5.2, 4.6), parent="Head")
+    box("Jowl", side * 1.5, 5.2, 3.1, 1.05, 1.5, 1.5, FAWN2)
+    box("Drool", side * 1.5, 5.6, 2.75, 0.2, 0.2, 0.4, WIG, tag="nocollide")
+for side, g in ((-1, "EarL"), (1, "EarR")):  # hinged at the root, under the wig's side rolls
+    GROUP = g
+    groups[g] = dict(joint=(side * 1.7, 2.9, 7.0), parent="Head")
+    box("Ear", side * 2.0, 2.9, 6.3, 0.9, 0.55, 0.9, EAR, ry=side * 25)
 # the curly barrister's wig: rows of white curls over the top (alternate rows sit higher, so it reads curly), and
-# rolls down each side and at the back
+# rolls down each side and at the back (v2: one group, sat on the head - the bark blows it up and it lands crooked)
+GROUP = "Wig"
+groups["Wig"] = dict(joint=(0, 3.5, 6.8), parent="Head")
 box("WigCap", 0, 3.5, 6.75, 3.6, 2.8, 0.3, WIG)
 for row in range(4):
     for col in range(5):
@@ -253,10 +272,16 @@ for sx in (-1, 1):
     box("Band", sx * 2.2, 0, 2.45, 0.45, 3.1, 3.1, GOLD)
     box("EndCap", sx * 2.95, 0, 2.6, 0.2, 2.6, 2.8, WOOD2)
 eyes(0, 1.55, 4.0, 0.55, 0.85)
-for sx in (-1, 1):
-    box("Brow", sx * 0.85, 1.56, 4.75, 0.9, 0.12, 0.22, BLACK, ry=sx * -15, tag="nocollide")  # (inner ends down: cross)
 box("Mouth", 0, 1.56, 3.35, 1.3, 0.1, 0.22, BLACK, tag="nocollide")
 box("Collar", 0, 1.56, 2.5, 1.8, 0.1, 0.35, BLACK, tag="nocollide")
+# v2 (2026-10-20, docs/BOSS_ANIMATION.md section 9): the brows and the jabot are groups of their own so the Gavel Slam
+# can scowl, gasp and flap the frills (same blocks, same places)
+GROUP = "Brows"
+groups["Brows"] = dict(joint=(0, 1.56, 4.86), parent="Torso")
+for sx in (-1, 1):
+    box("Brow", sx * 0.85, 1.56, 4.75, 0.9, 0.12, 0.22, BLACK, ry=sx * -15, tag="nocollide")  # (inner ends down: cross)
+GROUP = "Jabot"
+groups["Jabot"] = dict(joint=(0, 1.6, 2.7), parent="Torso")
 for sx in (-1, 1):
     box("Jabot", sx * 0.22, 1.6, 2.0, 0.4, 0.1, 0.7, WHITE, tag="nocollide")
 for side, g in ((-1, "ArmL"), (1, "ArmR")):
@@ -426,21 +451,27 @@ for (x, z) in ((-1.4, 1.0), (-0.6, 2.3), (0.9, 1.6), (1.6, 0.9), (0.3, 3.3), (-1
 GROUP = "Head"
 groups["Head"] = dict(joint=(0, 0, 6.3), parent="Torso")
 disc("Eclipse", 0, 0.1, 8.0, 1.65, 0.5, VOID)
+for sx in (-1, 1):
+    box("EyeGlow", sx * 0.55, 0.38, 8.1, 0.55, 0.06, 0.14, STAR, tag="neon")
+# v2 (2026-10-20, docs/BOSS_ANIMATION.md section 10): the corona turns round the black disc (group Corona), and each
+# orbiting gavel is a group of its own (Gavel1..3) on the orbit (Gavels, spun by the client) so the Gavel Orbit can fling
+# them out in a ring and the Gavel Volley can send them at other players (same blocks, same places)
+GROUP = "Corona"
+groups["Corona"] = dict(joint=(0, 0, 8.0), parent="Head")
 for k in range(12):
     a = k * math.tau / 12
     box("Corona", math.cos(a) * 2.05, 0.0, 8.0 + math.sin(a) * 2.05 - 0.3, 0.6, 0.3, 0.6, CORONA, ry=-math.degrees(a), tag="neon")
-for sx in (-1, 1):
-    box("EyeGlow", sx * 0.55, 0.38, 8.1, 0.55, 0.06, 0.14, STAR, tag="neon")
 for side, g in ((-1, "ArmL"), (1, "ArmR")):
     GROUP = g
     groups[g] = dict(joint=(side * 1.8, 0, 5.6), parent="Torso")
     box("Sleeve", side * 2.05, 0, 3.3, 1.1, 1.3, 2.5, ROBE2)
     box("Glove", side * 2.05, 0, 2.75, 0.75, 0.75, 0.6, GLOVE)
-GROUP = "Gavels"
-groups["Gavels"] = dict(joint=(0, 0, 8.0), parent="Torso")
+groups["Gavels"] = dict(joint=(0, 0, 8.0), parent="Torso")  # (the orbit: no blocks of its own)
 for k in range(3):
     a = k * math.tau / 3
     gx, gy = math.cos(a) * 3.2, math.sin(a) * 3.2
+    GROUP = "Gavel%d" % (k + 1)
+    groups[GROUP] = dict(joint=(gx, gy, 8.2), parent="Gavels")
     box("OrbitHandle", gx, gy, 7.3, 0.22, 0.22, 1.2, (122, 70, 34), tag="nocollide")
     box("OrbitHead", gx, gy, 8.5, 1.3, 0.65, 0.65, (150, 92, 46), rz=math.degrees(a), tag="nocollide")
     box("OrbitBand", gx, gy, 8.5, 0.3, 0.7, 0.7, CORONA, rz=math.degrees(a), tag="neon")

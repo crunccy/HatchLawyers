@@ -29,14 +29,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Megalodon benchmark + its crowd attack APPROVED + LIVE in Studio 2026-10-19; the other five are next (one at a time).
   The Senior Partner (Briefcase Swing + Paper Storm) APPROVED + LIVE 2026-10-20. Next: the other four, one at a time.
   Prosecutor Big Cheese (Cheese Roll + Wheel Split) APPROVED + LIVE 2026-10-20. Next: Bulldog, Martello, Eclipse.
+  Barrister Bulldog, Judge Martello, Chief Justice Eclipse LIVE 2026-10-20 by mr.robe's session (user's call, entry
+  below) - waiting for crnuch's review. With them all six bosses are on clips.
   **mr.robe's call 2026-10-20:** mr.robe's sessions may change `Server.BossService` to put the bosses on the v2
   islands (where they stand / walk only - no attack, timing or pose changes; 3-way merged, never pasted over).
-- **mr.robe (local), since 2026-10-20:** the LAST THREE bosses of crnuch's attack animation overhaul - Barrister
-  Bulldog, Judge Martello, Chief Justice Eclipse (user's call, mr.robe 2026-10-20: mr.robe's session does these three,
-  on crnuch's pattern: Blender clips -> `Shared.BossAnims`, client poses / fx, each one's Crowd add-on, pushed to
-  Studio by 3-way merge). Visual + crowd add-ons only (no damage / economy retune). Don't touch `Bosses.client` /
-  bosses.py / boss_anims.py / BossService crowd code meanwhile; the v2-islands move in `BossService.start` is fine
-  (we 3-way merge).
 - **crnuch (local), since 2026-10-20:** WORLD AMBIENCE & ATMOSPHERE overhaul of the six boss zones - client-side only
   (ambient particles, fog / Atmosphere, per-zone lighting + colour grading, optional ambient loops from Shared.Sfx).
   No map / model / boss / gameplay changes. One controller (`StarterPlayerScripts.Ambience` + `Shared.AmbiencePresets`)
@@ -52,6 +48,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
       swing hits; a player who stays in a disc is hit.
 - [ ] **Big Cheese 3-player playtest (Wheel Split)** - live 2026-10-20, only played solo. In the Food Court with 3
       players: the two non-targets get 12-wide lanes, wedges pop off as he lands on his edge and tumble down them.
+- [ ] **Bulldog / Martello / Eclipse 3-player playtest (Echo Bark / Gavel Rain / Gavel Volley)** - live 2026-10-20,
+      played solo with the crowd spots FAKED by a playtest-only server script (the client drew every add-on; the
+      server's own crowd hits not exercised). Test > Clients and Servers > 3 players on each island: the two
+      non-targets get discs (Bulldog r 12, Martello r 12, Eclipse r 10 - the Eclipse only on its Ring turns); a
+      player who stays in a disc is hit as the bark / landing / ring goes off.
 - [ ] **Megalodon recover clip: left fin 0.56 studs into the body / 0.48 into the snout** for a couple of frames (the
       glasses push since round 3's fin re-seat). `boss_anims.py -- check` shows it; fix in boss_clips/megalodon.py.
 - [ ] **WorldRedesign in the place is pre-voxel** (2026-10-19): `Workspace.WorldRedesign` was built from the old
@@ -71,6 +72,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
       any branch, not the Bulldog/Martello/Eclipse session): a `"Beam"` attack kind and a SeniorPartner `Slam` variant (he
       stands still and the briefcase stamps the spot). Both are dormant - no `Config.Bosses` entry uses them. Kept in the
       3-way merge; whoever owns them: log them, or remove them if they were an experiment.
+      **The live Bosses CLIENT has un-logged edits too** (found 2026-10-20 by the Bulldog/Martello/Eclipse session, kept
+      in its 3-way merge): **crnuch's approved Megalodon + Big Cheese clips are switched OFF live** (`anim = nil` for
+      windup / attack / recover / dizzy: "new burst / whirlpool moves use their purpose-built poses" - but Config still
+      has them on Line attacks), new POSES for Martello / Big Cheese / Megalodon, the Beam drawing, and a boss sound
+      cap (5 at once, 0.12 s per kind, volume x0.55, through the SFX group). crnuch: keep or undo?
 - [ ] **Studded-brick world (crnuch's call 2026-10-18, docs/ART_STYLE_STUDS.md):** real raised 3D studs map-wide.
       Test patch live (Plaza + Plot1, docs/ART_STYLE_STUDS.md "Status"). Next: check the low tiles at phone
       size + fps with Studio in front, then tag all 8 plots and roll out (claim it first).
@@ -216,6 +222,47 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-20 — mr.robe, local session: the last three boss attack animations (Bulldog, Martello, Eclipse) — LIVE
+- **User's call (mr.robe):** finish crnuch's boss attack animation overhaul for the last three bosses on his pattern and
+  push them live. All in docs/BOSS_ANIMATION.md **sections 8-10** (timelines, storyboards, crowd add-ons, checks).
+- **Barrister Bulldog - OBJECTION BARK + ECHO BARK:** ears perk, a growl, a huge breath that swells him, the bark (jaw
+  wide) blows his wig clean off, it lands askew, a wet-dog head shake puts it back. Echo Bark: sound-wave arcs race from
+  his mouth to the others' discs (r 12) and go off with the bark.
+- **Judge Martello - GAVEL SLAM as a gavel strike + GAVEL RAIN:** crouch, launch, arms tucked, a cartwheel onto his end
+  cap (BONK), hop back onto his feet. The hop is drawn along a new `Travel` fx channel (only the drawn path changes:
+  airborne he can't be touched; he lands exactly on the server's spot). Gavel Rain: mini gavels flung up at the launch
+  strike the others' discs (r 12) as he lands.
+- **Chief Justice Eclipse - GRAVITY PULL + GAVEL ORBIT + GAVEL VOLLEY:** a clip set per attack (`windup_Pull`,
+  `attack_Ring`, ...); the orbit is spun by code (a `Spin` channel), the corona turns round the disc. Gavel Volley (Ring
+  turns only, new `Crowd.On = "Ring"`): orbiting gavels leave the orbit, hover over the others' discs (r 10), slam down
+  with the ring and fly home.
+- **Models v2** (`tools/blender/bosses.py`): Bulldog 77 -> 80 blocks / 14 groups (a hinged jaw + mouth, jowls, ears,
+  wig, bow tie); Martello + Eclipse same blocks, new groups. **Fixed in passing:** the Bulldog's bow tie + bands were
+  buried inside his head (invisible in every render) - now under his chin. The other three export byte-identical.
+- **Checks:** clipping worst 0.32 studs (Bulldog), 0.27 (Martello), none over 0.25 (Eclipse); the floor 0.16 at worst
+  (the strike's thunk); folds by design are listed in the doc. `config_tests` now checks a clip set per attack kind,
+  the Slam / Pull attack lengths, the Slam's Travel 0 -> 1 and that `Crowd.On` is one of the boss's attacks.
+  `run_checks.py` ALL PASSED (290 Luau files, 42 config checks, sim tests).
+- **Pushed into Studio** (snapshot re-exported first; everything checked against it right before replacing): backups
+  `ServerStorage.Backups_2026-10-20.*_before_last3_boss_anims` (BossesClient, BossService, Config, BossAnims) +
+  `BossModels_before_last3_boss_anims`; `ReplicatedStorage.Bosses` rebuilt (`tools/zones/BuildBosses.lua`, 129 z-fight
+  nudges); `Shared.BossAnims` (generated), `Shared.Config`, `Server.BossService` (src == live before: a plain
+  replace), `StarterPlayerScripts.Bosses` **3-way merged** (`git merge-file`, no conflicts) with un-logged live edits
+  (Open items). Snapshot re-exported after: only those four scripts + the four backups changed; `src/` == live.
+- **Playtested** (1 player, the bosses on the v2 islands, QualityLevel 21, the crowd spots faked by a playtest-only
+  server script so the client drew each add-on solo; nothing left in the place after): every state on its clip and its
+  server timing, no errors / warnings on client or server. Numbers in docs/BOSS_ANIMATION.md section 10 "Built"; the
+  in-game shots matched the storyboards (the wig in the air at the bark, Martello on his end cap, the ring + volley).
+- **Heads-up for crnuch:** (1) `Server.BossService` changed (your crowd code): `crowdTargets` takes the attack kind and
+  honours `Crowd.On` - one line, outside `start`. (2) Three new Crowd add-ons in `Config.Bosses` = gameplay with 2+
+  players (your crowd design, section 4; Bulldog / Martello discs r 12, Eclipse r 10 on Ring turns). (3) **Your
+  approved Megalodon + Big Cheese clips are switched OFF in the live client by someone's un-logged edit** (Open items) -
+  I kept it (3-way merge), your call. (4) Review wanted: art/bosses/barrister_bulldog/, judge_martello/, eclipse/.
+- **Found:** on this PC the snapshot receiver silently failed 21 of 130 writes (OneDrive file locks) - CLAUDE.md now says
+  to receive outside OneDrive and copy. Python isn't installed here: Blender's own `python.exe` runs the checks
+  (`PYTHONUTF8=1`), the Luau CLI was downloaded to the session's scratchpad.
+- Open: the 3-player playtest of the three add-ons; MP4 previews not rendered (stills only).
 
 ## 2026-10-20 — mr.robe, local session: the zone bosses onto the v2 islands + buying an egg on a v2 island
 - **User's call (mr.robe):** put the bosses on the v2 egg islands, and check egg buying there. BossService was under

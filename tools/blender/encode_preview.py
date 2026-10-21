@@ -19,6 +19,13 @@ PHASES = {
                       (2.15, "RECOVER  0.6 s"), (2.75, "walk")],
     "BigCheese": [(0.0, "walk"), (0.5, "WINDUP  1.2 s  (warning on the floor)"), (1.7, "ROLL  110 studs @ 120/s = 0.92 s"),
                   (2.617, "RECOVER  0.6 s"), (3.217, "walk")],
+    "BarristerBulldog": [(0.0, "walk"), (0.5, "WINDUP  1.4 s  (warning on the floor)"),
+                         (1.9, "ATTACK  0.45 s  (the bark: its first frame)"), (2.35, "RECOVER  0.6 s"), (2.95, "walk")],
+    "JudgeMartello": [(0.0, "walk"), (0.5, "WINDUP = THE HOP  1.1 s  (airborne)"),
+                      (1.6, "ATTACK  0.45 s  (the strike: its first frame)"), (2.05, "RECOVER  0.6 s"), (2.65, "walk")],
+    "Eclipse": [(0.0, "walk"), (0.5, "PULL WINDUP  1.4 s"), (1.9, "PULL  2.0 s  (drags in everyone within 44)"),
+                (3.9, "RECOVER  0.6 s"), (4.5, "walk"), (5.0, "RING WINDUP  1.4 s"),
+                (6.4, "RING  0.45 s  (the gavels fling out: its first frame)"), (6.85, "RECOVER  0.6 s"), (7.45, "walk")],
 }[BOSS]
 
 files = sorted(glob.glob(os.path.join(src, "f_*.png")))

@@ -1191,6 +1191,7 @@ Config.Bosses = {
 	-- aimed where they stood when it began). One player in the zone: nothing changes.
 	--   Shape "Lane": Width studs wide, from the boss toward them (+20 past, at most Length), travelling at Speed
 	--   Shape "Disc": Radius studs round where they stood, landing as the windup ends (with the main attack)
+	--   On (optional): the attack kind it goes with, for a boss that takes turns (the Eclipse: its Ring turns only)
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
 			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
@@ -1201,11 +1202,15 @@ Config.Bosses = {
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
 			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
 			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90),
-			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 } },
+			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 },
+			-- ECHO BARK (2+ players): the bark's sound wave races to up to Max other players and goes off round them
+			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 } },
 		{ Zone = "BrainrotBoulevard", Model = "JudgeMartello", Name = "Judge Martello", Difficulty = "Medium",
 			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 3, Windup = 1.1,
 			Attack = "Slam", Radius = 26, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
-			Hitbox = { HalfWidth = 3.3, Back = 1.6, Front = 1.7, Height = 5.6 } },
+			Hitbox = { HalfWidth = 3.3, Back = 1.6, Front = 1.7, Height = 5.6 },
+			-- GAVEL RAIN (2+ players): a mini gavel flung up as he jumps drops on up to Max other players' spots as he lands
+			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 } },
 		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
 			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
 			Attack = "Line", Length = 110, Width = 22, LineSpeed = 120, Color = Color3.fromRGB(255, 200, 60),
@@ -1221,7 +1226,10 @@ Config.Bosses = {
 		{ Zone = "SpaceBase", Model = "Eclipse", Name = "Chief Justice Eclipse", Difficulty = "Extreme",
 			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.5, Windup = 1.4,
 			Attack = { "Pull", "Ring" }, Radius = 44, Inner = 12, PullTime = 2, PullSpeed = 16, RingRadius = 38,
-			Color = Color3.fromRGB(190, 120, 255), Hitbox = { HalfWidth = 2.4, Back = 1.8, Front = 1.8, Height = 10.3 } },
+			Color = Color3.fromRGB(190, 120, 255), Hitbox = { HalfWidth = 2.4, Back = 1.8, Front = 1.8, Height = 10.3 },
+			-- GAVEL VOLLEY (2+ players, Ring turns): orbiting gavels slam down on up to Max other players' spots with the
+			-- ring (the Pull already drags in everyone within Radius)
+			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 10, On = "Ring" } },
 	},
 }
 

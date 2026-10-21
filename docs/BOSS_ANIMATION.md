@@ -112,13 +112,13 @@ This one IS a gameplay change (crnuch's call, overriding the brief's "no gamepla
 | --- | --- | --- |
 | **Magistrate Megalodon** | **FEEDING FRENZY** - as he coils, sand-shark fins burst out of the sand at his feet and race down a lane at each other player while he charges his own target | Lane, 12 wide, at 120 studs/s, up to 110 long |
 | **The Senior Partner** | **PAPER STORM** - the briefcase bursts open at the top of the swing and lobs a bundle of case files at each other player (**built**, section 6) | Disc r 10 at their spot, lands with the swing |
-| Barrister Bulldog | ECHO BARK - the bark's sound wave travels to each other player and goes off round them | Disc r 12, lands with the bark |
-| Judge Martello | GAVEL RAIN - as he lands, a mini gavel drops on each other player's spot | Disc r 12, lands with the slam |
+| **Barrister Bulldog** | **ECHO BARK** - the bark's sound wave travels to each other player and goes off round them (**built**, section 8) | Disc r 12, lands with the bark |
+| **Judge Martello** | **GAVEL RAIN** - as he lands, a mini gavel drops on each other player's spot (**built**, section 9) | Disc r 12, lands with the slam |
 | **Prosecutor Big Cheese** | **WHEEL SPLIT** - two cheese wedges pop off the wheel and tumble down lanes at the others (**built**, section 7) | Lane, 12 wide, at 110 studs/s |
-| Chief Justice Eclipse | GAVEL VOLLEY (Ring turns) - each orbiting gavel locks onto a different player and slams down; the Pull already catches everyone within 44 | Disc r 10 under each, lands with the ring |
+| **Chief Justice Eclipse** | **GAVEL VOLLEY** (Ring turns) - each orbiting gavel locks onto a different player and slams down; the Pull already catches everyone within 44 (**built**, section 10; `Crowd.On = "Ring"`) | Disc r 10 under each, lands with the ring |
 
-Megalodon's Feeding Frenzy and the Senior Partner's Paper Storm (section 6) are built and live; the
-other four are proposals that get built with their animation passes.
+All six are built and live (2026-10-20). `Crowd.On` (optional) ties an add-on to one attack kind of a boss that takes
+turns: `BossService.crowdTargets` picks nobody for its other attacks (the Eclipse's Pull).
 
 ## 5. Megalodon benchmark: what was built (2026-10-19)
 - **Model v2** (`tools/blender/bosses.py`, 41 -> 47 blocks, 6 -> 13 groups): the jaw hinge (Head over Torso, a
@@ -320,12 +320,154 @@ at the end. Lane 12 wide: a player at base speed is out of it in 0.19 s.
 - Rerun: `Blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=BigCheese check stills frames`, then
   `tools/blender/encode_preview.py -- <frames>/cine <out.mp4> [speed] [title] BigCheese`.
 
-## 8. Status
+## 8. Barrister Bulldog: OBJECTION BARK + ECHO BARK (2026-10-20, mr.robe's session; LIVE in Studio)
+User's call (mr.robe 2026-10-20): mr.robe's session builds the last three bosses on crnuch's pattern and pushes them live.
+### His real timeline (BossService "Ring" + Config.Bosses.List[2])
+| Phase | Server | Duration |
+| --- | --- | --- |
+| windup | `Yaw` snaps toward the target, he stands; the disc warning (Radius 34 round him) | **1.4 s** |
+| attack | everyone within 34 is hit at its **first frame** (the bark), then he holds | **0.45 s** |
+| recover | stands | **0.6 s** |
+
+### Model v2 (`tools/blender/bosses.py`, 77 -> 80 blocks, 7 -> 14 groups)
+`Jaw` (a hinged underbite: the muzzle split into the upper lip + the jaw, a dark `Mouth` inside and a `Tongue`), `JowlL` /
+`JowlR` (they flap, with the drool), `EarL` / `EarR`, `Wig` (the whole barrister's wig: it gets blown off), `BowTie`.
+**Model fix:** the bow tie and the bands sat 0.55 higher, buried inside the head (invisible in every render) - now under
+the chin.
+
+### Storyboard (times from the start of each server state; the floor warnings are untouched)
+| t (s) | Beat |
+| --- | --- |
+| windup 0.00-0.30 | NOTICE: ears perk (back-out), a "huh?" head lift + two sniffs, the tail stops wagging; a quick dog's turn (0.04 hold, 0.22), the head leads |
+| 0.12-0.52 | PLANT + GROWL: front paws splay, back legs dig in, he sinks into a crouch (the torso moves, so the paws stay planted), a snarl that shows the fangs, the jowls quiver, ears back flat |
+| 0.42-0.95 | PUFF UP: a huge breath (air streaks sucked into his mouth) - he SWELLS (1.14 / 1.1), rears his head, the cheeks (jowls) fill with air |
+| 0.95-1.40 | HOLD: trembling, the wig quivering; the ECHO waves leave his mouth (2+ players); a lunge into the bark |
+| attack 0.00-0.04 | THE BARK: jaw WIDE (0.62 rad), head thrust forward + down, the puff let out (he shrinks, recoils); the shockwave to 34 (+ white + a second ring), air rings fly from his mouth, drool, dust, a shake |
+| 0.00-0.34 | the WIG blows clean off: up 2.7 model units, a full spin high above him; ears blown back, jowls flapping, the bow tie flutters |
+| recover 0.00-0.12 | the wig drops straight back down onto his head - askew (pushed back, tipped up): a puff of wig powder |
+| 0.15-0.45 | a WET-DOG HEAD SHAKE (9 Hz, decaying): drool flung both ways, the jowls and ears flop, the wig slides back into place |
+| 0.42-0.60 | a satisfied huff, a chest puff, the tail wagging again |
+
+**ECHO BARK** (`Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 }`): discs at the others' spots from the
+windup's first frame; at 0.95 three neon sound-wave arcs per disc leave his mouth and race low over the ground, growing,
+and reach the disc's centre as the bark goes off - a ring + dust round the player at the moment the server hits.
+
+### Checked
+Clipping: worst 0.32 studs (the ears blown back, end of the bark) on a 26-stud boss. Folds by design: the jaw's hinge in
+the head, the jowls over the jaw, the ears under the wig rolls, the hips, and the NECK (he has none: the head's back half
+sits buried in the chest, so it folds there as it turns / rears / bows). Note: the engine's hinge exclusion reports a
+body point that sits right at 2.1 studs from the head's joint (excluded at rest, counted at frame 52: "2.5 studs"); its
+real extra depth is 0.5 studs, inside the head. The only floor dip: the game's own walk in the cross-fade frame.
+
+## 9. Judge Martello: GAVEL SLAM (a gavel strike) + GAVEL RAIN (2026-10-20, mr.robe's session; LIVE in Studio)
+### His real timeline (BossService "Slam" + Config.Bosses.List[3])
+| Phase | Server | Duration |
+| --- | --- | --- |
+| windup = THE HOP | From (where he stood) -> To (where the target stood when it began), linear; `airborne`: his body can't be touched; the disc warning at the landing spot (Radius 26) | **1.1 s** |
+| attack | he lands: everyone within 26 of the spot is hit at its **first frame** | **0.45 s** |
+| recover | stands at the spot | **0.6 s** |
+
+### He is a gavel, so the slam is a gavel STRIKE
+He crouches, launches, tucks his arms into the hammer head at the top (a cannonball), cocks back, then swings himself
+like a gavel - a cartwheel about his own forward axis - and lands on his END CAP (BONK), his legs sticking out sideways
+as the handle. He hops back up onto his feet in the recover. The roll is about his middle (`pivot()` in
+`boss_clips/judge_martello.py`), and `clear()` measures every block corner (the legs' swing too) so nothing goes below
+the floor; the end cap lands exactly on it.
+**`Travel` (a new fx channel)**: how far along From -> To the client draws him in the windup. It holds for the crouch,
+then flies a straight line and reaches the server's spot as the windup ends. Only the drawn path changes (airborne, his
+body can't be touched); `config_tests` checks it runs 0 -> 1.
+
+### Model v2 (24 blocks, 5 -> 7 groups; same blocks, same places): `Brows`, `Jabot`.
+
+### Storyboard
+| t (s) | Beat |
+| --- | --- |
+| windup 0.00-0.24 | the brows slam down, a snappy turn (0.03 hold, 0.18); CROUCH: squashed flat (0.72), arms swung back, legs braced |
+| 0.30 | LAUNCH: stretched tall (1.3) off the floor, arms flung up - two MINI GAVELS fly out of his gloves (2+ players); a dust ring |
+| 0.30-0.62 | up to the top of the hop (HopHeight 6 = ~20 studs), arms TUCK into the hammer head, legs together, a cock back (-0.38 rad) |
+| 0.62-1.10 | the SWING: rolls over 90 deg, accelerating, dropping onto his end cap; his shadow grows on the spot |
+| attack 0.00 | BONK: squashed along his length (0.76), the shockwave to 26 (+ white), dust, wood chips, gold sparks, a big shake |
+| 0.03-0.45 | rings like a struck tuning fork (a 7 Hz wobble), the handle-legs whip then kick, brows up, the jabot flaps |
+| recover 0.10-0.38 | hops off his end, rolls back upright in the air (back-out), the arms POP out (ta-da), lands on his feet: squash 0.8 |
+| 0.38-0.60 | the jabot bounces, the brows back to a smug scowl, arms dusted off |
+
+**GAVEL RAIN** (`Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 }`): the mini gavels fly a high arc from
+his gloves, end over end (two whole turns), then swing head-down and strike each disc's centre as he lands - a ring,
+dust, chips. A shadow grows under each.
+
+### Checked
+Clipping: worst 0.27 studs (the gloves brushing the end caps as the arms fling up through the launch's stretch). The
+floor: 0.16 studs (a tucked glove at the end cap as he rolls onto it: the strike's thunk). Folds by design: the hips, and
+the arms tucked in the hammer head (from the top of the hop until they pop out).
+
+## 10. Chief Justice Eclipse: GRAVITY PULL + GAVEL ORBIT + GAVEL VOLLEY (2026-10-20, mr.robe's session; LIVE in Studio)
+### His real timeline (BossService, Config.Bosses.List[6]: Attack = { "Pull", "Ring" }, taking turns)
+| Attack | Windup | Attack | Recover |
+| --- | --- | --- | --- |
+| Pull | **1.4 s** (disc 44, its deadly middle 12) | **PullTime 2.0 s**: everyone within 44 dragged in at 16 studs/s; the middle hits every 0.1 s | **0.6 s** |
+| Ring | **1.4 s** (disc 38) | **0.45 s**: everyone within 38 hit at its first frame | **0.6 s** |
+
+**A clip set per attack** (new): `windup_Pull`, `attack_Pull`, `recover_Pull`, `windup_Ring`, `attack_Ring`,
+`recover_Ring`. The client tries `<state>_<AttackKind>` first, then `<state>`; config_tests checks every kind's lengths.
+
+### Model v2 (44 blocks, 5 -> 9 groups; same blocks, same places)
+`Corona` (turns round the black disc), `Gavels` = the ORBIT (no blocks of its own; spun by code every frame, like the
+Partner's papers, faster with the clips' `Spin` channel: 1.6 -> 13 rad/s), `Gavel1..3` (each gavel on the orbit: out,
+up, tumbling about its own long axis). The corona ends each cycle on a whole turn, so it fades back to the glide seamlessly.
+
+### Storyboard
+| t (s) | Beat |
+| --- | --- |
+| Pull windup 0.00-0.55 | the eclipse turns to you first (an eerie glide: 0.08 hold, 0.35); he RISES (+1.4), arms come up forward to summon, the gavels lift above his reach and spin up, the corona slides back behind his shoulders (a halo); star sparks rise |
+| 0.55-1.40 | hovering, a tremble, the vortex swirl fades in under him; a wind back, then he REACHES OUT at everyone |
+| Pull 0.00-2.00 | three HAULS (arms pull in, he leans back) while motes and sparks spiral in from the disc's edge, the swirl racing |
+| recover | lets go: arms drop, he sinks back to his glide, the orbit slows |
+| Ring windup 0.10-1.10 | arms out wide, the gavels spin up, widen and tumble; rising, trembling |
+| 1.10-1.40 | GATHER: arms in, crunched (0.86), the gavels drawn in tight |
+| Ring 0.00-0.10 | BURST: arms flung out, stretched (1.14), the gavels fly OUT to the ring's edge (38 studs) with a ring (+ white + gold) and star sparks |
+| 0.10-0.45 + recover | they hang there tumbling, then come home and settle into the orbit |
+
+**GAVEL VOLLEY** (`Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 10, On = "Ring" }`, Ring turns only): at
+windup 0.85 gavels 1..N leave the orbit - the model's own gavel is hidden there (`LocalTransparencyModifier`) and a clone
+of its parts flies up over the player's disc, flips head down, hovers, and slams down as the ring goes off; it then
+flies home to its (moving) place on the orbit and the model's gavel shows again.
+
+### Checked
+Clipping: **no pair over 0.25 studs**. Folds by design: the corona round the disc's rim (and its lowest blocks setting
+behind the collar, as at rest), the shoulders.
+
+### Built (all three, 2026-10-20)
+- **Engine** (`tools/blender/boss_anims.py`): the three specs registered, nothing else changed (the Megalodon / Partner /
+  Big Cheese clips export byte-identical). `bosses.py`: the other three bosses export byte-identical.
+- **Clips** (`tools/blender/boss_clips/barrister_bulldog.py`, `judge_martello.py`, `eclipse.py` + their `_preview.py`) ->
+  `src/BossAnims.lua` (155 KB, six bosses). Storyboards: `art/bosses/barrister_bulldog/`, `judge_martello/`, `eclipse/`
+  (`board_*.png` + the .blend; no MP4s rendered yet - `encode_preview.py` has their phases).
+- **Client** (`src/Bosses.client.lua`): `bulldogFx`, `martelloFx`, `eclipseFx`; the clip set per attack kind
+  (`clipPoseFor(..., kind)`), `clipFx` (a channel's value: the Slam's Travel), the orbit spin, `OWN_FX` (these attacks
+  skip the generic effects: theirs are timed to the clips). Sounds: only the licensed `Shared.Sfx` ids; textures:
+  crnuch's uploads already live in `Shared.Effects` (fx_ring, fx_swirl). No new assets.
+- **Server** (`src/BossService.lua`): `crowdTargets(b, here, target, kind)` + `Crowd.On`. **Config**: the three Crowds.
+  No damage, timing, range or economy change.
+- **LIVE in Studio 2026-10-20** (mr.robe's session): `ReplicatedStorage.Bosses` rebuilt (Bulldog 80 parts / 14 groups,
+  Martello 7 groups, Eclipse 9 groups; the other three unchanged), `Shared.BossAnims`, `Bosses` (client: 3-way merged
+  with un-logged live edits - see SESSION_LOG), `Server.BossService`, `Shared.Config`. Backups:
+  `ServerStorage.Backups_2026-10-20.*_before_last3_boss_anims` (+ `BossModels_before_last3_boss_anims`).
+- **Playtested (1 player, on the v2 islands, QualityLevel 21)**, the crowd spots faked by a playtest-only server script
+  (so the client drew each add-on solo; the server's own crowd hits not exercised): Bulldog windup 1.4 -> bark ->
+  recover, jaw to 0.66 rad, the wig up ~8 studs, 2 echo waves (42 arcs) + 2 discs; Martello held his spot through the
+  crouch (0.16 studs), hopped ~21 studs, landed with his head exactly over the server's spot (0.00 studs), end cap on the
+  floor (-0.02), 2 mini gavels + his shadow; Eclipse Pull 1.4 / 2.0 / 0.6 with the vortex, Ring with gavel 3 out to
+  38.1 studs (RingRadius 38) and the volley (2 copies; 6 model parts hidden, then shown). No errors / warnings (client +
+  server). The 3-player crowd tests are still to do (SESSION_LOG Open items).
+- Rerun: `blender -b --factory-startup -P tools/blender/boss_anims.py -- boss=BarristerBulldog check stills` (or
+  `boss=JudgeMartello` / `boss=Eclipse`); on Windows set `PYTHONUTF8=1`.
+
+## 11. Status
 | Boss | Storyboard | Blender clips | Preview | Client | In Studio |
 | --- | --- | --- | --- | --- | --- |
-| Magistrate Megalodon | done | done | done | done | **live** (3-player test to do) |
+| Magistrate Megalodon | done | done | done | done | **live** (3-player test to do; clips switched OFF live by an un-logged client edit - SESSION_LOG) |
 | The Senior Partner | done | done | done | done | **live** (3-player test to do) |
-| Barrister Bulldog | - | - | - | - | - |
-| Judge Martello | - | - | - | - | - |
-| Prosecutor Big Cheese | done | done | done | done | **live** (3-player test to do) |
-| Chief Justice Eclipse | - | - | - | - | - |
+| Barrister Bulldog | done | done | stills | done | **live** (3-player test to do) |
+| Judge Martello | done | done | stills | done | **live** (3-player test to do) |
+| Prosecutor Big Cheese | done | done | done | done | **live** (3-player test to do; clips switched OFF live by an un-logged client edit - SESSION_LOG) |
+| Chief Justice Eclipse | done | done | stills | done | **live** (3-player test to do) |

@@ -26,7 +26,10 @@ repo** — local Claude memory is per machine, so anything the other side should
 - **`studio/` = read-only snapshot of every script in the live place**, by Studio path (`studio/MANIFEST.json` lists
   Studio path, class, Enabled). Refresh it after any Studio edit: run `tools/studio_sync/receive_snapshot.ps1` (Windows) or
   `python3 tools/studio_sync/receive_snapshot.py --fresh` (Mac/Linux; `--port` if 8767 is taken), then `tools/studio_sync/ExportSnapshot.lua` in Studio
-  (Edit mode). Never hand-edit `studio/`; it is what's live.
+  (Edit mode). Never hand-edit `studio/`; it is what's live. **mr.robe's PC (repo in OneDrive):** OneDrive can lock
+  files mid-sync, so the receiver fails some writes ("user-mapped section open"; 21 of 130 on 2026-10-20) and the
+  snapshot silently keeps old copies - receive into a folder outside OneDrive, then copy into `studio/`, and check
+  `src/` == `studio/` for what you pushed.
 - **`src/` = working copies**: scripts with changes not in Studio yet (cloud sessions write here), plus older mirrors.
   A `src/` file identical to its `studio/` twin is in sync.
 - **Pushing `src/` → Studio:** re-export the snapshot first; if the Studio script changed since your `src/` work
@@ -181,6 +184,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   (`tools/blender/boss_anims.py` -> `Shared.BossAnims`, generated; the client cross-fades them with its POSES), checked
   for clipping per frame and for timing against Config by run_checks. **Crowd add-ons** (`Config.Bosses.List[n].Crowd`,
   crnuch's call): with 2+ players a boss also aims a warned ranged attack at up to 2 others; 1 player = no change.
+  All six bosses are on clips since 2026-10-20 (the last three by mr.robe's session). A boss that takes turns has a clip
+  set per attack (`windup_Pull`, `attack_Ring`, ...: the Eclipse); `Crowd.On` ties an add-on to one attack kind.
 - `ReplicatedStorage.EggModels` (v5 meshes) + `Shared.EggLook` — every egg the game shows (zones, loose, carried, the hatch)
   comes from `EggLook.build(egg, golden, height, simple)` / `EggLook.buildHatch`. The hatch (StarterPlayerScripts.Eggs, v5) plays in the
   world at the incubator for every rarity (`Shared.HatchFx` = the VFX kit + rarity ladder, `Shared.Incubator` = the

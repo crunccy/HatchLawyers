@@ -26,6 +26,17 @@
 --     back upright). The ROLL is code: the wheel turns by the distance really travelled (+ the clip's Roll channel),
 --     lifted by BossAnims RollLift so its block corners bump over the floor; the recover's Unroll channel stands it
 --     upright. The WHEEL SPLIT crowd add-on: cheese wedges pop off and tumble down lanes at the other players.
+--     Barrister Bulldog (2026-10-20): the OBJECTION BARK (ears perk, a growl, a huge breath that swells him, the bark
+--     blows his wig off, it lands askew, a head shake) and the ECHO BARK crowd add-on (sound waves race to the other
+--     players' discs and go off round them with the bark).
+--     Judge Martello (2026-10-20): the GAVEL SLAM as a gavel strike (crouch, launch, arms tucked, a cartwheel onto his
+--     end cap, a hop back onto his feet). The hop is drawn along the windup clip's Travel channel (airborne he can't be
+--     touched; he lands on the server's spot). The GAVEL RAIN crowd add-on: mini gavels flung up at the launch drop
+--     on the other players' discs as he lands.
+--     Chief Justice Eclipse (2026-10-20): a clip set per attack (windup_Pull, attack_Ring, ...): the GRAVITY PULL
+--     (summon, the corona racing, the vortex) and the GAVEL ORBIT (the gavels fling out to the ring's edge). The orbit
+--     is spun here every frame (the clips' Spin channel sets its speed). The GAVEL VOLLEY crowd add-on (Ring turns):
+--     orbiting gavels leave the orbit, hover over the other players' discs and slam down with the ring, then fly home.
 -- No text anywhere (user's call): no names, no labels, no messages.
 
 local Debris = game:GetService("Debris")
@@ -33,10 +44,12 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 -- the bosses' Blender clips (generated); a boss without clips keeps its POSES function
 local animsOk, animsLib = pcall(function()
 	return require(Shared:WaitForChild("BossAnims", 15) :: ModuleScript)
@@ -127,26 +140,50 @@ local SOUNDS = {
 	swing = { "rbxassetid://15674975792", 0.8, 1.15, 0.6 }, -- the big sweep
 	crack = { "rbxassetid://9113959343", 0.6, 0.7, 0.8 }, -- the ground cracks under the case
 	yank = { "rbxassetid://9113959332", 0.4, 0.85, 0.5 }, -- the case pulled out of the ground
+	-- Barrister Bulldog's Objection Bark
+	growl = { "rbxassetid://9116494032", 0.45, 0.42, 0.55 }, -- gears, very low: a growl
+	inhale = { "rbxassetid://15675024286", 0.5, 0.5, 0.6 }, -- a long low whoosh: the big breath
+	woof = { "rbxassetid://9125574353", 1, 0.34 }, -- the gavel knock, very low: WOOF
+	echo = { "rbxassetid://9125574353", 0.6, 0.6 }, -- the echo going off round a player
+	wigland = { "rbxassetid://9114753510", 0.35, 1.5, 0.4 }, -- the wig plops back on
+	-- Judge Martello's Gavel Slam
+	spring = { "rbxassetid://15675055424", 0.7, 0.42 }, -- a deep boing: the launch
+	bonk = { "rbxassetid://9114753510", 0.9, 0.75, 0.6 }, -- the end cap strikes
+	ting = { "rbxassetid://15675059323", 0.45, 0.7 }, -- the struck gavel rings
+	minibonk = { "rbxassetid://9125574353", 0.7, 1.15 }, -- a mini gavel knocks
+	-- Chief Justice Eclipse
+	summon = { "rbxassetid://15675043410", 0.5, 0.55 }, -- a low stinger: the summon
+	spinup = { "rbxassetid://9116494032", 0.35, 1.7, 0.9 }, -- gears, high: the orbit spins up
 	-- Big Cheese's Cheese Roll
 	pop = { "rbxassetid://15675055424", 0.6, 0.85 }, -- a wedge pops off the wheel
 	burnout = { "rbxassetid://9116494032", 0.5, 0.7, 0.4 }, -- gears grinding: the wheel spins in place
 	boing = { "rbxassetid://15675055424", 0.7, 0.55 }, -- the hop back upright lands
 	crumble = { "rbxassetid://9113959343", 0.4, 1.3, 0.4 }, -- a wedge crumbles at its lane's end
 }
+local bossSoundTimes: { [string]: number } = {}
+local activeBossSounds = 0
 local function playAt(pos: Vector3, kind: string)
 	local def = SOUNDS[kind]
-	if not def then
+	local now = os.clock()
+	if not def or activeBossSounds >= 5 or now - (bossSoundTimes[kind] or 0) < 0.12 then
 		return
 	end
+	bossSoundTimes[kind] = now
 	local a = Instance.new("Attachment")
 	a.WorldPosition = pos
 	a.Parent = workspace.Terrain
 	local s = Instance.new("Sound")
 	s.SoundId = def[1]
-	s.Volume = def[2]
+	s.Volume = def[2] * 0.55
 	s.PlaybackSpeed = def[3]
+	s.SoundGroup = Sfx.group()
+	activeBossSounds += 1
+	s.Destroying:Once(function()
+		activeBossSounds = math.max(0, activeBossSounds - 1)
+	end)
+	s.RollOffMode = Enum.RollOffMode.InverseTapered
 	s.RollOffMinDistance = 14
-	s.RollOffMaxDistance = 160
+	s.RollOffMaxDistance = 130
 	s.Parent = a
 	s:Play()
 	if def[4] then
@@ -211,6 +248,11 @@ type Boss = {
 	bundles: { BasePart }, -- the Paper Storm's case files in flight (+ their shadows)
 	strikeAt: Vector3?, -- where the case hit the ground
 	wedges: { BasePart }, -- Big Cheese's Wheel Split wedges
+	echoes: { any }, -- the Bulldog's Echo Bark waves in flight ({ arcs, from, to })
+	minis: { BasePart }, -- Judge Martello's Gavel Rain mini gavels (+ his landing shadow)
+	orbitSpin: number, -- the Eclipse's orbit (spun by code; the clips' Spin channel speeds it up)
+	vortex: BasePart?, -- the Eclipse's Pull: the swirl under him
+	volley: { any }, -- the Eclipse's Gavel Volley copies in flight ({ clones, offs, src, hidden, start, to })
 }
 local bosses: { [Configuration]: Boss } = {}
 local ragdolled = false -- (the local player is lying limp: no pulls - see ragdoll below)
@@ -282,14 +324,34 @@ local function build(s: Configuration)
 		phase = 0, walk = 0, seenState = (attr(s, "StateStart") :: number?) or 0, warn = nil, warnKind = nil,
 		stars = nil, lastRoll = 0, trailAt = 0, clipW = 0, lastClip = nil, turnStart = 0, turnFrom = 0, glow = glow,
 		glowNow = 0, squashed = false, fired = {}, fxAt = 0, lanes = {}, laneFrom = Vector3.zero, sharks = {}, runFx = nil,
-		paperSpin = 0, sheets = {}, bundles = {}, strikeAt = nil, wedges = {} }
+		paperSpin = 0, sheets = {}, bundles = {}, strikeAt = nil, wedges = {}, echoes = {}, minis = {}, orbitSpin = 0,
+		vortex = nil, volley = {} }
+end
+
+-- the Eclipse's Gavel Volley: the copies go, the model's own gavels show again
+local function endVolley(b: Boss)
+	for _, v in b.volley do
+		for _, c in v.clones do
+			c:Destroy()
+		end
+		for _, p in v.hidden do
+			p.LocalTransparencyModifier = 0
+		end
+	end
+	b.volley = {}
 end
 
 local function remove(s: Instance)
 	local b = bosses[s :: Configuration]
 	if b then
+		endVolley(b)
 		b.model:Destroy()
-		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx }, b.sheets, b.bundles, b.wedges } do
+		for _, ec in b.echoes do
+			for _, p in ec.arcs do
+				p:Destroy()
+			end
+		end
+		for _, list in { b.warn or {}, b.stars or {}, b.sharks, { b.runFx }, b.sheets, b.bundles, b.wedges, b.minis, { b.vortex } } do
 			for _, p in list do
 				p:Destroy()
 			end
@@ -409,16 +471,17 @@ POSES.JudgeMartello = function(b, state, a, t, idle)
 	local arms = math.sin(t * 9) * 0.35 * w
 	local torsoX = math.sin(t * 2) * 0.04 * (1 - w)
 	if state == "windup" then
-		local arc = math.sin(math.pi * math.clamp(a, 0, 1))
-		rootY = arc * ((attr(b.state, "HopHeight") :: number?) or 6)
-		torsoX = -0.35 * arc
-		legs = -0.9 * arc
-		arms = 2.6 * arc
+		local e = easeOut(a / 0.7)
+		rootY = 0.2 * e
+		torsoX = 0.18 * e
+		legs = -0.25 * e
+		arms = 2.5 * e -- gavel winds up for a forward sweep
 	elseif state == "attack" then
-		local e = 1 - easeOut(a * 2)
-		rootY = -0.35 * e -- (the squash on landing)
-		legs = 0.5 * e
-		arms = 1.2 * e
+		local e = easeOut(a * 3)
+		rootY = 0.2 * (1 - e)
+		torsoX = -0.45 * e
+		legs = 0.3 * e
+		arms = 2.5 - 2.2 * e
 	end
 	return CFrame.new(0, rootY, 0), {
 		LegL = CFrame.Angles(legs + sw * 0.2 * w, 0, 0),
@@ -439,20 +502,18 @@ POSES.BigCheese = function(b, state, a, t, idle)
 	local arm = math.sin(t * 3) * 0.2
 	if state == "windup" then
 		local e = easeOut(a / 0.6)
-		torso = CFrame.Angles(0.12 * e, e * math.pi / 2, 0)
-		if a > 0.6 then
-			rootOff *= CFrame.new(math.sin(t * 60) * 0.05, 0, 0)
-		end
-		arm = 1.4 * e
+		torso = CFrame.Angles(-0.25 * e, 0, math.sin(t * 24) * 0.1 * e)
+		rootOff *= CFrame.new(0, -0.35 * e, 0)
+		arm = 2.1 * e -- winds up like a spring before the cheese burst
 	elseif state == "attack" then
-		local from = (attr(s, "From") :: Vector3?) or Vector3.zero
-		local dist = Vector3.new(posAt(s, now()).X - from.X, 0, posAt(s, now()).Z - from.Z).Magnitude
-		b.lastRoll = (dist / (3.2 * ((attr(s, "Scale") :: number?) or 1))) % (math.pi * 2)
-		torso = CFrame.Angles(-b.lastRoll, 0, 0) * CFrame.Angles(0, math.pi / 2, 0)
-		arm = 0
+		local pop = math.sin(math.pi * math.clamp(a, 0, 1))
+		rootOff *= CFrame.new(0, 0.6 * pop, 0)
+		torso = CFrame.Angles(-0.35 * pop, 0, math.sin(t * 18) * 0.14 * pop)
+		arm = 2.1 * (1 - easeOut(a * 2))
 	elseif state == "recover" then
 		local e = 1 - ease(a)
-		torso = CFrame.Angles(-b.lastRoll * e, 0, 0) * CFrame.Angles(0, math.pi / 2 * e, 0)
+		torso = CFrame.Angles(-0.1 * e, 0, 0)
+		arm = 0.2 * e
 	end
 	return rootOff, {
 		Torso = torso,
@@ -476,8 +537,9 @@ POSES.Megalodon = function(b, state, a, t, idle)
 		fins = -0.6 * e
 		tail = math.sin(t * 20) * 0.5
 	elseif state == "attack" then
-		torsoX, fins, legs = -0.5, -0.9, 0.8
-		tail = math.sin(t * 25) * 0.6
+		torsoX, torsoY, fins, legs = -0.2, math.sin(t * 8) * 0.22, math.sin(t * 14) * 0.8, 0.5
+		rootOff *= CFrame.new(0, 0.25 + math.sin(t * 10) * 0.15, 0)
+		tail = math.sin(t * 14) * 0.7
 	elseif state == "dizzy" then
 		torsoZ = math.sin(t * 5) * 0.18
 		torsoY = math.sin(t * 3) * 0.25
@@ -603,9 +665,26 @@ local function mixPose(x: ClipPose, y: ClipPose, w: number): ClipPose
 	return { root = x.root:Lerp(y.root, w), scale = x.scale:Lerp(y.scale, w), rots = rots, fx = fx }
 end
 
+-- a clip's fx channel at time e (nil if it has no such clip / channel): e.g. a Slam's Travel in its windup
+local function clipFx(anim: any, name: string, channel: string, e: number): number?
+	local clip = anim.Clips[name]
+	local v = clip and clip.Fx[channel]
+	if not v then
+		return nil
+	end
+	local f = math.clamp(e * anim.Fps, 0, clip.Frames - 1)
+	local i0 = math.floor(f)
+	local i1 = math.min(i0 + 1, clip.Frames - 1)
+	return v[i0 + 1] + (v[i1 + 1] - v[i0 + 1]) * (f - i0)
+end
+
 -- the clip pose for a state (nil = not a clip state). A charge = launch (its first 0.2 s), the loop, then the brake
--- (its last 0.2 s); a short charge splits its time between launch and brake.
-local function clipPoseFor(anim: any, state: string, e: number, total: number, sc: number): ClipPose?
+-- (its last 0.2 s); a short charge splits its time between launch and brake. A boss with more than one attack has a
+-- clip set per attack kind (windup_Pull, attack_Ring, ...: the Eclipse).
+local function clipPoseFor(anim: any, state: string, e: number, total: number, sc: number, kind: string?): ClipPose?
+	if kind and anim.Clips[state .. "_" .. kind] then
+		return sampleClip(anim, state .. "_" .. kind, e, sc)
+	end
 	if state == "attack" then
 		if not anim.Clips.charge_loop then
 			return sampleClip(anim, "attack", e, sc)
@@ -669,8 +748,8 @@ local function makeWarn(b: Boss)
 		for i = 0, 23 do
 			add("WarnEdge", { Size = Vector3.new(1.5, 0.16, 0.8), Transparency = 0.3 }, { Angle = -angle / 2 + angle * i / 23, Step = angle / 23 })
 		end
-	elseif kind == "Line" then
-		-- lane 0 = its own charge / roll; 1..CrowdN = the crowd add-on's lanes at other players
+	elseif kind == "Line" or kind == "Beam" then
+		-- lane 0 = its own charge / roll / beam; 1..CrowdN = the crowd add-on's lanes at other players
 		for lane = 0, (attr(s, "CrowdN") :: number?) or 0 do
 			add("WarnStrip", { Size = Vector3.new(1, 0.1, 1), Transparency = 0.65 }, { Lane = lane })
 			add("WarnSide", { Size = Vector3.new(0.8, 0.16, 1), Transparency = 0.3 }, { Side = -1, Lane = lane })
@@ -735,7 +814,7 @@ local function poseWarn(b: Boss, pos: Vector3, yaw: number, grow: number, t: num
 			p.Transparency = 0.15 + 0.35 * pulse
 		end
 	end
-	if kind == "Line" then
+	if kind == "Line" or kind == "Beam" then
 		local laneCache = {}
 		for _, p in b.warn do
 			if p:GetAttribute("Crowd") then
@@ -849,6 +928,13 @@ local function sparkBurst(at: Vector3, color: Color3, count: number)
 	Debris:AddItem(holder, 1.2)
 end
 
+-- bosses whose Blender clips come with their own effects for these attacks (timed to the clips, below)
+local OWN_FX: { [string]: { [string]: boolean } } = {
+	BarristerBulldog = { Ring = true },
+	JudgeMartello = { Slam = true },
+	Eclipse = { Pull = true, Ring = true },
+}
+
 local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	local s = b.state
 	local kind = warnKindOf(s)
@@ -858,12 +944,15 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 	local floorY = (attr(s, "FloorY") :: number?) or origin.Y
 	local at = Vector3.new(origin.X, floorY, origin.Z)
 	local shakeRadius = radius * 1.6
+	if ANIMS[b.kind] and OWN_FX[b.kind] and OWN_FX[b.kind][kind] then
+		return -- (plays its own effects, timed to its Blender clips: bulldogFx / martelloFx / eclipseFx)
+	end
 	if kind == "Cone" and ANIMS[b.kind] then
 		return -- (a boss with Blender clips plays its own swing effects, timed to them: partnerFx)
 	elseif kind == "Cone" then
 		local front = at + Vector3.new(0, 1, 0) + look * 4.5 * ((attr(s, "Scale") :: number?) or 1)
 		task.delay(0.16, function()
-			paperBurst(front + Vector3.new(0, 1, 0), look)
+			if b.kind ~= "JudgeMartello" then paperBurst(front + Vector3.new(0, 1, 0), look) end
 			sparkBurst(front, color, 18)
 			shockwave(front, radius * 0.55, color, 0)
 			playAt(front, "slam")
@@ -876,6 +965,27 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 		sparkBurst(at + Vector3.new(0, 2, 0), color, 30)
 		playAt(at, "slam")
 		shakeRadius = radius * 1.8
+	elseif kind == "Beam" then
+		local goal = (attr(s, "Target") :: Vector3?) or at
+		local delta = Vector3.new(goal.X - at.X, 0, goal.Z - at.Z)
+		local dir = if delta.Magnitude > 0.1 then delta.Unit else look
+		local width = (attr(s, "Width") :: number?) or 16
+		local duration = math.max(0.35, ((attr(s, "StateEnd") :: number?) or 0) - ((attr(s, "StateStart") :: number?) or 0))
+		local bolt = part({ Size = Vector3.new(width, 1.1, 5), Color = color, Material = Enum.Material.Neon, Transparency = 0.15 })
+		bolt.Parent = visuals
+		playAt(at + Vector3.new(0, 6, 0), "charge")
+		task.spawn(function()
+			local started = now()
+			while bolt.Parent and now() - started < duration do
+				local travel = delta.Magnitude * math.clamp((now() - started) / duration, 0, 1)
+				local center = at + dir * travel + Vector3.new(0, 2.2, 0)
+				bolt.CFrame = CFrame.lookAt(center, center + dir)
+				RunService.Heartbeat:Wait()
+			end
+			bolt:Destroy()
+			shockwave(goal, width * 0.7, color, 0)
+		end)
+		shakeRadius = width * 2
 	elseif kind == "Line" then
 		playAt(at + Vector3.new(0, 4, 0), "charge")
 		shakeRadius = ((attr(s, "Width") :: number?) or 10) * 1.5
@@ -886,6 +996,7 @@ local function attackEffects(b: Boss, origin: Vector3, yaw: number)
 		local r = (attr(s, "RingRadius") :: number?) or radius
 		shockwave(at, r, color, 0.05)
 		shockwave(at, r * 0.75, Color3.new(1, 1, 1), 0.15)
+		if b.kind == "BigCheese" then sparkBurst(at + Vector3.new(0, 4, 0), color, 32) end
 		playAt(at + Vector3.new(0, 4, 0), if b.kind == "BarristerBulldog" then "bark" else "slam")
 		shakeRadius = r * 1.6
 	end
@@ -906,6 +1017,8 @@ local TEX = {
 	dot = "rbxassetid://115135517607406", -- fx_dot
 	spark = "rbxassetid://78182597037425", -- vfx_spark
 	star = "rbxassetid://90593358027334", -- vfx_star_flare
+	ring = "rbxassetid://71380376418393", -- fx_ring (crnuch's upload, live in Shared.Effects)
+	swirl = "rbxassetid://110019670977633", -- fx_swirl (crnuch's upload, live in Shared.Effects)
 }
 
 local function emitter(props: { [string]: any }): ParticleEmitter
@@ -1539,6 +1652,558 @@ local function cheeseFx(b: Boss, state: string, e: number, total: number, pos: V
 	end
 end
 
+------------------------------------------------------------------ Barrister Bulldog's effects (docs/BOSS_ANIMATION.md section 8)
+-- (tools/blender/boss_clips/barrister_bulldog.py: the echo waves leave his mouth at ECHO_LEAVE; the wig lands back on
+-- at recover + WIG_LAND; the head shake from recover + 0.15)
+local ECHO_LEAVE, WIG_LAND = 0.95, 0.12
+local DROOL = Color3.fromRGB(230, 240, 255)
+local WIG_WHITE = Color3.fromRGB(250, 250, 250)
+
+local function droolDrops(sc: number): { [string]: any }
+	local k = sc / 3.5
+	return { Texture = TEX.dot, Color = ColorSequence.new(DROOL), LightEmission = 0.2, Lifetime = NumberRange.new(0.4, 0.6),
+		Speed = NumberRange.new(16, 26), EmissionDirection = Enum.NormalId.Front, SpreadAngle = Vector2.new(35, 25),
+		Acceleration = Vector3.new(0, -110, 0),
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8 * k), NumberSequenceKeypoint.new(1, 0.35 * k) }),
+		Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(1, 0.7) }) }
+end
+
+-- an Echo Bark wave: three sound-wave arcs (7 neon blocks each on a 110-degree arc, standing up, facing where it goes)
+local function makeEcho(color: Color3): { BasePart }
+	local arcs = {}
+	for _ = 1, 3 do
+		for seg = 0, 6 do
+			local p = part({ Size = Vector3.new(1, 1, 0.6), Color = color, Material = Enum.Material.Neon, Transparency = 1 })
+			p:SetAttribute("Seg", seg)
+			p.Parent = visuals
+			table.insert(arcs, p)
+		end
+	end
+	return arcs
+end
+
+-- a = 0 (leaves his mouth) .. 1 (reaches the disc's centre as the bark goes off): low over the ground, growing
+local function poseEcho(arcs: { BasePart }, from: Vector3, to: Vector3, a: number, sc: number, floorY: number)
+	local k = sc / 3.5
+	local d = Vector3.new(to.X - from.X, 0, to.Z - from.Z)
+	local dir = if d.Magnitude > 0.1 then d.Unit else Vector3.new(0, 0, -1)
+	local goal = Vector3.new(to.X, floorY + 2.5 * k, to.Z)
+	for i, p in arcs do
+		local aj = a - ((i - 1) // 7) * 0.08 -- (the arcs follow each other)
+		if aj <= 0 or aj > 1 then
+			p.Transparency = 1
+			continue
+		end
+		local c = from:Lerp(goal, aj * 0.4 + 0.6 * aj * aj * aj) + Vector3.new(0, 4 * k * math.sin(math.pi * aj), 0)
+		local r = (2.5 + 6.5 * aj) * k
+		local ang = math.rad(-55 + 110 * ((p:GetAttribute("Seg") :: number?) or 0) / 6)
+		p.Size = Vector3.new(r * math.rad(110) / 6 * 1.15, 0.35 * k * (1 + aj), 0.6 * k)
+		p.CFrame = CFrame.lookAt(c, c + dir) * CFrame.Angles(0, 0, ang) * CFrame.new(0, r, 0)
+		p.Transparency = 0.15 + 0.6 * math.max(0, aj - 0.7) / 0.3
+	end
+end
+
+-- Barrister Bulldog's one-shot and per-frame effects, by state and time into it (e); timings match his Blender clips
+local function bulldogFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number)
+	local s = b.state
+	local k = sc / 3.5
+	local look = Vector3.new(-math.sin(b.yaw), 0, -math.cos(b.yaw))
+	local right = Vector3.new(-look.Z, 0, look.X)
+	local up = Vector3.new(0, 1, 0)
+	local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+	local ground = Vector3.new(pos.X, floorY + 0.5, pos.Z)
+	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(255, 90, 90)
+	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local function once(key: string): boolean
+		if b.fired[key] then
+			return false
+		end
+		b.fired[key] = true
+		return true
+	end
+	local jaw = blockOf(b, "Jaw")
+	local mouth = if jaw then jaw.Position else ground + up * 3.6 * sc + look * 6 * sc
+	if state == "windup" then
+		if e >= 0.02 and once("sniff") then -- ears perk: "huh?", a sniff
+			playAt(mouth, "sniff")
+		end
+		if e >= 0.3 and once("plant") then -- the front paws splay and plant, and he GROWLS
+			for _, side in { -1, 1 } do
+				dustPuff(sc, NumberRange.new(6, 11), Vector2.new(80, 80), 5, ground + right * side * 1.65 * sc + look * 2.2 * sc)
+			end
+			playAt(mouth, "growl")
+		end
+		if e >= 0.45 and once("inhale") then -- the huge breath: air streaks sucked into his mouth
+			playAt(mouth, "inhale")
+			local holder = part({ Shape = Enum.PartType.Ball, Size = Vector3.one * 16 * k, Transparency = 1, CFrame = CFrame.new(mouth) })
+			holder.Parent = visuals
+			local em = emitter({ Texture = TEX.streak, Color = ColorSequence.new(Color3.new(1, 1, 1)), LightEmission = 0.2,
+				Lifetime = NumberRange.new(0.18, 0.2), Speed = NumberRange.new(40 * k, 44 * k), Shape = Enum.ParticleEmitterShape.Sphere,
+				ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface, ShapeInOut = Enum.ParticleEmitterShapeInOut.Inward,
+				Orientation = Enum.ParticleOrientation.VelocityParallel, Squash = NumberSequence.new(-1.2),
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4 * k), NumberSequenceKeypoint.new(1, 0.15 * k) }),
+				Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(0.4, 0.2), NumberSequenceKeypoint.new(1, 1) }) })
+			em.Rate = 60
+			em.Parent = holder
+			task.delay(0.5, function()
+				em.Enabled = false
+			end)
+			Debris:AddItem(holder, 1)
+		end
+		-- ECHO BARK (2+ players): the sound waves leave his mouth and race to each other player's disc
+		if e >= ECHO_LEAVE and once("echo") and attr(s, "CrowdShape") == "Disc" then
+			for i = 1, (attr(s, "CrowdN") :: number?) or 0 do
+				local c = attr(s, "Crowd" .. i) :: Vector3?
+				if c then
+					table.insert(b.echoes, { arcs = makeEcho(color), from = mouth, to = c })
+				end
+			end
+		end
+		local span = math.max(0.1, total - ECHO_LEAVE)
+		for _, ec in b.echoes do
+			poseEcho(ec.arcs, ec.from, ec.to, math.clamp((e - ECHO_LEAVE) / span, 0, 1), sc, floorY)
+		end
+	elseif state == "attack" then
+		if once("bark") then -- THE BARK (the server's hit is now): the shockwave to the disc's edge, air rings, drool, dust
+			local r = (attr(s, "RingRadius") :: number?) or 34
+			shockwave(ground, r, color, 0)
+			shockwave(ground, r * 0.75, Color3.new(1, 1, 1), 0.07)
+			shockwave(ground, r * 0.5, color, 0.14)
+			burstAt(CFrame.lookAt(mouth, mouth + look), { Texture = TEX.ring, Color = ColorSequence.new(Color3.new(1, 1, 1)),
+				LightEmission = 0.3, Lifetime = NumberRange.new(0.3, 0.35), Speed = NumberRange.new(60, 80),
+				EmissionDirection = Enum.NormalId.Front, SpreadAngle = Vector2.new(4, 4), Orientation = Enum.ParticleOrientation.VelocityPerpendicular,
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 2 * k), NumberSequenceKeypoint.new(1, 14 * k) }),
+				Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) }) }, 3)
+			burstAt(CFrame.lookAt(mouth, mouth + look - up * 0.3), droolDrops(sc), 12)
+			dustPuff(sc, NumberRange.new(18, 28), Vector2.new(85, 85), 16, ground)
+			playAt(mouth, "woof")
+			playAt(mouth, "bark")
+			playAt(mouth + up * 3 * sc, "pop") -- (the wig blows off)
+			if me and (me.Position - ground).Magnitude < r * 1.6 then
+				shake(0.3, 0.5)
+			end
+			-- each echo goes off round its player (the server hits within CrowdRadius of the disc's centre now)
+			local cr = (attr(s, "CrowdRadius") :: number?) or 12
+			for _, ec in b.echoes do
+				local at = Vector3.new(ec.to.X, floorY + 0.5, ec.to.Z)
+				shockwave(at, cr, color, 0)
+				shockwave(at, cr * 0.7, Color3.new(1, 1, 1), 0.06)
+				dustPuff(sc, NumberRange.new(12, 18), Vector2.new(85, 85), 10, at)
+				playAt(at, "echo")
+				if me and (me.Position - at).Magnitude < cr * 1.4 then
+					shake(0.25, 0.35)
+				end
+			end
+		end
+	elseif state == "recover" then
+		if e >= WIG_LAND and once("wig") then -- the wig drops back on (askew): a puff of wig powder
+			local cap = blockOf(b, "WigCap")
+			local at = if cap then cap.Position else ground + up * 7 * sc
+			burstAt(CFrame.lookAt(at, at + up), { Texture = TEX.smoke, Color = ColorSequence.new(WIG_WHITE),
+				Lifetime = NumberRange.new(0.35, 0.5), Speed = NumberRange.new(6, 12), EmissionDirection = Enum.NormalId.Front,
+				SpreadAngle = Vector2.new(90, 90), Drag = 4, Rotation = NumberRange.new(0, 360),
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2 * k), NumberSequenceKeypoint.new(1, 3 * k) }),
+				Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) }) }, 8)
+			playAt(at, "wigland")
+		end
+		if e >= 0.18 and once("shake") then -- the head shake flings drool off his jowls, both ways
+			local jowl = blockOf(b, "Jowl")
+			local at = if jowl then jowl.Position else mouth
+			for _, side in { -1, 1 } do
+				burstAt(CFrame.lookAt(at, at + right * side + up * 0.4), droolDrops(sc), 6)
+			end
+			playAt(at, "shakeoff")
+		end
+	end
+	if state ~= "windup" and #b.echoes > 0 then
+		for _, ec in b.echoes do
+			for _, p in ec.arcs do
+				p:Destroy()
+			end
+		end
+		b.echoes = {}
+	end
+end
+
+------------------------------------------------------------------ Judge Martello's effects (docs/BOSS_ANIMATION.md section 9)
+-- (tools/blender/boss_clips/judge_martello.py: he launches at M_LAUNCH - the mini gavels leave his gloves - and swings
+-- over from the top of the hop at M_APEX; his end cap strikes as the attack begins)
+local M_LAUNCH, M_APEX = 0.3, 0.62
+local WOOD = Color3.fromRGB(196, 126, 62)
+local WOOD2 = Color3.fromRGB(150, 92, 46)
+local GAVEL_GOLD = Color3.fromRGB(232, 190, 60)
+
+local function chips(sc: number, count: number, at: Vector3) -- wood chips flying off a strike
+	local k = sc / 3.4
+	burstAt(CFrame.lookAt(at, at + Vector3.new(0, 1, 0)), { Texture = TEX.dot, Color = ColorSequence.new(WOOD, WOOD2),
+		Lifetime = NumberRange.new(0.45, 0.65), Speed = NumberRange.new(20, 34), EmissionDirection = Enum.NormalId.Front,
+		SpreadAngle = Vector2.new(60, 60), Acceleration = Vector3.new(0, -120, 0),
+		Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.0 * k), NumberSequenceKeypoint.new(1, 0.6 * k) }) }, count)
+end
+
+-- a Gavel Rain mini gavel (the head, its handle, two gold bands) + its shadow on the floor, moved as one
+local function makeMiniGavel(sc: number, from: Vector3, to: Vector3): BasePart
+	local k = sc / 3.4
+	local head = part({ Size = Vector3.new(6.0, 2.6, 2.6) * k, Color = WOOD })
+	for name, props in { Handle = { Size = Vector3.new(0.9, 5.0, 0.9) * k, Color = WOOD2 },
+		BandL = { Size = Vector3.new(0.9, 2.7, 2.7) * k, Color = GAVEL_GOLD }, BandR = { Size = Vector3.new(0.9, 2.7, 2.7) * k, Color = GAVEL_GOLD },
+		Shadow = { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, 2, 2), Color = Color3.fromRGB(30, 30, 40), Transparency = 1 } } do
+		local p = part(props)
+		p.Name = name
+		p.Parent = head
+	end
+	head:SetAttribute("From", from)
+	head:SetAttribute("To", to)
+	head.Parent = visuals
+	return head
+end
+
+-- a = 0 (leaves his glove at the launch) .. 1 (its end strikes the disc's centre as he lands): a high arc, end over
+-- end, then it swings into the strike (head end down, like a gavel)
+local function poseMiniGavel(g: BasePart, a: number, sc: number, floorY: number)
+	local k = sc / 3.4
+	local from, to = g:GetAttribute("From") :: Vector3, g:GetAttribute("To") :: Vector3
+	local d = Vector3.new(to.X - from.X, 0, to.Z - from.Z)
+	local target = Vector3.new(to.X, floorY + 3.0 * k, to.Z) -- (on its end: half its length up)
+	local tumble = if a < 0.8 then 4 * math.pi * a / 0.8 else 0
+	local swing = if a < 0.8 then 0 else math.pi / 2 * ((a - 0.8) / 0.2) ^ 3
+	local cf = CFrame.new(from:Lerp(target, a) + Vector3.new(0, 46 * k * math.sin(math.pi * a), 0))
+		* CFrame.Angles(0, math.atan2(-d.X, -d.Z), 0) * CFrame.Angles(0, 0, swing) * CFrame.Angles(tumble, 0, 0)
+	g.CFrame = cf
+	for _, p in g:GetChildren() do
+		local bp = p :: BasePart
+		if p.Name == "Shadow" then
+			local w = (3 + 8 * a) * k
+			bp.Size = Vector3.new(0.1, w, w)
+			bp.CFrame = CFrame.new(to.X, floorY + 0.12, to.Z) * CFrame.Angles(0, 0, math.pi / 2)
+			bp.Transparency = 1 - 0.45 * a
+		elseif p.Name == "Handle" then
+			bp.CFrame = cf * CFrame.new(0, -3.8 * k, 0)
+		elseif p.Name == "BandL" then
+			bp.CFrame = cf * CFrame.new(-2.0 * k, 0, 0)
+		elseif p.Name == "BandR" then
+			bp.CFrame = cf * CFrame.new(2.0 * k, 0, 0)
+		end
+	end
+end
+
+-- Judge Martello's one-shot and per-frame effects, by state and time into it (e); timings match his Blender clips
+local function martelloFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number)
+	local s = b.state
+	local k = sc / 3.4
+	local up = Vector3.new(0, 1, 0)
+	local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(255, 170, 60)
+	local spot = (attr(s, "Target") :: Vector3?) or pos
+	local at = Vector3.new(spot.X, floorY + 0.5, spot.Z)
+	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local function once(key: string): boolean
+		if b.fired[key] then
+			return false
+		end
+		b.fired[key] = true
+		return true
+	end
+	if state == "windup" then
+		if e >= 0.04 and once("crouch") then
+			playAt(pos + up * 2 * sc, "stomp")
+		end
+		if e >= M_LAUNCH and once("launch") then -- LAUNCH: a dust ring where he pushed off, two mini gavels flung up
+			local from = (attr(s, "From") :: Vector3?) or pos
+			local base = Vector3.new(from.X, floorY + 0.5, from.Z)
+			dustPuff(sc, NumberRange.new(12, 18), Vector2.new(85, 85), 12, base)
+			playAt(base, "spring")
+			playAt(base + up * 4 * sc, "lift")
+			-- his shadow on the landing spot (it grows as he comes down)
+			local shadow = part({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.1, 2, 2), Color = Color3.fromRGB(30, 30, 40), Transparency = 1 })
+			shadow.Name = "Shadow"
+			shadow.Parent = visuals
+			table.insert(b.minis, shadow)
+			-- GAVEL RAIN (2+ players): a mini gavel out of a glove for each other player's disc
+			if attr(s, "CrowdShape") == "Disc" then
+				local gloves = {}
+				for _, g in b.groups do
+					if g.name == "ArmL" or g.name == "ArmR" then
+						for _, p in g.parts do
+							if p.Name == "Glove" then
+								table.insert(gloves, p.Position)
+							end
+						end
+					end
+				end
+				for i = 1, (attr(s, "CrowdN") :: number?) or 0 do
+					local c = attr(s, "Crowd" .. i) :: Vector3?
+					if c then
+						table.insert(b.minis, makeMiniGavel(sc, gloves[(i - 1) % math.max(1, #gloves) + 1] or pos + up * 6 * sc, c))
+					end
+				end
+			end
+		end
+		if e >= M_APEX - 0.1 and once("swing") then -- the cartwheel: he swings himself like a gavel
+			playAt(pos, "swing")
+		end
+		local a = math.clamp((e - M_LAUNCH) / math.max(0.1, total - M_LAUNCH), 0, 1)
+		for _, m in b.minis do
+			if m.Name == "Shadow" then
+				local w = (6 + 16 * a) * k
+				m.Size = Vector3.new(0.1, w, w)
+				m.CFrame = CFrame.new(spot.X, floorY + 0.13, spot.Z) * CFrame.Angles(0, 0, math.pi / 2)
+				m.Transparency = 1 - 0.4 * a
+			else
+				poseMiniGavel(m, a, sc, floorY)
+			end
+		end
+	elseif state == "attack" then
+		if once("bonk") then -- THE STRIKE (the server's hit is now): his end cap on the spot
+			local r = (attr(s, "Radius") :: number?) or 26
+			shockwave(at, r, color, 0)
+			shockwave(at, r * 0.7, Color3.new(1, 1, 1), 0.08)
+			dustPuff(sc, NumberRange.new(20, 30), Vector2.new(85, 85), 18, at)
+			chips(sc, 14, at + up)
+			sparkBurst(at + up * 2, GAVEL_GOLD, 24)
+			playAt(at, "bonk")
+			playAt(at, "slam")
+			playAt(at, "crack")
+			if me and (me.Position - at).Magnitude < r * 1.8 then
+				shake(0.35, 0.9)
+			end
+			-- the mini gavels strike their discs (the server hits within CrowdRadius of each now)
+			local cr = (attr(s, "CrowdRadius") :: number?) or 12
+			for _, m in b.minis do
+				local to = m:GetAttribute("To") :: Vector3?
+				if to then
+					local p = Vector3.new(to.X, floorY + 0.5, to.Z)
+					shockwave(p, cr, color, 0)
+					dustPuff(sc, NumberRange.new(12, 18), Vector2.new(85, 85), 10, p)
+					chips(sc, 6, p + up)
+					playAt(p, "minibonk")
+					if me and (me.Position - p).Magnitude < cr * 1.4 then
+						shake(0.25, 0.35)
+					end
+				end
+			end
+		end
+		if e >= 0.05 and once("ting") then -- the struck gavel rings
+			playAt(at + up * 3 * sc, "ting")
+		end
+	elseif state == "recover" then
+		if e >= 0.2 and once("pop") then -- the arms pop back out
+			playAt(at + up * 3 * sc, "pop")
+		end
+		if e >= 0.38 and once("land") then -- back on his feet
+			dustPuff(sc, NumberRange.new(10, 16), Vector2.new(85, 85), 10, at)
+			playAt(at, "land")
+		end
+	end
+	if state ~= "windup" and #b.minis > 0 then
+		for _, m in b.minis do
+			m:Destroy()
+		end
+		b.minis = {}
+	end
+end
+
+------------------------------------------------------------------ Chief Justice Eclipse's effects (docs/BOSS_ANIMATION.md section 10)
+-- (tools/blender/boss_clips/eclipse.py: the volley gavels leave the orbit at LOCK_ON in a Ring windup; the orbit spins
+-- at ORBIT_SPIN rad/s for Spin 0 .. 1; BossService holds a Ring attack RING_TIME s)
+local LOCK_ON, RING_TIME = 0.85, 0.45
+local ORBIT_SPIN = { 1.6, 13 }
+local STARLIGHT = Color3.fromRGB(255, 230, 140)
+
+-- the Pull's swirl under him (the uploaded swirl texture, turned by code)
+local function makeVortex(color: Color3): BasePart
+	local p = part({ Size = Vector3.new(1, 0.1, 1), Transparency = 1 })
+	local d = Instance.new("Decal")
+	d.Texture = TEX.swirl
+	d.Face = Enum.NormalId.Top
+	d.Color3 = color
+	d.Transparency = 1
+	d.Parent = p
+	p.Parent = visuals
+	return p
+end
+
+-- the Gavel Volley: orbiting gavel i leaves the orbit for the disc at `to` (hidden there; a copy of its own parts flies)
+local function startVolley(b: Boss, i: number, to: Vector3, sc: number, floorY: number)
+	for _, g in b.groups do
+		if g.name == "Gavel" .. i and #g.parts > 0 then
+			local clones, offs = {}, {}
+			local pivot = g.parts[1].CFrame -- (its handle)
+			for _, p in g.parts do
+				local c = p:Clone()
+				c.LocalTransparencyModifier = 0
+				c.Parent = visuals
+				table.insert(clones, c)
+				table.insert(offs, pivot:Inverse() * p.CFrame)
+				p.LocalTransparencyModifier = 1
+			end
+			local k = sc / 3.2
+			local d = Vector3.new(to.X - pivot.X, 0, to.Z - pivot.Z)
+			table.insert(b.volley, { clones = clones, offs = offs, src = g.parts[1], hidden = g.parts, start = pivot,
+				over = Vector3.new(to.X, floorY + 30 * k, to.Z), floor = Vector3.new(to.X, floorY + 1.25 * sc + 0.1, to.Z),
+				down = CFrame.Angles(0, math.atan2(-d.X, -d.Z), 0) * CFrame.Angles(math.pi, 0, 0), to = to }) -- (handle up, head down)
+		end
+	end
+end
+
+local function poseVolley(v: any, cf: CFrame)
+	for i, c in v.clones do
+		c.CFrame = cf * v.offs[i]
+	end
+end
+
+-- windup e (LOCK_ON .. total): up from the orbit to hover over the disc, flipping head down; slams down as it ends
+local function volleyWindup(v: any, e: number, total: number, sc: number): CFrame
+	local k = sc / 3.2
+	local hover = total - 0.16
+	if e < hover then
+		local a = ease((e - LOCK_ON) / math.max(0.05, hover - LOCK_ON))
+		return CFrame.new(v.start.Position:Lerp(v.over, a) + Vector3.new(0, 14 * k * math.sin(math.pi * a), 0))
+			* v.start.Rotation:Lerp(v.down, a)
+	end
+	local a = math.clamp((e - hover) / 0.16, 0, 1)
+	if a < 0.6 then
+		return CFrame.new(v.over + Vector3.new(0, 4 * k * math.sin(math.pi * math.min(1, a * 1.6)), 0)) * v.down
+	end
+	return CFrame.new(v.over:Lerp(v.floor, ((a - 0.6) / 0.4) ^ 3)) * v.down
+end
+
+-- h = time since the slam (the attack, then the recover): bounces up and flies home to its (moving) place on the orbit
+local function volleyHome(v: any, h: number, sc: number): CFrame
+	local k = sc / 3.2
+	local home = v.src.CFrame
+	local a = ease(h / (RING_TIME + 0.5))
+	return CFrame.new(v.floor:Lerp(home.Position, a) + Vector3.new(0, 12 * k * math.sin(math.pi * a), 0)) * v.down:Lerp(home.Rotation, a)
+end
+
+-- Chief Justice Eclipse's one-shot and per-frame effects, by state and time into it (e); timings match his Blender clips
+local function eclipseFx(b: Boss, state: string, e: number, total: number, pos: Vector3, sc: number, t: number)
+	local s = b.state
+	local k = sc / 3.2
+	local up = Vector3.new(0, 1, 0)
+	local floorY = (attr(s, "FloorY") :: number?) or pos.Y
+	local ground = Vector3.new(pos.X, floorY + 0.5, pos.Z)
+	local color = (attr(s, "Color") :: Color3?) or Color3.fromRGB(190, 120, 255)
+	local kind = attr(s, "AttackKind")
+	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local function once(key: string): boolean
+		if b.fired[key] then
+			return false
+		end
+		b.fired[key] = true
+		return true
+	end
+	local cycle = state == "windup" or state == "attack" or state == "recover"
+	-- GRAVITY PULL: a swirl spins under him, motes and sparks spiral in from the disc's edge while he drags
+	if kind == "Pull" and cycle then
+		local radius = (attr(s, "Radius") :: number?) or 44
+		local on = if state == "windup" then math.clamp((e - 0.5) / 0.5, 0, 1) elseif state == "attack" then 1 else math.clamp(1 - e / 0.3, 0, 1)
+		if on > 0 and not b.vortex then
+			b.vortex = makeVortex(color)
+		end
+		local v = b.vortex
+		if v then
+			v.Size = Vector3.new(radius * 1.3, 0.1, radius * 1.3)
+			v.CFrame = CFrame.new(pos.X, floorY + 0.15, pos.Z) * CFrame.Angles(0, -t * (if state == "attack" then 5 else 2.5), 0)
+			local d = v:FindFirstChildOfClass("Decal")
+			if d then
+				d.Transparency = 1 - 0.55 * on
+			end
+		end
+		if state == "windup" and e >= 0.05 and once("summon") then -- he rises, arms up: the summon
+			playAt(pos + up * 8 * sc, "summon")
+			burstAt(CFrame.lookAt(ground, ground + up), { Texture = TEX.star, Color = ColorSequence.new(STARLIGHT), LightEmission = 0.3,
+				Lifetime = NumberRange.new(0.6, 0.8), Speed = NumberRange.new(16, 24), EmissionDirection = Enum.NormalId.Front,
+				SpreadAngle = Vector2.new(25, 25), Rotation = NumberRange.new(0, 90), RotSpeed = NumberRange.new(-120, 120),
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.6 * k), NumberSequenceKeypoint.new(1, 0) }) }, 10)
+		end
+		if state == "attack" then
+			if once("pull") then
+				playAt(pos + up * 6 * sc, "pull")
+			end
+			if os.clock() - b.fxAt > 0.05 then -- motes swirl in from the edge
+				b.fxAt = os.clock()
+				for _ = 1, 2 do
+					local a = math.random() * math.pi * 2
+					local rr = radius * (0.65 + 0.35 * math.random())
+					local from = Vector3.new(pos.X + math.cos(a) * rr, floorY + 1 + math.random() * 8 * k, pos.Z + math.sin(a) * rr)
+					local toward = Vector3.new(pos.X, from.Y, pos.Z) + Vector3.new(-math.sin(a), 0, math.cos(a)) * rr * 0.5
+					burstAt(CFrame.lookAt(from, toward), { Texture = TEX.spark, Color = ColorSequence.new(color, Color3.new(1, 1, 1)),
+						LightEmission = 0.3, Lifetime = NumberRange.new(0.5, 0.7), Speed = NumberRange.new(rr * 1.2, rr * 1.5),
+						EmissionDirection = Enum.NormalId.Front, SpreadAngle = Vector2.new(5, 5), Drag = 1,
+						Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.0 * k), NumberSequenceKeypoint.new(1, 0.2 * k) }) }, 1)
+				end
+			end
+		end
+	elseif b.vortex then
+		b.vortex:Destroy()
+		b.vortex = nil
+	end
+	-- GAVEL ORBIT (+ the GAVEL VOLLEY with 2+ players)
+	if kind == "Ring" and state == "windup" then
+		if e >= 0.1 and once("spinup") then
+			playAt(pos + up * 8 * sc, "spinup")
+		end
+		if e >= LOCK_ON and once("lock") and attr(s, "CrowdShape") == "Disc" then -- gavels leave the orbit for the discs
+			for i = 1, math.min(3, (attr(s, "CrowdN") :: number?) or 0) do
+				local c = attr(s, "Crowd" .. i) :: Vector3?
+				if c then
+					startVolley(b, i, c, sc, floorY)
+				end
+			end
+			if #b.volley > 0 then
+				playAt(pos + up * 8 * sc, "glint")
+			end
+		end
+		for _, v in b.volley do
+			poseVolley(v, volleyWindup(v, e, total, sc))
+		end
+	elseif kind == "Ring" and state == "attack" then
+		if once("burst") then -- THE RING (the server's hit is now): the gavels fling out to its edge
+			local r = (attr(s, "RingRadius") :: number?) or 38
+			shockwave(ground, r, color, 0)
+			shockwave(ground, r * 0.8, Color3.new(1, 1, 1), 0.06)
+			shockwave(ground, r * 0.55, STARLIGHT, 0.12)
+			local head = ground + up * 8 * sc
+			burstAt(CFrame.lookAt(head, head + up), { Texture = TEX.star, Color = ColorSequence.new(STARLIGHT, color), LightEmission = 0.3,
+				Lifetime = NumberRange.new(0.35, 0.5), Speed = NumberRange.new(50, 80), EmissionDirection = Enum.NormalId.Front,
+				SpreadAngle = Vector2.new(180, 180), Rotation = NumberRange.new(0, 90), RotSpeed = NumberRange.new(-200, 200),
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 2.2 * k), NumberSequenceKeypoint.new(1, 0) }) }, 24)
+			playAt(head, "charge")
+			playAt(ground, "slam")
+			if me and (me.Position - ground).Magnitude < r * 1.6 then
+				shake(0.3, 0.5)
+			end
+			-- the volley gavels slam down on their discs (the server hits within CrowdRadius of each now)
+			local cr = (attr(s, "CrowdRadius") :: number?) or 10
+			for _, v in b.volley do
+				local p = Vector3.new(v.to.X, floorY + 0.5, v.to.Z)
+				shockwave(p, cr, color, 0)
+				shockwave(p, cr * 0.7, Color3.new(1, 1, 1), 0.06)
+				dustPuff(sc, NumberRange.new(12, 18), Vector2.new(85, 85), 10, p)
+				sparkBurst(p + up * 2, STARLIGHT, 14)
+				playAt(p, "slam")
+				if me and (me.Position - p).Magnitude < cr * 1.4 then
+					shake(0.25, 0.35)
+				end
+			end
+		end
+		for _, v in b.volley do
+			poseVolley(v, volleyHome(v, e, sc))
+		end
+	elseif kind == "Ring" and state == "recover" then
+		for _, v in b.volley do
+			poseVolley(v, volleyHome(v, RING_TIME + e, sc))
+		end
+		if e >= 0.5 and #b.volley > 0 then -- home: the orbit's own gavels show again
+			endVolley(b)
+		end
+	end
+	if #b.volley > 0 and not (kind == "Ring" and cycle) then
+		endVolley(b)
+	end
+end
+
 -- dizzy stars circling over its head (the Megalodon after a charge)
 local function poseStars(b: Boss, pos: Vector3, on: boolean, t: number)
 	if not on then
@@ -1605,6 +2270,15 @@ RunService.Heartbeat:Connect(function(dt)
 		local t0, t1 = (attr(s, "StateStart") :: number?) or 0, (attr(s, "StateEnd") :: number?) or 0
 		local a = if t1 > t0 then math.clamp((t - t0) / (t1 - t0), 0, 1) else 1
 		local yaw = (attr(s, "Yaw") :: number?) or 0
+		-- a Slam's hop is drawn along its windup clip's Travel channel (it holds for the crouch, then flies, and lands on
+		-- the server's spot as the windup ends - airborne, its body can't be touched, so only the drawn path changes)
+		if state == "windup" and attr(s, "AttackKind") == "Slam" and ANIMS[b.kind] then
+			local travel = clipFx(ANIMS[b.kind], "windup", "Travel", t - t0)
+			local from, to = attr(s, "From") :: Vector3?, attr(s, "To") :: Vector3?
+			if travel and from and to then
+				pos = from:Lerp(to, travel)
+			end
+		end
 		-- react to a new state once (warning on windup, effects on attack)
 		if t0 ~= b.seenState then
 			b.seenState = t0
@@ -1655,6 +2329,9 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 		b.walk += ((if moving then 1 else 0) - b.walk) * math.min(1, dt * 6)
 		local anim = ANIMS[b.kind]
+		if (b.kind == "BigCheese" or b.kind == "Megalodon") and (state == "windup" or state == "attack" or state == "recover" or state == "dizzy") then
+			anim = nil -- new burst / whirlpool moves use their purpose-built poses, not the old rolling / charging clips
+		end
 		local lead = 0
 		if anim and state == "windup" then
 			-- the whip-round: holds a beat (the sniff), then turns to its target with an overshoot; the head leads
@@ -1689,7 +2366,7 @@ RunService.Heartbeat:Connect(function(dt)
 		local squash = Vector3.one
 		if anim then
 			-- the Blender clip for this state, cross-faded with the POSES above
-			local clipPose = clipPoseFor(anim, state, t - t0, t1 - t0, sc)
+			local clipPose = clipPoseFor(anim, state, t - t0, t1 - t0, sc, attr(s, "AttackKind"))
 			if clipPose then
 				b.lastClip = clipPose
 			end
@@ -1711,15 +2388,15 @@ RunService.Heartbeat:Connect(function(dt)
 					p.Transparency = 1 - 0.6 * glow
 				end
 			end
-			if b.kind == "Megalodon" then
+			if b.kind == "Megalodon" and anim then
 				megalodonFx(b, state, t - t0, t1 - t0, pos, sc, t)
-			elseif b.kind == "SeniorPartner" then
+			elseif b.kind == "SeniorPartner" and kind ~= "Slam" then
 				-- the papers at his ankles whirl faster and rise with the clip's Swirl channel (spun here, every state)
 				local swirl = fxNow.Swirl or 0
 				b.paperSpin += dt * (0.9 + 6.1 * swirl)
 				rots.Papers = CFrame.Angles(0, b.paperSpin, 0) * CFrame.new(0, (math.sin(t * 2) * 0.15 + 1.1 * swirl) * sc, 0)
 				partnerFx(b, state, t - t0, t1 - t0, pos, sc, t, swirl)
-			elseif b.kind == "BigCheese" then
+			elseif b.kind == "BigCheese" and anim then
 				-- THE ROLL (code): the distance really rolled (+ the clip's Roll: the burnout), upright again with Unroll
 				local roll = fxNow.Roll or 0
 				if state == "attack" then
@@ -1735,6 +2412,15 @@ RunService.Heartbeat:Connect(function(dt)
 					rootOff = rootOff * CFrame.new(0, rollLift(anim, roll), 0) -- (its block corners bump over the floor)
 				end
 				cheeseFx(b, state, t - t0, t1 - t0, pos, sc, t)
+			elseif b.kind == "BarristerBulldog" then
+				bulldogFx(b, state, t - t0, t1 - t0, pos, sc, t)
+			elseif b.kind == "JudgeMartello" then
+				martelloFx(b, state, t - t0, t1 - t0, pos, sc, t)
+			elseif b.kind == "Eclipse" then
+				-- THE ORBIT (code): the gavels go round every frame, faster with the clip's Spin channel
+				b.orbitSpin += dt * (ORBIT_SPIN[1] + (ORBIT_SPIN[2] - ORBIT_SPIN[1]) * (fxNow.Spin or 0))
+				rots.Gavels = CFrame.Angles(0, b.orbitSpin, 0)
+				eclipseFx(b, state, t - t0, t1 - t0, pos, sc, t)
 			end
 		end
 		local root = CFrame.new(pos) * CFrame.Angles(0, b.yaw, 0) * CFrame.new(rootOff.Position * sc) * rootOff.Rotation
