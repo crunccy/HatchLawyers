@@ -3,6 +3,10 @@
 
 local Players = game:GetService("Players")
 
+-- the hub's map first (Server.HubMap, 2026-10-20): with the hub switch on it moves the plots + hub services onto the
+-- v2 hub island before any service looks at them
+require(script.Parent.HubMap).apply()
+
 local PlayerData = require(script.Parent.PlayerData)
 local PlotService = require(script.Parent.PlotService)
 local CaseService = require(script.Parent.CaseService)

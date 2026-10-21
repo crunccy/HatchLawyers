@@ -593,12 +593,18 @@ task.spawn(function()
 		else
 			beam.Enabled = false
 		end
-		-- zone name when you walk in
+		-- zone name when you walk in (the lane's Bounds; on the redesign islands, IslandWiring.<Id>'s BoundsMin / BoundsMax)
 		local now: string? = nil
 		if root then
+			local wiring = CFG.Islands and CFG.Islands.Enabled and workspace:FindFirstChild("IslandWiring")
 			for _, z in CFG.List do
-				local b = z.Bounds
-				if b and root.Position.X >= b[1] and root.Position.X <= b[3] and root.Position.Z >= b[2] and root.Position.Z <= b[4] then
+				local p = root.Position
+				local folder = wiring and wiring:FindFirstChild(z.Id)
+				local lo, hi = folder and folder:GetAttribute("BoundsMin"), folder and folder:GetAttribute("BoundsMax")
+				local inside = if typeof(lo) == "Vector3" and typeof(hi) == "Vector3"
+					then p.X >= lo.X and p.X <= hi.X and p.Z >= lo.Z and p.Z <= hi.Z
+					else z.Bounds and p.X >= z.Bounds[1] and p.X <= z.Bounds[3] and p.Z >= z.Bounds[2] and p.Z <= z.Bounds[4]
+				if inside then
 					now = z.Id
 					if insideZone ~= z.Id then
 						Skin.banner({ Title = string.upper(z.Name), Sub = "Buy " .. eggName(z.Egg) .. "s and carry them home!",

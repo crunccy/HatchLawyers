@@ -13,6 +13,7 @@ local PlayerData = require(script.Parent.PlayerData)
 local FirmBuilder = require(script.Parent.FirmBuilder)
 local FirmStages = require(script.Parent:WaitForChild("FirmStages"))
 local FirmFeatures = require(script.Parent:WaitForChild("FirmFeatures"))
+local HubMap = require(script.Parent:WaitForChild("HubMap"))
 
 local Templates = ServerStorage:WaitForChild("Templates")
 local Plots = workspace:WaitForChild("Plots")
@@ -31,9 +32,10 @@ local function sortedPlots(): { Model }
 		end
 	end
 	-- Nearest the plaza first (design pass 2026-10-16: on a quiet server the firms fill the plots by the hub, not the
-	-- far corners), then Plot1, Plot2, ... in numeric order.
+	-- far corners), then Plot1, Plot2, ... in numeric order. (The plaza: HubMap.centre(), the v2 hub island's middle
+	-- when the hub runs there.)
 	local function dist(p: Model): number
-		local pos = p:GetPivot().Position
+		local pos = p:GetPivot().Position - HubMap.centre()
 		return math.floor(Vector2.new(pos.X, pos.Z).Magnitude / 10)
 	end
 	table.sort(list, function(a, b)

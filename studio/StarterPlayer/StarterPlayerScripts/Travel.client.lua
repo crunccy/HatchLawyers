@@ -49,17 +49,27 @@ end
 local function zoneColor(z: any): Color3
 	return z.Color or Color3.fromRGB(104, 152, 236)
 end
--- the zone the player is standing in (Config.Zones.List[i].Bounds = { x0, z0, x1, z1 })
+-- the zone the player is standing in (Config.Zones.List[i].Bounds = { x0, z0, x1, z1 }; on the redesign islands,
+-- Workspace.IslandWiring.<Id>'s BoundsMin / BoundsMax, as Ambience + ZoneMusic read them)
 local function currentZone(): string?
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
 	if not root then
 		return nil
 	end
 	local p = root.Position
+	local wiring = Config.Zones.Islands and Config.Zones.Islands.Enabled and workspace:FindFirstChild("IslandWiring")
 	for _, z in ZONES do
-		local b = z.Bounds
-		if b and p.X >= b[1] and p.X <= b[3] and p.Z >= b[2] and p.Z <= b[4] then
-			return z.Id
+		local folder = wiring and wiring:FindFirstChild(z.Id)
+		local lo, hi = folder and folder:GetAttribute("BoundsMin"), folder and folder:GetAttribute("BoundsMax")
+		if typeof(lo) == "Vector3" and typeof(hi) == "Vector3" then
+			if p.X >= lo.X and p.X <= hi.X and p.Z >= lo.Z and p.Z <= hi.Z then
+				return z.Id
+			end
+		else
+			local b = z.Bounds
+			if b and p.X >= b[1] and p.X <= b[3] and p.Z >= b[2] and p.Z <= b[4] then
+				return z.Id
+			end
 		end
 	end
 	return nil
@@ -234,7 +244,9 @@ end)
 
 ------------------------------------------------------------------ the portal (each client draws its own view)
 -- (v2 portal, 2026-10-13: FloatRing1-3 turn + bob round the light column, the Beam breathes and flares on a trip)
-type Portal = { model: Model, arms: Model?, home: CFrame?, gems: { BasePart }, rings: { { m: Model, home: CFrame } }, beam: BasePart?, beamBase: number }
+-- (2026-10-20, mr.robe's call: in the middle of the v2 hub island's plaza - Server.HubMap, workspace attribute
+-- HubCentre - the TRAVEL sign sits centred over the portal and spins, text on both sides, so it reads from all round)
+type Portal = { model: Model, arms: Model?, home: CFrame?, gems: { BasePart }, rings: { { m: Model, home: CFrame } }, beam: BasePart?, beamBase: number, sign: { { part: BasePart, rel: CFrame } }, signAxis: CFrame? }
 local portals: { [Model]: Portal } = {}
 local lastTouch = 0
 
@@ -263,7 +275,7 @@ local function track(model: Instance)
 	if not model:IsA("Model") or portals[model] then
 		return
 	end
-	local p: Portal = { model = model, gems = {}, rings = {}, beam = nil, beamBase = 0.86 }
+	local p: Portal = { model = model, gems = {}, rings = {}, beam = nil, beamBase = 0.86, sign = {} }
 	portals[model] = p
 	task.spawn(function()
 		-- (the portal streams in as one piece: wait for it)
@@ -288,6 +300,30 @@ local function track(model: Instance)
 		if beam and beam:IsA("BasePart") then
 			p.beam = beam
 			p.beamBase = beam.Transparency
+		end
+		-- the spinning sign (only on the hub island): board, trims, bulbs and posts turn round the portal's axis; the
+		-- sign stood 2 studs off it, so it's re-centred and lifted clear of the beacon; a copy of the plate on the back
+		if workspace:GetAttribute("HubCentre") ~= nil then
+			local pivot = model:GetPivot()
+			local own = pivot * CFrame.new(0, 0, 2)
+			for _, d in model:GetChildren() do
+				if d:IsA("BasePart") and string.match(d.Name, "^Sign") then
+					table.insert(p.sign, { part = d, rel = own:ToObjectSpace(d.CFrame) })
+				end
+			end
+			local plate = model:FindFirstChild("SignPlate") :: BasePart?
+			local gui = plate and plate:FindFirstChildWhichIsA("SurfaceGui")
+			if plate and gui then
+				local back = plate:Clone()
+				back.Name = "SignPlateBack"
+				local backGui = back:FindFirstChildWhichIsA("SurfaceGui") :: SurfaceGui
+				backGui.Face = if gui.Face == Enum.NormalId.Back then Enum.NormalId.Front else Enum.NormalId.Back
+				local rel = own:ToObjectSpace(plate.CFrame)
+				local mirrored = CFrame.new(rel.X, rel.Y, -rel.Z) * rel.Rotation
+				back.Parent = model
+				table.insert(p.sign, { part = back, rel = mirrored })
+			end
+			p.signAxis = pivot * CFrame.new(0, 0.6, 0)
 		end
 		lightGems(p)
 		-- particles: the game's own effects kit, in the portal's colours (CLAUDE.md: no hand-rolled emitters)
@@ -332,11 +368,12 @@ end
 
 -- the spiral arms turn, the floating rings turn (alternate ways) and bob, the beam breathes (anchored parts, moved
 -- locally every frame; small models)
-local spin, ringSpin = 0, 0
+local spin, ringSpin, signSpin = 0, 0, 0
 RunService.RenderStepped:Connect(function(dt)
 	local flaring = os.clock() < flareUntil
 	spin = (spin + dt * (if flaring then 5 else 1.6)) % (math.pi * 2)
 	ringSpin = (ringSpin + dt * (if flaring then 3.2 else 0.7)) % (math.pi * 2)
+	signSpin = (signSpin + dt * (if flaring then 2.4 else 0.8)) % (math.pi * 2)
 	local t = os.clock()
 	for _, p in portals do
 		if p.arms and p.home and p.arms.Parent then
@@ -351,6 +388,14 @@ RunService.RenderStepped:Connect(function(dt)
 		if p.beam and p.beam.Parent then
 			local base = if flaring then p.beamBase - 0.3 else p.beamBase
 			p.beam.Transparency = math.clamp(base + math.sin(t * 2.2) * 0.04, 0, 1)
+		end
+		if p.signAxis then
+			local turn = (p.signAxis :: CFrame) * CFrame.Angles(0, signSpin, 0)
+			for _, s in p.sign do
+				if s.part.Parent then
+					s.part.CFrame = turn * s.rel
+				end
+			end
 		end
 	end
 end)
