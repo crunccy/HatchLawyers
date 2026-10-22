@@ -39,6 +39,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Current state, open items, history | [SESSION_LOG.md](SESSION_LOG.md) |
 | Economy numbers + how to retune | [docs/ECONOMY.md](docs/ECONOMY.md), sim: [tools/economy_sim.py](tools/economy_sim.py) (tests: `python3 -m unittest discover tools`) |
 | Economy analysis, what needs attention | [docs/ECONOMY_REVIEW.md](docs/ECONOMY_REVIEW.md) |
+| Visual polish research and video references | [docs/VISUAL_RESEARCH_START_HERE.md](docs/VISUAL_RESEARCH_START_HERE.md); map/UI/VFX/animation brief, inspected video timestamps |
 | Original design manifesto | [docs/DESIGN.md](docs/DESIGN.md) — read its "Status" table; parts are superseded |
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
