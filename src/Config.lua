@@ -1031,8 +1031,10 @@ Config.Bosses = {
 	-- (2026-10-12, user: "make the attacks more frequent, make the models bigger, and make them faster and more
 	-- dangerous", "the range should be MUCH longer and they should be MUCH larger", then "they should ragdoll the
 	-- player, touching the boss's hitbox ragdolls them too, and they should be faster than the player" - so they
-	-- outrun players now (base speed 32, max 40). Still fair: every windup lets a player at base speed get out of the
-	-- warning, and a player who was just hit is safe for SafeAfterHit s and left alone by that boss for IgnoreAfterHit s.)
+	-- outrun players now (base speed 32, max 40). A player who was just hit is safe for SafeAfterHit s
+	-- and left alone by that boss for IgnoreAfterHit s.)
+	-- 2026-10-21: faster attack cadence and wider reach. Martello keeps a 1 s warning for its
+	-- 28-stud targeted slam so a moving player at base speed (32) can still escape.
 	SafeAfterHit = 4, -- seconds a hit player can't be hit again (they're ragdolled for RagdollTime of it)
 	IgnoreAfterHit = 5, -- seconds the boss that hit you won't chase or target you
 	RagdollTime = 2.2, -- seconds a hit player lies limp before getting up
@@ -1053,28 +1055,28 @@ Config.Bosses = {
 	--   "Pull"  drags everyone within Radius toward it at PullSpeed for PullTime s; the middle (Inner) is a hit
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
-			Attack = "Cone", Radius = 45, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
+			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 2.8, Windup = 1.0,
+			Attack = "Cone", Radius = 54, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.4, Front = 1.8, Height = 11.5 } },
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
-			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90),
+			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 2.4, Windup = 1.3,
+			Attack = "Ring", Radius = 40, Color = Color3.fromRGB(255, 90, 90),
 			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 } },
 		{ Zone = "BrainrotBoulevard", Model = "JudgeMartello", Name = "Judge Martello", Difficulty = "Medium",
-			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 3, Windup = 1.1,
-			Attack = "Slam", Radius = 26, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
+			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 2.4, Windup = 1.0,
+			Attack = "Slam", Radius = 28, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.6, Front = 1.7, Height = 5.6 } },
 		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
-			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
-			Attack = "Line", Length = 110, Width = 22, LineSpeed = 120, Color = Color3.fromRGB(255, 200, 60),
+			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 2.8, Windup = 1.0,
+			Attack = "Line", Length = 132, Width = 26, LineSpeed = 150, Color = Color3.fromRGB(255, 200, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 } },
 		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
-			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.8, Windup = 1.0,
-			Attack = "Line", Length = 130, Width = 20, LineSpeed = 150, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
+			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.2, Windup = 0.8,
+			Attack = "Line", Length = 156, Width = 24, LineSpeed = 185, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
 			Hitbox = { HalfWidth = 2.2, Back = 2.4, Front = 1.8, Height = 8 } },
 		{ Zone = "SpaceBase", Model = "Eclipse", Name = "Chief Justice Eclipse", Difficulty = "Extreme",
-			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.5, Windup = 1.4,
-			Attack = { "Pull", "Ring" }, Radius = 44, Inner = 12, PullTime = 2, PullSpeed = 16, RingRadius = 38,
+			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.0, Windup = 1.15,
+			Attack = { "Pull", "Ring" }, Radius = 53, Inner = 14, PullTime = 2, PullSpeed = 20, RingRadius = 46,
 			Color = Color3.fromRGB(190, 120, 255), Hitbox = { HalfWidth = 2.4, Back = 1.8, Front = 1.8, Height = 10.3 } },
 	},
 }
