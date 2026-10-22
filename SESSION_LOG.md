@@ -48,8 +48,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 ## Open items
 - [ ] **Mutation Machine v3 at phone size** (2026-10-22): the menu (Skin.window fit) and the sequence (1280x720 canvas,
       scale 0.45-1.4) were only seen at 1286x758 and 1711x818 windows; check a phone in the Device emulator (pods, the
-      picker grid, the waiting cover, the title card). Also: another player at the machine only sees the server's burst,
-      not the sequence (it's client-only) - decide if others should watch (like `Remotes.HatchShow`).
+      picker grid, the waiting cover, the title card). (Others watching: **mr.robe's call 2026-10-22 - not now**, the
+      sequence stays for the player who mutates; others near the machine only see the server's burst.)
 - [ ] **crnuch: review the rebuilt Mutation Machine** (mr.robe's call, inside your UI-overhaul claim; docs/UI_OVERHAUL.md
       row marked) and the sequence's look (`art/mutation/` renders; preview: MutationFx with `pauseAt`).
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
