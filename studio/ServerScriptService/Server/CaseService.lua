@@ -766,6 +766,15 @@ function CaseService.setQueued(player: Player, index: number, change: string?): 
 	return true
 end
 
+-- Keeps new clients away from a FREE office for `seconds` more (pushes its rest later; a busy office is left alone).
+-- The Mutation Machine holds its picks' free offices while it waits for the others to finish (LawyerService).
+function CaseService.hold(player: Player, index: number, seconds: number)
+	local desk = CaseService.getDesk(player, index)
+	if desk and (desk.phase == "Idle" or desk.phase == "Empty") then
+		desk.restUntil = math.max(desk.restUntil, now() + seconds)
+	end
+end
+
 function CaseService.queuedChange(player: Player, index: number): string?
 	local desk = CaseService.getDesk(player, index)
 	return desk and desk.queued

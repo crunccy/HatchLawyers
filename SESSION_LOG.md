@@ -44,12 +44,14 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Carry / Speed, Shop, Mutation Machine, Big Case belt + minigames, leaderboards, Arcade booths, zone banner + "you are
   here"; old hub kept untouched as the switch-off fallback). New `Server.HubMap` + `tools/zones/BuildHubWiring.lua`;
   small 3-way-merged edits to Main, PlotService, Zones.client, Travel.client. Don't wire the hub meanwhile.
-- **mr.robe (local), since 2026-10-21:** MUTATIONS FIX + the Mutation Machine rebuilt (user's call): find + fix why
-  mutating doesn't work (server-side, `Server.LawyerService` mergeSelected / mergeInto), a new 3D-looking Mutation
-  Machine menu (`StarterPlayerScripts.Merger`) and a hatch-style animated mutation sequence (HatchFx / Effects /
-  Puppet). Don't touch `Merger.client`, the mutation code in LawyerService or `Shared.MutationLook` meanwhile.
 
 ## Open items
+- [ ] **Mutation Machine v3 at phone size** (2026-10-22): the menu (Skin.window fit) and the sequence (1280x720 canvas,
+      scale 0.45-1.4) were only seen at 1286x758 and 1711x818 windows; check a phone in the Device emulator (pods, the
+      picker grid, the waiting cover, the title card). Also: another player at the machine only sees the server's burst,
+      not the sequence (it's client-only) - decide if others should watch (like `Remotes.HatchShow`).
+- [ ] **crnuch: review the rebuilt Mutation Machine** (mr.robe's call, inside your UI-overhaul claim; docs/UI_OVERHAUL.md
+      row marked) and the sequence's look (`art/mutation/` renders; preview: MutationFx with `pauseAt`).
 - [ ] **Megalodon 3-player playtest (Feeding Frenzy)** - skipped 2026-10-19 (crnuch). Needs Test > Clients and
       Servers > 3 players: the two non-targets get warning lanes + sand sharks; a player who stays in a lane is hit.
 - [ ] **Senior Partner 3-player playtest (Paper Storm)** - live 2026-10-20, only played solo. Same setup (Test >
@@ -195,7 +197,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
       own Claude on this repo now (2026-10-12). CaseService changed again since: no waiting room (entry below).
 - [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
-- [ ] Eye-check the Lawyer Merger panel + merge animation in a playtest (window wasn't rendering during the build).
+- [x] Eye-check the Lawyer Merger panel + merge animation - superseded 2026-10-22: the Mutation Machine was rebuilt
+      (menu v3 + Shared.MutationFx) and playtested (entry above).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
 - [ ] Eye-check a merged lawyer's Gold / Rainbow tag line (LawyerTags).
 - [ ] Eye-check the hatch screen's Rare/Legendary VFX (star flare + slash ring) on a real rare roll.
@@ -222,6 +225,66 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-22 — mr.robe, local session: mutations fixed + the Mutation Machine rebuilt (3D menu + an animated sequence)
+- **User's call (mr.robe, 2026-10-21):** "fix the mutations, they don't work right now and i want a better 3d looking
+  menu with some real animations when they mutate, similar to the egg hatching." Claimed 2026-10-21, released here.
+- **Why it didn't work (playtested):** the roll was fine (10 tries straight through the remote: 8 mutated at 70%), the
+  hub move and the group move broke nothing (only the known Skin Rays / Glow permission errors). But
+  `LawyerService.mergeSelected` REFUSED any pick sitting in an office that wasn't idle ("One of them is busy with a
+  case!"), and since clients walk straight in, offices are mid-case ~82% of the time: 12 / 12 tries with two office
+  StarJudges were refused. The menu still showed those sets as "CAN MUTATE!" and auto-filled office copies, so
+  pressing MUTATE flashed a toast and emptied the slots. (The old in-world "mutation moment" also jammed the camera
+  into the machine with the lawyer clipping into its console.)
+- **Fix (server-authoritative, the busy-office rule kept):** a pick on a case is now WAITED for, never pulled out:
+  `mergeSelected` re-checks the picks every 0.2 s (`checkPicks`: owned, distinct, same lawyer + tier, not locked, not
+  queued into an office, not max) for up to **`Config.Lawyers.MutateWait` = 300 s** (new; config check: it covers the
+  longest case), holds the picks' offices that are already free so no new client sits down (**new
+  `CaseService.hold`**), and rolls the moment all are free (no yield between the last check and `mergeInto`).
+  `MergeSelected("cancel")` stops a wait; one wait per player; leaving cancels it.
+- **Menu v3 (`StarterPlayerScripts.Merger`, rewritten on `Skin.window`):** dark studded purple + purple striped header
+  (Merge PNG), three raised pods with the picks LIVE in 3D on a gold pedestal (`SkinLook.showInViewport`), piped into the
+  result chamber; the exact SUCCESS CHANCE first (big LuckiestGuy number + meter), the next-tier lawyer in its recolour,
+  "Earns xN (was xM)", a Normal > Shiny 70% > Diamond 45% > Cosmic 25% ladder, the rule line. Picker: one card per kind
+  with "x5 (2 on a case)" and READY / NEED n MORE; fills bench copies first, then free offices, then the case ending
+  soonest. Busy picks get an "ON A CASE 0:42" badge; pressing MUTATE with one shows "Your lawyers are finishing their
+  cases..." + the countdown + CANCEL. After the sequence the menu comes back with "<name>! Bring 3 more".
+- **The sequence (`Shared.MutationFx`, new):** like the Mythic / Supreme hatch it cuts to a stage of its own,
+  `ReplicatedStorage.MutationLab` (Blender: `tools/blender/mutation_lab.py` -> `tools/zones/mutation_lab.json` ->
+  `tools/zones/BuildMutationLab.lua`, 274 studded blocks: glass capsule on a gold plinth, three intake pads with pipes,
+  two tesla coils, a curved back wall + "MUTATION MACHINE" sign; renders `art/mutation/`), cloned client-only at
+  y = 3400. Intro on the pads (worried) -> a beam lifts each lawyer, it flails and spins into the capsule (its pipe
+  lights) -> the coils arc into the capsule, it shakes, "45% CHANCE" -> SUCCESS: flash, the lid lifts, the lawyer rises
+  in its new recolour + `mutationAura` and the tier burst (Shiny gold rays + glints, Diamond ice burst + frost rings,
+  Cosmic dome + star orbs + starfield), "SHINY!" / "DIAMOND!" / "COSMIC!" + name + earn line; FIZZLE: the charge
+  sputters, a soft puff, the three tumble out dizzy, shrug and run off - soft blue "FIZZLED!", "Your lawyers ran off...",
+  "It was a 70% chance. Try again!" (no red, no "lose"). SKIP; camera / lighting / HUD restored (HatchCC + y > 2000 keep
+  Ambience off it). Test hook `pauseAt` + `MutationFx.resume()` (Studio screenshots are too slow for a 10 s sequence).
+- **Found:** Roblox doesn't draw see-through parts behind a `Glass` part - the capsule's light column vanished; the
+  builder makes "glass" see-through SmoothPlastic (CLAUDE.md gotcha). The old in-world moment (codex branch) is gone.
+- **Studio:** pushed LawyerService, CaseService, Config, Merger (all four still equal to the snapshot = no merge needed;
+  written with a hash guard) + new `Shared.MutationFx` + `ReplicatedStorage.MutationLab`; backups in
+  `ServerStorage.Backups_2026-10-21`. **The first push (2026-10-21) was lost:** the Studio window it was made in
+  disconnected and its edits never reached Team Create; re-pushed 2026-10-22 in the other window.
+- **Playtested** (graphics level 21): the old bug reproduced first. New code, real MergeSelected through clicks:
+  Normal -> Shiny success, Shiny -> Diamond success + fizzle, Diamond -> **Cosmic success** (a real 25% roll), fizzles at
+  70% / 45% (all three taken, the office one only after its case ended); a pick in office 5 mid-case: the machine waited
+  out its case, mutated it in place (it kept its office and went straight back to work); two office picks: waited for
+  both, then rolled; CANCEL mid-wait: nothing taken, picks stay, office keeps working; `CaseService.hold` on an idle
+  office: no client for the 12 s held (past the 5 s rest), a client right after. Every tier + the fizzle eye-checked
+  in screenshots (preview with `pauseAt`). No script errors in the output.
+- **Test data (mr_blox174, real save):** test lawyers were added via a playtest-only bridge and removed again; offices 5
+  and 20 got their Navy Power Suits back (L10, L4), the real Intern Suit L3 was locked for a test and unlocked; one real
+  Rookie used up by a test fizzle was replaced (L108, plain). The account went 70 -> 65 lawyers meanwhile through
+  mutations this session didn't make (a Shiny Comet, 3 Saturn Solicitors gone; office 10 empty) - mr.robe's own tries
+  with the old menu, it looks like. Nothing reset. Temp scripts lived only in the playtests; the edit place is clean.
+- `run_checks.py` ALL PASSED (304 Luau files, 43 Config checks incl. the new MutateWait one, 32 sim tests). Snapshot
+  re-exported (141 scripts, received outside OneDrive; only the five pushed scripts + backups changed; src/ == live).
+- **Heads-up for crnuch:** (1) the Mutation Machine screen is inside your UI-overhaul claim - rebuilt on `Skin.window` on
+  mr.robe's call; docs/UI_OVERHAUL.md row marked for your review. (2) Core loop: `CaseService.hold(player, index, s)` is
+  new (pushes a FREE office's rest later; a busy one is untouched), and `LawyerService.mergeSelected` now yields while
+  it waits. (3) The sequence borrows the lighting like the hatch stages (saves + restores; Ambience stays off it).
+- Open: phone size + others watching (Open items).
 
 ## 2026-10-20 — mr.robe, local session: the un-logged "Beam" boss experiment reverted
 - **mr.robe's call:** "revert the beam stuff" (and the Bulldog's bow tie moved under his chin is fine - stays). The

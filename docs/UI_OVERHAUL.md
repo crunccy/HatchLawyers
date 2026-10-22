@@ -74,7 +74,7 @@ see SESSION_LOG).
 | Incubator billboards | Eggs | at firm | World | S |
 | LAWYERS panel (slots, office card, CLIENTS, BENCH, sell/lock) | Lawyers | tile | Skin | S + fix the short bench grid (open item); its window isn't a `Skin.window` - no blur yet |
 | Skills | Skills | office card | Skin | S |
-| Mutation Machine (Merger) | Merger | at machine | Skin | S: header PNG |
+| Mutation Machine (Merger) | Merger (+ Shared.MutationFx) | at machine | Skin | **Done 2026-10-21 by mr.robe's session (mr.robe's call, outside this claim - crnuch to review)**: rebuilt as a `Skin.window` (purple, Merge PNG, blur), live 3D pods, chance first, tier ladder, waiting cover; the result plays as a cinematic (MutationFx) |
 | Office upgrade celebrations | Shared.UpgradeFx | upgrading | Own | S |
 | Shop | Shop | tile / stall | Skin | S: header PNG, red ribbons, gift squares stay off (no gifting feature) |
 | Rebirth screen | Supreme | tile | Skin (partial) | R |
