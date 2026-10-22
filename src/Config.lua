@@ -295,6 +295,9 @@ Config.Lawyers = {
 	StarEarn = { 1, 2.5, 6, 15 }, -- earn x by mutation tier (Normal, Shiny, Diamond, Cosmic)
 	StarNames = { "", "Shiny", "Diamond", "Cosmic" },
 	MaxOwned = 150, -- inventory cap (sell, mutate, or wait for space)
+	-- the longest the Mutation Machine waits for picked lawyers to finish their cases (never pulled out mid-case;
+	-- their offices get no new client meanwhile). Cases run 30-240 s (Config.Clients Duration).
+	MutateWait = 300,
 	Mutations = {
 		-- [tier] = what reaching it takes and how it looks. Chance: the Mutation Machine's success chance from the tier
 		-- below. Ramp: dark -> light colours the lawyer is recoloured along. Color: its name tag / UI colour.
@@ -1152,7 +1155,12 @@ Config.Zones = {
 	-- live game runs on today's lane, exactly as before. true = eggs, Travel and RETURN HOME use the islands
 	-- (Workspace.IslandWiring, Server.ZoneMap); bosses stay on the lane. In Studio, the admin /islands on|off tries it.
 	-- ON since 2026-10-20 (mr.robe's call: "turn it on"). Set false to put the egg zones back on the lane.
-	Islands = { Enabled = true },
+	-- Hub (2026-10-20, mr.robe's call): true = the hub's gameplay runs on the v2 central hub island too - the 8 firm plots,
+	-- the spawn, the Travel Portal (in the plaza's middle), Shop, Mutation Machine, Big Case belt + minigames,
+	-- leaderboards, License / Carry / Speed and the Arcade booths are moved there at server start (Server.HubMap, markers
+	-- in Workspace.HubWiring); needs Enabled. false = today's hub, unchanged. Start-only: restart the server to flip it.
+	-- ON since 2026-10-20 (mr.robe's call: "build and turn it on"; players get it at the next publish).
+	Islands = { Enabled = true, Hub = true },
 }
 
 -- Zone bosses (docs/BOSSES.md; Server.BossService, StarterPlayerScripts.Bosses; models ReplicatedStorage.Bosses from

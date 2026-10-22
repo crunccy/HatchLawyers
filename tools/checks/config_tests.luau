@@ -174,6 +174,15 @@ check("mutations: one per tier past Normal, names match, power climbs, chances v
 	assert(Formulas.mutateChance(#L.StarEarn) == 0, "the top tier can't mutate further")
 end)
 
+check("the Mutation Machine waits out the longest case (a pick on a case is never pulled out mid-case)", function()
+	local longest = 0
+	for _, c in Config.Clients do
+		longest = math.max(longest, c.Duration or 0)
+	end
+	assert(type(Config.Lawyers.MutateWait) == "number", "Config.Lawyers.MutateWait missing")
+	assert(Config.Lawyers.MutateWait >= longest, "MutateWait " .. Config.Lawyers.MutateWait .. " s is shorter than the longest case (" .. longest .. " s)")
+end)
+
 check("hatch mutations: odds add up to less than 1, golden eggs at least as lucky, rolls stay in range", function()
 	local H = Config.Lawyers.HatchMutation
 	for _, kind in { "Normal", "Golden" } do

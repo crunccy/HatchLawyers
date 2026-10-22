@@ -162,6 +162,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - `ReplicatedStorage.Shared.Formulas` — pure math (winChance, payout, trainCost, clientInterval,
   expectedIncomePerSecond, rollSkin/rollSkinId, skinPayoutBonus, formatCoins). Rolls take a `Random`.
 - `ReplicatedStorage.Shared.SkinLook` — dresses an NPC in a skin; `showInViewport` for previews.
+- `ReplicatedStorage.Shared.MutationFx` — the mutation sequence (2026-10-21): a cut to the Mutation Lab stage, the three
+  lawyers pulled into the capsule, a coil-arc charge with the exact chance, then the tier reveal (recolour + aura,
+  "SHINY!" / "DIAMOND!" / "COSMIC!") or a soft-blue fizzle where they run off. Borrows camera / lighting / HUD and gives
+  them back (marks itself with `HatchCC` + y > 2000 for Ambience). Test hook: `opts.pauseAt` + `MutationFx.resume()`.
 - `ReplicatedStorage.Shared.UpgradeFx` — the LAWYERS panel's office-upgrade celebrations (1 level small, MAX /
   UPGRADE ALL bigger with the number of levels, max level = whole-panel celebration). The panel passes it hooks.
 - `ReplicatedStorage.SkinModels` — rigged R15 model skins (e.g. `LawyerSkin_Legendary`). The 18 Epic / Mythic /
@@ -308,6 +312,12 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
   plus a lasting effect layer per tier (`Effects.mutationAura`, tag `FxMutation`: Shiny = gold glints + a sweep,
   Diamond = crystals + frost + a ring, Cosmic = a tilted orbit + stars + a dark-matter haze). Selling + locking:
   `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`; a locked lawyer can't be sold OR mutated.
+  **A pick working a case is WAITED for, never refused or pulled out (2026-10-21, mr.robe's "they don't work"):**
+  offices are almost never idle, so `LawyerService.mergeSelected` waits (up to `Config.Lawyers.MutateWait`) for the
+  picks' cases to end, holding the picks' free offices (`CaseService.hold`) so no new client sits down, then rolls;
+  `MergeSelected("cancel")` stops a wait. The menu (`StarterPlayerScripts.Merger` v3, Skin window, live 3D pods) shows
+  the wait + CANCEL, then `Shared.MutationFx` plays the sequence on `ReplicatedStorage.MutationLab` (Blender:
+  `tools/blender/mutation_lab.py` -> `tools/zones/BuildMutationLab.lua`), cloned client-only at y = 3400.
 - DataStores ARE reachable from Studio on this place now (saves persisted between playtests on 2026-10-11/12).
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - The prestige reset is called **"Rebirth"** on screen (user's call 2026-10-16); "Supreme" means only the top rarity
@@ -332,6 +342,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - A Client `execute_luau` that is still running when anything changes `CameraType` gets it reset by the tool
   ("Resetting from Custom back to Scriptable"), so a cutscene's camera breaks or stays stuck. Keep client calls short
   (trigger, return) and wait in a *Server* call; to move the camera yourself, do it in `task.delay` after the call returns.
+- Roblox doesn't draw see-through parts behind a `Glass` part: a glow inside a glass tube vanishes. Use
+  see-through SmoothPlastic (+ Reflectance) for "glass" that has something glowing inside.
 - `screen_capture` takes ~10 s to return and shoots when it starts: to catch a moment, put a mouse-input `wait` of
   the right length just before it (and don't think between the calls). Client code that takes the camera: start it
   with `task.delay` from execute_luau so the call has returned first.
