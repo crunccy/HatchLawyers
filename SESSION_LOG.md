@@ -10,6 +10,14 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Claude:** continue the existing Studio bug-list claim below; handle Studio pushes/playtests, visual checks, and Blender model work when working locally with those tools. Update this log with results and release the claim when done.
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
+## 2026-10-21 — crnuch, Codex session: faster, wider boss attacks
+
+- User requested only attack speed and range tuning. Updated `src/Config.lua`: shorter cooldowns and windups, larger cone/ring/slam areas, longer/wider/faster charges, stronger/wider Eclipse pull.
+- Martello's targeted slam is 28 studs with a 1 s warning (base player speed is 32 studs/s); avoids requiring a speed upgrade just to escape from the targeted center.
+- Models, scale, colors, body hitboxes, walking speed, attack patterns and post-hit protection are unchanged. Existing client warnings read the same settings as server hit detection.
+- Validation: all 215 tracked Luau files compiled, 40 config checks passed, and 32 economy tests passed. Initial compile run needed the omitted Studio snapshot files restored to the sparse checkout; rerun passed.
+- Source only; needs the usual Studio re-export/merge and playtest before publishing. Validate dodge feel on mobile and the warning boundaries for all six bosses.
+
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
