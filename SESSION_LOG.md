@@ -11,12 +11,20 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · video reference research and Claude brief for map/UI/VFX/animation polish; docs only · since 2026-10-22
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
+## 2026-10-22 — crnuch, local session: video research for visual polish (Codex)
+
+- **User's call:** prioritize map detail and UI, then VFX/animation; research actual video references and make the results available to Claude in GitHub.
+- Start at [docs/VISUAL_RESEARCH_START_HERE.md](docs/VISUAL_RESEARCH_START_HERE.md), then [docs/VIDEO_REFERENCES.md](docs/VIDEO_REFERENCES.md) and [docs/VISUAL_POLISH_BRIEF.md](docs/VISUAL_POLISH_BRIEF.md).
+- Initial library: ten videos with selected playback/frame inspections and timestamped observations. Not full end-to-end viewings; audio not directly listened to. Further research may extend this package.
+- Supplements the existing ART_REMODEL_BRIEF; preserves its staged workflow and active bug-fix claim. Research does not claim new Studio deficiencies without an inspection.
+- Documentation only; no gameplay/Studio changes or runtime tests. Original footage/assets remain with their creators.
+
 ## Open items
+- [ ] **Visual polish research handoff:** read docs/VISUAL_RESEARCH_START_HERE.md and VIDEO_REFERENCES.md; use VISUAL_POLISH_BRIEF.md to scope UI/map/VFX/animation work after reconciling active claims. Research only; implementation remains open.
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
