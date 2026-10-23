@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local Codex) · boss warning and hatch VFX source-to-reference specification · since 2026-10-23
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-23 — crnuch, local session: boss and hatch readability research (Codex)
+
+- Added docs/BOSS_AND_HATCH_READABILITY.md with V25 beam-layer and V26 attack-pose references; 26 sampled videos total.
+- October 23 Studio source shows warning extent grows from 45% to full in first 40% of windup; proposed fixed authoritative boundary plus interior countdown.
+- Identified shape semantics needing explicit visuals: line swept-circle endpoint coverage, cone near-body full-circle exception, Pull influence versus damage, and full-disc Ring. Preserve damage/timing; future runtime boundary tests specified, not executed.
+- Added selected boss pose brief and hatch layer-isolation/inspection-hold plan. Existing post-effect cleanup recognized; overlap risk labeled unverified pending caller-serialization review.
+- Docs only; no Studio changes, gameplay tuning or audio audition. Research claim released.
 
 ## 2026-10-23 — crnuch, local session: specific visual implementation tasks (Codex)
 
