@@ -4,7 +4,7 @@ Researched 2026-10-22 for Hatch a Lawyer. Start with [the implementation brief](
 
 ## Evidence and scope
 
-The user specifically requested actual video inspection and concrete references, then identified map detail, UI, VFX and animation as the priorities. These notes come from selected playback sections and visible frames/captions in ten YouTube videos. They are **sampled inspections, not ten complete end-to-end viewings**. Timestamps are navigation anchors for the inspected scenes; surrounding footage supplies motion context. YouTube titles can change.
+The user specifically requested actual video inspection and concrete references, then identified map detail, UI, VFX and animation as the priorities. These notes come from selected playback sections and visible frames/captions in twelve YouTube videos. They are **sampled inspections, not twelve complete end-to-end viewings**. Timestamps are navigation anchors for the inspected scenes; surrounding footage supplies motion context. YouTube titles can change.
 
 No direct listening/audio capture was available to the researcher: sound notes are based on the sound-design video's visible presentation/captions, not a verified assessment of any game's mix. No private game code was inspected. Observed presentation does not prove how a competitor implemented it or why its retention is high. Tutorial code/plugins were not installed, security-audited, or endorsed.
 
@@ -129,3 +129,25 @@ Videos show presentation. Verify engine details with Roblox's documentation:
 ## Reuse and further review
 
 Link to original footage; do not extract/re-upload creators' assets, soundtracks, models or full videos. No plugins or free-model packs were installed. Before implementation, Claude should reopen the relevant timestamps, inspect the current Studio state, and record before/after views. Any screenshot comparisons added later should retain source URL, timestamp and a clear distinction between external reference and our own game.
+
+## V11 — Fisch: detail clusters and a collection screen
+
+[ FULL GUIDE To FISCHFRIGHT 3 In Fisch Roblox! — Carbon Meister Plays](https://www.youtube.com/watch?v=QkOhdClVIn4). Listed four days old when inspected on 2026-10-22. Sampled scenes only; seasonal styling is not a claim about the entire game.
+
+- [6:06](https://www.youtube.com/watch?v=QkOhdClVIn4&t=366s): a daytime shoreline uses patterned sand, small stones, a large rock/wall mass, a tree trunk and a short rail. Distant water/haze separates the background. Detail occurs at different scales.
+- [12:13](https://www.youtube.com/watch?v=QkOhdClVIn4&t=733s): the Bestiary has a location list at left, a central card grid, selected-entry details at right, and a completion footer. Icons, silhouettes and unknown entries communicate different discovery states. Some labels appear small in this footage; do not inherit its exact typography.
+- [18:20](https://www.youtube.com/watch?v=QkOhdClVIn4&t=1100s): dock posts and wooden decking lead to sand; orange/purple lights hang above the crossing. Pumpkin, cauldron, character silhouette and cobweb occupy a nearby rock recess. Warm light and a large bright prop mark the transition.
+
+**Application:** Compose the pier entrance as one clear destination: recognizable sign/structure, a medium bench or legal-notice board, and a few briefcases/paper props underneath. Put overhead decoration above the walking lane. Borrow the hierarchy and placement, keeping our bright studded art direction rather than adopting Halloween scenery. For the lawyer collection, explore selected-card details beside a simpler grid on wide screens and a separate detail view on phones. Keep locked/unknown/owned states distinct without relying only on rarity colors.
+
+**Review task:** Before building props, take the approach view, eye-level interaction view and distant overview. The cluster should identify the destination in all three; small paper clutter alone cannot do that.
+
+## V12 — Pet Simulator 99: a rare hatch can overwhelm its subject
+
+[Hatching Titanic Soccerball Cat In Pet Simulator 99! (NO WAYYYY) — Sashamingon](https://www.youtube.com/watch?v=TeFsGfVab6Q). A 33-second clip, listed three months old on inspection.
+
+**Observed:** At [0:02](https://www.youtube.com/watch?v=TeFsGfVab6Q&t=2s), the world includes rainbow steps and a green soccer area, with currencies left and event goals right. At [0:17](https://www.youtube.com/watch?v=TeFsGfVab6Q&t=17s), a large luminous white/blue egg is centered. At [0:22](https://www.youtube.com/watch?v=TeFsGfVab6Q&t=22s), the sampled reveal frame is dominated by white light and outward colored streaks; a lower announcement identifies the Titanic Soccerball Cat. At [0:29](https://www.youtube.com/watch?v=TeFsGfVab6Q&t=29s), bright multicolor streaks remain visible. HUD and world stay present. These samples do not establish exact phase durations or the complete pet presentation.
+
+**Application:** Give our rare hatch separate anticipation, opening, character hold and confirmation stages, but keep the lawyer recognizable during the hold. Use a restrained background flare and a clear name/rarity line. Reserve the strongest burst for the transition, then remove it quickly enough to inspect the reward. This is a recommended sequence, not a measured reproduction of the video's timing.
+
+**Review task:** Check the peak-effect frame and the following character hold separately. Can a player identify the face, outfit, name and next action? If the silhouette disappears in white, reduce overlapping glow layers before adding more particles.
