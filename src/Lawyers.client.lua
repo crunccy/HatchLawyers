@@ -38,6 +38,7 @@ local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
 local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 local UIFonts = require(Shared:WaitForChild("UIFonts") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
+local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local PlaceLawyer = Remotes:WaitForChild("PlaceLawyer") :: RemoteFunction
 local OpenLawyerPicker = Remotes:WaitForChild("OpenLawyerPicker") :: RemoteEvent
@@ -603,7 +604,7 @@ local chipRow = make("Frame", { Position = UDim2.fromOffset(10, 38), Size = UDim
 	{ make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center }) })
 local sellAllNote = text({ Position = UDim2.fromOffset(10, 80), Size = UDim2.new(1, -20, 0, 24), FontFace = BODY, Text = "", TextColor3 = SOFT, ZIndex = 31, Parent = sellAll }, 18, 0)
 local sellAllGo, sellAllGoLabel = button({ Position = UDim2.new(0, 10, 1, -60), Size = UDim2.new(0.62, -15, 0, 50), BackgroundColor3 = RED, ZIndex = 31, Parent = sellAll }, "SELL", 22)
-local sellAllCancel, sellAllCancelLabel = button({ Position = UDim2.new(0.62, 5, 1, -60), Size = UDim2.new(0.38, -15, 0, 50), BackgroundColor3 = GRAY, ZIndex = 31, Parent = sellAll }, "CANCEL", 22)
+local sellAllCancel, sellAllCancelLabel = button({ Position = UDim2.new(0.62, 5, 1, -60), Size = UDim2.new(0.38, -15, 0, 50), BackgroundColor3 = Color3.fromRGB(90, 200, 255), ZIndex = 31, Parent = sellAll }, "CANCEL", 22)
 local _ = sellAllCancelLabel
 local sellRarities: { [number]: boolean } = { [1] = true, [2] = true } -- Common + Uncommon ticked to start
 local chips: { [number]: TextButton } = {}
@@ -646,9 +647,14 @@ local function flash(msg: string, color: Color3?)
 	end)
 end
 
+-- v3 (crnuch 2026-10-23: no gray): a disabled button is muted purple, not gray
+local function dimmed(c: Color3): Color3
+	local _ = c
+	return Color3.fromHex("6E5A96") -- muted purple (dimmed own colours came out brown / olive)
+end
 local function setButton(b: TextButton, l: TextLabel, label: string, color: Color3, enabled: boolean)
 	l.Text = label
-	b.BackgroundColor3 = if enabled then color else GRAY
+	b.BackgroundColor3 = if enabled then color else dimmed(color)
 	b.AutoButtonColor = enabled
 	b:SetAttribute("Enabled", enabled)
 end
@@ -951,6 +957,7 @@ local function doAssign(c: Client)
 	local ok, reason = AssignClient:InvokeServer(c.Id, selectedOffice)
 	busy = false
 	if ok then
+		Sfx.play("caseBegin", { gap = 0.35 })
 		flash(string.format("%s → Office %d!", c.Name or "Client", selectedOffice), GREEN)
 		focusClient = nil
 		-- one client per assignment (user's call): close, the Manager is the one who assigns everyone
@@ -1459,6 +1466,9 @@ unseatButton.Activated:Connect(function()
 		end
 	end
 	busy = false
+	if ok then
+		Sfx.play(if o.queued and isBusy(o) then "notify" else "lawyerUnequip", { gap = 0.3 })
+	end
 	flash(msg or (if ok then "Done!" else "Can't do that"), if ok then GREEN else RED)
 	render()
 end)
@@ -1483,6 +1493,7 @@ placeButton.Activated:Connect(function()
 	local ok, msg, queued = PlaceLawyer:InvokeServer(selectedOffice, pick.Uid)
 	busy = false
 	if ok then
+		Sfx.play(if queued then "notify" else "lawyerEquip", { gap = 0.3 })
 		flash(msg or string.format("%s → Office %d!", lawyerName(pick.Id, pick.Stars), selectedOffice), if queued then Color3.fromRGB(215, 160, 255) else GREEN)
 		benchPick = nil
 		if not queued then
@@ -1507,6 +1518,7 @@ bestButton.Activated:Connect(function()
 	busy = false
 	flash(msg or (if ok then "Done!" else "Can't do that"), if ok then GREEN else RED)
 	if ok then
+		Sfx.play("lawyerEquip", { gap = 0.3 })
 		benchPick = nil
 		previewKey = nil
 	end
@@ -1519,6 +1531,7 @@ local function doSell(uids: { string }, label: string)
 	local ok, coins, count = SellLawyers:InvokeServer(uids)
 	busy = false
 	if ok then
+		Sfx.play("coins", { gap = 0.4 })
 		flash(string.format("Sold %s for %s coins!", label, Formulas.formatCoins(coins :: number)), GOLD)
 		Effects.guiBurst(gui, UDim2.fromOffset(sellButton.AbsolutePosition.X + sellButton.AbsoluteSize.X / 2, sellButton.AbsolutePosition.Y), 260, GOLD, 1.2, 25)
 		benchPick = nil

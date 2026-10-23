@@ -45,8 +45,8 @@ local function hex(h: string): Color3
 end
 UIKit.Colors = {
 	Ink = hex("15131C"), -- v3: Skin.Ink
-	PanelTop = hex("3A3B43"), -- v3: charcoal like Skin.Panel (was purple-navy)
-	PanelBottom = hex("2E2F36"),
+	PanelTop = hex("43247A"), -- v3: deep purple like Skin.Panel (crnuch: "not gray")
+	PanelBottom = hex("321A5E"),
 	Gold = hex("FFC93C"),
 	Text = Color3.new(1, 1, 1),
 	TextSoft = hex("D6D2F5"),
@@ -476,7 +476,7 @@ function UIKit.skinPanel(frame: GuiObject)
 	g.Parent = frame
 	UIKit.corner(frame, if frame.AbsoluteSize.Y < 80 then 14 else 20)
 	UIKit.outline(frame, if frame.AbsoluteSize.X < 300 then 4 else 5)
-	UIKit.checker(frame, 0.97) -- v3: the body pattern is nearly gone (plain charcoal)
+	UIKit.checker(frame, 0.97) -- v3: the body pattern is nearly gone (plain deep purple)
 end
 
 -- tiled checker overlay under the element's children

@@ -7,7 +7,7 @@ Stills: `references/ui-v3/ref_*.jpg` (timestamps in the file names). Supersedes 
 where they disagree; the audit table there is still the list of screens.
 
 Also crnuch's calls the same day: **the fonts are the video UI's fonts, game-wide** ("none of your default AI fonts
-anymore"), and **no gold hover ring**.
+anymore"), **no gold hover ring**, and **no gray window backgrounds** (deep purple instead).
 
 ## 1. Fonts — one family
 
@@ -30,7 +30,7 @@ Fredoka One, Luckiest Guy and Builder Sans are retired. (Gotham is drawn as Mont
 
 | Element | Reference | Skin v3 |
 | --- | --- | --- |
-| Window body | plain dark charcoal, no pattern, thick ink outline | `Skin.Panel` 34353D, studs removed |
+| Window body | plain dark charcoal, no pattern, thick ink outline | `Skin.Panel` **deep purple 3A1F6B** (crnuch's call 2026-10-23: no gray), no pattern |
 | Header | per-screen colour (Shop yellow-orange, Upgrades purple), visible stud bricks, 3-4 wide diagonal light bands, white title left, red square X right | `Skin.stripes` on the header; icon bigger than the header, poking out of its top-left corner, tilted |
 | Card | saturated colour lit from the top-left, white sunburst behind the picture, soft diagonal bands, studs, light inner bevel | brighter 60° gradient, rays visible, `Skin.stripes`, twinkling sparkles |
 | Hero picture | big, outlined, overlapping the card edge | `Skin.breathe` |

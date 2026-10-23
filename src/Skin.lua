@@ -58,8 +58,8 @@ local function hex(h: string): Color3
 end
 Skin.Ink = hex("15131C")
 Skin.White = Color3.new(1, 1, 1)
-Skin.Panel = hex("34353D") -- v3: plain charcoal (the reference's body), was navy 2C2E3E
-Skin.PanelDeep = hex("25262C")
+Skin.Panel = hex("3A1F6B") -- v3: deep purple, plain (crnuch 2026-10-23: "not gray"; the reference's body is charcoal)
+Skin.PanelDeep = hex("26124A")
 Skin.TextSoft = hex("C9CCE0")
 Skin.Lime = hex("7DFF3C") -- highlighted words, progress fills, the "value" in an info line
 
@@ -430,7 +430,7 @@ export type Button = {
 	label: TextLabel,
 	setStyle: (string | Color3 | Swatch) -> (),
 	setText: (string) -> (),
-	-- v3: "default" | "disabled" (greyed, no bounce, a "no" wiggle on tap; reason shows as a toast) | "pending" (dim, "...")
+	-- v3: "default" | "disabled" (muted purple, no bounce, a "no" wiggle on tap; reason shows as a toast) | "pending" (dim, "...")
 	-- | "owned" (gold, no bounce, no glint)
 	setState: (string, string?) -> (),
 }
@@ -489,7 +489,7 @@ function Skin.button(props: { [string]: any }): Button
 		state, reason = st, why
 		btn:SetAttribute("SkinState", st)
 		if st == "disabled" then
-			paint(Skin.Palette.Grey)
+						paint(Skin.swatch(Color3.fromHex("6E5A96"))) -- muted purple (a dimmed own colour went brown / olive)
 			label.Text = textNow
 			label.TextTransparency = 0.15
 		elseif st == "owned" then -- earned, not broken: gold, still, no glint
@@ -579,12 +579,12 @@ function Skin.window(opts: { [string]: any }): Window
 	Skin.blockClicks(panel) -- a tap on empty window space must not fall through to the dim and close it
 	panel:SetAttribute("NoSkin", true) -- opt out of StarterPlayerScripts.UISkin (the old auto-skin)
 	dim:SetAttribute("NoSkin", true)
-	-- v3: the body is plain charcoal (the reference has no pattern there; v2's rings were busy behind the cards)
+	-- v3: the body is plain deep purple, no pattern (v2's rings were busy behind the cards)
 	-- inner rim (a thin lighter line inside the outline, like the reference)
 	make("Frame", {
 		Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1,
 		ZIndex = 1, Interactable = false, Parent = panel,
-	}, { corner(8), make("UIStroke", { Thickness = 2, Color = hex("4B4C56"), Transparency = 0.2 }) })
+	}, { corner(8), make("UIStroke", { Thickness = 2, Color = hex("6A44A8"), Transparency = 0.2 }) })
 
 	local header = make("Frame", {
 		Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, headerH), BackgroundColor3 = Skin.White,
