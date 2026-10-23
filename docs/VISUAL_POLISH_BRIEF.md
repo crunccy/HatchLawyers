@@ -6,7 +6,7 @@ Date: 2026-10-22. Status: research and proposed implementation plan; **nothing i
 
 The user identifies **map detail and UI as the biggest issues**, followed by a **VFX and animation upgrade**. They requested actual video references and asked that the research be made accessible in GitHub for Claude.
 
-Read [VIDEO_REFERENCES.md](VIDEO_REFERENCES.md) for ten sampled video references with timestamped observations. This brief's proposed treatments and timings are design recommendations, not measurements from those games.
+Read [VISUAL_RESEARCH_START_HERE.md](VISUAL_RESEARCH_START_HERE.md) for the complete reference library, including subsequent batches, and [VIDEO_REFERENCES.md](VIDEO_REFERENCES.md) for the initial references. This brief's proposed treatments and timings are design recommendations, not measurements from those games.
 
 ## Start here
 
