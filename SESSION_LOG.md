@@ -257,8 +257,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `Shared.MutationFx` was missing from the place when I exported at the start of this session (snapshot commit 3476176).
   Not touched here. Also live but not in git before today: VIP / promo / free-claim shop code (`VIPService`,
   `PromoAdmin`, `PromoPolicy`, `ClaimFreeShopReward`).
-- **Next (UI v3 rollout, one screen per session):** Rebirth, Firm stage-up, Big Case, Minigames, Daily Rewards,
-  Skills, Manager, Courtroom, Travel onto Skin v3 (StyleV3 only recolours them). Common's rarity colour is gray
+- **Later the same session (LIVE + checked on screen):** Travel menu rebuilt to crnuch's travel reference (teal striped
+  header, ZONES OPEN + license pills, picture cards from `art/travel/` uploaded by crnuch's Studio = `ArtAssets.Travel`,
+  boss + egg-price pills, TRAVEL / HERE / LOCKED; trip animations unchanged, crnuch's call; My Firm = the hub island
+  from above), Daily Rewards on Skin.window (striped day tiles, glinting claim). **Snapshot NOT refreshed after these
+  two** (Travel, Rewards, ArtAssets): re-export before editing them.
+- **Next (UI v3 rollout, one screen per session):** Rebirth (`Supreme.client`, read, not started), Firm stage-up, Big
+  Case, Minigames, Skills, Manager, Courtroom onto Skin v3 (StyleV3 only recolours them). Common's rarity colour is gray
   (`Config.RarityColors`) - crnuch to decide if it changes. Monetization ideas from the video (cheap Starter Pack,
   cheap 2x, prompt the smallest cash pack on a shortfall) need crnuch's yes.
 
