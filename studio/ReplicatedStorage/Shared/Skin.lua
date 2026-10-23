@@ -17,6 +17,11 @@
 -- the older screens until each one is rebuilt with this.)
 -- v2 (UI overhaul part 2, 2026-10-18, docs/UI_OVERHAUL.md): hudTile, toast, counter, banner, prompt; the world
 -- blurs while any Skin.window is open; ribbons are red by default. Motion numbers for all of them: Skin.Motion.
+-- v3 (2026-10-23, crnuch's reference video, docs/UI_STYLE_V3.md): ONE font family everywhere, Gotham Black (titles,
+-- buttons, numbers) + Gotham Bold (small print); repeating diagonal stripe bands on headers, cards and buttons
+-- (Skin.stripes); a plain charcoal body; brighter cards with visible sunbursts; coloured side tabs with a selected
+-- state; red "+66% more" value tags (Skin.tag); reward tiles (Skin.tile); a glint sweep on buy buttons
+-- (Skin.glint); button states (Button.setState: default / disabled / pending).
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -33,11 +38,13 @@ local function playSfx(name: string)
 end
 
 ------------------------------------------------------------------ tokens
+-- v3: the reference's UI is one geometric family with flat ends: Gotham Black for everything big, Gotham Bold for
+-- small print (crnuch's call 2026-10-23: no more Fredoka / Luckiest Guy / Builder Sans anywhere)
 Skin.Fonts = {
-	Title = Font.new("rbxasset://fonts/families/FredokaOne.json"),
-	Number = Font.new("rbxasset://fonts/families/LuckiestGuy.json"),
-	Body = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Bold),
-	Heavy = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy),
+	Title = Font.fromEnum(Enum.Font.GothamBlack),
+	Number = Font.fromEnum(Enum.Font.GothamBlack),
+	Body = Font.fromEnum(Enum.Font.GothamBold),
+	Heavy = Font.fromEnum(Enum.Font.GothamBlack),
 }
 Skin.Assets = {
 	Studs = "rbxassetid://114488299634202", -- tools/ui_textures.py
@@ -51,8 +58,8 @@ local function hex(h: string): Color3
 end
 Skin.Ink = hex("15131C")
 Skin.White = Color3.new(1, 1, 1)
-Skin.Panel = hex("2C2E3E")
-Skin.PanelDeep = hex("1D1E2A")
+Skin.Panel = hex("3A1F6B") -- v3: deep purple, plain (crnuch 2026-10-23: "not gray"; the reference's body is charcoal)
+Skin.PanelDeep = hex("26124A")
 Skin.TextSoft = hex("C9CCE0")
 Skin.Lime = hex("7DFF3C") -- highlighted words, progress fills, the "value" in an info line
 
@@ -185,6 +192,64 @@ function Skin.shineBands(parent: GuiObject, transparency: number?)
 	})
 end
 
+-- v3: the reference's repeating diagonal light bands ("/" leaning), evenly spaced across the whole surface. `bands`
+-- 2-4 (a NumberSequence takes 20 keypoints); `width` = each band's share of the width.
+function Skin.stripes(parent: GuiObject, transparency: number?, bands: number?, width: number?): Frame
+	local t = transparency or 0.8
+	local n = math.clamp(bands or 4, 1, 4)
+	local w = width or 0.07
+	local keys = { NumberSequenceKeypoint.new(0, 1) }
+	for i = 0, n - 1 do
+		local c = (i + 0.5) / n
+		table.insert(keys, NumberSequenceKeypoint.new(c - w / 2 - 0.004, 1))
+		table.insert(keys, NumberSequenceKeypoint.new(c - w / 2, t))
+		table.insert(keys, NumberSequenceKeypoint.new(c + w / 2, t))
+		table.insert(keys, NumberSequenceKeypoint.new(c + w / 2 + 0.004, 1))
+	end
+	table.insert(keys, NumberSequenceKeypoint.new(1, 1))
+	local c = parent:FindFirstChildOfClass("UICorner")
+	return make("Frame", {
+		Name = "Stripes", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Skin.White, BorderSizePixel = 0,
+		ZIndex = parent.ZIndex, Interactable = false, Parent = parent,
+	}, {
+		make("UIGradient", { Rotation = 30, Transparency = NumberSequence.new(keys) }),
+		if c then corner(c.CornerRadius.Offset) else nil :: any,
+	})
+end
+
+-- v3: a bright glint that sweeps across a button now and then (the reference's "glints on the buttons"). Only for
+-- the one action that matters on a screen (buy / claim), never on every button. Stops when the button goes away.
+function Skin.glint(gui: GuiObject, period: number?)
+	local c = gui:FindFirstChildOfClass("UICorner")
+	local holder = make("Frame", {
+		Name = "Glint", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ClipsDescendants = true,
+		ZIndex = gui.ZIndex + 1, Interactable = false, Parent = gui,
+	}, { if c then corner(c.CornerRadius.Offset) else nil :: any })
+	-- the reference's glint is a "//" pair: a wide bar and a thin one right behind it
+	local bar = make("Frame", {
+		Name = "Bar", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(-0.3, 0.5), Size = UDim2.new(0, 46, 2.6, 0),
+		Rotation = 24, BackgroundTransparency = 1, ZIndex = gui.ZIndex + 1, Parent = holder,
+	})
+	for _, b in { { 0, 22, 0.25 }, { 30, 8, 0.4 } } do
+		make("Frame", {
+			Position = UDim2.new(0, b[1], 0, 0), Size = UDim2.new(0, b[2], 1, 0), BackgroundColor3 = Skin.White,
+			BackgroundTransparency = b[3], BorderSizePixel = 0, ZIndex = gui.ZIndex + 1, Parent = bar,
+		})
+	end
+	task.spawn(function()
+		task.wait(math.random() * 1.5)
+		while holder.Parent do
+			local st = gui:GetAttribute("SkinState")
+			if gui.Visible and (st == nil or st == "default") and gui:FindFirstAncestorWhichIsA("LayerCollector") then
+				bar.Position = UDim2.fromScale(-0.3, 0.5)
+				tween(bar, 0.55, { Position = UDim2.fromScale(1.3, 0.5) }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+			end
+			task.wait(period or 2.6)
+		end
+	end)
+	return holder
+end
+
 ------------------------------------------------------------------ motion
 -- grow on hover, squish on press, spring back on release. Returns the UIScale it drives.
 -- Makes a window panel catch taps on its empty space. A Frame doesn't stop a click, even with Active = true: the
@@ -197,6 +262,36 @@ function Skin.blockClicks(panel: GuiObject): TextButton
 	})
 end
 
+-- v3: a click sends a white ring out from where you pressed, plus a few sparkle dots (the reference's buy bars)
+function Skin.ripple(button: GuiObject, at: Vector2?)
+	local abs = button.AbsoluteSize
+	local p = if at then at - button.AbsolutePosition else abs / 2
+	-- where you pressed, as a fraction of the button (works under any UIScale)
+	local fx, fy = math.clamp(p.X / math.max(abs.X, 1), 0, 1), math.clamp(p.Y / math.max(abs.Y, 1), 0, 1)
+	local z = button.ZIndex + 6
+	local ring = make("Frame", {
+		Name = "Ripple", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(fx, fy),
+		Size = UDim2.fromOffset(10, 10), BackgroundTransparency = 1, ZIndex = z, Interactable = false, Parent = button,
+	}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), make("UIStroke", { Thickness = 3, Color = Skin.White, Transparency = 0.1 }) })
+	local st = ring:FindFirstChildOfClass("UIStroke") :: UIStroke
+	tween(ring, 0.42, { Size = UDim2.fromOffset(70, 70) }, Enum.EasingStyle.Quad)
+	tween(st, 0.42, { Transparency = 1 }, Enum.EasingStyle.Quad)
+	for i = 1, 3 do
+		local dot = make("Frame", {
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(fx, fy), Size = UDim2.fromOffset(6, 6),
+			BackgroundColor3 = Skin.White, BorderSizePixel = 0, ZIndex = z, Interactable = false, Parent = button,
+		}, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
+		local a = math.rad(i * 120 + math.random(-30, 30))
+		tween(dot, 0.4, {
+			Position = UDim2.new(fx, math.cos(a) * 34, fy, math.sin(a) * 26), BackgroundTransparency = 1,
+			Size = UDim2.fromOffset(2, 2),
+		})
+		task.delay(0.42, dot.Destroy, dot)
+	end
+	task.delay(0.44, ring.Destroy, ring)
+end
+
+-- hover: grow (crnuch's call 2026-10-23: no gold hover ring); press: squish + ripple; disabled: a "no" wiggle
 function Skin.pressable(button: GuiButton, hoverScale: number?): UIScale
 	local scale = button:FindFirstChild("PressScale") :: UIScale?
 	if not scale then
@@ -205,8 +300,15 @@ function Skin.pressable(button: GuiButton, hoverScale: number?): UIScale
 	local s = scale :: UIScale
 	local grow = hoverScale or 1.06
 	local over = false
+	local function disabled(): boolean
+		local st = button:GetAttribute("SkinState")
+		return st == "disabled" or st == "pending" or st == "owned"
+	end
 	button.MouseEnter:Connect(function()
 		over = true
+		if disabled() then
+			return
+		end
 		tween(s, 0.18, { Scale = grow }, Enum.EasingStyle.Back)
 	end)
 	button.MouseLeave:Connect(function()
@@ -214,19 +316,91 @@ function Skin.pressable(button: GuiButton, hoverScale: number?): UIScale
 		tween(s, 0.2, { Scale = 1 }, Enum.EasingStyle.Back)
 	end)
 	button.MouseButton1Down:Connect(function()
+		if disabled() then
+			return
+		end
 		tween(s, 0.06, { Scale = 0.9 })
 	end)
 	button.MouseButton1Up:Connect(function()
-		tween(s, 0.28, { Scale = if over then grow else 1 }, Enum.EasingStyle.Back)
+		tween(s, 0.28, { Scale = if over and not disabled() then grow else 1 }, Enum.EasingStyle.Back)
 	end)
-	button.Activated:Connect(function()
+	button.Activated:Connect(function(input: InputObject?)
+		if disabled() then
+			-- a "no" wiggle instead of the squish
+			for _, r in { -5, 5, -3, 0 } do
+				tween(button, 0.05, { Rotation = r })
+				task.wait(0.05)
+			end
+			return
+		end
+		local at = if input and input.Position then Vector2.new(input.Position.X, input.Position.Y) else nil
+		if button:GetAttribute("NoRipple") ~= true then
+			Skin.ripple(button, at)
+		end
 		-- touch / gamepad: no hover events, so give the squish here too
 		if not over then
 			s.Scale = 0.9
 			tween(s, 0.28, { Scale = 1 }, Enum.EasingStyle.Back)
 		end
+		-- a click that opens a window covers the button, so MouseLeave never comes: drop the hover size once the
+		-- pointer isn't on it any more (a HUD tile stayed big next to the wide Shop tile, 2026-10-23)
+		task.delay(0.35, function()
+			if button.Parent then
+				over = false
+				tween(s, 0.2, { Scale = 1 }, Enum.EasingStyle.Quad)
+			end
+		end)
 	end)
 	return s
+end
+
+-- v3 idle life: hero pictures BREATHE (a slow tilt + a small swell) and sunbursts TURN, like the reference's shop
+-- icons. One RenderStepped loop for everything; things on a hidden screen are skipped.
+type Living = { gui: GuiObject, kind: string, amp: number, rate: number, phase: number, scale: UIScale?, base: number }
+local living: { Living } = {}
+local livingConn: RBXScriptConnection? = nil
+local function onScreen(g: GuiObject): boolean
+	local lc = g:FindFirstAncestorWhichIsA("LayerCollector")
+	return g.Visible and lc ~= nil and (not lc:IsA("ScreenGui") or (lc :: ScreenGui).Enabled)
+end
+local function startLiving()
+	if livingConn then
+		return
+	end
+	livingConn = RunService.RenderStepped:Connect(function()
+		local t = os.clock()
+		for i = #living, 1, -1 do
+			local l = living[i]
+			if not l.gui.Parent then
+				table.remove(living, i)
+			elseif onScreen(l.gui) then
+				if l.kind == "spin" then
+					l.gui.Rotation = (t * l.rate + l.phase) % 360
+				else
+					local w = t * l.rate * math.pi * 2 + l.phase
+					l.gui.Rotation = l.base + math.sin(w) * l.amp
+					if l.scale then
+						l.scale.Scale = 1 + 0.045 * math.sin(w * 2)
+					end
+				end
+			end
+		end
+	end)
+end
+-- amp = tilt degrees (5), rate = cycles per second (0.45)
+function Skin.breathe(gui: GuiObject, amp: number?, rate: number?)
+	local sc = gui:FindFirstChild("BreatheScale") :: UIScale?
+	if not sc then
+		sc = make("UIScale", { Name = "BreatheScale", Parent = gui })
+	end
+	table.insert(living, { gui = gui, kind = "breathe", amp = amp or 5, rate = rate or 0.45, phase = math.random() * 6,
+		scale = sc, base = gui.Rotation })
+	startLiving()
+end
+-- degPerSec (12)
+function Skin.spin(gui: GuiObject, degPerSec: number?)
+	table.insert(living, { gui = gui, kind = "spin", amp = 0, rate = degPerSec or 12, phase = math.random() * 360, base = 0 })
+	startLiving()
 end
 
 -- pop something into view (rewards, new cards)
@@ -259,7 +433,15 @@ function Skin.countTo(label: TextLabel, from: number, to: number, fmt: (number) 
 end
 
 ------------------------------------------------------------------ buttons
-export type Button = { button: TextButton, label: TextLabel, setStyle: (string | Color3 | Swatch) -> (), setText: (string) -> () }
+export type Button = {
+	button: TextButton,
+	label: TextLabel,
+	setStyle: (string | Color3 | Swatch) -> (),
+	setText: (string) -> (),
+	-- v3: "default" | "disabled" (muted purple, no bounce, a "no" wiggle on tap; reason shows as a toast) | "pending" (dim, "...")
+	-- | "owned" (gold, no bounce, no glint)
+	setState: (string, string?) -> (),
+}
 
 -- a chunky button: gradient fill, gloss, dark lip, ink outline + a coloured inner border, stroked label
 function Skin.button(props: { [string]: any }): Button
@@ -284,13 +466,19 @@ function Skin.button(props: { [string]: any }): Button
 		Skin.studs(btn, 0.88, nil, 24)
 	end
 	Skin.gloss(btn, 0.14) -- (user: "a little too shiny": was 0.32)
+	if props.Stripes ~= false then
+		Skin.stripes(btn, 0.82, 3, 0.08) -- v3: the reference's diagonal bands on every button
+	end
+	if props.Glint then
+		Skin.glint(btn) -- v3: the screen's one big action (buy / claim)
+	end
 	local label = text({
 		Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.46),
 		Size = UDim2.new(1, -12, 0.78, 0), Text = props.Text or "", FontFace = props.Font or Skin.Fonts.Title,
 		ZIndex = btn.ZIndex + 1, Parent = btn,
 	}, props.TextSize or 30, props.TextStroke)
-	local function setStyle(style: string | Color3 | Swatch)
-		local s = Skin.swatch(style)
+	local styleNow: Swatch = sw
+	local function paint(s: Swatch)
 		grad.Color = ColorSequence.new({
 			ColorSequenceKeypoint.new(0, s.light), ColorSequenceKeypoint.new(0.45, s.base), ColorSequenceKeypoint.new(1, s.base:Lerp(s.dark, 0.35)),
 		})
@@ -298,17 +486,54 @@ function Skin.button(props: { [string]: any }): Button
 		lip.BackgroundColor3 = s.dark
 		lip.BackgroundTransparency = 0.25
 	end
-	setStyle(sw)
+	local state, reason, textNow = "default", nil :: string?, props.Text or ""
+	local function setStyle(style: string | Color3 | Swatch)
+		styleNow = Skin.swatch(style)
+		if state == "default" then
+			paint(styleNow)
+		end
+	end
+	local function setState(st: string, why: string?)
+		state, reason = st, why
+		btn:SetAttribute("SkinState", st)
+		if st == "disabled" then
+						paint(Skin.swatch(Color3.fromHex("6E5A96"))) -- muted purple (a dimmed own colour went brown / olive)
+			label.Text = textNow
+			label.TextTransparency = 0.15
+		elseif st == "owned" then -- earned, not broken: gold, still, no glint
+			paint(Skin.Palette.Gold)
+			label.Text = textNow
+			label.TextTransparency = 0
+		elseif st == "pending" then
+			paint(styleNow)
+			label.Text = "..."
+			label.TextTransparency = 0.3
+		else
+			paint(styleNow)
+			label.Text = textNow
+			label.TextTransparency = 0
+		end
+	end
+	paint(sw)
 	if props.Pressable ~= false then
 		Skin.pressable(btn)
 	end
+	btn.Activated:Connect(function()
+		if state == "disabled" and reason then
+			Skin.toast({ Text = reason, Hold = 2 })
+		end
+	end)
 	return {
 		button = btn,
 		label = label,
 		setStyle = setStyle,
 		setText = function(t: string)
-			label.Text = t
+			textNow = t
+			if state ~= "pending" then
+				label.Text = t
+			end
 		end,
+		setState = setState,
 	}
 end
 
@@ -350,6 +575,10 @@ function Skin.window(opts: { [string]: any }): Window
 		IgnoreGuiInset = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = player:WaitForChild("PlayerGui"),
 	})
 	gui:SetAttribute("SkinBuilt", true) -- StarterPlayerScripts.UISkin (old auto-skin) must leave these screens alone
+	-- (a script that closes the window by setting Enabled still gives the chat box back)
+	gui:GetPropertyChangedSignal("Enabled"):Connect(function()
+		Skin.holdChat(gui, gui.Enabled)
+	end)
 	local dim = make("TextButton", {
 		Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
 		Text = "", AutoButtonColor = false, BorderSizePixel = 0, Parent = gui,
@@ -362,12 +591,12 @@ function Skin.window(opts: { [string]: any }): Window
 	Skin.blockClicks(panel) -- a tap on empty window space must not fall through to the dim and close it
 	panel:SetAttribute("NoSkin", true) -- opt out of StarterPlayerScripts.UISkin (the old auto-skin)
 	dim:SetAttribute("NoSkin", true)
-	Skin.studs(panel, 0.93, nil, 30)
+	-- v3: the body is plain deep purple, no pattern (v2's rings were busy behind the cards)
 	-- inner rim (a thin lighter line inside the outline, like the reference)
 	make("Frame", {
 		Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1,
 		ZIndex = 1, Interactable = false, Parent = panel,
-	}, { corner(8), make("UIStroke", { Thickness = 2, Color = hex("4A4D66"), Transparency = 0.2 }) })
+	}, { corner(8), make("UIStroke", { Thickness = 2, Color = hex("6A44A8"), Transparency = 0.2 }) })
 
 	local header = make("Frame", {
 		Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, headerH), BackgroundColor3 = Skin.White,
@@ -379,8 +608,8 @@ function Skin.window(opts: { [string]: any }): Window
 		}) }),
 		make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
 	})
-	Skin.studs(header, 0.86, nil, 26)
-	Skin.shineBands(header, 0.84)
+	Skin.studs(header, 0.8, nil, 26)
+	Skin.stripes(header, 0.74, 4, 0.06) -- v3: the reference header's wide diagonal light bands
 	-- ink divider under the header
 	make("Frame", {
 		Name = "Divider", Position = UDim2.new(0, 0, 0, headerH + 4), Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = Skin.Ink,
@@ -388,18 +617,20 @@ function Skin.window(opts: { [string]: any }): Window
 	})
 	local iconW = 0
 	if opts.Icon then
-		iconW = headerH - 8
-		make("ImageLabel", {
-			Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = UDim2.fromOffset(iconW, iconW),
-			BackgroundTransparency = 1, Image = opts.Icon, ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = header,
+		-- v3: the icon is bigger than the header and pokes out over its top-left corner (the reference's shop bag)
+		iconW = headerH + 18
+		local ic = make("ImageLabel", {
+			Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 2, 0.5, -8), Size = UDim2.fromOffset(iconW, iconW),
+			Rotation = -6, BackgroundTransparency = 1, Image = opts.Icon, ScaleType = Enum.ScaleType.Fit, ZIndex = 5, Parent = header,
 		})
-		iconW += 10
+		Skin.breathe(ic, 3, 0.3)
+		iconW -= 8
 	end
 	local title = text({
 		Name = "Title", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 22 + iconW, 0.5, -1),
-		Size = UDim2.new(0.62, 0, 0, headerH - 18), Text = opts.Title or "", TextXAlignment = Enum.TextXAlignment.Left,
+		Size = UDim2.new(0.62, 0, 0, headerH - 22), Text = opts.Title or "", TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 3, Parent = header,
-	}, 60, 5)
+	}, 54, 5)
 	local close = Skin.closeButton(header, headerH - 14, 4)
 
 	local body = make("Frame", {
@@ -407,18 +638,18 @@ function Skin.window(opts: { [string]: any }): Window
 		BackgroundTransparency = 1, ZIndex = 2, Parent = panel,
 	})
 	-- shortcut dock beside the window: its own dark studded panel so whatever HUD sits behind it never shows through
+	-- v3: the tabs float beside the window as their own coloured blocks (no dock panel), like the reference's
+	-- PACKS / PASSES / UPGRADES / CURRENCY
 	local sideRail = make("Frame", {
-		Name = "SideRail", AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(1, 12, 0, headerH + 10),
-		Size = UDim2.fromOffset(132, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Skin.Panel,
+		Name = "SideRail", AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(1, 10, 0, headerH + 14),
+		Size = UDim2.fromOffset(176, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1,
 		Visible = false, ZIndex = 1, Parent = panel,
-	}, { corner(10), stroke(5) })
-	Skin.studs(sideRail, 0.93, nil, 30)
+	})
 	make("Frame", {
-		Name = "List", Size = UDim2.fromOffset(132, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1,
+		Name = "List", Size = UDim2.fromOffset(176, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1,
 		ZIndex = 2, Parent = sideRail,
 	}, {
-		make("UIListLayout", { Padding = UDim.new(0, 2), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center }),
-		make("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8) }),
+		make("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Left }),
 	})
 
 	local function fit(): number
@@ -438,6 +669,7 @@ function Skin.window(opts: { [string]: any }): Window
 		gui.Enabled = true
 		playSfx("open")
 		Skin.blurFor(gui)
+		Skin.holdChat(gui, true)
 		dim.BackgroundTransparency = 1
 		tween(dim, 0.2, { BackgroundTransparency = 0.35 })
 		scale.Scale = 0.7 * fit()
@@ -455,6 +687,7 @@ function Skin.window(opts: { [string]: any }): Window
 		local t = tween(scale, 0.14, { Scale = 0.75 * fit() }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
 		t.Completed:Wait()
 		gui.Enabled = false
+		Skin.holdChat(gui, false)
 		busy = false
 		for _, h in closeHandlers do
 			task.spawn(h)
@@ -497,14 +730,18 @@ function Skin.scroller(parent: GuiObject, props: { [string]: any }?): ScrollingF
 	})
 end
 
--- "-- TITLE --" section header
+-- "~Cash~" section header (v3: the reference's small white title between the card groups; `color` tints its stroke)
 function Skin.section(parent: GuiObject, title: string, color: string | Color3 | Swatch, order: number): TextLabel
 	local sw = Skin.swatch(color)
 	local l = text({
-		Name = "Section_" .. title, Size = UDim2.new(1, 0, 0, 50), LayoutOrder = order,
-		Text = "-- " .. string.upper(title) .. " --", TextColor3 = sw.light:Lerp(sw.base, 0.35), FontFace = Skin.Fonts.Title,
+		Name = "Section_" .. title, Size = UDim2.new(1, 0, 0, 40), LayoutOrder = order,
+		Text = "~" .. title .. "~", TextColor3 = Skin.White, FontFace = Skin.Fonts.Title,
 		ZIndex = parent.ZIndex + 1, Parent = parent,
-	}, 44, 4)
+	}, 34, 4)
+	local st = l:FindFirstChildOfClass("UIStroke")
+	if st then
+		st.Color = sw.dark:Lerp(Skin.Ink, 0.5)
+	end
 	return l
 end
 
@@ -530,23 +767,32 @@ function Skin.card(parent: GuiObject, opts: { [string]: any }): Frame
 		LayoutOrder = opts.LayoutOrder, BackgroundColor3 = Skin.White, ClipsDescendants = true, ZIndex = z, Parent = parent,
 	}, {
 		corner(8), stroke(4),
-		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, sw.base:Lerp(sw.dark, 0.35)), ColorSequenceKeypoint.new(0.45, sw.base),
-			ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.45)),
+		-- v3: brighter, lit from the top-left like the reference's cards (was dark at the top and bottom)
+		make("UIGradient", { Rotation = 60, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, sw.light:Lerp(sw.base, 0.3)), ColorSequenceKeypoint.new(0.5, sw.base),
+			ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.3)),
 		}) }),
 	})
 	local glowAt = opts.GlowAt or Vector2.new(0.5, 0.38)
-	make("ImageLabel", {
+	local rays = make("ImageLabel", {
 		Name = "Rays", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(glowAt.X, glowAt.Y),
 		Size = UDim2.fromScale(1.6, 1.6), SizeConstraint = Enum.SizeConstraint.RelativeXX, BackgroundTransparency = 1,
-		Image = Skin.Assets.Rays, ImageColor3 = sw.light, ImageTransparency = 0.74, ZIndex = z, Interactable = false, Parent = card,
+		Image = Skin.Assets.Rays, ImageColor3 = Skin.White, ImageTransparency = 0.72, ZIndex = z, Interactable = false, Parent = card,
 	})
+	if opts.Spin ~= false then
+		Skin.spin(rays, 10) -- v3: the sunburst turns slowly
+	end
 	make("ImageLabel", {
 		Name = "Glow", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(glowAt.X, glowAt.Y),
 		Size = UDim2.fromScale(1.05, 1.05), SizeConstraint = Enum.SizeConstraint.RelativeXX, BackgroundTransparency = 1,
-		Image = Skin.Assets.Glow, ImageColor3 = Skin.White, ImageTransparency = 0.66, ZIndex = z, Interactable = false, Parent = card,
+		Image = Skin.Assets.Glow, ImageColor3 = Skin.White, ImageTransparency = 0.6, ZIndex = z, Interactable = false, Parent = card,
 	})
-	Skin.studs(card, 0.9, nil, 26)
+	Skin.studs(card, 0.88, nil, 26)
+	Skin.stripes(card, 0.86, 3, 0.1) -- v3: the reference's soft diagonal light bands across every card
+	if opts.Twinkle ~= false then
+		Skin.sparkle(card, UDim2.fromScale(0.88, 0.14), 16, z + 1, math.random() * 2)
+		Skin.sparkle(card, UDim2.fromScale(0.1, 0.8), 12, z + 1, 1 + math.random() * 2)
+	end
 	make("Frame", {
 		Name = "Bevel", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1,
 		ZIndex = z + 1, Interactable = false, Parent = card,
@@ -569,21 +815,108 @@ function Skin.ribbon(parent: GuiObject, label: string, color: string | Color3 | 
 	return r
 end
 
--- a shortcut beside the window: big icon + stroked label, no box (the reference's Stars / Featured / Speed / Money)
+-- v3: a red value tag straddling a card's top edge ("+66% more", "BEST VALUE!") - tilted a little, white text
+function Skin.tag(parent: GuiObject, label: string, opts: { [string]: any }?): Frame
+	local o = opts or {}
+	local sw = Skin.swatch(o.Color or "Red")
+	local z = o.ZIndex or 20
+	local t = make("Frame", {
+		Name = "Tag", AnchorPoint = o.AnchorPoint or Vector2.new(0.5, 0.5), Position = o.Position or UDim2.new(0.5, 0, 0, 0),
+		Size = UDim2.fromOffset(o.Width or 150, o.Height or 32), AutomaticSize = Enum.AutomaticSize.X, Rotation = o.Rotation or -4,
+		BackgroundColor3 = Skin.White, ZIndex = z, Parent = parent,
+	}, {
+		corner(6), stroke(3),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(sw.light:Lerp(sw.base, 0.4), sw.base) }),
+		make("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }),
+	})
+	text({ Size = UDim2.fromScale(1, 1), Text = label, ZIndex = z + 1, Parent = t }, o.TextSize or 22, 3)
+	return t
+end
+
+-- v3: a square reward tile (what a pack gives): a light tinted square, its picture, and an amount on its foot
+-- ("x10k", "+1"). opts: Color, Image, Amount, Size (px), LayoutOrder, ZIndex.
+function Skin.tile(parent: GuiObject, opts: { [string]: any }): Frame
+	local sw = Skin.swatch(opts.Color or "Gold")
+	local px = opts.Size or 96
+	local z = opts.ZIndex or (parent.ZIndex + 1)
+	local f = make("Frame", {
+		Name = opts.Name or "Tile", Size = UDim2.fromOffset(px, px), LayoutOrder = opts.LayoutOrder,
+		BackgroundColor3 = Skin.White, ZIndex = z, Parent = parent,
+	}, {
+		corner(6), stroke(3),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(sw.light, sw.base) }),
+	})
+	Skin.stripes(f, 0.84, 2, 0.12)
+	local pic = make("ImageLabel", {
+		Name = "Picture", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.42), Size = UDim2.fromScale(0.78, 0.78),
+		BackgroundTransparency = 1, Image = opts.Image or "", ScaleType = Enum.ScaleType.Fit, ZIndex = z + 1, Parent = f,
+	})
+	if opts.Breathe ~= false then
+		Skin.breathe(pic, 4, 0.4)
+	end
+	text({ AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -2), Size = UDim2.new(1, -6, 0.3, 0),
+		Text = opts.Amount or "", ZIndex = z + 2, Parent = f }, math.floor(px * 0.24), 3)
+	return f
+end
+
+-- a shortcut tab beside the window. v3: its own coloured block (gradient, stripes, ink outline) with a small icon and
+-- a stroked label - the reference's PACKS / PASSES / UPGRADES. Skin.selectTab lights one and dims the rest.
 function Skin.sideTab(rail: GuiObject, opts: { [string]: any }): TextButton
 	rail.Visible = true
+	local sw = Skin.swatch(opts.Color or "Orange")
 	local b = make("TextButton", {
-		Name = "Tab_" .. (opts.Label or ""), Size = UDim2.fromOffset(118, 96), BackgroundTransparency = 1, Text = "",
-		LayoutOrder = opts.LayoutOrder, ZIndex = 3, Parent = rail:FindFirstChild("List") or rail,
+		Name = "Tab_" .. (opts.Label or ""), Size = UDim2.fromOffset(168, 62), BackgroundColor3 = Skin.White, Text = "",
+		AutoButtonColor = false, LayoutOrder = opts.LayoutOrder, ZIndex = 3, Parent = rail:FindFirstChild("List") or rail,
+	}, {
+		corner(8), stroke(4),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.5, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.35)),
+		}) }),
 	})
+	Skin.stripes(b, 0.78, 3, 0.09)
 	make("ImageLabel", {
-		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -2), Size = UDim2.fromOffset(78, 72),
-		BackgroundTransparency = 1, Image = opts.Icon or "", ScaleType = Enum.ScaleType.Fit, ZIndex = 3, Parent = b,
+		Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -6, 0.5, -2), Size = UDim2.fromOffset(60, 60),
+		BackgroundTransparency = 1, Image = opts.Icon or "", ScaleType = Enum.ScaleType.Fit, ZIndex = 5, Parent = b,
 	})
-	text({ AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -2), Size = UDim2.new(1, 0, 0, 30),
-		Text = opts.Label or "", ZIndex = 4, Parent = b }, 26, 3)
-	Skin.pressable(b, 1.1)
+	text({ AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 54, 0.5, 0), Size = UDim2.new(1, -60, 0, 34),
+		Text = string.upper(opts.Label or ""), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = b }, 24, 3)
+	make("Frame", { -- dims the tab when another one is selected
+		Name = "Dimmer", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Skin.Ink, BackgroundTransparency = 1,
+		ZIndex = 6, Interactable = false, Parent = b,
+	}, { corner(8) })
+	Skin.pressable(b, 1.06)
 	return b
+end
+function Skin.selectTab(rail: GuiObject, selected: GuiObject?)
+	for _, b in (rail:FindFirstChild("List") or rail):GetChildren() do
+		local d = b:FindFirstChild("Dimmer")
+		if d and d:IsA("Frame") then
+			local on = b == selected
+			tween(d, 0.15, { BackgroundTransparency = if on then 1 else 0.45 })
+		end
+	end
+end
+
+------------------------------------------------------------------ v3: Roblox's chat box steps aside for windows
+-- The chat window (top-left, ~475 x 175) sits over every ScreenGui and eats taps meant for a window under it (the
+-- LAWYERS panel's Office 1 couldn't be tapped, 2026-10-23). While any window holds it, the chat box is hidden; it
+-- comes back when the last one closes. Skin.window does this itself; hand-built windows call it on open / close.
+local chatHolders: { [any]: boolean } = {}
+local chatWas: boolean? = nil
+function Skin.holdChat(key: any, on: boolean)
+	chatHolders[key] = if on then true else nil
+	local cfg = game:GetService("TextChatService"):FindFirstChildOfClass("ChatWindowConfiguration")
+	if not cfg then
+		return
+	end
+	local any = next(chatHolders) ~= nil
+	if any and chatWas == nil then
+		chatWas = cfg.Enabled
+		cfg.Enabled = false
+	elseif not any and chatWas ~= nil then
+		cfg.Enabled = chatWas
+		chatWas = nil
+	end
 end
 
 ------------------------------------------------------------------ v2: world blur behind open windows
@@ -702,7 +1035,8 @@ end
 -- The reference's square HUD tile: gradient + studs, white inner rim, ink outline + lip, sparkle glints, the PNG
 -- icon overflowing the top, the label overlapping the bottom edge, a red badge top-right. Hover x1.08, press x0.9.
 -- opts: Name, Parent, Label, Icon (HudMenu.Icons key or id), Color (swatch / name / Color3), Size (px, 88),
--- LayoutOrder, Position, AnchorPoint.
+-- LayoutOrder, Position, AnchorPoint. v3: Width (px) > Size makes a WIDE tile (the Shop): big breathing icon on the
+-- left, a big label beside it, and a glint sweep - it should be the one that stands out.
 export type HudTile = {
 	holder: Frame,
 	button: TextButton,
@@ -715,10 +1049,12 @@ export type HudTile = {
 }
 function Skin.hudTile(opts: { [string]: any }): HudTile
 	local px = opts.Size or 88
+	local width = opts.Width or px
+	local wide = width > px
 	local sw = Skin.swatch(opts.Color or "Sky")
 	local name = opts.Name or "Tile"
 	local holder = make("Frame", {
-		Name = name, Size = UDim2.fromOffset(px, px), Position = opts.Position, AnchorPoint = opts.AnchorPoint,
+		Name = name, Size = UDim2.fromOffset(width, px), Position = opts.Position, AnchorPoint = opts.AnchorPoint,
 		BackgroundTransparency = 1, LayoutOrder = opts.LayoutOrder, Parent = opts.Parent,
 	})
 	holder:SetAttribute("NoSkin", true)
@@ -746,14 +1082,26 @@ function Skin.hudTile(opts: { [string]: any }): HudTile
 	Skin.sparkle(button, UDim2.fromScale(0.2, 0.22), math.floor(px * 0.17), 3, 0)
 	Skin.sparkle(button, UDim2.fromScale(0.84, 0.6), math.floor(px * 0.11), 3, 1.1)
 	local icon = make("ImageLabel", {
-		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.38), Size = UDim2.fromScale(1.08, 1.08),
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = if wide then UDim2.new(0, math.floor(px * 0.55), 0.42, 0) else UDim2.fromScale(0.5, 0.38),
+		Size = if wide then UDim2.fromOffset(math.floor(px * 1.25), math.floor(px * 1.25)) else UDim2.fromScale(1.08, 1.08),
 		BackgroundTransparency = 1, Image = Skin.icon(opts.Icon), ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Interactable = false, Parent = button,
 	})
 	local labelText = opts.Label or ""
-	local label = text({
-		Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, -3), Size = UDim2.new(1, 18, 0, math.floor(px * 0.34)),
-		Text = labelText, ZIndex = 6, Parent = button,
-	}, math.floor(px * 0.3), 3)
+	local label = if wide
+		then text({
+			Name = "Label", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, math.floor(px * 1.08), 0.5, 0),
+			Size = UDim2.new(1, -math.floor(px * 1.14), 0, math.floor(px * 0.56)), Text = string.upper(labelText), ZIndex = 6, Parent = button,
+		}, math.floor(px * 0.5), 4)
+		else text({
+			Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, -3), Size = UDim2.new(1, 18, 0, math.floor(px * 0.34)),
+			Text = labelText, ZIndex = 6, Parent = button,
+		}, math.floor(px * 0.3), 3)
+	if wide then
+		Skin.stripes(button, 0.8, 4, 0.06)
+		Skin.glint(button, 2.4)
+		Skin.breathe(icon, 6, 0.5)
+	end
 	-- red badge (a count or "!") top-right; the alert is the same red "!" (beside the badge if both show)
 	local function redDot(dotName: string): (Frame, TextLabel)
 		local d = make("Frame", {
@@ -847,15 +1195,18 @@ function Skin.toast(opts: { [string]: any }): Toast
 	})
 	frame:SetAttribute("NoSkin", true)
 	local fit = make("UIScale", { Parent = frame })
+	-- v3: the reference's announcement pill - sky gradient, ink outline, white rim, diagonal light bands
+	local pillSw = Skin.swatch(opts.Color or "Sky")
 	local band = make("Frame", {
 		Name = "Band", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(200, size + 24),
-		BackgroundColor3 = Skin.Ink, BackgroundTransparency = 0.45, BorderSizePixel = 0, ZIndex = 30, Interactable = false, Parent = frame,
+		BackgroundColor3 = Skin.White, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 30, Interactable = false, Parent = frame,
 	}, {
-		make("UICorner", { CornerRadius = UDim.new(1, 0) }),
-		make("UIGradient", { Transparency = NumberSequence.new({
-			NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.16, 0.2), NumberSequenceKeypoint.new(0.84, 0.2), NumberSequenceKeypoint.new(1, 1),
-		}) }),
+		make("UICorner", { CornerRadius = UDim.new(0, 10) }),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(pillSw.light, pillSw.base) }),
 	})
+	local bandStroke = make("UIStroke", { Thickness = 3, Color = pillSw.dark:Lerp(Skin.Ink, 0.4), Transparency = 1, Parent = band })
+	local bandStripes = Skin.stripes(band, 0.72, 4, 0.05)
+	bandStripes.BackgroundTransparency = 1
 	local row = make("Frame", {
 		Name = "Row", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0, 1),
 		AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1, ZIndex = 31, Parent = frame,
@@ -872,7 +1223,7 @@ function Skin.toast(opts: { [string]: any }): Toast
 		FontFace = Skin.Fonts.Title, TextSize = size, TextColor3 = Skin.White, RichText = true, Text = "", LayoutOrder = 2,
 		ZIndex = 32, Parent = row,
 	})
-	local labelStroke = make("UIStroke", { Thickness = 3, Color = Skin.Ink, LineJoinMode = Enum.LineJoinMode.Round, Parent = label })
+	local labelStroke = make("UIStroke", { Thickness = 3, Color = pillSw.dark:Lerp(Skin.Ink, 0.55), LineJoinMode = Enum.LineJoinMode.Round, Parent = label })
 	local pulse = make("UIScale", { Parent = row })
 
 	local alpha = make("NumberValue", { Value = 1 })
@@ -880,7 +1231,9 @@ function Skin.toast(opts: { [string]: any }): Toast
 		label.TextTransparency = a
 		labelStroke.Transparency = a
 		icon.ImageTransparency = a
-		band.BackgroundTransparency = 0.45 + 0.55 * a
+		band.BackgroundTransparency = a
+		bandStroke.Transparency = a
+		bandStripes.BackgroundTransparency = a
 	end
 	alpha.Changed:Connect(applyAlpha)
 	applyAlpha(1)
@@ -889,7 +1242,7 @@ function Skin.toast(opts: { [string]: any }): Toast
 		local cam = workspace.CurrentCamera
 		local vw = if cam then cam.ViewportSize.X else 1280
 		local natural = row.AbsoluteSize.X / math.max(fit.Scale * pulse.Scale, 0.01)
-		band.Size = UDim2.fromOffset(natural + 90, size + 24)
+		band.Size = UDim2.fromOffset(natural + 48, size + 22)
 		fit.Scale = math.clamp((vw * 0.94) / math.max(natural + 40, 1), 0.45, 1)
 	end
 	row:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()

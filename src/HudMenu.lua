@@ -61,6 +61,7 @@ local TILE_COLORS = { Daily = "Pink", Lawyers = "Purple", Shop = "Green", Suprem
 local entries: { [string]: Entry } = {}
 local added = Instance.new("BindableEvent")
 local column: Frame? = nil
+local topRow: Frame? = nil -- v3: wide tiles (the SHOP, crnuch 2026-10-23) sit above the 2-column grid
 
 function HudMenu.icon(name: string): string
 	return HudMenu.Icons[name] or name
@@ -76,19 +77,31 @@ local function getColumn(): Frame
 	gui.ResetOnSpawn = false
 	gui.DisplayOrder = 5
 	gui.Parent = playerGui
-	local frame = Skin.make("Frame", {
-		Name = "Column", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 18, 0.5, 0),
+	-- the menu: a row of WIDE tiles on top (v3: the Shop), then the 2-column grid of square tiles ("Column")
+	local menu = Skin.make("Frame", {
+		Name = "Menu", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 18, 0.5, 0),
 		Size = UDim2.fromOffset(TILE * 2 + GAP_X, 10), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = gui,
+	}, {
+		Skin.make("UIListLayout", { Padding = UDim.new(0, GAP_Y), SortOrder = Enum.SortOrder.LayoutOrder }),
+		Skin.make("UIPadding", { PaddingTop = UDim.new(0, 16), PaddingBottom = UDim.new(0, 18) }),
+	})
+	menu:SetAttribute("NoSkin", true)
+	topRow = Skin.make("Frame", {
+		Name = "Top", Size = UDim2.fromOffset(TILE * 2 + GAP_X, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1,
+		LayoutOrder = 1, Parent = menu,
+	}, { Skin.make("UIListLayout", { Padding = UDim.new(0, GAP_Y), SortOrder = Enum.SortOrder.LayoutOrder }) })
+	local frame = Skin.make("Frame", {
+		Name = "Column", Size = UDim2.fromOffset(TILE * 2 + GAP_X, 10), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1,
+		LayoutOrder = 2, Parent = menu,
 	}, {
 		Skin.make("UIGridLayout", {
 			CellSize = UDim2.fromOffset(TILE, TILE), CellPadding = UDim2.fromOffset(GAP_X, GAP_Y),
 			FillDirection = Enum.FillDirection.Horizontal, FillDirectionMaxCells = 2, SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
-		Skin.make("UIPadding", { PaddingTop = UDim.new(0, 16), PaddingBottom = UDim.new(0, 18) }),
 	})
 	frame:SetAttribute("NoSkin", true)
 	-- phones: the whole menu shrinks with the screen height
-	local scale = Skin.make("UIScale", { Parent = frame })
+	local scale = Skin.make("UIScale", { Parent = menu })
 	local function fit()
 		local camera = workspace.CurrentCamera
 		local h = if camera then camera.ViewportSize.Y else 720
@@ -102,14 +115,21 @@ local function getColumn(): Frame
 	return frame
 end
 
+-- names whose tile is WIDE (two columns) and sits on top, above the grid (crnuch 2026-10-23: "the shop button double
+-- the width, at the top, over the other ones - stand out more")
+local WIDE = { Shop = true }
+
 -- opts: name, label, icon (HudMenu.Icons key or an image id), color, order
 function HudMenu.button(opts: { name: string, label: string, icon: string, color: Color3, order: number }): Entry
 	local existing = entries[opts.name]
 	if existing then
 		return existing
 	end
+	local grid = getColumn()
+	local wide = WIDE[opts.name] == true
 	local tile = Skin.hudTile({
-		Name = opts.name, Parent = getColumn(), Size = TILE, LayoutOrder = opts.order,
+		Name = opts.name, Parent = if wide then topRow else grid, Size = TILE, LayoutOrder = opts.order,
+		Width = if wide then TILE * 2 + GAP_X else nil,
 		Color = TILE_COLORS[opts.name] or opts.color,
 		Icon = HudMenu.icon(opts.icon),
 		Label = string.upper(string.sub(opts.label, 1, 1)) .. string.lower(string.sub(opts.label, 2)),

@@ -1,28 +1,22 @@
 --!strict
--- LAWYERS panel v2 (user's lawyer-management overhaul, 2026-10-09): ONE place to run the firm's lawyers.
--- Wording is EQUIP / UNEQUIP everywhere (user's call: easier for kids than seat / unseat / place).
--- Styled like the Shop / Lawyer Merger (purple striped header, dark studded panel, chunky outlined buttons).
---   top     OFFICE SLOTS bar: every office as a card - its lawyer, and a status pill:
---           FREE (green) · ON A CASE m:ss with a progress fill (orange) · CLIENT ARRIVING · LEAVING / SWAP
---           AFTER CASE (purple, a queued change) · EMPTY (grey). Tap a card to select that office.
---   left    the selected office: the lawyer in 3D, rarity, Earns xN, live status, and
---           UPGRADE OFFICE (Remotes.TrainLawyer) · SKILLS (opens StarterPlayerScripts.Skills for this office) ·
---           UNEQUIP (Remotes.PlaceLawyer(office, nil); on a busy office it is QUEUED: "UNEQUIP AFTER CASE",
---           cancel with Remotes.CancelLawyerChange)
---   right   CLIENTS tab: the waiting room (player attribute WaitingClients) - ASSIGN sends a client to the
---           selected office (Remotes.AssignClient). After one assignment the panel closes (user's call: one
---           client per assignment; assigning everyone is the Manager's perk).
---           EQUIP tab (internally "Bench"): every lawyer you own - EQUIP IN OFFICE N / EQUIP AFTER THIS CASE
---           (Remotes.PlaceLawyer, queued for a busy office) and EQUIP BEST (Remotes.PlaceLawyer("best"): the
---           strongest lawyers into every office). No merging here (user's call 2026-10-11): a "3x" tag and the info
---           line send players to the Lawyer Merger machine (StarterPlayerScripts.Merger).
--- Opened by: the LAWYERS button (left edge), an empty office's Place Lawyer prompt (Remotes.OpenLawyerPicker),
--- a waiting client's [E] Assign Client prompt (StarterPlayerScripts.AssignClients), the hatch screen's
--- equip button - all through the local ReplicatedStorage.LawyersUI bindable: Fire(office) or
--- Fire({ office = n?, client = waitingId?, tab = "Clients" | "Bench" }).
+-- LAWYERS panel v3 (2026-10-23, crnuch: "the lawyer ui is quite confusing to navigate, there's a lot going on").
+-- ONE job per tab, in the UI v3 look (docs/UI_STYLE_V3.md: purple striped header, coloured side tabs, rarity cards):
+--   OFFICES     every office as a card - its lawyer, level, status (FREE / ON A CASE m:ss / CLIENT ARRIVING / SWAPS
+--               AFTER CASE / EMPTY) and ONE button: UPGRADE (Remotes.TrainLawyer) or, empty, EQUIP LAWYER (-> MY
+--               LAWYERS aimed at it). Footer: UPGRADE ALL OFFICES + EQUIP BEST. Tap an office's picture for its
+--               details pop-up: the lawyer big, UPGRADE + MAX, SKILLS (StarterPlayerScripts.Skills), UNEQUIP (queued on
+--               a busy office: "UNEQUIP AFTER CASE", CANCEL CHANGE = Remotes.CancelLawyerChange), SWAP LAWYER.
+--   MY LAWYERS  every lawyer you own as a rarity card; tap one and it shows on the right with EQUIP IN OFFICE N (< >
+--               picks the office; EQUIP AFTER THIS CASE on a busy one), SELL (Epic and up: tap twice) and LOCK. Footer:
+--               SELL ALL... (tick rarities) + EQUIP BEST. A "3x" tag points to the Mutation Machine.
+-- Wording is EQUIP / UNEQUIP everywhere (user's call: easier for kids than seat / unseat / place). No CLIENTS tab:
+-- clients walk straight to a free lawyer since v16 (the server's WaitingClients list is always empty).
+-- Opened by: the LAWYERS HUD tile, an empty office's Place Lawyer prompt (Remotes.OpenLawyerPicker), the hatch
+-- screen's equip button - all through the local ReplicatedStorage.LawyersUI bindable: Fire(office) or
+-- Fire({ office = n?, tab = "Offices" | "Bench" }) (an empty office opens MY LAWYERS aimed at it).
 -- The server checks everything (Server.CaseService / LawyerService). This only reads mirrored attributes:
---   Lawyers (JSON { Uid, Id, Stars, Skills, Office }), DeskCount, Desk<N>Lawyer / Stars / Level / Phase /
---   CaseStart / CaseEnd / ClientName / ClientTier / Queued / FreeSkillRolls / PendingSkill, WaitingClients.
+--   Lawyers (JSON { Uid, Id, Stars, Skills, Office, Locked }), DeskCount, Desk<N>Lawyer / Stars / Level / Phase /
+--   CaseStart / CaseEnd / ClientName / Queued / FreeSkillRolls / PendingSkill.
 -- Sets the local SelectedDesk attribute (Courtroom and Skills follow it).
 
 local HttpService = game:GetService("HttpService")
@@ -43,7 +37,6 @@ local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local PlaceLawyer = Remotes:WaitForChild("PlaceLawyer") :: RemoteFunction
 local OpenLawyerPicker = Remotes:WaitForChild("OpenLawyerPicker") :: RemoteEvent
 local MarkSkinsSeen = Remotes:WaitForChild("MarkSkinsSeen") :: RemoteEvent
-local AssignClient = Remotes:WaitForChild("AssignClient") :: RemoteFunction
 local TrainLawyer = Remotes:WaitForChild("TrainLawyer") :: RemoteFunction
 local CancelLawyerChange = Remotes:WaitForChild("CancelLawyerChange") :: RemoteFunction
 -- 2026-10-13: selling + locking (Server.LawyerService) and mutation colours (Shared.MutationLook)
@@ -467,9 +460,13 @@ local function lawyerViewport(parent: GuiObject, id: string, aspect: number, yaw
 	return vf, m
 end
 
------------------------------------------------------------------- layout
+------------------------------------------------------------------ layout (v3, 2026-10-23: two tabs, one job each)
+-- (two tables keep the script under Luau's 200-locals limit: P = the picked lawyer, D = the office details pop-up)
+local P: { [string]: any } = {}
+local D: { [string]: any } = {}
 local playerGui = player:WaitForChild("PlayerGui")
-local gui = make("ScreenGui", { Name = "Lawyers", ResetOnSpawn = false, DisplayOrder = 32, IgnoreGuiInset = true, Parent = playerGui })
+local gui = make("ScreenGui", { Name = "Lawyers", ResetOnSpawn = false, DisplayOrder = 32, IgnoreGuiInset = true,
+	ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = playerGui })
 local shade = make("TextButton", { Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Visible = false, Parent = gui })
 shade:SetAttribute("NoSkin", true)
 
@@ -478,7 +475,7 @@ local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
 local menuEntry = HudMenu.button({ name = "Lawyers", label = "LAWYERS", icon = "Lawyers", color = PURPLE, order = 2 })
 local openButton = menuEntry.button
 
--- the panel
+local RAIL_W = 186 -- the side tabs float outside the panel's right edge
 local panelScale = make("UIScale", {})
 local panel = make("Frame", {
 	Name = "Panel", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromOffset(W, H),
@@ -486,11 +483,9 @@ local panel = make("Frame", {
 }, { corner(10), stroke(6), panelScale })
 panel:SetAttribute("NoSkin", true)
 Skin.blockClicks(panel) -- (Active = true alone doesn't stop a tap on empty space reaching the Shade and closing it)
-studs(panel, 0.9)
--- header in the shared Skin look: top-lit colour strip, studs, two shine bands, gavel icon + title, red X tile
 local sw = Skin.swatch("Purple")
 make("Frame", { Name = "Rim", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, Parent = panel },
-	{ corner(8), make("UIStroke", { Thickness = 2, Color = Color3.fromHex("4A4D66"), Transparency = 0.2 }) })
+	{ corner(8), make("UIStroke", { Thickness = 2, Color = Color3.fromHex("6A44A8"), Transparency = 0.2 }) })
 local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 70), BackgroundColor3 = WHITE, ZIndex = 2, Parent = panel }, {
 	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
 		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
@@ -498,146 +493,167 @@ local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4
 	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
 })
 make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, ZIndex = 3, Parent = header })
-Skin.studs(header, 0.86, nil, 26)
-Skin.shineBands(header, 0.84)
-make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = UDim2.fromOffset(58, 58), BackgroundTransparency = 1,
-	Image = HudMenu.Icons.Lawyers, ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Parent = header })
-Skin.text({ Position = UDim2.fromOffset(80, 6), Size = UDim2.fromOffset(300, 58), FontFace = Skin.Fonts.Title, Text = "Lawyers",
-	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 54, 5)
-local countLabel = text({ Position = UDim2.fromOffset(330, 22), Size = UDim2.new(1, -440, 0, 32), Text = "", TextColor3 = Color3.fromRGB(255, 230, 120), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4, Parent = header }, 24)
+Skin.studs(header, 0.8, nil, 26)
+Skin.stripes(header, 0.74, 4, 0.06)
+local headerIcon = make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 2, 0.5, -8), Size = UDim2.fromOffset(88, 88), Rotation = -6, BackgroundTransparency = 1,
+	Image = HudMenu.Icons.Lawyers, ScaleType = Enum.ScaleType.Fit, ZIndex = 5, Parent = header })
+Skin.breathe(headerIcon, 3, 0.3)
+Skin.text({ Position = UDim2.fromOffset(92, 8), Size = UDim2.fromOffset(300, 54), FontFace = Skin.Fonts.Title, Text = "Lawyers",
+	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = header }, 50, 5)
+local countLabel = text({ Position = UDim2.fromOffset(330, 22), Size = UDim2.new(1, -440, 0, 30), Text = "", TextColor3 = Color3.fromRGB(255, 225, 90), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4, Parent = header }, 22)
 local closeButton = Skin.closeButton(header, 58, 4)
 
--- OFFICE SLOTS bar
-text({ Position = UDim2.fromOffset(22, 84), Size = UDim2.fromOffset(200, 22), Text = "YOUR OFFICES", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = panel }, 20)
-text({ Position = UDim2.fromOffset(200, 84), Size = UDim2.new(1, -460, 0, 22), FontFace = BODY, Text = "Tap an office to manage it", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = panel }, 18, 0)
+-- the two tabs, coloured blocks beside the panel (the Shop's look)
+local rail = make("Frame", { Name = "SideRail", Position = UDim2.new(1, 10, 0, 84), Size = UDim2.fromOffset(176, 0), AutomaticSize = Enum.AutomaticSize.Y,
+	BackgroundTransparency = 1, Parent = panel })
+make("Frame", { Name = "List", Size = UDim2.fromOffset(176, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = rail },
+	{ make("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }) })
+local tabButtons: { [string]: TextButton } = {
+	Offices = Skin.sideTab(rail, { Label = "Offices", Icon = HudMenu.Icons.Upgrades, Color = "Gold", LayoutOrder = 1 }),
+	Bench = Skin.sideTab(rail, { Label = "My lawyers", Icon = HudMenu.Icons.Lawyers, Color = "Purple", LayoutOrder = 2 }),
+}
+local benchTabLabel = tabButtons.Bench:FindFirstChildWhichIsA("TextLabel") :: TextLabel
+
+-- one line under the header that says what this tab is for (feedback pops over it)
+local infoText = text({ Position = UDim2.fromOffset(22, 82), Size = UDim2.new(1, -44, 0, 28), FontFace = BODY, Text = "", RichText = true,
+	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = panel }, 20, 0)
+small(infoText)
+local VIEW_Y, FOOT_H = 116, 62
+
+-- OFFICES: every office as a card with ONE button
+local officesView = make("Frame", { Name = "Offices", Position = UDim2.fromOffset(20, VIEW_Y), Size = UDim2.new(1, -40, 1, -VIEW_Y - FOOT_H - 16), BackgroundTransparency = 1, Parent = panel })
 local slotBar = make("ScrollingFrame", {
-	Position = UDim2.fromOffset(20, 110), Size = UDim2.new(1, -40, 0, 138), BackgroundColor3 = SLOT, BorderSizePixel = 0,
-	ScrollBarThickness = 6, ScrollingDirection = Enum.ScrollingDirection.X, AutomaticCanvasSize = Enum.AutomaticSize.X,
-	CanvasSize = UDim2.new(), ElasticBehavior = Enum.ElasticBehavior.Never, Parent = panel,
+	Name = "OfficeGrid", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 8,
+	AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), ScrollingDirection = Enum.ScrollingDirection.Y, Parent = officesView,
 }, {
-	corner(8), stroke(4),
-	make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }),
-	make("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }),
+	make("UIGridLayout", { CellSize = UDim2.fromOffset(206, 196), CellPadding = UDim2.fromOffset(10, 10), SortOrder = Enum.SortOrder.LayoutOrder }),
+	make("UIPadding", { PaddingTop = UDim.new(0, 6), PaddingLeft = UDim.new(0, 2), PaddingRight = UDim.new(0, 8), PaddingBottom = UDim.new(0, 6) }),
 })
 
--- UPGRADE ALL: every office with a lawyer, cheapest level first, while coins last (Remotes.TrainLawyer("all"))
-local allButton, allLabel = button({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -20, 0, 78), Size = UDim2.fromOffset(240, 30), BackgroundColor3 = GREEN, Parent = panel }, "UPGRADE ALL OFFICES", 18)
-
--- LEFT: the selected office
-local BODY_Y = 262
-local left = make("Frame", { Position = UDim2.fromOffset(20, BODY_Y), Size = UDim2.fromOffset(300, H - BODY_Y - 18), BackgroundColor3 = SLOT, Parent = panel }, { corner(8), stroke(4) })
-local preview = make("Frame", { Position = UDim2.fromOffset(8, 8), Size = UDim2.new(1, -16, 0, 116), BackgroundColor3 = WHITE, ClipsDescendants = true, Parent = left }, { corner(6), stroke(3) })
-local previewGradient = make("UIGradient", { Rotation = 90, Parent = preview })
-local viewport = make("ViewportFrame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Ambient = Color3.fromRGB(200, 200, 200), LightDirection = Vector3.new(-1, -1, -1), ZIndex = 2, Parent = preview })
-local iconHolder = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 2, Parent = preview })
-local emptyPlus = text({ AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(90, 90), Text = "+", FontFace = TITLE, ZIndex = 3, Visible = false, Parent = preview }, 90)
-local officeTag = text({ Position = UDim2.fromOffset(8, 6), Size = UDim2.fromOffset(150, 22), Text = "", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, Parent = preview }, 20)
-local starsLabel = text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 4), Size = UDim2.fromOffset(90, 26), Text = "", TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4, Parent = preview }, 24)
-local nameLabel = text({ Position = UDim2.fromOffset(10, 128), Size = UDim2.new(1, -20, 0, 30), Text = "", Parent = left }, 26)
-local rarityPill = make("Frame", { Position = UDim2.fromOffset(10, 162), Size = UDim2.fromOffset(104, 22), BackgroundColor3 = GRAY, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
-local rarityText = text({ Size = UDim2.fromScale(1, 1), Text = "", Parent = rarityPill }, 16)
-local earnLabel = text({ Position = UDim2.fromOffset(122, 162), Size = UDim2.new(1, -132, 0, 22), Text = "", TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Left, Parent = left }, 20)
-local statusLabel = small(text({ Position = UDim2.fromOffset(10, 190), Size = UDim2.new(1, -20, 0, 22), FontFace = BODY, Text = "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, Parent = left }, 18, 0))
-local statusBar = make("Frame", { Position = UDim2.fromOffset(10, 214), Size = UDim2.new(1, -20, 0, 10), BackgroundColor3 = Color3.fromRGB(20, 20, 30), Visible = false, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
-local statusFill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = ORANGE, BorderSizePixel = 0, Parent = statusBar }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
-local upgradeButton, upgradeLabel = button({ Position = UDim2.fromOffset(10, 232), Size = UDim2.new(0.62, -14, 0, 50), BackgroundColor3 = GREEN, Parent = left }, "UPGRADE", 20)
-upgradeLabel.TextWrapped = true
--- MAX: as many levels as you can afford for this office (economy pass 2026-10-09: a Supreme resets every office)
-local maxButton, maxLabel = button({ Position = UDim2.new(0.62, 2, 0, 232), Size = UDim2.new(0.38, -12, 0, 50), BackgroundColor3 = Color3.fromRGB(40, 170, 30), Parent = left }, "MAX", 20)
-maxLabel.TextWrapped = true
-local skillsButton, skillsLabel = button({ Position = UDim2.fromOffset(10, 290), Size = UDim2.new(0.5, -14, 0, 44), BackgroundColor3 = GOLD, Parent = left }, "SKILLS", 22)
-local skillsBang = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(24, 24), BackgroundColor3 = RED, Visible = false, ZIndex = 4, Parent = skillsButton }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2, WHITE) })
-text({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = TITLE, ZIndex = 5, Parent = skillsBang }, 18)
-local unseatButton, unseatLabel = button({ Position = UDim2.new(0.5, 4, 0, 290), Size = UDim2.new(0.5, -14, 0, 44), BackgroundColor3 = ORANGE, Parent = left }, "UNEQUIP", 20)
-unseatLabel.TextWrapped = true
-
--- RIGHT: tabs
-local RX = 336
-local right = make("Frame", { Position = UDim2.fromOffset(RX, BODY_Y), Size = UDim2.fromOffset(W - RX - 20, H - BODY_Y - 18), BackgroundTransparency = 1, Parent = panel })
-local tabButtons: { [string]: TextButton } = {}
-local tabLabels: { [string]: TextLabel } = {}
-for i, name in { "Clients", "Bench" } do
-	local b, l = button({ Position = UDim2.fromOffset((i - 1) * 186, 0), Size = UDim2.fromOffset(176, 42), BackgroundColor3 = if name == "Clients" then Color3.fromRGB(60, 160, 255) else PURPLE, Parent = right }, string.upper(name), 24)
-	tabButtons[name] = b
-	tabLabels[name] = l
-end
-if tabButtons.Clients then
-	tabButtons.Clients.Visible = false
-end
-if tabButtons.Bench then
-	tabButtons.Bench.Position = UDim2.fromOffset(0, 0)
-end
-local infoBar = make("Frame", { Position = UDim2.fromOffset(0, 50), Size = UDim2.new(1, 0, 0, 36), BackgroundColor3 = CARD, Parent = right }, { corner(6), stroke(3) })
-local infoText = text({ Position = UDim2.fromOffset(10, 3), Size = UDim2.new(1, -20, 1, -6), FontFace = BODY, Text = "", RichText = true, TextXAlignment = Enum.TextXAlignment.Left, Parent = infoBar }, 18, 0)
-local CONTENT_Y = 94
-local clientList = make("ScrollingFrame", {
-	Position = UDim2.fromOffset(0, CONTENT_Y), Size = UDim2.new(1, 0, 1, -CONTENT_Y), BackgroundColor3 = SLOT, BorderSizePixel = 0,
-	ScrollBarThickness = 8, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = right,
-}, {
-	corner(8), stroke(4),
-	make("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
-	make("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 14) }),
-})
-local benchFrame = make("Frame", { Position = UDim2.fromOffset(0, CONTENT_Y), Size = UDim2.new(1, 0, 1, -CONTENT_Y), BackgroundTransparency = 1, Visible = false, Parent = right })
+-- MY LAWYERS: the grid on the left, the picked lawyer and its buttons on the right
+local benchFrame = make("Frame", { Name = "MyLawyers", Position = UDim2.fromOffset(20, VIEW_Y), Size = UDim2.new(1, -40, 1, -VIEW_Y - FOOT_H - 16), BackgroundTransparency = 1, Visible = false, Parent = panel })
 local benchGrid = make("ScrollingFrame", {
-	Size = UDim2.new(1, 0, 1, -114), BackgroundColor3 = SLOT, BorderSizePixel = 0,
+	Size = UDim2.new(1, -316, 1, 0), BackgroundColor3 = Skin.PanelDeep, BorderSizePixel = 0,
 	ScrollBarThickness = 8, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = benchFrame,
 }, {
 	corner(8), stroke(4),
-	make("UIGridLayout", { CellSize = UDim2.fromOffset(100, 124), CellPadding = UDim2.fromOffset(8, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
+	make("UIGridLayout", { CellSize = UDim2.fromOffset(122, 150), CellPadding = UDim2.fromOffset(8, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
 	make("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }),
 })
-local placeButton, placeLabel = button({ Position = UDim2.new(0, 0, 1, -50), Size = UDim2.new(0.66, -6, 0, 50), BackgroundColor3 = GREEN, Parent = benchFrame }, "PICK A LAWYER", 22)
+local detail = make("Frame", { Name = "Picked", AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(1, 0), Size = UDim2.new(0, 304, 1, 0),
+	BackgroundColor3 = Skin.PanelDeep, Parent = benchFrame }, { corner(8), stroke(4) })
+P.pickPreview = make("Frame", { Position = UDim2.fromOffset(8, 8), Size = UDim2.new(1, -16, 0, 126), BackgroundColor3 = WHITE, ClipsDescendants = true, Parent = detail }, { corner(6), stroke(3) })
+P.pickGradient = make("UIGradient", { Rotation = 90, Parent = P.pickPreview })
+P.pickArt = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 2, Parent = P.pickPreview })
+P.pickTag = text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 4), Size = UDim2.fromOffset(110, 22), Text = "", TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4, Parent = P.pickPreview }, 20)
+P.pickName = text({ Position = UDim2.fromOffset(10, 140), Size = UDim2.new(1, -20, 0, 28), Text = "", TextColor3 = Color3.fromRGB(255, 225, 90), Parent = detail }, 26)
+P.pickRarity = make("Frame", { Position = UDim2.fromOffset(10, 172), Size = UDim2.fromOffset(110, 22), BackgroundColor3 = PURPLE, Parent = detail }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
+P.pickRarityText = text({ Size = UDim2.fromScale(1, 1), Text = "", Parent = P.pickRarity }, 16)
+P.pickEarn = text({ Position = UDim2.fromOffset(128, 172), Size = UDim2.new(1, -138, 0, 22), Text = "", TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Left, Parent = detail }, 20)
+P.pickNote = small(text({ Position = UDim2.fromOffset(10, 198), Size = UDim2.new(1, -20, 0, 40), FontFace = BODY, Text = "", RichText = true, TextColor3 = SOFT,
+	TextWrapped = true, Parent = detail }, 17, 0), true)
+-- which office EQUIP puts it in: < Office N >
+P.targetRow = make("Frame", { Position = UDim2.fromOffset(10, 242), Size = UDim2.new(1, -20, 0, 34), BackgroundTransparency = 1, Parent = detail })
+local prevTarget = button({ Size = UDim2.fromOffset(40, 34), BackgroundColor3 = PURPLE, Parent = P.targetRow }, "<", 22)
+local nextTarget = button({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(1, 0), Size = UDim2.fromOffset(40, 34), BackgroundColor3 = PURPLE, Parent = P.targetRow }, ">", 22)
+P.targetText = text({ Position = UDim2.fromOffset(46, 0), Size = UDim2.new(1, -92, 1, 0), Text = "", Parent = P.targetRow }, 20)
+local placeButton, placeLabel = button({ Position = UDim2.fromOffset(10, 282), Size = UDim2.new(1, -20, 0, 50), BackgroundColor3 = GREEN, Parent = detail }, "PICK A LAWYER", 22)
 placeLabel.TextWrapped = true
-local bestButton, bestLabel = button({ Position = UDim2.new(0.66, 6, 1, -50), Size = UDim2.new(0.34, -6, 0, 50), BackgroundColor3 = GOLD, Parent = benchFrame }, "EQUIP BEST", 22)
--- 2026-10-13: SELL the picked lawyer / LOCK it (never sold) / SELL ALL of some rarities (Server.LawyerService)
-local sellButton, sellLabel = button({ Position = UDim2.new(0, 0, 1, -106), Size = UDim2.new(0.42, -6, 0, 50), BackgroundColor3 = ORANGE, Parent = benchFrame }, "SELL", 20)
+Skin.glint(placeButton)
+local sellButton, sellLabel = button({ Position = UDim2.fromOffset(10, 340), Size = UDim2.new(0.62, -14, 0, 44), BackgroundColor3 = ORANGE, Parent = detail }, "SELL", 20)
 sellLabel.TextWrapped = true
-local lockButton, lockLabel = button({ Position = UDim2.new(0.42, 6, 1, -106), Size = UDim2.new(0.22, -12, 0, 50), BackgroundColor3 = GOLD, Parent = benchFrame }, "LOCK", 20)
-local sellAllButton, sellAllLabel = button({ Position = UDim2.new(0.64, 6, 1, -106), Size = UDim2.new(0.36, -6, 0, 50), BackgroundColor3 = RED, Parent = benchFrame }, "SELL ALL...", 20)
+local lockButton, lockLabel = button({ Position = UDim2.new(0.62, 2, 0, 340), Size = UDim2.new(0.38, -12, 0, 44), BackgroundColor3 = Color3.fromRGB(90, 200, 255), Parent = detail }, "LOCK", 20)
+P.pickEmpty = text({ AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, -40, 0, 80), FontFace = BODY,
+	Text = "Tap a lawyer to see it here", TextColor3 = SOFT, TextWrapped = true, ZIndex = 5, Parent = detail }, 22, 0)
+
+-- the footer: Offices = UPGRADE ALL + EQUIP BEST, My lawyers = SELL ALL + EQUIP BEST
+local footer = make("Frame", { Position = UDim2.new(0, 20, 1, -FOOT_H - 12), Size = UDim2.new(1, -40, 0, FOOT_H), BackgroundTransparency = 1, Parent = panel })
+local allButton, allLabel = button({ Size = UDim2.new(0.6, -6, 1, 0), BackgroundColor3 = GREEN, Parent = footer }, "UPGRADE ALL OFFICES", 26)
+Skin.glint(allButton)
+local sellAllButton, sellAllLabel = button({ Size = UDim2.new(0.6, -6, 1, 0), BackgroundColor3 = RED, Visible = false, Parent = footer }, "SELL ALL...", 26)
+local bestButton, bestLabel = button({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(1, 0), Size = UDim2.new(0.4, -6, 1, 0), BackgroundColor3 = GOLD, Parent = footer }, "EQUIP BEST", 26)
 
 -- the SELL ALL picker: tick rarities, see what it sells and for how much, SELL
-local sellAll = make("Frame", { Name = "SellAll", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -110), Size = UDim2.new(1, 0, 0, 176),
-	BackgroundColor3 = Color3.fromRGB(24, 22, 36), Visible = false, ZIndex = 30, Parent = benchFrame }, { corner(8), stroke(4) })
+local sellAll = make("Frame", { Name = "SellAll", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, -4), Size = UDim2.new(1, -316, 0, 176),
+	BackgroundColor3 = Skin.PanelDeep, Visible = false, ZIndex = 30, Parent = benchFrame }, { corner(8), stroke(4) })
 text({ Position = UDim2.fromOffset(10, 6), Size = UDim2.new(1, -20, 0, 26), Text = "SELL ALL OF THESE RARITIES", ZIndex = 31, Parent = sellAll }, 22)
-local chipRow = make("Frame", { Position = UDim2.fromOffset(10, 38), Size = UDim2.new(1, -20, 0, 36), BackgroundTransparency = 1, ZIndex = 31, Parent = sellAll },
+P.chipRow = make("Frame", { Position = UDim2.fromOffset(10, 38), Size = UDim2.new(1, -20, 0, 36), BackgroundTransparency = 1, ZIndex = 31, Parent = sellAll },
 	{ make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center }) })
-local sellAllNote = text({ Position = UDim2.fromOffset(10, 80), Size = UDim2.new(1, -20, 0, 24), FontFace = BODY, Text = "", TextColor3 = SOFT, ZIndex = 31, Parent = sellAll }, 18, 0)
+P.sellAllNote = text({ Position = UDim2.fromOffset(10, 80), Size = UDim2.new(1, -20, 0, 24), FontFace = BODY, Text = "", TextColor3 = SOFT, ZIndex = 31, Parent = sellAll }, 18, 0)
 local sellAllGo, sellAllGoLabel = button({ Position = UDim2.new(0, 10, 1, -60), Size = UDim2.new(0.62, -15, 0, 50), BackgroundColor3 = RED, ZIndex = 31, Parent = sellAll }, "SELL", 22)
-local sellAllCancel, sellAllCancelLabel = button({ Position = UDim2.new(0.62, 5, 1, -60), Size = UDim2.new(0.38, -15, 0, 50), BackgroundColor3 = GRAY, ZIndex = 31, Parent = sellAll }, "CANCEL", 22)
-local _ = sellAllCancelLabel
+local sellAllCancel = button({ Position = UDim2.new(0.62, 5, 1, -60), Size = UDim2.new(0.38, -15, 0, 50), BackgroundColor3 = Color3.fromRGB(90, 200, 255), ZIndex = 31, Parent = sellAll }, "CANCEL", 22)
 local sellRarities: { [number]: boolean } = { [1] = true, [2] = true } -- Common + Uncommon ticked to start
 local chips: { [number]: TextButton } = {}
 for i, tier in Config.Eggs.Skins do
-	local chip = make("TextButton", { Size = UDim2.fromOffset(78, 34), BackgroundColor3 = Config.RarityColors[tier.Id] or WHITE, Text = "", AutoButtonColor = true, ZIndex = 32, Parent = chipRow }, { corner(8), stroke(3) })
+	local chip = make("TextButton", { Size = UDim2.fromOffset(62, 34), BackgroundColor3 = Config.RarityColors[tier.Id] or WHITE, Text = "", AutoButtonColor = true, ZIndex = 32, Parent = P.chipRow }, { corner(8), stroke(3) })
 	chip:SetAttribute("NoSkin", true)
-	small(text({ Size = UDim2.fromScale(1, 1), Text = string.upper(tier.Id), ZIndex = 33, Parent = chip }, 13))
+	small(text({ Size = UDim2.fromScale(1, 1), Text = string.upper(tier.Id), ZIndex = 33, Parent = chip }, 12))
 	chips[i] = chip
 end
 
--- feedback pill over the "YOUR OFFICES" row (never covers a button)
-local toastPill = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 95), Size = UDim2.fromOffset(660, 40), BackgroundColor3 = Color3.fromRGB(24, 22, 36), Visible = false, ZIndex = 20, Parent = panel }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(3) })
-local toast = text({ Position = UDim2.fromOffset(16, 4), Size = UDim2.new(1, -32, 1, -8), Text = "", TextColor3 = GOLD, ZIndex = 21, Parent = toastPill }, 26)
+-- OFFICE DETAILS pop-up (tap an office's picture): the lawyer big, UPGRADE / MAX, SKILLS, UNEQUIP, SWAP
+D.popupDim = make("TextButton", { Name = "PopupDim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.45, Text = "", AutoButtonColor = false,
+	Visible = false, ZIndex = 40, Parent = panel }, { corner(10) })
+D.popupDim:SetAttribute("KeepStyle", true)
+local left = make("Frame", { Name = "OfficeDetails", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.54), Size = UDim2.fromOffset(330, 448),
+	BackgroundColor3 = Skin.PanelDeep, Visible = false, ZIndex = 41, Parent = panel }, { corner(10), stroke(5) })
+Skin.blockClicks(left)
+D.popupClose = Skin.closeButton(left, 40, 45)
+D.popupClose.Position = UDim2.new(1, 10, 0, 6)
+local preview = make("Frame", { Position = UDim2.fromOffset(10, 10), Size = UDim2.new(1, -20, 0, 130), BackgroundColor3 = WHITE, ClipsDescendants = true, ZIndex = 42, Parent = left }, { corner(6), stroke(3) })
+D.previewGradient = make("UIGradient", { Rotation = 90, Parent = preview })
+D.viewport = make("ViewportFrame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Ambient = Color3.fromRGB(200, 200, 200), LightDirection = Vector3.new(-1, -1, -1), ZIndex = 43, Parent = preview })
+D.iconHolder = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 43, Parent = preview })
+D.emptyPlus = text({ AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(90, 90), Text = "+", FontFace = TITLE, ZIndex = 44, Visible = false, Parent = preview }, 90)
+local officeTag = text({ Position = UDim2.fromOffset(8, 6), Size = UDim2.fromOffset(170, 22), Text = "", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 45, Parent = preview }, 20)
+D.starsLabel = text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 4), Size = UDim2.fromOffset(100, 26), Text = "", TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 45, Parent = preview }, 22)
+D.nameLabel = text({ Position = UDim2.fromOffset(12, 146), Size = UDim2.new(1, -24, 0, 30), Text = "", TextColor3 = Color3.fromRGB(255, 225, 90), ZIndex = 42, Parent = left }, 26)
+D.rarityPill = make("Frame", { Position = UDim2.fromOffset(12, 180), Size = UDim2.fromOffset(104, 22), BackgroundColor3 = PURPLE, ZIndex = 42, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
+D.rarityText = text({ Size = UDim2.fromScale(1, 1), Text = "", ZIndex = 43, Parent = D.rarityPill }, 16)
+D.earnLabel = text({ Position = UDim2.fromOffset(124, 180), Size = UDim2.new(1, -136, 0, 22), Text = "", TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 42, Parent = left }, 20)
+D.statusLabel = small(text({ Position = UDim2.fromOffset(12, 208), Size = UDim2.new(1, -24, 0, 22), FontFace = BODY, Text = "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 42, Parent = left }, 18, 0))
+D.statusBar = make("Frame", { Position = UDim2.fromOffset(12, 232), Size = UDim2.new(1, -24, 0, 10), BackgroundColor3 = Color3.fromRGB(20, 12, 40), Visible = false, ZIndex = 42, Parent = left }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
+D.statusFill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = ORANGE, BorderSizePixel = 0, ZIndex = 43, Parent = D.statusBar }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }) })
+local upgradeButton, upgradeLabel = button({ Position = UDim2.fromOffset(12, 252), Size = UDim2.new(0.62, -16, 0, 54), BackgroundColor3 = GREEN, ZIndex = 42, Parent = left }, "UPGRADE", 20)
+upgradeLabel.TextWrapped = true
+local maxButton, maxLabel = button({ Position = UDim2.new(0.62, 2, 0, 252), Size = UDim2.new(0.38, -14, 0, 54), BackgroundColor3 = Color3.fromRGB(40, 170, 30), ZIndex = 42, Parent = left }, "MAX", 20)
+maxLabel.TextWrapped = true
+local skillsButton, skillsLabel = button({ Position = UDim2.fromOffset(12, 314), Size = UDim2.new(0.5, -16, 0, 50), BackgroundColor3 = GOLD, ZIndex = 42, Parent = left }, "SKILLS", 22)
+D.skillsBang = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(24, 24), BackgroundColor3 = RED, Visible = false, ZIndex = 46, Parent = skillsButton }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2, WHITE) })
+text({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = TITLE, ZIndex = 47, Parent = D.skillsBang }, 18)
+local unseatButton, unseatLabel = button({ Position = UDim2.new(0.5, 4, 0, 314), Size = UDim2.new(0.5, -16, 0, 50), BackgroundColor3 = ORANGE, ZIndex = 42, Parent = left }, "UNEQUIP", 20)
+unseatLabel.TextWrapped = true
+local swapButton = button({ Position = UDim2.fromOffset(12, 372), Size = UDim2.new(1, -24, 0, 54), BackgroundColor3 = PURPLE, ZIndex = 42, Parent = left }, "SWAP LAWYER", 24)
+
+-- where the upgrade celebrations play: moved over the office being upgraded (Shared.UpgradeFx draws inside it)
+-- (parked off the panel when nothing plays: lying over Office 1 it ate that card's taps)
+local PARKED = UDim2.fromOffset(-4000, -4000)
+local fxAnchor = make("Frame", { Name = "UpgradeFxAnchor", Position = PARKED, Size = UDim2.fromOffset(206, 196), BackgroundTransparency = 1, ZIndex = 50, Interactable = false, Parent = panel })
+local fxTag = text({ Size = UDim2.new(1, 0, 0, 22), Text = "", Visible = false, ZIndex = 51, Parent = fxAnchor }, 18)
+
+-- feedback pill over the info line (never covers a button)
+local toastPill = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 96), Size = UDim2.fromOffset(660, 40), BackgroundColor3 = Color3.fromHex("4FB6EE"), Visible = false, ZIndex = 60, Parent = panel }, { corner(10), stroke(3) })
+Skin.stripes(toastPill, 0.72, 4, 0.05)
+local toast = text({ Position = UDim2.fromOffset(16, 4), Size = UDim2.new(1, -32, 1, -8), Text = "", TextColor3 = WHITE, ZIndex = 61, Parent = toastPill }, 26)
 
 ------------------------------------------------------------------ rendering
 local selectedOffice = 1
-local tab = "Bench" -- (v16: no waiting room, so the CLIENTS tab is hidden)
+local tab = "Offices"
 local benchPick: string? = nil
-local focusClient: number? = nil -- highlighted after an [E] Assign Client prompt
 local busy = false
 local previewKey: string? = nil
 local previewConn: RBXScriptConnection? = nil
-type SlotRefs = { card: TextButton, pill: Frame, pillText: TextLabel, fill: Frame, stroke: UIStroke, content: Frame, key: string? }
+local pickKey: string? = nil
+type SlotRefs = { card: Frame, pill: Frame, pillText: TextLabel, fill: Frame, level: TextLabel, up: TextButton, upLabel: TextLabel, key: string? }
 local slotRefs: { [number]: SlotRefs } = {}
-local previewSpin: Model? = nil
 local previewHome: CFrame? = nil
--- an upgrade's hop + spin for the preview's lawyer (set by Shared.UpgradeFx, played by renderPreview's loop)
+-- an upgrade's hop + spin for the details' lawyer (set by Shared.UpgradeFx, played by renderPreview's loop)
 local kick = { t0 = -math.huge, dur = 0, hop = 0, spins = 0, bounces = 1 }
 local render: () -> ()
 
 local function flash(msg: string, color: Color3?)
 	toast.Text = msg
-	toast.TextColor3 = color or GOLD
+	toastPill.BackgroundColor3 = if color == RED then Color3.fromHex("E53030") elseif color == GOLD then Color3.fromHex("FFBE1F") else Color3.fromHex("4FB6EE")
 	toastPill.Visible = true
 	squish(toastPill)
 	task.delay(2.2, function()
@@ -647,9 +663,11 @@ local function flash(msg: string, color: Color3?)
 	end)
 end
 
+-- v3 (crnuch 2026-10-23: no gray): a disabled button is muted purple, not gray
+local MUTED = Color3.fromHex("6E5A96")
 local function setButton(b: TextButton, l: TextLabel, label: string, color: Color3, enabled: boolean)
 	l.Text = label
-	b.BackgroundColor3 = if enabled then color else GRAY
+	b.BackgroundColor3 = if enabled then color else MUTED
 	b.AutoButtonColor = enabled
 	b:SetAttribute("Enabled", enabled)
 end
@@ -658,44 +676,101 @@ local function selectOffice(i: number)
 	local count = math.max(deskCount(), 1)
 	selectedOffice = math.clamp(i, 1, count)
 	player:SetAttribute("SelectedDesk", selectedOffice) -- the Courtroom and Skills follow it
-	benchPick = nil
+end
+
+local function upgradeText(o: Office): (string, boolean)
+	local coins = (player:GetAttribute("Coins") :: number?) or 0
+	if o.level >= Config.Lawyer.MaxLevel then
+		return "MAX LEVEL", false
+	end
+	if ((player:GetAttribute("FreeLevelUps") :: number?) or 0) > 0 then
+		return "UPGRADE · FREE!", true
+	end
+	local cost = Formulas.trainCost(o.level)
+	return "UPGRADE · $" .. Formulas.formatCoins(cost), coins >= cost
 end
 
 local function paintSlot(refs: SlotRefs, o: Office)
 	local label, color, progress = status(o)
 	refs.pillText.Text = label
-	refs.pill.BackgroundColor3 = if progress then color:Lerp(BLACK, 0.45) else color
+	refs.pill.BackgroundColor3 = if progress then color:Lerp(BLACK, 0.45) else (if color == GRAY then MUTED else color)
 	refs.fill.Visible = progress ~= nil
 	refs.fill.Size = UDim2.fromScale(progress or 0, 1)
 	refs.fill.BackgroundColor3 = color
+	refs.level.Text = string.format("OFFICE %d · Lv %d", o.index, o.level)
+	if o.lawyerId then
+		local up, can = upgradeText(o)
+		setButton(refs.up, refs.upLabel, up, GREEN, can)
+	else
+		setButton(refs.up, refs.upLabel, "EQUIP LAWYER", PURPLE, true)
+	end
 end
 
--- the office cards are kept between renders (their 3D lawyers are only rebuilt when the office's lawyer changes)
-local function slotCard(i: number): SlotRefs
+local upgrade: (any, any, string) -> () -- (defined below)
+local openDetails: (number) -> ()
+
+-- an office card: rarity-coloured Skin card, its lawyer (tap for the details), name, status, ONE button.
+-- Rebuilt only when the office's lawyer / mutation / skills-ready changes.
+local function slotCard(i: number, o: Office): SlotRefs
+	local key = string.format("%s|%d|%s", o.lawyerId or "-", o.stars, tostring(o.skillsReady))
 	local refs = slotRefs[i]
-	if refs then
+	if refs and refs.key == key then
 		return refs
 	end
-	local card = make("TextButton", { Size = UDim2.fromOffset(112, 118), BackgroundColor3 = SLOT, Text = "", AutoButtonColor = true, LayoutOrder = i, Parent = slotBar }, { corner(8) })
-	local s = stroke(3)
-	s.Parent = card
-	local content = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Parent = card })
-	text({ Position = UDim2.fromOffset(6, 3), Size = UDim2.new(1, -12, 0, 18), Text = "OFFICE " .. i, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = card }, 15)
-	local pill = make("Frame", { Position = UDim2.new(0, 5, 1, -24), Size = UDim2.new(1, -10, 0, 20), BackgroundColor3 = GRAY, ClipsDescendants = true, ZIndex = 3, Parent = card }, { corner(5), stroke(2) })
-	local fill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = ORANGE, BorderSizePixel = 0, ZIndex = 3, Parent = pill })
-	local pillText = text({ Position = UDim2.fromOffset(3, 1), Size = UDim2.new(1, -6, 1, -2), Text = "", ZIndex = 4, Parent = pill }, 14)
-	refs = { card = card, pill = pill, pillText = pillText, fill = fill, stroke = s, content = content }
-	slotRefs[i] = refs
-	card.Activated:Connect(function()
-		squish(card)
-		if selectedOffice ~= i then
-			selectOffice(i)
-			-- an empty office wants a lawyer; anyone else: keep the tab the player is on
-			if not office(i).lawyerId then
-				tab = "Bench"
-			end
-			render()
+	if refs then
+		refs.card:Destroy()
+	end
+	local _, rColor = rarityOf(o.lawyerId)
+	local card = Skin.card(slotBar, { Name = "Office" .. i, Color = if o.lawyerId then rColor else Skin.Palette.Purple, LayoutOrder = i, GlowAt = Vector2.new(0.5, 0.32) })
+	local z = card.ZIndex + 2
+	local level = text({ Position = UDim2.fromOffset(8, 4), Size = UDim2.new(1, -16, 0, 20), Text = "", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 2, Parent = card }, 17)
+	if o.stars > 1 then
+		local tag, tagColor = mutationTag(o.stars)
+		text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 4), Size = UDim2.fromOffset(80, 20), Text = tag, TextColor3 = tagColor, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = z + 2, Parent = card }, 15)
+	end
+	-- the picture: tap it for SKILLS / MAX / UNEQUIP / SWAP
+	local art = make("Frame", { Name = "Picture", Position = UDim2.fromOffset(6, 24), Size = UDim2.new(1, -12, 0, 84), BackgroundTransparency = 1, ZIndex = z, Parent = card })
+	-- the tap area sits OVER the picture: a ViewportFrame swallows taps meant for a button under it (found 2026-10-23)
+	local artHit = make("TextButton", { Name = "Art", Position = UDim2.fromOffset(6, 24), Size = UDim2.new(1, -12, 0, 84), BackgroundTransparency = 1, Text = "", ZIndex = z + 6, Parent = card })
+	artHit:SetAttribute("KeepStyle", true)
+	if o.lawyerId then
+		if not lawyerViewport(art, o.lawyerId, 194 / 84, nil, o.stars) then
+			drawIcon(art, o.lawyerId, 0.75, 2)
 		end
+	else
+		text({ AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(70, 70), Text = "+", FontFace = TITLE, ZIndex = z + 1, Parent = art }, 64)
+	end
+	if o.skillsReady then
+		local bang = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -10, 0, 34), Size = UDim2.fromOffset(24, 24), BackgroundColor3 = RED, ZIndex = z + 3, Parent = card }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2, WHITE) })
+		text({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = TITLE, ZIndex = z + 4, Parent = bang }, 17)
+	end
+	small(text({ Position = UDim2.fromOffset(6, 108), Size = UDim2.new(1, -12, 0, 22), Text = if o.lawyerId then lawyerName(o.lawyerId, 1) else "Empty office",
+		TextColor3 = Color3.fromRGB(255, 225, 90), ZIndex = z + 1, Parent = card }, 20))
+	local pill = make("Frame", { Position = UDim2.fromOffset(10, 132), Size = UDim2.new(1, -20, 0, 18), BackgroundColor3 = MUTED, ClipsDescendants = true, ZIndex = z + 1, Parent = card }, { corner(5), stroke(2) })
+	local fill = make("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = ORANGE, BorderSizePixel = 0, ZIndex = z + 1, Parent = pill })
+	local pillText = text({ Position = UDim2.fromOffset(3, 1), Size = UDim2.new(1, -6, 1, -2), Text = "", ZIndex = z + 2, Parent = pill }, 13)
+	local up, upLabel = button({ Position = UDim2.new(0, 8, 1, -42), Size = UDim2.new(1, -16, 0, 36), BackgroundColor3 = GREEN, ZIndex = z + 1, Parent = card }, "UPGRADE", 18)
+	Skin.glint(up)
+	refs = { card = card, pill = pill, pillText = pillText, fill = fill, level = level, up = up, upLabel = upLabel, key = key }
+	slotRefs[i] = refs
+	artHit.Activated:Connect(function()
+		squish(art)
+		selectOffice(i)
+		openDetails(i)
+	end)
+	up.Activated:Connect(function()
+		selectOffice(i)
+		local oi = office(i)
+		if not oi.lawyerId then
+			tab = "Bench"
+			render()
+			return
+		end
+		if not up:GetAttribute("Enabled") then
+			flash(if oi.level >= Config.Lawyer.MaxLevel then "This office is max level!" else "Not enough coins yet", RED)
+			return
+		end
+		upgrade(i, nil, "Office " .. i)
 	end)
 	return refs
 end
@@ -710,77 +785,40 @@ local function renderSlots()
 	end
 	for i = 1, count do
 		local o = office(i)
-		local refs = slotCard(i)
-		local selected = i == selectedOffice
-		refs.stroke.Thickness = if selected then 5 else 3
-		refs.stroke.Color = if selected then GOLD else BLACK
-		local key = string.format("%s|%d|%s", o.lawyerId or "-", o.stars, tostring(o.skillsReady))
-		if refs.key ~= key then
-			refs.key = key
-			local content = refs.content
-			content:ClearAllChildren()
-			local card = refs.card
-			card.BackgroundColor3 = if o.lawyerId then CARD else SLOT
-			local old = card:FindFirstChildOfClass("UIGradient")
-			if old then
-				old:Destroy()
-			end
-			if o.lawyerId then
-				local _, rColor = rarityOf(o.lawyerId)
-				make("UIGradient", { Rotation = 90, Color = ColorSequence.new(rColor:Lerp(CARD, 0.35), CARD), Parent = card })
-				-- (art 58 tall, name 20: room for a readable name at phone size, see small())
-				local art = make("Frame", { Position = UDim2.fromOffset(4, 14), Size = UDim2.new(1, -8, 0, 58), BackgroundTransparency = 1, Parent = content })
-				if not lawyerViewport(art, o.lawyerId, 104 / 58, nil, o.stars) then
-					drawIcon(content, o.lawyerId, 0.52, 18)
-				end
-				small(text({ Position = UDim2.fromOffset(4, 72), Size = UDim2.new(1, -8, 0, 20), Text = lawyerName(o.lawyerId, 1), ZIndex = 2, Parent = content }, 15))
-				if o.stars > 1 then
-					local tag, tagColor = mutationTag(o.stars)
-					text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 3), Size = UDim2.fromOffset(70, 18), Text = tag, TextColor3 = tagColor, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 3, Parent = content }, 14)
-				end
-			else
-				text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 22), Size = UDim2.fromOffset(60, 52), Text = "+", FontFace = TITLE, TextColor3 = GRAY, Parent = content }, 52)
-				small(text({ Position = UDim2.fromOffset(4, 72), Size = UDim2.new(1, -8, 0, 20), Text = "Equip a lawyer", TextColor3 = SOFT, Parent = content }, 14))
-			end
-			if o.skillsReady then
-				local bang = make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -6, 0, 26), Size = UDim2.fromOffset(20, 20), BackgroundColor3 = RED, ZIndex = 5, Parent = content }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2, WHITE) })
-				text({ Size = UDim2.fromScale(1, 1), Text = "!", FontFace = TITLE, ZIndex = 6, Parent = bang }, 15)
-			end
-		end
-		paintSlot(refs, o)
+		paintSlot(slotCard(i, o), o)
 	end
 end
 
--- the big preview: the selected office's lawyer in 3D, gently swaying
+-- the details pop-up's big lawyer, gently swaying (and hopping on an upgrade)
 local function renderPreview(o: Office)
 	local key = if o.lawyerId then o.lawyerId .. "|" .. o.stars else "empty"
 	if key == previewKey then
 		return
 	end
 	previewKey = key
-	previewSpin, previewHome = nil, nil
+	previewHome = nil
 	if previewConn then
 		previewConn:Disconnect()
 		previewConn = nil
 	end
-	viewport:ClearAllChildren()
-	iconHolder:ClearAllChildren()
+	D.viewport:ClearAllChildren()
+	D.iconHolder:ClearAllChildren()
 	if not o.lawyerId then
-		previewGradient.Color = ColorSequence.new(Color3.fromRGB(90, 88, 120), Color3.fromRGB(60, 58, 84))
-		emptyPlus.Visible = true
+		D.previewGradient.Color = ColorSequence.new(Color3.fromHex("6A44A8"), Color3.fromHex("4A2A85"))
+		D.emptyPlus.Visible = true
 		return
 	end
-	emptyPlus.Visible = false
+	D.emptyPlus.Visible = false
 	local _, color = rarityOf(o.lawyerId)
-	previewGradient.Color = ColorSequence.new(color:Lerp(WHITE, 0.7), color:Lerp(WHITE, 0.25))
-	local vf, m = lawyerViewport(iconHolder, o.lawyerId, 268 / 116, 0, o.stars)
+	D.previewGradient.Color = ColorSequence.new(color:Lerp(WHITE, 0.7), color:Lerp(WHITE, 0.25))
+	local vf, m = lawyerViewport(D.iconHolder, o.lawyerId, 310 / 130, 0, o.stars)
 	if vf and m then
-		previewSpin, previewHome = m, m:GetPivot()
+		vf.ZIndex = 43
+		previewHome = m:GetPivot()
 		local box, size = m:GetBoundingBox()
 		local center = box.Position
 		previewConn = RunService.RenderStepped:Connect(function()
 			local t = os.clock()
-			-- an upgrade's hops + spins (kick), eased out
 			local hop, spin = 0, 0
 			local k = t - kick.t0
 			if k >= 0 and k < kick.dur then
@@ -788,26 +826,12 @@ local function renderPreview(o: Office)
 				hop = math.abs(math.sin(u * math.pi * kick.bounces)) * kick.hop * size.Y * (1 - u * 0.4)
 				spin = kick.spins * math.pi * 2 * (1 - (1 - u) ^ 3)
 			end
-			-- turn about its own centre, with a little idle bob
 			local turn = CFrame.new(center) * CFrame.Angles(0, math.sin(t * 1.2) * 0.5 + spin, 0) * CFrame.new(center):Inverse()
 			m:PivotTo(CFrame.new(0, math.sin(t * 2.6) * 0.06 + hop, 0) * turn * (previewHome :: CFrame))
 		end)
 	else
-		drawIcon(iconHolder, o.lawyerId, 1.05, 12)
+		drawIcon(D.iconHolder, o.lawyerId, 1.05, 12)
 	end
-end
-
-
-local function upgradeText(o: Office): (string, boolean)
-	local coins = (player:GetAttribute("Coins") :: number?) or 0
-	if o.level >= Config.Lawyer.MaxLevel then
-		return "MAX LEVEL", false
-	end
-	if ((player:GetAttribute("FreeLevelUps") :: number?) or 0) > 0 then
-		return string.format("UPGRADE Lv %d→%d\nFREE!", o.level, o.level + 1), true
-	end
-	local cost = Formulas.trainCost(o.level)
-	return string.format("UPGRADE Lv %d→%d\n$%s", o.level, o.level + 1, Formulas.formatCoins(cost)), coins >= cost
 end
 
 -- how many levels MAX would buy right now (same rule as the server: free level-ups first, then coins)
@@ -831,31 +855,8 @@ local function affordableLevels(fromLevel: number): number
 	return n
 end
 
--- the live parts of the left card (status line, progress, buttons) - also run by the 4x/s tick
+-- the live parts (pop-up status + buttons, footer) - also run by the 4x/s tick
 local function renderLeftLive()
-	local o = office(selectedOffice)
-	local label, color, progress = status(o)
-	if not o.lawyerId then
-		statusLabel.Text = "No lawyer equipped. Pick one in the EQUIP tab."
-	elseif o.queued and isBusy(o) then
-		local who = if o.queued == "unseat" then "Gets unequipped" else "Swaps out"
-		statusLabel.Text = string.format("%s when %s's case ends", who, o.clientName or "this")
-	elseif o.phase == "Case" then
-		statusLabel.Text = string.format("On %s's case · %s", o.clientName or "a", string.lower((label:gsub("ON A CASE ", ""))))
-	elseif o.phase == "Walking" then
-		statusLabel.Text = string.format("%s is walking over...", o.clientName or "A client")
-	else
-		statusLabel.Text = "Free! Assign a client, or unequip / swap now."
-	end
-	statusLabel.TextColor3 = if o.lawyerId and o.phase == "Idle" then GREEN elseif color == PURPLE then Color3.fromRGB(215, 160, 255) else SOFT
-	statusBar.Visible = progress ~= nil and not o.queued
-	statusFill.Size = UDim2.fromScale(progress or 0, 1)
-	-- buttons
-	local up, canUp = upgradeText(o)
-	setButton(upgradeButton, upgradeLabel, up, GREEN, canUp)
-	local n = if o.level < Config.Lawyer.MaxLevel then affordableLevels(o.level) else 0
-	setButton(maxButton, maxLabel, if n > 0 then string.format("MAX\n+%d", n) else "MAX", Color3.fromRGB(40, 170, 30), n > 1)
-	-- UPGRADE ALL: any office with a lawyer that can take a level right now
 	local anyAffordable = false
 	for i = 1, deskCount() do
 		local oi = office(i)
@@ -865,12 +866,34 @@ local function renderLeftLive()
 		end
 	end
 	setButton(allButton, allLabel, "UPGRADE ALL OFFICES", GREEN, anyAffordable)
-	setButton(skillsButton, skillsLabel, "SKILLS", GOLD, o.lawyerId ~= nil)
-	skillsBang.Visible = o.skillsReady
-	unseatButton.Visible = true
+	if not left.Visible then
+		return
+	end
+	local o = office(selectedOffice)
+	local label, color, progress = status(o)
 	if not o.lawyerId then
-		setButton(unseatButton, unseatLabel, "EQUIP LAWYER", PURPLE, true)
+		D.statusLabel.Text = "No lawyer here yet - tap SWAP LAWYER to pick one."
 	elseif o.queued and isBusy(o) then
+		local who = if o.queued == "unseat" then "Gets unequipped" else "Swaps out"
+		D.statusLabel.Text = string.format("%s when %s's case ends", who, o.clientName or "this")
+	elseif o.phase == "Case" then
+		D.statusLabel.Text = string.format("On %s's case · %s", o.clientName or "a", string.lower((label:gsub("ON A CASE ", ""))))
+	elseif o.phase == "Walking" then
+		D.statusLabel.Text = string.format("%s is walking over...", o.clientName or "A client")
+	else
+		D.statusLabel.Text = "Free - waiting for the next client."
+	end
+	D.statusLabel.TextColor3 = if o.lawyerId and o.phase == "Idle" then GREEN elseif color == PURPLE then Color3.fromRGB(215, 160, 255) else SOFT
+	D.statusBar.Visible = progress ~= nil and not o.queued
+	D.statusFill.Size = UDim2.fromScale(progress or 0, 1)
+	local up, canUp = upgradeText(o)
+	setButton(upgradeButton, upgradeLabel, if o.lawyerId then up else "UPGRADE", GREEN, canUp and o.lawyerId ~= nil)
+	local n = if o.level < Config.Lawyer.MaxLevel then affordableLevels(o.level) else 0
+	setButton(maxButton, maxLabel, if n > 0 then string.format("MAX\n+%d", n) else "MAX", Color3.fromRGB(40, 170, 30), n > 1 and o.lawyerId ~= nil)
+	setButton(skillsButton, skillsLabel, "SKILLS", GOLD, o.lawyerId ~= nil)
+	D.skillsBang.Visible = o.skillsReady
+	unseatButton.Visible = o.lawyerId ~= nil
+	if o.queued and isBusy(o) then
 		setButton(unseatButton, unseatLabel, "CANCEL CHANGE", RED, true)
 	elseif isBusy(o) then
 		setButton(unseatButton, unseatLabel, "UNEQUIP AFTER CASE", ORANGE, true)
@@ -880,31 +903,53 @@ local function renderLeftLive()
 end
 
 local function renderLeft()
+	if not left.Visible then
+		return
+	end
 	local o = office(selectedOffice)
 	renderPreview(o)
 	officeTag.Text = string.format("OFFICE %d · Lv %d", o.index, o.level)
 	if o.lawyerId then
 		local rName, rColor = rarityOf(o.lawyerId)
-		nameLabel.Text = lawyerName(o.lawyerId, o.stars)
+		D.nameLabel.Text = lawyerName(o.lawyerId, o.stars)
 		local tag, tagColor = mutationTag(o.stars)
-		starsLabel.Text = tag
-		starsLabel.TextColor3 = tagColor
-		rarityPill.Visible = true
-		rarityPill.BackgroundColor3 = rColor
-		rarityText.Text = string.upper(rName)
-		earnLabel.Text = string.format("Earns x%s", tostring(Formulas.lawyerEarn(o.lawyerId, o.stars)))
+		D.starsLabel.Text = tag
+		D.starsLabel.TextColor3 = tagColor
+		D.rarityPill.Visible = true
+		D.rarityPill.BackgroundColor3 = rColor
+		D.rarityText.Text = string.upper(rName)
+		D.earnLabel.Text = string.format("Earns x%s", tostring(Formulas.lawyerEarn(o.lawyerId, o.stars)))
 	else
-		nameLabel.Text = "Empty Office"
-		starsLabel.Text = ""
-		rarityPill.Visible = false
-		earnLabel.Text = ""
+		D.nameLabel.Text = "Empty office"
+		D.starsLabel.Text = ""
+		D.rarityPill.Visible = false
+		D.earnLabel.Text = ""
 	end
 	renderLeftLive()
 end
 
--- the upgrade celebrations (Shared.UpgradeFx, 2026-10-13): bigger for MAX / UPGRADE ALL, biggest at max level
+openDetails = function(i: number)
+	selectOffice(i)
+	previewKey = nil
+	left.Visible = true
+	D.popupDim.Visible = true
+	Skin.pop(left, 0.6)
+	renderLeft()
+end
+local function closeDetails()
+	left.Visible = false
+	D.popupDim.Visible = false
+	if previewConn then
+		previewConn:Disconnect()
+		previewConn = nil
+	end
+	previewKey = nil
+end
+
+-- the upgrade celebrations (Shared.UpgradeFx, 2026-10-13): bigger for MAX / UPGRADE ALL, biggest at max level.
+-- v3: they play over the office card being upgraded (or the pop-up's lawyer when it's open).
 local upgradeFx = (require(Shared:WaitForChild("UpgradeFx") :: ModuleScript) :: any).new({
-	panel = panel, preview = preview, slotBar = slotBar, officeTag = officeTag, width = W, height = H, kick = kick,
+	panel = panel, preview = fxAnchor, slotBar = slotBar, officeTag = fxTag, width = W, height = H, kick = kick,
 	card = function(i: number): GuiObject?
 		local refs = slotRefs[i]
 		return if refs then refs.card else nil
@@ -915,104 +960,42 @@ local upgradeFx = (require(Shared:WaitForChild("UpgradeFx") :: ModuleScript) :: 
 	end,
 	deskCount = deskCount,
 	setTag = function(i: number, level: number)
-		officeTag.Text = string.format("OFFICE %d · Lv %d", i, level)
+		local refs = slotRefs[i]
+		if refs then
+			refs.level.Text = string.format("OFFICE %d · Lv %d", i, level)
+		end
+		if i == selectedOffice then
+			officeTag.Text = string.format("OFFICE %d · Lv %d", i, level)
+		end
 	end,
 	lawyerViewport = lawyerViewport,
 })
-
--- why the selected office can't take a client right now (nil = it can)
-local function assignBlocker(o: Office): string?
-	if not o.lawyerId then
-		return string.format("Office %d has no lawyer yet", o.index)
-	elseif o.queued and isBusy(o) then
-		return string.format("Office %d's lawyer is being swapped out", o.index)
-	elseif o.phase ~= "Idle" then
-		return string.format("Office %d is busy - pick a FREE office above", o.index)
-	end
-	return nil
-end
-
-local closePanel: () -> () -- (defined below)
-
-local function doAssign(c: Client)
-	if busy then
+local fxToken = 0
+local function aimFx(i: number)
+	local refs = slotRefs[i]
+	local target: GuiObject? = if left.Visible then preview elseif refs then refs.card else nil
+	if not target then
 		return
 	end
-	local o = office(selectedOffice)
-	local blocker = assignBlocker(o)
-	if blocker then
-		flash(blocker, RED)
-		return
-	end
-	if not c.Seated then
-		flash((c.Name or "That client") .. " is still finding a seat", RED)
-		return
-	end
-	busy = true
-	local ok, reason = AssignClient:InvokeServer(c.Id, selectedOffice)
-	busy = false
-	if ok then
-		Sfx.play("caseBegin", { gap = 0.35 })
-		flash(string.format("%s → Office %d!", c.Name or "Client", selectedOffice), GREEN)
-		focusClient = nil
-		-- one client per assignment (user's call): close, the Manager is the one who assigns everyone
-		task.delay(0.7, closePanel)
-	else
-		flash(reason or "Can't assign right now", RED)
-	end
-	render()
-end
-
-local function renderClients(o: Office)
-	for _, c in clientList:GetChildren() do
-		if c:IsA("GuiObject") then
-			c:Destroy()
+	local s = math.max(panelScale.Scale, 0.01)
+	local rel = (target.AbsolutePosition - panel.AbsolutePosition) / s
+	fxAnchor.Position = UDim2.fromOffset(rel.X, rel.Y)
+	fxAnchor.Size = UDim2.fromOffset(target.AbsoluteSize.X / s, target.AbsoluteSize.Y / s)
+	fxToken += 1
+	local my = fxToken
+	task.delay(9, function() -- the longest celebration (max level) is over by then
+		if fxToken == my then
+			fxAnchor.Position = PARKED
 		end
-	end
-	local list = waitingClients()
-	local blocker = assignBlocker(o)
-	if #list == 0 then
-		text({ Size = UDim2.new(1, 0, 0, 60), FontFace = BODY, Text = "No clients waiting right now.\nNew ones walk into your firm every few seconds!", TextColor3 = SOFT, TextWrapped = true, Parent = clientList }, 20, 0)
-	end
-	local focusRow: GuiObject? = nil
-	for order, c in list do
-		local def = Config.Clients[c.Tier]
-		local color = clientColor(c.Tier)
-		local focused = c.Id == focusClient
-		local row = make("Frame", { Size = UDim2.new(1, 0, 0, 76), BackgroundColor3 = CARD, LayoutOrder = order, Parent = clientList }, { corner(6) })
-		stroke(if focused then 4 else 3, if focused then GOLD else BLACK).Parent = row
-		make("Frame", { Size = UDim2.new(0, 10, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, Parent = row }, { corner(6) })
-		text({ Position = UDim2.fromOffset(20, 6), Size = UDim2.new(1, -250, 0, 26), Text = c.Name or (def and def.Name) or "Client", TextXAlignment = Enum.TextXAlignment.Left, Parent = row }, 22)
-		-- the situation wraps onto two lines (it used to shrink to fit one); small() keeps it readable on phones
-		small(text({ Position = UDim2.fromOffset(20, 32), Size = UDim2.new(1, -250, 0, 40), FontFace = BODY, Text = c.Situation or "", TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextTruncate = Enum.TextTruncate.AtEnd, Parent = row }, 16, 0), true)
-		-- rarity + what the selected lawyer's chances look like
-		local chip = make("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -128, 0, 8), Size = UDim2.fromOffset(100, 22), BackgroundColor3 = color, Parent = row }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
-		text({ Size = UDim2.fromScale(1, 1), Text = string.upper(def and def.Id or "Client"), Parent = chip }, 14)
-		local chance = if o.lawyerId then Formulas.winChance(o.level, def and def.Difficulty or 0, 0) else nil
-		text({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -128, 0, 34), Size = UDim2.fromOffset(100, 22), Text = if chance then string.format("%d%% win", math.round(chance * 100)) else "", TextColor3 = GREEN, Parent = row }, 17)
-		local can = blocker == nil and c.Seated
-		local b, l = button({ AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Size = UDim2.fromOffset(110, 46), BackgroundColor3 = GREEN, Parent = row }, "ASSIGN", 22)
-		setButton(b, l, if c.Seated then "ASSIGN" else "ARRIVING", GREEN, can)
-		b.Activated:Connect(function()
-			doAssign(c)
-		end)
-		if focused then
-			focusRow = row
-		end
-	end
-	if focusRow then
-		task.defer(function()
-			clientList.CanvasPosition = Vector2.new(0, math.max(0, (focusRow :: GuiObject).AbsolutePosition.Y - clientList.AbsolutePosition.Y + clientList.CanvasPosition.Y - 8))
-		end)
-	end
+	end)
 end
 
 local function placeAction(o: Office, l: Lawyer?): (string, boolean, Color3)
 	if not l then
-		return if o.lawyerId then "PICK A LAWYER TO SWAP IN" else "PICK A LAWYER TO EQUIP", false, GREEN
+		return "PICK A LAWYER", false, GREEN
 	end
 	if l.Office == o.index then
-		return "ALREADY EQUIPPED HERE", false, GREEN
+		return "ALREADY IN THIS OFFICE", false, GREEN
 	end
 	if l.Office and isBusy(office(l.Office)) then
 		return string.format("ON A CASE IN OFFICE %d", l.Office), false, GREEN
@@ -1022,9 +1005,6 @@ local function placeAction(o: Office, l: Lawyer?): (string, boolean, Color3)
 			return string.format("OFFICE %d IS ON A CASE", o.index), false, GREEN
 		end
 		return "EQUIP AFTER THIS CASE", true, PURPLE
-	end
-	if o.lawyerId then
-		return string.format("EQUIP IN OFFICE %d", o.index), true, GREEN
 	end
 	return string.format("EQUIP IN OFFICE %d", o.index), true, GREEN
 end
@@ -1054,10 +1034,7 @@ local function sellAllPicks(list: { Lawyer }): ({ string }, number)
 	return uids, total
 end
 local function renderSell(list: { Lawyer }, pick: Lawyer?)
-	if not pick then
-		setButton(sellButton, sellLabel, "SELL", ORANGE, false)
-		setButton(lockButton, lockLabel, "LOCK", GOLD, false)
-	else
+	if pick then
 		if pick.Office then
 			setButton(sellButton, sellLabel, "IN AN OFFICE", ORANGE, false)
 		elseif pick.Locked then
@@ -1069,7 +1046,7 @@ local function renderSell(list: { Lawyer }, pick: Lawyer?)
 		else
 			setButton(sellButton, sellLabel, "SELL · " .. Formulas.formatCoins(sellValue(pick)), ORANGE, true)
 		end
-		setButton(lockButton, lockLabel, if pick.Locked then "UNLOCK" else "LOCK", GOLD, true)
+		setButton(lockButton, lockLabel, if pick.Locked then "UNLOCK" else "LOCK", Color3.fromRGB(90, 200, 255), true)
 	end
 	local any = false
 	for _, l in list do
@@ -1084,15 +1061,17 @@ local function renderSell(list: { Lawyer }, pick: Lawyer?)
 			chip.BackgroundTransparency = if sellRarities[i] then 0 else 0.6
 		end
 		local uids, total = sellAllPicks(list)
-		sellAllNote.Text = if #uids > 0 then string.format("Sells %d lawyer%s for %s coins (not locked, not in an office)", #uids, if #uids == 1 then "" else "s", Formulas.formatCoins(total))
+		P.sellAllNote.Text = if #uids > 0 then string.format("Sells %d lawyer%s for %s coins (not locked, not in an office)", #uids, if #uids == 1 then "" else "s", Formulas.formatCoins(total))
 			else "Nothing to sell with these rarities"
 		setButton(sellAllGo, sellAllGoLabel, if #uids > 0 then "SELL " .. #uids else "SELL", RED, #uids > 0)
 	end
 end
 
-type BenchCard = { card: TextButton, overlay: Frame, stroke: UIStroke, key: string?, stars: number }
+type BenchCard = { card: Frame, overlay: Frame, stroke: UIStroke, key: string?, stars: number }
 local benchCards: { [string]: BenchCard } = {}
 
+-- a lawyer card in the grid: rarity-coloured Skin card (no sunburst spin - there can be 150 of them), 3D lawyer, name,
+-- mutation + earn, and tags (which office, locked, 3x for the Mutation Machine). Tap = pick it.
 local function benchCard(l: Lawyer): BenchCard
 	local entry = benchCards[l.Uid]
 	if entry and entry.stars == l.Stars then
@@ -1102,31 +1081,94 @@ local function benchCard(l: Lawyer): BenchCard
 		benchCards[l.Uid] = nil
 	end
 	local _, rColor = rarityOf(l.Id)
-	local card = make("TextButton", { Text = "", BackgroundColor3 = CARD, AutoButtonColor = true, Parent = benchGrid }, { corner(8) })
-	make("UIGradient", { Rotation = 90, Color = ColorSequence.new(rColor:Lerp(CARD, 0.3), CARD), Parent = card })
-	local s = stroke(3)
-	s.Parent = card
-	local art = make("Frame", { Position = UDim2.fromOffset(4, 6), Size = UDim2.new(1, -8, 0, 74), BackgroundTransparency = 1, Parent = card })
-	if not lawyerViewport(art, l.Id, 92 / 74, nil, l.Stars) then
-		drawIcon(card, l.Id, 0.6, 18)
+	local card = Skin.card(benchGrid, { Name = l.Uid, Color = rColor, Spin = false, Twinkle = false, GlowAt = Vector2.new(0.5, 0.32) })
+	local s = card:FindFirstChildOfClass("UIStroke") :: UIStroke
+	local z = card.ZIndex + 2
+	local hit = make("TextButton", { Name = "Hit", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", ZIndex = z + 5, Parent = card })
+	hit:SetAttribute("KeepStyle", true)
+	local art = make("Frame", { Position = UDim2.fromOffset(4, 6), Size = UDim2.new(1, -8, 0, 84), BackgroundTransparency = 1, ZIndex = z, Parent = card })
+	if not lawyerViewport(art, l.Id, 114 / 84, nil, l.Stars) then
+		drawIcon(art, l.Id, 0.6, 6)
 	end
-	local overlay = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 2, Parent = card })
+	local overlay = make("Frame", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = z + 1, Parent = card })
 	entry = { card = card, overlay = overlay, stroke = s, stars = l.Stars }
 	benchCards[l.Uid] = entry
-	card.Activated:Connect(function()
+	hit.Activated:Connect(function()
 		squish(card)
 		benchPick = l.Uid
+		sellArmed = nil
 		render()
 	end)
 	return entry
 end
 
-local function renderBench(o: Office)
+-- equip target: an empty office first, else the selected one
+local function defaultTarget(): number
+	local o = office(selectedOffice)
+	if o.lawyerId then
+		for i = 1, deskCount() do
+			if not office(i).lawyerId then
+				return i
+			end
+		end
+	end
+	return selectedOffice
+end
+
+local function renderPick(list: { Lawyer }, pick: Lawyer?)
+	local o = office(selectedOffice)
+	for _, g in { P.pickPreview, P.pickName, P.pickRarity, P.pickEarn, P.pickNote, P.targetRow, placeButton, sellButton, lockButton } do
+		(g :: GuiObject).Visible = pick ~= nil
+	end
+	P.pickEmpty.Visible = pick == nil
+	local tOffice = office(selectedOffice)
+	local tLabel, tColor = status(tOffice)
+	P.targetText.Text = string.format("Office %d · %s", selectedOffice, if tOffice.lawyerId then string.lower(tLabel) else "empty")
+	P.targetText.TextColor3 = if tOffice.lawyerId then (if tColor == GREEN then GREEN else Color3.fromRGB(255, 200, 120)) else WHITE
+	if not pick then
+		pickKey = nil
+		renderSell(list, nil)
+		return
+	end
+	local key = pick.Uid .. "|" .. pick.Stars
+	if key ~= pickKey then
+		pickKey = key
+		P.pickArt:ClearAllChildren()
+		local rName, rColor = rarityOf(pick.Id)
+		P.pickGradient.Color = ColorSequence.new(rColor:Lerp(WHITE, 0.7), rColor:Lerp(WHITE, 0.25))
+		if not lawyerViewport(P.pickArt, pick.Id, 288 / 126, 0, pick.Stars) then
+			drawIcon(P.pickArt, pick.Id, 1, 8)
+		end
+		P.pickRarity.BackgroundColor3 = rColor
+		P.pickRarityText.Text = string.upper(rName)
+	end
+	P.pickName.Text = lawyerName(pick.Id, pick.Stars)
+	local tag, tagColor = mutationTag(pick.Stars)
+	P.pickTag.Text = tag
+	P.pickTag.TextColor3 = tagColor
+	P.pickEarn.Text = "Earns x" .. tostring(Formulas.lawyerEarn(pick.Id, pick.Stars))
+	local PCOL = "#D7A0FF"
+	if pick.Stars < #Config.Lawyers.StarEarn and copiesOf(list, pick) >= Config.Lawyers.MergeCount then
+		P.pickNote.Text = string.format('You have %d! <font color="%s">Mutation Machine</font>: %d%% for a %s one.', copiesOf(list, pick), PCOL,
+			math.floor(Formulas.mutateChance(pick.Stars) * 100 + 0.5), (MutationLook.info(pick.Stars + 1)))
+	elseif pick.Office then
+		P.pickNote.Text = string.format("Working in Office %d%s", pick.Office, if pick.Locked then " · locked" else "")
+	elseif pick.Locked then
+		P.pickNote.Text = "Locked: safe from selling and mutating"
+	else
+		P.pickNote.Text = "Not in an office yet"
+	end
+	local label, enabled, color = placeAction(o, pick)
+	setButton(placeButton, placeLabel, label, color, enabled)
+	renderSell(list, pick)
+end
+
+local function renderBench()
 	local list = lawyers()
 	if benchPick and not findLawyer(list, benchPick) then
 		benchPick = nil
 	end
-	-- bench lawyers first (strongest first), then the ones already working
+	-- not-equipped lawyers first (strongest first), then the ones already working
 	table.sort(list, function(a, b)
 		if (a.Office == nil) ~= (b.Office == nil) then
 			return a.Office == nil
@@ -1140,7 +1182,6 @@ local function renderBench(o: Office)
 		end
 		return a.Uid < b.Uid
 	end)
-	-- merged-away / gone lawyers lose their cards
 	local alive = {}
 	for _, l in list do
 		alive[l.Uid] = true
@@ -1153,96 +1194,57 @@ local function renderBench(o: Office)
 	end
 	local empty = benchGrid:FindFirstChild("EmptyNote")
 	if #list == 0 and not empty then
-		text({ Name = "EmptyNote", Size = UDim2.fromOffset(300, 60), FontFace = BODY, Text = "No lawyers yet - hatch eggs at the hub!", TextColor3 = SOFT, TextWrapped = true, Parent = benchGrid }, 20, 0)
+		text({ Name = "EmptyNote", Size = UDim2.fromOffset(300, 60), FontFace = BODY, Text = "No lawyers yet - hatch eggs in the zones!", TextColor3 = SOFT, TextWrapped = true, Parent = benchGrid }, 20, 0)
 	elseif #list > 0 and empty then
 		empty:Destroy()
 	end
 	for order, l in list do
 		local entry = benchCard(l)
 		local picked = l.Uid == benchPick
-		local _, rColor = rarityOf(l.Id)
 		entry.card.LayoutOrder = order
-		entry.stroke.Thickness = if picked then 5 else 3
-		entry.stroke.Color = if picked then GOLD else rColor:Lerp(BLACK, 0.35)
+		entry.stroke.Thickness = if picked then 6 else 4
+		entry.stroke.Color = if picked then WHITE else Skin.Ink
 		local busyHere = l.Office ~= nil and isBusy(office(l.Office))
 		local mergeable = l.Stars < #Config.Lawyers.StarEarn and copiesOf(list, l) >= Config.Lawyers.MergeCount
 		local key = string.format("%d|%s|%s|%s|%s", l.Stars, tostring(l.Office), tostring(busyHere), tostring(mergeable), tostring(l.Locked))
 		if entry.key ~= key then
 			entry.key = key
 			local overlay = entry.overlay
+			local z = overlay.ZIndex
 			overlay:ClearAllChildren()
-			small(text({ Position = UDim2.fromOffset(4, 78), Size = UDim2.new(1, -8, 0, 18), Text = lawyerName(l.Id, 1), ZIndex = 2, Parent = overlay }, 15))
+			small(text({ Position = UDim2.fromOffset(4, 92), Size = UDim2.new(1, -8, 0, 20), Text = lawyerName(l.Id, 1), TextColor3 = Color3.fromRGB(255, 225, 90), ZIndex = z, Parent = overlay }, 16))
 			local tag, tagColor = mutationTag(l.Stars)
-			text({ Position = UDim2.fromOffset(4, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = tag, TextColor3 = tagColor, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = overlay }, 13)
+			text({ Position = UDim2.fromOffset(6, 116), Size = UDim2.new(0.55, -6, 0, 22), Text = tag, TextColor3 = tagColor, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z, Parent = overlay }, 14)
+			text({ Position = UDim2.new(0.45, 0, 0, 116), Size = UDim2.new(0.55, -6, 0, 22), Text = "x" .. tostring(Formulas.lawyerEarn(l.Id, l.Stars)), TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = z, Parent = overlay }, 18)
 			if l.Locked then -- a little gold padlock tag (frames, no emoji)
-				local lk = make("Frame", { AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 4, 0, 76), Size = UDim2.fromOffset(16, 13), BackgroundColor3 = GOLD, ZIndex = 4, Parent = overlay }, { corner(3), stroke(2) })
-				make("Frame", { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, 1), Size = UDim2.fromOffset(10, 9), BackgroundTransparency = 1, ZIndex = 4, Parent = lk },
+				local lk = make("Frame", { AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 6, 0, 88), Size = UDim2.fromOffset(16, 13), BackgroundColor3 = GOLD, ZIndex = z + 1, Parent = overlay }, { corner(3), stroke(2) })
+				make("Frame", { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, 1), Size = UDim2.fromOffset(10, 9), BackgroundTransparency = 1, ZIndex = z + 1, Parent = lk },
 					{ make("UICorner", { CornerRadius = UDim.new(0.5, 0) }), make("UIStroke", { Thickness = 2.5, Color = Color3.fromRGB(40, 40, 52) }) })
 			end
-			text({ Position = UDim2.new(0.5, 0, 0, 98), Size = UDim2.new(0.5, -4, 0, 20), Text = "x" .. tostring(Formulas.lawyerEarn(l.Id, l.Stars)), TextColor3 = GREEN, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 2, Parent = overlay }, 16)
 			if l.Office then -- equipped: which office (orange while it's on a case)
-				local tag = make("Frame", { Position = UDim2.fromOffset(4, 4), Size = UDim2.fromOffset(62, 18), BackgroundColor3 = if busyHere then ORANGE else GREEN, ZIndex = 3, Parent = overlay }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
-				text({ Size = UDim2.fromScale(1, 1), Text = "OFFICE " .. l.Office, ZIndex = 4, Parent = tag }, 12)
+				local t = make("Frame", { Position = UDim2.fromOffset(4, 4), Size = UDim2.fromOffset(66, 18), BackgroundColor3 = if busyHere then ORANGE else GREEN, ZIndex = z + 1, Parent = overlay }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
+				text({ Size = UDim2.fromScale(1, 1), Text = "OFFICE " .. l.Office, ZIndex = z + 2, Parent = t }, 12)
 			end
 			if mergeable then
-				local m = make("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(30, 18), BackgroundColor3 = PURPLE, ZIndex = 3, Parent = overlay }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
-				text({ Size = UDim2.fromScale(1, 1), Text = "3x", ZIndex = 4, Parent = m }, 12) -- (3 copies: one try at the Mutation Machine)
+				local m = make("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 4), Size = UDim2.fromOffset(30, 18), BackgroundColor3 = PURPLE, ZIndex = z + 1, Parent = overlay }, { make("UICorner", { CornerRadius = UDim.new(1, 0) }), stroke(2) })
+				text({ Size = UDim2.fromScale(1, 1), Text = "3x", ZIndex = z + 2, Parent = m }, 12) -- (3 copies: one try at the Mutation Machine)
 			end
 		end
 	end
-	local pick = findLawyer(list, benchPick)
-	local label, enabled, color = placeAction(o, pick)
-	setButton(placeButton, placeLabel, label, color, enabled)
 	setButton(bestButton, bestLabel, "EQUIP BEST", GOLD, #list > 0)
-	renderSell(list, pick)
+	renderPick(list, findLawyer(list, benchPick))
 end
 
-
-local function renderInfo(o: Office)
-	local G, O, P = "#5CF03C", "#FFB43C", "#D7A0FF"
-	local msg
-	if tab == "Clients" then
-		local free = {}
-		for i = 1, deskCount() do
-			if i ~= o.index and office(i).phase == "Idle" then
-				table.insert(free, tostring(i))
-			end
-		end
-		local alsoFree = if #free > 0 then "  Free now: Office " .. table.concat(free, ", ") else ""
-		if not o.lawyerId then
-			msg = string.format('<font color="%s">Office %d has no lawyer.</font> Equip one in the EQUIP tab.', O, o.index)
-		elseif o.queued and isBusy(o) then
-			msg = string.format('<font color="%s">Office %d is being swapped out.</font>%s', P, o.index, alsoFree)
-		elseif o.phase ~= "Idle" then
-			local label = status(o)
-			msg = string.format('<font color="%s">Office %d is busy (%s).</font>%s', O, o.index, string.lower(label), alsoFree)
-		else
-			msg = string.format('<font color="%s">Office %d is free!</font> Pick a client to send to %s.', G, o.index, lawyerName(o.lawyerId :: string, o.stars))
-		end
+local function renderInfo()
+	local G = "#5CF03C"
+	if tab == "Offices" then
+		infoText.Text = string.format('Upgrade your offices to earn more. <font color="%s">Tap a lawyer\'s picture</font> for Skills, Max and Unequip.', G)
 	else
-		local list = lawyers()
-		local pick = findLawyer(list, benchPick)
-		if pick and pick.Stars < #Config.Lawyers.StarEarn and copiesOf(list, pick) >= Config.Lawyers.MergeCount then
-			msg = string.format('You have %d of these! <font color="%s">Try the Mutation Machine</font>: %d%% chance of a %s one.', copiesOf(list, pick), P,
-				math.floor(Formulas.mutateChance(pick.Stars) * 100 + 0.5), (MutationLook.info(pick.Stars + 1)))
-		elseif o.lawyerId and isBusy(o) then
-			msg = string.format('<font color="%s">Office %d is on a case.</font> Your pick gets equipped the moment it ends.', O, o.index)
-		elseif o.lawyerId then
-			msg = string.format('Pick a lawyer to equip in <font color="%s">Office %d</font>.', G, o.index)
-		else
-			msg = string.format('Pick a lawyer to equip in <font color="%s">Office %d</font>.', G, o.index)
-		end
+		infoText.Text = string.format('Tap a lawyer, then <font color="%s">EQUIP</font> it in an office. Use &lt; &gt; to choose which office.', G)
 	end
-	infoText.Text = msg
 end
 
 local function renderTabs()
-	local waiting = 0
-	for _, c in waitingClients() do
-		if c.Seated then
-			waiting += 1
-		end
-	end
 	local list = lawyers()
 	local bench = 0
 	for _, l in list do
@@ -1250,16 +1252,15 @@ local function renderTabs()
 			bench += 1
 		end
 	end
-	tabLabels.Clients.Text = string.format("CLIENTS (%d)", waiting)
-	tabLabels.Bench.Text = string.format("EQUIP (%d)", bench)
-	for name, b in tabButtons do
-		local s = b:FindFirstChildOfClass("UIStroke") :: UIStroke
-		s.Thickness = if name == tab then 5 else 3
-		s.Color = if name == tab then WHITE else BLACK
-		b.BackgroundTransparency = if name == tab then 0 else 0.35
-	end
-	clientList.Visible = tab == "Clients"
+	benchTabLabel.Text = if bench > 0 then string.format("MY LAWYERS (%d)", bench) else "MY LAWYERS"
+	Skin.selectTab(rail, tabButtons[tab])
+	officesView.Visible = tab == "Offices"
 	benchFrame.Visible = tab == "Bench"
+	allButton.Visible = tab == "Offices"
+	sellAllButton.Visible = tab == "Bench"
+	if tab ~= "Bench" then
+		sellAll.Visible = false
+	end
 	countLabel.Text = string.format("%d / %d lawyers · %d offices", #list, Config.Lawyers.MaxOwned, deskCount())
 end
 
@@ -1267,16 +1268,15 @@ render = function()
 	if deskCount() > 0 and selectedOffice > deskCount() then
 		selectOffice(deskCount())
 	end
-	local o = office(selectedOffice)
-	renderSlots()
-	renderLeft()
 	renderTabs()
-	renderInfo(o)
-	if tab == "Clients" then
-		renderClients(o)
+	renderInfo()
+	if tab == "Offices" then
+		renderSlots()
 	else
-		renderBench(o)
+		renderBench()
 	end
+	renderLeft()
+	renderLeftLive()
 end
 
 -- coalesce bursts of attribute changes into one render
@@ -1298,27 +1298,34 @@ end
 local function fit(): number
 	local camera = workspace.CurrentCamera
 	local view = if camera then camera.ViewportSize else Vector2.new(1280, 720)
-	return math.clamp(math.min((view.X - 24) / W, (view.Y - 24) / H), 0.35, 1)
+	return math.clamp(math.min((view.X - 24) / (W + RAIL_W), (view.Y - 24) / H), 0.35, 1)
+end
+local function place(s: number)
+	panelScale.Scale = s
+	panel.Position = UDim2.new(0.5, -math.floor(RAIL_W / 2 * s), 0.52, 0) -- leave room for the tabs on the right
 end
 
 local function open(opts: any)
 	local o = opts or {}
-	focusClient = o.client
 	if o.office then
 		selectOffice(o.office)
-	elseif o.client then
-		-- from a waiting client: the best free lawyer is preselected, ready to take them
-		selectOffice(bestFreeOffice() or selectedOffice)
 	else
 		local selected = player:GetAttribute("SelectedDesk")
 		selectOffice(if typeof(selected) == "number" then selected else selectedOffice)
 	end
-	tab = o.tab or (if o.client then "Clients" elseif not office(selectedOffice).lawyerId then "Bench" else tab)
-	if tab == "Clients" then
-		tab = "Bench" -- (no waiting room since v16)
+	if o.tab == "Bench" then
+		tab = "Bench"
+		if not o.office then
+			selectOffice(defaultTarget())
+		end
+	elseif o.tab == "Offices" or not panel.Visible then
+		tab = o.tab or "Offices"
+		if tab == "Clients" then
+			tab = "Offices" -- (no waiting room since v16)
+		end
 	end
+	closeDetails()
 	setTextMode(fit()) -- before render(), so new labels start in the right text mode
-	previewKey = nil
 	toastPill.Visible = false
 	render()
 	if not panel.Visible then
@@ -1327,12 +1334,15 @@ local function open(opts: any)
 		shade.BackgroundTransparency = 1
 		tween(shade, 0.2, { BackgroundTransparency = 0.35 })
 		local s = fit()
+		place(s)
 		panelScale.Scale = s * 0.6
 		tween(panelScale, 0.3, { Scale = s }, Enum.EasingStyle.Back)
+		Skin.holdChat(gui, true) -- the chat box would eat taps on the top-left office cards
 		MarkSkinsSeen:FireServer()
 	end
 end
 
+local closePanel: () -> ()
 closePanel = function()
 	if not panel.Visible then
 		return
@@ -1344,12 +1354,8 @@ closePanel = function()
 	task.wait(0.14)
 	panel.Visible = false
 	shade.Visible = false
-	focusClient = nil
-	if previewConn then
-		previewConn:Disconnect()
-		previewConn = nil
-	end
-	previewKey = nil
+	Skin.holdChat(gui, false)
+	closeDetails()
 end
 
 ------------------------------------------------------------------ actions
@@ -1365,15 +1371,23 @@ closeButton.Activated:Connect(function()
 	closePanel()
 end)
 shade.Activated:Connect(closePanel)
+D.popupDim.Activated:Connect(closeDetails)
+D.popupClose.Activated:Connect(closeDetails)
 
-for name, b in tabButtons do
-	b.Activated:Connect(function()
-		tab = name
-		render()
-	end)
-end
+tabButtons.Offices.Activated:Connect(function()
+	tab = "Offices"
+	render()
+end)
+tabButtons.Bench.Activated:Connect(function()
+	if tab ~= "Bench" then
+		tab = "Bench"
+		selectOffice(defaultTarget())
+	end
+	closeDetails()
+	render()
+end)
 
-local function upgrade(target: any, count: any, label: string)
+upgrade = function(target: any, count: any, label: string)
 	if busy then
 		return
 	end
@@ -1395,6 +1409,7 @@ local function upgrade(target: any, count: any, label: string)
 	end
 	render()
 	if ok then
+		aimFx(if typeof(target) == "number" then target else selectedOffice)
 		if target == "all" then
 			task.spawn(upgradeFx.all, before, reason)
 		elseif typeof(target) == "number" and before[target] then
@@ -1440,14 +1455,18 @@ skillsButton.Activated:Connect(function()
 	skillsEvent:Fire(selectedOffice) -- StarterPlayerScripts.Skills opens over this panel
 end)
 
+swapButton.Activated:Connect(function()
+	closeDetails()
+	tab = "Bench"
+	render()
+end)
+
 unseatButton.Activated:Connect(function()
 	if busy then
 		return
 	end
 	local o = office(selectedOffice)
 	if not o.lawyerId then
-		tab = "Bench"
-		render()
 		return
 	end
 	busy = true
@@ -1465,7 +1484,20 @@ unseatButton.Activated:Connect(function()
 		Sfx.play(if o.queued and isBusy(o) then "notify" else "lawyerUnequip", { gap = 0.3 })
 	end
 	flash(msg or (if ok then "Done!" else "Can't do that"), if ok then GREEN else RED)
+	previewKey = nil
 	render()
+end)
+
+local function cycleTarget(step: number)
+	local n = math.max(deskCount(), 1)
+	selectOffice(((selectedOffice - 1 + step) % n) + 1)
+	render()
+end
+prevTarget.Activated:Connect(function()
+	cycleTarget(-1)
+end)
+nextTarget.Activated:Connect(function()
+	cycleTarget(1)
 end)
 
 placeButton.Activated:Connect(function()
@@ -1477,7 +1509,7 @@ placeButton.Activated:Connect(function()
 	local o = office(selectedOffice)
 	local label, enabled = placeAction(o, pick)
 	if not pick then
-		flash("Tap a lawyer below first", RED)
+		flash("Tap a lawyer first", RED)
 		return
 	end
 	if not enabled then
@@ -1489,11 +1521,8 @@ placeButton.Activated:Connect(function()
 	busy = false
 	if ok then
 		Sfx.play(if queued then "notify" else "lawyerEquip", { gap = 0.3 })
-		flash(msg or string.format("%s → Office %d!", lawyerName(pick.Id, pick.Stars), selectedOffice), if queued then Color3.fromRGB(215, 160, 255) else GREEN)
+		flash(msg or string.format("%s → Office %d!", lawyerName(pick.Id, pick.Stars), selectedOffice), if queued then PURPLE else GREEN)
 		benchPick = nil
-		if not queued then
-			previewKey = nil
-		end
 	else
 		flash(msg or "Can't do that", RED)
 	end
@@ -1515,7 +1544,6 @@ bestButton.Activated:Connect(function()
 	if ok then
 		Sfx.play("lawyerEquip", { gap = 0.3 })
 		benchPick = nil
-		previewKey = nil
 	end
 	render()
 end)
@@ -1597,12 +1625,16 @@ sellAllGo.Activated:Connect(function()
 end)
 
 ------------------------------------------------------------------ wiring
--- other scripts: Fire(office) or Fire({ office, client, tab })
+-- other scripts: Fire(office) or Fire({ office, client, tab }) - an empty office opens MY LAWYERS aimed at it
 openEvent.Event:Connect(function(arg: any)
 	if typeof(arg) == "number" then
-		open({ office = arg, tab = if office(arg).lawyerId then nil else "Bench" })
+		open({ office = arg, tab = if office(arg).lawyerId then "Offices" else "Bench" })
 	elseif typeof(arg) == "table" then
-		open(arg)
+		if arg.tab == "Bench" or (arg.office and not office(arg.office).lawyerId) then
+			open({ office = arg.office, tab = "Bench" })
+		else
+			open({ office = arg.office, tab = "Offices" })
+		end
 	else
 		open({ tab = "Bench" })
 	end
@@ -1615,8 +1647,13 @@ player.AttributeChanged:Connect(function(name)
 	if name == "Coins" then
 		if panel.Visible and not busy then
 			renderLeftLive()
+			if tab == "Offices" then
+				for i, refs in slotRefs do
+					paintSlot(refs, office(i))
+				end
+			end
 		end
-	elseif name == "Lawyers" or name == "WaitingClients" or name == "DeskCount" or name == "FreeLevelUps" or string.match(name, "^Desk%d+") then
+	elseif name == "Lawyers" or name == "DeskCount" or name == "FreeLevelUps" or string.match(name, "^Desk%d+") then
 		queueRender()
 	end
 end)
@@ -1634,13 +1671,12 @@ task.spawn(function()
 	while true do
 		task.wait(0.25)
 		if panel.Visible and not busy then
-			for i, refs in slotRefs do
-				paintSlot(refs, office(i))
+			if tab == "Offices" then
+				for i, refs in slotRefs do
+					paintSlot(refs, office(i))
+				end
 			end
 			renderLeftLive()
-			if tab == "Clients" then
-				renderInfo(office(selectedOffice))
-			end
 		end
 	end
 end)
@@ -1651,7 +1687,7 @@ local function watchCamera()
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
 			if panel.Visible then
-				panelScale.Scale = fit()
+				place(fit())
 				setTextMode(panelScale.Scale)
 			end
 		end)

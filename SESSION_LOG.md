@@ -14,8 +14,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
   **2026-10-23 (crnuch's call): UI v3 = "exactly that style" of crnuch's reference video (palm_dev shop clip),
-  every button and pop-up.** Spec: docs/UI_STYLE_V3.md. Skin v3 + the Shop first (this session), then the rest
-  screen by screen. Don't restyle Skin or any screen meanwhile.
+  every button and pop-up.** Spec: docs/UI_STYLE_V3.md. Skin v3, fonts, Shop, LAWYERS, HUD done (entry 2026-10-23);
+  the remaining screens next, one per session. Don't restyle Skin or any screen meanwhile.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
@@ -228,6 +228,39 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-23 — crnuch, local session: UI v3 (the reference-video style), fonts, purple windows, LAWYERS rebuilt
+- **Read Codex's visual-polish research** (branch `codex/visual-polish-research`, 9 docs, 22 videos). Its branch forked
+  2026-10-13 and also carries code + an economy change (TrainBase 800 -> 2000): don't merge it whole; take docs only.
+- **crnuch's calls today:** every button and pop-up gets "exactly that" art style of crnuch's reference video
+  (`~/Downloads/v15025gf0000dbc1psfog65g6ag34m9g.MP4`, a palm_dev Roblox shop clip); the fonts are the video UI's
+  fonts game-wide (Gotham Black / Bold); **no gray** (deep purple windows, muted-purple inactive buttons); no gold
+  hover ring; the LAWYERS screen was "confusing, a lot going on"; the SHOP tile double-wide on top of the menu.
+- **Spec:** docs/UI_STYLE_V3.md (+ `references/ui-v3/`). Motion was measured from frame differences over the
+  still-camera stretches, not guessed: breathing hero pictures, turning sunbursts, twinkles, a "//" glint on buy
+  buttons, a press ripple, a drop-in / slide-up announcement pill.
+- **LIVE in Studio + playtested** (snapshot refreshed): `Shared.Skin` v3 (stripes, glint, ripple, breathe / spin, tag,
+  tile, coloured side tabs + selectTab, Button.setState default / disabled / pending / owned, sky announcement toast,
+  deep purple body, wide HUD tile, `Skin.holdChat`), `Shared.UIFonts` (Gotham), `Shared.UIKit` (v3 bands, glint,
+  ripple, purple panels, no tilt), `Shared.HudMenu` (a Top row for WIDE tiles: the Shop), new
+  `StarterPlayerScripts.Fonts` (converts every other font) + `StyleV3` (v3 look on hand-built screens' buttons and
+  panels), `Shop` (gold header, "+N% more" tags from coins per Robux, FREE! tags, glinting buy buttons, coloured tabs
+  that follow the scroll, owned = gold), `Lawyers` v3 (two side tabs: OFFICES cards with one button each + a details
+  pop-up; MY LAWYERS cards + a picked-lawyer column with EQUIP IN OFFICE N, < > to choose the office, SELL, LOCK; the
+  dead CLIENTS code is gone). Playtest: 694/694 labels on Gotham; Offices / My lawyers / details pop-up / equip
+  target all checked on screen.
+- **Found while testing:** Roblox's chat box (top-left) eats taps on whatever is under it - Office 1's card couldn't be
+  tapped. Windows now hide it while open (`Skin.holdChat`). Studio MCP's mouse tool adds the top-bar inset when it
+  aims at an element in an IgnoreGuiInset screen (clicks land 58 px low): aim by AbsolutePosition math or check with
+  hooks before calling something broken.
+- **Heads-up for mr.robe:** the live Mutation Machine (`Merger`) was an OLDER version than your 8f73372, and
+  `Shared.MutationFx` was missing from the place when I exported at the start of this session (snapshot commit 3476176).
+  Not touched here. Also live but not in git before today: VIP / promo / free-claim shop code (`VIPService`,
+  `PromoAdmin`, `PromoPolicy`, `ClaimFreeShopReward`).
+- **Next (UI v3 rollout, one screen per session):** Rebirth, Firm stage-up, Big Case, Minigames, Daily Rewards,
+  Skills, Manager, Courtroom, Travel onto Skin v3 (StyleV3 only recolours them). Common's rarity colour is gray
+  (`Config.RarityColors`) - crnuch to decide if it changes. Monetization ideas from the video (cheap Starter Pack,
+  cheap 2x, prompt the smallest cash pack on a shortfall) need crnuch's yes.
 
 ## 2026-10-22 — mr.robe, local session: mutations fixed + the Mutation Machine rebuilt (3D menu + an animated sequence)
 - **User's call (mr.robe, 2026-10-21):** "fix the mutations, they don't work right now and i want a better 3d looking

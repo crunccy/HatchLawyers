@@ -1,20 +1,23 @@
 --!strict
--- The game's typography, in one place (bold Roblox-simulator style, young audience):
---   Primary  FredokaOne        buttons, headings, menus, HUD, money (big + outlined)
---   Title    LuckiestGuy       big moments only: hatch reveals, WIN!, merges, rewards, unlocks
---   Body     BuilderSansMedium descriptions and small print (readable at small sizes)
+-- The game's typography, in one place. v3 (crnuch's call 2026-10-23, docs/UI_STYLE_V3.md): ONE family, the one in
+-- crnuch's reference video's UI - Gotham Black for everything big (buttons, headings, menus, HUD, money, big
+-- moments), Gotham Bold for descriptions and small print. No Fredoka / Luckiest Guy / Builder Sans anywhere;
+-- StarterPlayerScripts.Fonts converts any that a script still sets.
+--   Primary  GothamBlack  buttons, headings, menus, HUD, money (big + outlined)
+--   Title    GothamBlack  big moments: hatch reveals, WIN!, merges, rewards, unlocks
+--   Body     GothamBold   descriptions and small print
 -- Important text gets a thick black outline (UIFonts.outline). Use these instead of naming fonts in scripts.
 
 local UIFonts = {}
 
-UIFonts.Primary = Enum.Font.FredokaOne
-UIFonts.Title = Enum.Font.LuckiestGuy
-UIFonts.Body = Enum.Font.BuilderSansMedium
+UIFonts.Primary = Enum.Font.GothamBlack
+UIFonts.Title = Enum.Font.GothamBlack
+UIFonts.Body = Enum.Font.GothamBold
 
 -- FontFace versions (for scripts that use FontFace)
-UIFonts.PrimaryFace = Font.fromEnum(Enum.Font.FredokaOne)
-UIFonts.TitleFace = Font.fromEnum(Enum.Font.LuckiestGuy)
-UIFonts.BodyFace = Font.fromEnum(Enum.Font.BuilderSansMedium)
+UIFonts.PrimaryFace = Font.fromEnum(Enum.Font.GothamBlack)
+UIFonts.TitleFace = Font.fromEnum(Enum.Font.GothamBlack)
+UIFonts.BodyFace = Font.fromEnum(Enum.Font.GothamBold)
 
 -- Thick black rounded outline on a text object (adds or updates its UIStroke).
 function UIFonts.outline(label: TextLabel | TextButton, thickness: number?): UIStroke
@@ -31,13 +34,13 @@ function UIFonts.outline(label: TextLabel | TextButton, thickness: number?): UIS
 	return s
 end
 
--- Big-moment text: LuckiestGuy + outline.
+-- Big-moment text: Gotham Black + outline.
 function UIFonts.title(label: TextLabel | TextButton, thickness: number?)
 	label.Font = UIFonts.Title
 	UIFonts.outline(label, thickness or 4)
 end
 
--- Description / small print: BuilderSansMedium (no outline on light panels).
+-- Description / small print: Gotham Bold (no outline on light panels).
 function UIFonts.body(label: TextLabel | TextButton)
 	label.Font = UIFonts.Body
 end

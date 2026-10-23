@@ -342,6 +342,14 @@ function Skin.pressable(button: GuiButton, hoverScale: number?): UIScale
 			s.Scale = 0.9
 			tween(s, 0.28, { Scale = 1 }, Enum.EasingStyle.Back)
 		end
+		-- a click that opens a window covers the button, so MouseLeave never comes: drop the hover size once the
+		-- pointer isn't on it any more (a HUD tile stayed big next to the wide Shop tile, 2026-10-23)
+		task.delay(0.35, function()
+			if button.Parent then
+				over = false
+				tween(s, 0.2, { Scale = 1 }, Enum.EasingStyle.Quad)
+			end
+		end)
 	end)
 	return s
 end
@@ -567,6 +575,10 @@ function Skin.window(opts: { [string]: any }): Window
 		IgnoreGuiInset = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = player:WaitForChild("PlayerGui"),
 	})
 	gui:SetAttribute("SkinBuilt", true) -- StarterPlayerScripts.UISkin (old auto-skin) must leave these screens alone
+	-- (a script that closes the window by setting Enabled still gives the chat box back)
+	gui:GetPropertyChangedSignal("Enabled"):Connect(function()
+		Skin.holdChat(gui, gui.Enabled)
+	end)
 	local dim = make("TextButton", {
 		Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
 		Text = "", AutoButtonColor = false, BorderSizePixel = 0, Parent = gui,
@@ -657,6 +669,7 @@ function Skin.window(opts: { [string]: any }): Window
 		gui.Enabled = true
 		playSfx("open")
 		Skin.blurFor(gui)
+		Skin.holdChat(gui, true)
 		dim.BackgroundTransparency = 1
 		tween(dim, 0.2, { BackgroundTransparency = 0.35 })
 		scale.Scale = 0.7 * fit()
@@ -674,6 +687,7 @@ function Skin.window(opts: { [string]: any }): Window
 		local t = tween(scale, 0.14, { Scale = 0.75 * fit() }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
 		t.Completed:Wait()
 		gui.Enabled = false
+		Skin.holdChat(gui, false)
 		busy = false
 		for _, h in closeHandlers do
 			task.spawn(h)
@@ -883,6 +897,28 @@ function Skin.selectTab(rail: GuiObject, selected: GuiObject?)
 	end
 end
 
+------------------------------------------------------------------ v3: Roblox's chat box steps aside for windows
+-- The chat window (top-left, ~475 x 175) sits over every ScreenGui and eats taps meant for a window under it (the
+-- LAWYERS panel's Office 1 couldn't be tapped, 2026-10-23). While any window holds it, the chat box is hidden; it
+-- comes back when the last one closes. Skin.window does this itself; hand-built windows call it on open / close.
+local chatHolders: { [any]: boolean } = {}
+local chatWas: boolean? = nil
+function Skin.holdChat(key: any, on: boolean)
+	chatHolders[key] = if on then true else nil
+	local cfg = game:GetService("TextChatService"):FindFirstChildOfClass("ChatWindowConfiguration")
+	if not cfg then
+		return
+	end
+	local any = next(chatHolders) ~= nil
+	if any and chatWas == nil then
+		chatWas = cfg.Enabled
+		cfg.Enabled = false
+	elseif not any and chatWas ~= nil then
+		cfg.Enabled = chatWas
+		chatWas = nil
+	end
+end
+
 ------------------------------------------------------------------ v2: world blur behind open windows
 -- One BlurEffect in (local) Lighting, faded in while any Skin.window is open. Each window's ScreenGui is watched,
 -- so a script that closes a window by setting Enabled directly still lets the blur go.
@@ -999,7 +1035,8 @@ end
 -- The reference's square HUD tile: gradient + studs, white inner rim, ink outline + lip, sparkle glints, the PNG
 -- icon overflowing the top, the label overlapping the bottom edge, a red badge top-right. Hover x1.08, press x0.9.
 -- opts: Name, Parent, Label, Icon (HudMenu.Icons key or id), Color (swatch / name / Color3), Size (px, 88),
--- LayoutOrder, Position, AnchorPoint.
+-- LayoutOrder, Position, AnchorPoint. v3: Width (px) > Size makes a WIDE tile (the Shop): big breathing icon on the
+-- left, a big label beside it, and a glint sweep - it should be the one that stands out.
 export type HudTile = {
 	holder: Frame,
 	button: TextButton,
@@ -1012,10 +1049,12 @@ export type HudTile = {
 }
 function Skin.hudTile(opts: { [string]: any }): HudTile
 	local px = opts.Size or 88
+	local width = opts.Width or px
+	local wide = width > px
 	local sw = Skin.swatch(opts.Color or "Sky")
 	local name = opts.Name or "Tile"
 	local holder = make("Frame", {
-		Name = name, Size = UDim2.fromOffset(px, px), Position = opts.Position, AnchorPoint = opts.AnchorPoint,
+		Name = name, Size = UDim2.fromOffset(width, px), Position = opts.Position, AnchorPoint = opts.AnchorPoint,
 		BackgroundTransparency = 1, LayoutOrder = opts.LayoutOrder, Parent = opts.Parent,
 	})
 	holder:SetAttribute("NoSkin", true)
@@ -1043,14 +1082,26 @@ function Skin.hudTile(opts: { [string]: any }): HudTile
 	Skin.sparkle(button, UDim2.fromScale(0.2, 0.22), math.floor(px * 0.17), 3, 0)
 	Skin.sparkle(button, UDim2.fromScale(0.84, 0.6), math.floor(px * 0.11), 3, 1.1)
 	local icon = make("ImageLabel", {
-		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.38), Size = UDim2.fromScale(1.08, 1.08),
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = if wide then UDim2.new(0, math.floor(px * 0.55), 0.42, 0) else UDim2.fromScale(0.5, 0.38),
+		Size = if wide then UDim2.fromOffset(math.floor(px * 1.25), math.floor(px * 1.25)) else UDim2.fromScale(1.08, 1.08),
 		BackgroundTransparency = 1, Image = Skin.icon(opts.Icon), ScaleType = Enum.ScaleType.Fit, ZIndex = 4, Interactable = false, Parent = button,
 	})
 	local labelText = opts.Label or ""
-	local label = text({
-		Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, -3), Size = UDim2.new(1, 18, 0, math.floor(px * 0.34)),
-		Text = labelText, ZIndex = 6, Parent = button,
-	}, math.floor(px * 0.3), 3)
+	local label = if wide
+		then text({
+			Name = "Label", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, math.floor(px * 1.08), 0.5, 0),
+			Size = UDim2.new(1, -math.floor(px * 1.14), 0, math.floor(px * 0.56)), Text = string.upper(labelText), ZIndex = 6, Parent = button,
+		}, math.floor(px * 0.5), 4)
+		else text({
+			Name = "Label", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, -3), Size = UDim2.new(1, 18, 0, math.floor(px * 0.34)),
+			Text = labelText, ZIndex = 6, Parent = button,
+		}, math.floor(px * 0.3), 3)
+	if wide then
+		Skin.stripes(button, 0.8, 4, 0.06)
+		Skin.glint(button, 2.4)
+		Skin.breathe(icon, 6, 0.5)
+	end
 	-- red badge (a count or "!") top-right; the alert is the same red "!" (beside the badge if both show)
 	local function redDot(dotName: string): (Frame, TextLabel)
 		local d = make("Frame", {

@@ -55,6 +55,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | World ambience (per-zone fog, lighting, grading, ambient particles; client-only) | [docs/AMBIENCE.md](docs/AMBIENCE.md), shots in `art/ambience/` |
 | Eggs v5: Blender eggs, hatch, incubator (pipeline, upload, install) | [docs/EGGS_V5.md](docs/EGGS_V5.md) |
 | UI overhaul (2026-10-18): reference analysis, audit of every UI surface, icon ids, plan | [docs/UI_OVERHAUL.md](docs/UI_OVERHAUL.md); Figma design system: figma.com/design/PtgoaIbriizMlKEDFVxc8Q (Starter plan: Figma MCP = 20 calls/month) |
+| **UI v3 (2026-10-23, crnuch's reference video): THE current UI look** - fonts, stripes, motion, purple windows | [docs/UI_STYLE_V3.md](docs/UI_STYLE_V3.md), stills in `references/ui-v3/` |
 | Character style (lawyers, clients, Judge) — brick style, kit, rarity ladder | [docs/CHARACTER_STYLE.md](docs/CHARACTER_STYLE.md), kit: [tools/brick/BrickKit.lua](tools/brick/BrickKit.lua) |
 | Blender scripts | `tools/` (`firm_kit.py`, `firm_pieces.py`, `clients_v2.py`, …) — some still untracked |
 | Art references, `.fbx` exports | user's local `HatchLawyers` folder — not in git |
@@ -110,16 +111,23 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   wood light 214,140,70 · wood dark 122,70,34 · floor 222,160,96 · wall cream 246,226,180 · sign green 98,205,48.
   UI: white panels, ink 40,40,52, green 98,205,48, orange 255,160,24, gold 255,200,40, red 240,70,70.
   Rarity colors come from `Config.RarityColors`.
-- **Fonts** (`ReplicatedStorage.Shared.UIFonts`): **FredokaOne** for buttons, headings, menus, HUD and money (money
-  bigger); **LuckiestGuy** only for big moments (hatch reveal name, NEW!, WIN!, MERGED!, reward pop-ups, verdict);
-  **BuilderSansMedium** for descriptions and small print. White text + thick black UIStroke on important text.
+- **Fonts (crnuch's call 2026-10-23: the reference video's UI fonts, game-wide):** **Gotham Black** for everything big
+  (buttons, headings, menus, HUD, money, big moments) and **Gotham Bold** for descriptions and small print - via
+  `Shared.UIFonts` / `Skin.Fonts`. Fredoka One, Luckiest Guy and Builder Sans are retired;
+  `StarterPlayerScripts.Fonts` converts any a script or model still sets (opt out: attribute `KeepFont`).
+  White text + thick black UIStroke on important text.
   No serif / navy / brass. **No words over the Manager's head** — user's call. Lawyers AND clients get overhead name tags (user's calls
   2026-10-09, `StarterPlayerScripts.LawyerTags`, mirrored in `src/LawyerTags.client.lua`): "Steal a Brainrot" style —
   no panel, stacked bold text with thick black outlines. Lawyers: Gold/Rainbow tier · name · rarity · Earns xN (+ case
   pop-ups). Clients (compact): name · "Rarity · Pays xN". Tags are stud-sized but clamped up close (NEAR_LIMIT).
-- **UI:** big rounded buttons, thick black outlines, bouncy Back-eased tweens, scale to fit phones. Panels are dark
-  studded purple with purple striped headers (Shop / Merger / LAWYERS; UIKit restyles older ones to match). HUD menu
-  tiles ONLY via `Shared.HudMenu.button` (one column, never hand-placed); icons are PNGs in `HudMenu.Icons` - no emoji.
+- **UI (v3, docs/UI_STYLE_V3.md):** window bodies are plain **deep purple** (`Skin.Panel` 3A1F6B - crnuch: no gray,
+  ever; inactive buttons are muted purple 6E5A96, not gray), coloured headers with diagonal light stripes, coloured side
+  tabs, rarity-coloured cards, red value tags, a glint on the main buy / claim button, press ripple, breathing pictures.
+  No gold hover ring (crnuch). Build new screens on `Shared.Skin`; `StarterPlayerScripts.StyleV3` brings hand-built
+  screens' buttons / panels to the same look until they're rebuilt. HUD menu tiles ONLY via `Shared.HudMenu.button`
+  (never hand-placed): a 2-column grid, with the **Shop as a double-width tile on top** (`HudMenu` WIDE). Icons are PNGs
+  in `HudMenu.Icons` - no emoji. Roblox's chat box eats taps on whatever is under it: windows call `Skin.holdChat`
+  (Skin.window does) so it hides while they're open.
 - **Effects** (`ReplicatedStorage.Shared.Effects`, mirrored in `src/Effects.lua`; textures from
   `tools/vfx_textures.py` (v2, anime style from the user's 4 reference images) + `tools/effects_textures.py` (v1);
   ids in `Models - Effects/ASSET_IDS.md`). Ladder: Rare = ICE, Epic = ENERGY orb, Legendary = FIRE tornado,
@@ -224,9 +232,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   - `AdminCommands` — chat commands for crnuch + mr_blox174 (and anyone in a Studio playtest): `/hatch <rarity> [egg] [golden]`
     (a preview hatch, nothing saved), `/eggs <count> [egg] [golden]`, `/coins <amount>`, `/island <name>` (visit a
     redesign island), `/islands on|off` (Studio only: egg zones on the islands), `/help` (`;` works too).
-- `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (THE lawyer screen since
-  2026-10-09: office slots bar, office card with upgrade/skills/unseat, CLIENTS tab to assign, BENCH tab to place/
-  swap/merge; `SkinInventory` is disabled), `ClientWalk`, `AssignClients` (only the [E] prompts now), `Guide`.
+- `StarterPlayerScripts` — ours: `Eggs` (hatch screen, odds board, egg bob), `Lawyers` (THE lawyer screen; v3
+  2026-10-23: two side tabs - OFFICES = office cards with one UPGRADE / EQUIP button each, tap a picture for the
+  details pop-up (MAX / SKILLS / UNEQUIP / SWAP); MY LAWYERS = lawyer cards, pick one for EQUIP IN OFFICE N / SELL /
+  LOCK; `SkinInventory` is disabled), `Fonts`, `StyleV3`, `ClientWalk`, `AssignClients` (only the [E] prompts now), `Guide`.
   There is no office card at the bottom of the HUD any more. mr.robe's logic, our styling: `Hud`, `Courtroom`, `DeskProgress`.
 - `ServerStorage.Templates` — `FirmKitParts` (the firm as Plastic Parts, preferred), `FirmKit` (old textured
   meshes, fallback), `Clients` (9 block-style clients),

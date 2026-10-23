@@ -7,6 +7,8 @@
 -- Chunky 3D buttons (gradient + gloss + dark lip + ink outline + shine sweep, bouncy hover / squish press),
 -- navy checker panels, colourful header bars, icons from one sprite sheet, pop-in and attention pulses.
 -- StarterPlayerScripts.UISkin applies these to every screen automatically; scripts can also call them directly.
+-- v3 (2026-10-23, docs/UI_STYLE_V3.md): matches Skin v3 until each old screen is rebuilt on Skin - charcoal panels,
+-- diagonal light bands on every coloured button, a "//" double glint, Gotham Black, grow-only hover (no tilt).
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -42,9 +44,9 @@ local function hex(h: string): Color3
 	return Color3.fromHex(h)
 end
 UIKit.Colors = {
-	Ink = hex("1E1633"),
-	PanelTop = hex("3C3858"),
-	PanelBottom = hex("272539"),
+	Ink = hex("15131C"), -- v3: Skin.Ink
+	PanelTop = hex("43247A"), -- v3: deep purple like Skin.Panel (crnuch: "not gray")
+	PanelBottom = hex("321A5E"),
 	Gold = hex("FFC93C"),
 	Text = Color3.new(1, 1, 1),
 	TextSoft = hex("D6D2F5"),
@@ -319,7 +321,7 @@ function UIKit.skinButton(btn: GuiButton, style: string?)
 		x.AnchorPoint = Vector2.new(0.5, 0.5)
 		x.Position = UDim2.fromScale(0.5, 0.47)
 		x.Size = UDim2.fromScale(0.8, 0.8)
-		x.FontFace = Font.fromEnum(Enum.Font.LuckiestGuy)
+		x.FontFace = Font.fromEnum(Enum.Font.GothamBlack)
 		x.Text = "X"
 		x.TextScaled = true
 		x.TextColor3 = Color3.new(1, 1, 1)
@@ -331,6 +333,27 @@ function UIKit.skinButton(btn: GuiButton, style: string?)
 		x.Parent = btn
 	end
 
+	-- v3: the reference's diagonal light bands across coloured buttons (Skin.stripes' look)
+	if style ~= "light" and style ~= "close" then
+		local bands = layer(btn, "UIKitStripes")
+		bands.Size = UDim2.fromScale(1, 1)
+		bands.BackgroundColor3 = Color3.new(1, 1, 1)
+		bands.BackgroundTransparency = 0
+		local bg = child(bands, "UIGradient", "Bands")
+		bg.Rotation = 30
+		local keys = { NumberSequenceKeypoint.new(0, 1) }
+		for i = 0, 2 do
+			local c = (i + 0.5) / 3
+			table.insert(keys, NumberSequenceKeypoint.new(c - 0.044, 1))
+			table.insert(keys, NumberSequenceKeypoint.new(c - 0.04, 0.82))
+			table.insert(keys, NumberSequenceKeypoint.new(c + 0.04, 0.82))
+			table.insert(keys, NumberSequenceKeypoint.new(c + 0.044, 1))
+		end
+		table.insert(keys, NumberSequenceKeypoint.new(1, 1))
+		bg.Transparency = NumberSequence.new(keys)
+		cornerLike(btn, bands)
+	end
+
 	-- shine sweep (coloured buttons big enough to notice)
 	if style ~= "light" and style ~= "rarity" and btn.AbsoluteSize.X >= 60 then
 		local shine = layer(btn, "UIKitShine")
@@ -339,11 +362,16 @@ function UIKit.skinButton(btn: GuiButton, style: string?)
 		shine.BackgroundTransparency = 0
 		local sg = child(shine, "UIGradient", "Band")
 		sg.Rotation = 20
-		sg.Transparency = NumberSequence.new({
+		sg.Transparency = NumberSequence.new({ -- v3: a "//" pair (wide + thin), like the reference's glint
 			NumberSequenceKeypoint.new(0, 1),
-			NumberSequenceKeypoint.new(0.42, 1),
-			NumberSequenceKeypoint.new(0.5, 0.45),
-			NumberSequenceKeypoint.new(0.58, 1),
+			NumberSequenceKeypoint.new(0.4, 1),
+			NumberSequenceKeypoint.new(0.405, 0.3),
+			NumberSequenceKeypoint.new(0.47, 0.3),
+			NumberSequenceKeypoint.new(0.475, 1),
+			NumberSequenceKeypoint.new(0.5, 1),
+			NumberSequenceKeypoint.new(0.505, 0.45),
+			NumberSequenceKeypoint.new(0.525, 0.45),
+			NumberSequenceKeypoint.new(0.53, 1),
 			NumberSequenceKeypoint.new(1, 1),
 		})
 		sg.Offset = Vector2.new(-1.2, 0)
@@ -359,7 +387,6 @@ function UIKit.skinButton(btn: GuiButton, style: string?)
 		scale.Parent = btn
 	end
 	local base = scale.Scale
-	local tilt = if math.random() < 0.5 then -2 else 2
 	local function current(): number
 		return if ownScale then 1 else base
 	end
@@ -368,10 +395,7 @@ function UIKit.skinButton(btn: GuiButton, style: string?)
 		if not ownScale then
 			base = scale.Scale
 		end
-		tween(scale, 0.22, { Scale = current() * 1.08 }, Enum.EasingStyle.Back)
-		if style ~= "light" then
-			tween(btn, 0.22, { Rotation = tilt }, Enum.EasingStyle.Back)
-		end
+		tween(scale, 0.22, { Scale = current() * 1.06 }, Enum.EasingStyle.Back) -- v3: grow only (no tilt), like Skin
 	end)
 	btn.MouseLeave:Connect(function()
 		hovered[btn] = nil
@@ -383,10 +407,16 @@ function UIKit.skinButton(btn: GuiButton, style: string?)
 		tween(scale, 0.07, { Scale = current() * 0.9 })
 	end)
 	btn.MouseButton1Up:Connect(function()
-		tween(scale, 0.3, { Scale = current() * (if btn.GuiState == Enum.GuiState.Hover then 1.08 else 1) }, Enum.EasingStyle.Back)
+		tween(scale, 0.3, { Scale = current() * (if btn.GuiState == Enum.GuiState.Hover then 1.06 else 1) }, Enum.EasingStyle.Back)
 	end)
-	btn.Activated:Connect(function()
+	btn.Activated:Connect(function(input: InputObject?)
 		UIKit.sweep(btn)
+		-- v3: the same press ripple as Skin buttons (Skin is looked up lazily; it never requires UIKit)
+		local sk = script.Parent:FindFirstChild("Skin")
+		if sk and style ~= "close" then
+			local at = if input and input.Position then Vector2.new(input.Position.X, input.Position.Y) else nil
+			;(require(sk) :: any).ripple(btn, at)
+		end
 	end)
 
 	if ownScale and style ~= "light" and isPrimary(btn) then
@@ -446,7 +476,7 @@ function UIKit.skinPanel(frame: GuiObject)
 	g.Parent = frame
 	UIKit.corner(frame, if frame.AbsoluteSize.Y < 80 then 14 else 20)
 	UIKit.outline(frame, if frame.AbsoluteSize.X < 300 then 4 else 5)
-	UIKit.checker(frame, 0.92)
+	UIKit.checker(frame, 0.97) -- v3: the body pattern is nearly gone (plain deep purple)
 end
 
 -- tiled checker overlay under the element's children
