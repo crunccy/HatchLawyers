@@ -11,10 +11,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- Codex · visual research batch 4: inventory mode clarity and mobile footage, documentation only · since 2026-10-23
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-23 — crnuch, local session: inventory and animation research batch 4 (Codex)
+
+- Added `docs/VIDEO_RESEARCH_BATCH_04.md`, V18–V20: inventory action-mode visibility, recent PS99 collection cards, and animation-event synchronization.
+- Library now contains twenty sampled video references. Added concrete cue ownership/cleanup and inventory-state review cases. Updated index and removed stale count from the implementation brief.
+- Mobile-source search did not establish touch behavior; explicitly retained that gap. No direct audio listening or complete-video-viewing claims.
+- Docs only on PR #11; no Studio/game changes or runtime tests. Existing gameplay authority, systems and art sequence preserved. Research claim released.
 
 ## 2026-10-23 — crnuch, local session: map and UI visual research batch 3 (Codex)
 
