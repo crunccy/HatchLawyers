@@ -30,6 +30,7 @@ local function onPlayerAdded(player: Player)
 	if not data or player.Parent == nil then
 		return
 	end
+	ShopService.onDataLoaded(player)
 	local firm = PlotService.assign(player)
 	if not firm then
 		PlayerData.release(player)

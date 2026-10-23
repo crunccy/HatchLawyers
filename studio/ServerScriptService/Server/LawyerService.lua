@@ -14,8 +14,7 @@
 --                              lawyer at the same tier (see below).
 --   MergeSelected({uids})      the MUTATION MACHINE (Hub.MergeMachine, the old Lawyer Merger): the player picks
 --                              exactly MergeCount lawyers, the server checks every one (owned, distinct, same lawyer
---                              + tier, not max, not locked, not queued for an office) and rolls. A pick on a case
---                              is waited for (never pulled out mid-case); MergeSelected("cancel") stops the wait.
+--                              + tier, not max, not busy, not queued for an office) and rolls.
 --   MUTATING (2026-10-13, user's calls): `Stars` is the mutation tier (1 Normal, 2 Shiny, 3 Diamond, 4 Cosmic,
 --   Config.Lawyers.Mutations). Success (Formulas.mutateChance): the first pick (or the one in an office) keeps its
 --   uid/office and goes up a tier. A FIZZLE takes all of them. It's refused if it would leave you with no lawyers.
@@ -558,12 +557,24 @@ function mergeInto(player: Player, data: PlayerData.Data, uid: string, used: { s
 	return true, Formulas.lawyerName(base.Id, base.Stars), "mutated"
 end
 
--- The Mutation Machine's picks as they are right now: ok (or false + why not) and the offices of the picks that are
--- still working a case. Runs again on every step of a wait, so a pick sold / locked / moved meanwhile stops it.
-local function checkPicks(player: Player, data: PlayerData.Data, uids: { any }): (boolean, string?, { number }?)
+-- The Mutation Machine: exactly the lawyers the player picked. Returns ok, the lawyer's name it went for (or the
+-- reason it refused), the mutated lawyer's uid (nil if it fizzled) and "mutated" | "fizzled".
+local function mergeSelected(player: Player, picks: unknown): (boolean, string?, string?, string?)
+	if throttled(player) then
+		return false, "Slow down!"
+	end
+	local data = PlayerData.get(player)
+	if not data then
+		return false, "Still loading"
+	end
+	local need = Config.Lawyers.MergeCount
+	if type(picks) ~= "table" or #(picks :: { any }) ~= need then
+		return false, string.format("Pick %d lawyers", need)
+	end
+	-- only the array part counts (a hand-made table could carry extra keys that would also be merged away)
+	local uids = table.move(picks :: { any }, 1, need, 1, {})
 	local seen: { [string]: boolean } = {}
 	local first: PlayerData.LawyerData? = nil
-	local busy = {}
 	for _, u in uids do
 		if type(u) ~= "string" or not data.Lawyers[u] then
 			return false, "You don't have that lawyer"
@@ -580,90 +591,16 @@ local function checkPicks(player: Player, data: PlayerData.Data, uids: { any }):
 		if lawyer.Locked then
 			return false, "Unlock it first" -- a lock keeps a lawyer safe from selling AND from a fizzle
 		end
-		if queuedForOffice(player, data, u) then
-			return false, "One of them is about to go into an office!"
-		end
 		local at = PlayerData.officeOf(data, u)
 		if at and not officeFree(player, at) then
-			table.insert(busy, at)
+			return false, "One of them is busy with a case!"
+		end
+		if queuedForOffice(player, data, u) then
+			return false, "One of them is about to go into an office!"
 		end
 	end
 	if (first :: PlayerData.LawyerData).Stars >= #Config.Lawyers.StarEarn then
 		return false, "Already Cosmic!"
-	end
-	return true, nil, busy
-end
-
--- players whose Mutation Machine is waiting for picks to finish their cases (MergeSelected("cancel") stops it)
-local waiting: { [Player]: { cancelled: boolean } } = {}
-
--- The Mutation Machine: exactly the lawyers the player picked. Returns ok, the lawyer's name it went for (or the
--- reason it refused), the mutated lawyer's uid (nil if it fizzled) and "mutated" | "fizzled".
--- A pick working a case in its office is never pulled out mid-case (2026-10-21, mr.robe: "they don't work" - offices
--- are almost never idle since clients walk straight in, so every set with an office lawyer was refused as busy):
--- the call WAITS (up to Config.Lawyers.MutateWait s) until every pick is free, keeping new clients away from the
--- picks' offices that are already free (CaseService.hold), then mutates at once. MergeSelected("cancel") stops a wait.
-local function mergeSelected(player: Player, picks: unknown): (boolean, string?, string?, string?)
-	if picks == "cancel" then
-		local w = waiting[player]
-		if w then
-			w.cancelled = true
-		end
-		return w ~= nil, "Cancelled"
-	end
-	if throttled(player) then
-		return false, "Slow down!"
-	end
-	if waiting[player] then
-		return false, "The machine is already waiting for your lawyers!"
-	end
-	local data = PlayerData.get(player)
-	if not data then
-		return false, "Still loading"
-	end
-	local need = Config.Lawyers.MergeCount
-	if type(picks) ~= "table" or #(picks :: { any }) ~= need then
-		return false, string.format("Pick %d lawyers", need)
-	end
-	-- only the array part counts (a hand-made table could carry extra keys that would also be merged away)
-	local uids = table.move(picks :: { any }, 1, need, 1, {})
-	local ok, reason, busy = checkPicks(player, data, uids)
-	if not ok then
-		return false, reason
-	end
-	if #(busy :: { number }) > 0 then
-		local w = { cancelled = false }
-		waiting[player] = w
-		local deadline = os.clock() + Config.Lawyers.MutateWait
-		while true do
-			-- the picks already free stay free: no new client sits down with them meanwhile
-			for _, u in uids do
-				local at = PlayerData.officeOf(data, u :: string)
-				if at and officeFree(player, at) then
-					CaseService.hold(player, at, 1)
-				end
-			end
-			task.wait(0.2)
-			local fresh = PlayerData.get(player)
-			if w.cancelled or not player.Parent or not fresh then
-				waiting[player] = nil
-				return false, "Cancelled"
-			end
-			data = fresh :: PlayerData.Data
-			ok, reason, busy = checkPicks(player, data, uids)
-			if not ok then
-				waiting[player] = nil
-				return false, reason
-			end
-			if #(busy :: { number }) == 0 then
-				break -- (no yield from here to mergeInto: nothing can change the picks in between)
-			end
-			if os.clock() > deadline then
-				waiting[player] = nil
-				return false, "They're still busy - try again soon!"
-			end
-		end
-		waiting[player] = nil
 	end
 	-- keep the one sitting in an office (it stays at its desk), else the first pick
 	local keep = uids[1] :: string
@@ -679,8 +616,8 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 			table.insert(used, u :: string)
 		end
 	end
-	local done, name, result = mergeInto(player, data, keep, used)
-	if done then
+	local ok, name, result = mergeInto(player, data, keep, used)
+	if ok then
 		local machine = workspace:FindFirstChild("Hub") and workspace.Hub:FindFirstChild("MergeMachine")
 		if machine and machine:IsA("Model") then -- everyone near the machine sees it go off (or fizzle: a grey puff)
 			local box, size = machine:GetBoundingBox()
@@ -692,7 +629,7 @@ local function mergeSelected(player: Player, picks: unknown): (boolean, string?,
 			end
 		end
 	end
-	return done, name, if done and result == "mutated" then keep else nil, result
+	return ok, name, if ok and result == "mutated" then keep else nil, result
 end
 
 ------------------------------------------------------------------ selling + locking
@@ -806,10 +743,6 @@ function LawyerService.start()
 	Players.PlayerRemoving:Connect(function(player)
 		lastRequest[player] = nil
 		placedForGoal[player] = nil
-		local w = waiting[player]
-		if w then
-			w.cancelled = true
-		end
 	end)
 end
 

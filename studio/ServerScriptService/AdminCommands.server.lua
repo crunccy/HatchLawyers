@@ -9,10 +9,6 @@
 --   /eggs <count> [egg] [golden]     put real eggs in your arms (up to 30, past your carry limit) to hatch at the
 --                                    incubator - normal random odds, real lawyers
 --   /coins <amount>                  add coins (1e9, 5m, 2b, 3t, 1qd ... work)
---   /islands on|off                  (Studio only) run the egg zones on the redesign islands instead of the lane, for
---                                    this playtest (Server.ZoneMap; the real switch is Config.Zones.Islands.Enabled)
---   /island [name]                   visit a world-redesign island (Workspace.WorldRedesign, built 2026-10-19 from
---                                    environment-redesign/; nothing is wired there yet). Reset to come back.
 --   /help                            this list
 -- Answers show as a note on screen (Remotes.Zones "Note"). Commands are TextChatCommands (so they never show in chat);
 -- ";" versions go through Player.Chatted.
@@ -32,6 +28,20 @@ local PlayerData = require(Server:WaitForChild("PlayerData") :: ModuleScript) ::
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local EggHatched = Remotes:WaitForChild("EggHatched") :: RemoteEvent
 local ZonesRemote = Remotes:WaitForChild("Zones") :: RemoteEvent
+local PromoControl = Remotes:FindFirstChild("PromoControl") :: RemoteEvent?
+if not PromoControl then
+	local remote = Instance.new("RemoteEvent")
+	remote.Name = "PromoControl"
+	remote.Parent = Remotes
+	PromoControl = remote
+end
+
+local PromoPolicy = require(ServerScriptService:WaitForChild("PromoPolicy"))
+local PromoCharacter = require(ServerScriptService:WaitForChild("PromoCharacter"))
+local flightInput = Instance.new("RemoteEvent")
+flightInput.Name = "PromoFlightInput"
+flightInput.Parent = Remotes
+PromoCharacter.bind(flightInput)
 
 local ADMINS = {
 	[2234491534] = true, -- crnuch (place owner)
@@ -39,6 +49,10 @@ local ADMINS = {
 }
 local function isAdmin(player: Player): boolean
 	return ADMINS[player.UserId] == true or RunService:IsStudio()
+end
+
+local function isPromo(player: Player): boolean
+	return PromoPolicy.isAllowed(player.UserId) and PlayerData.isPromo(player)
 end
 
 local function note(player: Player, text: string)
@@ -110,7 +124,7 @@ end
 local COMMANDS: { [string]: (player: Player, args: { string }) -> () } = {}
 
 COMMANDS.help = function(player)
-	note(player, "/hatch <rarity> [egg] [golden] (preview)  |  /eggs <count> [egg] [golden]  |  /coins <amount>  |  /island [name]  |  /islands on|off")
+	note(player, "/hatch <rarity> [egg] [golden] (preview)  |  /eggs <count> [egg] [golden]  |  /coins <amount>")
 end
 
 COMMANDS.hatch = function(player, args)
@@ -250,11 +264,153 @@ COMMANDS.islands = function(player, args)
 	note(player, if word == "on" then "Egg zones now on the islands: TRAVEL to one, RETURN HOME with your eggs" else "Egg zones back on the lane")
 end
 
-local lastRun: { [Player]: number } = {}
-local function run(player: Player, text: string)
-	if not isAdmin(player) then
+local function promoNote(player: Player, text: string)
+	note(player, "[Promo] " .. text)
+end
+
+local function promoOnly(player: Player): any?
+	if not isPromo(player) then
+		return nil
+	end
+	return PlayerData.get(player)
+end
+
+COMMANDS.promo = function(player, args)
+	local action = string.lower(args[1] or "help")
+	local data = promoOnly(player)
+	if not data then
 		return
 	end
+	if action == "help" then
+		promoNote(player, "/promo resources | hatch <rarity> [egg] [golden] | lawyer <id> [golden] | eggs [egg] [count] [golden] | lawyers [search] | firm max | worlds | world <id|home> | gui [hide|show|toggle] | cam [on|off|toggle] | fly [on|off|toggle] | invisible [on|off|toggle] | reset")
+	elseif action == "resources" then
+		data.Coins = 1e30
+		data.Eggs.RareTokens = 999
+		player:SetAttribute("RareEggTokens", 999)
+		player:SetAttribute("FreeEgg", true)
+		PlayerData.sync(player)
+		promoNote(player, "Sandbox resources topped up. This profile is temporary and never saved.")
+	elseif action == "eggs" then
+		local egg, count, golden = "Briefcase", 30, false
+		for _, word in args do
+			local w = string.lower(word)
+			if EGGS[w] then egg = EGGS[w]
+			elseif tonumber(w) then count = math.clamp(math.floor(tonumber(w) :: number), 1, 30)
+			elseif w == "golden" or w == "gold" then golden = true end
+		end
+		data.Zones.Carried = {}
+		for _ = 1, count do
+			table.insert(data.Zones.Carried, { Egg = egg, Golden = golden or nil })
+		end
+		PlayerData.sync(player)
+		local ZoneService = require(Server:WaitForChild("ZoneService") :: ModuleScript) :: any
+		ZoneService.sync(player)
+		promoNote(player, string.format("Added %d %s%s eggs to your temporary profile.", count, if golden then "golden " else "", egg))
+	elseif action == "lawyers" then
+		local filter = string.lower(args[2] or "")
+		local matches = {}
+		for _, skin in Config.SkinCatalog do
+			if filter == "" or string.find(string.lower(skin.Id .. " " .. skin.Name), filter, 1, true) then
+				table.insert(matches, skin.Id)
+			end
+		end
+		table.sort(matches)
+		local shown = {}
+		for i = 1, math.min(20, #matches) do table.insert(shown, matches[i]) end
+		promoNote(player, if #matches == 0 then "No matching lawyer. Search by name or Id." else table.concat(shown, ", ") .. if #matches > #shown then " … narrow with /promo lawyers <search>" else "")
+	elseif action == "hatch" then
+		local rarity = rarityIndex(args[2])
+		if not rarity then
+			local names = {}
+			for _, tier in Config.Eggs.Skins do table.insert(names, string.lower(tier.Id)) end
+			promoNote(player, "Use /promo hatch <" .. table.concat(names, "|") .. "> [egg] [golden].")
+			return
+		end
+		local egg = "Briefcase"
+		local golden = false
+		for i = 3, #args do
+			local word = string.lower(args[i])
+			if EGGS[word] then egg = EGGS[word]
+			elseif word == "golden" or word == "gold" then golden = true end
+		end
+		local themed = Formulas.themedEgg(egg)
+		local pool = {}
+		for _, skin in Config.SkinCatalog do
+			if skin.Rarity == rarity and skin.Egg == (if themed then themed.Id else nil) then table.insert(pool, skin.Id) end
+		end
+		if #pool == 0 then promoNote(player, "No " .. Config.Eggs.Skins[rarity].Id .. " lawyer in that egg yet.") return end
+		local skinId = pool[Random.new():NextInteger(1, #pool)]
+		local inc = myIncubator(player)
+		local at = if inc and inc.PrimaryPart then inc.PrimaryPart.Position + Vector3.new(0, 5, 0) else nil
+		EggHatched:FireClient(player, { ok = true, preview = true, skinId = skinId, lawyerId = skinId, rarity = rarity, skills = {}, egg = if themed then themed.Id else nil, isNew = false, at = at, golden = golden, chance = nil })
+	elseif action == "lawyer" then
+		local skinId = args[2]
+		local skin = Formulas.getSkin(skinId)
+		if not skin then
+			promoNote(player, "Use /promo lawyers [search] to find a lawyer Id.")
+			return
+		end
+		local egg = skin.Egg or "Briefcase"
+		local golden = table.find(args, "golden") ~= nil or table.find(args, "gold") ~= nil
+		local inc = myIncubator(player)
+		local at = if inc and inc.PrimaryPart then inc.PrimaryPart.Position + Vector3.new(0, 5, 0) else nil
+		EggHatched:FireClient(player, { ok = true, preview = true, skinId = skin.Id, lawyerId = skin.Id, rarity = skin.Rarity, skills = {}, egg = skin.Egg, isNew = false, at = at, golden = golden, chance = nil })
+	elseif action == "firm" and string.lower(args[2] or "") == "max" then
+		data.Firm.Segments = Config.Firm.MaxSegments
+		data.Prestige.Level = (Config.Prestige and Config.Prestige.TowerLevel) or 1
+		for index = #data.Desks + 1, Config.Firm.MaxSegments * 2 do
+			table.insert(data.Desks, { Level = Config.Lawyer.MaxLevel })
+		end
+		for _, desk in data.Desks do desk.Level = Config.Lawyer.MaxLevel end
+		PlayerData.sync(player)
+		local PlotService = require(Server:WaitForChild("PlotService") :: ModuleScript) :: any
+		local DeskService = require(Server:WaitForChild("DeskService") :: ModuleScript) :: any
+		PlotService.rebuild(player)
+		DeskService.buildDesks(player)
+		DeskService.dress(player)
+		promoNote(player, "Max firm preview is ready.")
+	elseif action == "world" then
+		local target = args[2]
+		if not target then promoNote(player, "Use /promo world home or an id from /promo worlds.") return end
+		local canonical = if string.lower(target) == "home" then "Home" else nil
+		for _, zone in Config.Zones.List do
+			if string.lower(zone.Id) == string.lower(target) then canonical = zone.Id break end
+		end
+		if not canonical then
+			promoNote(player, "Unknown world. Use /promo worlds to list valid ids.")
+			return
+		end
+		(PromoControl :: RemoteEvent):FireClient(player, "travel", canonical)
+	elseif action == "worlds" then
+		local ids = { "home" }
+		for _, zone in Config.Zones.List do table.insert(ids, string.lower(zone.Id)) end
+		promoNote(player, "World ids: " .. table.concat(ids, ", "))
+	elseif action == "fly" or action == "invisible" or action == "invis" then
+		local mode = string.lower(args[2] or "toggle")
+		if mode ~= "on" and mode ~= "off" and mode ~= "toggle" then promoNote(player, "Use on, off, or toggle.") return end
+		local canonical = if action == "invis" then "invisible" else action
+		if not PromoCharacter.set(player, canonical, mode) then promoNote(player, "Wait for your character to spawn.") return end
+		if canonical == "fly" then (PromoControl :: RemoteEvent):FireClient(player, "fly", if PromoCharacter.isFlying(player) then "on" else "off") end
+		promoNote(player, canonical .. " updated. /promo reset restores recording controls.")
+	elseif action == "reset" then
+		PromoCharacter.reset(player);
+		(PromoControl :: RemoteEvent):FireClient(player, "reset", "off")
+		promoNote(player, "Flight, invisibility, GUI and camera restored.")
+	elseif action == "gui" or action == "cam" or action == "camera" then
+		local mode = string.lower(args[2] or "toggle")
+		if mode ~= "hide" and mode ~= "show" and mode ~= "on" and mode ~= "off" and mode ~= "toggle" then
+			promoNote(player, "Use /promo " .. (action == "gui" and "gui [hide|show|toggle]" or "cam [on|off|toggle]"))
+			return
+		end
+		(PromoControl :: RemoteEvent):FireClient(player, if action == "gui" then "gui" else "cam", mode)
+	else
+		promoNote(player, "Unknown command. Type /promo help.")
+	end
+end
+
+local lastRun: { [Player]: number } = {}
+local function run(player: Player, text: string)
+	if #text > 300 then return end
 	local words = string.split(string.gsub(text, "^%s*[/;]", ""), " ")
 	local args = {}
 	for _, w in words do
@@ -263,7 +419,14 @@ local function run(player: Player, text: string)
 		end
 	end
 	local name = table.remove(args, 1)
-	local fn = name and COMMANDS[string.lower(name)]
+	name = name and string.lower(name)
+	if name == "promo" then
+		if not isPromo(player) then return end
+	elseif not isAdmin(player) then
+		if isPromo(player) then note(player, "Use /promo help for your recording commands.") end
+		return
+	end
+	local fn = name and COMMANDS[name]
 	if not fn then
 		return
 	end
@@ -308,3 +471,6 @@ Players.PlayerAdded:Connect(hook)
 for _, p in Players:GetPlayers() do
 	hook(p)
 end
+
+Players.PlayerRemoving:Connect(function(player) lastRun[player] = nil end)
+

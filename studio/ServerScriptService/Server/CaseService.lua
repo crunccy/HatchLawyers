@@ -390,8 +390,8 @@ local function startCase(session: Session, desk: DeskState, tier: number, tutori
 		return
 	end
 	local buffs = deskBuffs(data, desk.index, tier)
-	local duration = if tutorial then Config.Case.TutorialDuration else Formulas.caseDuration(Config.Clients[tier], buffs)
-		* (require(script.Parent.ShopService) :: any).effect(session.player, "SpeedyCases", 1) -- Robux pass
+	local duration = (if tutorial then Config.Case.TutorialDuration else Formulas.caseDuration(Config.Clients[tier], buffs))
+		* (require(script.Parent.ShopService) :: any).effect(session.player, "SpeedyCases", 1) -- Instant Cases pass
 
 	if not desk.clientModel then
 		-- normally the client walked here from the waiting room; this is only a safety net
@@ -479,7 +479,8 @@ local function resolveCase(session: Session, desk: DeskState)
 	local payout = Formulas.casePayout(deskData.Level, client, buffs, fraction)
 	local earn = if lawyer then Formulas.lawyerEarn(lawyer.Id, lawyer.Stars) else 1
 	payout = math.floor(payout * earn * Formulas.prestigeMultiplier(data.Prestige and data.Prestige.Level)
-		* (require(script.Parent.ShopService) :: any).effect(player, "DoubleCash", 1)) -- Robux pass, after the buff caps
+		* (require(script.Parent.ShopService) :: any).effect(player, "DoubleCash", 1)
+		* (require(script.Parent.ShopService) :: any).effect(player, "VIP", 1)) -- pass bonuses, after the buff caps
 	if outcome == "Win" then
 		data.Stats.Wins += 1
 	elseif outcome == "Settlement" then
@@ -766,15 +767,6 @@ function CaseService.setQueued(player: Player, index: number, change: string?): 
 	return true
 end
 
--- Keeps new clients away from a FREE office for `seconds` more (pushes its rest later; a busy office is left alone).
--- The Mutation Machine holds its picks' free offices while it waits for the others to finish (LawyerService).
-function CaseService.hold(player: Player, index: number, seconds: number)
-	local desk = CaseService.getDesk(player, index)
-	if desk and (desk.phase == "Idle" or desk.phase == "Empty") then
-		desk.restUntil = math.max(desk.restUntil, now() + seconds)
-	end
-end
-
 function CaseService.queuedChange(player: Player, index: number): string?
 	local desk = CaseService.getDesk(player, index)
 	return desk and desk.queued
@@ -829,7 +821,9 @@ function CaseService.run()
 					end
 					-- the tutorial case is a guaranteed court case: hold the verdict until the player has been
 					-- to court (CourtService extends it from there), or Config.Tutorial.CourtWait runs out
-					if desk.tutorial and not desk.court and Config.Tutorial.FirstCaseInCourt and t < desk.endsAt + Config.Tutorial.CourtWait then
+					if desk.tutorial and not desk.court and Config.Tutorial.FirstCaseInCourt
+						and not (require(script.Parent.ShopService) :: any).has(session.player, "SpeedyCases")
+						and t < desk.endsAt + Config.Tutorial.CourtWait then
 						desk.model:SetAttribute("AwaitingCourt", true)
 						continue
 					end
