@@ -11,10 +11,15 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- Codex · focused mobile UI reference follow-up, docs only · since 2026-10-23
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-23 — crnuch, local session: focused mobile presentation study (Codex)
+
+- Added `docs/MOBILE_PRESENTATION_STUDY.md`, V21: Grow a Garden footage with visible touch controls, selected state, success/unavailable feedback, repeated cooldown messages and related market-stall forms.
+- Twenty-one sampled references total. Partially closes the mobile footage gap; physical-device ergonomics, controller behavior and our own UI validation remain open.
+- Added specific recommendations for touch-control space, notification coalescing and a cohesive pier stall family. No Studio changes or runtime tests. Research claim released.
 
 ## 2026-10-23 — crnuch, local session: inventory and animation research batch 4 (Codex)
 
