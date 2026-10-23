@@ -6,8 +6,9 @@ The user's priorities are map detail and UI, followed by VFX and animation. They
 
 ## Contents
 
-- [VIDEO_REFERENCES.md](VIDEO_REFERENCES.md): ten gameplay/tutorial videos with inspected timestamps, observed details, applications and limitations.
+- [VIDEO_REFERENCES.md](VIDEO_REFERENCES.md): twelve gameplay/tutorial videos with inspected timestamps, observed details, applications and limitations.
 - [VISUAL_POLISH_BRIEF.md](VISUAL_POLISH_BRIEF.md): prioritized deliverables, UI states, map-detail kit, effect/animation direction, likely integration points and review criteria.
+- [VISUAL_SYSTEMS_AUDIT.md](VISUAL_SYSTEMS_AUDIT.md): existing button, animation and particle systems; implementation guardrails and research gaps.
 - [ART_REMODEL_BRIEF.md](ART_REMODEL_BRIEF.md): existing approved map/model scope and staged workflow; remains the authority for that sequence.
 - [ZONES_REFERENCE.md](ZONES_REFERENCE.md) and [CHARACTER_STYLE.md](CHARACTER_STYLE.md): existing world/character direction.
 
@@ -24,7 +25,7 @@ These are design recommendations informed by selected footage; they are not clai
 
 ## Evidence / status
 
-Selected sections of ten videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. Current PS99/Steal an Egg footage is mixed with older useful technique references. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
+Selected sections of twelve videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. Current PS99/Steal an Egg footage is mixed with older useful technique references. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
 
 This package changes documentation only. No Studio installation, runtime implementation or gameplay test was performed for this research. Existing Studio and repo versions may differ. Read current claims and re-export/merge before implementation.
 
