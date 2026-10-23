@@ -5,6 +5,7 @@ local PromoPolicy = {}
 
 local ALLOWED_USER_IDS: { [number]: boolean } = {
 	[468598163] = true, -- maddrummerman25; temporary promo profile only
+	[2234491534] = true
 }
 
 function PromoPolicy.isAllowed(userId: number): boolean

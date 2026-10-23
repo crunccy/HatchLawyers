@@ -11,7 +11,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local Codex) · fix promo command authorization and add sandbox flight/invisibility · since 2026-10-23
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
@@ -23,6 +22,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - Added setup, revocation, and command reference in `docs/PROMO_ADMIN.md`.
 - Validation: `tools/checks/run_checks.py --luau-dir /private/tmp/hatchlawyers-luau/bin` — 215 Luau files compiled, 40 config checks passed, 32 economy simulation tests passed.
 - Studio/live place was not modified. Install and playtest remains open below.
+
+## 2026-10-23 — crnuch, local session: promo access repair and character filming controls (Codex)
+
+- Confirmed two causes: PR #9 remains unmerged and the connected Studio edit place has no PromoPolicy/PromoAdmin or promo dispatcher; the proposed dispatcher also rejected non-full-admin promo users before checking promo authorization.
+- Fixed dispatch to authorize only /promo against the server policy and disposable PlayerData session. Other admin commands stay restricted. Included the existing local owner allowlist entry (2234491534), retaining advertiser 468598163.
+- Added server-owned bounded flight (WASD, E/Q, 60 studs/sec), server-side reversible invisibility, /promo reset, character cleanup, remote validation/rate limit/input timeout. Removed the client's startup dependency on Travel so recording controls still connect when Travel is absent.
+- Syntax validation: luau-compile accepted AdminCommands, PromoAdmin and PromoCharacter. No interactive or multi-client playtest performed; flight/visibility and production authorization still need Studio verification.
+- No Studio changes or publishing. Installation requires merging the current Studio versions first, retaining newer /island and /islands commands, and installing all PlayerData/leaderboard/shop safeguards together. The shared Codex/Claude handoff assigns Studio pushes to Claude; original request also asked not to change the live game directly.
+- Research automation paused at user's request.
 
 ## Open items
 - [ ] **Install + Studio playtest Promo Admin** from the `codex/promo-admin-toolkit` PR after review. Verify the allowlisted account gets a disposable profile, resources/eggs/hatch previews work, all travel destinations open, max-firm preview rebuilds, GUI restore works, free-camera restores on respawn, and ordinary users cannot use `/promo`.

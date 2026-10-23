@@ -36,6 +36,13 @@ if not PromoControl then
 	PromoControl = remote
 end
 
+local PromoPolicy = require(ServerScriptService:WaitForChild("PromoPolicy"))
+local PromoCharacter = require(ServerScriptService:WaitForChild("PromoCharacter"))
+local flightInput = Instance.new("RemoteEvent")
+flightInput.Name = "PromoFlightInput"
+flightInput.Parent = Remotes
+PromoCharacter.bind(flightInput)
+
 local ADMINS = {
 	[2234491534] = true, -- crnuch (place owner)
 	[11776753629] = true, -- mr_blox174
@@ -45,7 +52,7 @@ local function isAdmin(player: Player): boolean
 end
 
 local function isPromo(player: Player): boolean
-	return PlayerData.isPromo(player)
+	return PromoPolicy.isAllowed(player.UserId) and PlayerData.isPromo(player)
 end
 
 local function note(player: Player, text: string)
@@ -217,7 +224,7 @@ COMMANDS.promo = function(player, args)
 		return
 	end
 	if action == "help" then
-		promoNote(player, "/promo resources | hatch <rarity> [egg] [golden] | lawyer <id> [golden] | eggs [egg] [count] [golden] | lawyers [search] | firm max | worlds | world <id|home> | gui [hide|show|toggle] | cam [on|off|toggle]")
+		promoNote(player, "/promo resources | hatch <rarity> [egg] [golden] | lawyer <id> [golden] | eggs [egg] [count] [golden] | lawyers [search] | firm max | worlds | world <id|home> | gui [hide|show|toggle] | cam [on|off|toggle] | fly [on|off|toggle] | invisible [on|off|toggle] | reset")
 	elseif action == "resources" then
 		data.Coins = 1e30
 		data.Eggs.RareTokens = 999
@@ -320,6 +327,17 @@ COMMANDS.promo = function(player, args)
 		local ids = { "home" }
 		for _, zone in Config.Zones.List do table.insert(ids, string.lower(zone.Id)) end
 		promoNote(player, "World ids: " .. table.concat(ids, ", "))
+	elseif action == "fly" or action == "invisible" or action == "invis" then
+		local mode = string.lower(args[2] or "toggle")
+		if mode ~= "on" and mode ~= "off" and mode ~= "toggle" then promoNote(player, "Use on, off, or toggle.") return end
+		local canonical = if action == "invis" then "invisible" else action
+		if not PromoCharacter.set(player, canonical, mode) then promoNote(player, "Wait for your character to spawn.") return end
+		if canonical == "fly" then (PromoControl :: RemoteEvent):FireClient(player, "fly", if PromoCharacter.isFlying(player) then "on" else "off") end
+		promoNote(player, canonical .. " updated. /promo reset restores recording controls.")
+	elseif action == "reset" then
+		PromoCharacter.reset(player);
+		(PromoControl :: RemoteEvent):FireClient(player, "reset", "off")
+		promoNote(player, "Flight, invisibility, GUI and camera restored.")
 	elseif action == "gui" or action == "cam" or action == "camera" then
 		local mode = string.lower(args[2] or "toggle")
 		if mode ~= "hide" and mode ~= "show" and mode ~= "on" and mode ~= "off" and mode ~= "toggle" then
@@ -334,9 +352,7 @@ end
 
 local lastRun: { [Player]: number } = {}
 local function run(player: Player, text: string)
-	if not isAdmin(player) then
-		return
-	end
+	if #text > 300 then return end
 	local words = string.split(string.gsub(text, "^%s*[/;]", ""), " ")
 	local args = {}
 	for _, w in words do
@@ -345,7 +361,14 @@ local function run(player: Player, text: string)
 		end
 	end
 	local name = table.remove(args, 1)
-	local fn = name and COMMANDS[string.lower(name)]
+	name = name and string.lower(name)
+	if name == "promo" then
+		if not isPromo(player) then return end
+	elseif not isAdmin(player) then
+		if isPromo(player) then note(player, "Use /promo help for your recording commands.") end
+		return
+	end
+	local fn = name and COMMANDS[name]
 	if not fn then
 		return
 	end
@@ -390,3 +413,5 @@ Players.PlayerAdded:Connect(hook)
 for _, p in Players:GetPlayers() do
 	hook(p)
 end
+
+Players.PlayerRemoving:Connect(function(player) lastRun[player] = nil end)

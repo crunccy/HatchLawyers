@@ -8,7 +8,9 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local remotes = ReplicatedStorage:WaitForChild("Remotes")
 local control = remotes:WaitForChild("PromoControl") :: RemoteEvent
-local travel = remotes:WaitForChild("Travel") :: RemoteFunction
+local flightInput = remotes:WaitForChild("PromoFlightInput") :: RemoteEvent
+local flying = false
+local flightElapsed = 0
 
 local guiState: { [ScreenGui]: boolean }? = nil
 local function setGui(mode: string)
@@ -78,7 +80,7 @@ local function setCamera(mode: string)
 end
 
 UserInputService.InputBegan:Connect(function(input, processed)
-	if not cameraOn or processed then return end
+	if (not cameraOn and not flying) or processed then return end
 	if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D or input.KeyCode == Enum.KeyCode.Q or input.KeyCode == Enum.KeyCode.E or input.KeyCode == Enum.KeyCode.LeftShift then
 		held[input.KeyCode] = true
 	elseif input.KeyCode == Enum.KeyCode.Equals then
@@ -91,7 +93,26 @@ UserInputService.InputEnded:Connect(function(input)
 	held[input.KeyCode] = nil
 end)
 
+UserInputService.WindowFocusReleased:Connect(function() table.clear(held) end)
+UserInputService.TextBoxFocused:Connect(function() table.clear(held) end)
 RunService.RenderStepped:Connect(function(dt)
+	if flying then
+		flightElapsed += dt
+		if flightElapsed >= 0.05 then
+			flightElapsed = 0
+			local direction = Vector3.zero
+			local current = workspace.CurrentCamera
+			if current and not cameraOn and not UserInputService:GetFocusedTextBox() then
+				if held[Enum.KeyCode.W] then direction += current.CFrame.LookVector end
+				if held[Enum.KeyCode.S] then direction -= current.CFrame.LookVector end
+				if held[Enum.KeyCode.D] then direction += current.CFrame.RightVector end
+				if held[Enum.KeyCode.A] then direction -= current.CFrame.RightVector end
+				if held[Enum.KeyCode.E] then direction += Vector3.yAxis end
+				if held[Enum.KeyCode.Q] then direction -= Vector3.yAxis end
+			end
+			flightInput:FireServer(if direction.Magnitude > 0 then direction.Unit else Vector3.zero)
+		end
+	end
 	if not cameraOn or not camera or workspace.CurrentCamera ~= camera then return end
 	local delta = UserInputService:GetMouseDelta()
 	yaw -= delta.X * 0.0025
@@ -111,18 +132,31 @@ end)
 
 control.OnClientEvent:Connect(function(action: string, value: string)
 	if player:GetAttribute("PromoMode") ~= true then return end
-	if action == "gui" then
+	if action == "fly" then
+		flying = value == "on"
+		table.clear(held)
+	elseif action == "reset" then
+		flying = false
+		table.clear(held)
+		setCamera("off")
+		setGui("show")
+	elseif action == "gui" then
 		setGui(value)
 	elseif action == "cam" then
 		setCamera(value)
 	elseif action == "travel" then
 		task.spawn(function()
-			local ok, success, reason = pcall(function() return travel:InvokeServer(value) end)
+			local ok, success, reason = pcall(function() local travel = remotes:FindFirstChild("Travel")
+				if not travel or not travel:IsA("RemoteFunction") then return false, "Travel is not installed" end
+				return travel:InvokeServer(value) end)
 			if not ok or success ~= true then warn("[PromoAdmin] Travel failed", if ok then reason else success) end
 		end)
 	end
 end)
 
 player.CharacterAdded:Connect(function()
+	flying = false
+	table.clear(held)
+	setGui("show")
 	if cameraOn then setCamera("off") end
 end)
