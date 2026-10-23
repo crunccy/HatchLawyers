@@ -13,6 +13,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   and minigame screen onto `Shared.Skin` + the glossy PNG icons. Audit + plan: docs/UI_OVERHAUL.md. Figma design
   pass first, then Studio. Visual only (no gameplay / save changes). Don't restyle UI meanwhile.
   Parts 1 (audit, icons, Figma) + 2 (Skin v2 + HUD) done 2026-10-18; part 3 (the remaining R / S rows) next.
+  **2026-10-23 (crnuch's call): UI v3 = "exactly that style" of crnuch's reference video (palm_dev shop clip),
+  every button and pop-up.** Spec: docs/UI_STYLE_V3.md. Skin v3 + the Shop first (this session), then the rest
+  screen by screen. Don't restyle Skin or any screen meanwhile.
 - **crnuch (local), since 2026-10-18:** WORLD REDESIGN in Blender only (floating-island hub + six egg islands),
   deliverables in `environment-redesign/`. Stages 1-2 done + approved 2026-10-18 (decisions in
   `environment-redesign/central_hub/blockout/LAYOUT.md`); Stages 3-4 done 2026-10-18; Stage 5: Briefcase Bay, Pet
