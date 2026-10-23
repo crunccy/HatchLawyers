@@ -11,10 +11,15 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- Codex · environment scale and asset-library research, docs only · since 2026-10-23
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-23 — crnuch, local session: environment scale study (Codex)
+
+- Added `docs/ENVIRONMENT_SCALE_STUDY.md`, V22: sampled RoBuilder proportion/lighting/library examples, applied to avatar clearance and reusable asset contact sheets.
+- Twenty-two sampled video references total. Added a concrete prop/effect handoff format and review surfaces, grounded in the existing studded style and eight-firm context.
+- Docs only; no Studio changes, downloaded packs or runtime tests. Research claim released.
 
 ## 2026-10-23 — crnuch, local session: focused mobile presentation study (Codex)
 
