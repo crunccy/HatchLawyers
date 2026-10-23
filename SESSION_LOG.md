@@ -11,10 +11,19 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- Codex · visual research batch 3: map/UI video references and implementation specifications, docs only on codex/visual-polish-research · since 2026-10-22
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-23 — crnuch, local session: map and UI visual research batch 3 (Codex)
+
+- **User's call:** make the game and UI look amazing; continue substantial video research and keep the implementation handoff in GitHub.
+- Added `docs/VIDEO_RESEARCH_BATCH_03.md`: five inspected references covering lighting, modular map construction, phone UI scaling, current Steal an Egg boss presentation and button shine. Seventeen sampled videos total; timestamps distinguish observations from proposals.
+- Added `docs/MAP_UI_ART_DIRECTION.md`: destination-specific map improvements, a reusable detail kit, LAWYERS/shop/travel layouts and states, notification behavior, motion/lighting ownership and visual acceptance criteria.
+- Updated `docs/VISUAL_RESEARCH_START_HERE.md`. Existing UIKit/Puppet/Effects systems and approved art sequence remain the implementation starting point.
+- Verified the new documents are accessible on `codex/visual-polish-research`, PR #11. Documentation only: no runtime tests, Studio installation or publishing.
+- Remaining evidence gaps: real mobile/controller gameplay, direct sound audition, and continuous boss telegraph timing. Do not infer collision dimensions or exact animation timing from edited/sample footage.
+- Research claim released. Recurring follow-up may extend the library; read coverage first to avoid repeated searches.
 
 ## 2026-10-22 — visual research follow-up: Fisch, rare hatch, existing systems
 
