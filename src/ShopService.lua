@@ -17,6 +17,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
 local PlayerData = require(script.Parent.PlayerData)
+local PlotService = require(script.Parent.PlotService)
+local VIPService = require(script.Parent.VIPService)
 
 local ShopService = {}
 
@@ -24,6 +26,10 @@ local PURCHASE_HISTORY = 200
 local passByKey: { [string]: any } = {}
 local passById: { [number]: any } = {}
 local productById: { [number]: any } = {}
+local freeByKey: { [string]: any } = {}
+for _, reward in Config.Shop.FreeRewards do
+	freeByKey[reward.Key] = reward
+end
 for _, p in Config.Shop.Passes do
 	passByKey[p.Key] = p
 	if p.Id ~= 0 then
@@ -37,11 +43,56 @@ for _, p in Config.Shop.Products do
 end
 
 local owned: { [Player]: { [string]: boolean } } = {}
+local RewardGranted = ReplicatedStorage.Remotes:WaitForChild("RewardGranted") :: RemoteEvent
+
+local function notify(player: Player, title: string, message: string)
+	RewardGranted:FireClient(player, { kind = "Shop", title = title, text = message })
+end
+
+local function grantCashPass(player: Player, pass: any)
+	local data = PlayerData.get(player)
+	if not data or data.CashPassClaims[pass.Key] then return end
+	data.CashPassClaims[pass.Key] = true
+	data.Coins += pass.Coins
+	PlayerData.sync(player)
+	if not PlayerData.saveNow(player) then
+		warn("[ShopService] cash pass save pending", pass.Key, player.UserId)
+	end
+	player:SetAttribute("CashPassClaim" .. pass.Key, true)
+	notify(player, pass.Name, "+" .. Formulas.formatCoins(pass.Coins) .. " coins")
+end
 
 local function setOwned(player: Player, key: string)
 	owned[player] = owned[player] or {}
 	owned[player][key] = true
 	player:SetAttribute("Pass" .. key, true)
+	local pass = passByKey[key]
+	if pass and pass.Coins then grantCashPass(player, pass) end
+	if key == "VIP" then
+		if player.Character then task.spawn(VIPService.decorateCharacter, player, player.Character) end
+		VIPService.decorateFirm(player, PlotService.getFirm(player))
+	end
+end
+
+local function claimFree(player: Player, key: string)
+	local reward = freeByKey[key]
+	local data = PlayerData.get(player)
+	if not reward or not data or data.FreeShopClaims[key] then return end
+	local previous = reward.Prerequisite
+	if previous and not (data.CashPassClaims[previous] or data.FreeShopClaims[previous]) then return end
+	data.FreeShopClaims[key] = true
+	if reward.Coins then data.Coins += reward.Coins end
+	if reward.FreeTokens then
+		data.Eggs.FreeTokens += reward.FreeTokens
+		player:SetAttribute("EggTokens", data.Eggs.FreeTokens)
+		player:SetAttribute("FreeEgg", true)
+	end
+	PlayerData.sync(player)
+	if not PlayerData.saveNow(player) then
+		warn("[ShopService] free reward save pending", key, player.UserId)
+	end
+	player:SetAttribute("FreeShopClaim" .. key, true)
+	notify(player, reward.Name, reward.Text)
 end
 
 -- Does this player own the pass with this Config key? (Server-side truth, not the attribute.)
@@ -137,15 +188,29 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 end
 
 function ShopService.start()
+	local claimRemote = ReplicatedStorage.Remotes:FindFirstChild("ClaimFreeShopReward") :: RemoteEvent?
+	if not claimRemote then
+		claimRemote = Instance.new("RemoteEvent")
+		claimRemote.Name = "ClaimFreeShopReward"
+		claimRemote.Parent = ReplicatedStorage.Remotes
+	end
+	claimRemote.OnServerEvent:Connect(function(player: Player, key: any)
+		if type(key) == "string" then claimFree(player, key) end
+	end)
+	local vipClaim = ReplicatedStorage.Remotes:FindFirstChild("ClaimVIPDaily") :: RemoteFunction?
+	if not vipClaim then
+		vipClaim = Instance.new("RemoteFunction")
+		vipClaim.Name = "ClaimVIPDaily"
+		vipClaim.Parent = ReplicatedStorage.Remotes
+	end
+	vipClaim.OnServerInvoke = VIPService.claimDaily
+	VIPService.start()
 	MarketplaceService.ProcessReceipt = processReceipt
 	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player: Player, passId: number, purchased: boolean)
 		local pass = passById[passId]
 		if purchased and pass then
 			setOwned(player, pass.Key)
-			local RewardGranted = ReplicatedStorage.Remotes:FindFirstChild("RewardGranted") :: RemoteEvent?
-			if RewardGranted then
-				RewardGranted:FireClient(player, { kind = "Shop", text = pass.Text, title = pass.Name })
-			end
+			if not pass.Coins then notify(player, pass.Name, pass.Text) end
 		end
 	end)
 	Players.PlayerAdded:Connect(checkPasses)
@@ -155,6 +220,24 @@ function ShopService.start()
 	Players.PlayerRemoving:Connect(function(player)
 		owned[player] = nil
 	end)
+end
+
+function ShopService.onDataLoaded(player: Player)
+	local data = PlayerData.get(player)
+	if not data then return end
+	VIPService.onDataLoaded(player)
+	for key, claimed in data.FreeShopClaims do
+		if claimed then player:SetAttribute("FreeShopClaim" .. key, true) end
+	end
+	for key, claimed in data.CashPassClaims do
+		if claimed then player:SetAttribute("CashPassClaim" .. key, true) end
+	end
+	for key in owned[player] or {} do
+		local pass = passByKey[key]
+		if pass and pass.Coins then grantCashPass(player, pass) end
+	end
+	-- A fresh ownership check covers purchases made before data finished loading.
+	task.spawn(checkPasses, player)
 end
 
 -- Test hook for Studio only (Server.ShopService is never reachable from clients): runs the real receipt
@@ -175,3 +258,4 @@ function ShopService._testGivePass(player: Player, key: string)
 end
 
 return ShopService
+

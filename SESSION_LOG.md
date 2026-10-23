@@ -32,8 +32,17 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - No Studio changes or publishing. Installation requires merging the current Studio versions first, retaining newer /island and /islands commands, and installing all PlayerData/leaderboard/shop safeguards together. The shared Codex/Claude handoff assigns Studio pushes to Claude; original request also asked not to change the live game directly.
 - Research automation paused at user's request.
 
+## 2026-10-23 — crnuch, local session: authorized Promo Admin Studio installation (Codex)
+
+- User explicitly approved installation and testing; publishing remains with the owner.
+- Exported all 138 pre-install Studio scripts locally, performed three-way merges, resolved AdminCommands/Shop conflicts preserving island commands and newer shop logic, and installed eight toolkit scripts. Exported the eight installed scripts into this commit's studio snapshot and src.
+- Fixed a discovered original toolkit bug: promo license was the number of zones (6), outside the valid licenses (0–5). It now uses the license table length.
+- Studio playtest passed: real owner account loaded promo profile; allowlist accepts advertiser ID and rejects unrelated ID; valid license; command dispatch grants temporary resources; flight actuator creation/reset; invisibility and exact transparency restoration including a newly added part. GUI/camera commands dispatched, client installed, camera returned to Custom. Flight input was sent, but movement feel and a second-account end-to-end test remain manual checks.
+- Final playtest console contained only HubMap informational output. Test bridge and temporary test script removed; Studio returned to Edit mode. No publication performed.
+- Owner must publish the place and have the advertiser rejoin a fresh server before these changes reach the live game. Friend uses /promo commands, not unrestricted /coins or /eggs.
+
 ## Open items
-- [ ] **Install + Studio playtest Promo Admin** from the `codex/promo-admin-toolkit` PR after review. Verify the allowlisted account gets a disposable profile, resources/eggs/hatch previews work, all travel destinations open, max-firm preview rebuilds, GUI restore works, free-camera restores on respawn, and ordinary users cannot use `/promo`.
+- [x] **Install + Studio playtest Promo Admin** from the `codex/promo-admin-toolkit` PR after review. Verify the allowlisted account gets a disposable profile, resources/eggs/hatch previews work, all travel destinations open, max-firm preview rebuilds, GUI restore works, free-camera restores on respawn, and ordinary users cannot use `/promo`.
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,

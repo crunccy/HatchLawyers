@@ -206,6 +206,64 @@ COMMANDS.coins = function(player, args)
 	note(player, "+" .. Formulas.formatCoins(n) .. " coins")
 end
 
+-- /island [name]: the redesign islands (Workspace.WorldRedesign). Lands on the island's south side (its arrival side),
+-- 150 studs south of its centre, on whatever the ground is there; streams the spot in first.
+COMMANDS.island = function(player, args)
+	local world = workspace:FindFirstChild("WorldRedesign")
+	if not world then
+		note(player, "No redesign islands in this place yet")
+		return
+	end
+	local want = args[1] and string.lower(args[1])
+	local names, target = {}, nil
+	for _, m in world:GetChildren() do
+		if m:IsA("Model") then
+			table.insert(names, string.lower(m.Name))
+			if want and not target and string.find(string.lower(m.Name), want, 1, true) then
+				target = m
+			end
+		end
+	end
+	table.sort(names)
+	if not target then
+		note(player, "Which island? " .. table.concat(names, " / ") .. "   e.g. /island ocean")
+		return
+	end
+	local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not hrp then
+		return
+	end
+	local above = (target :: Model):GetPivot() * CFrame.new(0, 300, 150)
+	pcall(function()
+		player:RequestStreamAroundAsync(above.Position - Vector3.new(0, 300, 0), 10)
+	end)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { target }
+	params.RespectCanCollide = true -- (land on the ground, not a tree top or a cloud)
+	local hit = workspace:Raycast(above.Position, Vector3.new(0, -600, 0), params)
+	local ground = if hit then hit.Position else above.Position - Vector3.new(0, 300, 0)
+	hrp.AssemblyLinearVelocity = Vector3.zero
+	hrp.CFrame = CFrame.new(ground + Vector3.new(0, 5, 0))
+	note(player, "Welcome to " .. target.Name .. " (reset to go back)")
+end
+
+-- /islands on|off (Studio only): the egg zones on the redesign islands for this playtest (Server.ZoneMap reads the
+-- workspace attribute IslandsOn; ZoneService + TravelServer rebind). Live servers only follow Config.Zones.Islands.
+COMMANDS.islands = function(player, args)
+	if not RunService:IsStudio() then
+		note(player, "Only in Studio. The live switch is Config.Zones.Islands.Enabled")
+		return
+	end
+	local word = args[1] and string.lower(args[1])
+	if word ~= "on" and word ~= "off" then
+		note(player, "Islands are " .. (if workspace:GetAttribute("IslandsOn") then "ON" else "OFF") .. ".  /islands on  or  /islands off")
+		return
+	end
+	workspace:SetAttribute("IslandsOn", word == "on")
+	note(player, if word == "on" then "Egg zones now on the islands: TRAVEL to one, RETURN HOME with your eggs" else "Egg zones back on the lane")
+end
+
 local function promoNote(player: Player, text: string)
 	note(player, "[Promo] " .. text)
 end
@@ -415,3 +473,4 @@ for _, p in Players:GetPlayers() do
 end
 
 Players.PlayerRemoving:Connect(function(player) lastRun[player] = nil end)
+

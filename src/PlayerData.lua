@@ -64,6 +64,9 @@ export type Data = {
 	-- Developer-product receipts already granted: PurchaseId -> os.time(). ShopService checks this before
 	-- granting, so a receipt Roblox re-sends is never granted twice. Pruned to the newest 200.
 	Purchases: { [string]: number },
+	CashPassClaims: { [string]: boolean },
+	FreeShopClaims: { [string]: boolean },
+	VIP: { LastClaimDay: number },
 	-- Hub minigames: game id -> os.time() it can be played again (MinigameService).
 	Minigames: { [string]: number },
 	-- Egg zones (ZoneService): License level (0 = none; prestige resets it), Carry / Speed upgrade levels (1 = start),
@@ -73,7 +76,7 @@ export type Data = {
 
 type Session = { data: Data, releasing: boolean, promo: boolean }
 
-local SCHEMA_VERSION = 18
+local SCHEMA_VERSION = 20
 local STORE_NAME = "PlayerData"
 local AUTOSAVE_INTERVAL = 60
 local LOCK_EXPIRY = 5 * 60 -- a lock this old belongs to a crashed server and can be taken over
@@ -83,9 +86,22 @@ local SAVE_ATTEMPTS = 3
 
 -- MIGRATIONS[n] upgrades a version-n record to version n + 1.
 local MIGRATIONS: { [number]: (any) -> any } = {
+	[19] = function(data)
+		data.VIP = data.VIP or { LastClaimDay = -1 }
+		return data
+	end,
+	[18] = function(data)
+		data.CashPassClaims = data.CashPassClaims or {}
+		data.FreeShopClaims = data.FreeShopClaims or {}
+		return data
+	end,
 	-- v18 (2026-10-13): lawyer MUTATIONS + selling. `Stars` keeps its numbers but now means the mutation tier (Gold 2 ->
 	-- Shiny, Rainbow 3 -> Diamond, same power), so nothing is rewritten. New optional Lawyers[uid].Locked (nil = not).
+	-- v18 (2026-10-13): the UPSTAIRS ROOMS (Config.Floors, ServerScriptService.FloorRooms): data.Floors = Hall of Fame
+	-- index, Case Files counts, Moot Court booths, today's letters, the Partner's rules, guestbook likes, court recess.
+	-- (Shares v18 with the mutations work in src/, whose step adds nothing - so the two merge without renumbering.)
 	[17] = function(data)
+		data.Floors = data.Floors or { Index = {}, CaseFiles = {}, Training = {}, Mail = { Day = 0, Letters = {} }, Rules = {}, Likes = 0, Court = 0 }
 		return data
 	end,
 	-- v16: egg zones (Config.Zones). No License, the starting bag and shoes, nothing carried.
@@ -303,7 +319,11 @@ local function template(): Data
 		Prestige = { Level = 0 },
 		Firm = { Segments = Config.Firm.StartSegments, Areas = {} },
 		Purchases = {},
+		CashPassClaims = {},
+		FreeShopClaims = {},
+		VIP = { LastClaimDay = -1 },
 		Minigames = {},
+		Floors = { Index = {}, CaseFiles = {}, Training = {}, Mail = { Day = 0, Letters = {} }, Rules = {}, Likes = 0, Court = 0 },
 		Zones = { License = 0, Carry = 1, Speed = 1, Carried = {} },
 	}
 end
@@ -516,7 +536,7 @@ function PlayerData.load(player: Player): Data?
 	local data: Data? = nil
 	if promo then
 		data = template()
-		data.Zones.License = #Config.Zones.List
+		data.Zones.License = #Config.Zones.License
 	elseif dataStore then
 		local status, saved = "error", nil
 		for attempt = 1, LOAD_ATTEMPTS do
@@ -656,3 +676,4 @@ function PlayerData.start()
 end
 
 return PlayerData
+

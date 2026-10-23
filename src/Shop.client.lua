@@ -25,7 +25,7 @@ local ArtAssets = require(Shared:WaitForChild("ArtAssets") :: ModuleScript) :: a
 local make, text = Skin.make, Skin.text
 local Icons = HudMenu.Icons
 local W, H = 1000, 620
-local FEATURED_KEY = "LuckyEggs" -- the pass shown big at the top
+local FEATURED_KEY = "Cash100K" -- first cash pass starts the claim path
 
 ------------------------------------------------------------------ the window
 local win = Skin.window({ Name = "Shop", Title = "Shop", Color = "Green", Icon = Icons.Cart, Size = Vector2.new(W, H), DisplayOrder = 32 }) -- above BigCase (30) toasts
@@ -117,6 +117,17 @@ type Card = { item: any, kind: string, price: any, frame: Frame }
 local cards: { Card } = {}
 local prices: { [string]: number } = {}
 local pending: { [string]: boolean } = {}
+local claimRemote = ReplicatedStorage.Remotes:WaitForChild("ClaimFreeShopReward") :: RemoteEvent
+local vipClaim = ReplicatedStorage.Remotes:WaitForChild("ClaimVIPDaily") :: RemoteFunction
+
+local function unlocked(item: any): boolean
+	local previous = item.Prerequisite
+	if not previous then return true end
+	if string.sub(previous, 1, 4) == "Free" then
+		return player:GetAttribute("FreeShopClaim" .. previous) == true
+	end
+	return player:GetAttribute("CashPassClaim" .. previous) == true
+end
 
 local function owns(item: any): boolean
 	return player:GetAttribute("Pass" .. item.Key) == true
@@ -124,14 +135,34 @@ end
 
 local function refreshCard(c: Card)
 	local item, price = c.item, c.price
-	if c.kind == "pass" and owns(item) then
+	if c.kind == "free" and player:GetAttribute("FreeShopClaim" .. item.Key) == true then
+		price.setText("CLAIMED")
+		price.setStyle("Grey")
+	elseif c.kind == "pass" and item.Key == "VIP" and owns(item) then
+		if (player:GetAttribute("VIPLastClaimDay") or -1) >= os.time() // 86400 then
+			price.setText("CLAIMED TODAY")
+			price.setStyle("Grey")
+		elseif pending[item.Key] then
+			price.setText("...")
+			price.setStyle("Green")
+		else
+			price.setText("CLAIM VIP DAILY")
+			price.setStyle("Green")
+		end
+	elseif c.kind == "pass" and owns(item) then
 		price.setText("OWNED")
 		price.setStyle("Grey")
-	elseif item.Id == 0 then
+	elseif not unlocked(item) then
+		price.setText("LOCKED")
+		price.setStyle("Grey")
+	elseif c.kind ~= "free" and item.Id == 0 then
 		price.setText("SOON")
 		price.setStyle("Grey")
 	elseif pending[item.Key] then
 		price.setText("...")
+		price.setStyle("Green")
+	elseif c.kind == "free" then
+		price.setText("CLAIM FREE")
 		price.setStyle("Green")
 	else
 		price.setText(Skin.ROBUX .. (prices[item.Key] or item.Price))
@@ -142,16 +173,26 @@ end
 local function hookPurchase(c: Card)
 	local item, kind = c.item, c.kind
 	c.price.button.Activated:Connect(function()
-		if player:GetAttribute("PromoMode") == true then
-			return -- purchases persist outside the sandbox profile
-		end
-		if item.Id == 0 or pending[item.Key] or (kind == "pass" and owns(item)) then
+		if player:GetAttribute("PromoMode") == true then return end
+		if not unlocked(item) or pending[item.Key] or (kind == "pass" and (item.Id == 0 or (owns(item) and item.Key ~= "VIP"))) 
+			or (item.Key == "VIP" and owns(item) and (player:GetAttribute("VIPLastClaimDay") or -1) >= os.time() // 86400)
+			or (kind == "free" and player:GetAttribute("FreeShopClaim" .. item.Key) == true)
+			or (kind == "product" and item.Id == 0) then
 			return
 		end
 		pending[item.Key] = true
 		refreshCard(c)
-		if kind == "pass" then
+		if kind == "pass" and item.Key == "VIP" and owns(item) then
+			task.spawn(function()
+				local ok, result = pcall(function() return vipClaim:InvokeServer() end)
+				pending[item.Key] = nil
+				refreshCard(c)
+				if not ok then warn("[Shop] VIP claim failed", result) end
+			end)
+		elseif kind == "pass" then
 			MarketplaceService:PromptGamePassPurchase(player, item.Id)
+		elseif kind == "free" then
+			claimRemote:FireServer(item.Key)
 		else
 			MarketplaceService:PromptProductPurchase(player, item.Id)
 		end
@@ -235,7 +276,7 @@ local function build()
 	local featured = findItem(Config.Shop.Passes, FEATURED_KEY) or Config.Shop.Passes[1]
 	order = addSection("Featured", "Featured", "Gold", order)
 	if featured then
-		table.insert(cards, wideCard(scroller, featured, "pass", order, "BEST VALUE!"))
+		table.insert(cards, wideCard(scroller, featured, "pass", order, "START HERE"))
 	end
 	order += 1
 	-- GAME PASSES: the rest, 3 to a row
@@ -243,20 +284,28 @@ local function build()
 	local passGrid = Skin.grid(scroller, CELL, order)
 	order += 1
 	for i, item in Config.Shop.Passes do
-		if item ~= featured then
+		if item ~= featured and not item.Coins then
 			table.insert(cards, smallCard(passGrid, item, "pass", i))
 		end
 	end
-	-- CASH: the cash products, 3 to a row
-	order = addSection("Cash", "Cash", "Green", order)
+	-- Cash passes and the real, one-time free claims in purchase order.
+	order = addSection("Cash", "Cash Packs + Free Claims", "Green", order)
 	local cashGrid = Skin.grid(scroller, CELL, order)
 	order += 1
+	for i, key in Config.Shop.CashJourney do
+		local pass = findItem(Config.Shop.Passes, key)
+		local free = findItem(Config.Shop.FreeRewards, key)
+		local item = pass or free
+		if item then table.insert(cards, smallCard(cashGrid, item, if pass then "pass" else "free", i)) end
+	end
 	local others = {}
 	for i, item in Config.Shop.Products do
-		if item.Minutes then
-			table.insert(cards, smallCard(cashGrid, item, "product", i))
-		else
-			table.insert(others, item)
+		if item.Id ~= 0 then
+			if item.Minutes then
+				table.insert(cards, smallCard(cashGrid, item, "product", i + #Config.Shop.CashJourney))
+			else
+				table.insert(others, item)
+			end
 		end
 	end
 	-- EGGS (and anything else): wide cards
@@ -270,7 +319,7 @@ local function build()
 	-- real prices for set-up items (Creator Dashboard is the source of truth)
 	for _, c in cards do
 		local item = c.item
-		if item.Id ~= 0 and not prices[item.Key] then
+		if item.Id and item.Id ~= 0 and not prices[item.Key] then
 			task.spawn(function()
 				local ok, info = pcall(MarketplaceService.GetProductInfo, MarketplaceService, item.Id,
 					if c.kind == "pass" then Enum.InfoType.GamePass else Enum.InfoType.Product)
@@ -327,7 +376,7 @@ MarketplaceService.PromptProductPurchaseFinished:Connect(function(userId, produc
 	end
 end)
 player.AttributeChanged:Connect(function(name)
-	if string.sub(name, 1, 4) == "Pass" then
+	if string.sub(name, 1, 4) == "Pass" or string.sub(name, 1, 13) == "FreeShopClaim" or string.sub(name, 1, 13) == "CashPassClaim" or name == "VIPLastClaimDay" then
 		clearPending(nil)
 	end
 end)
@@ -385,3 +434,4 @@ game:GetService("ProximityPromptService").PromptTriggered:Connect(function(promp
 		open()
 	end
 end)
+
