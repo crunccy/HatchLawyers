@@ -15,6 +15,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
+## 2026-10-22 — visual research follow-up: Fisch, rare hatch, existing systems
+
+- Added V11/V12 to `docs/VIDEO_REFERENCES.md`: Fisch shoreline/dock detail and collection hierarchy; PS99 rare-hatch sampled frames including readability limits.
+- Added `docs/VISUAL_SYSTEMS_AUDIT.md`: existing UIKit motion/layers, Puppet idles/actions and continuous-particle LOD. Improve these systems rather than duplicating them.
+- Updated research index to twelve sampled videos. Source review is dated and does not assert current Studio state. Audio audition remains outstanding.
+- Docs only on `codex/visual-polish-research`, draft PR #11. No runtime tests or Studio changes. User requested recurring continuation; follow-up scheduled in the app.
+
 ## 2026-10-22 — crnuch, local session: video research for visual polish (Codex)
 
 - **User's call:** prioritize map detail and UI, then VFX/animation; research actual video references and make the results available to Claude in GitHub.
