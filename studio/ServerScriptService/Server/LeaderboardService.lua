@@ -99,6 +99,10 @@ end
 -- Reads the scores right away (no yielding), then writes them in the background. Main calls this
 -- on leave *before* PlayerData.release, which stops handing out the player's data.
 function LeaderboardService.save(player: Player)
+	-- Promo scores are synthetic and must never become permanent global leaderboard records.
+	if PlayerData.isPromo(player) then
+		return
+	end
 	local data = PlayerData.get(player)
 	if not data or not storesOk then
 		return
@@ -231,3 +235,4 @@ function LeaderboardService.start()
 end
 
 return LeaderboardService
+

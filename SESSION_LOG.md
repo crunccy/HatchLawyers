@@ -15,7 +15,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
+## 2026-10-20 — crnuch, cloud session: isolated Promo Admin toolkit
+
+- Added a separate server-only UserId policy for `maddrummerman25` (`468598163`); promo access is not full admin.
+- Promo users load a fresh in-memory profile; profile saves and leaderboard writes are suppressed, and shop purchase prompts are disabled. Added temporary resources, egg and lawyer hatch previews, max-firm preview, all-world travel, local GUI hiding, and a free camera.
+- Added setup, revocation, and command reference in `docs/PROMO_ADMIN.md`.
+- Validation: `tools/checks/run_checks.py --luau-dir /private/tmp/hatchlawyers-luau/bin` — 215 Luau files compiled, 40 config checks passed, 32 economy simulation tests passed.
+- Studio/live place was not modified. Install and playtest remains open below.
+
+## 2026-10-23 — crnuch, local session: promo access repair and character filming controls (Codex)
+
+- Confirmed two causes: PR #9 remains unmerged and the connected Studio edit place has no PromoPolicy/PromoAdmin or promo dispatcher; the proposed dispatcher also rejected non-full-admin promo users before checking promo authorization.
+- Fixed dispatch to authorize only /promo against the server policy and disposable PlayerData session. Other admin commands stay restricted. Included the existing local owner allowlist entry (2234491534), retaining advertiser 468598163.
+- Added server-owned bounded flight (WASD, E/Q, 60 studs/sec), server-side reversible invisibility, /promo reset, character cleanup, remote validation/rate limit/input timeout. Removed the client's startup dependency on Travel so recording controls still connect when Travel is absent.
+- Syntax validation: luau-compile accepted AdminCommands, PromoAdmin and PromoCharacter. No interactive or multi-client playtest performed; flight/visibility and production authorization still need Studio verification.
+- No Studio changes or publishing. Installation requires merging the current Studio versions first, retaining newer /island and /islands commands, and installing all PlayerData/leaderboard/shop safeguards together. The shared Codex/Claude handoff assigns Studio pushes to Claude; original request also asked not to change the live game directly.
+- Research automation paused at user's request.
+
+## 2026-10-23 — crnuch, local session: authorized Promo Admin Studio installation (Codex)
+
+- User explicitly approved installation and testing; publishing remains with the owner.
+- Exported all 138 pre-install Studio scripts locally, performed three-way merges, resolved AdminCommands/Shop conflicts preserving island commands and newer shop logic, and installed eight toolkit scripts. Exported the eight installed scripts into this commit's studio snapshot and src.
+- Fixed a discovered original toolkit bug: promo license was the number of zones (6), outside the valid licenses (0–5). It now uses the license table length.
+- Studio playtest passed: real owner account loaded promo profile; allowlist accepts advertiser ID and rejects unrelated ID; valid license; command dispatch grants temporary resources; flight actuator creation/reset; invisibility and exact transparency restoration including a newly added part. GUI/camera commands dispatched, client installed, camera returned to Custom. Flight input was sent, but movement feel and a second-account end-to-end test remain manual checks.
+- Final playtest console contained only HubMap informational output. Test bridge and temporary test script removed; Studio returned to Edit mode. No publication performed.
+- Owner must publish the place and have the advertiser rejoin a fresh server before these changes reach the live game. Friend uses /promo commands, not unrestricted /coins or /eggs.
+
 ## Open items
+- [x] **Install + Studio playtest Promo Admin** from the `codex/promo-admin-toolkit` PR after review. Verify the allowlisted account gets a disposable profile, resources/eggs/hatch previews work, all travel destinations open, max-firm preview rebuilds, GUI restore works, free-camera restores on respawn, and ordinary users cannot use `/promo`.
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
