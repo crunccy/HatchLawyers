@@ -9,7 +9,8 @@ The user's priorities are map detail and UI, followed by VFX and animation. They
 - [VIDEO_REFERENCES.md](VIDEO_REFERENCES.md): first twelve gameplay/tutorial references.
 - [VIDEO_RESEARCH_BATCH_03.md](VIDEO_RESEARCH_BATCH_03.md): five additional inspected lighting, map-building, mobile UI, boss and button references (V13–V17).
 - [VIDEO_RESEARCH_BATCH_04.md](VIDEO_RESEARCH_BATCH_04.md): three inventory/animation-event references (V18–V20), mode clarity and cue ownership; mobile evidence remains unverified.
-- [MOBILE_PRESENTATION_STUDY.md](MOBILE_PRESENTATION_STUDY.md): V21, visibly present touch controls, interaction feedback, duplicate notifications and related stall designs; twenty-one references total.
+- [MOBILE_PRESENTATION_STUDY.md](MOBILE_PRESENTATION_STUDY.md): V21, visibly present touch controls, interaction feedback, duplicate notifications and related stall designs; touch presentation reference.
+- [ENVIRONMENT_SCALE_STUDY.md](ENVIRONMENT_SCALE_STUDY.md): V22, avatar-relative scale and reusable prop/effect contact sheets; twenty-two references total.
 - [MAP_UI_ART_DIRECTION.md](MAP_UI_ART_DIRECTION.md): concrete map-detail kit, screen layouts/states, pop-up behavior, motion rules and visual acceptance board.
 - [VISUAL_POLISH_BRIEF.md](VISUAL_POLISH_BRIEF.md): prioritized deliverables, UI states, map-detail kit, effect/animation direction, likely integration points and review criteria.
 - [VISUAL_SYSTEMS_AUDIT.md](VISUAL_SYSTEMS_AUDIT.md): existing button, animation and particle systems; implementation guardrails and research gaps.
@@ -29,7 +30,7 @@ These are design recommendations informed by selected footage; they are not clai
 
 ## Evidence / status
 
-Selected sections of twenty-one videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. Current PS99/Steal an Egg footage is mixed with older useful technique references. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
+Selected sections of twenty-two videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. Current PS99/Steal an Egg footage is mixed with older useful technique references. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
 
 This package changes documentation only. No Studio installation, runtime implementation or gameplay test was performed for this research. Existing Studio and repo versions may differ. Read current claims and re-export/merge before implementation.
 
