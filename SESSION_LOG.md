@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local Codex) · actionable visual improvement specifications with current Studio source evidence and new video samples · since 2026-10-23
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-23 — crnuch, local session: specific visual implementation tasks (Codex)
+
+- User resumed research and requested deliberate, applicable improvements.
+- Added docs/ACTIONABLE_VISUAL_UPGRADES.md; V23 viewport portrait and V24 stylized building samples bring coverage to 24 videos.
+- Used October 23 Studio source export to identify small controls caused by scaling the 920×600 LAWYERS layout, inconsistent portrait fitting and animated bounds, existing single-toast replacement behavior, and HubMap runtime relocation/parked look-alikes.
+- Six scoped tasks specify changes, integration locations and acceptance criteria. Proposed target sizes/timings are explicitly not measured industry standards. Map and UI defects not visually verified are distinguished from code evidence.
+- Documentation only; no new Studio/game changes, runtime tests or direct audio audition. Claim released. Entry index now points Claude to the actionable task document.
 
 ## 2026-10-23 — crnuch, local session: environment scale study (Codex)
 
