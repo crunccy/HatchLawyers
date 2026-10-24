@@ -34,9 +34,9 @@ local PAPER = Color3.fromRGB(255, 252, 240)
 local PURPLE = Color3.fromRGB(140, 80, 230)
 local RED = Color3.fromRGB(240, 70, 70)
 local GOLD = Color3.fromRGB(255, 200, 40)
-local FONT = Font.fromEnum(Enum.Font.FredokaOne)
-local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium) -- descriptions / small print (Shared.UIFonts)
-local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy) -- big moments (Shared.UIFonts)
+local FONT = Font.fromEnum(Enum.Font.GothamBlack)
+local BODY = Font.fromEnum(Enum.Font.GothamBold) -- descriptions / small print (Shared.UIFonts)
+local TITLE = Font.fromEnum(Enum.Font.GothamBlack) -- big moments (Shared.UIFonts)
 local GOOD = Color3.fromRGB(67, 181, 92)
 local CALM = Color3.fromRGB(110, 160, 220)
 local SKIN = Color3.fromRGB(234, 184, 146)
@@ -95,6 +95,7 @@ local attendButton = make("TextButton", {
 	Visible = false,
 	Parent = buttonGui,
 }, { round(), make("UIStroke", { Color = BLACK, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }) })
+Skin.glint(attendButton) -- (UI v3: the one thing to press during a case)
 
 -- Courtroom overlay
 -- Above the SKINS screen (15), below the egg hatch (20).
@@ -121,7 +122,7 @@ panel:SetAttribute("NoSkin", true)
 dim:SetAttribute("NoSkin", true)
 Skin.blockClicks(panel) -- a tap between the evidence cards must not reach the Dim and close the courtroom
 dim.BackgroundTransparency = 0.35
-Skin.studs(panel, 0.93, nil, 30)
+-- (UI v3: plain deep purple body, no studs)
 local headerSw = Skin.swatch("Purple")
 local headerBar = make("Frame", {
 	Name = "Header", Position = UDim2.new(0, 4, 0, 4), Size = UDim2.new(1, -8, 0.105, -4), BackgroundColor3 = WHITE, Parent = panel,
@@ -133,7 +134,7 @@ local headerBar = make("Frame", {
 	make("UIStroke", { Thickness = 3, Color = headerSw.dark, Transparency = 0.1 }),
 })
 Skin.studs(headerBar, 0.86, nil, 22)
-Skin.shineBands(headerBar, 0.84)
+Skin.stripes(headerBar, 0.74, 4, 0.06)
 local title = Skin.text({ Position = UDim2.new(0, 14, 0.1, 0), Size = UDim2.new(0.62, 0, 0.8, 0), Text = "Courtroom", FontFace = FONT,
 	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = headerBar }, 26, 3)
 local verdictTimer = Skin.text({

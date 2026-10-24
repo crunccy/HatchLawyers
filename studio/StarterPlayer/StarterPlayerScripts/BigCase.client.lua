@@ -34,9 +34,9 @@ local RED = Color3.fromRGB(240, 70, 70)
 local GOLD = Color3.fromRGB(255, 200, 40)
 local BLUE = Color3.fromRGB(60, 150, 255)
 local CREAM = Color3.fromRGB(255, 248, 230)
-local FONT = Font.fromEnum(Enum.Font.FredokaOne)
-local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy)
-local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium)
+local FONT = Font.fromEnum(Enum.Font.GothamBlack)
+local TITLE = Font.fromEnum(Enum.Font.GothamBlack)
+local BODY = Font.fromEnum(Enum.Font.GothamBold)
 local RIVAL_COLORS = { ORANGE, BLUE, Color3.fromRGB(190, 90, 255), Color3.fromRGB(255, 90, 160) }
 
 local function now(): number

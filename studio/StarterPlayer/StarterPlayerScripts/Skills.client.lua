@@ -29,11 +29,11 @@ local GREEN = Color3.fromRGB(98, 205, 48)
 local ORANGE = Color3.fromRGB(255, 160, 24)
 local RED = Color3.fromRGB(240, 70, 70)
 local GOLD = Color3.fromRGB(255, 200, 40)
-local GRAY = Color3.fromRGB(170, 170, 182)
-local EMPTY = Color3.fromHex("3A3D55")
-local FONT = Font.fromEnum(Enum.Font.FredokaOne)
-local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium) -- descriptions / small print (Shared.UIFonts)
-local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy) -- big moments (Shared.UIFonts)
+local GRAY = Color3.fromHex("6E5A96") -- (v3: inactive = muted purple)
+local EMPTY = Color3.fromHex("4A2A85") -- (v3: purple, no gray / navy)
+local FONT = Font.fromEnum(Enum.Font.GothamBlack)
+local BODY = Font.fromEnum(Enum.Font.GothamBold) -- descriptions / small print (Shared.UIFonts)
+local TITLE = Font.fromEnum(Enum.Font.GothamBlack) -- big moments (Shared.UIFonts)
 
 local function make(class: string, props: { [string]: any }, children: { Instance }?): any
 	local instance = Instance.new(class)
@@ -124,36 +124,14 @@ local function pendingSkill(): Formulas.OwnedSkill?
 end
 
 ---------------------------------------------------------------- layout (designed at 560x400, scaled to fit)
-local gui = make("ScreenGui", { Name = "Skills", ResetOnSpawn = false, DisplayOrder = 33, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
-local dim = make("TextButton", { Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.35, Text = "", AutoButtonColor = false, Parent = gui })
-dim:SetAttribute("NoSkin", true)
-local panelScale = make("UIScale", {})
-local panel = make("Frame", {
-	Name = "Panel",
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(580, 470),
-	BackgroundColor3 = Skin.Panel,
-	Parent = gui,
-}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
-panel:SetAttribute("NoSkin", true)
-Skin.blockClicks(panel) -- a tap on empty panel space must not reach the dim and close it
-Skin.studs(panel, 0.93, nil, 30)
-local sw = Skin.swatch("Sky")
-local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 62), BackgroundColor3 = WHITE, Parent = panel }, {
-	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
-	}) }),
-	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
-})
-make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, Parent = header })
-Skin.studs(header, 0.86, nil, 26)
-Skin.shineBands(header, 0.84)
-make("ImageLabel", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(52, 52), BackgroundTransparency = 1,
-	Image = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons.Star, ScaleType = Enum.ScaleType.Fit, ZIndex = 2, Parent = header })
-local title = text({ Position = UDim2.fromOffset(68, 8), Size = UDim2.new(1, -150, 0, 46), FontFace = Skin.Fonts.Title, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = header }, 36)
-local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 78), Size = UDim2.fromOffset(530, 22), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 18)
-local closeButton = Skin.closeButton(header, 50, 3)
+-- UI v3 (2026-10-23, docs/UI_STYLE_V3.md): a Skin.window (sky striped header with the star popping out, deep purple
+-- body, blur, the chat box steps aside). The old layout sits in `panel`, a frame pushed down under the taller header.
+local win = Skin.window({ Name = "Skills", Title = "Skills", Color = "Sky", Icon = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons.Star,
+	Size = Vector2.new(580, 492), DisplayOrder = 33 })
+local gui = win.gui
+local panel = make("Frame", { Name = "Content", Position = UDim2.fromOffset(0, 22), Size = UDim2.new(1, 0, 1, -22), BackgroundTransparency = 1, ZIndex = 2, Parent = win.panel })
+local title = win.title
+local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 78), Size = UDim2.fromOffset(530, 22), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3, Parent = panel }, 18)
 
 type Card = { frame: Frame, gradient: UIGradient, rarity: TextLabel, name: TextLabel, level: TextLabel, effect: TextLabel, replace: TextButton }
 local cards: { Card } = {}
@@ -166,6 +144,7 @@ for slot = 1, Config.Skills.MaxSlots do
 		Parent = panel,
 	}, { corner(8), make("UIStroke", { Color = Skin.Ink, Thickness = 4 }) })
 	Skin.studs(frame, 0.88, nil, 22)
+	Skin.stripes(frame, 0.86, 2, 0.12)
 	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, ZIndex = 2, Parent = frame },
 		{ corner(6), make("UIStroke", { Thickness = 2, Color = WHITE, Transparency = 0.65 }) })
 	local gradient = make("UIGradient", { Rotation = 90, Parent = frame })
@@ -193,6 +172,7 @@ for slot = 1, Config.Skills.MaxSlots do
 end
 
 local rollButton = button({ Name = "RollButton", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 340), Size = UDim2.fromOffset(340, 62), BackgroundColor3 = GREEN, Parent = panel }, 28)
+Skin.glint(rollButton)
 local odds = text({ FontFace = BODY, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 418), Size = UDim2.fromOffset(520, 22), TextColor3 = MUTED, Parent = panel }, 17)
 do
 	local total = 0
@@ -339,9 +319,7 @@ local function open()
 	deskIndex = if typeof(selected) == "number" then selected else 1
 	message = nil
 	reveal.Visible = false
-	gui.Enabled = true
-	panelScale.Scale = 0
-	TweenService:Create(panelScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = fit() }):Play()
+	win.open()
 	render()
 end
 
@@ -349,7 +327,7 @@ local function close()
 	if busy then
 		return
 	end
-	gui.Enabled = false
+	win.hide()
 end
 
 -- Click / tap one of your own lawyers (or their desk) to open their skills (design doc: "Lawyer UI").
@@ -401,8 +379,7 @@ end
 	end
 	open()
 end)
-closeButton.Activated:Connect(close)
-dim.Activated:Connect(close)
+-- (the window's own X and backdrop close it)
 
 ---------------------------------------------------------------- rolling
 local function flash(text: string)

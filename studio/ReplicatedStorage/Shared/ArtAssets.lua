@@ -38,4 +38,16 @@ ArtAssets.Tabs = {
 	Eggs = "rbxassetid://76432403189938", -- egg_briefcase
 }
 
+-- the Travel menu's picture cards (2026-10-23, art/travel/ - crops of the v2 islands' ground renders; uploaded by
+-- crnuch's Studio)
+ArtAssets.Travel = {
+	Home = "rbxassetid://117539978811046", -- the hub island from above (crnuch: "a pic of the island itself")
+	BriefcaseBay = "rbxassetid://92015247659036",
+	PetPark = "rbxassetid://95030000841761",
+	BrainrotBoulevard = "rbxassetid://99916639620400",
+	FoodCourt = "rbxassetid://79095597985925",
+	OceanShore = "rbxassetid://131220690883461",
+	SpaceBase = "rbxassetid://119502654637372",
+}
+
 return ArtAssets

@@ -261,9 +261,18 @@ Claim big work here before starting (who · what · since), push the claim, remo
   header, ZONES OPEN + license pills, picture cards from `art/travel/` uploaded by crnuch's Studio = `ArtAssets.Travel`,
   boss + egg-price pills, TRAVEL / HERE / LOCKED; trip animations unchanged, crnuch's call; My Firm = the hub island
   from above), Daily Rewards on Skin.window (striped day tiles, glinting claim). **Snapshot NOT refreshed after these
-  two** (Travel, Rewards, ArtAssets): re-export before editing them.
-- **Next (UI v3 rollout, one screen per session):** Rebirth (`Supreme.client`, read, not started), Firm stage-up, Big
-  Case, Minigames, Skills, Manager, Courtroom onto Skin v3 (StyleV3 only recolours them). Common's rarity colour is gray
+  two** (Travel, Rewards, ArtAssets): re-export before editing them. (Snapshot refreshed again 2026-10-24.)
+- **2026-10-24, same session:** Rebirth, Skills and Manager Office moved onto Skin.window (v3 headers, purple striped
+  rows / slots, glinting main buttons, muted purple when inactive); Firm stage-up = a SMALL gold sunburst card near the
+  top; **crnuch's call: pop-ups are small** (same look - sunburst, stripes, solid - about half size, each kind in its own
+  screen slot; Skin.toast text 20, reward pop-up 300x78 at 0.42). Mechanical v3 pass on Courtroom (plain purple body,
+  glinting ATTEND COURT), Big Case, Goals, Minigames, Eggs, Zones (striped headers, Gotham, purple not navy) - built from
+  the live scripts (their src copies were stale). All live; Rebirth / stage-up / Daily / Travel checked on screen,
+  Skills / Manager checked by layout numbers only (Studio was in the background - screenshot them next).
+  **UISkin gotcha:** it checks NoSkin on everything BELOW a ScreenGui, not on the ScreenGui itself - put NoSkin on the
+  frames you build (it repainted the stage-up card purple).
+- **Next:** a visual pass on Skills, Manager, Courtroom, Big Case, the minigames (Studio in front); the Mutation
+  Machine (Merger) is untouched - its live version is older than mr.robe's 8f73372, sort that out with mr.robe first (StyleV3 only recolours them). Common's rarity colour is gray
   (`Config.RarityColors`) - crnuch to decide if it changes. Monetization ideas from the video (cheap Starter Pack,
   cheap 2x, prompt the smallest cash pack on a shortfall) need crnuch's yes.
 

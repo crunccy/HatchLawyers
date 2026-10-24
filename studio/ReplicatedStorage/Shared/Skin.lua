@@ -1188,7 +1188,7 @@ export type Toast = {
 function Skin.toast(opts: { [string]: any }): Toast
 	local parent = opts.Parent or Skin.overlay("SkinToasts", 22)
 	local home: UDim2 = opts.Position or UDim2.new(0.5, 0, 0, 64)
-	local size = opts.TextSize or 24
+	local size = opts.TextSize or 20 -- (pop-ups stay small: crnuch 2026-10-23)
 	local frame = make("Frame", {
 		Name = opts.Name or "Toast", AnchorPoint = Vector2.new(0.5, 0), Position = home, Size = UDim2.fromOffset(10, size + 20),
 		BackgroundTransparency = 1, Visible = false, ZIndex = 30, Parent = parent,

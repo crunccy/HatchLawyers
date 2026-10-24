@@ -13,7 +13,7 @@ local Sfx = require(ReplicatedStorage.Shared:WaitForChild("Sfx"))
 local StageUp = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("FirmStageUp") :: RemoteEvent
 
 local player = Players.LocalPlayer
-local FONT = Font.new("rbxasset://fonts/families/FredokaOne.json")
+local FONT = Font.fromEnum(Enum.Font.GothamBlack) -- (UI v3: one family, game-wide)
 local INK = UIKit.Colors.Ink
 
 local gui = Instance.new("ScreenGui")
@@ -75,38 +75,40 @@ local function popAndFade(f: Frame, hold: number)
 	end)
 end
 
-local toastY = 0.2
+-- v3 (2026-10-23, docs/UI_STYLE_V3.md): pop-ups are SMALL (crnuch: "there are a lot of popups" - keep the sunburst
+-- and stripes, just smaller): the stage-up is a small gold Skin card near the top; area / need = Skin.toast pills.
+local Skin = require(ReplicatedStorage.Shared:WaitForChild("Skin")) :: any
 StageUp.OnClientEvent:Connect(function(info)
 	if info.kind == "Stage" then
 		Sfx.play("officeUpgrade", { gap = 1.5 })
-		local f = panel(UDim2.fromScale(0.5, 0.32), UDim2.fromScale(0.5, 0.38))
-		local burst = UIKit.burst(f, UIKit.Colors.Gold, 520)
-		burst.ZIndex = 0
-		label(f, "FIRM UPGRADED!", 0.1, 0.32, UIKit.Colors.TextGold, 4)
-		label(f, string.upper(info.name or ""), 0.44, 0.26, Color3.new(1, 1, 1), 3.5)
-		label(f, "New rooms to build on your lawn!", 0.74, 0.16, UIKit.Colors.TextSoft, 2)
-		popAndFade(f, 4.5)
+		-- (crnuch 2026-10-23: pop-ups SMALLER - same gold card with its sunburst + bands, about half the old size)
+		local holder = Instance.new("Frame")
+		holder.AnchorPoint = Vector2.new(0.5, 0)
+		holder.Position = UDim2.fromScale(0.5, 0.15)
+		holder.Size = UDim2.fromOffset(400, 112)
+		holder.BackgroundTransparency = 1
+		holder:SetAttribute("NoSkin", true) -- (UISkin checks NoSkin below the ScreenGui, not on it)
+		holder.Parent = gui
+		local fit = Instance.new("UIScale")
+		local cam = workspace.CurrentCamera
+		fit.Scale = if cam then math.clamp(cam.ViewportSize.X / 640, 0.6, 1) else 1
+		fit.Parent = holder
+		local f = Skin.card(holder, { Color = "Gold", ZIndex = 2, GlowAt = Vector2.new(0.5, 0.5) })
+		local z = f.ZIndex + 3
+		local title = Skin.text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 10), Size = UDim2.new(1, -30, 0, 46), Text = "FIRM UPGRADED!",
+			ZIndex = z, Parent = f }, 40, 4)
+		Skin.breathe(title, 2, 0.6)
+		Skin.text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 60), Size = UDim2.new(1, -30, 0, 26), Text = string.upper(info.name or ""),
+			TextColor3 = Color3.fromHex("FFF4C2"), ZIndex = z, Parent = f }, 24, 3)
+		Skin.text({ AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 86), Size = UDim2.new(1, -30, 0, 20), FontFace = Skin.Fonts.Body,
+			Text = "New rooms to build on your lawn!", ZIndex = z, Parent = f }, 16, 2)
+		popAndFade(holder, 4.5)
 	elseif info.kind == "Area" or info.kind == "Need" then
 		local good = info.kind == "Area"
 		Sfx.play(if good then "areaUnlock" else "error", { gap = if good then 1.5 else 0.8, volume = if good then 1 else 0.65 })
-		local f = Instance.new("Frame")
-		f.AnchorPoint = Vector2.new(0.5, 0)
-		f.Position = UDim2.fromScale(0.5, toastY)
-		f.Size = UDim2.new(0.4, 0, 0, if good then 84 else 56)
-		f.BackgroundColor3 = if good then Color3.fromRGB(98, 205, 48) else Color3.fromRGB(240, 70, 70)
-		UIKit.shade(f, 1.05, 0.7)
-		UIKit.corner(f, 16)
-		UIKit.outline(f, 4)
-		local c = Instance.new("UISizeConstraint")
-		c.MaxSize = Vector2.new(560, 100)
-		c.Parent = f
-		f.Parent = gui
-		if good then
-			label(f, "BUILT: " .. string.upper(info.name or ""), 0.08, 0.5, Color3.new(1, 1, 1), 3)
-			label(f, info.text or "", 0.58, 0.34, Color3.new(1, 1, 1), 2)
-		else
-			label(f, info.text or "", 0.15, 0.7, Color3.new(1, 1, 1), 2.5)
-		end
-		popAndFade(f, if good then 3 else 2.2)
+		Skin.toast({
+			Text = if good then "BUILT: " .. string.upper(info.name or "") .. (if info.text and info.text ~= "" then "  " .. info.text else "") else (info.text or ""),
+			Color = if good then "Green" else "Red", Hold = if good then 3 else 2.2, Position = UDim2.new(0.5, 0, 0.15, 128), -- (under the stage card)
+		})
 	end
 end)

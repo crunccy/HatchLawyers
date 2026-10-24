@@ -90,7 +90,7 @@ local header = make("TextButton", {
 		ColorSequenceKeypoint.new(1, purple.base:Lerp(purple.dark, 0.25)),
 	}) }) })
 Skin.studs(header, 0.86, nil, 22)
-Skin.shineBands(header, 0.84)
+Skin.stripes(header, 0.74, 4, 0.06)
 make("Frame", { -- ink divider under the header
 	Name = "Divider", Position = UDim2.fromOffset(0, HEAD_H + 4), Size = UDim2.new(1, 0, 0, 3), BackgroundColor3 = Skin.Ink,
 	BorderSizePixel = 0, Parent = card,

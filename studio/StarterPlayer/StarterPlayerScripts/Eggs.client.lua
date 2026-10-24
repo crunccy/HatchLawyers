@@ -44,7 +44,7 @@ local themedPrompts: { ProximityPrompt } = {}
 local BRIEFCASE_GOLD = Color3.fromRGB(245, 200, 70) -- the starter Briefcase Egg (mr.robe's yellow + brown egg)
 
 -- Cartoony style (see the team style guide): FredokaOne, bright colors, thick black outlines.
-local FONT = Enum.Font.FredokaOne
+local FONT = Enum.Font.GothamBlack
 local BLACK = Color3.new(0, 0, 0)
 local WHITE = Color3.new(1, 1, 1)
 local GREEN = Color3.fromRGB(98, 205, 48)

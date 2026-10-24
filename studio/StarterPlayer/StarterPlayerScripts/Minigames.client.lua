@@ -23,7 +23,7 @@ local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Minigame"
 
 local player = Players.LocalPlayer
 local CFG = Config.Minigames
-local FONT = Font.new("rbxasset://fonts/families/FredokaOne.json")
+local FONT = Font.fromEnum(Enum.Font.GothamBlack)
 local INK = UIKit.Colors.Ink
 local WHITE = Color3.new(1, 1, 1)
 local GOLD = Color3.fromRGB(255, 200, 46)
