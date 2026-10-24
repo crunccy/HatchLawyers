@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · reusable decor cluster and collision handoff research; docs only · since 2026-10-24
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: reusable decor cluster research (Codex)
+
+- Added docs/DECOR_CLUSTER_HANDOFF.md from fresh main zone_decor.py, BuildDecorLibrary and BuildLane; extended V14 at 30:12 and 34:11. Unique video count stays 30.
+- Proposed one TreeM/Bush/Rocks/FileBoxes perimeter composition with explicit transforms, grounded support points and per-component collision/query review.
+- Recognized existing seeded foliage kit and Plastic+BrickStuds importer; warned against whole-library replacement for a small polish pilot.
+- Current main ART_REMODEL_BRIEF marks approved map plan completed; research index now corrects older pending-stage language.
+- Documentation only; no Studio edits, builder execution, tests, publication or audio audition. Claim released.
 
 ## 2026-10-24 — crnuch, local session: reward state clarity research (Codex)
 
