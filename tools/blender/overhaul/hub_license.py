@@ -283,4 +283,5 @@ def main():
     O.render(OUT, "license_after", (66, -74, 44), (0, 2, 13), lens=32, show=["new"])
 
 
-main()
+if __name__ == "__main__":  # (other overhaul scripts import these builders)
+    main()

@@ -18,9 +18,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   colours). Stage 3 hub buildings: Law License Building rendered (`hub_license.py` on the architecture kit
   `ohbuild.py`; same footprint, doors and clear forecourt as the v2 hub's, for mr.robe's wiring markers); Upgrades +
   Egg Incubator rendered (`hub_services.py`). With the hub switch on, the island's Shop / Mutation Machine / portal /
-  fountain / belt / boards are parked look-alikes - players see the real Hub.* models - so next: Hub.ShopStall, the
-  License / Carry / Speed counters, leaderboards, Big Case belt; Hub.MergeMachine is mr.robe's v3 (left alone).
-  Then firm stages 2-6, then the islands. Scripts + renders:
+  fountain / belt / boards are parked look-alikes - players see the real Hub.* models; those are remade in
+  `hub_gameplay.py` (Shop stall, License / Carry / Speed counters, a leaderboard, the Big Case belt with ONE slat
+  mesh - BigCase.client scrolls each slat; prompt / gui parts stay plain Parts). Hub.MergeMachine is mr.robe's v3
+  (left alone). Next: minigame spots + Arcade booths, then firm stages 2-6, then the islands. Scripts + renders:
   `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,

@@ -306,4 +306,5 @@ def main():
     O.render(OUT, "incubator_after", (342, -52, 30), (300, 0, 11), lens=32, show=["incubator"])
 
 
-main()
+if __name__ == "__main__":  # (other overhaul scripts import these builders)
+    main()
