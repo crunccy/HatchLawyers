@@ -151,6 +151,11 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   studs on broad terrain + structural surfaces; smooth water, glow and selected natural details stay unstudded; no
   island built from hundreds of stacked small bricks. Ocean Shore v2 is the APPROVED benchmark (2026-10-19,
   ART_STYLE_STUDS.md); the other islands get redesigned to it one at a time when crnuch asks.
+- **MODEL OVERHAUL (crnuch's calls 2026-10-24): every map model gets remade** - trees, hub buildings, the portal, firm
+  stages, props, and the six islands too. Built in Blender as **MESHES** (crnuch uploads them; studs kept), not
+  stacks of Parts - more detail (bevels, trims, layered canopies) for far fewer parts. Map first; characters, eggs and
+  bosses later. Benchmark first (a tree family, the portal, one firm building), approved from renders before anything
+  goes in. Reference stills: `references/models/` (PS99, Fisch, Steal an Egg - from the Codex research's videos).
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
   far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),

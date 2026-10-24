@@ -5,6 +5,10 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **crnuch (local), since 2026-10-24: MAP MODEL OVERHAUL** (crnuch: "genuinely any of the models ... a whole model
+  overhaul"): every map model remade in Blender as meshes (crnuch uploads) - trees, hub buildings, the Travel portal,
+  firm stages, props, then the six islands. Stage 1 = benchmark (tree family + portal + one firm building) rendered for
+  approval. Refs: `references/models/`. Don't remodel map pieces meanwhile; tell crnuch's session if you need one.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
