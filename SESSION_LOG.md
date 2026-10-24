@@ -9,6 +9,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   overhaul"): every map model remade in Blender as meshes (crnuch uploads) - trees, hub buildings, the Travel portal,
   firm stages, props, then the six islands. Stage 1 = benchmark (tree family + portal + one firm building) rendered for
   approval. Refs: `references/models/`. Don't remodel map pieces meanwhile; tell crnuch's session if you need one.
+  Progress 2026-10-24: tree family APPROVED (unstudded, as the stud rules say); Travel portal v2 APPROVED (round and
+  symmetrical, crnuch's call: "the same from all sides"); Dingy Shack benchmark rendered, waiting for crnuch. Scripts +
+  renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
