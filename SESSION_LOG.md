@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · travel UI and destination wayfinding research; docs only · since 2026-10-24
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: travel UI and wayfinding research (Codex)
+
+- Added docs/TRAVEL_UI_WAYFINDING.md with V27, four timestamped PS99 travel samples; 27 sampled videos total. Older reference footage explicitly labeled; muted visual review only.
+- Audited Travel.client, Skin.window, TravelServer and TravelFx against October 23 Studio export. Existing locks/current-location/carrying/busy/camera cleanup recognized.
+- Specified compact travel layout (52px GO scales to about 36.2px at 844×390), one-island landmark/card/sign pilot, and destination/status copy within existing trip lifecycle.
+- Preserves server rules, wiring, chunky studded style and current model-work sequence. Acceptance checks are proposed, not executed.
+- Documentation only; no Studio edits, installs, publication or runtime tests. Claim released.
 
 ## 2026-10-23 — crnuch, local session: boss and hatch readability research (Codex)
 
