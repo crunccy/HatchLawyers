@@ -25,16 +25,16 @@ local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
 local INK = WHITE -- text sits on dark surfaces now
 local MUTED = Skin.TextSoft
-local ROW = Color3.fromHex("3A3D55")
-local ROW_ALT = Color3.fromHex("34374D")
+local ROW = Color3.fromHex("4A2A85") -- (v3: purple rows, no gray / navy)
+local ROW_ALT = Color3.fromHex("43247A")
 local GREEN = Color3.fromRGB(98, 205, 48)
 local RED = Color3.fromRGB(240, 70, 70)
 local GOLD = Color3.fromRGB(255, 200, 40)
-local GRAY = Color3.fromRGB(170, 170, 182)
+local GRAY = Color3.fromHex("6E5A96") -- (v3: inactive = muted purple)
 local PURPLE = Color3.fromRGB(110, 60, 200)
-local FONT = Font.fromEnum(Enum.Font.FredokaOne)
-local BODY = Font.fromEnum(Enum.Font.BuilderSansMedium) -- descriptions / small print (Shared.UIFonts)
-local TITLE = Font.fromEnum(Enum.Font.LuckiestGuy) -- big moments (Shared.UIFonts)
+local FONT = Font.fromEnum(Enum.Font.GothamBlack)
+local BODY = Font.fromEnum(Enum.Font.GothamBold) -- descriptions / small print (Shared.UIFonts)
+local TITLE = Font.fromEnum(Enum.Font.GothamBlack) -- big moments (Shared.UIFonts)
 
 local function make(class: string, props: { [string]: any }, children: { Instance }?): any
 	local instance = Instance.new(class)
@@ -93,32 +93,12 @@ local function button(props: { [string]: any }, maxSize: number): TextButton
 end
 
 ---------------------------------------------------------------- layout (560x400, scaled to fit)
-local gui = make("ScreenGui", { Name = "Manager", ResetOnSpawn = false, DisplayOrder = 32, Enabled = false, Parent = player:WaitForChild("PlayerGui") })
-local dim = make("TextButton", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = BLACK, BackgroundTransparency = 0.35, Text = "", AutoButtonColor = false, Parent = gui })
-dim:SetAttribute("NoSkin", true)
-local panelScale = make("UIScale", {})
-local panel = make("Frame", {
-	Name = "Panel",
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(560, 470),
-	BackgroundColor3 = Skin.Panel,
-	Parent = gui,
-}, { corner(10), make("UIStroke", { Color = Skin.Ink, Thickness = 5 }), panelScale })
-panel:SetAttribute("NoSkin", true)
-Skin.blockClicks(panel) -- a tap on empty panel space must not reach the dim and close it
-Skin.studs(panel, 0.93, nil, 30)
-local sw = Skin.swatch("Gold")
-local header = make("Frame", { Name = "Header", Position = UDim2.fromOffset(4, 4), Size = UDim2.new(1, -8, 0, 64), BackgroundColor3 = WHITE, ZIndex = 1, Parent = panel }, {
-	corner(7), make("UIGradient", { Rotation = 90, Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, sw.light), ColorSequenceKeypoint.new(0.55, sw.base), ColorSequenceKeypoint.new(1, sw.base:Lerp(sw.dark, 0.25)),
-	}) }),
-	make("UIStroke", { Thickness = 3, Color = sw.dark, Transparency = 0.1 }),
-})
-make("Frame", { Position = UDim2.new(0, -4, 1, 0), Size = UDim2.new(1, 8, 0, 4), BackgroundColor3 = Skin.Ink, BorderSizePixel = 0, Parent = header })
-Skin.studs(header, 0.86, nil, 26)
-Skin.shineBands(header, 0.84)
-Skin.text({ Position = UDim2.fromOffset(18, 6), Size = UDim2.fromOffset(300, 52), Text = "Manager Office", TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 2, Parent = header }, 44, 4)
+-- UI v3 (2026-10-23, docs/UI_STYLE_V3.md): a Skin.window (gold striped header, the upgrades icon popping out, deep
+-- purple body, blur, the chat box steps aside); the old layout sits in `panel`, pushed down under the taller header.
+local win = Skin.window({ Name = "Manager", Title = "Manager Office", Color = "Gold", Icon = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons.Upgrades,
+	Size = Vector2.new(560, 492), DisplayOrder = 32 })
+local gui = win.gui
+local panel = make("Frame", { Name = "Content", Position = UDim2.fromOffset(0, 22), Size = UDim2.new(1, 0, 1, -22), BackgroundTransparency = 1, ZIndex = 2, Parent = win.panel })
 -- Prestige: only shows once the firm is at the top tier
 local supremeButton = button({ Name = "SupremeButton", Position = UDim2.fromOffset(318, 13), Size = UDim2.fromOffset(160, 42), BackgroundColor3 = GOLD, Visible = false, ZIndex = 3, Parent = panel }, 20)
 make("UIGradient", {
@@ -131,7 +111,6 @@ make("UIGradient", {
 })
 local supremeArmedUntil = 0
 local subtitle = text({ FontFace = BODY, Position = UDim2.fromOffset(24, 80), Size = UDim2.fromOffset(500, 20), TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, Parent = panel }, 17)
-local closeButton = Skin.closeButton(header, 52, 3)
 
 -- not hired yet
 local hireCard = make("Frame", { Name = "HireCard", Position = UDim2.fromOffset(40, 118), Size = UDim2.fromOffset(480, 300), BackgroundColor3 = ROW, Parent = panel }, { corner(10), stroke(3) })
@@ -145,6 +124,8 @@ text({
 	Parent = hireCard,
 }, 20)
 local hireButton = button({ Name = "HireButton", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 180), Size = UDim2.fromOffset(300, 64), BackgroundColor3 = GREEN, Parent = hireCard }, 28)
+Skin.stripes(hireCard, 0.88, 3, 0.08)
+Skin.glint(hireButton)
 
 -- hired: one row per upgrade
 type Row = { frame: Frame, name: TextLabel, effect: TextLabel, pips: TextLabel, buy: TextButton, id: string }
@@ -153,7 +134,8 @@ local list = make("Frame", { Name = "Upgrades", Position = UDim2.fromOffset(20, 
 for i, def in Config.Manager.Upgrades do
 	local frame = make("Frame", { Name = def.Id, Position = UDim2.fromOffset(0, (i - 1) * 68), Size = UDim2.fromOffset(520, 60), BackgroundColor3 = if i % 2 == 0 then ROW_ALT else ROW, Parent = list }, { corner(8), stroke(3) })
 	make("Frame", { Name = "Bevel", Position = UDim2.fromOffset(2, 2), Size = UDim2.new(1, -4, 1, -4), BackgroundTransparency = 1, Parent = frame },
-		{ corner(6), make("UIStroke", { Thickness = 1.5, Color = Color3.fromHex("5A5E80"), Transparency = 0.3 }) })
+		{ corner(6), make("UIStroke", { Thickness = 1.5, Color = Color3.fromHex("8A63C9"), Transparency = 0.3 }) })
+	Skin.stripes(frame, 0.9, 3, 0.06)
 	rows[i] = {
 		id = def.Id,
 		frame = frame,
@@ -241,14 +223,12 @@ local function fit(): number
 end
 
 local function open()
-	gui.Enabled = true
-	panelScale.Scale = 0
-	TweenService:Create(panelScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = fit() }):Play()
+	win.open()
 	render()
 end
 
 local function close()
-	gui.Enabled = false
+	win.hide()
 end
 
 supremeButton.Activated:Connect(function()
@@ -267,8 +247,7 @@ supremeButton.Activated:Connect(function()
 	end
 end)
 
-closeButton.Activated:Connect(close)
-dim.Activated:Connect(close)
+-- (the window's own X and backdrop close it)
 
 hireButton.Activated:Connect(function()
 	local ok, reason = HireManager:InvokeServer()
