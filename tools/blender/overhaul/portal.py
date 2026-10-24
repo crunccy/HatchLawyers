@@ -143,9 +143,52 @@ def studs_annulus(name, look, r0, r1, z, pitch=1.0, rad=0.32, h=0.22, segs=10):
                 bm.faces.new(top)
 
 
-# ------------------------------------------------------------------ the portal
+# ------------------------------------------------------------------ the portal (v2, crnuch 2026-10-24: "circular and
+# symmetrical around so it looks the same from all sides": it stands in the middle of the hub plaza)
+def to_world(cx, cy, ang, lx, ly):
+    return (cx + lx * math.cos(ang) - ly * math.sin(ang), cy + lx * math.sin(ang) + ly * math.cos(ang))
+
+
+def gem_radial(name, look, centre, r, out, facets=8):
+    """A faceted crystal pointing outward along `out` (a horizontal direction)."""
+    bm = bm_for(name, look)
+    c, out = Vector(centre), Vector(out).normalized()
+    side = Vector((-out.y, out.x, 0))
+    ring = [bm.verts.new(c + (side * math.cos(k / facets * TAU) + Vector((0, 0, 1)) * math.sin(k / facets * TAU)) * r)
+            for k in range(facets)]
+    tip, back = bm.verts.new(c + out * r * 0.95), bm.verts.new(c - out * r * 0.5)
+    for k in range(facets):
+        j = (k + 1) % facets
+        bm.faces.new((ring[k], ring[j], tip))
+        bm.faces.new((ring[j], ring[k], back))
+
+
+def arc(name, look, p0, p1, rise, r=0.28, n=12, segs=8):
+    """A curved band from p0 to p1 bowing up by `rise` (the gold arches between the pillars)."""
+    bm = bm_for(name, look)
+    p0, p1 = Vector(p0), Vector(p1)
+    pts = [p0.lerp(p1, t) + Vector((0, 0, rise * math.sin(t * math.pi))) for t in (i / (n - 1) for i in range(n))]
+    rings, side = [], None
+    for i, p in enumerate(pts):
+        d = (pts[min(i + 1, n - 1)] - pts[max(i - 1, 0)]).normalized()
+        side = side or d.cross(Vector((0, 0, 1))).normalized()
+        side = (side - d * side.dot(d)).normalized()
+        up = side.cross(d).normalized()
+        rings.append([bm.verts.new(p + (side * math.cos(k / segs * TAU) + up * math.sin(k / segs * TAU)) * r) for k in range(segs)])
+    for i in range(n - 1):
+        for k in range(segs):
+            bm.faces.new((rings[i][k], rings[i][(k + 1) % segs], rings[i + 1][(k + 1) % segs], rings[i + 1][k]))
+
+
+PAD_Z = 3.1
+PILLAR_R = 9.6      # pillar ring radius
+PILLAR_H = 13.0
+CROWN_Z = PAD_Z + 1.45 + PILLAR_H + 1.2   # the crown ring sits on the pillar caps
+N_PILLARS = 6
+
+
 def stage():
-    """Three round tiers: bevelled white bodies, a gold lip, a recessed neon channel, studded tops."""
+    """Three round tiers: bevelled white bodies, a gold lip, a recessed neon channel, studded tops; steps on 4 sides."""
     tiers = ((15.0, 0.0, 1.2), (12.4, 1.2, 1.0), (10.0, 2.2, 0.9))
     for k, (R, z0, h) in enumerate(tiers):
         z1 = z0 + h
@@ -157,13 +200,16 @@ def stage():
         lathe("Stage_Gold", "trim_gold", [(R + 0.05, z1 - 0.32), (R + 0.22, z1 - 0.2), (R + 0.22, z1 - 0.05), (R - 0.1, z1 + 0.04)])
         inner = tiers[k + 1][0] if k < 2 else 7.4
         studs_annulus("Stage_Studs", "stage_white", inner, R - 0.4, z1 + 0.04)  # classic studs: the surface's own colour
-    # front steps up to the pad (they cut through the tier faces: the walk-in side)
-    for i in range(4):  # each step 0.775 up, ending flush with the top tier (3.1)
-        h = (i + 1) * 0.775
-        box("Stage_White", "stage_white", (0, -15.6 + i * 1.5, h / 2), (6.4, 1.5, h), bevel=0.1)
-        box("Stage_Gold", "trim_gold", (0, -16.35 + i * 1.5, h - 0.06), (6.5, 0.16, 0.12))
+    for q in range(3):  # three matching stairways every 120 degrees, each landing in a gap between pillars
+        ang = q * TAU / 3
+        for i in range(4):  # each step 0.775 up, ending flush with the top tier (3.1)
+            h = (i + 1) * 0.775
+            x, y = to_world(0, 0, ang, 0, -15.6 + i * 1.5)
+            box("Stage_White", "stage_white", (x, y, h / 2), (5.6, 1.5, h), bevel=0.1, rot=ang)
+            x, y = to_world(0, 0, ang, 0, -16.35 + i * 1.5)
+            box("Stage_Gold", "trim_gold", (x, y, h - 0.06), (5.7, 0.16, 0.12), rot=ang)
     # the pad: a dark recessed disc with glowing rings + the flat swirl
-    z = 3.1
+    z = PAD_Z
     lathe("Pad_Dark", "pad_dark", [(7.4, z + 0.05), (7.0, z - 0.2), (0.0, z - 0.2)])
     for r0, r1, look in ((6.6, 7.0, "neon_cyan"), (5.0, 5.3, "neon_pink"), (3.3, 3.55, "neon_cyan")):
         lathe("Pad_Rings", look, [(r1, z - 0.18), (r1, z - 0.05), (r0, z - 0.05), (r0, z - 0.18)])
@@ -171,107 +217,130 @@ def stage():
     lathe("SwirlCore", "core", [(0.9, z - 0.06), (0.6, z + 0.25), (0.0, z + 0.3)])
     for k in range(4):  # spiral arms lying flat on the pad (spun by the client)
         bm = bm_for(f"SwirlArm{k + 1}", "swirl")
-        pts = 16
         prev = None
-        for i in range(pts):
-            t = i / (pts - 1)
+        for i in range(16):
+            t = i / 15
             a = k / 4 * TAU + t * 3.4
             r = 0.9 + t * 5.4
             w = 0.5 * (1 - t) + 0.12
             p = Vector((math.cos(a) * r, math.sin(a) * r, z - 0.02))
-            n = Vector((-math.sin(a), math.cos(a), 0))
-            pair = (bm.verts.new(p + n * w), bm.verts.new(p - n * w))
+            nrm = Vector((-math.sin(a), math.cos(a), 0))
+            pair = (bm.verts.new(p + nrm * w), bm.verts.new(p - nrm * w))
             if prev:
                 bm.faces.new((prev[0], prev[1], pair[1], pair[0]))
             prev = pair
 
 
 def pylons():
-    """Two pillars beside the pad: stepped plinth, panelled shaft with neon edge strips, gold-trimmed capital, crystal."""
-    for side in (-1, 1):
-        x = side * 9.0
-        y = 1.0
-        base_z = 3.1
-        box("Pylon_Base", "stage_white", (x, y, base_z + 0.6), (4.4, 4.4, 1.2), bevel=0.25)
-        box("Pylon_Gold", "trim_gold", (x, y, base_z + 1.3), (4.0, 4.0, 0.3), bevel=0.08)
-        box("Pylon_Shaft", "pylon_purple", (x, y, base_z + 1.45 + 8.0), (3.2, 3.2, 16.0), bevel=0.3)
-        for dx, dy in ((1, 1), (1, -1), (-1, 1), (-1, -1)):  # neon edge strips on the four corners
-            box("Pylon_Glow", "neon_cyan", (x + dx * 1.55, y + dy * 1.55, base_z + 1.45 + 8.0), (0.28, 0.28, 15.2))
-        for face, (nx, ny) in enumerate(((0, -1), (0, 1), (-1, 0), (1, 0))):  # recessed panels with a gold frame, 3 per face
-            for k in range(3):
-                pz = base_z + 4.2 + k * 4.6
-                if nx == 0:
-                    box("Pylon_Deep", "pylon_deep", (x, y + ny * 1.52, pz), (2.2, 0.2, 3.6), bevel=0.05)
-                    box("Pylon_Gold", "trim_gold", (x, y + ny * 1.6, pz + 1.9), (2.4, 0.16, 0.18))
-                else:
-                    box("Pylon_Deep", "pylon_deep", (x + nx * 1.52, y, pz), (0.2, 2.2, 3.6), bevel=0.05)
-                    box("Pylon_Gold", "trim_gold", (x + nx * 1.6, y, pz + 1.9), (0.16, 2.4, 0.18))
-        for bz in (base_z + 1.45 + 5.6, base_z + 1.45 + 10.2):  # gold bands between the panels
-            box("Pylon_Gold", "trim_gold", (x, y, bz + 0.5), (3.5, 3.5, 0.35), bevel=0.08)
-        top = base_z + 1.45 + 16.0
-        box("Pylon_Shaft", "pylon_purple", (x, y, top - 0.4), (3.8, 3.8, 0.8), bevel=0.25)  # the capital flares out
-        box("Pylon_Gold", "trim_gold", (x, y, top + 0.3), (4.0, 4.0, 0.6), bevel=0.15)
-        box("Pylon_Base", "stage_white", (x, y, top + 1.0), (3.4, 3.4, 0.8), bevel=0.2)
-        gem("Pylon_Crystal", "neon_pink", (x, y, top + 2.6), 1.0, facets=6, axis_front=False)
-    # the arms that hold the halo: gold-trimmed beams from each capital in to the halo rim
-    for side in (-1, 1):
-        box("Pylon_Shaft", "pylon_purple", (side * 7.4, 1.0, 20.0), (3.4, 1.6, 1.4), bevel=0.25)
-        box("Pylon_Glow", "neon_cyan", (side * 7.4, 0.15, 20.0), (3.0, 0.2, 0.3))
+    """Six identical pillars on a ring, each turned to face outward: plinth, panelled shaft with neon edges and gold bands,
+    a flared capital; gold arches join neighbours just under the crown."""
+    base_z = PAD_Z
+    for i in range(N_PILLARS):
+        ang = i / N_PILLARS * TAU  # pillars at 0, 60, 120 ... degrees; the gaps (30, 90, ...) hold the stairways + the gems
+        cx, cy = math.cos(ang) * PILLAR_R, math.sin(ang) * PILLAR_R
+        face = ang + math.pi / 2  # local -y points outward
+        def B(look_name, look, lx, ly, z, size, bevel=0.0):
+            x, y = to_world(cx, cy, face, lx, ly)
+            box(look_name, look, (x, y, z), size, bevel=bevel, rot=face)
+        B("Pylon_Base", "stage_white", 0, 0, base_z + 0.6, (3.4, 3.4, 1.2), 0.22)
+        B("Pylon_Gold", "trim_gold", 0, 0, base_z + 1.3, (3.1, 3.1, 0.3), 0.08)
+        B("Pylon_Shaft", "pylon_purple", 0, 0, base_z + 1.45 + PILLAR_H / 2, (2.1, 2.1, PILLAR_H), 0.22)
+        for dx, dy in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+            B("Pylon_Glow", "neon_cyan", dx * 1.01, dy * 1.01, base_z + 1.45 + PILLAR_H / 2, (0.22, 0.22, PILLAR_H - 0.8))
+        for k in range(3):  # recessed panels on all four faces (the pillar looks the same from any side too)
+            pz = base_z + 3.6 + k * 4.0
+            for lx, ly, sx, sy in ((0, -0.99, 1.35, 0.2), (0, 0.99, 1.35, 0.2), (-0.99, 0, 0.2, 1.35), (0.99, 0, 0.2, 1.35)):
+                B("Pylon_Deep", "pylon_deep", lx, ly, pz, (sx, sy, 3.0), 0.05)
+        for bz in (base_z + 1.45 + 4.4, base_z + 1.45 + 8.4):
+            B("Pylon_Gold", "trim_gold", 0, 0, bz + 0.4, (2.4, 2.4, 0.3), 0.08)
+        top = base_z + 1.45 + PILLAR_H
+        B("Pylon_Shaft", "pylon_purple", 0, 0, top + 0.3, (3.0, 3.0, 0.6), 0.2)
+        B("Pylon_Gold", "trim_gold", 0, 0, top + 0.75, (3.2, 3.2, 0.3), 0.1)
+        gem_radial("Pylon_Crystal", "neon_pink", (cx, cy, CROWN_Z + 2.4), 0.8, (math.cos(ang), math.sin(ang), 0), facets=6)
+    # gold arches between neighbouring pillars, just under the crown
+    for i in range(N_PILLARS):
+        a0, a1 = i / N_PILLARS * TAU, (i + 1) / N_PILLARS * TAU
+        z = PAD_Z + 1.45 + PILLAR_H - 2.6
+        arc("Arch_Gold", "trim_gold", (math.cos(a0) * PILLAR_R, math.sin(a0) * PILLAR_R, z),
+            (math.cos(a1) * PILLAR_R, math.sin(a1) * PILLAR_R, z), 1.6, r=0.3)
 
 
 def halo():
-    """The floating emitter: a thick white rim with a gold inner lip, six gem sockets, concentric glowing rings, the core."""
-    c = Vector((0, 1.0, 20.0))
-    torus_v("Halo_Rim", "stage_white", c, 5.6, 1.1, segs=64, tube=14, axis="y", sx=1.0)
-    torus_v("Halo_Gold", "trim_gold", c + Vector((0, -0.55, 0)), 4.45, 0.35, segs=64, tube=10, axis="y")
-    torus_v("Halo_Gold", "trim_gold", c + Vector((0, -0.55, 0)), 6.75, 0.3, segs=64, tube=10, axis="y")
-    for i in range(6):  # gems across the top half, in lane order left -> right
-        a = math.radians(160 - i * 28)
-        p = c + Vector((math.cos(a) * 5.6, -1.15, math.sin(a) * 5.6))
-        torus_v("Halo_Gold", "trim_gold", p + Vector((0, 0.15, 0)), 0.75, 0.16, segs=20, tube=8, axis="y")
-        gem(f"Gem{i + 1}", f"gem{i + 1}", p + Vector((0, -0.2, 0)), 0.62, facets=8)
-    # the emitter face: concentric rings that glow downwards, the core in the middle
-    for R, look in ((3.9, "neon_cyan"), (2.7, "neon_pink"), (1.6, "neon_cyan")):
-        torus_v("Halo_Rings", look, c + Vector((0, 0.1, 0)), R, 0.22, segs=48, tube=8, axis="y")
-    box("Halo_Back", "pad_dark", c + Vector((0, 0.6, 0)), (9.4, 0.4, 9.4), bevel=0.2)
+    """The crown: a flat white ring on the pillar caps with gold lips, the six zone gems round its outer edge (each facing
+    out, in lane order), and the emitter underneath - concentric glowing rings + the core, shining down the beam."""
+    z = CROWN_Z
+    lathe("Halo_Rim", "stage_white", [(PILLAR_R - 2.2, z - 0.9), (PILLAR_R + 2.0, z - 0.9), (PILLAR_R + 2.4, z - 0.4),
+                                       (PILLAR_R + 2.4, z + 0.5), (PILLAR_R + 2.0, z + 0.9), (PILLAR_R - 2.2, z + 0.9),
+                                       (PILLAR_R - 2.5, z + 0.4), (PILLAR_R - 2.5, z - 0.4), (PILLAR_R - 2.2, z - 0.9)], segs=72)
+    for zz, rr in ((z + 0.95, PILLAR_R + 2.15), (z - 0.95, PILLAR_R + 2.15), (z + 0.95, PILLAR_R - 2.3)):
+        lathe("Halo_Gold", "trim_gold", [(rr + 0.2, zz - 0.12), (rr + 0.2, zz + 0.12), (rr - 0.2, zz + 0.12), (rr - 0.2, zz - 0.12),
+                                          (rr + 0.2, zz - 0.12)], segs=72)
+    for i in range(6):  # the gems sit between the pillars, each in a gold socket, facing out
+        a = i / 6 * TAU - math.pi / 2  # over the six openings between pillars, starting at the front, in lane order
+        out = Vector((math.cos(a), math.sin(a), 0))
+        p = Vector((0, 0, z)) + out * (PILLAR_R + 2.45)
+        bm = bm_for("Halo_Gold", "trim_gold")
+        side = Vector((-out.y, out.x, 0))
+        ring = []
+        for k in range(16):  # the socket: a flat gold ring facing out
+            b = k / 16 * TAU
+            ring.append((bm.verts.new(p + (side * math.cos(b) + Vector((0, 0, 1)) * math.sin(b)) * 0.95),
+                         bm.verts.new(p + (side * math.cos(b) + Vector((0, 0, 1)) * math.sin(b)) * 0.65 + out * 0.15)))
+        for k in range(16):
+            j = (k + 1) % 16
+            bm.faces.new((ring[k][0], ring[j][0], ring[j][1], ring[k][1]))
+        gem_radial(f"Gem{i + 1}", f"gem{i + 1}", p + out * 0.2, 0.6, out)
+    # the emitter: a dark disc filling the ring, glowing rings facing down, the core
+    lathe("Halo_Back", "pad_dark", [(PILLAR_R - 2.2, z - 0.3), (0.0, z - 0.3)], segs=48)
+    # the crown's top: a shallow white dome with gold rings (seen from above as you walk up)
+    lathe("Halo_Rim", "stage_white", [(PILLAR_R - 2.3, z + 0.85), (5.2, z + 1.5), (3.0, z + 2.0), (1.0, z + 2.2), (0.0, z + 2.22)], segs=64)
+    for rr, zz in ((5.2, z + 1.52), (3.0, z + 2.02)):
+        lathe("Halo_Gold", "trim_gold", [(rr + 0.25, zz - 0.06), (rr + 0.25, zz + 0.1), (rr - 0.25, zz + 0.1), (rr - 0.25, zz - 0.06)], segs=48)
+    for R, look in ((6.2, "neon_cyan"), (4.6, "neon_pink"), (3.0, "neon_cyan")):
+        lathe("Halo_Rings", look, [(R + 0.25, z - 0.32), (R + 0.25, z - 0.55), (R - 0.25, z - 0.55), (R - 0.25, z - 0.32)], segs=48)
     bm = bm_for("HaloCore", "core")
-    g = bmesh.ops.create_icosphere(bm, subdivisions=2, radius=0.9)
+    g = bmesh.ops.create_icosphere(bm, subdivisions=2, radius=1.1)
     for v in g["verts"]:
-        v.co += c
+        v.co += Vector((0, 0, z - 1.2))
 
 
 def beam_and_rings():
-    """The light column from the pad up to the halo, and three floating rings around it (turned + bobbed in game)."""
-    lathe("Beam", "neon_cyan", [(2.6, 3.0), (2.6, 19.0), (0.0, 19.0)], segs=40)
-    for k, (z, R) in enumerate(((7.0, 4.0), (10.8, 3.4), (14.4, 2.8))):
+    """The light column from the pad up to the crown, and three floating rings around it (turned + bobbed in game)."""
+    lathe("Beam", "neon_cyan", [(2.6, PAD_Z - 0.1), (2.6, CROWN_Z - 0.5), (0.0, CROWN_Z - 0.5)], segs=40)
+    for k, (zf, R) in enumerate(((PAD_Z + 4.0, 4.4), (PAD_Z + 7.6, 3.8), (PAD_Z + 11.0, 3.2))):
         name = f"FloatRing{k + 1}"
-        torus_v(name + "_White", "stage_white", (0, 0, z), R, 0.32, segs=48, tube=10, axis="z")
-        for i in range(8):  # glowing inserts + gold caps around the ring
+        torus_v(name + "_White", "stage_white", (0, 0, zf), R, 0.32, segs=48, tube=10, axis="z")
+        for i in range(8):
             a = i / 8 * TAU + k * 0.3
-            p = Vector((math.cos(a) * R, math.sin(a) * R, z))
+            p = Vector((math.cos(a) * R, math.sin(a) * R, zf))
             box(name + "_Glow", "neon_pink" if k == 1 else "neon_cyan", p, (0.9, 0.9, 0.25), bevel=0.1, rot=a)
             box(name + "_Gold", "trim_gold", p + Vector((0, 0, 0.3)), (0.5, 0.5, 0.2), bevel=0.06, rot=a)
 
 
 def sign():
-    """The TRAVEL sign over the portal: a black attraction board with a gold frame and bulbs (CLAUDE.md sign styles)."""
-    z = 30.0  # clear of the halo's top (26.9)
-    box("Sign_Board", "sign_black", (0, 2.0, z), (12.0, 0.8, 3.4), bevel=0.25)
-    box("SignPlate", "sign_black", (0, 1.55, z), (11.0, 0.1, 2.6))
+    """The TRAVEL sign on a stem above the crown's centre: a black attraction board with a gold frame and bulbs (it spins in
+    game, text on both faces - so it reads from every side too)."""
+    z = CROWN_Z + 6.2
+    box("Sign_Post", "pylon_deep", (0, 0, CROWN_Z + 2.2), (0.9, 0.9, 4.4), bevel=0.15)
+    lathe("Sign_Gold", "trim_gold", [(1.6, CROWN_Z + 2.0), (1.6, CROWN_Z + 2.6), (0.0, CROWN_Z + 2.6)], segs=24)
+    box("Sign_Board", "sign_black", (0, 0, z), (12.0, 0.9, 3.4), bevel=0.25)
+    for yy in (-0.5, 0.5):
+        box("SignPlate" if yy < 0 else "Sign_PlateBack", "sign_black", (0, yy, z), (11.0, 0.1, 2.6))
     for dz in (1.8, -1.8):
-        box("Sign_Gold", "trim_gold", (0, 1.55, z + dz), (12.4, 1.0, 0.35), bevel=0.1)
+        box("Sign_Gold", "trim_gold", (0, 0, z + dz), (12.4, 1.1, 0.35), bevel=0.1)
     for dx in (6.2, -6.2):
-        box("Sign_Gold", "trim_gold", (dx, 1.55, z), (0.35, 1.0, 3.9), bevel=0.1)
+        box("Sign_Gold", "trim_gold", (dx, 0, z), (0.35, 1.1, 3.9), bevel=0.1)
+    bm = bm_for("Sign_Bulbs", "bulb_glow")
     for i in range(12):
-        bm = bm_for("Sign_Bulbs", "bulb_glow")
         for dz in (1.8, -1.8):
-            g = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.2)
-            for v in g["verts"]:
-                v.co += Vector((-5.5 + i, 1.0, z + dz))
-    box("Sign_Post", "pylon_deep", (0, 2.0, 27.4), (0.8, 0.8, 1.8), bevel=0.15)  # the stem down to the halo
+            for yy in (-0.6, 0.6):
+                g = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.2)
+                for v in g["verts"]:
+                    v.co += Vector((-5.5 + i, yy, z + dz))
     K_font = K.font("bold")  # (Arial Black stands in for Gotham Black in the preview)
-    t = K.label3d("TRAVEL", 0, 1.35, z, 2.2, look="trim_gold", rot=0, extrude=0.18, font=K_font)
-    t.name = "Preview_TravelText"  # (in game the SurfaceGui on SignPlate says TRAVEL)
+    for yy, rot in ((-0.6, 0), (0.6, 180)):
+        t = K.label3d("TRAVEL", 0, yy, z, 2.2, look="trim_gold", rot=rot, extrude=0.18, font=K_font)
+        t.name = "Preview_TravelText"  # (in game the SurfaceGui on SignPlate says TRAVEL)
 
 
 def trigger():
@@ -295,7 +364,7 @@ def build():
     K.sky_and_sun(sc, sun_energy=3.6, sun_rot=(55, 6, -30))
     sc.collection.objects.link(bpy.data.objects["Sun"])
     stage(); pylons(); halo(); beam_and_rings(); sign(); trigger()
-    player(-11, -19)
+    player(-6, -21)
     gb = bm_for("Preview_Ground", "plaza")
     bmesh.ops.create_grid(gb, x_segments=1, y_segments=1, size=60)
     obs = {}
@@ -338,9 +407,10 @@ def render(sc, name, loc, look, lens=30):
 sc = build()
 K.setup_eevee(sc, samples=48)
 stats()
-render(sc, "portal_front", (0, -60, 9), (0, 0, 15), lens=32)
-render(sc, "portal_three_quarter", (-38, -38, 15), (0, 0, 13), lens=32)
-render(sc, "portal_close", (13, -17, 7), (8, 1, 9), lens=30)
+render(sc, "portal_front", (0, -62, 9), (0, 0, 15), lens=32)
+render(sc, "portal_three_quarter", (-42, -42, 16), (0, 0, 14), lens=32)
+render(sc, "portal_side", (60, 12, 9), (0, 0, 15), lens=32)
+render(sc, "portal_above", (-30, -40, 48), (0, 0, 10), lens=32)
 if FBX:
     bpy.ops.object.select_all(action="DESELECT")
     for ob in bpy.data.objects:
