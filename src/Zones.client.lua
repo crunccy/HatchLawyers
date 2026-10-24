@@ -14,7 +14,6 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -22,12 +21,13 @@ local Config = require(Shared:WaitForChild("Config")) :: any
 local Formulas = require(Shared:WaitForChild("Formulas")) :: any
 local UIKit = require(Shared:WaitForChild("UIKit")) :: any
 local Skin = require(Shared:WaitForChild("Skin")) :: any
+local Sfx = require(Shared:WaitForChild("Sfx")) :: any
 local Icons = (require(Shared:WaitForChild("HudMenu")) :: any).Icons
 local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Zones") :: RemoteEvent
 
 local player = Players.LocalPlayer
 local CFG = Config.Zones
-local FONT = Font.new("rbxasset://fonts/families/FredokaOne.json")
+local FONT = Font.fromEnum(Enum.Font.GothamBlack)
 local INK = UIKit.Colors.Ink
 local WHITE = Color3.new(1, 1, 1)
 local GOLD = Color3.fromRGB(255, 200, 46)
@@ -61,23 +61,7 @@ local function priceOf(egg: string, golden: boolean): number
 	return math.floor(base * (if golden then CFG.Golden.PriceMultiplier else 1))
 end
 
------------------------------------------------------------------- sounds (same licensed sounds as StarterPlayerScripts.Sounds)
-local sfx = SoundService:WaitForChild("SFX", 5) :: SoundGroup?
-local function sound(id: string, volume: number, speed: number): Sound
-	local s = Instance.new("Sound")
-	s.SoundId = id
-	s.Volume = volume
-	s.PlaybackSpeed = speed
-	s.SoundGroup = sfx
-	s.Parent = SoundService
-	return s
-end
-local SND = {
-	buy = sound("rbxassetid://9113728049", 0.5, 1), -- PSE cash register
-	alert = sound("rbxassetid://9045751375", 0.5, 1),
-	upgrade = sound("rbxassetid://15675043410", 0.5, 1), -- UI tonal stinger
-	note = sound("rbxassetid://15675085146", 0.4, 1), -- UI indicator
-}
+------------------------------------------------------------------ sounds use the shared SFX group, cooldowns and voice limit
 
 ------------------------------------------------------------------ gui
 local gui = Instance.new("ScreenGui")
@@ -609,12 +593,18 @@ task.spawn(function()
 		else
 			beam.Enabled = false
 		end
-		-- zone name when you walk in
+		-- zone name when you walk in (the lane's Bounds; on the redesign islands, IslandWiring.<Id>'s BoundsMin / BoundsMax)
 		local now: string? = nil
 		if root then
+			local wiring = CFG.Islands and CFG.Islands.Enabled and workspace:FindFirstChild("IslandWiring")
 			for _, z in CFG.List do
-				local b = z.Bounds
-				if b and root.Position.X >= b[1] and root.Position.X <= b[3] and root.Position.Z >= b[2] and root.Position.Z <= b[4] then
+				local p = root.Position
+				local folder = wiring and wiring:FindFirstChild(z.Id)
+				local lo, hi = folder and folder:GetAttribute("BoundsMin"), folder and folder:GetAttribute("BoundsMax")
+				local inside = if typeof(lo) == "Vector3" and typeof(hi) == "Vector3"
+					then p.X >= lo.X and p.X <= hi.X and p.Z >= lo.Z and p.Z <= hi.Z
+					else z.Bounds and p.X >= z.Bounds[1] and p.X <= z.Bounds[3] and p.Z >= z.Bounds[2] and p.Z <= z.Bounds[4]
+				if inside then
 					now = z.Id
 					if insideZone ~= z.Id then
 						Skin.banner({ Title = string.upper(z.Name), Sub = "Buy " .. eggName(z.Egg) .. "s and carry them home!",
@@ -710,19 +700,19 @@ end
 local boughtCount = 0
 Remote.OnClientEvent:Connect(function(kind: string, info: any)
 	if kind == "Note" then
-		SND.note:Play()
+		Sfx.play("notify", { gap = 0.7 })
 		toast(info, Icons.Goals)
 	elseif kind == "Alert" then
-		SND.alert:Play()
+		Sfx.play("stinger", { gap = 2 })
 		banner("GOLDEN EGG!", info.text, GOLD, 4)
 	elseif kind == "Bought" then
-		SND.buy:Play()
+		Sfx.play("cash", { gap = 0.35, volume = 0.7 })
 		boughtCount += 1
 		local full = info.count >= info.max
 		local text = if full then "Arms full! Take your eggs home to your INCUBATOR" elseif boughtCount <= 3 then "Got an egg! Carry it home to your INCUBATOR" else "Carrying " .. info.count .. "/" .. info.max
 		toast(text, Icons.Eggs, if boughtCount <= 3 or full then 3 else 1.4)
 	elseif kind == "Upgraded" then
-		SND.upgrade:Play()
+		Sfx.play("officeUpgrade", { gap = 1 })
 		banner(string.upper(UPGRADE[info.kind] and UPGRADE[info.kind].title or "UPGRADE"), info.text, GREEN, 3)
 	end
 end)
