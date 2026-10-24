@@ -4,7 +4,13 @@
 
 The user's priorities are map detail and UI, followed by VFX and animation. They requested concrete video research, then asked for all findings to be available in GitHub.
 
+## Current style override — checked 2026-10-24
+
+Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/blob/main/docs/UI_STYLE_V3.md) before implementing any older research. It supersedes older font/material suggestions: Gotham Black/Bold, plain deep-purple window bodies, decorated saturated cards, muted-purple inactive states, no gold hover ring, deliberately small pop-ups. Fredoka/LuckiestGuy/BuilderSans recommendations in older notes are retired. Preserve the chunky studded world. Research branch snapshots can lag current main; inspect current source before treating an old finding as an outstanding defect.
+
 ## Contents
+
+- [REWARD_STATE_CLARITY.md](REWARD_STATE_CLARITY.md): V30 current event/shop hierarchy samples; daily/playtime timer semantics, loading/pending states and inline receipts, based on fresh UI v3 Rewards source.
 
 - [ATMOSPHERE_READABILITY.md](ATMOSPHERE_READABILITY.md): fresh ambience audit, rate-versus-live-particle suppression, mist anchor placement, quality budget and cinematic handoff; expanded V13 coverage (no new video count).
 
@@ -32,7 +38,7 @@ The user's priorities are map detail and UI, followed by VFX and animation. They
 ## Key conclusions
 
 1. Make destinations recognizable through large shapes, route contrast and grouped detail.
-2. Improve existing purple panels with clearer hierarchy, larger reward pictures, consistent buttons and readable mobile states.
+2. Improve current UI v3 purple panels with clearer hierarchy, larger reward pictures, consistent buttons and readable mobile states.
 3. Use particles as accents around important content; reserve large effects for exceptional moments.
 4. Give attacks a readable preparation, strike and recovery using whole-body poses.
 5. Keep warning geometry independent of optional particle quality and exactly aligned with attack dimensions.
@@ -42,7 +48,7 @@ These are design recommendations informed by selected footage; they are not clai
 
 ## Evidence / status
 
-Selected sections of twenty-nine videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. PS99/Steal an Egg footage is mixed with older useful technique references. V29's exact experience is unverified and is labeled a secondary visual reference, not official PS99 gameplay. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
+Selected sections of thirty videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. PS99/Steal an Egg footage is mixed with older useful technique references. V29's exact experience is unverified and is labeled a secondary visual reference, not official PS99 gameplay. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
 
 This package changes documentation only. No Studio installation, runtime implementation or gameplay test was performed for this research. Existing Studio and repo versions may differ. Read current claims and re-export/merge before implementation.
 
