@@ -11,10 +11,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · reward-state presentation research; docs only · since 2026-10-24
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: reward state clarity research (Codex)
+
+- Added docs/REWARD_STATE_CLARITY.md from fresh main Rewards/RewardsService and two timestamped V30 samples. Total 30 distinct sampled videos.
+- Current source already contains UI v3 calendar and intentionally small pop-ups; proposals preserve them. Specify labeled daily/playtime timers, loading/pending claim states, inline confirmed receipts and explicit calendar status.
+- Found current main docs/UI_STYLE_V3.md supersedes older branch font advice. Added prominent research-index override: Gotham Black/Bold, plain deep purple body, muted-purple unavailable state, small pop-ups; no restoration of retired fonts.
+- No Studio edits, new gameplay rules, runtime tests, installs, publication or audio listening. Claim released.
 
 ## 2026-10-24 — crnuch, local session: atmosphere readability research (Codex)
 
