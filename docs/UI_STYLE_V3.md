@@ -42,7 +42,12 @@ Fredoka One, Luckiest Guy and Builder Sans are retired. (Gotham is drawn as Mont
 | Announcement | sky-blue pill, diagonal bands, white text: "ENZO HIT A THUNDER SHOT!" | `Skin.toast` is that pill now |
 | Unavailable | grey "LOCKED" bar; red text "You need more Wins." | `Button.setState("disabled", reason)` |
 
-Grey is only for locked / owned / unavailable. Everything else carries a colour.
+Grey is only for locked / owned / unavailable. Everything else carries a colour. (Update: crnuch - no gray at all;
+inactive = muted purple 6E5A96.)
+
+**Pop-ups are SMALL (crnuch 2026-10-23: "there are a lot of popups in this game"):** keep the v3 look (sunburst,
+stripes, solid background) but about half the old size, and each kind has its own slot so they never stack: stage-up
+card near the top (0.15), area / need pills under it, reward pop-up at 0.42, Skin.toast default text 20.
 
 ## 3. Motion (from frame-difference maps over the still-camera stretches, not guessed)
 

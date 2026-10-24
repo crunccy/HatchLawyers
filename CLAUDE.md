@@ -123,7 +123,7 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - **UI (v3, docs/UI_STYLE_V3.md):** window bodies are plain **deep purple** (`Skin.Panel` 3A1F6B - crnuch: no gray,
   ever; inactive buttons are muted purple 6E5A96, not gray), coloured headers with diagonal light stripes, coloured side
   tabs, rarity-coloured cards, red value tags, a glint on the main buy / claim button, press ripple, breathing pictures.
-  No gold hover ring (crnuch). Build new screens on `Shared.Skin`; `StarterPlayerScripts.StyleV3` brings hand-built
+  No gold hover ring (crnuch). **Pop-ups are small** (same look, about half size, each kind in its own screen slot). Build new screens on `Shared.Skin`; `StarterPlayerScripts.StyleV3` brings hand-built
   screens' buttons / panels to the same look until they're rebuilt. HUD menu tiles ONLY via `Shared.HudMenu.button`
   (never hand-placed): a 2-column grid, with the **Shop as a double-width tile on top** (`HudMenu` WIDE). Icons are PNGs
   in `HudMenu.Icons` - no emoji. Roblox's chat box eats taps on whatever is under it: windows call `Skin.holdChat`

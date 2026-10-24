@@ -208,8 +208,8 @@ local toastScale = make("UIScale", { Scale = 0 })
 local toast = make("Frame", {
 	Name = "RewardToast",
 	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.42),
-	Size = UDim2.fromOffset(340, 100),
+	Position = UDim2.fromScale(0.5, 0.42), -- (its own slot: the stage-up card + area pills sit near the top)
+	Size = UDim2.fromOffset(300, 78), -- (minimal pop-ups: crnuch 2026-10-23)
 	BackgroundColor3 = GOLD,
 	Visible = false,
 	ZIndex = 20,
@@ -225,8 +225,8 @@ toast:SetAttribute("NoSkin", true)
 Skin.studs(toast, 0.86, nil, 24)
 make("Frame", { Position = UDim2.fromOffset(3, 3), Size = UDim2.new(1, -6, 1, -6), BackgroundTransparency = 1, ZIndex = 20, Parent = toast },
 	{ corner(8), make("UIStroke", { Thickness = 2, Color = WHITE, Transparency = 0.5 }) })
-local toastTitle = Skin.text({ Position = UDim2.fromOffset(10, 8), Size = UDim2.fromOffset(320, 44), FontFace = Skin.Fonts.Title, ZIndex = 21, Parent = toast }, 38, 4)
-local toastBody = Skin.text({ Position = UDim2.fromOffset(10, 54), Size = UDim2.fromOffset(320, 36), FontFace = Skin.Fonts.Title, ZIndex = 21, Parent = toast }, 26, 3)
+local toastTitle = Skin.text({ Position = UDim2.fromOffset(10, 6), Size = UDim2.fromOffset(280, 34), FontFace = Skin.Fonts.Title, ZIndex = 21, Parent = toast }, 30, 4)
+local toastBody = Skin.text({ Position = UDim2.fromOffset(10, 42), Size = UDim2.fromOffset(280, 28), FontFace = Skin.Fonts.Body, ZIndex = 21, Parent = toast }, 22, 3)
 local toastToken = 0
 local Effects = require(ReplicatedStorage.Shared:WaitForChild("Effects")) :: any
 
@@ -238,8 +238,8 @@ local function showToast(title: string, body: string)
 	toast.Visible = true
 	toastScale.Scale = 0.3
 	TweenService:Create(toastScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-	-- every reward is a big moment: gold sunburst + twinkles behind the pop-up (Shared.Effects)
-	Effects.guiBurst(toast.Parent, toast.Position, 420, Effects.GOLD, 2.4, 19)
+	-- gold sunburst + twinkles behind the pop-up (Shared.Effects) - smaller since 2026-10-23 (crnuch: pop-ups smaller)
+	Effects.guiBurst(toast.Parent, toast.Position, 240, Effects.GOLD, 1.6, 19)
 	task.delay(2.6, function()
 		if token == toastToken then
 			local out = TweenService:Create(toastScale, TweenInfo.new(0.2), { Scale = 0 })
