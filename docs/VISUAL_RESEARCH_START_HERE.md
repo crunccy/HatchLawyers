@@ -6,6 +6,8 @@ The user's priorities are map detail and UI, followed by VFX and animation. They
 
 ## Contents
 
+- [ATMOSPHERE_READABILITY.md](ATMOSPHERE_READABILITY.md): fresh ambience audit, rate-versus-live-particle suppression, mist anchor placement, quality budget and cinematic handoff; expanded V13 coverage (no new video count).
+
 - [MUTATION_UI_CLARITY.md](MUTATION_UI_CLARITY.md): source-backed outcome/consequence copy, input eligibility and persistent result states; V29 secondary machine-framing footage with explicit experience-identity limits.
 
 - [EGG_INTERACTION_CLARITY.md](EGG_INTERACTION_CLARITY.md): V28; readable carry HUD, focused egg cue, perimeter detail and confirmed pickup feedback; source audit and scoped acceptance criteria.
