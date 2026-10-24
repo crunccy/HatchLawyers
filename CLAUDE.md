@@ -156,6 +156,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   stacks of Parts - more detail (bevels, trims, layered canopies) for far fewer parts. Map first; characters, eggs and
   bosses later. Benchmark first (a tree family, the portal, one firm building), approved from renders before anything
   goes in. Reference stills: `references/models/` (PS99, Fisch, Steal an Egg - from the Codex research's videos).
+  **Studs stay LOW (crnuch 2026-10-24: "i dont want the studs to be protruding so much on anything"):** every model
+  uses the game's one standard stud (0.10 tall, soft rounded square - `tools/blender/overhaul/ohstuds.py`, the same as
+  the raised stud tiles and the islands); never taller or fatter.
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
   far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),

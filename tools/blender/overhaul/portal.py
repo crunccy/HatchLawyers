@@ -13,6 +13,7 @@ from mathutils import Vector, Matrix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "environment-redesign", "kit"))
+sys.path.insert(0, HERE)
 import hl_kit as K
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -125,22 +126,16 @@ def gem(name, look, centre, r, facets=8, axis_front=True):
         bm.faces.new((ring[j], ring[k], back))
 
 
-def studs_annulus(name, look, r0, r1, z, pitch=1.0, rad=0.32, h=0.22, segs=10):
-    """Classic Roblox studs on the 1-stud grid inside a ring (the stage tiers' walkable tops)."""
+def studs_annulus(name, look, r0, r1, z, pitch=1.0):
+    """The game's standard studs (ohstuds: 0.10 tall, rounded square) on the 1-stud grid inside a ring."""
+    import ohstuds
     bm = bm_for(name, look)
     n = int(r1 / pitch) + 1
     for i in range(-n, n + 1):
         for j in range(-n, n + 1):
             x, y = (i + 0.5) * pitch, (j + 0.5) * pitch
-            d = math.hypot(x, y)
-            if r0 + 0.45 < d < r1 - 0.45:
-                bot = [bm.verts.new((x + math.cos(k / segs * TAU) * rad, y + math.sin(k / segs * TAU) * rad, z)) for k in range(segs)]
-                top = [bm.verts.new((x + math.cos(k / segs * TAU) * rad * 0.94, y + math.sin(k / segs * TAU) * rad * 0.94, z + h))
-                       for k in range(segs)]
-                for k in range(segs):
-                    m = (k + 1) % segs
-                    bm.faces.new((bot[k], bot[m], top[m], top[k]))
-                bm.faces.new(top)
+            if r0 + 0.45 < math.hypot(x, y) < r1 - 0.45:
+                ohstuds.add_stud(bm, (x, y, z))
 
 
 # ------------------------------------------------------------------ the portal (v2, crnuch 2026-10-24: "circular and
@@ -411,6 +406,7 @@ render(sc, "portal_front", (0, -62, 9), (0, 0, 15), lens=32)
 render(sc, "portal_three_quarter", (-42, -42, 16), (0, 0, 14), lens=32)
 render(sc, "portal_side", (60, 12, 9), (0, 0, 15), lens=32)
 render(sc, "portal_above", (-30, -40, 48), (0, 0, 10), lens=32)
+render(sc, "portal_studs", (-9, -20, 4.5), (-6, -11, 2), lens=30)
 if FBX:
     bpy.ops.object.select_all(action="DESELECT")
     for ob in bpy.data.objects:

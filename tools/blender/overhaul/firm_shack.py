@@ -16,6 +16,7 @@ from mathutils import Vector, Matrix, Euler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "environment-redesign", "kit"))
+sys.path.insert(0, HERE)
 import hl_kit as K
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -104,21 +105,17 @@ def cyl(name, look, c, r, h, segs=16, axis="y", r_top=None):
     bm.faces.new(top)
 
 
-def studs(name, look, x0, x1, z0, z1, y, skip=None, rad=0.32, h=0.2, segs=10):
-    """Classic studs on the 1-stud grid over a rectangle (firm-local), skipping cells where skip(x, z) is true."""
+def studs(name, look, x0, x1, z0, z1, y, skip=None):
+    """The game's standard studs (ohstuds: 0.10 tall, rounded square) on the 1-stud grid over a rectangle (firm-local),
+    skipping cells where skip(x, z) is true."""
+    import ohstuds
     bm = bm_for(name, look)
     x = math.floor(x0) + 0.5
     while x < x1:
         z = math.floor(z0) + 0.5
         while z < z1:
             if not (skip and skip(x, z)):
-                b = P(x, y, z)
-                bot = [bm.verts.new(b + Vector((math.cos(k / segs * TAU) * rad, math.sin(k / segs * TAU) * rad, 0))) for k in range(segs)]
-                top = [bm.verts.new(b + Vector((math.cos(k / segs * TAU) * rad * 0.94, math.sin(k / segs * TAU) * rad * 0.94, h))) for k in range(segs)]
-                for k in range(segs):
-                    j = (k + 1) % segs
-                    bm.faces.new((bot[k], bot[j], top[j], top[k]))
-                bm.faces.new(top)
+                ohstuds.add_stud(bm, P(x, y(x, z) if callable(y) else y, z))
             z += 1
         x += 1
 
@@ -372,7 +369,10 @@ def porch():
         box("Shack_PorchBoards" if i % 2 else "Shack_PorchLight", "plank_dark" if i % 2 else "plank_light",
             (x, -0.15 + dip, -5.0), (0.92, 0.25, 4.0), rot=(rng.uniform(-1, 1), 0, rng.uniform(-0.8, 0.8)))
     box("Shack_PorchUnder", "dark_hole", (0, -0.6, -5.0), (22.0, 0.4, 4.0))
-    studs("Shack_PorchStuds", "plank_dark", -10.8, 10.8, -6.8, -3.2, -0.05, skip=lambda x, z: 4.0 < x < 5.0)
+    # (the studs follow the deck's sag: board i sits at -0.15 + dip, its top 0.125 higher)
+    studs("Shack_PorchStuds", "plank_dark", -10.8, 10.8, -6.8, -3.2,
+          lambda x, z: -0.025 - 0.18 * math.sin(math.pi * min(21, max(0, round(x + 10.5))) / 21),
+          skip=lambda x, z: 4.0 < x < 5.0)
     for i in range(3):
         if i == 1:  # the middle step is broken: half of it is gone
             box("Shack_Steps", "plank_dark", (-2.2, -0.5 - i * 0.45, -7.4 - i * 0.9), (3.6, 0.4, 0.9), rot=(0, 0, 4))
@@ -505,6 +505,7 @@ stats()
 render(sc, "shack_front", (-14, -40, 7), (0, 4, 4), lens=30)
 render(sc, "shack_three_quarter", (32, -32, 16), (0, 6, 3), lens=30)
 render(sc, "shack_close", (-6, -17, 3.5), (1, -3, 4.5), lens=26)
+render(sc, "shack_studs", (-1.5, -11.5, 1.6), (-4, -5, 0), lens=30)
 if FBX:
     bpy.ops.object.select_all(action="DESELECT")
     for ob in bpy.data.objects:
