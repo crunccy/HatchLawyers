@@ -11,10 +11,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · mutation UI decision and result clarity research; docs only · since 2026-10-24
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: mutation decision clarity research (Codex)
+
+- Added docs/MUTATION_UI_CLARITY.md. Fresh main Merger and LawyerService snapshots confirm odds/preview already exist, fizzle consumes all selected inputs, count-only CAN MUTATE badge and distinct rejection/fizzle outcomes.
+- Proposed explicit pre-submit consequence copy, honest count badge, visible selected office locations, persistent result inspection and transport-error reconciliation without automatic retry.
+- V29 machine approach/reveal samples are explicitly secondary footage: title says Ps99x, exact experience unverified. V28 follow-up adds coverage without double-counting. Total 29 distinct sampled videos.
+- Documentation only; no Studio edits, gameplay changes, runtime tests or direct audio audition. Claim released.
 
 ## 2026-10-24 — crnuch, local session: egg interaction clarity research (Codex)
 
