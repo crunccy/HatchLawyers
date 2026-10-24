@@ -358,7 +358,7 @@ def notice_board():
     text("CASE BOARD", "white", (0, -0.3, 4.85), 0.3, extrude=0.015)
 
 
-def attraction_sign():
+def attraction_sign(label="BIG CASES"):
     """Attraction sign (the game's style: black panel, gold text, light bulbs) on two posts, a gold star on top."""
     n = "AttractionSign"
     for x in (-3.25, 3.25):
@@ -374,8 +374,9 @@ def attraction_sign():
             sphere(n + "_Bulbs", "bulb_glow", (x, y, z), 0.12, sub=1)
     prism(n + "_Gold", "gold", [(x, z + 6.65) for x, z in star(0.85, 0.38)], 0.3, c=(0, 0, -0.1))
     sphere(n + "_Bulbs", "bulb_glow", (0, -0.17, 6.52), 0.14, sub=1)
-    text("BIG CASES", "gold", (0, -0.25, 4.6), 0.86, extrude=0.05)
-    text("BIG CASES", "gold", (0, 0.25, 4.6), 0.86, rot=(90, 0, 180), extrude=0.05)
+    size = min(0.86, 6.4 / (0.72 * len(label)))
+    text(label, "gold", (0, -0.25, 4.6), size, extrude=0.05)
+    text(label, "gold", (0, 0.25, 4.6), size, rot=(90, 0, 180), extrude=0.05)
 
 
 def gavel_statue():

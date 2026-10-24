@@ -38,7 +38,10 @@ K.PAL.update({
     "wall_cream": (246, 226, 180), "wall_warm": (240, 214, 168), "marble": (244, 242, 236), "marble_shade": (220, 216, 206),
     "navy_roof": (56, 70, 136), "navy_dark": (38, 48, 100), "navy_seam": (82, 98, 168), "glass_blue": (128, 190, 240),
     "glass_deep": (82, 140, 210), "carpet_red": (204, 40, 58), "flag_purple": (140, 80, 220), "flag_red": (232, 56, 64),
+    "stone_cool": (182, 188, 200), "stone_cool_dark": (138, 146, 162), "egg_shell": (255, 246, 226), "egg_orange": (255, 150, 50),
+    "egg_blue": (110, 200, 250), "copper": (214, 128, 72), "brass": (224, 172, 72), "boot_red": (226, 50, 58),
 })
+K.GLOWS.update({"heat_glow": ((255, 96, 60), 1.8), "halo_glow": ((110, 230, 255), 1.6), "orb_glow": ((255, 214, 90), 2.0)})
 K.GLOWS.update({"lamp_glow": ((255, 208, 120), 1.35), "bulb_glow": ((255, 226, 150), 2.2)})  # (warm, not blown to white)
 ROUGH = {"gold": 0.32, "gold_dark": 0.36, "iron": 0.5, "iron_light": 0.5, "brief_black": 0.45, "panel_black": 0.4,
          "glass_blue": 0.12, "glass_deep": 0.12, "navy_roof": 0.6}
@@ -57,9 +60,10 @@ def reset():
 
 
 @contextmanager
-def at(x=0.0, y=0.0, z=0.0, rz=0.0, prefix=None):
-    """Place what is built inside at (x, y, z), turned rz degrees about Z (nests). prefix renames the meshes made inside."""
-    CUR.append(CUR[-1] @ Matrix.Translation((x, y, z)) @ Matrix.Rotation(math.radians(rz), 4, "Z"))
+def at(x=0.0, y=0.0, z=0.0, rz=0.0, prefix=None, s=1.0):
+    """Place what is built inside at (x, y, z), turned rz degrees about Z, scaled s (nests). prefix renames the meshes
+    made inside."""
+    CUR.append(CUR[-1] @ Matrix.Translation((x, y, z)) @ Matrix.Rotation(math.radians(rz), 4, "Z") @ Matrix.Scale(s, 4))
     if prefix is not None:
         PREFIX.append(prefix)
     try:
