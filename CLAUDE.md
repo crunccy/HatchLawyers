@@ -159,6 +159,12 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   **Studs stay LOW (crnuch 2026-10-24: "i dont want the studs to be protruding so much on anything"):** every model
   uses the game's one standard stud (0.10 tall, soft rounded square - `tools/blender/overhaul/ohstuds.py`, the same as
   the raised stud tiles and the islands); never taller or fatter.
+  **Bushes / hedges are ONE solid green** (crnuch 2026-10-24: the two-tone shade + sunlit-top split "looks like two
+  different colours"): `ohkit.leafy` makes one lumpy mesh, the lighting does the shading. "Skip importing and just
+  model everything" (crnuch 2026-10-24): model the whole map first, export / upload later. Shared helpers:
+  `ohkit.py` (primitives, foliage, renders), `ohbuild.py` (windows, doors, columns, roofs), `props.py` (the prop kit).
+  Big flat tops (podiums, decks, plazas) get PREVIEW studs only (`ohbuild.studtop`); in the game the Studs system lays
+  them on StudTop surfaces. A MeshPart takes at most 20k triangles: `ohkit.stats()` warns.
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
   far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),

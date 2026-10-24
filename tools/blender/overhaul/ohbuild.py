@@ -1,8 +1,8 @@
 # tools/blender/overhaul/ohbuild.py - the MAP MODEL OVERHAUL's architecture kit (hub buildings, firm stages): framed
 # windows (arched / square, glass with a cartoon shine), panelled double doors with a fanlight, classical columns, hip
 # roofs with standing seams and a gold ridge, pediments, balustrades, corner quoins, flags, and the StudTop preview.
-# Everything builds in the current ohkit frame (O.at). A wall piece's outward face is local -Y at y = 0 (turn it with
-# O.at(rz=...) for other walls). Names: <prefix>_<Part> per colour, like the rest of the overhaul.
+# Everything builds in the current ohkit frame (O.at). A wall piece's outward face is local -Y at y = 0; turn it with
+# O.at(rz=...) for other walls: +X wall rz=90, -X wall rz=-90, back (+Y) wall rz=180. Names: <prefix>_<Part> per colour, like the rest of the overhaul.
 import math
 from mathutils import Vector
 import ohkit as O
@@ -132,7 +132,7 @@ def quoins(p, x, y, z0, z1, look="stone_mid", dir=(1, 1), size=1.0):
         k += 1
 
 
-def balustrade(p, x0, y0, x1, y1, z, h=1.6, look="marble", rail=None, every=0.75, posts=6.0):
+def balustrade(p, x0, y0, x1, y1, z, h=1.6, look="marble", rail=None, every=0.9, posts=6.0):
     """A run of turned balusters between a base and a hand rail, with square posts every `posts` studs."""
     rail = rail or look
     L = math.hypot(x1 - x0, y1 - y0)
@@ -143,8 +143,8 @@ def balustrade(p, x0, y0, x1, y1, z, h=1.6, look="marble", rail=None, every=0.75
         n = max(1, int(L / every))
         for i in range(n):
             x = -L / 2 + (i + 0.5) * L / n
-            lathe(p + "_Baluster", look, [(0.22, 0.24, True), (0.24, 0.36), (0.16, 0.5), (0.27, 0.8), (0.2, h - 0.5), (0.14, h - 0.4),
-                                          (0.22, h - 0.26, True)], segs=6, c=(x, 0, 0))
+            lathe(p + "_Baluster", look, [(0.22, 0.24, True), (0.15, 0.5), (0.27, 0.82), (0.15, h - 0.45), (0.22, h - 0.26, True)],
+                  segs=6, c=(x, 0, 0))
         m = max(1, int(L / posts))
         for i in range(m + 1):
             x = -L / 2 + i * L / m
@@ -221,7 +221,7 @@ def gable(p, look, x, y, z, w, h, depth, trim="marble", tympanum=None, over=0.7)
         slope = math.degrees(math.atan2(h, w / 2))
         L = math.hypot(w / 2, h) + over
         for s in (-1, 1):
-            box(p + "_Raking", trim, (s * w / 4, -0.1, h / 2 + 0.28), (L, depth + over * 1.4, 0.56), rot=(0, -s * slope, 0), bevel=0.08)
+            box(p + "_Raking", trim, (s * w / 4, -0.1, h / 2 + 0.28), (L, depth + over * 1.4, 0.56), rot=(0, s * slope, 0), bevel=0.08)
         box(p + "_Raking", trim, (0, -0.1, -0.05), (w + over * 2, depth + over * 1.4, 0.5), bevel=0.08)
 
 

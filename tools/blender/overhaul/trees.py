@@ -25,7 +25,7 @@ TAU = math.tau
 # the overhaul's tree colours (sRGB): <kind>_shade = underside, <kind>_leaf / _light = the sunlit top
 TREE_PAL = {
     "oak_shade": (64, 150, 44), "oak_light": (132, 212, 70),
-    "blossom_shade": (236, 130, 176), "blossom_light": (255, 200, 225),
+    "blossom_shade": (236, 130, 176), "blossom_light": (255, 200, 225), "blossom": (255, 168, 206),
     "poplar_shade": (44, 140, 76), "poplar_light": (104, 196, 96),
     "pine_shade": (30, 112, 62), "pine_light": (72, 168, 90),
     "palm_shade": (70, 160, 50), "palm_light": (140, 214, 84),
@@ -73,7 +73,7 @@ def apply_modifiers(ob):
     bpy.data.meshes.remove(old)
 
 
-def canopy(name, blobs, shade, light, voxel=0.4, faces=1400, lumpy=0.7, seed=0, squash=1.0, split=0.28):
+def canopy(name, blobs, shade, light, voxel=0.4, faces=1400, lumpy=0.7, seed=0, squash=1.0, split=0.28, one=None):
     """Overlapping spheres -> ONE organic surface (voxel remesh + lumps + smooth + thin), split by face direction into
     <name>_Canopy (shade) and <name>_Light (sunlit top). squash < 1 flattens it (an umbrella crown)."""
     bm = bmesh.new()
@@ -97,6 +97,13 @@ def canopy(name, blobs, shade, light, voxel=0.4, faces=1400, lumpy=0.7, seed=0, 
     dec = ob.modifiers.new("Decimate", "DECIMATE")
     dec.ratio = min(1.0, faces / max(1, len(ob.data.polygons)))
     apply_modifiers(ob)
+    if one:  # ONE colour (crnuch 2026-10-24: the blossom's two tones looked like two different colours)
+        ob.name = ob.data.name = name + "_Canopy"
+        ob.data.materials.clear()
+        ob.data.materials.append(matte(one))
+        for p in ob.data.polygons:
+            p.use_smooth = True
+        return
     # split: faces looking up (with a noisy edge so the line between the tones is organic) -> the sunlit mesh
     me = ob.data
     bm = bmesh.new()
@@ -173,7 +180,7 @@ def trunk(name, look, parts, roots=4, root_r=None, seed=0):
 
 
 # ------------------------------------------------------------------ the family
-def tree_oak(x, y, name="Oak", s=1.0, shade="oak_shade", light="oak_light", seed=1):
+def tree_oak(x, y, name="Oak", s=1.0, shade="oak_shade", light="oak_light", seed=1, one=None):
     """Round broadleaf: a curved trunk forking into visible branches under a cluster crown."""
     o = Vector((x, y, 0))
     top = o + Vector((0.5, 0.2, 9.0)) * s
@@ -188,7 +195,7 @@ def tree_oak(x, y, name="Oak", s=1.0, shade="oak_shade", light="oak_light", seed
         ((0, 0, 0.6), 4.6), ((4.0, 1.2, -1.0), 3.6), ((-3.8, -1.6, -0.6), 3.8), ((0.8, 4.0, -0.8), 3.4),
         ((-0.6, -4.0, -0.4), 3.4), ((2.8, -2.8, 0.4), 3.0), ((-2.6, 2.8, 0.8), 3.0), ((0.4, 0.2, 3.6), 3.4),
         ((3.0, 1.4, 2.2), 2.6), ((-2.8, -0.8, 2.6), 2.6))]
-    canopy(name, lobes, shade, light, voxel=0.38 * s, faces=1500, lumpy=0.75 * s, seed=seed)
+    canopy(name, lobes, shade, light, voxel=0.38 * s, faces=1500, lumpy=0.75 * s, seed=seed, one=one)
 
 
 def tree_umbrella(x, y, name="Umbrella", s=1.0, seed=2):
@@ -218,7 +225,7 @@ def tree_poplar(x, y, name="Poplar", s=1.0, seed=3):
 
 
 def tree_blossom(x, y, name="Blossom", s=1.0, seed=4):
-    tree_oak(x, y, name, s * 0.92, shade="blossom_shade", light="blossom_light", seed=seed)
+    tree_oak(x, y, name, s * 0.92, seed=seed, one="blossom")
 
 
 def tree_pine(x, y, name="Pine", s=1.0, seed=5):
