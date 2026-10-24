@@ -11,10 +11,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · egg pickup and world-label presentation research; documentation only · since 2026-10-24
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: egg interaction clarity research (Codex)
+
+- Added docs/EGG_INTERACTION_CLARITY.md, V28 recent Steal an Egg samples; 28 sampled video references total.
+- Fresh main Zones.client read confirms small carry chips, existing golden/full states, two-line labels and price on prompt. Supporting server checks, loose-egg distinction and guide/feedback audited from October 23 export.
+- Proposed readable compact bag, one local egg-focus cue, Briefcase Bay perimeter-detail pilot and coordinated confirmed pickup feedback. Actual pickup prompt not observed in V28; this limitation and proposal provenance are explicit.
+- Four timestamped visual samples; no full viewing, direct listening or inferred success metrics. Documentation only, no Studio edits or runtime tests. Research claim released.
 
 ## 2026-10-24 — crnuch, local session: travel UI and wayfinding research (Codex)
 
