@@ -24,7 +24,7 @@ K.PAL.update({
     "iron": (52, 54, 64), "iron_light": (96, 100, 116), "wood_warm": (196, 132, 74), "wood_deep": (122, 76, 42),
     "plank_light": (206, 152, 96), "plank_dark": (150, 98, 58), "stone_light": (232, 226, 212), "stone_mid": (196, 188, 174),
     "stone_dark": (146, 140, 132), "trim_cream": (248, 238, 214), "gold": (255, 196, 46), "gold_dark": (206, 146, 24),
-    "bush_shade": (58, 142, 40), "bush_light": (124, 206, 66), "leaf_sun": (140, 214, 74), "soil": (112, 74, 46),
+    "bush_shade": (58, 142, 40), "bush_light": (124, 206, 66), "bush": (88, 182, 54), "hedge": (80, 172, 50), "leaf_sun": (140, 214, 74), "soil": (112, 74, 46),
     "flower_red": (240, 62, 84), "flower_yel": (255, 212, 54), "flower_pink": (255, 128, 190), "flower_purple": (168, 104, 240),
     "flower_white": (252, 250, 244), "flower_orange": (255, 140, 40), "rock": (156, 152, 146), "rock_top": (204, 200, 192),
     "moss": (112, 186, 62), "brief_brown": (136, 84, 46), "brief_black": (46, 46, 56), "file_box": (234, 220, 184),
@@ -34,9 +34,14 @@ K.PAL.update({
     "terracotta": (218, 114, 72), "terracotta_dark": (178, 84, 52), "parasol_red": (234, 66, 76), "hydrant_red": (228, 52, 52),
     "banner_purple": (128, 72, 210), "plaza": (238, 228, 206), "plaza_edge": (206, 196, 176), "path": (255, 160, 24),
     "grass_ov": (124, 222, 52), "avatar": (255, 210, 60),
+    # architecture (hub buildings, firms)
+    "wall_cream": (246, 226, 180), "wall_warm": (240, 214, 168), "marble": (244, 242, 236), "marble_shade": (220, 216, 206),
+    "navy_roof": (56, 70, 136), "navy_dark": (38, 48, 100), "navy_seam": (82, 98, 168), "glass_blue": (128, 190, 240),
+    "glass_deep": (82, 140, 210), "carpet_red": (204, 40, 58), "flag_purple": (140, 80, 220), "flag_red": (232, 56, 64),
 })
 K.GLOWS.update({"lamp_glow": ((255, 208, 120), 1.35), "bulb_glow": ((255, 226, 150), 2.2)})  # (warm, not blown to white)
-ROUGH = {"gold": 0.32, "gold_dark": 0.36, "iron": 0.5, "iron_light": 0.5, "brief_black": 0.45, "panel_black": 0.4}
+ROUGH = {"gold": 0.32, "gold_dark": 0.36, "iron": 0.5, "iron_light": 0.5, "brief_black": 0.45, "panel_black": 0.4,
+         "glass_blue": 0.12, "glass_deep": 0.12, "navy_roof": 0.6}
 
 BMS = {}          # name -> (bmesh, look)
 CUR = [Matrix.Identity(4)]
@@ -356,10 +361,11 @@ def tuft(name, look, c, h=0.9, blades=6, seed=0):
 
 
 # ------------------------------------------------------------------ foliage (the approved tree canopy, from trees.py)
-def leafy(name, blobs, shade="bush_shade", light="bush_light", voxel=0.25, faces=700, lumpy=0.25, seed=0, squash=1.0, split=0.3):
-    """Overlapping spheres (local frame) -> ONE organic surface (voxel remesh + lumps + smooth + thin), split by which
-    way each face looks into <name>_Canopy (shade) + <name>_Light (sunlit top), as the approved trees do.
-    Returns the two objects (for flowers_on)."""
+def leafy(name, blobs, look="bush", voxel=0.25, faces=700, lumpy=0.25, seed=0, squash=1.0, split=None, light=None):
+    """Overlapping spheres (local frame) -> ONE organic surface (voxel remesh + lumps + smooth + thin) in ONE green
+    (crnuch 2026-10-24: two-tone bushes looked like two different colours; the light does the shading). split + light
+    = the trees' old two-tone split (<name>_Canopy + <name>_Light), kept only for reference. Returns the objects."""
+    shade = look
     full = PREFIX[-1] + name
     bm = bmesh.new()
     for c, r in blobs:
@@ -386,6 +392,13 @@ def leafy(name, blobs, shade="bush_shade", light="bush_light", voxel=0.25, faces
     dec = ob.modifiers.new("Decimate", "DECIMATE")
     dec.ratio = min(1.0, faces / max(1, len(ob.data.polygons)))
     _apply(ob)
+    if split is None:  # one colour: just name it and smooth it
+        ob.name = ob.data.name = full + "_Leaves"
+        ob.data.materials.clear()
+        ob.data.materials.append(mat(look))
+        for p in ob.data.polygons:
+            p.use_smooth = True
+        return [ob]
     bm = bmesh.new()
     bm.from_mesh(ob.data)
     bm.normal_update()
@@ -487,11 +500,23 @@ def render(out, name, loc, look, lens=32, res=(1600, 900), show=None):
     print("rendered", sc.render.filepath)
 
 
-def stats(skip=("Preview", "Scene", "Old")):
-    tot = {}
+def stats(skip=("Preview", "Scene", "Old", "Studs")):
+    """Triangles per model (<Model>_...), the biggest single mesh (a Roblox MeshPart takes at most 20,000), and the
+    preview studs (in the game the Studs system lays them on StudTop surfaces, so they are not part of the meshes)."""
+    tot, big = {}, []
     for ob in bpy.data.objects:
         if ob.type == "MESH" and not ob.name.startswith(skip):
+            t = sum(len(p.vertices) - 2 for p in ob.data.polygons)
             key = ob.name.split("_")[0]
-            tot[key] = tot.get(key, 0) + sum(len(p.vertices) - 2 for p in ob.data.polygons)
+            tot[key] = tot.get(key, 0) + t
+            big.append((t, ob.name))
     print("tris per model:", dict(sorted(tot.items())))
-    print("TOTAL tris", sum(tot.values()), "meshes", sum(1 for o in bpy.data.objects if o.type == "MESH" and not o.name.startswith(skip)))
+    big.sort(reverse=True)
+    print("biggest meshes:", big[:4], "(limit 20000 each)")
+    over = [n for t, n in big if t > 20000]
+    if over:
+        print("!! OVER THE MESHPART LIMIT:", over)
+    print("TOTAL tris", sum(tot.values()), "meshes", len(big))
+    n = sum(len(ob.data.polygons) for ob in bpy.data.objects if ob.type == "MESH" and ob.name.startswith("Studs"))
+    if n:
+        print("preview studs (StudTop surfaces in game):", n // 32, "studs")

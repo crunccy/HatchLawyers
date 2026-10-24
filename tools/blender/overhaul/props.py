@@ -1,7 +1,7 @@
 # tools/blender/overhaul/props.py - MAP MODEL OVERHAUL stage 2: the PROP KIT (crnuch's calls 2026-10-24, CLAUDE.md
 # "MODEL OVERHAUL"). The street furniture, greenery, signs and legal cargo every area of the map reuses, remade as smooth
 # meshes in the approved benchmark style (trees / portal / shack): chunky toy shapes, chamfered edges, round posts with
-# turned profiles, one mesh per colour (<Prop>_<Part>), foliage = the trees' two-tone canopy, NO studs on small props
+# turned profiles, one mesh per colour (<Prop>_<Part>), foliage = ONE green lumpy surface (crnuch: not two-tone), NO studs on small props
 # (studs only on broad structural tops - docs/ART_STYLE_STUDS.md + "Studs stay LOW"). Sign text is preview only: in the
 # game it is a SurfaceGui in the game's fonts on the board.
 #   Blender -b --factory-startup --python tools/blender/overhaul/props.py -- <out_dir>
@@ -283,7 +283,7 @@ def flower_bed():
                                           (2.45, "flower_purple", "flower_yel"))):
         blobs = [((x0 + dx, dy, 0.62), rr) for dx, dy, rr in ((-0.6, -0.3, 0.72), (0.55, 0.25, 0.72), (0.0, 0.0, 0.8), (0.7, -0.45, 0.55),
                                                              (-0.65, 0.45, 0.55))]
-        obs = leafy(n + "_Leaves%d" % gi, blobs, voxel=0.18, faces=420, lumpy=0.12, seed=20 + gi, split=0.35)
+        obs = leafy(n + "_Leaves%d" % gi, blobs, voxel=0.18, faces=420, lumpy=0.14, seed=20 + gi)
         pts = [(x0 + r.uniform(-1.05, 1.05), r.uniform(-0.75, 0.75), 4) for _ in range(9)]
         flowers_on(obs, n + "_Flower" + look.split("_")[1].title(), look, n + "_FlowerMid" + mid.split("_")[1].title(), mid, pts, r=0.24)
 
@@ -292,7 +292,7 @@ def hedge():
     """Clipped hedge 8 x 2.4 x 2.6 on a low wooden edging."""
     n = "Hedge"
     blobs = [((x, y, z), 0.86) for x in [-3.4 + 0.85 * i for i in range(9)] for y in (-0.42, 0.42) for z in (0.95, 1.7)]
-    leafy(n + "_Leaves", blobs, voxel=0.28, faces=1100, lumpy=0.16, seed=9, split=0.45)
+    leafy(n + "_Hedge", blobs, look="hedge", voxel=0.28, faces=1100, lumpy=0.16, seed=9)
     for (x, y, sx, sy) in ((0, -1.42, 9.0, 0.26), (0, 1.42, 9.0, 0.26), (-4.37, 0, 0.26, 2.58), (4.37, 0, 0.26, 2.58)):
         box(n + "_Edge", "wood_deep", (x, y, 0.2), (sx, sy, 0.4), bevel=0.05)
 
@@ -619,4 +619,5 @@ def main():
     O.render(OUT, "props_after", (124, 600 - 44, 10), (124, 600, 3.5), lens=28, show=["compare"])
 
 
-main()
+if __name__ == "__main__":  # (the hub / firm scripts import the props)
+    main()
