@@ -6,6 +6,8 @@ The user's priorities are map detail and UI, followed by VFX and animation. They
 
 ## Contents
 
+- [MUTATION_UI_CLARITY.md](MUTATION_UI_CLARITY.md): source-backed outcome/consequence copy, input eligibility and persistent result states; V29 secondary machine-framing footage with explicit experience-identity limits.
+
 - [EGG_INTERACTION_CLARITY.md](EGG_INTERACTION_CLARITY.md): V28; readable carry HUD, focused egg cue, perimeter detail and confirmed pickup feedback; source audit and scoped acceptance criteria.
 
 - [TRAVEL_UI_WAYFINDING.md](TRAVEL_UI_WAYFINDING.md): V27; compact travel layout, consistent island/card landmarks and destination status, with current-source boundaries and acceptance criteria.
@@ -38,7 +40,7 @@ These are design recommendations informed by selected footage; they are not clai
 
 ## Evidence / status
 
-Selected sections of twenty-eight videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. Current PS99/Steal an Egg footage is mixed with older useful technique references. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
+Selected sections of twenty-nine videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. PS99/Steal an Egg footage is mixed with older useful technique references. V29's exact experience is unverified and is labeled a secondary visual reference, not official PS99 gameplay. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
 
 This package changes documentation only. No Studio installation, runtime implementation or gameplay test was performed for this research. Existing Studio and repo versions may differ. Read current claims and re-export/merge before implementation.
 
