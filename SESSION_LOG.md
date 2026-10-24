@@ -23,7 +23,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   mesh - BigCase.client scrolls each slat; prompt / gui parts stay plain Parts). Hub.MergeMachine is mr.robe's v3
   (left alone). Minigame spots (Gavel Bonk bench, Lucky Case table + bulb board, ONE case / bulb / gavel model to swap
   per instance; peekers + judge wait for the character stage) and the Arcade booth (x3 games): `hub_minigames.py`.
-  Next: firm stages 2-6, then the islands. Scripts + renders:
+  Stage 4 FIRM FRONTS 2-6 rendered (`firm_stages.py`: Storefront brick + awning + roof café, Main Street sandstone +
+  pediment porch, Glass Office curtain wall + fins, Corporate HQ V-beams + terrace + roof garden, Supreme Tower gold
+  bands + crown + spire); same layout as Server.FirmStages (door, lanes, aisle, elevator stops, showcase strip, room
+  slots, sign spots kept; elevators / pedestals / hologram pads / lounge carpet stay Parts). Next: the office hall
+  pieces, then the islands (hub island first). Scripts + renders:
   `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
