@@ -10,8 +10,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   firm stages, props, then the six islands. Stage 1 = benchmark (tree family + portal + one firm building) rendered for
   approval. Refs: `references/models/`. Don't remodel map pieces meanwhile; tell crnuch's session if you need one.
   Progress 2026-10-24: tree family APPROVED (unstudded, as the stud rules say); Travel portal v2 APPROVED (round and
-  symmetrical, crnuch's call: "the same from all sides"); Dingy Shack benchmark rendered, waiting for crnuch. Scripts +
-  renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
+  symmetrical, crnuch's call: "the same from all sides"); Dingy Shack v2 (dingy + low studs) OK'd. crnuch's call: "skip
+  importing and just model everything" - model all of it first, export/upload later. Stage 2 PROP KIT rendered
+  (`props.py`: 21 props - lamps, benches, bins, bollard, hydrant, café table, railing, fence, planters, flower bed,
+  hedge, rocks, sign post, notice board, attraction sign, gavel statue, briefcases, file boxes, crate; ~31k tris all
+  in; shared helpers `ohkit.py`). Next: hub buildings, then firm stages 2-6, then the islands. Scripts + renders:
+  `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.

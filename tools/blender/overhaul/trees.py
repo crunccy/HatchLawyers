@@ -19,7 +19,7 @@ import hl_kit as K  # palette, materials, sky, camera, EEVEE setup
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT = argv[0] if argv else os.path.join(HERE, "renders")
 FBX = "--fbx" in argv
-os.makedirs(OUT, exist_ok=True)
+os.makedirs(OUT, exist_ok=True) if __name__ == "__main__" else None
 TAU = math.tau
 
 # the overhaul's tree colours (sRGB): <kind>_shade = underside, <kind>_leaf / _light = the sunlit top
@@ -388,11 +388,12 @@ def stats():
     print("per tree:", total)
 
 
-sc = build()
-K.setup_eevee(sc, samples=48)
-stats()
-render(sc, "trees_lineup", (5, -78, 16), (5, 0, 8), lens=30)
-render(sc, "trees_close", (-30, -34, 9), (-14, 0, 9), lens=30)
-render(sc, "trees_close2", (22, -36, 10), (36, 0, 9), lens=30)
-if FBX:
-    export_fbx()
+if __name__ == "__main__":  # (other overhaul scripts import the tree builders for their scene renders)
+    sc = build()
+    K.setup_eevee(sc, samples=48)
+    stats()
+    render(sc, "trees_lineup", (5, -78, 16), (5, 0, 8), lens=30)
+    render(sc, "trees_close", (-30, -34, 9), (-14, 0, 9), lens=30)
+    render(sc, "trees_close2", (22, -36, 10), (36, 0, 9), lens=30)
+    if FBX:
+        export_fbx()
