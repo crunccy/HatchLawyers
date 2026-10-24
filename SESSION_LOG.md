@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · atmosphere readability and effect ownership study; docs only · since 2026-10-24
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: atmosphere readability research (Codex)
+
+- Added docs/ATMOSPHERE_READABILITY.md from fresh main Ambience/AmbiencePresets snapshots and V13 4:11 follow-up; unique video count remains 29.
+- Existing fog/particles/quality/boss-dip/suspension acknowledged. Source shows rate-only suppression with long-lived particles; proposed immediate decorative-layer quieting and explicit cinematic handoff.
+- Identified per-kind anchor caps, multiple layers per anchor, compounded Low rate factors and folder-first classification as concrete implementation constraints.
+- Scoped Pet Park anchor/debug/camera review and future acceptance recordings. No measured obstruction/performance defect claimed.
+- Documentation only; no Studio edits, gameplay tests, installs, publication or audio listening. Claim released.
 
 ## 2026-10-24 — crnuch, local session: mutation decision clarity research (Codex)
 
