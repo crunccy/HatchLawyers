@@ -8,7 +8,11 @@ The user's priorities are map detail and UI, followed by VFX and animation. They
 
 Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/blob/main/docs/UI_STYLE_V3.md) before implementing any older research. It supersedes older font/material suggestions: Gotham Black/Bold, plain deep-purple window bodies, decorated saturated cards, muted-purple inactive states, no gold hover ring, deliberately small pop-ups. Fredoka/LuckiestGuy/BuilderSans recommendations in older notes are retired. Preserve the chunky studded world. Research branch snapshots can lag current main; inspect current source before treating an old finding as an outstanding defect.
 
+**Map status correction:** [current main ART_REMODEL_BRIEF](https://github.com/crunccy/HatchLawyers/blob/main/docs/ART_REMODEL_BRIEF.md) marks the approved stage-1 map plan completed. Treat earlier pending-stage language as historical; inspect current assets/claims and propose focused polish.
+
 ## Contents
+
+- [DECOR_CLUSTER_HANDOFF.md](DECOR_CLUSTER_HANDOFF.md): existing library asset reuse, explicit cluster transforms, grounding, collision/query review and scoped export; expanded V14 coverage.
 
 - [REWARD_STATE_CLARITY.md](REWARD_STATE_CLARITY.md): V30 current event/shop hierarchy samples; daily/playtime timer semantics, loading/pending states and inline receipts, based on fresh UI v3 Rewards source.
 
