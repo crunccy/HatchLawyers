@@ -28,7 +28,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   bands + crown + spire); same layout as Server.FirmStages (door, lanes, aisle, elevator stops, showcase strip, room
   slots, sign spots kept; elevators / pedestals / hologram pads / lounge carpet stay Parts). Office hall kit
   (`firm_hall.py`: OfficeSegment, LawyerDesk, ExpansionLock, BackWall at today's sizes; named per colour so DeskLook /
-  dressHall can recolour by NAME at install - today they pick Parts by size). Next: the islands (hub island first). Scripts + renders:
+  dressHall can recolour by NAME at install - today they pick Parts by size). Stage 5 ISLANDS: the hub island
+  re-dressed (`island_hub.py`: runs the approved hubv2_build.py UNCHANGED in a sandbox - no .blend save, JSON to the
+  out dir - with every dressing / landmark call redirected to the new models; new statue fountain; renders use the
+  v2 hub's own cameras, so its committed renders are the before). Next: the five egg islands, one at a time. Scripts + renders:
   `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,

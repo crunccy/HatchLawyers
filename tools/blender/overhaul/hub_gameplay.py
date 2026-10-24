@@ -179,7 +179,7 @@ def counter(kind):
 
 
 # ================================================================== LEADERBOARD (11 x 17.3 x 1.4)
-def leaderboard(accent="gold"):
+def leaderboard(accent="gold", title="RICHEST"):
     n = "Leaderboard"
     for sx in (-4.2, 4.2):
         box(n + "_Footing", "stone_mid", (sx, 0.3, 0.4), (1.6, 1.6, 0.8), bevel=0.1)
@@ -200,7 +200,7 @@ def leaderboard(accent="gold"):
         box(n + "_Roof", "navy_roof", (s * 2.95, 0.05, 17.6), (6.3, 2.0, 0.3), rot=(0, s * 14, 0), bevel=0.06)
     tube(n + "_Gold", "gold", [(0, -1.0, 18.4), (0, 1.1, 18.4)], 0.13, segs=8)
     prism(n + "_Star", "gold", [(x, z + 19.4) for x, z in star(0.9, 0.42)], 0.3)
-    text("RICHEST", "panel_black", (0, -0.62, 15.65), 1.2, extrude=0.02)
+    text(title, "panel_black", (0, -0.62, 15.65), min(1.2, 8.6 / (0.75 * max(1, len(title)))), extrude=0.02)
 
 
 # ================================================================== BIG CASE BELT (62.4 x 12.2 x 10.3)
@@ -278,4 +278,5 @@ def main():
     O.render(OUT, "belt_close", (265, -12, 6), (275, 0, 3.5), lens=26, show=["belt"])
 
 
-main()
+if __name__ == "__main__":  # (the island scripts import these builders)
+    main()

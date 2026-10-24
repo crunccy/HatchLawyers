@@ -19,7 +19,7 @@ import hl_kit as K
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT = argv[0] if argv else os.path.join(HERE, "renders")
 FBX = "--fbx" in argv
-os.makedirs(OUT, exist_ok=True)
+os.makedirs(OUT, exist_ok=True) if __name__ == "__main__" else None
 TAU = math.tau
 
 K.PAL.update({
@@ -358,10 +358,17 @@ def build():
     sc = bpy.context.scene
     K.sky_and_sun(sc, sun_energy=3.6, sun_rot=(55, 6, -30))
     sc.collection.objects.link(bpy.data.objects["Sun"])
-    stage(); pylons(); halo(); beam_and_rings(); sign(); trigger()
     player(-6, -21)
     gb = bm_for("Preview_Ground", "plaza")
     bmesh.ops.create_grid(gb, x_segments=1, y_segments=1, size=60)
+    make_objects()
+    return sc
+
+
+def make_objects():
+    """The portal's meshes as objects at the origin (no scene reset) - the island scripts place it with its matrix."""
+    sc = bpy.context.scene
+    stage(); pylons(); halo(); beam_and_rings(); sign(); trigger()
     obs = {}
     for name, (bm, look) in BMS.items():
         me = bpy.data.meshes.new(name)
@@ -378,7 +385,8 @@ def build():
     obs["Trigger"].hide_render = True
     # the beam is see-through in game (Transparency); preview it as a soft glow
     bmat = obs["Beam"].data.materials[0] = K.mat("portal_field")
-    return sc
+    BMS.clear()
+    return [o for o in obs.values() if not o.name.startswith("Preview")]
 
 
 def stats():
@@ -399,18 +407,19 @@ def render(sc, name, loc, look, lens=30):
     print("rendered", sc.render.filepath)
 
 
-sc = build()
-K.setup_eevee(sc, samples=48)
-stats()
-render(sc, "portal_front", (0, -62, 9), (0, 0, 15), lens=32)
-render(sc, "portal_three_quarter", (-42, -42, 16), (0, 0, 14), lens=32)
-render(sc, "portal_side", (60, 12, 9), (0, 0, 15), lens=32)
-render(sc, "portal_above", (-30, -40, 48), (0, 0, 10), lens=32)
-render(sc, "portal_studs", (-9, -20, 4.5), (-6, -11, 2), lens=30)
-if FBX:
-    bpy.ops.object.select_all(action="DESELECT")
-    for ob in bpy.data.objects:
-        if ob.type == "MESH" and not ob.name.startswith("Preview"):
-            ob.select_set(True)
-    bpy.ops.export_scene.fbx(filepath=os.path.join(OUT, "TravelPortal.fbx"), use_selection=True, apply_unit_scale=True,
-                             axis_forward="-Z", axis_up="Y", object_types={"MESH"}, mesh_smooth_type="FACE")
+if __name__ == "__main__":  # (the island scripts import make_objects)
+    sc = build()
+    K.setup_eevee(sc, samples=48)
+    stats()
+    render(sc, "portal_front", (0, -62, 9), (0, 0, 15), lens=32)
+    render(sc, "portal_three_quarter", (-42, -42, 16), (0, 0, 14), lens=32)
+    render(sc, "portal_side", (60, 12, 9), (0, 0, 15), lens=32)
+    render(sc, "portal_above", (-30, -40, 48), (0, 0, 10), lens=32)
+    render(sc, "portal_studs", (-9, -20, 4.5), (-6, -11, 2), lens=30)
+    if FBX:
+        bpy.ops.object.select_all(action="DESELECT")
+        for ob in bpy.data.objects:
+            if ob.type == "MESH" and not ob.name.startswith("Preview"):
+                ob.select_set(True)
+        bpy.ops.export_scene.fbx(filepath=os.path.join(OUT, "TravelPortal.fbx"), use_selection=True, apply_unit_scale=True,
+                                 axis_forward="-Z", axis_up="Y", object_types={"MESH"}, mesh_smooth_type="FACE")
