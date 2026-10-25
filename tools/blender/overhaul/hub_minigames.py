@@ -164,7 +164,7 @@ def arcade_booth(game="FilingFrenzy"):
         box(n + "_Wall", "white", (sx, 1.5, 6.0), (0.8, 11.2, 11.0))
         for k in range(5):  # candy stripes on the side walls
             box(n + "_Stripe", accent, (sx + (0.42 if sx > 0 else -0.42), -3.0 + k * 2.2, 6.0), (0.06, 1.0, 10.6))
-        lathe(n + "_Post", "gold", [(0.45, 0.5), (0.45, 0.8, True), (0.35, 1.0), (0.3, 11.3), (0.45, 11.5, True), (0.0, 11.5)], segs=12,
+        lathe(n + "_Post", "gold", [(0.45, 0.5), (0.45, 0.8, True), (0.35, 1.0), (0.3, 11.6), (0.45, 11.8, True), (0.0, 11.8)], segs=12,
               c=(sx, -6.6, 0))
     # counter across the front with a striped apron and a gold top edge
     box(n + "_Counter", accent, (0, -4.6, 1.95), (14.4, 1.8, 2.9), bevel=0.1)
@@ -182,7 +182,7 @@ def arcade_booth(game="FilingFrenzy"):
         xm = (x0 + x1) / 2
         poly(nm, lk, [(xm + (x1 - x0) / 2 * math.cos(math.pi * (1 - j / 6)), -7.22, 10.4 - 0.6 * math.sin(math.pi * j / 6)) for j in range(7)],
              thick=0.1)
-    box(n + "_MarqueeBack", "gold", (0, -6.4, 13.4), (13.6, 0.8, 3.4), bevel=0.15)
+    box(n + "_MarqueeBack", "gold", (0, -6.4, 13.4), (15.6, 0.8, 3.4), bevel=0.15)   # (its ends rest on the corner posts)
     box(n + "_Marquee", "panel_black", (0, -6.85, 13.4), (12.6, 0.2, 2.6), bevel=0.06)
     text({"FilingFrenzy": "FILING FRENZY", "BriefcaseStack": "CASE STACK", "LieDetector": "LIE DETECTOR"}[game], "gold",
          (0, -6.97, 13.4), 1.05, extrude=0.03)
@@ -198,10 +198,10 @@ def arcade_booth(game="FilingFrenzy"):
                 box(n + "_Paper", "paper", (-1.1 + k * 0.72, 0, 1.34), (0.38, 1.3, 0.1), rot=(0, 10 - k * 6, 0))
         with at(3.8, -4.4, 3.8):
             for k in range(3):
-                box(n + "_Paper", "paper", (0, 0, 0.1 + k * 0.08), (1.4, 1.0, 0.06), rot=(0, 0, k * 8))
-            tube(n + "_Pen", "speed_blue", [(-0.4, -0.2, 0.42), (0.5, 0.3, 0.42)], 0.07, segs=6)
+                box(n + "_Paper", "paper", (0, 0, 0.03 + k * 0.055), (1.4, 1.0, 0.06), rot=(0, 0, k * 8))
+            tube(n + "_Pen", "speed_blue", [(-0.4, -0.2, 0.24), (0.5, 0.3, 0.24)], 0.07, segs=6)
     elif game == "BriefcaseStack":
-        for k, (x, y, z, rz) in enumerate(((-3.8, -4.4, 3.8, 4), (-3.6, -4.5, 4.75, -8), (-3.9, -4.4, 5.7, 10))):
+        for k, (x, y, z, rz) in enumerate(((-3.8, -4.4, 3.8, 4), (-3.6, -4.5, 4.29, -8), (-3.9, -4.4, 4.78, 10))):
             with at(x, y, z, rz=rz, s=0.55):
                 PR.briefcase(n, ("brief_brown", "brief_black", "carry_red")[k], "gold_dark", (0, 0, 0.45), (-90, 0, 0))
         with at(3.8, -4.4, 3.8):

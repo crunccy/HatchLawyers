@@ -129,12 +129,12 @@ def shop_stall():
         poly(n + "_Bunting" + lk.title().replace("_", ""), lk, [a + Vector((0.08, 0, -0.05)), b + Vector((-0.08, 0, -0.05)),
                                                                 m + Vector((0, 0, -0.85))], thick=0.04)
     # SHOP sign: black panel in a gold back plate ringed with bulbs; the big gold coin on its stand behind
-    box(n + "_Gold", "gold", (0, -3.0, 14.7), (13.2, 1.0, 4.6), bevel=0.15)
-    box(n + "_Sign", "panel_black", (0, -3.52, 14.7), (12.2, 0.2, 4.0), bevel=0.06)
+    box(n + "_Gold", "gold", (0, -3.0, 14.45), (13.2, 1.0, 4.6), bevel=0.15)          # (stands on the roof trim, top 12.2)
+    box(n + "_Sign", "panel_black", (0, -3.55, 14.45), (12.2, 0.2, 3.6), bevel=0.06)
     for x in [-6.1 + 1.0 * i for i in range(13)]:
-        for z in (12.55, 16.85):
-            sphere(n + "_Bulbs", "bulb_glow", (x, -3.55, z), 0.17, sub=1)
-    text("SHOP", "gold", (0, -3.66, 14.7), 2.6, extrude=0.05)
+        for z in (12.48, 16.42):
+            sphere(n + "_Bulbs", "bulb_glow", (x, -3.5, z), 0.17, sub=1)
+    text("SHOP", "gold", (0, -3.68, 14.45), 2.4, extrude=0.05)
     lathe(n + "_Iron", "iron", [(0.7, 12.2), (0.7, 12.5, True), (0.35, 12.7), (0.32, 14.2), (0.0, 14.3)], segs=12, c=(0, 3.5, 0))
     with at(0, 3.5, 16.9):
         lathe(n + "_Gold", "gold", [(0.0, -0.5), (2.5, -0.5, True), (2.8, -0.45), (2.8, 0.45), (2.5, 0.5, True), (0.0, 0.5)], segs=40,
@@ -199,7 +199,7 @@ def leaderboard(accent="gold", title="RICHEST"):
     for s in (-1, 1):
         box(n + "_Roof", "navy_roof", (s * 2.95, 0.05, 17.6), (6.3, 2.0, 0.3), rot=(0, s * 14, 0), bevel=0.06)
     tube(n + "_Gold", "gold", [(0, -1.0, 18.4), (0, 1.1, 18.4)], 0.13, segs=8)
-    prism(n + "_Star", "gold", [(x, z + 19.4) for x, z in star(0.9, 0.42)], 0.3)
+    prism(n + "_Star", "gold", [(x, z + 19.02) for x, z in star(0.9, 0.42)], 0.3)  # (its two lower points in the roof)
     text(title, "panel_black", (0, -0.62, 15.65), min(1.2, 8.6 / (0.75 * max(1, len(title)))), extrude=0.02)
 
 

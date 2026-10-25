@@ -45,59 +45,76 @@ def rbox(name, look, c, size, r=0.5):
 
 # ================================================================== statues
 def giant_corgi(F, s=1.0):
+    """A sitting corgi statue: the orange body (with its ears, legs and haunches) and the white patches (chest, muzzle,
+    paws, blaze, tail) are each ONE fused solid, so nothing floats or pokes through; eyes / nose / tongue / collar sit
+    half-sunk into the surface."""
     n = "PetCorgi"
     with F_place(F, s=s):
         lathe(n + "_Rock", "rock", [(9.0, 0.0), (9.0, 1.6, True), (8.6, 2.0), (8.2, 2.25, True), (0.0, 2.25)], segs=20)
         cyl(n + "_Moss", "moss", (0, 0, 2.2), 8.0, 0.55, segs=20, r_top=7.7)
-        z = 2.8
+        z = 2.75
+        o, w = n + "_Orange", n + "_White"
         for sx in (-1, 1):
-            rbox(n + "_White", "fur_white", (sx * 1.6, -3.2, z + 0.45), (1.6, 2.0, 0.9), 0.4)
-            rbox(n + "_Orange", "corgi", (sx * 1.6, -2.6, z + 2.9), (1.4, 1.4, 4.0), 0.5)
-            rbox(n + "_Orange", "corgi", (sx * 2.6, 1.8, z + 1.5), (2.4, 4.4, 3.0), 1.0)
-        rbox(n + "_Orange", "corgi", (0, 0.2, z + 3.2), (5.0, 6.0, 4.4), 1.6)
-        rbox(n + "_White", "fur_white", (0, -1.7, z + 4.1), (3.2, 2.8, 3.8), 1.2)
-        rbox(n + "_Orange", "corgi", (0, -1.4, z + 7.1), (4.6, 4.2, 3.4), 1.4)
-        rbox(n + "_White", "fur_white", (0, -3.6, z + 6.4), (2.6, 1.8, 1.6), 0.7)
-        rbox(n + "_White", "fur_white", (0, -3.45, z + 7.9), (1.0, 0.3, 1.6), 0.14)
-        sphere(n + "_Black", "panel_black", (0, -4.5, z + 7.0), 0.45, sub=2, scale=(1.2, 0.8, 0.8))
-        rbox(n + "_Pink", "flower_pink", (0.3, -4.25, z + 5.75), (0.8, 0.5, 0.9), 0.25)
+            rbox(o, "corgi", (sx * 1.55, -2.5, z + 2.6), (1.5, 1.5, 4.6), 0.6)          # front legs (into the body)
+            rbox(o, "corgi", (sx * 2.4, 1.6, z + 1.6), (2.6, 4.6, 3.2), 1.1)            # haunches
+            rbox(w, "fur_white", (sx * 1.55, -3.0, z + 0.45), (1.7, 2.2, 0.95), 0.42)   # front paws (under the legs)
+            rbox(w, "fur_white", (sx * 2.5, -0.2, z + 0.4), (1.6, 2.0, 0.85), 0.38)     # back paws
+            with at(sx * 1.45, -1.3, z + 8.15):                                          # ears: sunk into the head
+                prism(o, "corgi", [(-0.95, 0), (0.95, 0), (0.12 * sx, 3.0)], 0.9, rot=(0, -sx * 12, 0))
+        rbox(o, "corgi", (0, 0.4, z + 3.4), (5.2, 6.2, 4.8), 1.8)                        # body
+        rbox(o, "corgi", (0, -0.9, z + 5.6), (3.4, 3.4, 2.4), 1.0)                      # neck (body into head)
+        rbox(o, "corgi", (0, -1.4, z + 7.2), (4.6, 4.2, 3.4), 1.4)                      # head
+        rbox(w, "fur_white", (0, -1.75, z + 4.0), (3.0, 2.8, 4.2), 1.2)                # chest (just through the body's front)
+        rbox(w, "fur_white", (0, -3.35, z + 6.5), (2.6, 1.9, 1.7), 0.75)               # muzzle (out of the head)
+        rbox(w, "fur_white", (0, -3.1, z + 8.0), (1.0, 0.8, 1.8), 0.35)                # blaze
+        sphere(w, "fur_white", (0, 3.4, z + 3.2), 1.1, sub=2)                          # tail fluff (into the rump)
+        O.fuse(o, voxel=0.14, smooth_iters=3, faces=9000)
+        O.fuse(w, voxel=0.12, smooth_iters=3, faces=5000)
         for sx in (-1, 1):
-            sphere(n + "_Black", "panel_black", (sx * 1.1, -3.45, z + 7.75), 0.34, sub=2)
-            sphere(n + "_White", "fur_white", (sx * 1.1 + 0.1, -3.72, z + 7.9), 0.1, sub=1)
-            with at(sx * 1.6, -1.4, z + 8.6):
-                prism(n + "_Orange", "corgi", [(-0.85, 0), (0.85, 0), (0.1 * sx, 2.7)], 0.8, rot=(0, -sx * 14, 0))
-                prism(n + "_Pink", "flower_pink", [(-0.45, 0.25), (0.45, 0.25), (0.08 * sx, 1.9)], 0.2, c=(0, -0.42, 0), rot=(0, -sx * 14, 0))
-        tube(n + "_Collar", "red", [(2.15 * math.cos(a / 16 * math.tau), -1.3 + 1.9 * math.sin(a / 16 * math.tau), z + 5.55) for a in range(17)], 0.28,
-             segs=6, cap=False)
-        sphere(n + "_Gold", "gold", (0, -3.25, z + 5.2), 0.45, sub=2)
-        sphere(n + "_White", "fur_white", (0, 3.75, z + 3.3), 1.0, sub=2)
+            with at(sx * 1.45, -1.62, z + 8.35):                                         # pink inner ears, on the ears' front
+                prism(n + "_Pink", "flower_pink", [(-0.5, 0.15), (0.5, 0.15), (0.08 * sx, 2.1)], 0.34, rot=(0, -sx * 12, 0))
+            sphere(n + "_Eye", "panel_black", (sx * 1.05, -3.42, z + 7.7), 0.36, sub=2)
+            sphere(n + "_Shine", "fur_white", (sx * 1.05 + 0.1, -3.7, z + 7.85), 0.1, sub=1)
+        sphere(n + "_Nose", "panel_black", (0, -4.25, z + 6.95), 0.45, sub=2, scale=(1.2, 0.8, 0.8))
+        rbox(n + "_Tongue", "flower_pink", (0.3, -4.05, z + 5.75), (0.8, 0.6, 0.9), 0.28)
+        ring = [(2.05 * math.cos(a / 16 * math.tau), -1.25 + 1.95 * math.sin(a / 16 * math.tau), z + 5.7) for a in range(17)]
+        tube(n + "_Collar", "red", ring, 0.3, segs=6, cap=False)
+        sphere(n + "_Gold", "gold", (0, -3.25, z + 5.3), 0.45, sub=2)
 
 
 def giant_cat(F, s=1.0):
+    """A sitting cat statue: grey body + head + ears + tail fused into one solid, white chest / paws / muzzle fused into
+    another; eyes, nose, whiskers and collar sit on the surface."""
     n = "PetCat"
     with F_place(F, s=s):
         box(n + "_Marble", "marble", (0, 0, 0.6), (7, 7, 1.2), bevel=0.2)
         box(n + "_Gold", "gold", (0, 0, 1.15), (7.2, 7.2, 0.12))
         z = 1.2
-        rbox(n + "_Grey", "cat_grey", (0, 0.5, z + 2.5), (4.4, 4.6, 5.0), 1.5)
-        rbox(n + "_White", "fur_white", (0, -1.6, z + 2.7), (2.6, 1.2, 3.4), 0.6)
+        g, w = n + "_Grey", n + "_White"
+        rbox(g, "cat_grey", (0, 0.5, z + 2.55), (4.4, 4.6, 5.1), 1.6)                  # body
+        rbox(g, "cat_grey", (0, -0.2, z + 5.2), (3.2, 3.0, 1.8), 0.8)                  # neck
+        rbox(g, "cat_grey", (0, -0.3, z + 6.7), (4.2, 3.8, 3.4), 1.4)                  # head
         for sx in (-1, 1):
-            rbox(n + "_White", "fur_white", (sx * 1.2, -2.0, z + 0.45), (1.3, 1.7, 0.9), 0.4)
-        rbox(n + "_Grey", "cat_grey", (0, -0.3, z + 6.7), (4.2, 3.8, 3.4), 1.4)
-        rbox(n + "_White", "fur_white", (0, -2.1, z + 6.2), (2.0, 0.5, 1.2), 0.24)
+            cyl(g, "cat_grey", (sx * 1.2, -0.4, z + 7.6), 1.0, 2.2, segs=4, spin=45, r_top=0.08, smooth=False)  # ears, sunk in
+        tail = [(2.0 + 0.4 * math.sin(t / 8 * 2.4), 1.8 - t * 0.25, z + 0.4 + t * 0.62) for t in range(9)]
+        tail[0] = (1.2, 1.8, z + 0.9)                                                    # (starts inside the body)
+        tube(g, "cat_grey", tail, [0.55 - 0.02 * t for t in range(9)], segs=10)
+        rbox(w, "fur_white", (0, -1.45, z + 2.8), (2.6, 1.6, 3.6), 0.7)                # chest
         for sx in (-1, 1):
-            cyl(n + "_Grey", "cat_grey", (sx * 1.3, -0.4, z + 8.2), 0.95, 1.7, segs=4, spin=45, r_top=0.05, smooth=False)
-            cyl(n + "_Pink", "flower_pink", (sx * 1.3, -0.95, z + 8.35), 0.5, 1.1, segs=4, spin=45, r_top=0.03, smooth=False)
-            sphere(n + "_Eye", "eye_green", (sx * 0.9, -2.15, z + 7.1), 0.36, sub=2, scale=(1, 0.6, 1.1))
-            box(n + "_Pupil", "panel_black", (sx * 0.9, -2.36, z + 7.1), (0.12, 0.06, 0.55))
+            rbox(w, "fur_white", (sx * 1.2, -1.75, z + 0.5), (1.3, 1.9, 1.0), 0.42)    # paws
+        rbox(w, "fur_white", (0, -1.95, z + 6.2), (2.2, 0.9, 1.3), 0.4)                # muzzle
+        O.fuse(g, voxel=0.12, smooth_iters=2, faces=8000)
+        O.fuse(w, voxel=0.1, smooth_iters=2, faces=4000)
+        for sx in (-1, 1):
+            cyl(n + "_Pink", "flower_pink", (sx * 1.2, -0.95, z + 7.9), 0.45, 1.3, segs=4, spin=45, r_top=0.04, smooth=False)
+            sphere(n + "_Eye", "eye_green", (sx * 0.9, -2.08, z + 7.1), 0.38, sub=2, scale=(1, 0.6, 1.1))
+            box(n + "_Pupil", "panel_black", (sx * 0.9, -2.3, z + 7.1), (0.12, 0.06, 0.55))
             for k in range(2):
-                tube(n + "_Whisker", "white", [(sx * 0.9, -2.35, z + 6.25 + k * 0.25), (sx * 2.6, -2.5, z + 6.35 + k * 0.4)], 0.04, segs=4)
-        sphere(n + "_Pink", "flower_pink", (0, -2.42, z + 6.45), 0.22, sub=1)
-        tail = [(2.3 + 0.4 * math.sin(t / 8 * 2.4), 1.8 - t * 0.25, z + 0.6 + t * 0.62) for t in range(9)]
-        tube(n + "_Grey", "cat_grey", tail, [0.55 - 0.02 * t for t in range(9)], segs=10)
-        tube(n + "_Collar", "speed_blue" if "speed_blue" in O.K.PAL else "house_blue",
-             [(1.95 * math.cos(a / 16 * math.tau), -0.3 + 1.75 * math.sin(a / 16 * math.tau), z + 5.15) for a in range(17)], 0.22, segs=6, cap=False)
-        sphere(n + "_Gold", "gold", (0, -2.1, z + 4.85), 0.35, sub=2)
+                tube(n + "_Whisker", "white", [(sx * 0.95, -2.35, z + 6.15 + k * 0.25), (sx * 2.5, -2.45, z + 6.3 + k * 0.4)], 0.045, segs=4)
+        sphere(n + "_Pink", "flower_pink", (0, -2.42, z + 6.5), 0.22, sub=1)
+        ring = [(1.95 * math.cos(a / 16 * math.tau), -0.25 + 1.65 * math.sin(a / 16 * math.tau), z + 5.25) for a in range(17)]
+        tube(n + "_Collar", "house_blue", ring, 0.24, segs=6, cap=False)
+        sphere(n + "_Gold", "gold", (0, -1.95, z + 4.95), 0.36, sub=2)
 
 
 # ================================================================== pet houses
@@ -117,11 +134,11 @@ def dog_house(F, body="roof_blue", roof="red", name="REX"):
         for sgn in (-1, 1):
             box(n + "_Roof" + rf.title(), rf, (sgn * 1.62, 0.3, 6.0), (3.8, 7.2, 0.35), rot=(0, sgn * 35, 0), bevel=0.08)
         tube(n + "_Trim", "white", [(0, -3.3, 7.05), (0, 3.9, 7.05)], 0.16, segs=8)
-        box(n + "_Plate", "white", (0, -3.32, 4.3), (3.4, 0.15, 0.85), bevel=0.06)
-        text(name, "panel_black", (0, -3.42, 4.3), 0.55, extrude=0.015)
+        box(n + "_Plate", "white", (0, -2.78, 5.6), (3.0, 0.15, 0.8), bevel=0.06)      # (on the gable's face, y -2.7)
+        text(name, "panel_black", (0, -2.88, 5.6), 0.5, extrude=0.015)
         lathe(n + "_Bowl", "red", [(0.0, 0.0), (0.75, 0.0, True), (1.0, 0.4, True), (0.85, 0.42), (0.7, 0.2)], segs=16, c=(3.6, -3.4, 0))
         for k in range(7):
-            sphere(n + "_Kibble", "wood_warm", (3.6 + rr.uniform(-0.5, 0.5), -3.4 + rr.uniform(-0.5, 0.5), 0.3), 0.18, sub=1)
+            sphere(n + "_Kibble", "wood_warm", (3.6 + rr.uniform(-0.35, 0.35), -3.4 + rr.uniform(-0.35, 0.35), 0.16), 0.18, sub=1)
         chew_bone(n, (-2.6, -4.3, 0.0), 20)
 
 
@@ -141,11 +158,12 @@ def cat_tower(F):
             cyl(n + "_Sisal", "sisal", (x, y, 0.6), 0.6, h - 0.6, segs=12)
             for k in range(int((h - 1.0) / 0.7)):
                 cyl(n + "_Rope", "rope", (x, y, 1.0 + k * 0.7), 0.64, 0.14, segs=10)
-            lathe(n + "_Platform", "purple", [(1.9, h), (2.0, h + 0.1), (2.0, h + 0.5), (1.85, h + 0.6, True), (0.0, h + 0.6)], segs=20)
+            lathe(n + "_Platform", "purple", [(0.0, h), (1.9, h), (2.0, h + 0.1), (2.0, h + 0.5), (1.85, h + 0.6, True), (0.0, h + 0.6)], segs=20,
+                  c=(x, y, 0))  # (on top of its post)
         box(n + "_Box", "house_pink", (-0.4, 1.8, 4.3), (3.6, 3.0, 2.6), bevel=0.35, segs=2)
         cyl(n + "_Hole", "panel_black", (-0.4, 0.31, 4.3), 0.75, 0.06, segs=16, rot=(90, 0, 0))
-        tube(n + "_String", "white", [(3.2, -1.6, 12.6), (3.4, -1.6, 10.6)], 0.04, segs=4)
-        sphere(n + "_Ball", "house_yellow", (3.4, -1.6, 10.3), 0.42, sub=2)
+        tube(n + "_String", "white", [(3.5, -1.6, 12.2), (3.55, -1.6, 10.6)], 0.045, segs=4)   # (from inside the top platform)
+        sphere(n + "_Ball", "house_yellow", (3.55, -1.6, 10.25), 0.42, sub=2)
 
 
 def bird_house(F, x, y, look="sky_blue", roof="red", h=6.0):
@@ -163,20 +181,20 @@ def rabbit_hutch(F):
     with F_place(F):
         for sx in (-1, 1):
             for sy in (-1, 1):
-                box(n + "_Leg", "wood_deep", (sx * 4.6, sy * 2.1, 1.5), (0.6, 0.6, 2.9), bevel=0.06)
+                box(n + "_Leg", "wood_deep", (sx * 4.6, sy * 2.1, 1.45), (0.6, 0.6, 2.9), bevel=0.06)
         box(n + "_Floor", "wood_deep", (0, 0, 2.75), (10.2, 5.2, 0.3), bevel=0.06)
         box(n + "_Body", "wood_warm", (0, 0, 4.6), (10, 5, 3.4), bevel=0.12)
         box(n + "_Frame", "wood_deep", (-2.2, -2.56, 4.6), (4.8, 0.2, 2.8), bevel=0.05)
         box(n + "_Inside", "panel_black", (-2.2, -2.62, 4.6), (4.2, 0.06, 2.3))
         for k in range(9):
-            cyl(n + "_Wire", "iron_light", (-4.2 + k * 0.5, -2.7, 3.5), 0.03, 2.2, segs=4)
+            cyl(n + "_Wire", "iron_light", (-4.2 + k * 0.5, -2.62, 3.4), 0.035, 2.4, segs=4)
         for k in range(4):
-            tube(n + "_Wire", "iron_light", [(-4.3, -2.7, 3.6 + k * 0.6), (-0.1, -2.7, 3.6 + k * 0.6)], 0.03, segs=4)
+            tube(n + "_Wire", "iron_light", [(-4.5, -2.62, 3.6 + k * 0.6), (0.1, -2.62, 3.6 + k * 0.6)], 0.035, segs=4)
         box(n + "_Door", "wood_deep", (2.6, -2.56, 4.6), (3.4, 0.2, 2.6), bevel=0.06)
         for z in (3.8, 5.4):
-            box(n + "_Iron", "iron", (1.2, -2.7, z), (0.5, 0.06, 0.18))
+            box(n + "_Iron", "iron", (1.2, -2.68, z), (0.5, 0.08, 0.18))
         for sgn in (-1, 1):
-            box(n + "_Roof", "roof_green", (0, sgn * 1.45, 6.85), (10.6, 3.3, 0.3), rot=(-sgn * 25, 0, 0), bevel=0.08)
+            box(n + "_Roof", "roof_green", (0, sgn * 1.38, 6.82), (10.6, 3.2, 0.3), rot=(-sgn * 25, 0, 0), bevel=0.08)
         prism(n + "_Body", "wood_warm", [(-2.5, 0), (2.5, 0), (0, 1.2)], 10.0, c=(0, 0, 6.3), rot=(0, 0, 90))
         box(n + "_Ramp", "wood_warm", (3.2, -3.9, 1.4), (1.6, 3.4, 0.2), rot=(-48, 0, 0), bevel=0.05)
         for k in range(3):
@@ -192,11 +210,11 @@ def bunny_topiary(F, s=1.0):
         box(n + "_Planter", "brick" if "brick" in O.K.PAL else "red", (0, 0, 0.8), (5, 5, 1.6), bevel=0.15)
         box(n + "_Rim", "limestone", (0, 0, 1.68), (5.3, 5.3, 0.2), bevel=0.06)
         box(n + "_Soil", "soil", (0, 0, 1.65), (4.4, 4.4, 0.2))
-        blobs = [((0, 0.2, 3.9), 2.0), ((0, -0.4, 3.4), 1.6), ((0, -1.4, 6.6), 1.45)]
+        blobs = [((0, 0.2, 3.6), 2.0), ((0, -0.4, 3.1), 1.6), ((0, 0, 2.1), 1.4), ((0, -1.4, 6.3), 1.45)]
         for sx in (-1, 1):
             blobs += [((sx * 0.6, -1.4, 8.0 + k * 0.7), 0.42) for k in range(4)]
         leafy(n + "Shape", blobs, look="hedge", voxel=0.16, faces=900, lumpy=0.07, seed=4)
-        sphere(n + "_Tail", "fur_white", (0, 2.3, 3.9), 0.75, sub=2)
+        sphere(n + "_Tail", "fur_white", (0, 2.1, 3.6), 0.75, sub=2)
 
 
 def wood_bridge(F, L=16, w=6):
@@ -208,9 +226,11 @@ def wood_bridge(F, L=16, w=6):
             xe = min(x + 1.15, L / 2)
             xm = (x + xe) / 2
             slope = math.degrees(math.atan2(arch(xe) - arch(x), xe - x))
-            box(n + ("_Plank" if k % 2 else "_PlankDark"), "wood_warm" if k % 2 else "wood_deep", (xm, 0, arch(xm)), (xe - x - 0.05, w, 0.4),
+            box(n + ("_Plank" if k % 2 else "_PlankDark"), "wood_warm" if k % 2 else "wood_deep", (xm, 0, arch(xm)), (xe - x + 0.08, w, 0.4),
                 rot=(0, -slope, 0), bevel=0.05)
-            x, k = xe + 0.05, k + 1
+            x, k = xe, k + 1
+        for sx in (-1, 1):  # stone footings under both ends (the bridge sits on them)
+            box(n + "_Stone", "limestone_dark", (sx * (L / 2 + 0.3), 0, 0.55), (1.6, w + 0.6, 1.1), bevel=0.15)
         for sgn in (-1, 1):
             for j in range(5):
                 xx = -L / 2 + j * L / 4
@@ -247,32 +267,35 @@ def pet_shop(F, wall, roof, awning, label, extra=None):
             with at(sgn * 10, 2, 0.8, rz=90 * sgn):
                 B.window(n + "Win", 0, 2.0, 3.4, 4.0, arch=True)
         g = 12
-        for i in range(g):
+        for i in range(g):  # the awning: its back edge ON the wall (y -4.0), a scalloped front edge
             x0, x1 = -10 + 20 * i / g, -10 + 20 * (i + 1) / g
             lk, nm = (aw, n + "_Awning") if i % 2 == 0 else ("white", n + "_AwningW")
             if abs((x0 + x1) / 2) < 2.0:
                 continue
-            poly(nm, lk, [(x0, -4.1, 8.3), (x1, -4.1, 8.3), (x1, -6.8, 7.0), (x0, -6.8, 7.0)], thick=0.12)
+            poly(nm, lk, [(x0, -3.98, 8.3), (x1, -3.98, 8.3), (x1, -6.8, 7.0), (x0, -6.8, 7.0)], thick=0.12)
             xm = (x0 + x1) / 2
-            poly(nm, lk, [(xm + (x1 - x0) / 2 * math.cos(math.pi * (1 - j / 6)), -6.82, 7.0 - 0.5 * math.sin(math.pi * j / 6)) for j in range(7)], thick=0.1)
-        box(n + "_Sign", aw, (0, -4.45, 12.1), (13, 0.5, 2.6), bevel=0.15)
-        box(n + "_Gold", "gold", (0, -4.3, 12.1), (13.5, 0.4, 3.1), bevel=0.12)
-        text(label, "white", (0, -4.75, 12.1), min(1.2, 11.5 / (0.72 * len(label))), extrude=0.03)
+            poly(nm, lk, [(xm + (x1 - x0) / 2 * math.cos(math.pi * (1 - j / 6)), -6.75, 7.0 - 0.5 * math.sin(math.pi * j / 6)) for j in range(7)], thick=0.1)
+        for sx in (-9.6, -2.4, 2.4, 9.6):  # iron brackets from the wall to the awning's front edge
+            tube(n + "_Iron", "iron", [(sx, -4.0, 6.4), (sx, -5.6, 6.9), (sx, -6.7, 7.0)], 0.06, segs=5)
+        box(n + "_Gold", "gold", (0, -4.15, 12.1), (13.5, 0.4, 3.1), bevel=0.12)   # (flush on the gable wall, y -4.0)
+        box(n + "_Sign", aw, (0, -4.35, 12.1), (13, 0.3, 2.6), bevel=0.12)
+        text(label, "white", (0, -4.53, 12.1), min(1.2, 11.5 / (0.72 * len(label))), extrude=0.03)
         for x in (-8.6, 8.6):
             box(n + "_FlowerBox", "wood_deep", (x, -6.4, 1.3), (4, 1.4, 1.0), bevel=0.08)
             for j in range(4):
                 sphere(n + "_Leaf", "bush", (x - 1.5 + j, -6.4, 1.85), 0.42, sub=1, scale=(1, 1, 0.7))
                 O.flower(n + "_Flower", ("flower_pink", "flower_yel", "speed_blue" if "speed_blue" in O.K.PAL else "flower_white", "flower_purple")[j],
-                         n + "_FlowerMid", "flower_yel", O.pt((x - 1.5 + j, -6.55, 2.2)), Vector((0, -0.3, 1)).normalized(), r=0.28)
-        for k in range(4):
-            paw_print(n + "_Paw", "white", (-2 + (k % 2) * 4, -8.5 - k * 2.4, 0.81), rz=0)
+                         n + "_FlowerMid", "flower_yel", O.pt((x - 1.5 + j, -6.5, 2.07)), Vector((0, -0.3, 1)).normalized(), r=0.28)
+        for k in range(4):  # (on the paving, then on the path beyond it)
+            yk = -8.5 - k * 2.4
+            paw_print(n + "_Paw", "white", (-2 + (k % 2) * 4, yk, 0.8 if yk > -9.0 else 0.0), rz=0)
         if extra:
             extra(n)
 
 
 def barkery(F):
     def treats(n):
-        with at(0, 2, 16.3, s=2.2):
+        with at(0, 2, 15.5, s=2.2):  # (resting on the ridge)
             chew_bone(n, (0, 0, 0))
     pet_shop(F, "cream", "red", "red", "THE BARKERY", extra=treats)
     with F_place(F):

@@ -111,7 +111,7 @@ def stage2():
             x = lo + 1.0 + k * 0.9
             sphere(n + "_FlowerLeaf", "bush", (x, -1.0, 1.05), 0.45, sub=1, scale=(1, 1, 0.7))
             O.flower(n + "_Flower", ("flower_pink", "flower_yel", "flower_red")[k % 3], n + "_FlowerMid", "flower_yel",
-                     O.pt((x + r.uniform(-0.2, 0.2), -1.25, 1.42)), Vector((0, -0.35, 1)).normalized(), r=0.26)
+                     O.pt((x + r.uniform(-0.2, 0.2), -1.18, 1.3)), Vector((0, -0.35, 1)).normalized(), r=0.26)
         wall_lantern(n, 4.0 * s, 5.2, -0.5)
         accent_bricks(n + "_BrickAccent", "brick_dark", lo, hi, 6.8, 8.8, -0.5, r, 5)
         accent_bricks(n + "_BrickAccent", "brick_light", lo, hi, 6.8, 8.8, -0.5, r, 4)
@@ -271,7 +271,7 @@ def stage3():
             x = lo + 0.8 + k * (hi - lo - 1.6) / 15
             sphere(n + "_FlowerLeaf", "bush", (x, -1.0, 1.75), 0.4, sub=1, scale=(1, 1, 0.7))
             O.flower(n + "_Flower", ("flower_red", "flower_white", "flower_yel")[k % 3], n + "_FlowerMid", "flower_yel" if k % 3 != 2 else "flower_orange",
-                     O.pt((x, -1.2, 2.1)), Vector((0, -0.35, 1)).normalized(), r=0.24)
+                     O.pt((x, -1.15, 1.98)), Vector((0, -0.35, 1)).normalized(), r=0.24)
         # upper floor: brick returns at the corners
         a2, b2 = sorted((24 * s, 22.8 * s))
         fbox(n + "_Brick", "brick", a2, G, 0, b2, H, DEPTH)
@@ -306,7 +306,7 @@ def stage3():
         fbox("Top", "marble", -18.3, 3.2, 17.2, -8.7, 3.6, 20.3, bevel=0.06)
         fbox("Machine", "iron_light", -16.5, 3.6, 18.6, -14.5, 5.6, 19.8, bevel=0.15)
         fbox("Machine", "iron", -16.2, 4.0, 18.5, -14.8, 4.3, 18.6)
-        box("Glow", "lamp_glow", (-15.5, 18.5, 5.0), (0.8, 0.06, 0.4))
+        box("Glow", "lamp_glow", (-15.5, 18.58, 5.0), (0.8, 0.08, 0.4))
         for k, x in enumerate((-13, -12, -11)):
             lathe("Cup", "white", [(0.0, 3.6), (0.22, 3.6), (0.28, 4.05), (0.24, 4.05, True), (0.18, 3.7)], segs=10, c=(x, 18.0, 0))
         fbox("Menu", "panel_black", -17.5, 5.5, 20.3, -9.5, 8.0, 20.4, bevel=0.05)
@@ -333,7 +333,7 @@ def stage4():
     for s in (-1, 1):  # full-height fins
         a2, b2 = sorted((24.6 * s, 24 * s))
         fbox(n + "_Fin", "white", a2, -1.5, -1.6, b2 + (0.6 if s > 0 else -0.6) * 0, 4 * F + 1.8, 3, bevel=0.1)
-        with at(s * 24.6, 0, 0, rz=90 * s):
+        with at(s * 24.4, 0, 0, rz=90 * s):
             for y in (7, 14):
                 for f in range(4):
                     B.window(n + "Win", y * s, f * F + 2.0, 3.2, 5.0, arch=False, mullions=False, sill=False)
@@ -396,7 +396,9 @@ def stage5():
         for x in (-16, -12.5, -9.5):
             lathe("Stool", "iron", [(0.5, 0.0), (0.5, 0.1, True), (0.1, 0.2), (0.1, 2.0), (0.0, 2.0)], segs=10, c=(x, 15.5, 0))
             cyl("StoolSeat", "booth_orange" if "booth_orange" in O.K.PAL else "egg_orange", (x, 15.5, 2.0), 0.6, 0.25, segs=14)
-        fbox("Lamp", "lamp_glow", -14, 7, 17.5, -12, 7.4, 18.5)
+        tube("Cord", "iron", [(-13, 18.0, 2 * F - 0.45), (-13, 18.0, 13.0)], 0.05, segs=5)  # a pendant lamp from the atrium ceiling
+        lathe("Shade", "brass", [(0.0, 13.25), (0.2, 13.2), (1.1, 12.4), (1.2, 12.2, True), (0.0, 12.2)], segs=16, c=(-13, 18.0, 0))
+        fbox("Lamp", "lamp_glow", -13.8, 12.05, 17.2, -12.2, 12.2, 18.8)
     floor_plate(n, 2 * F)
     showcase(n, 2 * F + 0.45, 3 * F, 9)
     floor_plate(n, 3 * F)
@@ -405,7 +407,7 @@ def stage5():
         for x in (-16, 0, 16):
             sofa("Lounge", "navy_roof", x, 11.6, 3 * F + 0.6, w=10)
             fbox("Table", "wood_warm", x - 2, 3 * F + 0.6, 6.5, x + 2, 3 * F + 1.6, 8.5, bevel=0.15)
-        fbox("Glow", "lamp_glow", -22, 3 * F + 1, 19.5, 22, 4 * F - 1, 20.3)
+        fbox("Glow", "lamp_glow", -22, 3 * F + 1, 19.8, 22, 4 * F - 1, 20.45)
         fbox("Preview_Carpet", "carpet_red", -23, 3 * F + 0.45, 0.5, 23, 3 * F + 0.6, DEPTH - 1)
     floor_plate(n, 4 * F)
     # floors 5-6: a glass box stepped back 6, a planted terrace in front
@@ -482,7 +484,7 @@ def stage6():
     for i in range(9):
         x = -16 + i * 4
         prism(n + "_CrownSpike", "gold", [(x - 1.2, T1 + 5.2), (x + 1.2, T1 + 5.2), (x, T1 + 7.6)], 0.8, c=(0, 2.8, 0))
-        sphere(n + "_Gem", ("carpet_red", "speed_blue", "awning_green")[i % 3], (x, 2.3, T1 + 2.5), 0.55, sub=1)
+        sphere(n + "_Gem", ("carpet_red", "speed_blue", "awning_green")[i % 3], (x, 2.75, T1 + 2.5), 0.55, sub=1)
     fbox(n + "_CrownRail", "gold", -18, T1 + 5, 3, 18, T1 + 6, 3.4)
     fdisc(n + "_Helipad", "iron", 9, 10.5, T1 + 5, 6.8, 0.8, segs=32)
     lathe(n + "_HeliRing", "hazard" if "hazard" in O.K.PAL else "gold", [(5.4, T1 + 5.8), (5.8, T1 + 5.8), (5.8, T1 + 5.86), (5.4, T1 + 5.86)], segs=32)

@@ -364,8 +364,8 @@ def rock_portal(m, x, y, z, rot=0.0):
         cyl(n + "_Swirl", "portal_glow", (0, -0.25, 12.1), 2.4, 0.1, segs=24, rot=(90, 0, 0))
         for k in range(9):
             a = math.radians(-20 + 12 + k * 196 / 8)
-            for fy in (-2.05, 2.05):
-                box(n + "_Rune", "portal_glow", (11.4 * math.cos(a), fy, 12.6 + 11.4 * math.sin(a)), (0.9, 0.12, 0.9), rot=(0, -math.degrees(a), 0),
+            for fy in (-1.93, 1.93):
+                box(n + "_Rune", "portal_glow", (11.4 * math.cos(a), fy, 12.6 + 11.4 * math.sin(a)), (0.9, 0.16, 0.9), rot=(0, -math.degrees(a), 0),
                     bevel=0.08)
         for sgn in (-1, 1):
             for (lx, ly, rr, sq) in ((11.4, 0, 3.4, 0.9), (16.0, 1.0, 3.2, 0.7), (19.2, 3.2, 2.2, 0.6), (11.0, -3.6, 1.6, 0.7)):

@@ -66,9 +66,9 @@ def giant_briefcase(m, veg, x, y, z0, rot, col):
         zb, W, D, H = z0 + 2.4, 17.0, 6.0, 12.0
         box(n + "_Leather", "leather", (0, 0, zb + H / 2), (W, D, H), bevel=0.9, segs=3)
         box(n + "_Seam", "leather_dark", (0, 0, zb + H * 0.62), (W + 0.12, D + 0.12, 0.45), bevel=0.15)
-        for zz in (0.55, H * 0.62 + 0.7, H - 0.55):  # stitching
-            for k in range(14):
-                box(n + "_Stitch", "paper", (-W / 2 + 1.6 + k * (W - 3.2) / 13, -D / 2 - 0.02, zb + zz), (0.55, 0.08, 0.13))
+        for zz in (1.1, H * 0.62 + 0.7, H - 1.1):  # stitching (on the flat face, clear of the rounded edges)
+            for k in range(12):
+                box(n + "_Stitch", "paper", (-W / 2 + 2.0 + k * (W - 4.0) / 11, -D / 2 - 0.01, zb + zz), (0.55, 0.1, 0.13))
         for sx in (-1, 1):  # gold corners, clasps
             for sz in (0, 1):
                 box(n + "_Gold", "gold", (sx * (W / 2 - 0.85), 0, zb + 0.9 + sz * (H - 1.8)), (1.9, D + 0.3, 1.9), bevel=0.35, segs=2)
@@ -320,8 +320,8 @@ def escape_portal(m, veg, x, y, z, rot=0.0):
             cyl(n + "_Swirl", "portal_glow", (0, -0.25, 12.1), 2.4, 0.1, segs=24, rot=(90, 0, 0))
             for k in range(9):  # runes round the arch on both faces
                 a = math.radians(-20 + 12 + k * (220 - 24) / 8)
-                for fy in (-2.05, 2.05):
-                    box(n + "_Rune", "portal_glow", (11.4 * math.cos(a), fy, 12.6 + 11.4 * math.sin(a)), (0.9, 0.12, 0.9), rot=(0, -math.degrees(a), 0),
+                for fy in (-1.93, 1.93):
+                    box(n + "_Rune", "portal_glow", (11.4 * math.cos(a), fy, 12.6 + 11.4 * math.sin(a)), (0.9, 0.16, 0.9), rot=(0, -math.degrees(a), 0),
                         bevel=0.08)
             for sgn in (-1, 1):  # buttress legs
                 box(n + "_Leg", "limestone_dark", (sgn * 11.4, 0, 3.2), (5.6, 5.0, 6.4), bevel=0.4)

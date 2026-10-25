@@ -73,11 +73,9 @@ def pixel_tree(F, x, y, s=1.0, look="magenta", top="lilac"):
                 for k in range(-2, 3):
                     p = Vector((i * step, j * step, k * step))
                     d = Vector((p.x, p.y, p.z * 1.25)).length
-                    if R - step < d < R + 0.2:
-                        rbox(n + "_" + look.title().replace("_", ""), look, (p.x, p.y, 7.2 + p.z), (step * 0.96,) * 3, 0.22)
-        for k in range(3):  # stray glitch pixels floating off it
-            a = rr.uniform(0, TAU)
-            rbox(n + "_" + look.title().replace("_", ""), look, (math.cos(a) * 5.0, math.sin(a) * 5.0, 8.0 + rr.uniform(-1, 2)), (0.7, 0.7, 0.7), 0.12)
+                    if d < R + 0.2 and (d > R - step or (i == 0 and j == 0)):  # (the shell, plus a core column on the trunk)
+                        rbox(n + "_" + look.title().replace("_", ""), look, (p.x, p.y, 7.2 + p.z), (step * 1.03,) * 3, 0.22)
+        rbox(n + "_" + look.title().replace("_", ""), look, (0, 0, 5.6), (step * 1.03, step * 1.03, 1.2), 0.22)  # (joins the trunk)
 
 
 def upside_down_tree(F, x, y, s=1.0):
@@ -135,7 +133,7 @@ def big_screen(F, w=28, d=16, h=30):
         for x in (-w / 4, w / 4):
             lathe(n + "_Antenna", "iron", [(1.2, h + 2), (1.0, h + 4), (0.3, h + 8.5), (0.0, h + 9)], segs=8, c=(x, 0, 0))
             sphere(n + "_Red", "glow_red", (x, 0, h + 9.6), 0.8, sub=1)
-        with at(0, -d / 2 - 0.4, 0):
+        with at(0, -d / 2 - 0.25, 0):  # (the screen's frame sinks into the tower's front)
             rbox(n + "_Frame", "glow_magenta", (0, 0, 8 + (h - 10) / 2), (w - 4, 0.6, h - 10), 0.3)
             box(n + "_Field", "sky_blue", (0, -0.25, 9 + (h - 12) / 2), (w - 6, 0.5, h - 12), bevel=0.1)
             cz = 9 + (h - 12) / 2
@@ -190,13 +188,13 @@ def upside_down_house(F):
             rbox(n + "_Door", "awning_green" if "awning_green" in O.K.PAL else "violet", (0, -0.1, 4.0), (2.6, 0.3, 5.0), 0.15)
             sphere(n + "_Knob", "gold", (0.8, -0.35, 2.0), 0.2, sub=1)  # (the knob at the bottom: it's upside down)
         rbox(n + "_Floor", "wood_deep", (0, 0, 14.3), (15.6, 12.6, 0.6), 0.15)
-        rbox(n + "_Table", "wood_warm", (-4.5, 0, 15.8), (4, 2, 0.4), 0.1)
+        rbox(n + "_Table", "wood_warm", (-4.5, 0, 14.8), (4, 2, 0.4), 0.1)         # (upside down: its top on the "ceiling")
         for sx in (-1, 1):
             for sy in (-1, 1):
-                cyl(n + "_Table", "wood_deep", (-4.5 + sx * 1.6, sy * 0.7, 16.0), 0.18, 1.4, segs=6)
+                cyl(n + "_Table", "wood_deep", (-4.5 + sx * 1.6, sy * 0.7, 14.95), 0.18, 1.45, segs=6)
         with at(4.0, 2.0, 14.6):
-            rbox(n + "_Chair", "red", (0, 0, 0.4), (1.4, 1.4, 0.3), 0.08)
-            rbox(n + "_Chair", "red", (0, 0.6, 1.2), (1.4, 0.25, 1.6), 0.08)
+            rbox(n + "_Chair", "red", (0, 0, 0.15), (1.4, 1.4, 0.3), 0.08)
+            rbox(n + "_Chair", "red", (0, 0.58, 1.0), (1.4, 0.25, 1.6), 0.08)
         rbox(n + "_Chimney", "brick" if "brick" in O.K.PAL else "red", (4.0, 2.5, 2.0), (1.6, 1.6, 3.4), 0.1)
 
 

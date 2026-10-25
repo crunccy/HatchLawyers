@@ -64,7 +64,7 @@ def half_wall(n, y0, y1, planter=True, seed=0):
                 flowers_on(obs, n + "_Flower", "flower_pink", n + "_FlowerMid", "flower_yel", [(0, y, 3) for y in (-1.1, -0.3, 0.5, 1.2)], r=0.2)
         # shrubs outside the wall, on the plot's ground (1.5 below the floor)
         with at(s * 25.2, (y0 + y1) / 2, -1.5):
-            leafy(n + "_Shrub%d" % (s + seed), [((0, -2.2, 0.7), 0.95), ((0.2, -1.2, 0.8), 1.0), ((-0.1, 2.0, 0.65), 0.9), ((0, 2.9, 0.6), 0.75)],
+            leafy(n + "_Shrub%d" % (s + seed), [((0, -2.2, 0.5), 0.95), ((0.2, -1.2, 0.6), 1.0), ((-0.1, 2.0, 0.45), 0.9), ((0, 2.9, 0.4), 0.75)],
                   voxel=0.2, faces=520, lumpy=0.18, seed=seed + 7 + s)
 
 
@@ -148,11 +148,11 @@ def expansion_lock(n="ExpansionLock"):
                 box(n + ("_Hazard" if k % 2 == 0 else "_HazardBlack"), "hazard" if k % 2 == 0 else "panel_black", ((x + xe) / 2, 0.6, z),
                     (xe - x, 0.35, 0.5), bevel=0.04)
                 x, k = xe, k + 1
-    with at(0, 0.6, 0):
+    with at(0, 0.6, 0):  # the sign on two posts in the gap
+        for sx in (-2.0, 2.0):
+            box(n + "_BarrierPost", "wood_deep", (sx, 0.15, 1.9), (0.4, 0.4, 3.8), bevel=0.05)
         box(n + "_Sign", "hazard", (0, 0, 3.0), (5.0, 0.2, 1.6), bevel=0.1)
         text("COMING SOON", "panel_black", (0, -0.12, 3.0), 0.6, extrude=0.015)
-        for sx in (-1.8, 1.8):
-            tube(n + "_Iron", "iron", [(sx, 0, 3.8), (sx * 0.4, 0, 4.4)], 0.04, segs=4)
     for c in ((5.0, 1.8, 0), (-5.0, 1.8, 0), (11.5, 6.0, 0), (-11.0, 2.6, 0), (23.0, 1.6, 0)):
         cone(n, c)
     for (x, y, sz) in ((20.0, 4.3, 2.2), (17.6, 4.6, 1.8), (19.4, 4.4, 1.6), (-20.6, 5.0, 1.6), (-18.4, 5.4, 2.0), (-18.6, 5.5, 1.4), (15.6, 5.8, 1.4)):

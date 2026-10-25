@@ -291,7 +291,7 @@ def flower_bed():
 def hedge():
     """Clipped hedge 8 x 2.4 x 2.6 on a low wooden edging."""
     n = "Hedge"
-    blobs = [((x, y, z), 0.86) for x in [-3.4 + 0.85 * i for i in range(9)] for y in (-0.42, 0.42) for z in (0.95, 1.7)]
+    blobs = [((x, y, z), 0.86) for x in [-3.4 + 0.85 * i for i in range(9)] for y in (-0.42, 0.42) for z in (0.7, 1.6)]
     leafy(n + "_Hedge", blobs, look="hedge", voxel=0.28, faces=1100, lumpy=0.16, seed=9)
     for (x, y, sx, sy) in ((0, -1.42, 9.0, 0.26), (0, 1.42, 9.0, 0.26), (-4.37, 0, 0.26, 2.58), (4.37, 0, 0.26, 2.58)):
         box(n + "_Edge", "wood_deep", (x, y, 0.2), (sx, sy, 0.4), bevel=0.05)

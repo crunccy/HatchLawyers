@@ -81,7 +81,7 @@ def window(p, x, z, w, h, arch=True, frame="white", glass="glass_blue", sill="ma
                 sh_h = (h - w / 2 * 0.6) if arch else h
                 box(p + "_Shutter", shutters, (sx, -0.12, sh_h / 2), (w * 0.52, 0.18, sh_h), bevel=0.04)
                 for zz in [sh_h * (i + 1) / 7 for i in range(6)]:
-                    box(p + "_Shutter", shutters, (sx, -0.23, zz), (w * 0.44, 0.06, 0.1), rot=(20, 0, 0))
+                    box(p + "_Shutter", shutters, (sx, -0.22, zz), (w * 0.44, 0.08, 0.12), rot=(12, 0, 0))
 
 
 def door(p, x, z, w, h, frame="gold", leaf="wood_deep", panel="wood_warm", glass="glass_blue", handle="gold", depth=0.5):

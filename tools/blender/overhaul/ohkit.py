@@ -524,3 +524,140 @@ def stats(skip=("Preview", "Scene", "Old", "Studs")):
     n = sum(len(ob.data.polygons) for ob in bpy.data.objects if ob.type == "MESH" and ob.name.startswith("Studs"))
     if n:
         print("preview studs (StudTop surfaces in game):", n // 32, "studs")
+
+
+# ------------------------------------------------------------------ the attachment check (crnuch 2026-10-25: parts that float
+# off or poke through look wrong). Every model's meshes are split into their separate pieces (connected islands); a piece
+# is ATTACHED if it touches or enters another attached piece, starting from the ground; anything else is reported.
+def pieces(objs):
+    """[(object name, world verts, faces, bounds)] - one entry per connected island of each object."""
+    import bmesh
+    out = []
+    for ob in objs:
+        bm = bmesh.new()
+        bm.from_mesh(ob.data)
+        bm.transform(ob.matrix_world)
+        bm.faces.ensure_lookup_table()
+        seen = set()
+        for f in bm.faces:
+            if f.index in seen:
+                continue
+            stack, isl = [f], []
+            seen.add(f.index)
+            while stack:
+                g = stack.pop()
+                isl.append(g)
+                for e in g.edges:
+                    for h in e.link_faces:
+                        if h.index not in seen:
+                            seen.add(h.index)
+                            stack.append(h)
+            vids = sorted({v.index for g in isl for v in g.verts})
+            remap = {vi: k for k, vi in enumerate(vids)}
+            bm.verts.ensure_lookup_table()
+            verts = [bm.verts[vi].co.copy() for vi in vids]
+            faces = [[remap[v.index] for v in g.verts] for g in isl]
+            lo = Vector((min(v.x for v in verts), min(v.y for v in verts), min(v.z for v in verts)))
+            hi = Vector((max(v.x for v in verts), max(v.y for v in verts), max(v.z for v in verts)))
+            out.append((ob.name, verts, faces, (lo, hi)))
+        bm.free()
+    return out
+
+
+def check_attached(objs, ground=0.0, tol=0.06, label="", allow=(), grounds=()):
+    """Report every piece of objs that floats (touches nothing attached, not even the ground). allow = name prefixes that
+    are meant to float (floating eyes, bubbles ...). Returns the list of (object, centre, size)."""
+    from mathutils.bvhtree import BVHTree
+    ps = [p for p in pieces(objs) if not p[0].startswith(allow)] if allow else pieces(objs)
+    trees = [BVHTree.FromPolygons(v, f, epsilon=0.0) for _, v, f, _ in ps]
+    n = len(ps)
+    cache = {}
+
+    def samples(i):
+        if i not in cache:
+            vs, fs = ps[i][1], ps[i][2]
+            pts = list(vs)
+            for f in fs:
+                for k in range(1, len(f) - 1):
+                    a, b, c = vs[f[0]], vs[f[k]], vs[f[k + 1]]
+                    area = (b - a).cross(c - a).length / 2
+                    m = min(14, int(math.sqrt(area / 0.03)))
+                    for u in range(m + 1):
+                        for w in range(m + 1 - u):
+                            if m:
+                                pts.append(a + (b - a) * (u / m) + (c - a) * (w / m))
+            cache[i] = pts
+        return cache[i]
+
+    def near(i, j):
+        (lo1, hi1), (lo2, hi2) = ps[i][3], ps[j][3]
+        if any(lo1[k] > hi2[k] + tol or lo2[k] > hi1[k] + tol for k in range(3)):
+            return False
+        if trees[i].overlap(trees[j]):
+            return True
+        for a, b in ((i, j), (j, i)):  # corners AND points spread over the faces (flush faces touch away from corners)
+            for v in samples(a):
+                if trees[b].find_nearest(v, tol)[0] is not None:
+                    return True
+        for a, b in ((i, j), (j, i)):  # fully inside the other piece (a hidden join): a vertex inside it, by ray parity
+            v = ps[a][1][0]
+            cnt, o = 0, v.copy()
+            d = Vector((0.0123, 0.0217, 1.0)).normalized()
+            for _ in range(16):
+                hit = trees[b].ray_cast(o, d, 500.0)
+                if hit[0] is None:
+                    break
+                cnt += 1
+                o = hit[0] + d * 1e-4
+            if cnt % 2 == 1:
+                return True
+        return False
+    levels = tuple(grounds)
+    attached = [ps[i][3][0].z <= ground + tol or any(abs(ps[i][3][0].z - g) <= tol for g in levels) for i in range(n)]
+    frontier = [i for i in range(n) if attached[i]]
+    while frontier:
+        i = frontier.pop()
+        for j in range(n):
+            if not attached[j] and near(i, j):
+                attached[j] = True
+                frontier.append(j)
+    bad = []
+    for i in range(n):
+        if not attached[i]:
+            lo, hi = ps[i][3]
+            bad.append((ps[i][0], tuple(round(c, 2) for c in (lo + hi) / 2), tuple(round(c, 2) for c in hi - lo)))
+    print(f"[attach] {label}: {n} pieces, {len(bad)} floating")
+    for b in bad[:40]:
+        print("   FLOAT", b)
+    return bad
+
+
+def fuse(name, voxel=0.12, smooth_iters=2, faces=None):
+    """Melt everything built so far into mesh `name` into ONE solid (voxel remesh = a union of the shapes: no seams, no
+    pieces poking through each other), lightly smoothed - for characters / statues made of overlapping shapes. The
+    shapes must be closed (boxes, spheres, capped cylinders / tubes, prisms). Returns the new object."""
+    key = PREFIX[-1] + name
+    bm, look = BMS.pop(key)
+    me = bpy.data.meshes.new(key + "_src")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new(key, me)
+    bpy.context.scene.collection.objects.link(ob)
+    rm = ob.modifiers.new("Remesh", "REMESH")
+    rm.mode, rm.voxel_size = "VOXEL", voxel
+    if smooth_iters:
+        sm = ob.modifiers.new("Smooth", "SMOOTH")
+        sm.factor, sm.iterations = 0.5, smooth_iters
+    if faces:
+        dec = ob.modifiers.new("Decimate", "DECIMATE")
+        dec.ratio = 1.0
+    _apply(ob)
+    if faces and len(ob.data.polygons) > faces:
+        dec = ob.modifiers.new("Decimate", "DECIMATE")
+        dec.ratio = faces / len(ob.data.polygons)
+        _apply(ob)
+    ob.data.materials.clear()
+    ob.data.materials.append(mat(look))
+    for p in ob.data.polygons:
+        p.use_smooth = True
+    return ob

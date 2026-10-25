@@ -28,22 +28,22 @@ def scales(p, x, y, z, s=1.0):
     with at(x, y, z):
         lathe(p + "_Gold", "gold", [(1.2 * s, 0.0), (1.2 * s, 0.3 * s, True), (0.95 * s, 0.4 * s), (0.9 * s, 0.6 * s, True),
                                     (0.55 * s, 0.7 * s), (0.28 * s, 0.95 * s), (0.22 * s, 1.2 * s)], segs=20)
-        lathe(p + "_Gold", "gold", [(0.22 * s, 1.2 * s), (0.18 * s, 3.6 * s), (0.3 * s, 3.8 * s), (0.22 * s, 4.0 * s), (0.0, 4.05 * s)],
-              segs=12)
+        lathe(p + "_Gold", "gold", [(0.22 * s, 1.2 * s), (0.18 * s, 3.6 * s), (0.3 * s, 3.8 * s), (0.22 * s, 4.1 * s), (0.2 * s, 4.35 * s),
+                                    (0.0, 4.4 * s)], segs=12)  # (up into the ball and the beam)
         sphere(p + "_Gold", "gold", (0, 0, 4.55 * s), 0.42 * s, sub=2)
         tube(p + "_Gold", "gold", [(-2.3 * s, 0, 4.1 * s), (-1.2 * s, 0, 4.25 * s), (0, 0, 4.3 * s), (1.2 * s, 0, 4.25 * s), (2.3 * s, 0, 4.1 * s)],
              0.13 * s, segs=8)
         for sg in (-1, 1):
-            curl = [(sg * (2.3 + 0.22 * math.cos(math.radians(a))) * s, 0, (4.32 + 0.22 * math.sin(math.radians(a))) * s)
+            curl = [(sg * (2.25 + 0.2 * math.cos(math.radians(a))) * s, 0, (4.3 + 0.2 * math.sin(math.radians(a))) * s)
                     for a in range(-90, 200, 40)]
             tube(p + "_Gold", "gold", curl, 0.07 * s, segs=5)
             px = sg * 2.3 * s
             for k in range(3):
                 a = k / 3 * math.tau
-                tube(p + "_Gold", "gold", [(px, 0, 4.05 * s), (px + math.cos(a) * 0.75 * s, math.sin(a) * 0.75 * s, 2.45 * s)], 0.04 * s,
+                tube(p + "_Gold", "gold", [(px, 0, 4.12 * s), (px + math.cos(a) * 0.88 * s, math.sin(a) * 0.88 * s, 2.42 * s)], 0.045 * s,
                      segs=4)
             lathe(p + "_Gold", "gold", [(0.0, 2.05 * s), (0.5 * s, 2.1 * s), (0.85 * s, 2.32 * s), (0.95 * s, 2.45 * s, True),
-                                        (0.88 * s, 2.47 * s), (0.0, 2.38 * s)], segs=16, c=(px, 0, 0))
+                                        (0.88 * s, 2.47 * s), (0.0, 2.38 * s), (0.0, 2.05 * s)], segs=16, c=(px, 0, 0))
 
 
 def podium():
@@ -201,7 +201,7 @@ def wings():
             for x in (-3.2, 3.2):
                 B.window(N + "Win", x, 6.6, 2.6, 3.8, arch=False)
                 B.window(N + "Win", x, 11.8, 2.6, 4.0, arch=True)
-        B.flag(N, cx + s * 2.0, 4, 22.6, 4.5, look="flag_red", w=2.8, fh=1.7, seed=2 + s)
+        B.flag(N, cx, 4, 22.5, 4.5, look="flag_red", w=2.8, fh=1.7, seed=2 + s)  # (on the ridge)
 
 
 def grounds():

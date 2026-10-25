@@ -165,6 +165,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   `ohkit.py` (primitives, foliage, renders), `ohbuild.py` (windows, doors, columns, roofs), `props.py` (the prop kit).
   Big flat tops (podiums, decks, plazas) get PREVIEW studs only (`ohbuild.studtop`); in the game the Studs system lays
   them on StudTop surfaces. A MeshPart takes at most 20k triangles: `ohkit.stats()` warns.
+  **Nothing floats, nothing pokes through (crnuch 2026-10-25: "detached or overlapping a lot of pieces"):** every piece of
+  a model must touch the rest of it or the ground - run `tools/blender/overhaul/check_models.py` (0 floating pieces is
+  the bar; add new models to its list). Characters / statues made of overlapping shapes are FUSED per colour
+  (`ohkit.fuse`: a voxel union, no seams), with eyes / noses / collars half-sunk into the surface.
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
   far-distance fallback, not the finished look. Bright world colors (see `tools/firm_pieces.py` "v4" palette),
