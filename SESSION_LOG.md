@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · portrait framing follow-up; docs only · since 2026-10-25 10:08 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-25 — crnuch, local session: current portrait framing research (Codex)
+
+- Refreshed current main Lawyers/SkinLook evidence in docs/ACTIONABLE_VISUAL_UPGRADES.md. Added prominent correction: office-detail popup and footer actions already exist; older layout dimensions are historical.
+- Specified visible-geometry, actual-aspect and motion-envelope camera fitting, label exclusion, resize ownership and contact-sheet acceptance. Preserved cached masters, existing preview disconnects and v3 style.
+- Extended V23 with muted playback approximately 23:00–23:19 and paused visual review at 23:19. Horns/feet near frame edges inform clearance review; no clipping defect claimed for our game. No direct listening, unique reference count remains 31.
+- PR #11 remains open on codex/visual-polish-research. Cleared the prior completed shoreline claim and this research claim; cloud work untouched.
+- Documentation only. No implementation, Studio changes, tests or publishing.
 
 ## 2026-10-25 — crnuch, local session: shoreline visual follow-up (Codex)
 
