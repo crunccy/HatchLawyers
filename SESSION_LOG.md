@@ -34,8 +34,11 @@ Claim big work here before starting (who · what · since), push the claim, remo
   v2 hub's own cameras, so its committed renders are the before). Briefcase Bay re-dressed (`island_briefcase_bay.py`
   on the shared `island_kit.py`: sandbox runner + generic tree / bush / flower / hedge / topiary / lamp / bench /
   harbour swaps; new giant briefcase + gavel, fountain, lighthouse + cottage, ferry, sailboat, welcome arch, Return
-  Home arch; terrain / cliffs / water / skyline / spawn dock / markers stay v2). Next: Pet Park, Brainrot Zone, Food
-  Court, Ocean Shore, Space Base. Scripts + renders:
+  Home arch; terrain / cliffs / water / skyline / spawn dock / markers stay v2). Pet Park re-dressed
+  (`island_pet_park.py`: corgi + cat statues, dog houses, cat tower, rabbit hutch, bird houses, bunny topiaries,
+  bridge, Barkery + Paw Clinic, lawn toys, ducks + lilies; the v2 frame's Return Home rock portal is now
+  `island_kit.rock_portal` for every v2-frame island). island_kit also swaps a script's own functions (source-level
+  rename, file untouched) and captures the v2 frame's cameras. Next: Brainrot Zone, Food Court, Ocean Shore, Space Base. Scripts + renders:
   `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,

@@ -188,6 +188,24 @@ def lifebuoy_stand(m, x, y, z0=0.0, rot=0.0):
 
 
 # ------------------------------------------------------------------ the sandbox
+CAPTURED = []  # (camera name, the path it would have rendered, w, h) when run_island(capture_cams=True)
+
+
+def render_captured(out, prefix):
+    """Render the cameras a capture_cams run recorded, named <prefix><key>.jpg (key = the original file's suffix)."""
+    keys = []
+    sc = bpy.context.scene
+    for cam_name, path, w, h in CAPTURED:
+        key = os.path.basename(path).rsplit(".", 1)[0].split("_", 1)[1]
+        sc.camera = bpy.data.objects[cam_name]
+        sc.render.resolution_x, sc.render.resolution_y = 1920, 1080
+        sc.render.filepath = os.path.join(out, prefix + key + ".jpg")
+        bpy.ops.render.render(write_still=True)
+        print("rendered", sc.render.filepath)
+        keys.append(key)
+    return keys
+
+
 class _NoSave:
     def __init__(self, wm):
         self._wm = wm
@@ -200,8 +218,11 @@ class _NoSave:
         return {"FINISHED"}
 
 
-def run_island(script, out):
-    """Run an island's v2 build script unchanged: no .blend save, its JSON writes into out, no renders of its own."""
+def run_island(script, out, overrides=None, argv=("norender",), capture_cams=False):
+    """Run an island's v2 build script unchanged: no .blend save, its JSON writes into out, no renders of its own.
+    overrides = {name: fn} swaps functions the script defines itself (their defs are renamed in the source text it
+    runs; the file is untouched). capture_cams: let the script's own render loop run with K.render recording each
+    camera instead of rendering (the v2 frame builds its cameras inside finish())."""
     script_dir = os.path.dirname(script)
     real_open = builtins.open
 
@@ -213,15 +234,22 @@ def run_island(script, out):
     wm = bpy.ops.wm
     bpy.ops.wm = _NoSave(wm)
     old_argv, old_open = sys.argv, builtins.open
-    sys.argv = [script, "--", "norender"]
+    sys.argv = [script, "--", *argv]
     builtins.open = safe_open  # (helper modules write too)
     g = {"__name__": "__main__", "__file__": script, "open": safe_open}
+    g.update(overrides or {})
+    src = override_source(real_open(script).read(), list((overrides or {}).keys()))
+    real_render = K.render
+    CAPTURED.clear()
+    if capture_cams:
+        K.render = lambda scene, cam, path, w, h, hide=(): CAPTURED.append((cam.name, path, w, h))
     try:
-        exec(compile(real_open(script).read(), script, "exec"), g)
+        exec(compile(src, script, "exec"), g)
     finally:
         bpy.ops.wm = wm
         sys.argv = old_argv
         builtins.open = old_open
+        K.render = real_render
     for f in os.listdir(out):
         if f.startswith("sandbox_"):
             os.remove(os.path.join(out, f))
@@ -261,3 +289,134 @@ def before_after(out, prefix, keys, before_dir, before_prefix):
         for x, t in ((24, "TODAY"), (1024, "NEW")):
             d.text((x, 18), t, font=f, fill="white", stroke_width=5, stroke_fill="black")
         o.save(os.path.join(out, prefix + key + "_before_after.jpg"), quality=88)
+
+
+# ------------------------------------------------------------------ dock cargo + torches (the v2 frame's dock dressing)
+def barrel(m, x, y, z0=0.0, lying=False, yaw=0.0):
+    with place(m, x, y, z0, yaw):
+        if lying:
+            with at(0, 0, 1.0):
+                lathe("IslBarrel_Wood", "wood_warm", [(0.0, -1.2), (0.85, -1.2, True), (1.0, -0.6), (1.05, 0.0), (1.0, 0.6), (0.85, 1.2, True), (0.0, 1.2)],
+                      segs=16, rot=(0, 90, 0))
+                for xx in (-0.75, 0.75):
+                    cyl("IslBarrel_Hoop", "iron", (xx - 0.08, 0, 0), 1.04, 0.16, segs=16, rot=(0, 90, 0))
+        else:
+            lathe("IslBarrel_Wood", "wood_warm", [(0.0, 0.0), (0.85, 0.0, True), (1.0, 0.6), (1.05, 1.2), (1.0, 1.8), (0.85, 2.4, True), (0.0, 2.4)], segs=16)
+            for zz in (0.45, 1.95):
+                cyl("IslBarrel_Hoop", "iron", (0, 0, zz - 0.08), 1.04, 0.16, segs=16)
+
+
+def crate(m, x, y, z0=0.0, s=1.8, yaw=0.0):
+    with place(m, x, y, z0, yaw, s / 2.2):
+        PR.crate()
+
+
+def torch(m, x, y, z0=0.0, h=5.0):
+    """A dock lantern post (wood post, iron arm, a hanging lantern)."""
+    with place(m, x, y, z0):
+        box("IslTorch_Post", "wood_deep", (0, 0, h / 2), (0.4, 0.4, h), bevel=0.06)
+        tube("IslTorch_Iron", "iron", [(0, 0, h - 0.2), (0.6, 0, h + 0.1), (1.0, 0, h - 0.1)], 0.06, segs=5)
+        PR.lantern("IslTorch", (1.0, 0, h - 1.6), 0.55)
+
+
+# ------------------------------------------------------------------ the v2 islands' Return Home portal (Ocean Shore's design)
+def crystal(name, look, c, h, lean=(0, 0)):
+    """A six-sided crystal shard with a pointed tip."""
+    with at(*c):
+        cyl(name, look, (0, 0, 0), h * 0.16, h * 0.7, segs=6, rot=(lean[0], lean[1], 0), smooth=False, r_top=h * 0.18)
+        tip = O.xform((0, 0, 0), (lean[0], lean[1], 0)) @ Vector((0, 0, h * 0.7))
+        cyl(name, look, tuple(tip), h * 0.18, h * 0.3, segs=6, rot=(lean[0], lean[1], 0), smooth=False, r_top=0.0)
+
+
+def rock_portal(m, x, y, z, rot=0.0):
+    """The escape / Return Home portal (front = local -y): a natural rock arch on craggy legs, a purple vortex down to
+    the ground (a level walk-in), glowing runes, a moss cap with flowers, a purple crystal keystone, crystals + ferns at
+    its feet, a flat stone base with stepping stones leading in, two palms leaning over it."""
+    import ohbuild as B
+    n = "IslPortal"
+    with place(m, x, y, z, rot):
+        r = random.Random(77)
+        base = [(17 * (1 + 0.12 * math.sin(3 * a + 1.3)) * math.cos(a), 12 * (1 + 0.12 * math.sin(3 * a + 1.3)) * math.sin(a) + 1.5)
+                for a in [math.tau * i / 20 for i in range(20)]]
+        import bmesh
+        tmp = bmesh.new()
+        top = [tmp.verts.new((bx, by, 0.15)) for bx, by in base]
+        bot = [tmp.verts.new((bx * 1.03, by * 1.03, -0.5)) for bx, by in base]
+        tmp.faces.new(top)
+        tmp.faces.new(list(reversed(bot)))
+        for i in range(20):
+            j = (i + 1) % 20
+            tmp.faces.new((bot[i], bot[j], top[j], top[i]))
+        bmesh.ops.triangulate(tmp, faces=[f for f in tmp.faces if len(f.verts) > 4])
+        O._merge(n + "_Base", "rock_top", tmp, Matrix.Identity(4))
+        for k, ly in enumerate((-15.5, -20.5, -25.5, -30.5)):
+            O.rock(n + "_Step", n + "_StepTop", ((k % 2) * 1.6 - 0.8, ly, -0.25), 2.1, seed=k + 40, squash=0.2, top="rock_top")
+        W, Hs = 19.6, 22.4
+        B.ring(n + "_Arch", "rock", B.opening(W, Hs, True, n=16, grow=3.2), B.opening(W, Hs, True, n=16), -1.9, 1.9)
+        for k in range(12):  # craggy rocks along the arch so it reads as natural stone, not a ring
+            a = math.radians(-30 + k * 240 / 11)
+            O.rock(n + "_Arch", n + "_ArchTop", (11.4 * math.cos(a), r.uniform(-0.8, 0.8), 12.6 + 11.4 * math.sin(a)), r.uniform(2.0, 2.8),
+                   seed=k, squash=0.85, top="rock_top", top_at=0.75)
+        prism(n + "_Vortex", "vortex_glow", B.opening(W, Hs, True, n=16), 0.4)
+        for r0, a0, a1 in ((4.6, 20, 200), (6.8, 200, 380), (3.4, 110, 290)):
+            tube(n + "_Swirl", "portal_glow", [(r0 * math.cos(math.radians(a)), -0.3, 12.1 + r0 * math.sin(math.radians(a))) for a in range(a0, a1 + 1, 15)],
+                 0.18, segs=6)
+        cyl(n + "_Swirl", "portal_glow", (0, -0.25, 12.1), 2.4, 0.1, segs=24, rot=(90, 0, 0))
+        for k in range(9):
+            a = math.radians(-20 + 12 + k * 196 / 8)
+            for fy in (-2.05, 2.05):
+                box(n + "_Rune", "portal_glow", (11.4 * math.cos(a), fy, 12.6 + 11.4 * math.sin(a)), (0.9, 0.12, 0.9), rot=(0, -math.degrees(a), 0),
+                    bevel=0.08)
+        for sgn in (-1, 1):
+            for (lx, ly, rr, sq) in ((11.4, 0, 3.4, 0.9), (16.0, 1.0, 3.2, 0.7), (19.2, 3.2, 2.2, 0.6), (11.0, -3.6, 1.6, 0.7)):
+                O.rock(n + "_Leg", n + "_LegMoss", (sgn * lx, ly, 0.3), rr, seed=int(lx * 10) + sgn, squash=sq, top="moss", top_at=0.6)
+            for k in range(3):
+                crystal(n + "_Crystal", "crystal_purple", (sgn * (8.2 + k * 1.3), -4.2 - k * 0.8, 0.1), 2.6 + k * 0.9, lean=(12, sgn * 16))
+            fern(O_NONE, sgn * 18.5, 2.5, 0.1, 1.1)
+        obs = O.leafy(n + "Cap", [((math.cos(math.radians(a)) * 13.4, 0, 12.6 + math.sin(math.radians(a)) * 13.4), 1.5) for a in range(50, 131, 12)],
+                      look="moss", voxel=0.22, faces=520, lumpy=0.14, seed=31)
+        O.flowers_on(obs, n + "_Flower", "flower_pink", n + "_FlowerMid", "flower_yel",
+                     [(math.cos(math.radians(a)) * 13.0, r.uniform(-1.0, 1.0), 40) for a in range(58, 126, 9)], r=0.3)
+        for k, (lx, h, lean) in enumerate(((0, 5.0, 0), (-1.4, 3.6, -16), (1.4, 3.8, 16), (-0.6, 2.6, -8), (0.8, 2.8, 8))):
+            crystal(n + "_Crystal", "crystal_purple", (lx, 0.2 * (k % 2), 25.6), h, lean=(0, lean))
+        lathe(n + "_Glow", "portal_glow", [(9.5, 0.17), (11.5, 0.17), (11.5, 0.24), (9.5, 0.24)], segs=40)
+    for sgn in (-1, 1):
+        wx, wy, wz, rr_ = where(m, x, y, rot, z)
+        c, s_ = math.cos(math.radians(rr_)), math.sin(math.radians(rr_))
+        lx, ly = sgn * 13.5, 7.5
+        tree(O_NONE, wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1, 1.9, "palm")
+
+
+class _NoFrame:
+    pass
+
+
+O_NONE = _NoFrame()
+
+
+def override_source(src, names):
+    """Rename the script's own `def name(` so a global of that name (an overhaul adapter) is used instead."""
+    for nm in names:
+        assert ("def %s(" % nm) in src, nm
+        src = src.replace("def %s(" % nm, "def _v2_%s(" % nm)
+    return src
+
+
+def render_places(I, out, prefix, names, dist=36.0, height=12.0, look_up=6.0, lens=28):
+    """Close-up renders of named landmarks (the v2 frame's LAYOUT["places"]): a camera between the island's middle and the
+    landmark, looking at it (they face the middle)."""
+    places = {p["name"]: p["blender_xy"] for p in I.LAYOUT["places"]}
+    cx, cy = I.center
+    done = []
+    for nm in names:
+        if nm not in places:
+            print("[island] no place", nm)
+            continue
+        x, y = places[nm]
+        d = Vector((cx - x, cy - y, 0)).normalized()
+        side = Vector((-d.y, d.x, 0)) * dist * 0.35
+        cam = (x + d.x * dist + side.x, y + d.y * dist + side.y, I.Z + height)
+        key = "place_" + "".join(ch for ch in nm.lower() if ch.isalnum())
+        O.render(out, prefix + key, cam, (x, y, I.Z + look_up), lens=lens, res=(1600, 900))
+        done.append(key)
+    return done
