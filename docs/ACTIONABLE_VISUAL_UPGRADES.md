@@ -3,6 +3,8 @@
 
 **User's direction:** deliberate, specific improvements that apply to Hatch a Lawyer. This document turns the references into bounded tasks. Follow ART_REMODEL_BRIEF for map sequencing and check SESSION_LOG claims before implementation.
 
+> **Current-source correction, 2026-10-25:** UI-01/UI-02 describe an older LAWYERS layout. Current main already has office-detail pop-ups, a footer action row and different portrait sizes. Read the follow-up at the end before implementing; do not rebuild those existing features. Earlier layout dimensions/line numbers are historical.
+
 ## Evidence levels
 - **Observed source:** the 138-script Studio export captured on October 23 before the promo installation. The UI, SkinLook, HubMap and FirmBuilder files cited below were not changed by that installation. These are source observations, not screenshots proving a visual defect.
 - **New video samples:** V23/V24 below. Selected frames plus a short playback segment; neither video watched end-to-end. Muted, no direct audio audition.
@@ -148,3 +150,39 @@ Total library: **24 sampled video references**. No audio evaluation, full-watch 
 
 ## Claude's first review package
 Deliver: compact LAWYERS prototype with measured hitboxes; six-model portrait contact sheet; one runtime-wired destination blockout with its source path; before/after captures at matching cameras. Stop for art review before propagating across all panels and destinations. Record actual results against each acceptance criterion rather than reporting only “looks better.”
+
+## Current LAWYERS portrait follow-up — 2026-10-25
+
+### Evidence and coverage
+
+Fresh main snapshots:
+- [Lawyers.client.lua](https://github.com/crunccy/HatchLawyers/blob/main/studio/StarterPlayer/StarterPlayerScripts/Lawyers.client.lua), blob 6fb25627da4046df99186beb830fafb759d86d57.
+- [SkinLook.lua](https://github.com/crunccy/HatchLawyers/blob/main/studio/ReplicatedStorage/Shared/SkinLook.lua), blob 5eaf97ce0ddac33e48ab226003b8bb096597c74c.
+
+V23 [23:19](https://www.youtube.com/watch?v=51hHMXf8z5c&t=1399s): after muted playback from approximately 23:00 to 23:19, inspected the paused result. A separate white lower-right panel shows the full avatar, with horns close to its top and feet close to its bottom; substantial blank space remains beside the body. The world avatar stays separate. This extends the same reference, not the unique count (library remains 31). No direct listening or end-to-end viewing. Captions about script completion are not evidence of our game's behavior. Transfer the need to judge the identifying accessory and body together; do not copy the white panel or infer a clipping bug from the screenshot.
+
+### Corrections to earlier implementation advice
+
+The current LAWYERS screen already uses a two-tab layout and a 330×448 office-detail pop-up. Its portrait is 310×130; office cards pass 194/84, bench cards 114/84 and the picked lawyer 288/126 to lawyerViewport. The old 268/116 selected-preview figure is obsolete. UPGRADE ALL OFFICES already sits in a footer action row; do not implement the earlier request to move it there again.
+
+The 920×600 base remains, but fit now includes a 186-wide side rail in its width denominator. Recompute compact-layout measurements from this source and actual final AbsoluteSize; older miniature-control examples are not current measurements. Retain the new detail workflow, tap layer above office portraits, v3 purple styling and Gotham typography.
+
+### UI-02A — fit the full animated silhouette without making every model tiny
+
+**Source:** lawyerViewport fits a rotated bounding box once, including height/width/aspect and half-depth. It is not height-only. The separate SkinLook.showInViewport remains height-based. The selected detail then applies ±0.5-radian sway plus upgrade spin/hop after the fit. The helper receives caller-supplied aspect constants; it does not derive them from the final viewport. Current clipping has not been demonstrated.
+
+**Exact proposed change:** introduce one shared portrait-framing helper, initially used only by lawyerViewport and SkinLook.showInViewport. Preserve their clone/dress/cache responsibilities. Take actual viewport dimensions after layout, visible geometry bounds, FOV and a per-use motion policy. For static cards, fit the posed silhouette with consistent feet/face alignment. For detail, fit the existing motion envelope or reduce the spin/hop; do not automatically shrink every card to the largest animation envelope in the catalog.
+
+Proposed fitting procedure for Claude:
+1. Dress/apply mutation before computing bounds. Lawyers already removes its StandIn and caches a plain master; preserve both behaviors.
+2. Transform the visible part bounding-box corners into the intended camera orientation. Ignore invisible helper geometry deliberately, not all parts with any transparency.
+3. Fit those points against both horizontal and vertical frustum limits, accounting for depth and the chosen focus point. The existing 0.96 multiplier is not proof of a fixed clipping percentage; avoid simplistic claims.
+4. For moving detail, include extreme sway and the upgrade motion's spatial envelope. A finite pose contact sheet is a review aid, not proof that every intermediate pose fits.
+5. Start with 8–12% edge clearance as an art proposal, then tune. Reserve the office tag and mutation label region too; fitting only within the rectangle can still place horns behind text.
+6. Refit when actual aspect changes or geometry changes. Skip zero-sized frames until layout is ready. Reuse the clone; do not clone on each resize or fit every frame.
+
+**Lifecycle:** closeDetails already disconnects previewConn and changing preview disconnects the old connection. Preserve this. Any new size-change connection must be owned and removed with its viewport. Do not add a second animation loop or a WorldModel/Humanoid conversion for these custom cached rigs.
+
+**Acceptance deliverable:** a contact sheet covering small ordinary, wide accessory and tall rare lawyers, plus mutation variants, in office/bench/picked/detail frames. At rest and upgrade extremes, face, feet and identifying prop remain inside the intended clear area and outside label overlays. Resize between desktop and compact landscape, close/reopen, and change selection during an upgrade. Record final frame sizes and connection ownership; keep server outcomes, inventory selection, sell/mutation semantics and model assets unchanged.
+
+Implementation belongs in src working copies after a fresh Studio export/merge review; studio/ remains a read-only snapshot. No tests, Studio edits or performance measurements were run for this follow-up.
