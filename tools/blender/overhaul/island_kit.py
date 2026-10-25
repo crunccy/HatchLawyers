@@ -328,6 +328,10 @@ def crystal(name, look, c, h, lean=(0, 0)):
         cyl(name, look, tuple(tip), h * 0.18, h * 0.3, segs=6, rot=(lean[0], lean[1], 0), smooth=False, r_top=0.0)
 
 
+# the Return Home portal's dressing, per island (Space Base: moon rock, alien moss, alien plants instead of palms)
+PORTAL = {"rock": "rock", "top": "rock_top", "moss": "moss", "flowers": ("flower_pink", "flower_yel"), "fern": True, "side": None}
+
+
 def rock_portal(m, x, y, z, rot=0.0):
     """The escape / Return Home portal (front = local -y): a natural rock arch on craggy legs, a purple vortex down to
     the ground (a level walk-in), glowing runes, a moss cap with flowers, a purple crystal keystone, crystals + ferns at
@@ -348,15 +352,15 @@ def rock_portal(m, x, y, z, rot=0.0):
             j = (i + 1) % 20
             tmp.faces.new((bot[i], bot[j], top[j], top[i]))
         bmesh.ops.triangulate(tmp, faces=[f for f in tmp.faces if len(f.verts) > 4])
-        O._merge(n + "_Base", "rock_top", tmp, Matrix.Identity(4))
+        O._merge(n + "_Base", PORTAL["top"], tmp, Matrix.Identity(4))
         for k, ly in enumerate((-15.5, -20.5, -25.5, -30.5)):
-            O.rock(n + "_Step", n + "_StepTop", ((k % 2) * 1.6 - 0.8, ly, -0.25), 2.1, seed=k + 40, squash=0.2, top="rock_top")
+            O.rock(n + "_Step", n + "_StepTop", ((k % 2) * 1.6 - 0.8, ly, -0.25), 2.1, seed=k + 40, squash=0.2, look=PORTAL["rock"], top=PORTAL["top"])
         W, Hs = 19.6, 22.4
-        B.ring(n + "_Arch", "rock", B.opening(W, Hs, True, n=16, grow=3.2), B.opening(W, Hs, True, n=16), -1.9, 1.9)
+        B.ring(n + "_Arch", PORTAL["rock"], B.opening(W, Hs, True, n=16, grow=3.2), B.opening(W, Hs, True, n=16), -1.9, 1.9)
         for k in range(12):  # craggy rocks along the arch so it reads as natural stone, not a ring
             a = math.radians(-30 + k * 240 / 11)
             O.rock(n + "_Arch", n + "_ArchTop", (11.4 * math.cos(a), r.uniform(-0.8, 0.8), 12.6 + 11.4 * math.sin(a)), r.uniform(2.0, 2.8),
-                   seed=k, squash=0.85, top="rock_top", top_at=0.75)
+                   seed=k, squash=0.85, look=PORTAL["rock"], top=PORTAL["top"], top_at=0.75)
         prism(n + "_Vortex", "vortex_glow", B.opening(W, Hs, True, n=16), 0.4)
         for r0, a0, a1 in ((4.6, 20, 200), (6.8, 200, 380), (3.4, 110, 290)):
             tube(n + "_Swirl", "portal_glow", [(r0 * math.cos(math.radians(a)), -0.3, 12.1 + r0 * math.sin(math.radians(a))) for a in range(a0, a1 + 1, 15)],
@@ -369,14 +373,17 @@ def rock_portal(m, x, y, z, rot=0.0):
                     bevel=0.08)
         for sgn in (-1, 1):
             for (lx, ly, rr, sq) in ((11.4, 0, 3.4, 0.9), (16.0, 1.0, 3.2, 0.7), (19.2, 3.2, 2.2, 0.6), (11.0, -3.6, 1.6, 0.7)):
-                O.rock(n + "_Leg", n + "_LegMoss", (sgn * lx, ly, 0.3), rr, seed=int(lx * 10) + sgn, squash=sq, top="moss", top_at=0.6)
+                O.rock(n + "_Leg", n + "_LegMoss", (sgn * lx, ly, 0.3), rr, seed=int(lx * 10) + sgn, squash=sq, look=PORTAL["rock"], top=PORTAL["moss"],
+                       top_at=0.6)
             for k in range(3):
                 crystal(n + "_Crystal", "crystal_purple", (sgn * (8.2 + k * 1.3), -4.2 - k * 0.8, 0.1), 2.6 + k * 0.9, lean=(12, sgn * 16))
-            fern(O_NONE, sgn * 18.5, 2.5, 0.1, 1.1)
+            if PORTAL["fern"]:
+                fern(O_NONE, sgn * 18.5, 2.5, 0.1, 1.1)
         obs = O.leafy(n + "Cap", [((math.cos(math.radians(a)) * 13.4, 0, 12.6 + math.sin(math.radians(a)) * 13.4), 1.5) for a in range(50, 131, 12)],
-                      look="moss", voxel=0.22, faces=520, lumpy=0.14, seed=31)
-        O.flowers_on(obs, n + "_Flower", "flower_pink", n + "_FlowerMid", "flower_yel",
-                     [(math.cos(math.radians(a)) * 13.0, r.uniform(-1.0, 1.0), 40) for a in range(58, 126, 9)], r=0.3)
+                      look=PORTAL["moss"], voxel=0.22, faces=520, lumpy=0.14, seed=31)
+        if PORTAL["flowers"]:
+            O.flowers_on(obs, n + "_Flower", PORTAL["flowers"][0], n + "_FlowerMid", PORTAL["flowers"][1],
+                         [(math.cos(math.radians(a)) * 13.0, r.uniform(-1.0, 1.0), 40) for a in range(58, 126, 9)], r=0.3)
         for k, (lx, h, lean) in enumerate(((0, 5.0, 0), (-1.4, 3.6, -16), (1.4, 3.8, 16), (-0.6, 2.6, -8), (0.8, 2.8, 8))):
             crystal(n + "_Crystal", "crystal_purple", (lx, 0.2 * (k % 2), 25.6), h, lean=(0, lean))
         lathe(n + "_Glow", "portal_glow", [(9.5, 0.17), (11.5, 0.17), (11.5, 0.24), (9.5, 0.24)], segs=40)
@@ -384,7 +391,11 @@ def rock_portal(m, x, y, z, rot=0.0):
         wx, wy, wz, rr_ = where(m, x, y, rot, z)
         c, s_ = math.cos(math.radians(rr_)), math.sin(math.radians(rr_))
         lx, ly = sgn * 13.5, 7.5
-        tree(O_NONE, wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1, 1.9, "palm")
+        if PORTAL["side"]:
+            with at(wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1):
+                PORTAL["side"](sgn)
+        else:
+            tree(O_NONE, wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1, 1.9, "palm")
 
 
 class _NoFrame:
@@ -404,11 +415,13 @@ def override_source(src, names):
 
 def render_places(I, out, prefix, names, dist=36.0, height=12.0, look_up=6.0, lens=28):
     """Close-up renders of named landmarks (the v2 frame's LAYOUT["places"]): a camera between the island's middle and the
-    landmark, looking at it (they face the middle)."""
+    landmark, looking at it (they face the middle). A name can be (name, dist, height, look_up) for a tall landmark."""
     places = {p["name"]: p["blender_xy"] for p in I.LAYOUT["places"]}
     cx, cy = I.center
     done = []
+    d0, h0, u0 = dist, height, look_up
     for nm in names:
+        nm, dist, height, look_up = nm if isinstance(nm, tuple) else (nm, d0, h0, u0)
         if nm not in places:
             print("[island] no place", nm)
             continue

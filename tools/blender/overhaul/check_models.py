@@ -19,6 +19,15 @@ class _Beam:
         pass
 
 
+def _space_portal(SB):  # (the Return Home portal in Space Base's dressing)
+    saved = dict(IK.PORTAL)
+    SB.patch()
+    try:
+        IK.rock_portal(N, 0, 0, 0.0, 0)
+    finally:
+        IK.PORTAL.update(saved)
+
+
 def models():
     import props as PR, hub_license as HL, hub_services as HS, hub_gameplay as HG, hub_minigames as HM, firm_stages as FS, firm_hall as FH
     import island_hub as IH, island_briefcase_bay as BB, island_pet_park as PP, island_brainrot as BR
@@ -74,6 +83,7 @@ def models():
                                                                 ("crystal_cluster", (N, 0, 0)), ("moon_rocks", (N, 0, 0)), ("rocket", (N,)),
                                                                 ("observatory", (N,)), ("habitat_domes", (N,)), ("robot_factory", (N,)),
                                                                 ("solar_farm", (N,)), ("sat_dish", (N,)), ("fuel_depot", (N,)), ("ufo", (N,)))]
+        out.append(("space", "portal", _space_portal, (SB,)))
     except Exception as e:
         print("[check] space base skipped:", e)
     return out
