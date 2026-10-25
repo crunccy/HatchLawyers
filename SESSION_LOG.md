@@ -11,10 +11,16 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · UI motion hierarchy research and shared Skin lifecycle audit; docs only · since 2026-10-24 19:55 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: UI motion lifecycle research (Codex)
+
+- Added docs/UI_MOTION_LIFECYCLE.md from fresh main Skin/Rewards/UI_STYLE_V3. Extended V17 at 0:18, 6:54 and 6:59; unique video count remains 30. Muted sampled review, no audio listening.
+- Source-backed findings: ready tile scale updates at four Hz; claimed picture retains breathing registration; shared breathe/spin already skip disabled ScreenGuis, while glint/sparkle use separate task loops with weaker visibility checks.
+- Proposed stable calendar labels, cancellable picture motion, consistent owner visibility/cancellation and optional quiet presentation. Explicit compatibility boundaries and Studio acceptance checks; no measured performance defect claimed.
+- Documentation only, no game changes, Studio installation, tests or publication. Research claim released.
 
 ## 2026-10-24 — crnuch, local session: reusable decor cluster research (Codex)
 
