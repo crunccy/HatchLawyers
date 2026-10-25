@@ -12,6 +12,8 @@ Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/bl
 
 ## Contents
 
+- [SHORELINE_SCENIC_ANCHORS.md](SHORELINE_SCENIC_ANCHORS.md): reuse existing shoreline assets, compose one landing, bind scenic motion/sound to runtime anchors and clean up streamed effects; source audit reusing earlier V11 coverage, no new viewing.
+
 - [SHOP_OFFER_CLARITY.md](SHOP_OFFER_CLARITY.md): live-price/value-tag consistency, explicit conditional-free claim chain, compact purchase targets and removal of empty-section shortcuts; extended V30 samples.
 
 - [HOME_ROUTE_PRESENTATION.md](HOME_ROUTE_PRESENTATION.md): existing home/tutorial cue audit, stable incubator targeting, runtime route review and explicit filming visibility; extended V27 coverage.
