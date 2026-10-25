@@ -564,6 +564,111 @@ def pieces(objs):
     return out
 
 
+def check_zfight(objs, tol=0.02, min_area=0.02, label="", ground=0.0):
+    """Report z-fighting: faces of two DIFFERENT colours lying in the same plane (within tol), facing the same way and
+    overlapping by more than min_area square studs - in Roblox (single-sided MeshParts) those flicker. Returns
+    [(mesh a, mesh b, centre, overlap area)], one per pair of meshes (the biggest overlap)."""
+    tris = []  # (look, name, normal, d, 2D axes, pts2, centre)
+    for ob in objs:
+        look = ob.data.materials[0].name if ob.data.materials else ob.name
+        me = ob.data
+        me.calc_loop_triangles()
+        mw = ob.matrix_world
+        for t in me.loop_triangles:
+            a, b, c = (mw @ me.vertices[i].co for i in t.vertices)
+            n = (b - a).cross(c - a)
+            if n.length < 1e-9:
+                continue
+            n.normalize()
+            if n.z < -0.9 and max(a.z, b.z, c.z) <= ground + 0.05:  # (undersides on the ground: never seen)
+                continue
+            tris.append((look, ob.name, n, n.dot(a), (a, b, c)))
+    buckets = {}
+    for k, (look, nm, n, d, pts) in enumerate(tris):
+        key = (round(n.x * 100), round(n.y * 100), round(n.z * 100), round(d / tol))
+        buckets.setdefault(key, []).append(k)
+
+    def clip(poly, a, b):  # keep the part of poly left of a->b (2D)
+        out = []
+        for i in range(len(poly)):
+            p, q = poly[i], poly[(i + 1) % len(poly)]
+            sp = (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0])
+            sq = (b[0] - a[0]) * (q[1] - a[1]) - (b[1] - a[1]) * (q[0] - a[0])
+            if sp >= 0:
+                out.append(p)
+            if (sp >= 0) != (sq >= 0):
+                t = sp / (sp - sq)
+                out.append((p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t))
+        return out
+
+    def area(poly):
+        return abs(sum(poly[i][0] * poly[(i + 1) % len(poly)][1] - poly[(i + 1) % len(poly)][0] * poly[i][1] for i in range(len(poly)))) / 2
+
+    def ccw(poly):
+        sa = sum(poly[i][0] * poly[(i + 1) % len(poly)][1] - poly[(i + 1) % len(poly)][0] * poly[i][1] for i in range(len(poly)))
+        return poly if sa > 0 else list(reversed(poly))
+
+    from mathutils.bvhtree import BVHTree
+    solids = []
+    for ob in objs:
+        mw = ob.matrix_world
+        solids.append(BVHTree.FromPolygons([mw @ v.co for v in ob.data.vertices], [list(pg.vertices) for pg in ob.data.polygons], epsilon=0.0))
+    ray = Vector((0.0123, 0.0217, 1.0)).normalized()
+
+    def covered(pt):  # inside some solid (ray parity), so the face there can't be seen
+        for t in solids:
+            cnt, o = 0, pt.copy()
+            for _ in range(24):
+                hit = t.ray_cast(o, ray, 1000.0)
+                if hit[0] is None:
+                    break
+                cnt += 1
+                o = hit[0] + ray * 1e-4
+            if cnt % 2 == 1:
+                return True
+        return False
+
+    best = {}
+    for key, ids in buckets.items():
+        near = list(ids)
+        for dd in (-1, 1):
+            near += buckets.get((key[0], key[1], key[2], key[3] + dd), [])
+        for i in ids:
+            li, ni, nn, di, pi = tris[i]
+            u = nn.orthogonal().normalized()
+            v = nn.cross(u)
+            P = ccw([(p.dot(u), p.dot(v)) for p in pi])
+            for j in near:
+                if j <= i:
+                    continue
+                lj, nj, mj, dj, pj = tris[j]
+                if lj == li or nn.dot(mj) < 0.999 or abs(di - dj) > tol:
+                    continue
+                Q = ccw([(p.dot(u), p.dot(v)) for p in pj])
+                poly = P
+                for k in range(3):
+                    if not poly:
+                        break
+                    poly = clip(poly, Q[k], Q[(k + 1) % 3])
+                if len(poly) < 3:
+                    continue
+                ar = area(poly)
+                if ar < 1e-4:
+                    continue
+                cx, cy = sum(p[0] for p in poly) / len(poly), sum(p[1] for p in poly) / len(poly)
+                c = u * cx + v * cy + nn * di
+                if covered(c + nn * 0.05):  # (hidden inside other geometry)
+                    continue
+                pair = tuple(sorted((ni, nj)))
+                tot, _, cc = best.get(pair, (0.0, 0.0, c))
+                best[pair] = (tot + ar, max(_, ar), cc)
+    bad = [(a, b, tuple(round(x, 2) for x in c), round(tot, 3)) for (a, b), (tot, mx, c) in best.items() if tot >= min_area]
+    print(f"[zfight] {label}: {len(objs)} meshes, {len(bad)} z-fighting pairs")
+    for b in bad[:12]:
+        print("   ", b)
+    return bad
+
+
 def check_attached(objs, ground=0.0, tol=0.06, label="", allow=(), grounds=()):
     """Report every piece of objs that floats (touches nothing attached, not even the ground). allow = name prefixes that
     are meant to float (floating eyes, bubbles ...). Returns the list of (object, centre, size)."""

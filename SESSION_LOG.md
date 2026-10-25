@@ -55,7 +55,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   there, no palms). ALL SIX ISLANDS + the hub island are re-dressed and pass the attachment check; hub / Bay / Pet
   Park / Brainrot re-rendered after the fixes. Next: crnuch's review, then the characters / eggs / bosses stage, then
   export + crnuch's upload + install. Scripts + renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the
-  place yet (meshes need crnuch's upload).
+  place yet (meshes need crnuch's upload). **Visual audit 2026-10-25: docs/VISUAL_AUDIT_2026-10-25.md** (ranked
+  findings + fix order; 124 z-fighting spots open, the plaza-centre decision M4 blocks the hub install).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -100,6 +101,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   small 3-way-merged edits to Main, PlotService, Zones.client, Travel.client. Don't wire the hub meanwhile.
 
 ## Open items
+- [ ] **Hub wiring (mr.robe's claim), from the visual audit 2026-10-25:** the Carry + Speed counter markers are 5.7
+      studs apart at the Upgrades door, so their info panels overlap (SHOES unreadable); the three Arcade booth
+      markers turn the booths sideways, so the plaza sees their backs. Captures + fixes: docs/VISUAL_AUDIT_2026-10-25.md
+      M2 / M3. Also M4 for both users: at runtime the Travel portal takes the plaza centre and the fountain is parked.
 - [ ] **Mutation Machine v3 at phone size** (2026-10-22): the menu (Skin.window fit) and the sequence (1280x720 canvas,
       scale 0.45-1.4) were only seen at 1286x758 and 1711x818 windows; check a phone in the Device emulator (pods, the
       picker grid, the waiting cover, the title card). (Others watching: **mr.robe's call 2026-10-22 - not now**, the
@@ -279,6 +284,14 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-25 — crnuch, local session: visual audit of the overhaul models
+- docs/VISUAL_AUDIT_2026-10-25.md: ranked findings (must fix / polish / optional) with evidence level, owner, smallest
+  fix and acceptance each, plus the fix order. Evidence in `art/audit/` (Studio Edit + Play captures of the wired hub,
+  four-view review renders, the z-fight report). No fixes applied yet; no Studio edits (one local playtest only).
+- New tools: `check_models.py -- zfight` (`ohkit.check_zfight`: coplanar faces of two colours, same facing, visible)
+  and `audit_views.py` (four eye-height views of every overhaul model). check_models' main now only runs as a script.
+- Not covered: characters, animation, effects, UI previews, phone, the six islands in Play (crnuch: new models first).
 
 ## 2026-10-25 — crnuch, local session: map model overhaul, Blender stages 1-5 (benchmark → props → hub → firms → islands)
 - Every map model remodelled in Blender as smooth meshes, one mesh per colour, low standard studs only on broad tops

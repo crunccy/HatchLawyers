@@ -1,13 +1,15 @@
 # tools/blender/overhaul/check_models.py - builds every MAP MODEL OVERHAUL model on its own and runs ohkit.check_attached
 # on it (crnuch 2026-10-25: "detached or overlapping" parts look wrong): every separate piece of a model must touch the
 # rest of it (or the ground); a floating piece is listed with its mesh name, centre and size.
-#   Blender -b --factory-startup --python tools/blender/overhaul/check_models.py -- [<group> ...]
+#   Blender -b --factory-startup --python tools/blender/overhaul/check_models.py -- [<group> ...] [zfight]
+# zfight: report coplanar faces of two colours (they flicker in Roblox) instead of floating pieces.
 # groups: props hub gameplay minigames firms hall bay pet rot food ocean space kit (default: all)
 import bpy, os, sys, math
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-WANT = set(a for a in argv if not a.startswith("-")) or None
+ZF = "zfight" in argv  # (check z-fighting instead of floating pieces)
+WANT = set(a for a in argv if not a.startswith("-") and a != "zfight") or None
 sys.argv = [sys.argv[0], "--", os.path.join(HERE, "renders")]  # (the imported scripts read an out dir from argv)
 import ohkit as O
 import island_kit as IK
@@ -107,6 +109,12 @@ def main():
                 if bpy.data.objects[n].type == "MESH" and not n.startswith(("Preview", "Studs"))]
         if not objs:
             continue
+        if ZF:  # (z-fighting instead: coplanar faces of two colours)
+            for b in O.check_zfight(objs, label=f"{group}.{name}"):
+                report.append(f"{group}.{name}: {b[0]} / {b[1]} at {b[2]} overlap {b[3]}")
+            for ob in objs:
+                bpy.data.objects.remove(ob)
+            continue
         floors = (0.0,) if group in ("firms", "hall") else ()  # (a firm stands on FirmBuilder's floor at y 0)
         bad = O.check_attached(objs, ground=0.0, label=f"{group}.{name}", grounds=floors,
                                allow=tuple(a for a in ("Incubator_Halo", "CounterLicense_Icon", "CounterCarry_Icon", "CounterSpeed_Icon",
@@ -118,7 +126,8 @@ def main():
     path = os.path.join(os.environ.get("TMPDIR", "/tmp"), "attach_report.txt")
     with open(path, "w") as fh:
         fh.write("\n".join(report))
-    print(f"[check] {len(report)} floating pieces; report: {path}")
+    print(f"[check] {len(report)} {'z-fighting pairs' if ZF else 'floating pieces'}; report: {path}")
 
 
-main()
+if __name__ == "__main__":
+    main()
