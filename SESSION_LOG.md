@@ -16,6 +16,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
+## 2026-10-25 — crnuch, local session: shoreline visual follow-up (Codex)
+
+- Browser access recovered. Extended V11 with muted samples at 6:22/6:42 (rock corridor/route silhouette) and revisited 18:20 (dock landing and concentrated side decoration). No direct listening or full-video viewing; unique count remains 31.
+- Updated docs/SHORELINE_SCENIC_ANCHORS.md with explicit evidence provenance, existing dock/rock-kit constraints, and one scoped landing composition sheet: matched approach, landing, reverse view, camera orbit and compact HUD-on checks.
+- Rechecked current main island_edge.py and BuildHubLandmarks; hashes unchanged. Authored dock dimensions distinguished from runtime scale. No missing-asset or reproduced runtime defect claim.
+- Updated research index. Documentation only; no Studio changes, imports, tests or publication. Claim released.
+
 ## 2026-10-25 — crnuch, local session: shoreline and scenic anchor audit (Codex)
 
 - Added docs/SHORELINE_SCENIC_ANCHORS.md from current main island_edge.py, BuildHubLandmarks, WorldLife and HubMap.
