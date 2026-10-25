@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · home-route guide visibility research; docs only · since 2026-10-24 22:17 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: home-route presentation research (Codex)
+
+- Added docs/HOME_ROUTE_PRESENTATION.md after current-main Guide, Zones, PromoAdmin, OwnerPrompts, ZoneService and HubMap reads.
+- Existing carry beam, reversed chevrons and YOUR FIRM marker acknowledged. Proposed stable own-incubator selection, near-prompt handoff and review of one actual runtime route before adding anchors.
+- Identified promo GUI-hide scope excludes owned navigation Beams and folder-contained BillboardGui; specified owner-composed visibility, preserving boss warnings and server authorization.
+- Extended V27 at 1:13; 1:25 end card excluded. Total stays 31 unique videos. Muted sampled visual review, no audio listening.
+- Documentation only, no implementation, Studio installation, tests or publication. Research claim released.
 
 ## 2026-10-24 — crnuch, local session: world odds-board readability research (Codex)
 
