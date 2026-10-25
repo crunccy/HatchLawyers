@@ -12,6 +12,8 @@ Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/bl
 
 ## Contents
 
+- [SHOP_OFFER_CLARITY.md](SHOP_OFFER_CLARITY.md): live-price/value-tag consistency, explicit conditional-free claim chain, compact purchase targets and removal of empty-section shortcuts; extended V30 samples.
+
 - [HOME_ROUTE_PRESENTATION.md](HOME_ROUTE_PRESENTATION.md): existing home/tutorial cue audit, stable incubator targeting, runtime route review and explicit filming visibility; extended V27 coverage.
 
 - [ODDS_BOARD_READABILITY.md](ODDS_BOARD_READABILITY.md): V31; world-sign resolution versus viewing size, local inspection UI, normal/golden/pass labels and base-rarity versus pity semantics, with current-source boundaries.
