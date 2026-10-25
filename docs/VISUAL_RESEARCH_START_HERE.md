@@ -16,7 +16,7 @@ Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/bl
 
 - [ODDS_BOARD_READABILITY.md](ODDS_BOARD_READABILITY.md): V31; world-sign resolution versus viewing size, local inspection UI, normal/golden/pass labels and base-rarity versus pity semantics, with current-source boundaries.
 
-- [UI_MOTION_LIFECYCLE.md](UI_MOTION_LIFECYCLE.md): current Skin/Rewards motion audit; stop claimed-picture breathing, remove four-Hz tile pulse, suspend hidden glints/sparkles and preserve v3; extended V17 samples.
+- [UI_MOTION_LIFECYCLE.md](UI_MOTION_LIFECYCLE.md): current Skin/Rewards motion audit; stop claimed-picture breathing, remove four-Hz tile pulse, suspend hidden glints/sparkles, distinguish pending/owned/disabled feedback and preserve v3; extended V17 samples.
 
 - [DECOR_CLUSTER_HANDOFF.md](DECOR_CLUSTER_HANDOFF.md): existing library asset reuse, explicit cluster transforms, grounding, collision/query review and scoped export; expanded V14 coverage.
 
