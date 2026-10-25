@@ -47,8 +47,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
   bridge on footings ...); the corgi + cat are fused per colour (`ohkit.fuse`). Rule in CLAUDE.md. Food Court re-dressed
   (`island_food_court.py`: condiment-bottle lamps, fruit trees, cupcakes, swirl lollipops, striped candy canes,
   watermelon slices, Burger Barn, Pizza Palace, Donut Diner, Taco Tower, giant burger / fries / ice cream, soda-cup
-  fountain). Next: Ocean Shore, Space Base (then re-render the earlier islands with the fixes). Scripts + renders:
-  `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
+  fountain). Ocean Shore re-dressed (`island_ocean_shore.py`: fused corals, fan / brain / tube coral, seaweed,
+  shells, starfish, conch, sand dollars, driftwood, shipwreck; `island_kit.patch_v2_common` now keeps each island's
+  own colours - Briefcase Bay's palette had tinted Ocean Shore's grey cliffs beige). Space Base re-dressed
+  (`island_space_base.py`: rocket + gantry, observatory, habitat domes, robot factory, solar farm, fuel depot, UFO pad,
+  alien plants, crystals; the Return Home portal per island via `island_kit.PORTAL` - moon rock + alien plants
+  there, no palms). ALL SIX ISLANDS + the hub island are re-dressed and pass the attachment check; hub / Bay / Pet
+  Park / Brainrot re-rendered after the fixes. Next: crnuch's review, then the characters / eggs / bosses stage, then
+  export + crnuch's upload + install. Scripts + renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the
+  place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -272,6 +279,19 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-25 — crnuch, local session: map model overhaul, Blender stages 1-5 (benchmark → props → hub → firms → islands)
+- Every map model remodelled in Blender as smooth meshes, one mesh per colour, low standard studs only on broad tops
+  (preview studs; in game the StudTop system lays them). Scripts in `tools/blender/overhaul/` (shared `ohkit.py`,
+  `ohbuild.py`, `props.py`, `island_kit.py`), renders in `art/overhaul/` (islands: `*_before_after.jpg` = the
+  committed v2 render next to the new one, same camera). Detail: the **In progress** claim above.
+- crnuch's calls this session: skip importing, model everything first; bushes / hedges / cherry blossom ONE solid
+  colour; nothing floats or pokes through (CLAUDE.md rule + `check_models.py`: 0 floating pieces over every model).
+- The approved v2 island builds run UNCHANGED in a sandbox (`island_kit.run_island`: no .blend / JSON overwritten),
+  only their dressing / landmark calls swapped, so layouts, egg spots and boss areas are exactly the approved ones.
+- Nothing is in Studio: the meshes still need export + crnuch's upload + install (next stage, after review).
+- Open: crnuch's review of the islands; then characters / eggs / bosses; DeskLook / dressHall must recolour the new
+  hall kit by NAME at install; Hub.MergeMachine is mr.robe's v3 (left alone).
 
 ## 2026-10-23 — crnuch, local session: UI v3 (the reference-video style), fonts, purple windows, LAWYERS rebuilt
 - **Read Codex's visual-polish research** (branch `codex/visual-polish-research`, 9 docs, 22 videos). Its branch forked
