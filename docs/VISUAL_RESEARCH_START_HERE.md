@@ -12,7 +12,7 @@ Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/bl
 
 ## Contents
 
-- [SHORELINE_SCENIC_ANCHORS.md](SHORELINE_SCENIC_ANCHORS.md): reuse existing shoreline assets, compose one landing, bind scenic motion/sound to runtime anchors and clean up streamed effects; source audit reusing earlier V11 coverage, no new viewing.
+- [SHORELINE_SCENIC_ANCHORS.md](SHORELINE_SCENIC_ANCHORS.md): reuse existing shoreline assets, compose one landing, bind scenic motion/sound to runtime anchors and clean up streamed effects; source audit plus extended V11 rock-corridor samples and a dock revisit, with matched landing views and scoped acceptance criteria.
 
 - [SHOP_OFFER_CLARITY.md](SHOP_OFFER_CLARITY.md): live-price/value-tag consistency, explicit conditional-free claim chain, compact purchase targets and removal of empty-section shortcuts; extended V30 samples.
 
