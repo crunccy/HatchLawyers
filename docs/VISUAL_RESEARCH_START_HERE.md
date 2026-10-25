@@ -36,7 +36,7 @@ Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/bl
 
 - [BOSS_AND_HATCH_READABILITY.md](BOSS_AND_HATCH_READABILITY.md): V25–V26; source-confirmed growing warnings, capsule endpoints, cone close-range exception, readable attack poses and hatch layer/cleanup specifications.
 
-- [ACTIONABLE_VISUAL_UPGRADES.md](ACTIONABLE_VISUAL_UPGRADES.md): V23–V24 plus source-grounded compact UI, portrait fitting, runtime hub detailing, firm silhouettes and notification priorities; V23–V24 coverage.
+- [ACTIONABLE_VISUAL_UPGRADES.md](ACTIONABLE_VISUAL_UPGRADES.md): V23–V24 plus compact UI, portrait fitting, runtime hub detailing, firm silhouettes and notification priorities. October 25 follow-up corrects outdated LAWYERS layout assumptions and specifies animated portrait framing from current main; extended V23 coverage.
 
 - [VIDEO_REFERENCES.md](VIDEO_REFERENCES.md): first twelve gameplay/tutorial references.
 - [VIDEO_RESEARCH_BATCH_03.md](VIDEO_RESEARCH_BATCH_03.md): five additional inspected lighting, map-building, mobile UI, boss and button references (V13–V17).
