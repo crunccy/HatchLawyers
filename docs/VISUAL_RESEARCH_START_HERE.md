@@ -12,6 +12,8 @@ Read [UI_STYLE_V3.md on current main](https://github.com/crunccy/HatchLawyers/bl
 
 ## Contents
 
+- [ODDS_BOARD_READABILITY.md](ODDS_BOARD_READABILITY.md): V31; world-sign resolution versus viewing size, local inspection UI, normal/golden/pass labels and base-rarity versus pity semantics, with current-source boundaries.
+
 - [UI_MOTION_LIFECYCLE.md](UI_MOTION_LIFECYCLE.md): current Skin/Rewards motion audit; stop claimed-picture breathing, remove four-Hz tile pulse, suspend hidden glints/sparkles and preserve v3; extended V17 samples.
 
 - [DECOR_CLUSTER_HANDOFF.md](DECOR_CLUSTER_HANDOFF.md): existing library asset reuse, explicit cluster transforms, grounding, collision/query review and scoped export; expanded V14 coverage.
@@ -54,7 +56,7 @@ These are design recommendations informed by selected footage; they are not clai
 
 ## Evidence / status
 
-Selected sections of thirty videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. PS99/Steal an Egg footage is mixed with older useful technique references. V29's exact experience is unverified and is labeled a secondary visual reference, not official PS99 gameplay. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
+Selected sections of thirty-one videos were played and visually inspected, not watched end-to-end. Audio was not directly captured/listened to; sound notes are explicitly lower confidence. PS99/Steal an Egg footage is mixed with older useful technique references. V29's exact experience is unverified and is labeled a secondary visual reference, not official PS99 gameplay. Timestamps link to the original videos; no third-party assets, videos or plugins were copied into the game.
 
 This package changes documentation only. No Studio installation, runtime implementation or gameplay test was performed for this research. Existing Studio and repo versions may differ. Read current claims and re-export/merge before implementation.
 
