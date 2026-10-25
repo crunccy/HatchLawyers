@@ -95,3 +95,53 @@ Acceptance: switching quiet mode while open or hidden restores owned transforms 
 5. Update the overbroad lifecycle sentence in UI_STYLE_V3 to match actual behavior after implementation.
 
 No reward amounts, eligibility, claims, DataStores, remotes, purchase logic, map assets or boss geometry are part of this task. The reference informs visual restraint; the proposed lifecycle work comes from current project source.
+
+
+## Follow-up — button states must have different feedback (2026-10-25)
+
+### Additional visual sample
+
+V17 was played muted from 6:30 to 6:41 in the preceding research interval. At [6:41](https://www.youtube.com/watch?v=8F3oW_Z6ffE&t=401s), the completed lime Rewards button shows a bright diagonal highlight crossing its face while the white outlined label stays legible. The tutorial's captions describe the shine; they are not game UI. This reinforces stable label/shape hierarchy. **No pending, owned or disabled state was demonstrated in this sample**; the recommendations below derive from our source. Unique video count remains 31. No direct listening, full viewing or new runtime test.
+
+Skin.lua was fetched again on October 25 and still has the audited blob 64b6a7e9422a72fe4f51de2179fb11234bb2dedb.
+
+### Source findings
+
+- Skin.pressable (294–355) groups `disabled`, `pending` and `owned` together. If Activated fires in any of these states, it runs the same four-step rotation sequence: -5, +5, -3, 0 degrees.
+- Each activation starts its own yielding sequence. There is no local animation token/debounce in that branch. Rapid activations can therefore leave multiple sequences writing Rotation; this is a code-path finding, not a reproduced visual jitter report.
+- Rotation values are absolute and finish at zero. A deliberately tilted button would lose its original tilt if this branch runs.
+- Skin.button.setState (496–516) paints the new state and changes text, but does not itself cancel a hover/press tween or settle PressScale. MouseLeave/MouseButton1Up may later settle it; state change alone does not guarantee that.
+- A pending button displays “...”; an owned button is gold. The underlying GuiButton remains an input object. Skin's presentation check does **not** cancel other Activated handlers or enforce purchase/reward permissions. Existing caller guards and server validation must remain.
+
+### Proposed behavior table
+
+| State | Label and stable appearance | Feedback on activation |
+| --- | --- | --- |
+| Default | Existing action and v3 art | Existing squish/ripple; no new gold hover ring |
+| Disabled | Muted purple, specific reason available | At most one short restrained refusal cue; retain readable reason |
+| Pending | Meaningful short status such as CLAIMING… where space permits | No refusal wiggle and no extra request; keep pending indication stable |
+| Owned/claimed | Persistent OWNED/CLAIMED status appropriate to caller | No refusal wiggle; optionally show existing item details if caller already supports it |
+
+Pending is work in progress; owned is a completed state. Neither should visually imply an erroneous action. This is a design recommendation, not a claim about the tutorial.
+
+### Implementation boundary
+
+Keep Skin.button's existing API and normal-state art. In pressable, separate semantic state checks from feedback animation. Use one cancellation token or owned tween sequence per button. Capture the original Rotation before a refusal sequence and apply offsets around it; restore that baseline on completion, cancellation and state change. Do not fight a separate decorative rotation writer: place feedback on an owned wrapper if a caller intentionally animates the same property.
+
+On entry to pending/disabled/owned, cancel owned press/hover tweens and settle PressScale to 1. Observe SkinState changes inside pressable so callers using attributes directly receive the same presentation behavior. Do not modify PopScale, BreatheScale or the layout scale. Destroying the button cancels delayed animation work.
+
+For rapid disabled taps, coalesce the cue while one is active. If a reason toast already exists, update/refresh that one notice rather than creating an additional stack. Preserve the current single-toast policy and its ownership; this task does not require a new global notification manager.
+
+Pilot one daily Claim button and one existing owned Shop pass card. Re-read the actual callers before editing: this research audited the shared Skin implementation, not every screen's purchase handlers. Do not disable the underlying GuiButton in a way that removes the player's access to a useful reason or detail view. Do not infer that cosmetic SkinState is a security boundary.
+
+### Acceptance criteria for implementation
+
+1. Hover/press then transition to pending without moving the pointer: scale settles, pending label stays readable, no success or refusal cue is emitted prematurely.
+2. Ten rapid taps on a disabled control: one bounded refusal animation, stable reason, baseline rotation restored.
+3. Tap an owned card: no “no” wiggle; intended details behavior, if present, remains.
+4. Disable a button whose initial Rotation is -4 degrees: it returns to -4, not zero.
+5. Destroy/close during a refusal sequence: no delayed writes to destroyed instances or stale tweens on reopen.
+6. Touch and gamepad retain visible activation feedback and access to reasons without hover.
+7. Caller debounce and server validation continue to reject duplicate/unauthorized actions; no prices, grants, remotes or permissions change.
+
+These checks are specified for Claude's implementation and have not been run. Keep this follow-up alongside the lifecycle pilot rather than treating it as a new UI restyle.
