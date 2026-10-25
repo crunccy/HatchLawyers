@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · world odds-board legibility research; docs only · since 2026-10-24 21:12 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-24 — crnuch, local session: world odds-board readability research (Codex)
+
+- Added docs/ODDS_BOARD_READABILITY.md from fresh main Zones, BuildLane, Formulas, Config and EggServer. V31 samples at 0:36, 1:13, 2:04 and 2:40; V12 extended at 0:09. Total 31 unique sampled videos.
+- Specified one existing sign plus local inspection view, consistent normal/golden headings and readable compact table. Distinguished canvas resolution, physical label size and illustrative projection from runtime measurement.
+- Clarified base rarity odds versus individual-lawyer chances and pity/tutorial/token overrides; preserved capped luck calculation. No current Supreme zero-rounding defect claimed.
+- Footage supports destination/status hierarchy; no readable exact-probability panel was observed. Muted sampled review only.
+- Documentation only: no game changes, Studio installs, tests, publication or audio listening. Claim released.
 
 ## 2026-10-24 — crnuch, local session: UI motion lifecycle research (Codex)
 
