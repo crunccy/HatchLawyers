@@ -429,9 +429,12 @@ def patch_v2_common():
     for p in (os.path.join(ROOT, "briefcase_bay_v2"), os.path.join(ROOT, "ocean_shore_v2")):
         if p not in sys.path:
             sys.path.insert(0, p)
-    BD = importlib.import_module("bbv2_detail")
-    OD = importlib.import_module("osv2_detail")
+    OD = importlib.import_module("osv2_detail")  # (the v2 frame's own palette - hl_v2 builds on Ocean Shore's)
     OP = importlib.import_module("osv2_parts")
+    keep = {d: dict(getattr(K, d)) for d in ("PAL", "GLOWS", "GLASS")}
+    BD = importlib.import_module("bbv2_detail")  # (its palette re-tints shared names like rock_grey / dirt_rim: undo that)
+    for d, vals in keep.items():
+        getattr(K, d).update(vals)
     BD.park_tree = lambda m, x, y, z0, s=1.0, kind="oak": tree(m, x, y, z0, s, kind)
     BD.topiary = lambda m, x, y, z0, rot=0.0: topiary(m, x, y, z0, rot)
     BD.flower_bed = lambda m, veg, x, y, z0, sx, sy, rot: flower_bed(m, veg, x, y, z0, sx, sy, rot)

@@ -210,10 +210,10 @@ def shipwreck2(m, x, y, z0, rot=0.0):
             x0, x1 = -15.2 + rr.uniform(0, 4), 13.2 - rr.uniform(0, 6)
             tube(n + ("_Plank" if row % 2 else "_PlankDark"), "dock_wood" if row % 2 else "dock_wood_dark", [(x0, ly + 0.25, lz), (x1, ly + 0.25, lz + 0.2)],
                  0.5, segs=6)
-        for k in range(6):  # the broken deck (resting on the ribs)
-            lx = -10 + k * 3.4
-            box(n + ("_Deck" if k % 2 else "_DeckDark"), "dock_wood" if k % 2 else "dock_wood_dark", (lx, 0.5, 6.4 + heel * 2.5), (2.6, 8.4, 0.35),
-                rot=(10, 0, 0), bevel=0.06)
+        for k in range(6):  # the broken deck (each plank resting on a rib)
+            lx = -11.7 + k * 3.3
+            box(n + ("_Deck" if k % 2 else "_DeckDark"), "dock_wood" if k % 2 else "dock_wood_dark", (lx, 1.2, 5.7), (2.6, 13.0, 0.35),
+                rot=(6, 0, 0), bevel=0.06)  # (wide enough to rest on the ribs both sides)
         mb, mt = Vector((-2, 0.5, 6.0)), Vector((4, 9.0, 24.0))
         tube(n + "_Mast", "driftwood_dark", [tuple(mb), tuple(mt)], [0.55, 0.42], segs=10)
         nest = mb + (mt - mb) * 0.82
@@ -244,7 +244,8 @@ def shipwreck2(m, x, y, z0, rot=0.0):
 
 # ================================================================== the mapping + run
 def patch():
-    BD, OD, OP = IK.patch_v2_common()
+    importlib.import_module("osv2_parts"), importlib.import_module("osv2_detail")
+    BD, OD, OP = IK.patch_v2_common()  # (keeps Ocean Shore's own colours: grey cliffs ...)
     OD.brain_coral, OD.tube_coral, OD.seaweed, OD.conch, OD.sand_dollar, OD.shipwreck2 = brain_coral, tube_coral, seaweed, conch, sand_dollar, shipwreck2
     for nm, fn in (("coral", coral), ("fan_coral", fan_coral), ("shell", shell), ("starfish", starfish), ("pebbles", pebbles), ("driftwood", driftwood)):
         setattr(OP, nm, fn)

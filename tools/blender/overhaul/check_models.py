@@ -2,7 +2,7 @@
 # on it (crnuch 2026-10-25: "detached or overlapping" parts look wrong): every separate piece of a model must touch the
 # rest of it (or the ground); a floating piece is listed with its mesh name, centre and size.
 #   Blender -b --factory-startup --python tools/blender/overhaul/check_models.py -- [<group> ...]
-# groups: props hub gameplay minigames firms hall bay pet rot food kit (default: all)
+# groups: props hub gameplay minigames firms hall bay pet rot food ocean space kit (default: all)
 import bpy, os, sys, math
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -67,6 +67,15 @@ def models():
                                                                 ("shipwreck2", (N, 0, 0, 0.0)))]
     except Exception as e:
         print("[check] ocean shore skipped:", e)
+    try:
+        import island_space_base as SB
+        out += [("space", nm, getattr(SB, nm), a) for nm, a in (("beacon_lamp", (N, 0, 0)), ("alien_mushroom", (N, 0, 0)), ("tentacle_plant", (N, 0, 0)),
+                                                                ("bulb_plant", (N, 0, 0)), ("spike_plant", (N, 0, 0)), ("crystal", (N, 0, 0)),
+                                                                ("crystal_cluster", (N, 0, 0)), ("moon_rocks", (N, 0, 0)), ("rocket", (N,)),
+                                                                ("observatory", (N,)), ("habitat_domes", (N,)), ("robot_factory", (N,)),
+                                                                ("solar_farm", (N,)), ("sat_dish", (N,)), ("fuel_depot", (N,)), ("ufo", (N,)))]
+    except Exception as e:
+        print("[check] space base skipped:", e)
     return out
 
 
