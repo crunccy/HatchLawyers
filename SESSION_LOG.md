@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · shoreline composition and scenic motion research; docs only · since 2026-10-25 06:49 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-25 — crnuch, local session: shoreline and scenic anchor audit (Codex)
+
+- Added docs/SHORELINE_SCENIC_ANCHORS.md from current main island_edge.py, BuildHubLandmarks, WorldLife and HubMap.
+- Existing beach/rocks/docks/boats/far islands and scenic motion acknowledged. Proposed one landing composition and runtime anchors for old-coordinate waves, hub activity, bird/walker motion.
+- Specified source-owned fountain/lighthouse cleanup and scoped flag animation discovery; no runtime misalignment, leak or audio problem claimed as reproduced.
+- Browser control failed twice. Reused documented V11 6:06/18:20 observations with explicit provenance; no new video coverage or listening, count remains 31.
+- Documentation only; no builders, Studio changes, tests or publication. Claim released.
 
 ## 2026-10-25 — crnuch, local session: shop offer clarity research (Codex)
 
