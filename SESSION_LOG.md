@@ -44,8 +44,10 @@ Claim big work here before starting (who · what · since), push the claim, remo
   looked "detached or overlapping" -> new attachment check (`check_models.py`, `ohkit.check_attached`: every
   piece must touch the rest or the ground) over every overhaul model: 1842 floating pieces -> 0 (ears seated, signs +
   awnings flush on walls, chains / poles / flags / bulbs / papers touching, cat-tower platforms on their posts, the
-  bridge on footings ...); the corgi + cat are fused per colour (`ohkit.fuse`). Rule in CLAUDE.md. Next: Food Court,
-  Ocean Shore, Space Base (then re-render the islands with the fixes). Scripts + renders:
+  bridge on footings ...); the corgi + cat are fused per colour (`ohkit.fuse`). Rule in CLAUDE.md. Food Court re-dressed
+  (`island_food_court.py`: condiment-bottle lamps, fruit trees, cupcakes, swirl lollipops, striped candy canes,
+  watermelon slices, Burger Barn, Pizza Palace, Donut Diner, Taco Tower, giant burger / fries / ice cream, soda-cup
+  fountain). Next: Ocean Shore, Space Base (then re-render the earlier islands with the fixes). Scripts + renders:
   `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the place yet (meshes need crnuch's upload).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,

@@ -58,6 +58,15 @@ def models():
                                                                ("soda_fountain", (N,)))]
     except Exception as e:
         print("[check] food court skipped:", e)
+    try:
+        import island_ocean_shore as OS
+        out += [("ocean", nm, getattr(OS, nm), a) for nm, a in (("coral", (N, 0, 0, 0.0, 1.0, "coral_pink")), ("fan_coral", (N, 0, 0, 0.0)),
+                                                                ("brain_coral", (N, 0, 0, 0.0)), ("tube_coral", (N, 0, 0, 0.0)), ("seaweed", (N, 0, 0, 0.0)),
+                                                                ("shell", (N, 0, 0, 0.0)), ("starfish", (N, 0, 0, 0.0)), ("conch", (N, 0, 0, 0.0)),
+                                                                ("sand_dollar", (N, 0, 0, 0.0)), ("driftwood", (N, 0, 0, 0.0)),
+                                                                ("shipwreck2", (N, 0, 0, 0.0)))]
+    except Exception as e:
+        print("[check] ocean shore skipped:", e)
     return out
 
 
