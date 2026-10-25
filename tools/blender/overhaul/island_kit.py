@@ -420,3 +420,27 @@ def render_places(I, out, prefix, names, dist=36.0, height=12.0, look_up=6.0, le
         O.render(out, prefix + key, cam, (x, y, I.Z + look_up), lens=lens, res=(1600, 900))
         done.append(key)
     return done
+
+
+def patch_v2_common():
+    """The swaps every island on the shared v2 frame (hl_v2) needs: Briefcase Bay v2's park trees / topiaries / flower
+    beds, Ocean Shore v2's bushes / hibiscus / grass / palms / dock torches / cargo, and the Return Home rock portal."""
+    import importlib
+    for p in (os.path.join(ROOT, "briefcase_bay_v2"), os.path.join(ROOT, "ocean_shore_v2")):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+    BD = importlib.import_module("bbv2_detail")
+    OD = importlib.import_module("osv2_detail")
+    OP = importlib.import_module("osv2_parts")
+    BD.park_tree = lambda m, x, y, z0, s=1.0, kind="oak": tree(m, x, y, z0, s, kind)
+    BD.topiary = lambda m, x, y, z0, rot=0.0: topiary(m, x, y, z0, rot)
+    BD.flower_bed = lambda m, veg, x, y, z0, sx, sy, rot: flower_bed(m, veg, x, y, z0, sx, sy, rot)
+    OD.bush = lambda m, x, y, z0, s=1.0, look=None: bush(m, x, y, z0, s)
+    OD.hibiscus = lambda m, x, y, z0, s=1.0: flower_bush(m, x, y, z0, s * 0.8, "flower_red")
+    OD.grass_clump = lambda m, x, y, z0, s=1.0: grass_clump(m, x, y, z0, s)
+    OD.palm2 = lambda m, x, y, z0, style=None, h=None, lean=None: tree(m, x, y, z0, (h or 10.0) / 10.0, "palm")
+    OD.torch = lambda m, x, y, z0, h=5.0: torch(m, x, y, z0, h)
+    OD.crate = lambda m, x, y, z0, s=1.8, yaw=0.0: crate(m, x, y, z0, s, yaw)
+    OD.barrel = lambda m, x, y, z0, lying=False, yaw=0.0: barrel(m, x, y, z0, lying, yaw)
+    OP.escape_portal = lambda m, x, y, z, rot=0.0: rock_portal(m, x, y, z, rot)
+    return BD, OD, OP
