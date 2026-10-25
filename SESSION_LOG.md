@@ -15,7 +15,175 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
 
+## 2026-10-25 — crnuch, local session: current portrait framing research (Codex)
+
+- Refreshed current main Lawyers/SkinLook evidence in docs/ACTIONABLE_VISUAL_UPGRADES.md. Added prominent correction: office-detail popup and footer actions already exist; older layout dimensions are historical.
+- Specified visible-geometry, actual-aspect and motion-envelope camera fitting, label exclusion, resize ownership and contact-sheet acceptance. Preserved cached masters, existing preview disconnects and v3 style.
+- Extended V23 with muted playback approximately 23:00–23:19 and paused visual review at 23:19. Horns/feet near frame edges inform clearance review; no clipping defect claimed for our game. No direct listening, unique reference count remains 31.
+- PR #11 remains open on codex/visual-polish-research. Cleared the prior completed shoreline claim and this research claim; cloud work untouched.
+- Documentation only. No implementation, Studio changes, tests or publishing.
+
+## 2026-10-25 — crnuch, local session: shoreline visual follow-up (Codex)
+
+- Browser access recovered. Extended V11 with muted samples at 6:22/6:42 (rock corridor/route silhouette) and revisited 18:20 (dock landing and concentrated side decoration). No direct listening or full-video viewing; unique count remains 31.
+- Updated docs/SHORELINE_SCENIC_ANCHORS.md with explicit evidence provenance, existing dock/rock-kit constraints, and one scoped landing composition sheet: matched approach, landing, reverse view, camera orbit and compact HUD-on checks.
+- Rechecked current main island_edge.py and BuildHubLandmarks; hashes unchanged. Authored dock dimensions distinguished from runtime scale. No missing-asset or reproduced runtime defect claim.
+- Updated research index. Documentation only; no Studio changes, imports, tests or publication. Claim released.
+
+## 2026-10-25 — crnuch, local session: shoreline and scenic anchor audit (Codex)
+
+- Added docs/SHORELINE_SCENIC_ANCHORS.md from current main island_edge.py, BuildHubLandmarks, WorldLife and HubMap.
+- Existing beach/rocks/docks/boats/far islands and scenic motion acknowledged. Proposed one landing composition and runtime anchors for old-coordinate waves, hub activity, bird/walker motion.
+- Specified source-owned fountain/lighthouse cleanup and scoped flag animation discovery; no runtime misalignment, leak or audio problem claimed as reproduced.
+- Browser control failed twice. Reused documented V11 6:06/18:20 observations with explicit provenance; no new video coverage or listening, count remains 31.
+- Documentation only; no builders, Studio changes, tests or publication. Claim released.
+
+## 2026-10-25 — crnuch, local session: shop offer clarity research (Codex)
+
+- Added docs/SHOP_OFFER_CLARITY.md from fresh main Shop, ShopService, Config and Skin.
+- Found static value tags are not refreshed with asynchronously loaded prices; specified shared price records and explicit comparison basis without claiming a measured live-price mismatch.
+- Specified readable claim prerequisites, one-time purchase labels, compact card layout and shortcuts only for actual sections. Current Config has no enabled product for the unconditional Eggs tab.
+- Extended V30 with 5:53 egg price/content hierarchy; 5:23 poll sign explicitly excluded from purchase evidence. Count remains 31. Muted sampled review only.
+- Documentation only, no purchases, code changes, Studio installs, tests or publication. Research claim released.
+
+## 2026-10-25 — crnuch, local session: button-state feedback follow-up (Codex)
+
+- Extended docs/UI_MOTION_LIFECYCLE.md with source-backed pending/owned/disabled feedback specification. Re-fetched main Skin; audited blob unchanged.
+- Identified shared refusal wiggle for all three states, uncoordinated yielding sequences on rapid activation, absolute rotation reset and lack of state-change settling in setState.
+- Proposed separate semantic feedback, one owned animation sequence, baseline preservation and explicit caller/server boundaries. No runtime defect reproduction claimed.
+- Saved previously reviewed muted V17 6:30–6:41 sample; stable label under shine at 6:41. No disabled/pending states shown in the reference. Count remains 31.
+- Documentation only; no code installation, runtime tests or publication. Pending research claim released.
+
+## 2026-10-24 — crnuch, local session: home-route presentation research (Codex)
+
+- Added docs/HOME_ROUTE_PRESENTATION.md after current-main Guide, Zones, PromoAdmin, OwnerPrompts, ZoneService and HubMap reads.
+- Existing carry beam, reversed chevrons and YOUR FIRM marker acknowledged. Proposed stable own-incubator selection, near-prompt handoff and review of one actual runtime route before adding anchors.
+- Identified promo GUI-hide scope excludes owned navigation Beams and folder-contained BillboardGui; specified owner-composed visibility, preserving boss warnings and server authorization.
+- Extended V27 at 1:13; 1:25 end card excluded. Total stays 31 unique videos. Muted sampled visual review, no audio listening.
+- Documentation only, no implementation, Studio installation, tests or publication. Research claim released.
+
+## 2026-10-24 — crnuch, local session: world odds-board readability research (Codex)
+
+- Added docs/ODDS_BOARD_READABILITY.md from fresh main Zones, BuildLane, Formulas, Config and EggServer. V31 samples at 0:36, 1:13, 2:04 and 2:40; V12 extended at 0:09. Total 31 unique sampled videos.
+- Specified one existing sign plus local inspection view, consistent normal/golden headings and readable compact table. Distinguished canvas resolution, physical label size and illustrative projection from runtime measurement.
+- Clarified base rarity odds versus individual-lawyer chances and pity/tutorial/token overrides; preserved capped luck calculation. No current Supreme zero-rounding defect claimed.
+- Footage supports destination/status hierarchy; no readable exact-probability panel was observed. Muted sampled review only.
+- Documentation only: no game changes, Studio installs, tests, publication or audio listening. Claim released.
+
+## 2026-10-24 — crnuch, local session: UI motion lifecycle research (Codex)
+
+- Added docs/UI_MOTION_LIFECYCLE.md from fresh main Skin/Rewards/UI_STYLE_V3. Extended V17 at 0:18, 6:54 and 6:59; unique video count remains 30. Muted sampled review, no audio listening.
+- Source-backed findings: ready tile scale updates at four Hz; claimed picture retains breathing registration; shared breathe/spin already skip disabled ScreenGuis, while glint/sparkle use separate task loops with weaker visibility checks.
+- Proposed stable calendar labels, cancellable picture motion, consistent owner visibility/cancellation and optional quiet presentation. Explicit compatibility boundaries and Studio acceptance checks; no measured performance defect claimed.
+- Documentation only, no game changes, Studio installation, tests or publication. Research claim released.
+
+## 2026-10-24 — crnuch, local session: reusable decor cluster research (Codex)
+
+- Added docs/DECOR_CLUSTER_HANDOFF.md from fresh main zone_decor.py, BuildDecorLibrary and BuildLane; extended V14 at 30:12 and 34:11. Unique video count stays 30.
+- Proposed one TreeM/Bush/Rocks/FileBoxes perimeter composition with explicit transforms, grounded support points and per-component collision/query review.
+- Recognized existing seeded foliage kit and Plastic+BrickStuds importer; warned against whole-library replacement for a small polish pilot.
+- Current main ART_REMODEL_BRIEF marks approved map plan completed; research index now corrects older pending-stage language.
+- Documentation only; no Studio edits, builder execution, tests, publication or audio audition. Claim released.
+
+## 2026-10-24 — crnuch, local session: reward state clarity research (Codex)
+
+- Added docs/REWARD_STATE_CLARITY.md from fresh main Rewards/RewardsService and two timestamped V30 samples. Total 30 distinct sampled videos.
+- Current source already contains UI v3 calendar and intentionally small pop-ups; proposals preserve them. Specify labeled daily/playtime timers, loading/pending claim states, inline confirmed receipts and explicit calendar status.
+- Found current main docs/UI_STYLE_V3.md supersedes older branch font advice. Added prominent research-index override: Gotham Black/Bold, plain deep purple body, muted-purple unavailable state, small pop-ups; no restoration of retired fonts.
+- No Studio edits, new gameplay rules, runtime tests, installs, publication or audio listening. Claim released.
+
+## 2026-10-24 — crnuch, local session: atmosphere readability research (Codex)
+
+- Added docs/ATMOSPHERE_READABILITY.md from fresh main Ambience/AmbiencePresets snapshots and V13 4:11 follow-up; unique video count remains 29.
+- Existing fog/particles/quality/boss-dip/suspension acknowledged. Source shows rate-only suppression with long-lived particles; proposed immediate decorative-layer quieting and explicit cinematic handoff.
+- Identified per-kind anchor caps, multiple layers per anchor, compounded Low rate factors and folder-first classification as concrete implementation constraints.
+- Scoped Pet Park anchor/debug/camera review and future acceptance recordings. No measured obstruction/performance defect claimed.
+- Documentation only; no Studio edits, gameplay tests, installs, publication or audio listening. Claim released.
+
+## 2026-10-24 — crnuch, local session: mutation decision clarity research (Codex)
+
+- Added docs/MUTATION_UI_CLARITY.md. Fresh main Merger and LawyerService snapshots confirm odds/preview already exist, fizzle consumes all selected inputs, count-only CAN MUTATE badge and distinct rejection/fizzle outcomes.
+- Proposed explicit pre-submit consequence copy, honest count badge, visible selected office locations, persistent result inspection and transport-error reconciliation without automatic retry.
+- V29 machine approach/reveal samples are explicitly secondary footage: title says Ps99x, exact experience unverified. V28 follow-up adds coverage without double-counting. Total 29 distinct sampled videos.
+- Documentation only; no Studio edits, gameplay changes, runtime tests or direct audio audition. Claim released.
+
+## 2026-10-24 — crnuch, local session: egg interaction clarity research (Codex)
+
+- Added docs/EGG_INTERACTION_CLARITY.md, V28 recent Steal an Egg samples; 28 sampled video references total.
+- Fresh main Zones.client read confirms small carry chips, existing golden/full states, two-line labels and price on prompt. Supporting server checks, loose-egg distinction and guide/feedback audited from October 23 export.
+- Proposed readable compact bag, one local egg-focus cue, Briefcase Bay perimeter-detail pilot and coordinated confirmed pickup feedback. Actual pickup prompt not observed in V28; this limitation and proposal provenance are explicit.
+- Four timestamped visual samples; no full viewing, direct listening or inferred success metrics. Documentation only, no Studio edits or runtime tests. Research claim released.
+
+## 2026-10-24 — crnuch, local session: travel UI and wayfinding research (Codex)
+
+- Added docs/TRAVEL_UI_WAYFINDING.md with V27, four timestamped PS99 travel samples; 27 sampled videos total. Older reference footage explicitly labeled; muted visual review only.
+- Audited Travel.client, Skin.window, TravelServer and TravelFx against October 23 Studio export. Existing locks/current-location/carrying/busy/camera cleanup recognized.
+- Specified compact travel layout (52px GO scales to about 36.2px at 844×390), one-island landmark/card/sign pilot, and destination/status copy within existing trip lifecycle.
+- Preserves server rules, wiring, chunky studded style and current model-work sequence. Acceptance checks are proposed, not executed.
+- Documentation only; no Studio edits, installs, publication or runtime tests. Claim released.
+
+## 2026-10-23 — crnuch, local session: boss and hatch readability research (Codex)
+
+- Added docs/BOSS_AND_HATCH_READABILITY.md with V25 beam-layer and V26 attack-pose references; 26 sampled videos total.
+- October 23 Studio source shows warning extent grows from 45% to full in first 40% of windup; proposed fixed authoritative boundary plus interior countdown.
+- Identified shape semantics needing explicit visuals: line swept-circle endpoint coverage, cone near-body full-circle exception, Pull influence versus damage, and full-disc Ring. Preserve damage/timing; future runtime boundary tests specified, not executed.
+- Added selected boss pose brief and hatch layer-isolation/inspection-hold plan. Existing post-effect cleanup recognized; overlap risk labeled unverified pending caller-serialization review.
+- Docs only; no Studio changes, gameplay tuning or audio audition. Research claim released.
+
+## 2026-10-23 — crnuch, local session: specific visual implementation tasks (Codex)
+
+- User resumed research and requested deliberate, applicable improvements.
+- Added docs/ACTIONABLE_VISUAL_UPGRADES.md; V23 viewport portrait and V24 stylized building samples bring coverage to 24 videos.
+- Used October 23 Studio source export to identify small controls caused by scaling the 920×600 LAWYERS layout, inconsistent portrait fitting and animated bounds, existing single-toast replacement behavior, and HubMap runtime relocation/parked look-alikes.
+- Six scoped tasks specify changes, integration locations and acceptance criteria. Proposed target sizes/timings are explicitly not measured industry standards. Map and UI defects not visually verified are distinguished from code evidence.
+- Documentation only; no new Studio/game changes, runtime tests or direct audio audition. Claim released. Entry index now points Claude to the actionable task document.
+
+## 2026-10-23 — crnuch, local session: environment scale study (Codex)
+
+- Added `docs/ENVIRONMENT_SCALE_STUDY.md`, V22: sampled RoBuilder proportion/lighting/library examples, applied to avatar clearance and reusable asset contact sheets.
+- Twenty-two sampled video references total. Added a concrete prop/effect handoff format and review surfaces, grounded in the existing studded style and eight-firm context.
+- Docs only; no Studio changes, downloaded packs or runtime tests. Research claim released.
+
+## 2026-10-23 — crnuch, local session: focused mobile presentation study (Codex)
+
+- Added `docs/MOBILE_PRESENTATION_STUDY.md`, V21: Grow a Garden footage with visible touch controls, selected state, success/unavailable feedback, repeated cooldown messages and related market-stall forms.
+- Twenty-one sampled references total. Partially closes the mobile footage gap; physical-device ergonomics, controller behavior and our own UI validation remain open.
+- Added specific recommendations for touch-control space, notification coalescing and a cohesive pier stall family. No Studio changes or runtime tests. Research claim released.
+
+## 2026-10-23 — crnuch, local session: inventory and animation research batch 4 (Codex)
+
+- Added `docs/VIDEO_RESEARCH_BATCH_04.md`, V18–V20: inventory action-mode visibility, recent PS99 collection cards, and animation-event synchronization.
+- Library now contains twenty sampled video references. Added concrete cue ownership/cleanup and inventory-state review cases. Updated index and removed stale count from the implementation brief.
+- Mobile-source search did not establish touch behavior; explicitly retained that gap. No direct audio listening or complete-video-viewing claims.
+- Docs only on PR #11; no Studio/game changes or runtime tests. Existing gameplay authority, systems and art sequence preserved. Research claim released.
+
+## 2026-10-23 — crnuch, local session: map and UI visual research batch 3 (Codex)
+
+- **User's call:** make the game and UI look amazing; continue substantial video research and keep the implementation handoff in GitHub.
+- Added `docs/VIDEO_RESEARCH_BATCH_03.md`: five inspected references covering lighting, modular map construction, phone UI scaling, current Steal an Egg boss presentation and button shine. Seventeen sampled videos total; timestamps distinguish observations from proposals.
+- Added `docs/MAP_UI_ART_DIRECTION.md`: destination-specific map improvements, a reusable detail kit, LAWYERS/shop/travel layouts and states, notification behavior, motion/lighting ownership and visual acceptance criteria.
+- Updated `docs/VISUAL_RESEARCH_START_HERE.md`. Existing UIKit/Puppet/Effects systems and approved art sequence remain the implementation starting point.
+- Verified the new documents are accessible on `codex/visual-polish-research`, PR #11. Documentation only: no runtime tests, Studio installation or publishing.
+- Remaining evidence gaps: real mobile/controller gameplay, direct sound audition, and continuous boss telegraph timing. Do not infer collision dimensions or exact animation timing from edited/sample footage.
+- Research claim released. Recurring follow-up may extend the library; read coverage first to avoid repeated searches.
+
+## 2026-10-22 — visual research follow-up: Fisch, rare hatch, existing systems
+
+- Added V11/V12 to `docs/VIDEO_REFERENCES.md`: Fisch shoreline/dock detail and collection hierarchy; PS99 rare-hatch sampled frames including readability limits.
+- Added `docs/VISUAL_SYSTEMS_AUDIT.md`: existing UIKit motion/layers, Puppet idles/actions and continuous-particle LOD. Improve these systems rather than duplicating them.
+- Updated research index to twelve sampled videos. Source review is dated and does not assert current Studio state. Audio audition remains outstanding.
+- Docs only on `codex/visual-polish-research`, draft PR #11. No runtime tests or Studio changes. User requested recurring continuation; follow-up scheduled in the app.
+
+## 2026-10-22 — crnuch, local session: video research for visual polish (Codex)
+
+- **User's call:** prioritize map detail and UI, then VFX/animation; research actual video references and make the results available to Claude in GitHub.
+- Start at [docs/VISUAL_RESEARCH_START_HERE.md](docs/VISUAL_RESEARCH_START_HERE.md), then [docs/VIDEO_REFERENCES.md](docs/VIDEO_REFERENCES.md) and [docs/VISUAL_POLISH_BRIEF.md](docs/VISUAL_POLISH_BRIEF.md).
+- Initial library: ten videos with selected playback/frame inspections and timestamped observations. Not full end-to-end viewings; audio not directly listened to. Further research may extend this package.
+- Supplements the existing ART_REMODEL_BRIEF; preserves its staged workflow and active bug-fix claim. Research does not claim new Studio deficiencies without an inspection.
+- Documentation only; no gameplay/Studio changes or runtime tests. Original footage/assets remain with their creators.
+
 ## Open items
+- [ ] **Visual polish research handoff:** read docs/VISUAL_RESEARCH_START_HERE.md and VIDEO_REFERENCES.md; use VISUAL_POLISH_BRIEF.md to scope UI/map/VFX/animation work after reconciling active claims. Research only; implementation remains open.
 - [ ] **Queued: cohesive map + model art pass** ([docs/ART_REMODEL_BRIEF.md](docs/ART_REMODEL_BRIEF.md)). Start only after the current Studio bug-fix claim is complete and released; then claim it here. Scope includes firms, travel portal, shop, Mutation Machine, License Office/shop, and the back-of-map minigame pier designed together with the minigames and `BigCaseBelt`. Follow the brief's sequence, completing and reviewing one bounded stage before starting the next.
 - [ ] **Push + playtest LAWYER MUTATIONS + SELLING** (built 2026-10-13 in a cloud session; **heads-up mr.robe: save v18,
       LawyerService / CaseService / PlayerData / EggServer / ZoneService / FirmFeatures changed**). Re-export `studio/`,
