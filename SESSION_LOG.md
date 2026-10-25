@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · button-state feedback follow-up; docs only · since 2026-10-24 23:20 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-25 — crnuch, local session: button-state feedback follow-up (Codex)
+
+- Extended docs/UI_MOTION_LIFECYCLE.md with source-backed pending/owned/disabled feedback specification. Re-fetched main Skin; audited blob unchanged.
+- Identified shared refusal wiggle for all three states, uncoordinated yielding sequences on rapid activation, absolute rotation reset and lack of state-change settling in setState.
+- Proposed separate semantic feedback, one owned animation sequence, baseline preservation and explicit caller/server boundaries. No runtime defect reproduction claimed.
+- Saved previously reviewed muted V17 6:30–6:41 sample; stable label under shine at 6:41. No disabled/pending states shown in the reference. Count remains 31.
+- Documentation only; no code installation, runtime tests or publication. Pending research claim released.
 
 ## 2026-10-24 — crnuch, local session: home-route presentation research (Codex)
 
