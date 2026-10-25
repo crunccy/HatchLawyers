@@ -11,10 +11,17 @@ it is the to-do list for the next session. Move finished items into the dated en
 - **Coordination:** check this log before starting; keep tasks in separate files or claim them here first. Share decisions, file paths, test/playtest results, and any Studio sync/merge needed here. Do not overwrite each other's changes.
 
 ## In progress
-- crnuch (local, Codex) · shop offer clarity and live-price labels research; docs only · since 2026-10-25 03:07 CDT
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
 - crnuch (cloud) · bug list: shack incubators, hatch egg through low ceilings, over-bright firms, portal spot,
   "Supreme" → "Rebirth" naming, z-fighting models, desk accessories overlapping on level-up · since 2026-10-13
+
+## 2026-10-25 — crnuch, local session: shop offer clarity research (Codex)
+
+- Added docs/SHOP_OFFER_CLARITY.md from fresh main Shop, ShopService, Config and Skin.
+- Found static value tags are not refreshed with asynchronously loaded prices; specified shared price records and explicit comparison basis without claiming a measured live-price mismatch.
+- Specified readable claim prerequisites, one-time purchase labels, compact card layout and shortcuts only for actual sections. Current Config has no enabled product for the unconditional Eggs tab.
+- Extended V30 with 5:53 egg price/content hierarchy; 5:23 poll sign explicitly excluded from purchase evidence. Count remains 31. Muted sampled review only.
+- Documentation only, no purchases, code changes, Studio installs, tests or publication. Research claim released.
 
 ## 2026-10-25 — crnuch, local session: button-state feedback follow-up (Codex)
 
