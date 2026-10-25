@@ -1,6 +1,6 @@
 # Shoreline composition and scenic anchors — 2026-10-25
 
-Source audit and implementation proposal. No Studio changes, builder runs, tests or publication. Attempts to open new video samples failed because browser control was unavailable. This batch reuses previously recorded V11 observations explicitly; it adds **no new visual coverage**. Library remains 31 sampled videos. No sound was auditioned.
+Source audit and implementation proposal. No Studio changes, builder runs, tests or publication. The initial source-audit batch could not open videos and reused earlier V11 observations. The later follow-up below records new sampled visual coverage after browser access recovered. Library remains 31 sampled videos. No sound was auditioned.
 
 ## Existing reference evidence
 
@@ -72,4 +72,35 @@ Do not change gameplay collisions globally. For the landing, explicitly distingu
 
 Work in src and scoped modeling/import files after fresh export/merge review. The active cloud incubator/ceiling claim is untouched. Current main marks the old map art stages complete; this is focused polish and runtime integration, not a request to redo them.
 
-Deliver one landing composition sheet and a source-anchor map, then the lifecycle acceptance recordings. Revisit fresh video samples when browser access returns; do not count this source-only batch as new viewing.
+Deliver one landing composition sheet and a source-anchor map, then the lifecycle acceptance recordings. The initial source-only audit adds no viewing coverage; see the separately recorded follow-up below.
+
+## Visual follow-up — 2026-10-25, recovered browser access
+
+**Evidence method:** muted playback of V11 at approximately 6:15–6:42 and 18:05–18:20, with paused visual inspection at 6:22, 6:42 and 18:20. This is sampled review, not full viewing. No direct listening. On-screen creator captions are not used to establish game mechanics. The 18:20 view repeats earlier coverage; 6:22/6:42 extend coverage of the same video. Unique-video count remains 31.
+
+| Sample | Visible evidence | Transfer and limit |
+| --- | --- | --- |
+| [6:22](https://www.youtube.com/watch?v=QkOhdClVIn4&t=382s), also 6:42 | A broad grey sloped/stepped route climbs along the left; tall rock masses enclose the scene on the right. Distant palms break a bright, hazy horizon. Avatar gear occupies much of the foreground. | Study the empty route between large masses. This sample is a rock corridor, not evidence of a sandy dock or a measured camera clearance. |
+| [18:20](https://www.youtube.com/watch?v=QkOhdClVIn4&t=1100s), repeated | Wooden planks/posts meet sand. A large glowing pumpkin sits to the right of the landing; orange/purple overhead lights and a side recess with a cauldron, figure and cobweb concentrate decoration. Water remains visible to the left. Character effects and creator subtitles overlay the view. | Put the decorative focus beside the route and retain an open side. Seasonal props, overhead strings and glow intensity are not a proposed asset list for our game. |
+
+### EDGE-04 — turn the landing proposal into a measurable composition sheet
+
+**Exact proposed change:** adjust one active dock-to-beach landing using the existing dock and one rock-cluster grouping. Keep the center traversable, place the dominant rock mass beside the approach, and retain open water on the other side where the current layout permits. Do not add a glowing landmark simply because the reference has one. Our destination landmark must remain the most useful thing to recognize.
+
+**Source constraints rechecked this follow-up:** island_edge.py and BuildHubLandmarks.lua retain the blob hashes listed above. The authored dock has eight 8-stud-wide planks, spaced every 4 studs along local +Z; posts sit at local x ±3.6. The rowboat sits beside the end. These are authoring dimensions, not a measurement of the runtime model after wiring/scaling. The RockCluster is already five boxes with a dominant mass and smaller supports; use its existing hierarchy before adding parts.
+
+**Implementation location:** scoped placement data in tools/blender/island_edge.py and a deliberately limited import through tools/zones/BuildHubLandmarks.lua. Record the active IslandEdge descendant and its world transform first. No changes to HubMap routing, collision policy for the whole kit, WorldLife animation amplitudes or any gameplay destination are needed for this composition task. The generic importer replaces same-named models; do not run the full import merely to move one cluster.
+
+Prepare a before/after sheet with these matched views. Keep the same camera position, FOV, graphics setting, time/lighting and avatar for each pair; include HUD-on views because the game is normally played that way.
+
+| View | Specific decision | Acceptance criterion |
+| --- | --- | --- |
+| Approach along the dock | Does the shore exit read before the detail? | The walkable exit is visible and distinct from the decorative rock mass; no new prop crosses the existing usable route. |
+| Standing at the landing, camera turned toward shore | Does the side grouping frame rather than cover the destination? | Destination silhouette remains visible from the ordinary third-person view; trim/reposition the cluster if it masks it. |
+| Turn back toward water | Does the rowboat read as scenery rather than a route? | Dock end, boat and distant islands are separable silhouettes. No decorative path implies an unavailable interaction. |
+| Walk both directions with a short camera orbit | Does the composition hold during play? | No new camera pop-in against rocks/posts, avatar snag, floating support or abrupt water/ground seam. Inspect the actual collision geometry before changing it. |
+| Compact landscape viewport with normal HUD | Do silhouettes survive screen crowding? | Route/exit still readable without hiding HUD, increasing bloom or adding a floating label. Record viewport dimensions; no mobile-device performance claim from this review. |
+
+Use the dock's actual runtime width as the initial clearance baseline. Do not narrow it to match a screenshot or prescribe a generic stud count before checking player scale. Keep the far-island layer broad; small distant clutter will not solve a blocked landing silhouette.
+
+**Deliverable and stopping point:** one matched composition sheet, one short walk/orbit recording, exact changed transforms and instance delta. Accept the pilot before extending to another shoreline. These are proposed implementation acceptance checks; none were executed in Studio during this research.
