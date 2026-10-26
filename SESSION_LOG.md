@@ -60,8 +60,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   polish N1-N3, N5-N8, N10, N11 done 2026-10-25 (entry below). Open from the audit: M2-M5, N4, N9, the optional list.
   GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
   Exported as .fbx 2026-10-26 (entry below): next = crnuch imports, then the install; the hub island is heavy (2.1M tris).
-  **In progress 2026-10-26 (crnuch's side session): INSTALLING the imported meshes** (crnuch imported all 23 .fbx):
-  scale / looks / collision, the six egg islands swapped in over their Part versions (archived), hub island staged.
+  Six egg islands = the overhaul meshes since 2026-10-26 (entry below); hub island + kit staged in ServerStorage.Overhaul.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -289,6 +288,23 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-26 — crnuch, local session (side session): the overhaul islands are in the game
+- crnuch imported all 23 .fbx into Studio. The importer scaled each file its own way (2x-200x), turned it 180 degrees
+  and dropped it at y ~2000; row files also spread their models further than it scaled them. Fixed with
+  `tools/zones/ApplyOverhaulLooks.lua` (now: scale back from the JSON, Color / Material / Transparency for all 3,354
+  meshes - 0 missing, collision) + a per-model rescale of the kit rows (all within 2% of their JSON size).
+- **Collision (heads-up both):** plants / shells (joined meshes spanning the island) and glow / see-through pieces:
+  CanCollide + CanQuery off; island undersides: no collide; everything else: PreciseConvexDecomposition.
+- **The six egg islands swapped in:** each mesh island lined up on its Part island by `Island_Top` (same size to 0.1)
+  and turned 180 degrees; every portal lands ~4 studs from its `IslandWiring` ReturnHome. Top-level folders renamed for
+  Ambience (`Island_Top`, `Island_Underside`, `Vegetation`). Part islands -> `ServerStorage.Old_WorldRedesign_Parts`
+  (their SurfaceGui sign labels went with them: the new landmarks carry 3D text). WorldRedesign 112,735 -> 21,248 parts.
+- Playtest: standing on all six arrivals (no falling), all 162 egg spots sit on the new ground (<= 0.2 studs), Food
+  Court seen in game, no errors.
+- Staged, not swapped: `ServerStorage.Overhaul.CentralHub` (needs M4 + HubLookalike tags on its portal / shop / boards
+  so HubMap parks them, else they double up), `ServerStorage.Overhaul.Models.*` (firm stages, hub buildings, props,
+  trees ...: each swap needs the names scripts look up). Hub island is 2.1M tris: lighter foliage first.
 
 ## 2026-10-26 — crnuch, local session (side session): the overhaul models exported as .fbx
 - crnuch: "go export them". New `tools/blender/overhaul/export_models.py` builds every overhaul model on its own (the

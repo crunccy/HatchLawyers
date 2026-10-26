@@ -15,6 +15,22 @@ The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_
   Garden half-stud grid as on the Parts. No mesh is over 19,500 triangles (a MeshPart takes 20,000).
 - Units: 1 Blender metre = 1 stud. The FBX axis change makes Blender (x, y, z) -> Roblox (x, z, -y).
 
+## Installed 2026-10-26
+- The six egg islands are these meshes now: `Workspace.WorldRedesign.<BriefcaseBay|PetPark|BrainrotZone|FoodCourt|
+  OceanShore|SpaceBase>` (top-level `Island_Top` / `Island_Underside` / `Water` / `Landmarks` / `Vegetation` for
+  Ambience; the Part versions are in `ServerStorage.Old_WorldRedesign_Parts`). Lined up on the Part islands by their
+  `Island_Top`, turned 180 degrees (portals land on each `IslandWiring.<zone>.ReturnHome`, ~4 studs).
+- Staged, not in the world: `ServerStorage.Overhaul.CentralHub` (the hub island, at the hub's spot: waits for M4 + the
+  HubLookalike tagging) and `ServerStorage.Overhaul.Models.<group>` (the kit models, each at its true size).
+
+## What the importer does (seen 2026-10-26)
+- It picks its own scale per file (2x for an island, up to 200x for a row of props) and turns the file 180 degrees.
+- In a row file the models' positions get a different scale from their shapes: scale each model to its own JSON size
+  (`ApplyOverhaulLooks.lua` scales the whole file - right for the islands, whose pieces share one origin - then each kit
+  model was rescaled on its own, 2026-10-26).
+- Precise collision is slow: run the looks script as a background thread (`task.spawn`) and read its progress from an
+  attribute, or the MCP call times out while Studio works.
+
 ## Import (crnuch's Studio: meshes must be uploaded from the place owner's account)
 1. Studio -> Import 3D -> pick `exports/overhaul/<group>.fbx`. Keep the meshes separate (don't merge), anchored.
    Check one model's size against its `min` / `max` in the JSON (studs); if it came in 100x off, set the importer's

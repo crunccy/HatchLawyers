@@ -1,50 +1,112 @@
--- tools/zones/ApplyOverhaulLooks.lua - after crnuch imports an exports/overhaul/<group>.fbx with Studio's 3D importer,
--- this sets every MeshPart's Color / Material / Transparency / Reflectance from tools/zones/overhaul/<group>.json (the
--- .fbx carries the shapes and the stud UVs; the looks live in the JSON). Plastic = studded: MaterialService.BrickStuds
--- (the Plastic override) lays the GaG studs through the mesh's UVs. Anchors everything, renames "Foo.001" back to "Foo".
--- Run in Edit mode (Studio MCP execute_luau or the command bar) with LOOKS = the JSON text, ROOT = the imported model.
--- Prints what it set and any mesh it couldn't find. One undo step.
+-- tools/zones/ApplyOverhaulLooks.lua - after crnuch imports exports/overhaul/<group>.fbx with Studio's Import 3D (each lands
+-- in Workspace as a Model named <group>), this puts it right from tools/zones/overhaul/<group>.json:
+--   * SCALE: the importer picks its own size per file (2x .. 100x seen 2026-10-26) - the model is scaled back so 1 Blender
+--     metre = 1 stud again (checked against the JSON's sizes). It also turns the file 180 degrees: Blender (x, y, z) lands
+--     as Roblox (-x, z, y), so a Blender front (-Y) faces Roblox -Z, as the game wants.
+--   * LOOKS: Color / Material / Transparency / Reflectance per mesh (Plastic = studded by MaterialService.BrickStuds through
+--     the mesh's stud UVs), Anchored, "Foo.001" names back to "Foo".
+--   * COLLISION: scattered plants / shells (joined meshes spanning the island) and glow / see-through pieces don't collide or
+--     take raycasts (eggs land through them, as on the Part islands); the island's underside doesn't collide; everything
+--     else collides on its real shape (PreciseConvexDecomposition).
+-- Run in Edit mode (Studio MCP execute_luau) while `python3 -m http.server 8772` serves tools/zones/overhaul/; set GROUPS.
 local HttpService = game:GetService("HttpService")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
-local LOOKS = [[PASTE tools/zones/overhaul/<group>.json HERE]]
-local ROOT: Instance = workspace:WaitForChild("PASTE_IMPORTED_MODEL_NAME")
+local GROUPS = { "PASTE", "GROUP", "NAMES" }
+local URL = "http://localhost:8772/"
+local SCATTER = { "Oak", "Blossom", "Hedge", "Pine", "Bush", "Palm", "Tuft", "Topiary", "Tree", "Canopy", "OceanShell", "OceanStar",
+	"OceanDrift", "Coral", "Conch", "OceanFan", "OceanBrain", "Fern", "Flower", "Daisy", "Grass", "Lily", "Lotus", "Ivy", "Moss",
+	"Seaweed", "Leaf", "Pebble" }
+local SOFT_LOOKS = { "water", "foam", "glow", "beam", "glass", "portal_", "mist", "cloud", "neon" }
 
-local info = HttpService:JSONDecode(LOOKS)
-local rec = ChangeHistoryService:TryBeginRecording("Overhaul looks: " .. tostring(info.group))
-local set, missing = 0, {}
-
-local function find(scope: Instance, names: { string }): BasePart?
-	for _, n in names do
-		local hit = scope:FindFirstChild(n, true)
-		if hit and hit:IsA("BasePart") then
-			return hit
+local function has(s: string, list: { string }): boolean
+	for _, k in list do
+		if string.find(s, k, 1, true) then
+			return true
 		end
 	end
-	return nil
+	return false
 end
 
-for key, model in info.models do
-	local scope = ROOT:FindFirstChild(key, true) or ROOT -- (the importer keeps each model's empty as a Model)
-	for _, m in model.meshes do
-		local alt = string.gsub(m.fbx_name, "%.", "_") -- (in case the importer swapped the dot)
-		local part = find(scope, { m.fbx_name, alt, m.name })
-		if not part then
-			table.insert(missing, key .. "/" .. m.fbx_name)
-			continue
-		end
-		part.Name = m.name
-		part.Color = Color3.fromRGB(m.color[1], m.color[2], m.color[3])
-		part.Material = Enum.Material[m.material]
-		part.MaterialVariant = ""
-		part.Transparency = m.transparency
-		part.Reflectance = m.reflectance
-		part.Anchored = true
-		part.CastShadow = m.material ~= "Neon" and m.transparency < 0.5
-		set += 1
+local function apply(group: string): string
+	local root = workspace:FindFirstChild(group) :: Model?
+	if not root then
+		return group .. ": not in Workspace"
 	end
+	local info = HttpService:JSONDecode(HttpService:GetAsync(URL .. group .. ".json"))
+	local lo, hi = { math.huge, math.huge, math.huge }, { -math.huge, -math.huge, -math.huge }
+	for _, e in info.models do
+		for i = 1, 3 do
+			lo[i] = math.min(lo[i], e.min[i] + e.origin[i])
+			hi[i] = math.max(hi[i], e.max[i] + e.origin[i])
+		end
+	end
+	local want = Vector3.new(hi[1] - lo[1], hi[3] - lo[3], hi[2] - lo[2]) -- (Blender x, z, y extents)
+	local got = root:GetExtentsSize()
+	local k = math.max(got.X, got.Y, got.Z) / math.max(want.X, want.Y, want.Z)
+	if math.abs(k - 1) > 0.002 then
+		root:ScaleTo(root:GetScale() / k)
+	end
+	got = root:GetExtentsSize()
+	local byName: { [string]: BasePart } = {}
+	for _, d in root:GetDescendants() do
+		if d:IsA("BasePart") then
+			byName[d.Name] = d
+		end
+	end
+	local set, missing, n = 0, {}, 0
+	for key, model in info.models do
+		local scatter = has(key, SCATTER)
+		local under = string.find(key, "Underside", 1, true) ~= nil
+		for _, m in model.meshes do
+			local part = byName[m.fbx_name] or byName[m.name]
+			if not part then
+				table.insert(missing, m.fbx_name)
+				continue
+			end
+			part.Name = m.name
+			part.Color = Color3.fromRGB(m.color[1], m.color[2], m.color[3])
+			part.Material = Enum.Material[m.material]
+			part.MaterialVariant = ""
+			part.Transparency = m.transparency
+			part.Reflectance = m.reflectance
+			part.Anchored = true
+			local soft = m.material == "Neon" or m.transparency > 0 or has(string.lower(m.look), SOFT_LOOKS)
+			part.CastShadow = not soft
+			if scatter or soft then
+				part.CanCollide, part.CanQuery, part.CanTouch = false, false, false
+			elseif under then
+				part.CanCollide, part.CanTouch = false, false
+			else
+				part.CanCollide = true
+				pcall(function()
+					(part :: MeshPart).CollisionFidelity = Enum.CollisionFidelity.PreciseConvexDecomposition
+				end)
+			end
+			set += 1
+			n += 1
+			if n % 25 == 0 then
+				task.wait()
+			end
+		end
+	end
+	for _, d in root:GetDescendants() do -- (models: "IslDaisy.001" -> "IslDaisy")
+		if d:IsA("Model") then
+			d.Name = (string.gsub(d.Name, "%.%d+$", ""))
+		end
+	end
+	return ("%s: scaled 1/%.3f -> (%.1f, %.1f, %.1f) want (%.1f, %.1f, %.1f); %d meshes set, %d not found %s"):format(group, k,
+		got.X, got.Y, got.Z, want.X, want.Y, want.Z, set, #missing, table.concat(missing, ", ", 1, math.min(#missing, 8)))
+end
+
+local rec = ChangeHistoryService:TryBeginRecording("Overhaul imports: scale, looks, collision")
+local report = {}
+for _, g in GROUPS do
+	local ok, msg = pcall(apply, g)
+	table.insert(report, if ok then msg else g .. " FAILED: " .. tostring(msg))
 end
 if rec then
 	ChangeHistoryService:FinishRecording(rec, Enum.FinishRecordingOperation.Commit)
 end
-print(("[looks] %s: %d meshes set, %d not found %s"):format(info.group, set, #missing, table.concat(missing, ", ", 1, math.min(#missing, 12))))
+print(table.concat(report, "\n"))
+return table.concat(report, "\n")
