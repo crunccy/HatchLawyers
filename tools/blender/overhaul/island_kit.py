@@ -467,6 +467,7 @@ def settle_dressing(scenery=()):
 def begin_clear():
     """Fresh lists for a new island / hub run."""
     del FOOT[:], COLS[:], PLANTS[:], TOPS[:], DRESS[:]
+    _SCB.clear()
     QUIET[0] = 0
     CLEARED.clear()
     CLEARED.update(cols_shrunk=0, cols_dropped=0, plants_dropped=0)
@@ -542,16 +543,35 @@ def _clear_col(x, y, h, w, d, yaw, kind):
 
 
 LAST_TOP = [0.0]
+_SCB = {}
+
+
+def _scenery_bvh():
+    """The running v2 island's classic scenery mesh (sc: cliffs, pool rims, terraces ...) as (bvh, verts, faces), rebuilt
+    only when it has grown."""
+    from mathutils.bvhtree import BVHTree
+    sc = CURRENT["g"].get("sc")
+    bm = getattr(sc, "bm", None)
+    if bm is None or not bm.is_valid:
+        return None
+    n = len(bm.faces)
+    if _SCB.get("n") != n:
+        vs = [v.co.copy() for v in bm.verts]
+        bm.verts.index_update()
+        fs = [[v.index for v in f.verts] for f in bm.faces]
+        _SCB.update(n=n, t=(BVHTree.FromPolygons(vs, fs), vs, fs))
+    return _SCB["t"]
 
 
 def settle_tops():
     """After the island is built: take away what a column stands on its top where it runs into a TALLER neighbour column,
     a landmark or another top piece (the frame puts it at the column's centre and never looks round)."""
-    kept = []
+    kept, scb = [], _scenery_bvh()
     for ci, parts, new, H, z0 in reversed(TOPS):
         core = _shrink(H, 0.3)
         hit = (any(_overlap(core, f[1]) for f in FOOT) or any(_overlap(core, kp) for kp in kept) or
-               any(j != ci and top > z0 + 0.4 and _overlap(core, _shrink(r, 0.3)) for j, (r, top) in enumerate(COLS)))
+               any(j != ci and top > z0 + 0.4 and _overlap(core, _shrink(r, 0.3)) for j, (r, top) in enumerate(COLS)) or
+               bool(scb) and _runs_into(_bvh(parts, new), scb, z0))  # (the real rock: a taller neighbour, a rim stone)
         if hit:
             _undo(parts, new)
             CLEARED["tops_dropped"] = CLEARED.get("tops_dropped", 0) + 1
@@ -578,8 +598,10 @@ def clear_plant(m, x, y, z, roll, lean):
         return r
     H = _hull([(p.x, p.y) for p in pts])
     core = _shrink(H, 0.3)  # (touching is fine, running into is not)
+    scb = _scenery_bvh()
     why = ("on_landmark" if any(_overlap(core, f[1]) for f in FOOT) else "in_cliff" if any(_overlap(core, c, 0.4) for c, _ in COLS)
-           else "on_plant" if any(_overlap(core, p) for p in PLANTS) else None)
+           else "on_plant" if any(_overlap(core, p) for p in PLANTS)
+           else "in_rock" if scb and _runs_into(_bvh(parts, new), scb, min(p.z for p in pts)) else None)
     if why:
         _undo(parts, new)
         CLEARED["plants_dropped"] += 1
@@ -592,10 +614,103 @@ def clear_plant(m, x, y, z, roll, lean):
 CLEAR_OVERRIDES = {"colfn": clear_colfn, "plant": clear_plant}  # (for run_island on the v2-frame islands)
 
 
-def run_island(script, out, overrides=None, argv=("norender",), capture_cams=False):
+def clear_cliff(cliff_column, mod):
+    """Wrap osv2_detail.cliff_column (Ocean Shore's + Briefcase Bay's cliffs; mod = that module, whose `rng` it uses): a
+    column that would cut into a landmark already built is rebuilt smaller with a private random, or dropped - its own
+    call still runs (into scratch meshes) so the island's random rolls don't change."""
+    import hl_classic as CL
+
+    def w(m, veg, x, y, z0, h, wd, d, yaw, cap=True, plants=True):
+        reach = lambda s: _rect(x, y, wd * s * 0.68 + 0.4, d * s * 0.68 + 0.4, yaw)
+        if not any(_overlap(reach(1.0), f[1], 0.6) for f in FOOT):
+            return cliff_column(m, veg, x, y, z0, h, wd, d, yaw, cap, plants)
+        snap = _snap()
+        QUIET[0] += 1
+        try:
+            cliff_column(CL.ClassicMesh("_Cleared", None), CL.ClassicMesh("_Cleared", None), x, y, z0, h, wd, d, yaw, cap, plants)
+        finally:
+            QUIET[0] -= 1
+            _undo(*_added(snap)[1:])
+        for s in (0.85, 0.7, 0.55, 0.4):
+            if not any(_overlap(reach(s), f[1], 0.6) for f in FOOT):
+                saved = mod.rng
+                mod.rng = random.Random(int(abs(x) * 1000 + abs(y) * 7))
+                try:
+                    CLEARED["cols_shrunk"] = CLEARED.get("cols_shrunk", 0) + 1
+                    return cliff_column(m, veg, x, y, z0, h * (0.7 + 0.3 * s), wd * s, d * s, yaw, cap, plants)
+                finally:
+                    mod.rng = saved
+        CLEARED["cols_dropped"] = CLEARED.get("cols_dropped", 0) + 1
+        return z0  # (nothing stands there now: whatever goes "on top" goes on the ground)
+    return w
+
+
+def settle_landmarks(labels, scenery, step=0.5, reach=6.0):
+    """After the island is built: slide each decorative landmark named in labels (no gameplay marker on it!) the shortest
+    way (16 directions, `step` up to `reach` studs) that takes it clear of the named scenery objects and the other
+    landmarks (0.4+ above its base). Its pieces move with it. Returns {label: offset Vector} of those that moved."""
+    from mathutils.bvhtree import BVHTree
+    sc = []
+    for nm in scenery:
+        ob = bpy.data.objects.get(nm)
+        if ob and ob.type == "MESH":
+            sc.append((BVHTree.FromPolygons([ob.matrix_world @ v.co for v in ob.data.vertices], [list(p.vertices) for p in ob.data.polygons]),
+                       [ob.matrix_world @ v.co for v in ob.data.vertices], [list(p.vertices) for p in ob.data.polygons]))
+    moved = {}
+    for i, f in enumerate(FOOT):
+        if f[0] not in labels or len(f) < 6:
+            continue
+        _, vs, fs = _bvh(f[4], f[5])
+        if not fs:
+            continue
+        z0 = f[2]
+        others = [_bvh(o[4], o[5]) for j, o in enumerate(FOOT) if j != i and len(o) >= 6 and _overlap(o[1], f[1], reach + 1)]
+
+        def hits(off):
+            me = (BVHTree.FromPolygons([v + off for v in vs], fs), [v + off for v in vs], fs)
+            return any(_runs_into(me, t, z0) for t in sc + others)
+        if not hits(Vector()):
+            continue
+        best = None
+        r = step
+        while r <= reach + 1e-6 and best is None:
+            for k in range(16):
+                a = k / 16 * math.tau
+                off = Vector((math.cos(a) * r, math.sin(a) * r, 0.0))
+                if not hits(off):
+                    best = off
+                    break
+            r += step
+        if best is None:
+            print("[island] could not slide", f[0], "clear within", reach)
+            continue
+        _move(f[4], f[5], best)
+        FOOT[i] = (f[0], [(x + best.x, y + best.y) for x, y in f[1]], f[2], f[3], f[4], f[5])
+        moved[f[0]] = best
+        print("[island] slid", f[0], "by", tuple(round(c, 2) for c in best))
+    return moved
+
+
+def _move(parts, new, off):
+    """Translate one piece (its tagged vertices in the open meshes + its new objects)."""
+    for k, pid in parts:
+        if k not in O.BMS:
+            continue
+        bm = O.BMS[k][0]
+        lay = bm.verts.layers.int.get("piece")
+        for v in bm.verts:
+            if v[lay] == pid:
+                v.co += off
+    for nm in new:
+        ob = bpy.data.objects.get(nm)
+        if ob:
+            ob.location += off
+
+
+def run_island(script, out, overrides=None, argv=("norender",), capture_cams=False, post=None):
     """Run an island's v2 build script unchanged: no .blend save, its JSON writes into out, no renders of its own.
     overrides = {name: fn} swaps functions the script defines itself (their defs are renamed in the source text it
-    runs; the file is untouched). capture_cams: let the script's own render loop run with K.render recording each
+    runs; the file is untouched). post(g) runs after the script, before the dressing is settled. capture_cams: let the script's own render loop run with K.render recording each
     camera instead of rendering (the v2 frame builds its cameras inside finish())."""
     script_dir = os.path.dirname(script)
     real_open = builtins.open
@@ -621,6 +736,8 @@ def run_island(script, out, overrides=None, argv=("norender",), capture_cams=Fal
         K.render = lambda scene, cam, path, w, h, hide=(): CAPTURED.append((cam.name, path, w, h))
     try:
         exec(compile(src, script, "exec"), g)
+        if post:  # (the island's own last fixes: decorative landmarks slid clear of the rocks ...)
+            post(g)
         if TOPS:
             settle_tops()
         settle_dressing()

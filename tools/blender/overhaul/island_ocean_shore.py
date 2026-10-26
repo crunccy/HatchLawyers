@@ -268,6 +268,9 @@ def patch():
     BD, OD, OP = IK.patch_v2_common()  # (keeps Ocean Shore's own colours: grey cliffs ...)
     OD.brain_coral, OD.tube_coral, OD.seaweed, OD.conch, OD.sand_dollar = brain_coral, tube_coral, seaweed, conch, sand_dollar
     OD.shipwreck2 = IK.landmark(shipwreck2, "shipwreck")  # (its real footprint: loose palms / bushes keep off it)
+    if not getattr(OD.cliff_column, "_cleared", False):  # (cliff columns keep off the portal + what's built before them)
+        OD.cliff_column = IK.clear_cliff(OD.cliff_column, OD)
+        OD.cliff_column._cleared = True
     for nm, fn in (("coral", coral), ("fan_coral", fan_coral), ("shell", shell), ("starfish", starfish), ("pebbles", pebbles), ("driftwood", driftwood)):
         setattr(OP, nm, fn)
     OP.tuft = lambda m, x, y, z0, s=1.0, look=None: IK.grass_clump(m, x, y, z0, s)
@@ -275,10 +278,15 @@ def patch():
     OP.palm = lambda m, x, y, z0=0.0, h=None, lean=None, kind=None, fronds=None: IK.tree(m, x, y, z0, (h or 16.0) / 16.0 * 1.2, "palm")
 
 
+def post(g):
+    """After the v2 script: the shipwreck (decoration) slides clear of the rocks it was beached into (crnuch: "fix it")."""
+    IK.settle_landmarks(("shipwreck",), ("Scenery_Rocks", "Landmarks"))
+
+
 def main():
     patch()
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT)
+    g = IK.run_island(SCRIPT, OUT, post=post)
     O.finish()
     O.stats(skip=("Preview", "Scene", "Studs", "Sky_", "Label", "OSV2", "Diagram", "Egg_Spot"))
     IK.render_cams(g, OUT, "ocean_")

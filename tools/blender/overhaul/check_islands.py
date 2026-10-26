@@ -35,7 +35,11 @@ def by_design(label, other, height):
             "observatory" in lab and "observatory_dome" in other or
             "planter" in lab and other.startswith(("tree", "scenery Hub")) and "Trunk" in other or
             "lighthouse" in lab and other == "scenery Lighthouse_Beam" or  # (its own light beam)
-            "portal" in lab and other.startswith("tree IslPalm") and height <= 2.0)  # (the palms planted at its feet)
+            "portal" in lab and other.startswith("tree IslPalm") and height <= 2.0 or  # (the palms planted at its feet)
+            "portal" in lab and other == "scenery Landmarks" and height <= 2.0 or  # (Briefcase Bay's arch: its footing set in the plaza)
+            "lighthouse" in lab and other == "scenery Scenery_Rocks" and height <= 1.5 or  # (its rock base on the headland rock)
+            lab.startswith(("ferry", "sailboat")) and other == "scenery Island_Top" or  # (the keel under the water, on the basin floor)
+            lab.startswith("driftwood") and "driftwood" in other)  # (logs washed up across each other)
 CNT = itertools.count(1)
 
 
@@ -48,8 +52,8 @@ def wrap_all():
             continue
         for nm, fn in list(vars(mod).items()):
             code = getattr(fn, "__code__", None)
-            if not code or HERE not in code.co_filename or getattr(fn, "_wrapped", False):
-                continue
+            if not code or HERE not in code.co_filename or getattr(fn, "_wrapped", False) or nm in ("cliff_column", "rope"):
+                continue  # (scenery builders the islands wrap: what a cliff column grows on top is not a landmark)
 
             def w(*a, _fn=fn, _nm=nm, **k):
                 with O.at(prefix="LM%05d_%s__" % (next(CNT), _nm[:16])):
@@ -72,7 +76,7 @@ def build():
     over = {"pet": ("pond_rim", "park_lamp", "floor_bit", "pond_garden"), "rot": ("floor_bit", "mushroom", "crystal", "goo_garden"),
             "food": ("floor_bit", "soda_garden"), "space": ("floor_bit",)}.get(ISL, ())
     clear = IK.CLEAR_OVERRIDES if ISL in ("pet", "rot", "food", "space") else {}  # (as the island scripts build them)
-    return IK.run_island(M.SCRIPT, OUT, overrides={**clear, **{k: getattr(M, k) for k in over}})
+    return IK.run_island(M.SCRIPT, OUT, overrides={**clear, **{k: getattr(M, k) for k in over}}, post=getattr(M, "post", None))
 
 
 def groups():

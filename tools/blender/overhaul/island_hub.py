@@ -50,11 +50,11 @@ DEFERRED = []  # built after the hub script (its stud pass would stud them)
 
 def where(m, x, y, rot=0.0, z=0.0):
     """A kit call's (x, y) in world space: m is a classic mesh (world coords) or a kit Frame (local coords). On the hub's
-    Garden_Props (gazebo terraces, lookout decks, garden paths) it stands on their top, not sunk into them."""
+    Garden_Props (gazebo terraces, lookout decks, garden paths) and the raised Plaza_Paving it stands on their top."""
     if isinstance(m, K.Frame):
         wx, wy = m.p(x, y)
         return wx, wy, m.z + z, m.rot + rot
-    if getattr(m, "name", "") == "Garden_Props":
+    if getattr(m, "name", "") in ("Garden_Props", "Plaza_Paving"):
         z += prop_top(m, x, y)
     return x, y, z, rot
 

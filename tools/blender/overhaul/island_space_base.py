@@ -378,10 +378,15 @@ def patch():
         setattr(SB, nm, IK.landmark(fn, nm))  # (its real footprint: the cliffs + ring plants keep off it)
 
 
+def post(g):
+    """After the v2 script: the robot factory slides in off the island's lip (it hung over the edge)."""
+    IK.settle_landmarks(("robot_factory",), ("Island_Underside",))
+
+
 def main():
     patch()
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT, overrides={**IK.CLEAR_OVERRIDES, "floor_bit": floor_bit}, argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",),
+    g = IK.run_island(SCRIPT, OUT, post=post, overrides={**IK.CLEAR_OVERRIDES, "floor_bit": floor_bit}, argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",),
                       capture_cams=True)
     O.finish()
     print("[island] kept clear of the landmarks:", IK.CLEARED)

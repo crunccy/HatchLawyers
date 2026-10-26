@@ -311,8 +311,14 @@ Claim big work here before starting (who · what · since), push the claim, remo
   `check_models.py -- clip` 0. Floating 0, z-fighting 0, run_checks ALL PASSED.
 - Renders: all six islands + the hub re-rendered; before / afters `art/overhaul/fixes/overlap_*`; TODAY / NEW pairs
   recomposed (Briefcase Bay's now included). Rule in CLAUDE.md (MODEL OVERHAUL).
-- Open: Bay's ferry + gavel against rocks and Ocean Shore's portal in its rock ring are left as the approved v2 placed them
-  - crnuch's call whether to move them; the hub's lamps / benches sit 0.4 into the raised plaza paving.
+- **Then crnuch: "fix it"** (the v2-placed leftovers): Ocean Shore + Briefcase Bay cliff columns (`osv2_detail.cliff_column`,
+  wrapped by `IK.clear_cliff`) shrink / drop where they'd cut into a landmark built before them (Ocean Shore's portal: 11
+  shrunk, 11 dropped); decoration with no gameplay marker slides clear after the build (`IK.settle_landmarks`, an island
+  module's `post(g)`): Bay's giant gavel 1.5 off the cliff, Space Base's robot factory 4 in off the island's lip, Ocean
+  Shore's shipwreck clear of its cliff; Bay's ferry: the v2 mooring rope ran INTO the wheelhouse - it now ties on at the
+  hull (`ferry_rope`); hub lamps / benches stand on the raised plaza paving. Plants + column-top treats are tested
+  against the real scenery mesh now (pond-rim rocks too). After: every island 0 at 1+ stud except the ferry's rope tie
+  (by design); before / afters `art/overhaul/fixes/overlap2_*`.
 
 ## 2026-10-25 — crnuch, local session (side session): the visual audit's polish items on the overhaul models
 - Blender only, nothing in Studio. Each item's result is under it in docs/VISUAL_AUDIT_2026-10-25.md ("Done"); before /

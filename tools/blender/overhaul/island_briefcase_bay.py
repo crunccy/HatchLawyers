@@ -383,6 +383,12 @@ def patch(g_modules):
     DT.bollard = lambda m, x, y, z: IK.bollard(m, x, y, z)
     DT.buoy = lambda m, x, y, z: IK.buoy(m, x, y, z)
     DT.lifebuoy_stand = lambda m, x, y, z, rot: IK.lifebuoy_stand(m, x, y, z, rot)
+    if not getattr(OD.rope, "_clipped", False):  # (the ferry's mooring rope ends at its hull, not inside the wheelhouse)
+        OD.rope = ferry_rope(OD.rope)
+        OD.rope._clipped = True
+    if not getattr(OD.cliff_column, "_cleared", False):  # (cliff columns keep off the landmarks built before them)
+        OD.cliff_column = IK.clear_cliff(OD.cliff_column, OD)
+        OD.cliff_column._cleared = True
     L = IK.landmark  # (each records its real footprint: loose trees / bushes / lamps that run into it are taken back)
     DT.giant_briefcase2 = L(giant_briefcase, "giant briefcase")
     DT.giant_gavel2 = L(giant_gavel, "giant gavel")
@@ -394,12 +400,35 @@ def patch(g_modules):
     DT.escape_portal_bb = L(escape_portal, "Return Home arch")
 
 
+def ferry_rope(rope):
+    """Wrap the v2 rope: the one from the pier to the ferry stops where it meets the ferry's hull (the v2 ran it into the
+    wheelhouse) - at the hull outline the ferry recorded (IK.FOOT), tied on just under the deck's edge."""
+    def w(m, a, b, *rest, **k):
+        f = next((f for f in IK.FOOT if f[0] == "ferry"), None)
+        if f is not None and IK._overlap([(b[0] - 0.1, b[1] - 0.1), (b[0] + 0.1, b[1] - 0.1), (b[0] + 0.1, b[1] + 0.1)], f[1]):
+            lo, hi = 0.0, 1.0  # (where a -> b enters the hull outline: bisection)
+            inside = lambda t: IK._overlap([(a[0] + (b[0] - a[0]) * t + dx, a[1] + (b[1] - a[1]) * t + dy) for dx, dy in ((-0.01, -0.01), (0.01, -0.01), (0, 0.01))], f[1])
+            for _ in range(24):
+                mid = (lo + hi) / 2
+                lo, hi = (lo, mid) if inside(mid) else (mid, hi)
+            t = min(1.0, hi + 0.2 / max(1e-6, math.hypot(b[0] - a[0], b[1] - a[1])))  # (0.2 into the hull's side)
+            b = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, 1.9)  # (just under the deck's edge)
+        return rope(m, a, b, *rest, **k)
+    return w
+
+
+def post(g):
+    """After the v2 script: the giant gavel (decoration: no gameplay marker) slides clear of the cliff its plinth was set
+    into (crnuch 2026-10-26: "fix it")."""
+    IK.settle_landmarks(("giant gavel",), ("Scenery_Rocks", "Island_Top", "Landmarks"))
+
+
 def main():
     import importlib
     mods = {nm: importlib.import_module(nm) for nm in ("bbv2_parts", "bbv2_detail")}
     patch(mods)
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT)
+    g = IK.run_island(SCRIPT, OUT, post=post)
     O.finish()
     O.stats(skip=("Preview", "Scene", "Studs", "Sky_", "Label", "BBV2", "Diagram", "Egg_Spot"))
     keys = IK.render_cams(g, OUT, "bay_", only=ONLY)
