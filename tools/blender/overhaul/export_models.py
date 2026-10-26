@@ -305,12 +305,13 @@ def write_group(group):
         ob.hide_set(False)
         ob.hide_viewport = False
         ob.select_set(True)
-    path = os.path.join(OUT, group + ".fbx")
+    name = group + ("_phone" if PHONE else "_FULL")  # (a new name each budget: Studio's importer reused an old file of the same name)
+    path = os.path.join(OUT, name + ".fbx")
     bpy.ops.export_scene.fbx(filepath=path, use_selection=True, object_types={"EMPTY", "MESH"}, apply_unit_scale=True,
                              axis_forward="-Z", axis_up="Y", mesh_smooth_type="FACE", use_mesh_modifiers=False,
                              add_leaf_bones=False, bake_anim=False, path_mode="AUTO")
     meshes = [m for e in MODELS.values() for m in e["meshes"]]
-    info = {"group": group, "fbx": "exports/overhaul/" + group + ".fbx", "made": "2026-10-26",
+    info = {"group": group, "fbx": "exports/overhaul/" + name + ".fbx", "made": "2026-10-26",
             "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
             "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
             "models": MODELS}

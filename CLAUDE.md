@@ -317,10 +317,12 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   rebuilding an island). In Studio, admin `/islands on|off` flips it for a playtest. No hub firms yet.
   Before-wiring copies: `ServerStorage.Backups_2026-10-20`, git tag `backup-2026-10-20-before-island-wiring`.
   environment-redesign/README.md has the details.
-  **The six egg islands are the OVERHAUL MESHES since 2026-10-26** (crnuch imported the .fbx; tools/zones/overhaul/README.md):
-  `WorldRedesign.<island>` = MeshParts (Plastic = GaG studs through their UVs; plants don't collide or take raycasts,
-  solids collide precisely); the Part versions are in `ServerStorage.Old_WorldRedesign_Parts`. The hub island is still
-  Parts (its mesh version waits in `ServerStorage.Overhaul.CentralHub`); the kit models in `ServerStorage.Overhaul.Models`.
+  **ALL SEVEN ISLANDS (hub included) are the OVERHAUL MESHES since 2026-10-26**, phone / tablet budget versions (crnuch
+  imported the .fbx; tools/zones/overhaul/README.md): `WorldRedesign.<island>` = MeshParts (Plastic = GaG studs through
+  their UVs; plants / glow don't collide or take raycasts, small props box collision, ground + buildings precise). The
+  hub's copies of the pieces HubMap moves carry the `HubLookalike` tag (parked at start, as before). Part versions in
+  `ServerStorage.Old_WorldRedesign_Parts`; the kit models wait in `ServerStorage.Overhaul.Models`. New .fbx imports get a
+  new file name each time (Studio's importer reused an old file of the same name).
   **The OLD MAIN ISLAND is archived (crnuch's call 2026-10-26):** its scenery (Ground, IslandDecor, Shrubbery, IslandEdge,
   ZoneLandmarks, Baseplate, the Hub's street / plaza / trees / fountain, `ArcadePier.Pier`, the zone lane `Zones.<zone>`,
   the License Office shell) is in `ServerStorage.Old_MainIsland` (each folder's `From` attribute = where it came from).

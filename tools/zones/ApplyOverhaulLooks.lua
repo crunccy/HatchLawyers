@@ -11,7 +11,7 @@
 --     buildings, big landmarks) on its real shape (PreciseConvexDecomposition). Ground cover and tiny details cast no
 --     shadow. RenderFidelity stays Automatic (Roblox lowers the detail with distance).
 -- Run in Edit mode (Studio MCP execute_luau) while `python3 -m http.server 8772` serves tools/zones/overhaul/; set GROUPS.
--- Precise collision is slow: run it in a task.spawn and read the OverhaulLooks attribute, or the MCP call times out.
+-- It runs in a task.spawn (precise collision takes minutes): read workspace's OverhaulLooks attribute for progress.
 local HttpService = game:GetService("HttpService")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
@@ -52,6 +52,22 @@ local function apply(group: string): string
 		root:ScaleTo(root:GetScale() / k)
 	end
 	got = root:GetExtentsSize()
+	for _, d in root:GetDescendants() do -- (models: "IslDaisy.001" -> "IslDaisy")
+		if d:IsA("Model") then
+			d.Name = (string.gsub(d.Name, "%.%d+$", ""))
+		end
+	end
+	for key, e in info.models do -- (a row file: the importer spreads the models further than it scales them - each to its own size)
+		local m = if e.origin[1] ~= 0 then root:FindFirstChild((string.gsub(key, "%.%d+$", ""))) else nil
+		if m and m:IsA("Model") then
+			local w = Vector3.new(e.max[1] - e.min[1], e.max[3] - e.min[3], e.max[2] - e.min[2])
+			local g = m:GetExtentsSize()
+			local r = math.max(g.X, g.Y, g.Z) / math.max(w.X, w.Y, w.Z)
+			if math.abs(r - 1) > 0.002 then
+				m:ScaleTo(m:GetScale() / r)
+			end
+		end
+	end
 	local byName: { [string]: BasePart } = {}
 	for _, d in root:GetDescendants() do
 		if d:IsA("BasePart") then
@@ -96,34 +112,22 @@ local function apply(group: string): string
 			end
 		end
 	end
-	for _, d in root:GetDescendants() do -- (models: "IslDaisy.001" -> "IslDaisy")
-		if d:IsA("Model") then
-			d.Name = (string.gsub(d.Name, "%.%d+$", ""))
-		end
-	end
-	for key, e in info.models do -- (a row file: the importer spreads the models further than it scales them - each to its own size)
-		local m = if e.origin[1] ~= 0 then root:FindFirstChild((string.gsub(key, "%.%d+$", ""))) else nil
-		if m and m:IsA("Model") then
-			local w = Vector3.new(e.max[1] - e.min[1], e.max[3] - e.min[3], e.max[2] - e.min[2])
-			local g = m:GetExtentsSize()
-			local r = math.max(g.X, g.Y, g.Z) / math.max(w.X, w.Y, w.Z)
-			if math.abs(r - 1) > 0.002 then
-				m:ScaleTo(m:GetScale() / r)
-			end
-		end
-	end
 	return ("%s: scaled 1/%.3f -> (%.1f, %.1f, %.1f) want (%.1f, %.1f, %.1f); %d meshes set, %d not found %s"):format(group, k,
 		got.X, got.Y, got.Z, want.X, want.Y, want.Z, set, #missing, table.concat(missing, ", ", 1, math.min(#missing, 8)))
 end
 
-local rec = ChangeHistoryService:TryBeginRecording("Overhaul imports: scale, looks, collision")
-local report = {}
-for _, g in GROUPS do
-	local ok, msg = pcall(apply, g)
-	table.insert(report, if ok then msg else g .. " FAILED: " .. tostring(msg))
-end
-if rec then
-	ChangeHistoryService:FinishRecording(rec, Enum.FinishRecordingOperation.Commit)
-end
-print(table.concat(report, "\n"))
-return table.concat(report, "\n")
+workspace:SetAttribute("OverhaulLooks", "running")
+task.spawn(function() -- (precise collision takes minutes: read the OverhaulLooks attribute for progress)
+	local rec = ChangeHistoryService:TryBeginRecording("Overhaul imports: scale, looks, collision")
+	local report = {}
+	for _, g in GROUPS do
+		local ok, msg = pcall(apply, g)
+		table.insert(report, if ok then msg else g .. " FAILED: " .. tostring(msg))
+		workspace:SetAttribute("OverhaulLooks", ("running %d/%d\n%s"):format(#report, #GROUPS, table.concat(report, "\n")))
+	end
+	if rec then
+		ChangeHistoryService:FinishRecording(rec, Enum.FinishRecordingOperation.Commit)
+	end
+	workspace:SetAttribute("OverhaulLooks", "DONE\n" .. table.concat(report, "\n"))
+end)
+return "started: read workspace's OverhaulLooks attribute"

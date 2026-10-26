@@ -2,7 +2,7 @@
 
 The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_models.py` (crnuch: "go export them").
 
-- **`exports/overhaul/<group>.fbx`** (not in git: re-make them with the script): one file per group, each model an
+- **`exports/overhaul/<group>_phone.fbx`** (not in git: re-make them with the script; `_FULL` with `full`): one file per group, each model an
   empty holding its meshes, laid out in a row along X. Groups: `trees shack portal props hub gameplay minigames firms
   hall bay kit pet rot food ocean space` + one per island `island_<hub|bay|pet|rot|food|ocean|space>` (a whole island:
   its terrain / scenery / landmarks collections + the overhaul models, at the island's own origin).
@@ -16,13 +16,18 @@ The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_
 - Units: 1 Blender metre = 1 stud. After Studio's import a Blender (x, y, z) lands as Roblox (-x, z, y) (the importer
   turns it 180 degrees), so a Blender front (-Y) faces Roblox -Z.
 
-## Installed 2026-10-26
-- The six egg islands are these meshes now: `Workspace.WorldRedesign.<BriefcaseBay|PetPark|BrainrotZone|FoodCourt|
+## Installed 2026-10-26 (the phone / tablet budget versions)
+- ALL SEVEN ISLANDS are these meshes: `Workspace.WorldRedesign.<CentralHub|BriefcaseBay|PetPark|BrainrotZone|FoodCourt|
   OceanShore|SpaceBase>` (top-level `Island_Top` / `Island_Underside` / `Water` / `Landmarks` / `Vegetation` for
-  Ambience; the Part versions are in `ServerStorage.Old_WorldRedesign_Parts`). Lined up on the Part islands by their
-  `Island_Top`, turned 180 degrees (portals land on each `IslandWiring.<zone>.ReturnHome`, ~4 studs).
-- Staged, not in the world: `ServerStorage.Overhaul.CentralHub` (the hub island, at the hub's spot: waits for M4 + the
-  HubLookalike tagging) and `ServerStorage.Overhaul.Models.<group>` (the kit models, each at its true size).
+  Ambience). Put in by `tools/zones/SwapOverhaulIslands.lua`: lined up on what was there by `Island_Top`, turned 180
+  degrees (portals ~4 studs from each `IslandWiring.<zone>.ReturnHome`); the hub's copies of the pieces HubMap moves
+  onto it carry the `HubLookalike` tag (39 models), so HubMap parks them at start as it parked the Part hub's.
+- Archives: `ServerStorage.Old_WorldRedesign_Parts` (the Part islands, hub included), `ServerStorage.Old_Overhaul_FullDetail`
+  (the first full-detail mesh islands + kit; safe to delete once nobody wants them back).
+- Staged, not in the world: `ServerStorage.Overhaul.Models.<group>` (the kit models, each at its true size): firm stages,
+  hall pieces, gameplay pieces, props, trees - each swap needs the names scripts look up.
+- Phone / tablet budget: islands 5.2M -> 1.94M triangles (the hub 2.11M -> 0.80M), kit 0.70M -> 0.49M; Workspace went
+  from ~140k parts to ~3k. Roblox's own LOD (RenderFidelity Automatic) lowers distant meshes further.
 
 ## What the importer does (seen 2026-10-26)
 - It picks its own scale per file (2x for an island, up to 200x for a row of props) and turns the file 180 degrees.
@@ -35,10 +40,12 @@ The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_
 ## Import (crnuch's Studio: meshes must be uploaded from the place owner's account)
 1. Studio -> Import 3D -> pick `exports/overhaul/<group>.fbx`. Keep the meshes separate (don't merge), anchored.
    It lands in Workspace as a Model named <group>, at its own scale (see above).
-2. `python3 -m http.server 8772` in this folder, then run `tools/zones/ApplyOverhaulLooks.lua` (Studio MCP execute_luau,
-   Edit mode) with `GROUPS` set: scale back, looks, collision, `Foo.001` names. For a row file, rescale each model to its
-   own JSON size afterwards (see above).
-3. Swapping models into the game (firm stages, hub buildings, islands) is the install step after that: per model, by
+2. Serve this folder's JSONs under the imported names (`<group>_phone.json` copies) with `python3 -m http.server 8772`,
+   then run `tools/zones/ApplyOverhaulLooks.lua` (Studio MCP execute_luau, Edit mode) with `GROUPS` set: scale back (row
+   files per model), looks, phone collision, `Foo.001` names. It runs in the background: read workspace's
+   `OverhaulLooks` attribute.
+3. Islands: `tools/zones/SwapOverhaulIslands.lua`.
+4. Swapping kit models into the game (firm stages, hall, gameplay pieces) is the next install step: per model, by
    the names scripts look up (`Firm`, `Sign`, `Trigger`, `FloatRing1-3` ...), one at a time.
 
 Re-export: `Blender -b --factory-startup --python tools/blender/overhaul/export_models.py -- models [<group> ...]`

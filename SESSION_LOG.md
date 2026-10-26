@@ -60,9 +60,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   polish N1-N3, N5-N8, N10, N11 done 2026-10-25 (entry below). Open from the audit: M2-M5, N4, N9, the optional list.
   GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
   Exported as .fbx 2026-10-26 (entry below): next = crnuch imports, then the install; the hub island is heavy (2.1M tris).
-  Six egg islands = the overhaul meshes since 2026-10-26 (entry below); hub island + kit staged in ServerStorage.Overhaul.
-  **In progress 2026-10-26 (crnuch's side session): PHONE / TABLET BUDGET for the overhaul meshes** (crnuch: "optimize
-  it for phones and tablets especially", then add everything): decimated re-export, collision / shadow rules, hub swap.
+  ALL SEVEN ISLANDS = the overhaul meshes (phone budget) since 2026-10-26 (entries below); kit staged in ServerStorage.Overhaul.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -290,6 +288,25 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-26 — crnuch, local session (side session): phone / tablet budget + the hub island in
+- crnuch: "optimize it for phones and tablets especially" + "once you add everything you'll be done for the week".
+- **Budget (export_models.py `phone_budget`):** coplanar faces merged on every mesh (no visible change), foliage to 25%,
+  round props over 1,500 tris to 50%, undersides / foam / water to 40%. Islands 5.2M -> 1.94M tris (hub 2.11M -> 0.80M,
+  Bay 0.87M -> 0.28M, Ocean 0.71M -> 0.29M), kit 0.70M -> 0.49M. Before / after renders at play distance: the same picture.
+  Fixed on the way: gagstuds' "light" kept oak_light / pine_light / stone_light smooth (the two-tone bushes) - studded now.
+- **Studio rules (ApplyOverhaulLooks.lua):** tiny details (< 2 studs) don't collide or cast shadows, props < 12 studs box
+  collision, ground + buildings precise, ground cover casts no shadow; it now runs in the background (OverhaulLooks attr).
+- crnuch re-imported (as `<group>_phone.fbx`: under the old names Studio's importer brought the old full-detail meshes in
+  twice). **ALL SEVEN ISLANDS SWAPPED** with `tools/zones/SwapOverhaulIslands.lua`: six egg islands (portals ~4 studs from
+  ReturnHome), and **the hub island (heads-up mr.robe)**: lined up on the Part hub (top off 0.03, portal arch 4.6 studs),
+  its 39 copies of the pieces HubMap moves tagged `HubLookalike`, so HubMap parks them exactly as it parked the Part hub's
+  (M4 behaviour unchanged). Part hub -> `ServerStorage.Old_WorldRedesign_Parts`; the first full-detail meshes ->
+  `ServerStorage.Old_Overhaul_FullDetail`; the light kit -> `ServerStorage.Overhaul.Models` (sizes exact).
+- Playtest: `[HubMap] ... 25 models moved, 39 look-alike parts parked`, firm built, standing at the hub spawn, a firm lawn
+  and all six arrivals, 0 of 162 egg spots off the ground, no errors. Workspace: ~140k parts this morning -> 2,994.
+- Not done (the kit swaps, each with the names scripts use): firm stages + hall (FirmStages / FirmBuilder), the hub's
+  working pieces (portal, shop, belt, boards, counters, minigames, booths: mr.robe's hub wiring), props / trees.
 
 ## 2026-10-26 — crnuch, local session (side session): the overhaul islands are in the game
 - crnuch imported all 23 .fbx into Studio. The importer scaled each file its own way (2x-200x), turned it 180 degrees
