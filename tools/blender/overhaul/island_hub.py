@@ -31,6 +31,7 @@ import ohbuild as B
 from ohkit import at, box, cyl, lathe, sphere, tube, prism, poly, text
 import props as PR
 import trees as T
+import island_kit as IK  # (landmark footprints + loose dressing kept off them)
 import hub_license as HL
 import hub_services as HS
 import hub_gameplay as HG
@@ -48,11 +49,27 @@ DEFERRED = []  # built after the hub script (its stud pass would stud them)
 
 
 def where(m, x, y, rot=0.0, z=0.0):
-    """A kit call's (x, y) in world space: m is a classic mesh (world coords) or a kit Frame (local coords)."""
+    """A kit call's (x, y) in world space: m is a classic mesh (world coords) or a kit Frame (local coords). On the hub's
+    Garden_Props (gazebo terraces, lookout decks, garden paths) it stands on their top, not sunk into them."""
     if isinstance(m, K.Frame):
         wx, wy = m.p(x, y)
         return wx, wy, m.z + z, m.rot + rot
+    if getattr(m, "name", "") == "Garden_Props":
+        z += prop_top(m, x, y)
     return x, y, z, rot
+
+
+_TOPS = {}
+
+
+def prop_top(m, x, y):
+    """The top of the classic mesh m under (x, y) below 8 studs (a terrace, a deck, a path), 0 where it has nothing."""
+    from mathutils.bvhtree import BVHTree
+    n = len(m.bm.faces)
+    if _TOPS.get(id(m), (None, -1))[1] != n:
+        _TOPS[id(m)] = (BVHTree.FromBMesh(m.bm), n)
+    hit = _TOPS[id(m)][0].ray_cast(Vector((x, y, 8.0)), Vector((0, 0, -1)), 9.0)
+    return hit[0].z if hit[0] is not None and hit[0].z > 0.05 else 0.0
 
 
 def frame_at(F, z=0.0):
@@ -329,15 +346,16 @@ def fountain():
 
 
 def patch():
+    D = {"lamp": "lamp", "bench": "bench", "planter": "planter", "hedge": "hedge", "flowerbed": "bed", "bush": "bush", "rocks": "prop"}
     for nm, fn in (("lamp", lamp), ("bench", bench), ("planter", planter), ("hedge", hedge), ("flowerbed", flowerbed), ("bush", bush),
                    ("rocks", rocks), ("railing", railing), ("banner", banner)):
-        setattr(K, nm, fn)
-    BD.park_tree = park_tree
+        setattr(K, nm, IK.dressing(fn, D[nm]) if nm in D else fn)  # (loose dressing that runs into a building is taken back)
+    BD.park_tree = IK.dressing(park_tree, "tree")
     for nm, fn in (("license_building", license_building), ("upgrades", upgrades), ("egg_incubator", egg_incubator), ("shop", shop),
                    ("travel_portal", travel_portal), ("bigcase_terrace", bigcase_terrace), ("leaderboard", leaderboard), ("booth", booth),
                    ("wood_sign", wood_sign), ("lot_sign", lot_sign), ("statue_fountain", statue_fountain),
                    ("firm_main_street", firm(3)), ("firm_glass_office", firm(4)), ("firm_supreme_tower", firm(6))):
-        setattr(P, nm, fn)
+        setattr(P, nm, fn if nm in ("wood_sign", "travel_portal") else IK.landmark(fn, nm))  # (their real footprints)
 
 
 class _NoSave:
@@ -367,8 +385,11 @@ def run_hub():
     old_argv = sys.argv
     sys.argv = [HUB, "--", "norender"]
     g = {"__name__": "__main__", "__file__": HUB, "open": safe_open}
+    IK.begin_clear()
     try:
         exec(compile(real_open(HUB).read(), HUB, "exec"), g)
+        IK.settle_dressing(scenery=("Garden_Props",))
+        print("[island_hub] kept clear of the buildings:", IK.CLEARED)
     finally:
         bpy.ops.wm = wm
         sys.argv = old_argv

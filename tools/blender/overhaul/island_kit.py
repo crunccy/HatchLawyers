@@ -233,6 +233,365 @@ def in_egg_area(x, y, pad=3.0):
     return any(math.hypot(x - cx, y - cy) < R + pad for (cx, cy), R, _ in running("REGIONS", {}).values())
 
 
+# ------------------------------------------------------------------ nothing runs into the buildings (crnuch 2026-10-25)
+# The v2 frame keeps a cliff column / terrace / boulder / ring plant out of a landmark's circle by its CENTRE only, so wide
+# columns and plants grew into the buildings (and plants into the columns and each other). The adapters below fix that
+# without touching the v2 scripts: landmark builders record their real footprint (FOOT); clear_colfn() shrinks a column
+# that would cut into one (or drops it), clear_plant() drops a ring plant that lands on a landmark, a column or another
+# plant. Both still run the frame's own code with its random rolls, so everything else stays where the approved island has it.
+FOOT = []    # (label, 2D hull, z0, z1) per landmark built this run
+COLS = []    # (2D rect, top z) of the cliff columns / terraces / boulders kept
+TOPS = []    # (column index, parts, new objects, 2D hull, base z) of what each kept column stands on its top (settle_tops)
+PLANTS = []  # 2D hulls of the ring plants kept
+CLEARED = {"cols_shrunk": 0, "cols_dropped": 0, "plants_dropped": 0}
+
+
+def _hull(pts):
+    """2D convex hull (monotone chain), CCW."""
+    pts = sorted(set((round(x, 3), round(y, 3)) for x, y in pts))
+    if len(pts) < 3:
+        return pts
+    def half(seq):
+        h = []
+        for p in seq:
+            while len(h) >= 2 and (h[-1][0] - h[-2][0]) * (p[1] - h[-2][1]) - (h[-1][1] - h[-2][1]) * (p[0] - h[-2][0]) <= 0:
+                h.pop()
+            h.append(p)
+        return h
+    lo, hi = half(pts), half(reversed(pts))
+    return lo[:-1] + hi[:-1]
+
+
+def _overlap(A, B, gap=0.0):
+    """Do two convex polygons come closer than gap (separating-axis test)?"""
+    if len(A) < 3 or len(B) < 3:
+        return False
+    for P in (A, B):
+        for i in range(len(P)):
+            (x0, y0), (x1, y1) = P[i], P[(i + 1) % len(P)]
+            nx, ny = y1 - y0, x0 - x1
+            ln = math.hypot(nx, ny) or 1.0
+            nx, ny = nx / ln, ny / ln
+            a = [x * nx + y * ny for x, y in A]
+            b = [x * nx + y * ny for x, y in B]
+            if max(a) + gap < min(b) or max(b) + gap < min(a):
+                return False
+    return True
+
+
+def _shrink(P, d):
+    """A convex polygon pulled in by d toward its centroid (so touching isn't counted)."""
+    cx, cy = sum(x for x, _ in P) / len(P), sum(y for _, y in P) / len(P)
+    out = []
+    for x, y in P:
+        L = math.hypot(x - cx, y - cy) or 1.0
+        k = max(0.0, (L - d) / L)
+        out.append((cx + (x - cx) * k, cy + (y - cy) * k))
+    return out
+
+
+def _snap():
+    return {k: len(bm.verts) for k, (bm, _) in O.BMS.items()}, set(bpy.data.objects.keys())
+
+
+PIECE = itertools.count(1)
+
+
+def _added(snap):
+    """What was built since snap: world points, (mesh key, piece id) per open ohkit mesh (its new vertices are tagged
+    with the id, so taking a piece back never depends on vertex order), new object names."""
+    counts, names = snap
+    pts, parts, pid = [], [], next(PIECE)
+    for k, (bm, _) in O.BMS.items():
+        n0 = counts.get(k, 0)
+        if len(bm.verts) > n0:
+            lay = bm.verts.layers.int.get("piece") or bm.verts.layers.int.new("piece")
+            bm.verts.ensure_lookup_table()
+            for v in bm.verts[n0:]:
+                v[lay] = pid
+                pts.append(v.co.copy())
+            parts.append((k, pid))
+    new = [nm for nm in bpy.data.objects.keys() if nm not in names]
+    for nm in new:
+        ob = bpy.data.objects[nm]
+        if ob.type == "MESH":
+            pts += [ob.matrix_world @ v.co for v in ob.data.vertices]
+    return pts, parts, new
+
+
+def _undo(parts, new):
+    """Take back what _added listed (the tagged vertices of open meshes, the new objects)."""
+    import bmesh
+    for k, pid in parts:
+        if k not in O.BMS:  # (fused away since)
+            continue
+        bm = O.BMS[k][0]
+        lay = bm.verts.layers.int.get("piece")
+        dead = [v for v in bm.verts if v[lay] == pid]
+        if len(dead) == len(bm.verts):
+            bm.free()
+            del O.BMS[k]
+        elif dead:
+            bmesh.ops.delete(bm, geom=dead, context="VERTS")
+    for nm in new:
+        if nm in bpy.data.objects:
+            bpy.data.objects.remove(bpy.data.objects[nm])
+
+
+def _bvh(parts, new):
+    """A BVH of one piece (its tagged faces in the open meshes + its new objects), world coordinates."""
+    from mathutils.bvhtree import BVHTree
+    vs, fs = [], []
+    for k, pid in parts:
+        if k not in O.BMS:
+            continue
+        bm = O.BMS[k][0]
+        lay = bm.verts.layers.int.get("piece")
+        idx = {}
+        for f in bm.faces:
+            if all(v[lay] == pid for v in f.verts):
+                ids = []
+                for v in f.verts:
+                    if v not in idx:
+                        idx[v] = len(vs)
+                        vs.append(v.co.copy())
+                    ids.append(idx[v])
+                fs.append(ids)
+    for nm in new:
+        ob = bpy.data.objects.get(nm)
+        if ob and ob.type == "MESH":
+            n0 = len(vs)
+            vs += [ob.matrix_world @ v.co for v in ob.data.vertices]
+            fs += [[n0 + i for i in p.vertices] for p in ob.data.polygons]
+    return BVHTree.FromPolygons(vs, fs) if fs else None, vs, fs
+
+
+QUIET = [0]  # (> 0 inside a landmark / column / ring plant: its own trees and lamps are part of it, not loose dressing)
+DRESS = []   # (kind, parts, new objects, 2D hull, base z) of loose dressing (trees, bushes, lamps, benches ...) - settle_dressing
+
+
+def landmark(fn, label=None):
+    """Wrap a landmark builder so its real footprint goes into FOOT: (label, 2D hull, z0, z1, parts, new objects)."""
+    def w(*a, **k):
+        s = _snap()
+        QUIET[0] += 1
+        try:
+            r = fn(*a, **k)
+        finally:
+            QUIET[0] -= 1
+        pts, parts, new = _added(s)
+        if pts:
+            FOOT.append((label or fn.__name__, _hull([(p.x, p.y) for p in pts]), min(p.z for p in pts), max(p.z for p in pts), parts, new))
+        return r
+    w.__name__ = getattr(fn, "__name__", "landmark")
+    return w
+
+
+def dressing(fn, kind):
+    """Wrap a loose-dressing builder (tree / bush / lamp / bench / hedge / prop): what it builds outside a landmark is
+    recorded (DRESS) so settle_dressing() can take it back if it runs into a landmark."""
+    def w(*a, **k):
+        if QUIET[0]:
+            return fn(*a, **k)
+        s = _snap()
+        QUIET[0] += 1
+        try:
+            r = fn(*a, **k)
+        finally:
+            QUIET[0] -= 1
+        pts, parts, new = _added(s)
+        if pts:
+            DRESS.append((kind, parts, new, _hull([(p.x, p.y) for p in pts]), min(p.z for p in pts)))
+        return r
+    w.__name__ = getattr(fn, "__name__", kind)
+    return w
+
+
+def _runs_into(a, b, base):
+    """Do pieces a and b ((bvh, verts, faces) each) cut into each other more than 0.4 above base?"""
+    (ta, va, fa), (tb, vb, fb) = a, b
+    if not ta or not tb:
+        return False
+    return any(min(max(va[j].z for j in fa[ia]), max(vb[j].z for j in fb[ib])) > base + 0.4 for ia, ib in ta.overlap(tb))
+
+
+def settle_dressing(scenery=()):
+    """After the island / hub is built: take back loose dressing that runs into a landmark or one of the named scenery
+    objects (real geometry, 0.4+ above its own base; touching or standing on it is fine) and trees / bushes whose canopy
+    runs into a lamp or a bench."""
+    from mathutils.bvhtree import BVHTree
+    fb, drop, keep = {}, set(), []
+    dg = bpy.context.evaluated_depsgraph_get()
+    sc = []
+    for nm in scenery:
+        ob = bpy.data.objects.get(nm)
+        if ob and ob.type == "MESH":
+            vs = [ob.matrix_world @ v.co for v in ob.data.vertices]
+            fs = [list(p.vertices) for p in ob.data.polygons]
+            sc.append((BVHTree.FromPolygons(vs, fs), vs, fs))
+    for i, (kind, parts, new, H, z0) in enumerate(DRESS):
+        core = _shrink(H, 0.2)
+        if sc:
+            cx, cy = sum(x for x, _ in H) / len(H), sum(y for _, y in H) / len(H)
+            rad = max(math.hypot(x - cx, y - cy) for x, y in H) + 3.0
+            near = [t for t in sc if t[0].find_nearest(Vector((cx, cy, z0 + 1.0)), rad)[0] is not None]
+            if near and any(_runs_into(_bvh(parts, new), t, z0) for t in near):
+                drop.add(i)
+                continue
+        for j, f in enumerate(FOOT):
+            if len(f) < 6 or not _overlap(core, f[1]):
+                continue
+            if j not in fb:
+                fb[j] = _bvh(f[4], f[5])
+            if _runs_into(_bvh(parts, new), fb[j], z0):
+                drop.add(i)
+                break
+        if i not in drop:
+            keep.append(i)
+    posts = [i for i in keep if DRESS[i][0] in ("lamp", "bench")]
+    for i in keep:
+        kind, parts, new, H, z0 = DRESS[i]
+        if kind not in ("tree", "bush"):
+            continue
+        core = _shrink(H, 0.2)
+        for j in posts:
+            if _overlap(core, DRESS[j][3]) and _runs_into(_bvh(parts, new), _bvh(DRESS[j][1], DRESS[j][2]), z0):
+                drop.add(i)
+                break
+    for i in drop:
+        _undo(DRESS[i][1], DRESS[i][2])
+    CLEARED["dressing_dropped"] = CLEARED.get("dressing_dropped", 0) + len(drop)
+    del DRESS[:]
+
+
+def begin_clear():
+    """Fresh lists for a new island / hub run."""
+    del FOOT[:], COLS[:], PLANTS[:], TOPS[:], DRESS[:]
+    QUIET[0] = 0
+    CLEARED.clear()
+    CLEARED.update(cols_shrunk=0, cols_dropped=0, plants_dropped=0)
+
+
+def _rect(x, y, hw, hd, yaw):
+    a = math.radians(yaw)
+    c, s = math.cos(a), math.sin(a)
+    return [(x + c * dx - s * dy, y + s * dx + c * dy) for dx, dy in ((-hw, -hd), (hw, -hd), (hw, hd), (-hw, hd))]
+
+
+def thrown_away(fn, *a, **k):
+    """Run one of the island script's own functions with everything it draws thrown away (its classic mesh `sc` swapped
+    for a scratch one, its ohkit pieces taken back): the frame's random rolls stay the same, nothing is drawn."""
+    g = CURRENT["g"]
+    real, snap = g["sc"], _snap()
+    import hl_classic as CL
+    g["sc"] = CL.ClassicMesh("_Cleared", None)
+    try:
+        return fn(*a, **k)
+    finally:
+        g["sc"] = real
+        _undo(*_added(snap)[1:])
+
+
+def clear_colfn(x, y, h, w, d, yaw, kind):
+    """Override for the v2 island scripts' colfn: a column that would cut into a landmark is rebuilt smaller (to the
+    largest of 85 / 70 / 55 / 40 % that clears it, with a private random so the frame's rolls stay the same) or dropped."""
+    QUIET[0] += 1
+    try:
+        _clear_col(x, y, h, w, d, yaw, kind)
+    finally:
+        QUIET[0] -= 1
+
+
+def _clear_col(x, y, h, w, d, yaw, kind):
+    g, n0 = CURRENT["g"], len(FOOT)
+    I = g["I"]
+    if not getattr(I, "_top_kept", False):  # (the frame's column() returns its top z: keep it)
+        col = I.column
+        def column(*a, **k):
+            LAST_TOP[0] = col(*a, **k)
+            return LAST_TOP[0]
+        I.column, I._top_kept = column, True
+    reach = lambda s: _rect(x, y, w * s * 0.68 + 0.4, d * s * 0.68 + 0.4, yaw)  # (side blocks jut to ~0.66 w, the cap 0.45 past)
+
+    def build(*args):
+        snap = _snap()
+        LAST_TOP[0] = 0.4 + args[2]
+        g["_v2_colfn"](*args)
+        COLS.append((_rect(x, y, args[3] * 0.6, args[4] * 0.6, yaw), LAST_TOP[0]))  # (with the side blocks that jut out)
+        pts, parts, new = _added(snap)
+        if pts:
+            TOPS.append((len(COLS) - 1, parts, new, _hull([(p.x, p.y) for p in pts]), min(p.z for p in pts)))
+    try:
+        if not any(_overlap(reach(1.0), f[1], 0.6) for f in FOOT):
+            build(x, y, h, w, d, yaw, kind)
+            return
+        thrown_away(g["_v2_colfn"], x, y, h, w, d, yaw, kind)  # (the frame's own call, nothing kept: same random rolls)
+        for s in (0.85, 0.7, 0.55, 0.4):
+            if not any(_overlap(reach(s), f[1], 0.6) for f in FOOT[:n0]):
+                saved = (I.rng, g.get("rng"))
+                I.rng = g["rng"] = random.Random(int(abs(x) * 1000 + abs(y) * 7))
+                try:
+                    build(x, y, h * (0.7 + 0.3 * s), w * s, d * s, yaw, kind)
+                finally:
+                    I.rng, g["rng"] = saved
+                CLEARED["cols_shrunk"] += 1
+                return
+        CLEARED["cols_dropped"] += 1
+    finally:
+        del FOOT[n0:]  # (what a column stands on its top is not a landmark)
+
+
+LAST_TOP = [0.0]
+
+
+def settle_tops():
+    """After the island is built: take away what a column stands on its top where it runs into a TALLER neighbour column,
+    a landmark or another top piece (the frame puts it at the column's centre and never looks round)."""
+    kept = []
+    for ci, parts, new, H, z0 in reversed(TOPS):
+        core = _shrink(H, 0.3)
+        hit = (any(_overlap(core, f[1]) for f in FOOT) or any(_overlap(core, kp) for kp in kept) or
+               any(j != ci and top > z0 + 0.4 and _overlap(core, _shrink(r, 0.3)) for j, (r, top) in enumerate(COLS)))
+        if hit:
+            _undo(parts, new)
+            CLEARED["tops_dropped"] = CLEARED.get("tops_dropped", 0) + 1
+        else:
+            kept.append(core)
+    PLANTS.extend(kept)
+    del TOPS[:]
+
+
+def clear_plant(m, x, y, z, roll, lean):
+    """Override for the v2 island scripts' ring plant: drawn as before, then taken away again if it landed on a landmark,
+    inside a cliff column or on another plant (its footprint radius is still returned, so later placements don't move)."""
+    if TOPS:  # (the cliff ring is done: settle what stands on the columns before the first ring plant)
+        settle_tops()
+    s, n0 = _snap(), len(FOOT)
+    QUIET[0] += 1
+    try:
+        r = CURRENT["g"]["_v2_plant"](m, x, y, z, roll, lean)
+    finally:
+        QUIET[0] -= 1
+    del FOOT[n0:]  # (a plant drawn with a landmark builder - a cupcake, a dog house - is not a landmark)
+    pts, parts, new = _added(s)
+    if not pts:
+        return r
+    H = _hull([(p.x, p.y) for p in pts])
+    core = _shrink(H, 0.3)  # (touching is fine, running into is not)
+    why = ("on_landmark" if any(_overlap(core, f[1]) for f in FOOT) else "in_cliff" if any(_overlap(core, c, 0.4) for c, _ in COLS)
+           else "on_plant" if any(_overlap(core, p) for p in PLANTS) else None)
+    if why:
+        _undo(parts, new)
+        CLEARED["plants_dropped"] += 1
+        CLEARED["plants_" + why] = CLEARED.get("plants_" + why, 0) + 1
+    else:
+        PLANTS.append(core)
+    return r
+
+
+CLEAR_OVERRIDES = {"colfn": clear_colfn, "plant": clear_plant}  # (for run_island on the v2-frame islands)
+
+
 def run_island(script, out, overrides=None, argv=("norender",), capture_cams=False):
     """Run an island's v2 build script unchanged: no .blend save, its JSON writes into out, no renders of its own.
     overrides = {name: fn} swaps functions the script defines itself (their defs are renamed in the source text it
@@ -254,6 +613,7 @@ def run_island(script, out, overrides=None, argv=("norender",), capture_cams=Fal
     g = {"__name__": "__main__", "__file__": script, "open": safe_open}
     g.update(overrides or {})
     CURRENT["g"] = g  # (adapters read the running script's globals through running())
+    begin_clear()
     src = override_source(real_open(script).read(), list((overrides or {}).keys()))
     real_render = K.render
     CAPTURED.clear()
@@ -261,6 +621,9 @@ def run_island(script, out, overrides=None, argv=("norender",), capture_cams=Fal
         K.render = lambda scene, cam, path, w, h, hide=(): CAPTURED.append((cam.name, path, w, h))
     try:
         exec(compile(src, script, "exec"), g)
+        if TOPS:
+            settle_tops()
+        settle_dressing()
     finally:
         bpy.ops.wm = wm
         sys.argv = old_argv
@@ -414,6 +777,12 @@ def rock_portal(m, x, y, z, rot=0.0):
         else:
             tree(O_NONE, wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1, 1.9, "palm")
 
+
+rock_portal = landmark(rock_portal, "Return Home portal")
+for _nm, _kind in (("tree", "tree"), ("bush", "bush"), ("flower_bush", "bush"), ("topiary", "bush"), ("fern", "bush"), ("lamp_post", "lamp"),
+                   ("torch", "lamp"), ("bench", "bench"), ("hedge_run", "hedge"), ("flower_bed", "bed"), ("barrel", "prop"), ("crate", "prop"),
+                   ("buoy", "prop"), ("bollard", "prop"), ("lifebuoy_stand", "prop")):
+    globals()[_nm] = dressing(globals()[_nm], _kind)
 
 class _NoFrame:
     pass

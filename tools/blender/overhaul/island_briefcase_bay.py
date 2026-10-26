@@ -383,14 +383,15 @@ def patch(g_modules):
     DT.bollard = lambda m, x, y, z: IK.bollard(m, x, y, z)
     DT.buoy = lambda m, x, y, z: IK.buoy(m, x, y, z)
     DT.lifebuoy_stand = lambda m, x, y, z, rot: IK.lifebuoy_stand(m, x, y, z, rot)
-    DT.giant_briefcase2 = giant_briefcase
-    DT.giant_gavel2 = giant_gavel
-    DT.fountain = fountain
-    DT.lighthouse2 = lighthouse
-    DT.ferry2 = ferry
-    DT.sailboat = sailboat
-    P.welcome_sign = welcome_sign
-    DT.escape_portal_bb = escape_portal
+    L = IK.landmark  # (each records its real footprint: loose trees / bushes / lamps that run into it are taken back)
+    DT.giant_briefcase2 = L(giant_briefcase, "giant briefcase")
+    DT.giant_gavel2 = L(giant_gavel, "giant gavel")
+    DT.fountain = L(fountain, "fountain")
+    DT.lighthouse2 = L(lighthouse, "lighthouse")
+    DT.ferry2 = L(ferry, "ferry")
+    DT.sailboat = L(sailboat, "sailboat")
+    P.welcome_sign = L(welcome_sign, "welcome arch")
+    DT.escape_portal_bb = L(escape_portal, "Return Home arch")
 
 
 def main():

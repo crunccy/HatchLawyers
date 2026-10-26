@@ -65,7 +65,7 @@ def at(x=0.0, y=0.0, z=0.0, rz=0.0, prefix=None, s=1.0):
     made inside."""
     CUR.append(CUR[-1] @ Matrix.Translation((x, y, z)) @ Matrix.Rotation(math.radians(rz), 4, "Z") @ Matrix.Scale(s, 4))
     if prefix is not None:
-        PREFIX.append(prefix)
+        PREFIX.append(PREFIX[-1] + prefix)  # (nested prefixes stack)
     try:
         yield
     finally:

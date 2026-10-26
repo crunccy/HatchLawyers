@@ -169,6 +169,11 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   a model must touch the rest of it or the ground - run `tools/blender/overhaul/check_models.py` (0 floating pieces is
   the bar; add new models to its list; `-- zfight` lists coplanar two-colour faces that will flicker - 0 since 2026-10-25, keep it there).
   Review renders of every model: `audit_views.py`.
+  **Nothing runs into anything else either** (crnuch 2026-10-25: buildings overlapping each other / the cliffs): `check_models.py
+  -- clip` (awnings, signs, windows ... buried in another part: 0) and `check_islands.py -- <island>` (a placed model running
+  into the cliffs, another model or a tree, 0.4+ above its base). The island runners keep the v2 frame's cliff columns, ring
+  plants and loose dressing off every landmark's real footprint (`island_kit.landmark` / `dressing` / `clear_colfn` /
+  `clear_plant`): wrap any new landmark builder with `IK.landmark`.
   **No silhouettes that read rude** (kids' game; crnuch 2026-10-25: the Pizza Palace's round towers): a tall round shaft
   never ends in a rounded / flared cap with a ball - give towers square bodies or pointed roofs, and check the four views. Audit + fix order: docs/VISUAL_AUDIT_2026-10-25.md. Characters / statues made of overlapping shapes are FUSED per colour
   (`ohkit.fuse`: a voxel union, no seams), with eyes / noses / collars half-sunk into the surface.

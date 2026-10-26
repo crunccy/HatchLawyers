@@ -375,15 +375,16 @@ def patch():
                    ("spike_plant", spike_plant), ("crystal", crystal), ("crystal_cluster", crystal_cluster), ("moon_rocks", moon_rocks), ("rocket", rocket),
                    ("observatory", observatory), ("observatory_dome", observatory_dome), ("habitat_domes", habitat_domes), ("robot_factory", robot_factory),
                    ("solar_farm", solar_farm), ("sat_dish", sat_dish), ("fuel_depot", fuel_depot), ("ufo", ufo)):
-        setattr(SB, nm, fn)
+        setattr(SB, nm, IK.landmark(fn, nm))  # (its real footprint: the cliffs + ring plants keep off it)
 
 
 def main():
     patch()
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT, overrides={"floor_bit": floor_bit}, argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",),
+    g = IK.run_island(SCRIPT, OUT, overrides={**IK.CLEAR_OVERRIDES, "floor_bit": floor_bit}, argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",),
                       capture_cams=True)
     O.finish()
+    print("[island] kept clear of the landmarks:", IK.CLEARED)
     O.stats(skip=("Preview", "Scene", "Studs", "Sky_", "Label", "SBV2", "Diagram", "Egg_Spot"))
     if "places_only" not in argv:
         IK.render_captured(OUT, "space_")

@@ -266,7 +266,8 @@ def shipwreck2(m, x, y, z0, rot=0.0):
 def patch():
     importlib.import_module("osv2_parts"), importlib.import_module("osv2_detail")
     BD, OD, OP = IK.patch_v2_common()  # (keeps Ocean Shore's own colours: grey cliffs ...)
-    OD.brain_coral, OD.tube_coral, OD.seaweed, OD.conch, OD.sand_dollar, OD.shipwreck2 = brain_coral, tube_coral, seaweed, conch, sand_dollar, shipwreck2
+    OD.brain_coral, OD.tube_coral, OD.seaweed, OD.conch, OD.sand_dollar = brain_coral, tube_coral, seaweed, conch, sand_dollar
+    OD.shipwreck2 = IK.landmark(shipwreck2, "shipwreck")  # (its real footprint: loose palms / bushes keep off it)
     for nm, fn in (("coral", coral), ("fan_coral", fan_coral), ("shell", shell), ("starfish", starfish), ("pebbles", pebbles), ("driftwood", driftwood)):
         setattr(OP, nm, fn)
     OP.tuft = lambda m, x, y, z0, s=1.0, look=None: IK.grass_clump(m, x, y, z0, s)

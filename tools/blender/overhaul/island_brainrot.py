@@ -341,15 +341,16 @@ def patch():
     for nm, fn in (("wobble_lamp", wobble_lamp), ("pixel_tree", pixel_tree), ("upside_down_tree", upside_down_tree), ("twisty_tower", twisty_tower),
                    ("big_screen", big_screen), ("melty_mall", melty_mall), ("upside_down_house", upside_down_house), ("leaning_tower", leaning_tower),
                    ("giant_dice", giant_dice), ("floating_eye", floating_eye), ("floating_cube", floating_cube), ("neon_tower", neon_tower)):
-        setattr(BR, nm, fn)
+        setattr(BR, nm, IK.landmark(fn, nm))  # (its real footprint: the cliffs + ring plants keep off it)
 
 
 def main():
     patch()
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT, overrides={"floor_bit": floor_bit, "mushroom": mushroom, "crystal": crystal, "goo_garden": goo_garden},
+    g = IK.run_island(SCRIPT, OUT, overrides={**IK.CLEAR_OVERRIDES, "floor_bit": floor_bit, "mushroom": mushroom, "crystal": crystal, "goo_garden": goo_garden},
                       argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",), capture_cams=True)
     O.finish()
+    print("[island] kept clear of the landmarks:", IK.CLEARED)
     O.stats(skip=("Preview", "Scene", "Studs", "Sky_", "Label", "BRV2", "Diagram", "Egg_Spot"))
     if "places_only" not in argv:
         IK.render_captured(OUT, "rot_")

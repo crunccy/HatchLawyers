@@ -3,13 +3,21 @@
 # rest of it (or the ground); a floating piece is listed with its mesh name, centre and size.
 #   Blender -b --factory-startup --python tools/blender/overhaul/check_models.py -- [<group> ...] [zfight]
 # zfight: report coplanar faces of two colours (they flicker in Roblox) instead of floating pieces.
+# clip: report thin decorative pieces (awnings, signs, banners, flags, sails, windows, doors ...) buried 0.3+ inside another
+#   solid part of the same model (crnuch 2026-10-25: the Pizza Palace's awning ran into its towers and out of their fronts).
 # groups: props hub gameplay minigames firms hall bay pet rot food ocean space kit (default: all)
 import bpy, os, sys, math
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ZF = "zfight" in argv  # (check z-fighting instead of floating pieces)
-WANT = set(a for a in argv if not a.startswith("-") and a != "zfight") or None
+CLIP = "clip" in argv  # (check decorative sheets buried in solids instead)
+WANT = set(a for a in argv if not a.startswith("-") and a not in ("zfight", "clip")) or None
+SHEETS = ("Awning", "Valance", "Sign", "Banner", "Flag", "Sail", "Cloth", "Shine", "Ribbon", "Bunting", "Poster", "Menu", "Pennant",
+          "Win_", "Door_", "DoorFrame")  # (windows / doors are set 0.05 into their wall: deeper means into something else)
+CLIP_OK = (("CounterLicense_IconRibbon", "CounterLicense_Icon"),  # (the ribbon wraps the rolled diploma)
+           ("Storefront_DoorFrame", "Storefront_Trim"),           # (the frame's foot meets the base course at the threshold)
+           ("MainStreetShow_Shine", "MainStreet_Pediment"))       # (the glass shine runs on behind the porch pediment: hidden)
 sys.argv = [sys.argv[0], "--", os.path.join(HERE, "renders")]  # (the imported scripts read an out dir from argv)
 import ohkit as O
 import island_kit as IK
@@ -104,6 +112,47 @@ def models():
     return out
 
 
+def crossings(t, p, v, n=0):
+    """How many faces a ray from p along v crosses (odd = p is inside a closed mesh)."""
+    o = p.copy()
+    for _ in range(64):
+        hit = t.ray_cast(o, v, 500.0)
+        if hit[0] is None:
+            return n
+        n, o = n + 1, hit[0] + v * 1e-4
+    return n
+
+
+def clips(objs, depth=0.3):
+    """Thin decorative pieces (SHEETS in their name) with points more than `depth` inside another object of the model
+    (the nearest face's normal points away from the point): [(sheet, depth, other, (x, y, z))]."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+    global DIRS
+    DIRS = (Vector((0.0, 0.0, 1.0)), Vector((0.577, -0.577, 0.577)), Vector((-0.6, 0.0, -0.8)))  # (all three must say inside)
+    dg = bpy.context.evaluated_depsgraph_get()
+    solid = [(ob, BVHTree.FromObject(ob, dg)) for ob in objs if not any(k in ob.name for k in SHEETS)]
+    out = []
+    for sh in objs:
+        if not any(k in sh.name for k in SHEETS):
+            continue
+        me, mw = sh.data, sh.matrix_world
+        pts = [mw @ v.co for v in me.vertices] + [mw @ p.center for p in me.polygons]
+        for ob, t in solid:
+            worst = (0.0, None)
+            for p in pts:
+                hit = t.find_nearest(p, 3.0)
+                if hit[0] is None:
+                    continue
+                q, n, d = hit[0], hit[1], hit[3]
+                if d > worst[0] and (p - q).dot(n) < 0 and all(crossings(t, p, v) % 2 == 1 for v in DIRS):
+                    worst = (d, p)
+            if worst[0] > depth and (sh.name, ob.name) not in CLIP_OK:
+                c = worst[1]
+                out.append((sh.name, worst[0], ob.name, (round(c.x, 1), round(c.y, 1), round(c.z, 1))))
+    return out
+
+
 def main():
     O.reset()
     report = []
@@ -122,6 +171,12 @@ def main():
                 if bpy.data.objects[n].type == "MESH" and not n.startswith(("Preview", "Studs"))]
         if not objs:
             continue
+        if CLIP:  # (decorative sheets buried in another part instead)
+            for b in clips(objs):
+                report.append(f"{group}.{name}: {b[0]} {b[1]:.2f} deep in {b[2]} at {b[3]}")
+            for ob in objs:
+                bpy.data.objects.remove(ob)
+            continue
         if ZF:  # (z-fighting instead: coplanar faces of two colours)
             for b in O.check_zfight(objs, label=f"{group}.{name}"):
                 report.append(f"{group}.{name}: {b[0]} / {b[1]} at {b[2]} overlap {b[3]}")
@@ -139,7 +194,7 @@ def main():
     path = os.path.join(os.environ.get("TMPDIR", "/tmp"), "attach_report.txt")
     with open(path, "w") as fh:
         fh.write("\n".join(report))
-    print(f"[check] {len(report)} {'z-fighting pairs' if ZF else 'floating pieces'}; report: {path}")
+    print(f"[check] {len(report)} {'clipping sheets' if CLIP else 'z-fighting pairs' if ZF else 'floating pieces'}; report: {path}")
 
 
 if __name__ == "__main__":

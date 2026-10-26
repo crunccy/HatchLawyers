@@ -365,10 +365,20 @@ def pond_garden(x, y):
 
 
 # ================================================================== the mapping + run
+def pond_rim(x, y, a):
+    """The v2 pond rim (small rocks round each pond), minus the rocks where the duck pond's bridge lands (the 150° pond;
+    the bridge runs along 150°): they're thrown away with the same random rolls, so nothing else moves (crnuch: overlaps)."""
+    g = IK.CURRENT["g"]
+    if g.get("deg") == 150 and abs((a - 150 + 90) % 180 - 90) < 26:
+        IK.thrown_away(g["_v2_pond_rim"], x, y, a)
+    else:
+        g["_v2_pond_rim"](x, y, a)
+
+
 def portal_side(sgn):
     """Beside the Return Home portal (palms on Ocean Shore): a pine with two bushes at its foot - a temperate park (audit N1)."""
-    p = O.pt((0, 0, 0))
-    IK.tree(IK.O_NONE, p.x, p.y, p.z, 1.5, "pine")
+    p = O.pt((sgn * 2.5, 5.0, 0))  # (back + out: its branches clear the arch's crags and legs)
+    IK.tree(IK.O_NONE, p.x, p.y, p.z - 0.15, 1.35, "pine")
     IK.bush(IK.O_NONE, -sgn * 2.6, -1.6, 0.0, 1.1)
     IK.bush(IK.O_NONE, sgn * 1.4, -2.6, 0.0, 0.8)
 
@@ -386,7 +396,7 @@ def patch():
     for nm, fn in (("giant_corgi", giant_corgi), ("giant_cat", giant_cat), ("dog_house", dog_house), ("cat_tower", cat_tower),
                    ("bird_house", bird_house), ("rabbit_hutch", rabbit_hutch), ("bunny_topiary", bunny_topiary), ("wood_bridge", wood_bridge),
                    ("barkery", barkery), ("paw_clinic", paw_clinic)):
-        setattr(PP, nm, fn)
+        setattr(PP, nm, IK.landmark(fn, nm))  # (its real footprint: the cliffs + ring plants keep off it)
     BD.park_tree = lambda m, x, y, z0, s=1.0, kind="oak": IK.tree(m, x, y, z0, s, kind)
     BD.topiary = lambda m, x, y, z0, rot=0.0: IK.topiary(m, x, y, z0, rot)
     BD.flower_bed = lambda m, veg, x, y, z0, sx, sy, rot: IK.flower_bed(m, veg, x, y, z0, sx, sy, rot)
@@ -405,9 +415,10 @@ def patch():
 def main():
     patch()
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT, overrides={"park_lamp": park_lamp, "floor_bit": floor_bit, "pond_garden": pond_garden},
+    g = IK.run_island(SCRIPT, OUT, overrides={**IK.CLEAR_OVERRIDES, "pond_rim": pond_rim, "park_lamp": park_lamp, "floor_bit": floor_bit, "pond_garden": pond_garden},
                       argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",), capture_cams=True)
     O.finish()
+    print("[island] kept clear of the landmarks:", IK.CLEARED)
     O.stats(skip=("Preview", "Scene", "Studs", "Sky_", "Label", "PPV2", "Diagram", "Egg_Spot"))
     if "places_only" not in argv:
         IK.render_captured(OUT, "pet_")

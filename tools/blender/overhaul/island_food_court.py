@@ -166,16 +166,17 @@ def picnic_table(n, c, rot=0.0, umbrella="red"):
             poly(n + "_Umbrella" + L(lk), lk, [P(0, 6.3, 0), P(3.0, 5.0, a1), P(3.0, 5.0, a0)], thick=0.05)
 
 
-def eatery(n, w, d, h, wall, trim, awning, label, sign_bg=None, side_y=None):
+def eatery(n, w, d, h, wall, trim, awning, label, sign_bg=None, side_y=None, awning_w=None, front_x=None):
     """The shared restaurant shell (front = local -y): base, walls, windows (front + both sides: audit N5), a door, a
-    striped awning, the sign board. side_y = the side windows' centres along y (default: every 8 from the front)."""
+    striped awning, the sign board. side_y = the side windows' centres along y (default: every 8 from the front);
+    awning_w = the awning's width (default the front's: narrower where corner towers stand); front_x = the front windows'
+    centres (default every 8 across, clear of the door)."""
     box(n + "_Base", "stone_light", (0, 0, 0.4), (w + 4, d + 6, 0.8), bevel=0.12)
     rbox(n + "_Wall", wall, (0, 1.5, 0.8 + h / 2), (w, d, h), 0.25)
     rbox(n + "_Trim", trim, (0, 1.5, 0.8 + h + 0.4), (w + 1, d + 1, 0.8), 0.2)
     frame = trim if trim != "gold" else "white"
     with at(0, -d / 2 + 1.5, 0.8):
-        for k in range(int(w / 8)):
-            x = -w / 2 + 4 + k * 8
+        for x in (front_x or [-w / 2 + 4 + k * 8 for k in range(int(w / 8))]):
             if abs(x) > 3:
                 B.window(n + "Win", x, 1.4, 4.4, 4.4, arch=False, frame=frame)
         B.door(n + "Door", 0, 0, 3.6, 6.2, frame=frame, leaf=awning, panel="white")
@@ -183,9 +184,10 @@ def eatery(n, w, d, h, wall, trim, awning, label, sign_bg=None, side_y=None):
         with at(s * w / 2, 0, 0.8, rz=90 * s):
             for y in (side_y or [-d / 2 + 5.5 + k * 8 for k in range(int(d / 8))]):
                 B.window(n + "Win", y * s, 1.4, 4.4, 4.4, arch=False, frame=frame)
-    g = int(w / 1.8)
+    aw = awning_w or w
+    g = int(aw / 1.8)
     for i in range(g):
-        x0, x1 = -w / 2 + w * i / g, -w / 2 + w * (i + 1) / g
+        x0, x1 = -aw / 2 + aw * i / g, -aw / 2 + aw * (i + 1) / g
         lk = awning if i % 2 == 0 else "white"
         poly(n + "_Awning" + L(lk), lk, [(x0, -d / 2 + 1.52, 7.9), (x1, -d / 2 + 1.52, 7.9), (x1, -d / 2 - 1.4, 6.6), (x0, -d / 2 - 1.4, 6.6)], thick=0.12)
         xm = (x0 + x1) / 2
@@ -232,7 +234,8 @@ def burger_barn(F):
 def pizza_palace(F, slice_sign=True):
     n = "FoodPizza"
     with IK.place(F, 0, 0):
-        top = eatery(n, 28, 18, 10, "cream_soft", "white", "red", "PIZZA PALACE", "red", side_y=(0.5, 7.0))  # (clear of the corner towers)
+        top = eatery(n, 28, 18, 10, "cream_soft", "white", "red", "PIZZA PALACE", "red", side_y=(0.5, 7.0),  # (clear of the corner towers)
+                     awning_w=2 * (14 - 2.3) - 0.1, front_x=(-7.0, 7.0))  # (windows clear of the turrets too)  # (the awning ends at the turrets' inner faces, not through them - crnuch)
         for k in range(9):
             if k % 2 == 0:
                 rbox(n + "_Brick", "brick_red", (-14 + k * 3.5, -7.2, top + 0.8), (2.4, 1.2, 1.6), 0.15)
@@ -441,15 +444,16 @@ def patch():
                    ("watermelon_slice", watermelon_slice), ("burger_barn", burger_barn), ("pizza_palace", pizza_palace), ("donut_diner", donut_diner),
                    ("taco_tower", taco_tower), ("giant_burger", giant_burger), ("giant_fries", giant_fries), ("ice_cream", ice_cream),
                    ("soda_fountain", soda_fountain)):
-        setattr(FP, nm, fn)
+        setattr(FP, nm, IK.landmark(fn, nm))  # (its real footprint: the cliffs + ring plants keep off it)
 
 
 def main():
     patch()
     O.BMS.clear()
-    g = IK.run_island(SCRIPT, OUT, overrides={"floor_bit": floor_bit, "soda_garden": soda_garden},
+    g = IK.run_island(SCRIPT, OUT, overrides={**IK.CLEAR_OVERRIDES, "floor_bit": floor_bit, "soda_garden": soda_garden},
                       argv=("only=aerial,ground_spawn,ground_eggs,boss_view,ground_portal",), capture_cams=True)
     O.finish()
+    print("[island] kept clear of the landmarks:", IK.CLEARED)
     O.stats(skip=("Preview", "Scene", "Studs", "Sky_", "Label", "FCV2", "Diagram", "Egg_Spot"))
     if "places_only" not in argv:
         IK.render_captured(OUT, "food_")

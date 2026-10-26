@@ -286,6 +286,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-26 — crnuch, local session (side session): nothing runs into anything (buildings into cliffs, plants, lamps)
+- crnuch's report: "a lot of buildings overlap each other" (the Pizza Palace's awning ran into its turrets, a turret into
+  the cake cliff). Blender only, nothing in Studio.
+- **Cause, mostly inherited from the v2 layouts:** the hl_v2 frame keeps a cliff column / terrace / boulder / ring plant out
+  of a landmark's circle by its CENTRE only, so 15-20-stud columns and plants grew into the shops (a column stood through
+  the Taco Tower's and the Paw Clinic's fronts), column-top treats sank into taller neighbours, and plants grew inside the
+  cliffs. Not touched: the v2 scripts (they still run unchanged).
+- **Fix in the sandbox (`island_kit`):** landmark builders record their real footprint (`IK.landmark`); `clear_colfn`
+  rebuilds a column that would cut into one smaller (or drops it) with a private random, so the frame's rolls - and
+  everything else on the approved island - stay put; `clear_plant` drops ring plants on a landmark, in a cliff or on another
+  plant; `settle_tops` drops column-top treats that run into a taller column / a landmark / each other; loose dressing
+  (`IK.dressing`: trees, bushes, lamps, benches, hedges, props) that runs into a landmark is taken back (`settle_dressing`;
+  a tree whose canopy hits a lamp or bench too). Pieces are tagged per vertex, so taking one back never disturbs another.
+  Pet Park's pond rim leaves out the rocks under the bridge's ends (`pond_rim`, thrown away with the same rolls); the hub's
+  benches / lamps / railings stand ON its gazebo terraces and lookouts (`island_hub.prop_top`) and its street lamps no
+  longer stand inside the firm fronts. Per island, e.g. Food Court: 30 columns shrunk, 22 dropped, ~120 plants / treats
+  that sat inside rock or on shops dropped.
+- **Models:** Pizza Palace awning + front windows end at the turrets.
+- **New checks:** `check_islands.py -- <island>`; landmarks running 1+ stud into something, before -> after: food 155 -> 0,
+  pet 35 -> 0, rot 100 -> 1 (a pixel tree against a rock), space 148 -> 1 (the robot factory at the island lip, 1.0), ocean
+  33 -> 2 (the portal in its ring of rock, the beached shipwreck), bay 10 -> 4 (the ferry 3.5 against shore rocks, the giant
+  gavel 2.2, the Return Home arch on its platform 1.7, the lighthouse on its rock 1.2), hub 89 -> 0 (all v2 placements).
+  `check_models.py -- clip` 0. Floating 0, z-fighting 0, run_checks ALL PASSED.
+- Renders: all six islands + the hub re-rendered; before / afters `art/overhaul/fixes/overlap_*`; TODAY / NEW pairs
+  recomposed (Briefcase Bay's now included). Rule in CLAUDE.md (MODEL OVERHAUL).
+- Open: Bay's ferry + gavel against rocks and Ocean Shore's portal in its rock ring are left as the approved v2 placed them
+  - crnuch's call whether to move them; the hub's lamps / benches sit 0.4 into the raised plaza paving.
+
 ## 2026-10-25 — crnuch, local session (side session): the visual audit's polish items on the overhaul models
 - Blender only, nothing in Studio. Each item's result is under it in docs/VISUAL_AUDIT_2026-10-25.md ("Done"); before /
   afters in `art/overhaul/fixes/audit_*` (four eye-height views per model, BEFORE row = the code at `50fe684`, plus island
