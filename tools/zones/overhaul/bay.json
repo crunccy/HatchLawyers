@@ -7,17 +7,17 @@
  "models": {
   "bay_briefcase": {
    "origin": [
-    16.229,
+    16.239,
     0.0,
     0.0
    ],
    "min": [
-    -16.23,
+    -16.24,
     -5.62,
-    -0.18
+    -0.19
    ],
    "max": [
-    16.24,
+    16.25,
     5.55,
     18.09
    ],
@@ -144,7 +144,7 @@
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -165,7 +165,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 360,
+     "tris": 88,
      "look": "flower_orange",
      "color": [
       255,
@@ -179,7 +179,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 720,
+     "tris": 178,
      "look": "flower_yel",
      "color": [
       255,
@@ -193,7 +193,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_purple",
      "color": [
       168,
@@ -207,7 +207,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_red",
      "color": [
       240,
@@ -221,7 +221,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_yel",
      "color": [
       255,
@@ -235,7 +235,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -249,7 +249,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -263,7 +263,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -277,7 +277,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -291,7 +291,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -305,7 +305,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -333,21 +333,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone",
-     "tris": 2808,
+     "tris": 1404,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2",
-     "tris": 1728,
+     "tris": 864,
      "look": "stone_mid",
      "color": [
       196,
@@ -362,12 +362,12 @@
   },
   "bay_gavel": {
    "origin": [
-    71.693,
+    71.729,
     0.0,
     0.0
    ],
    "min": [
-    -15.23,
+    -15.24,
     -6.12,
     -0.15
    ],
@@ -422,7 +422,7 @@
     {
      "name": "BayGavel_Wood",
      "fbx_name": "BayGavel_Wood",
-     "tris": 584,
+     "tris": 566,
      "look": "court_wood",
      "color": [
       150,
@@ -436,7 +436,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange.001",
-     "tris": 360,
+     "tris": 90,
      "look": "flower_orange",
      "color": [
       255,
@@ -450,7 +450,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel.001",
-     "tris": 720,
+     "tris": 176,
      "look": "flower_yel",
      "color": [
       255,
@@ -464,7 +464,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple.001",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_purple",
      "color": [
       168,
@@ -478,7 +478,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed.001",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_red",
      "color": [
       240,
@@ -492,7 +492,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel.001",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_yel",
      "color": [
       255,
@@ -506,7 +506,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.002",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -520,7 +520,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.003",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -534,7 +534,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.002",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -548,7 +548,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.003",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -562,7 +562,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.002",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -576,7 +576,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.003",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -604,21 +604,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone.001",
-     "tris": 2808,
+     "tris": 1404,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2.001",
-     "tris": 1728,
+     "tris": 864,
      "look": "stone_mid",
      "color": [
       196,
@@ -633,7 +633,7 @@
   },
   "bay_fountain": {
    "origin": [
-    121.528,
+    121.564,
     0.0,
     0.0
    ],
@@ -707,7 +707,7 @@
     {
      "name": "BayFountain_Jet",
      "fbx_name": "BayFountain_Jet",
-     "tris": 816,
+     "tris": 326,
      "look": "water_fall",
      "color": [
       70,
@@ -721,7 +721,7 @@
     {
      "name": "BayFountain_Stone",
      "fbx_name": "BayFountain_Stone",
-     "tris": 1244,
+     "tris": 1240,
      "look": "limestone",
      "color": [
       232,
@@ -735,7 +735,7 @@
     {
      "name": "BayFountain_Water",
      "fbx_name": "BayFountain_Water",
-     "tris": 312,
+     "tris": 124,
      "look": "water",
      "color": [
       60,
@@ -750,7 +750,7 @@
   },
   "bay_lighthouse": {
    "origin": [
-    170.699,
+    170.734,
     0.0,
     0.0
    ],
@@ -775,14 +775,14 @@
       248,
       244
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "BayLighthouseCottage_Frame",
      "fbx_name": "BayLighthouseCottage_Frame",
-     "tris": 256,
+     "tris": 140,
      "look": "white",
      "color": [
       248,
@@ -796,7 +796,7 @@
     {
      "name": "BayLighthouseCottage_Glass",
      "fbx_name": "BayLighthouseCottage_Glass",
-     "tris": 144,
+     "tris": 108,
      "look": "glass_blue",
      "color": [
       128,
@@ -915,7 +915,7 @@
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -992,7 +992,7 @@
     {
      "name": "BayLighthouse_Base",
      "fbx_name": "BayLighthouse_Base",
-     "tris": 268,
+     "tris": 266,
      "look": "limestone",
      "color": [
       232,
@@ -1041,7 +1041,7 @@
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1093,9 +1093,9 @@
      "tris": 712,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1104,14 +1104,14 @@
     {
      "name": "BayLighthouse_Red",
      "fbx_name": "BayLighthouse_Red",
-     "tris": 632,
+     "tris": 630,
      "look": "lighthouse_red",
      "color": [
       226,
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1125,14 +1125,14 @@
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "BayLighthouse_Rock",
      "fbx_name": "BayLighthouse_Rock",
-     "tris": 140,
+     "tris": 138,
      "look": "rock",
      "color": [
       156,
@@ -1167,7 +1167,7 @@
       248,
       244
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }
@@ -1175,7 +1175,7 @@
   },
   "bay_ferry": {
    "origin": [
-    215.599,
+    215.634,
     0.0,
     0.0
    ],
@@ -1214,7 +1214,7 @@
       248,
       244
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1308,9 +1308,9 @@
      "tris": 108,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1350,9 +1350,9 @@
      "tris": 20,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1390,7 +1390,7 @@
   },
   "bay_sailboat": {
    "origin": [
-    256.216,
+    256.251,
     0.0,
     0.0
    ],
@@ -1429,7 +1429,7 @@
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1471,7 +1471,7 @@
       60,
       56
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1493,17 +1493,17 @@
   },
   "bay_welcome": {
    "origin": [
-    294.637,
+    294.694,
     0.0,
     0.0
    ],
    "min": [
-    -9.88,
-    -1.98,
-    -0.11
+    -9.9,
+    -1.99,
+    -0.1
    ],
    "max": [
-    9.87,
+    9.89,
     1.5,
     13.4
    ],
@@ -1532,14 +1532,14 @@
       248,
       244
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "BayWelcomeIvy-1_Leaves",
      "fbx_name": "BayWelcomeIvy-1_Leaves",
-     "tris": 600,
+     "tris": 150,
      "look": "bush",
      "color": [
       88,
@@ -1553,7 +1553,7 @@
     {
      "name": "BayWelcomeIvy1_Leaves",
      "fbx_name": "BayWelcomeIvy1_Leaves",
-     "tris": 600,
+     "tris": 150,
      "look": "bush",
      "color": [
       88,
@@ -1638,7 +1638,7 @@
   },
   "bay_portal": {
    "origin": [
-    348.309,
+    348.379,
     0.0,
     0.0
    ],
@@ -1656,12 +1656,12 @@
     {
      "name": "BayPortalCap_Leaves",
      "fbx_name": "BayPortalCap_Leaves",
-     "tris": 1000,
+     "tris": 250,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1670,12 +1670,12 @@
     {
      "name": "BayPortalMoss-1_Leaves",
      "fbx_name": "BayPortalMoss-1_Leaves",
-     "tris": 520,
+     "tris": 130,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1684,12 +1684,12 @@
     {
      "name": "BayPortalMoss1_Leaves",
      "fbx_name": "BayPortalMoss1_Leaves",
-     "tris": 520,
+     "tris": 130,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1726,7 +1726,7 @@
     {
      "name": "BayPortal_Flower",
      "fbx_name": "BayPortal_Flower",
-     "tris": 640,
+     "tris": 160,
      "look": "flower_pink",
      "color": [
       250,
@@ -1740,7 +1740,7 @@
     {
      "name": "BayPortal_FlowerMid",
      "fbx_name": "BayPortal_FlowerMid",
-     "tris": 160,
+     "tris": 38,
      "look": "flower_yel",
      "color": [
       255,
@@ -1866,7 +1866,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange.002",
-     "tris": 360,
+     "tris": 90,
      "look": "flower_orange",
      "color": [
       255,
@@ -1880,7 +1880,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel.002",
-     "tris": 720,
+     "tris": 176,
      "look": "flower_yel",
      "color": [
       255,
@@ -1894,7 +1894,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple.002",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_purple",
      "color": [
       168,
@@ -1908,7 +1908,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed.002",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_red",
      "color": [
       240,
@@ -1922,7 +1922,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel.002",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_yel",
      "color": [
       255,
@@ -1936,7 +1936,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.004",
-     "tris": 652,
+     "tris": 162,
      "look": "bush",
      "color": [
       88,
@@ -1950,7 +1950,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.005",
-     "tris": 636,
+     "tris": 158,
      "look": "bush",
      "color": [
       88,
@@ -1964,7 +1964,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.004",
-     "tris": 660,
+     "tris": 164,
      "look": "bush",
      "color": [
       88,
@@ -1978,7 +1978,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.005",
-     "tris": 652,
+     "tris": 162,
      "look": "bush",
      "color": [
       88,
@@ -1992,7 +1992,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.004",
-     "tris": 648,
+     "tris": 162,
      "look": "bush",
      "color": [
       88,
@@ -2006,7 +2006,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.005",
-     "tris": 656,
+     "tris": 164,
      "look": "bush",
      "color": [
       88,
@@ -2034,21 +2034,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone.002",
-     "tris": 2808,
+     "tris": 1404,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2.002",
-     "tris": 1728,
+     "tris": 864,
      "look": "stone_mid",
      "color": [
       196,
@@ -2062,7 +2062,7 @@
     {
      "name": "IslTopiaryBall1_Leaves",
      "fbx_name": "IslTopiaryBall1_Leaves",
-     "tris": 720,
+     "tris": 180,
      "look": "hedge",
      "color": [
       80,
@@ -2076,7 +2076,7 @@
     {
      "name": "IslTopiaryBall2_Leaves",
      "fbx_name": "IslTopiaryBall2_Leaves",
-     "tris": 720,
+     "tris": 180,
      "look": "hedge",
      "color": [
       80,
@@ -2177,9 +2177,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,

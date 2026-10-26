@@ -5,10 +5,13 @@
 --     as Roblox (-x, z, y), so a Blender front (-Y) faces Roblox -Z, as the game wants.
 --   * LOOKS: Color / Material / Transparency / Reflectance per mesh (Plastic = studded by MaterialService.BrickStuds through
 --     the mesh's stud UVs), Anchored, "Foo.001" names back to "Foo".
---   * COLLISION: scattered plants / shells (joined meshes spanning the island) and glow / see-through pieces don't collide or
---     take raycasts (eggs land through them, as on the Part islands); the island's underside doesn't collide; everything
---     else collides on its real shape (PreciseConvexDecomposition).
+--   * COLLISION (phone / tablet budget, crnuch 2026-10-26): scattered plants / shells (joined meshes spanning the island)
+--     and glow / see-through pieces don't collide or take raycasts (eggs land through them, as on the Part islands); the
+--     underside and tiny details (< 2 studs) don't collide; small props (< 12 studs) collide as a box; the rest (ground,
+--     buildings, big landmarks) on its real shape (PreciseConvexDecomposition). Ground cover and tiny details cast no
+--     shadow. RenderFidelity stays Automatic (Roblox lowers the detail with distance).
 -- Run in Edit mode (Studio MCP execute_luau) while `python3 -m http.server 8772` serves tools/zones/overhaul/; set GROUPS.
+-- Precise collision is slow: run it in a task.spawn and read the OverhaulLooks attribute, or the MCP call times out.
 local HttpService = game:GetService("HttpService")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
@@ -18,6 +21,7 @@ local SCATTER = { "Oak", "Blossom", "Hedge", "Pine", "Bush", "Palm", "Tuft", "To
 	"OceanDrift", "Coral", "Conch", "OceanFan", "OceanBrain", "Fern", "Flower", "Daisy", "Grass", "Lily", "Lotus", "Ivy", "Moss",
 	"Seaweed", "Leaf", "Pebble" }
 local SOFT_LOOKS = { "water", "foam", "glow", "beam", "glass", "portal_", "mist", "cloud", "neon" }
+local GROUND_COVER = { "grass", "flower", "tuft", "daisy", "moss", "ivy", "petal", "clover" }
 
 local function has(s: string, list: { string }): boolean
 	for _, k in list do
@@ -72,15 +76,17 @@ local function apply(group: string): string
 			part.Reflectance = m.reflectance
 			part.Anchored = true
 			local soft = m.material == "Neon" or m.transparency > 0 or has(string.lower(m.look), SOFT_LOOKS)
-			part.CastShadow = not soft
+			local size = math.max(part.Size.X, part.Size.Y, part.Size.Z)
+			part.CastShadow = not soft and size >= 2 and not has(string.lower(m.look), GROUND_COVER)
 			if scatter or soft then
 				part.CanCollide, part.CanQuery, part.CanTouch = false, false, false
-			elseif under then
+			elseif under or size < 2 then
 				part.CanCollide, part.CanTouch = false, false
 			else
 				part.CanCollide = true
+				local fidelity = if size < 12 then Enum.CollisionFidelity.Box else Enum.CollisionFidelity.PreciseConvexDecomposition
 				pcall(function()
-					(part :: MeshPart).CollisionFidelity = Enum.CollisionFidelity.PreciseConvexDecomposition
+					(part :: MeshPart).CollisionFidelity = fidelity
 				end)
 			end
 			set += 1
@@ -93,6 +99,17 @@ local function apply(group: string): string
 	for _, d in root:GetDescendants() do -- (models: "IslDaisy.001" -> "IslDaisy")
 		if d:IsA("Model") then
 			d.Name = (string.gsub(d.Name, "%.%d+$", ""))
+		end
+	end
+	for key, e in info.models do -- (a row file: the importer spreads the models further than it scales them - each to its own size)
+		local m = if e.origin[1] ~= 0 then root:FindFirstChild((string.gsub(key, "%.%d+$", ""))) else nil
+		if m and m:IsA("Model") then
+			local w = Vector3.new(e.max[1] - e.min[1], e.max[3] - e.min[3], e.max[2] - e.min[2])
+			local g = m:GetExtentsSize()
+			local r = math.max(g.X, g.Y, g.Z) / math.max(w.X, w.Y, w.Z)
+			if math.abs(r - 1) > 0.002 then
+				m:ScaleTo(m:GetScale() / r)
+			end
 		end
 	end
 	return ("%s: scaled 1/%.3f -> (%.1f, %.1f, %.1f) want (%.1f, %.1f, %.1f); %d meshes set, %d not found %s"):format(group, k,

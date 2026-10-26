@@ -56,9 +56,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -95,12 +95,12 @@
     {
      "name": "StorefrontCafe_CafeTable_Iron",
      "fbx_name": "StorefrontCafe_CafeTable_Iron",
-     "tris": 2064,
+     "tris": 1028,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -165,7 +165,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_FlowerMidOrange",
      "fbx_name": "StorefrontCafe_FlowerBed_FlowerMidOrange",
-     "tris": 180,
+     "tris": 42,
      "look": "flower_orange",
      "color": [
       255,
@@ -179,7 +179,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_FlowerMidYel",
      "fbx_name": "StorefrontCafe_FlowerBed_FlowerMidYel",
-     "tris": 360,
+     "tris": 90,
      "look": "flower_yel",
      "color": [
       255,
@@ -193,7 +193,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_FlowerPurple",
      "fbx_name": "StorefrontCafe_FlowerBed_FlowerPurple",
-     "tris": 720,
+     "tris": 180,
      "look": "flower_purple",
      "color": [
       168,
@@ -207,7 +207,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_FlowerRed",
      "fbx_name": "StorefrontCafe_FlowerBed_FlowerRed",
-     "tris": 720,
+     "tris": 180,
      "look": "flower_red",
      "color": [
       240,
@@ -221,7 +221,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_FlowerYel",
      "fbx_name": "StorefrontCafe_FlowerBed_FlowerYel",
-     "tris": 720,
+     "tris": 180,
      "look": "flower_yel",
      "color": [
       255,
@@ -235,7 +235,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_Leaves0_Leaves",
      "fbx_name": "StorefrontCafe_FlowerBed_Leaves0_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -249,7 +249,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_Leaves1_Leaves",
      "fbx_name": "StorefrontCafe_FlowerBed_Leaves1_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -263,7 +263,7 @@
     {
      "name": "StorefrontCafe_FlowerBed_Leaves2_Leaves",
      "fbx_name": "StorefrontCafe_FlowerBed_Leaves2_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -298,7 +298,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -319,12 +319,12 @@
     {
      "name": "StorefrontCafe_Lights",
      "fbx_name": "StorefrontCafe_Lights",
-     "tris": 120,
+     "tris": 72,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -529,7 +529,7 @@
     {
      "name": "Storefront_Flower",
      "fbx_name": "Storefront_Flower",
-     "tris": 2560,
+     "tris": 640,
      "look": "flower_pink",
      "color": [
       250,
@@ -557,7 +557,7 @@
     {
      "name": "Storefront_FlowerLeaf",
      "fbx_name": "Storefront_FlowerLeaf",
-     "tris": 640,
+     "tris": 160,
      "look": "bush",
      "color": [
       88,
@@ -571,7 +571,7 @@
     {
      "name": "Storefront_FlowerMid",
      "fbx_name": "Storefront_FlowerMid",
-     "tris": 640,
+     "tris": 158,
      "look": "flower_yel",
      "color": [
       255,
@@ -644,9 +644,9 @@
      "tris": 500,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -690,7 +690,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -767,7 +767,7 @@
     {
      "name": "Storefront_Urn",
      "fbx_name": "Storefront_Urn",
-     "tris": 432,
+     "tris": 424,
      "look": "marble",
      "color": [
       244,
@@ -845,9 +845,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -870,7 +870,7 @@
     {
      "name": "MainStreetCoffee_Cup",
      "fbx_name": "MainStreetCoffee_Cup",
-     "tris": 210,
+     "tris": 204,
      "look": "white",
      "color": [
       248,
@@ -905,7 +905,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -926,7 +926,7 @@
     {
      "name": "MainStreetCoffee_Preview_Text_white",
      "fbx_name": "MainStreetCoffee_Preview_Text_white",
-     "tris": 1940,
+     "tris": 968,
      "look": "white",
      "color": [
       248,
@@ -954,7 +954,7 @@
     {
      "name": "MainStreetCol_Column",
      "fbx_name": "MainStreetCol_Column",
-     "tris": 1872,
+     "tris": 932,
      "look": "marble",
      "color": [
       244,
@@ -1108,7 +1108,7 @@
     {
      "name": "MainStreetWin_Frame",
      "fbx_name": "MainStreetWin_Frame",
-     "tris": 1792,
+     "tris": 1276,
      "look": "white",
      "color": [
       248,
@@ -1122,7 +1122,7 @@
     {
      "name": "MainStreetWin_Glass",
      "fbx_name": "MainStreetWin_Glass",
-     "tris": 672,
+     "tris": 392,
      "look": "glass_blue",
      "color": [
       128,
@@ -1276,7 +1276,7 @@
     {
      "name": "MainStreet_Flower",
      "fbx_name": "MainStreet_Flower",
-     "tris": 2560,
+     "tris": 640,
      "look": "flower_red",
      "color": [
       240,
@@ -1304,7 +1304,7 @@
     {
      "name": "MainStreet_FlowerLeaf",
      "fbx_name": "MainStreet_FlowerLeaf",
-     "tris": 640,
+     "tris": 160,
      "look": "bush",
      "color": [
       88,
@@ -1318,7 +1318,7 @@
     {
      "name": "MainStreet_FlowerMid",
      "fbx_name": "MainStreet_FlowerMid",
-     "tris": 640,
+     "tris": 156,
      "look": "flower_yel",
      "color": [
       255,
@@ -1377,9 +1377,9 @@
      "tris": 468,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1451,7 +1451,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1528,12 +1528,12 @@
     {
      "name": "MainStreet_Spot",
      "fbx_name": "MainStreet_Spot",
-     "tris": 120,
+     "tris": 114,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1577,7 +1577,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1587,9 +1587,9 @@
      "tris": 72,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1648,9 +1648,9 @@
      "tris": 160,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2086,7 +2086,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -2096,9 +2096,9 @@
      "tris": 120,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2219,12 +2219,12 @@
     {
      "name": "GlassOffice_Spot",
      "fbx_name": "GlassOffice_Spot",
-     "tris": 240,
+     "tris": 228,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2254,7 +2254,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -2264,9 +2264,9 @@
      "tris": 108,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2320,9 +2320,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2345,7 +2345,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -2359,7 +2359,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.001",
-     "tris": 1388,
+     "tris": 346,
      "look": "bush",
      "color": [
       88,
@@ -2373,7 +2373,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.002",
-     "tris": 1384,
+     "tris": 346,
      "look": "bush",
      "color": [
       88,
@@ -2387,7 +2387,7 @@
     {
      "name": "PlanterSq_Flower",
      "fbx_name": "PlanterSq_Flower",
-     "tris": 1680,
+     "tris": 420,
      "look": "flower_pink",
      "color": [
       250,
@@ -2401,7 +2401,7 @@
     {
      "name": "PlanterSq_FlowerMid",
      "fbx_name": "PlanterSq_FlowerMid",
-     "tris": 420,
+     "tris": 104,
      "look": "flower_yel",
      "color": [
       255,
@@ -2436,7 +2436,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -2446,9 +2446,9 @@
      "tris": 528,
      "look": "trim_cream",
      "color": [
-      248,
-      238,
-      214
+      204,
+      190,
+      158
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2577,9 +2577,9 @@
      "tris": 16,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2602,7 +2602,7 @@
     {
      "name": "CorporateHQCafe_Shade",
      "fbx_name": "CorporateHQCafe_Shade",
-     "tris": 96,
+     "tris": 94,
      "look": "brass",
      "color": [
       224,
@@ -2616,12 +2616,12 @@
     {
      "name": "CorporateHQCafe_Stool",
      "fbx_name": "CorporateHQCafe_Stool",
-     "tris": 210,
+     "tris": 204,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2644,12 +2644,12 @@
     {
      "name": "CorporateHQGarden_Bench_Iron",
      "fbx_name": "CorporateHQGarden_Bench_Iron",
-     "tris": 2080,
+     "tris": 1000,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2672,7 +2672,7 @@
     {
      "name": "CorporateHQGarden_Lawn",
      "fbx_name": "CorporateHQGarden_Lawn",
-     "tris": 12,
+     "tris": 2,
      "look": "grass_ov",
      "color": [
       124,
@@ -2686,7 +2686,7 @@
     {
      "name": "CorporateHQGarden_Tree-16_Leaves",
      "fbx_name": "CorporateHQGarden_Tree-16_Leaves",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -2700,7 +2700,7 @@
     {
      "name": "CorporateHQGarden_Tree16_Leaves",
      "fbx_name": "CorporateHQGarden_Tree16_Leaves",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -3043,7 +3043,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -3148,12 +3148,12 @@
     {
      "name": "CorporateHQ_Spot",
      "fbx_name": "CorporateHQ_Spot",
-     "tris": 360,
+     "tris": 342,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3232,7 +3232,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 540,
+     "tris": 134,
      "look": "flower_orange",
      "color": [
       255,
@@ -3246,7 +3246,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 1080,
+     "tris": 266,
      "look": "flower_yel",
      "color": [
       255,
@@ -3260,7 +3260,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple",
-     "tris": 2160,
+     "tris": 540,
      "look": "flower_purple",
      "color": [
       168,
@@ -3274,7 +3274,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed",
-     "tris": 2160,
+     "tris": 540,
      "look": "flower_red",
      "color": [
       240,
@@ -3288,7 +3288,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel",
-     "tris": 2160,
+     "tris": 540,
      "look": "flower_yel",
      "color": [
       255,
@@ -3302,7 +3302,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3316,7 +3316,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3330,7 +3330,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.002",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3344,7 +3344,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3358,7 +3358,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3372,7 +3372,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.002",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3386,7 +3386,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3400,7 +3400,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3414,7 +3414,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.002",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -3442,21 +3442,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone",
-     "tris": 4212,
+     "tris": 2106,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2",
-     "tris": 2592,
+     "tris": 1296,
      "look": "stone_mid",
      "color": [
       196,
@@ -3501,9 +3501,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3562,9 +3562,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3783,7 +3783,7 @@
     {
      "name": "SupremeTower_Column",
      "fbx_name": "SupremeTower_Column",
-     "tris": 352,
+     "tris": 348,
      "look": "gold",
      "color": [
       255,
@@ -3940,9 +3940,9 @@
      "tris": 124,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -4035,7 +4035,7 @@
     {
      "name": "SupremeTower_Spire",
      "fbx_name": "SupremeTower_Spire",
-     "tris": 108,
+     "tris": 84,
      "look": "gold",
      "color": [
       255,
@@ -4049,12 +4049,12 @@
     {
      "name": "SupremeTower_Spot",
      "fbx_name": "SupremeTower_Spot",
-     "tris": 480,
+     "tris": 456,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -4098,7 +4098,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }

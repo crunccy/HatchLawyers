@@ -147,7 +147,7 @@
     {
      "name": "RotUpsideCanopy16_Leaves",
      "fbx_name": "RotUpsideCanopy16_Leaves",
-     "tris": 1400,
+     "tris": 1398,
      "look": "lilac",
      "color": [
       190,
@@ -292,7 +292,7 @@
     {
      "name": "RotTwisty_Spire",
      "fbx_name": "RotTwisty_Spire",
-     "tris": 152,
+     "tris": 40,
      "look": "magenta",
      "color": [
       230,
@@ -440,9 +440,9 @@
      "tris": 80,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -563,7 +563,7 @@
     {
      "name": "RotScreen_Tongue",
      "fbx_name": "RotScreen_Tongue",
-     "tris": 108,
+     "tris": 26,
      "look": "flower_pink",
      "color": [
       250,
@@ -666,7 +666,7 @@
     {
      "name": "RotMallWin_Frame",
      "fbx_name": "RotMallWin_Frame",
-     "tris": 640,
+     "tris": 428,
      "look": "white",
      "color": [
       248,
@@ -680,7 +680,7 @@
     {
      "name": "RotMallWin_Glass",
      "fbx_name": "RotMallWin_Glass",
-     "tris": 240,
+     "tris": 100,
      "look": "glass_blue",
      "color": [
       128,
@@ -736,7 +736,7 @@
     {
      "name": "RotMall_Icing",
      "fbx_name": "RotMall_Icing",
-     "tris": 3644,
+     "tris": 1572,
      "look": "magenta",
      "color": [
       230,
@@ -811,7 +811,7 @@
     {
      "name": "RotUpsideHouseWin_Frame",
      "fbx_name": "RotUpsideHouseWin_Frame",
-     "tris": 256,
+     "tris": 156,
      "look": "white",
      "color": [
       248,
@@ -825,7 +825,7 @@
     {
      "name": "RotUpsideHouseWin_Glass",
      "fbx_name": "RotUpsideHouseWin_Glass",
-     "tris": 96,
+     "tris": 40,
      "look": "glass_blue",
      "color": [
       128,
@@ -1162,12 +1162,12 @@
     {
      "name": "RotNeon_Antenna",
      "fbx_name": "RotNeon_Antenna",
-     "tris": 40,
+     "tris": 24,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1282,7 +1282,7 @@
    "min": [
     -21.12,
     -32.41,
-    -1.6
+    -2.05
    ],
    "max": [
     21.27,
@@ -1293,7 +1293,7 @@
     {
      "name": "IslPortalCap_Leaves",
      "fbx_name": "IslPortalCap_Leaves",
-     "tris": 1040,
+     "tris": 260,
      "look": "rot_grass",
      "color": [
       84,
@@ -1307,7 +1307,7 @@
     {
      "name": "IslPortal_Arch",
      "fbx_name": "IslPortal_Arch",
-     "tris": 334,
+     "tris": 310,
      "look": "rot_rock_dark",
      "color": [
       80,
@@ -1335,7 +1335,7 @@
     {
      "name": "IslPortal_Base",
      "fbx_name": "IslPortal_Base",
-     "tris": 76,
+     "tris": 70,
      "look": "rot_rock",
      "color": [
       112,
@@ -1405,7 +1405,7 @@
     {
      "name": "IslPortal_Leg",
      "fbx_name": "IslPortal_Leg",
-     "tris": 120,
+     "tris": 104,
      "look": "rot_rock_dark",
      "color": [
       80,
@@ -1419,7 +1419,7 @@
     {
      "name": "IslPortal_LegMoss",
      "fbx_name": "IslPortal_LegMoss",
-     "tris": 40,
+     "tris": 10,
      "look": "rot_grass",
      "color": [
       84,

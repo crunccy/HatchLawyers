@@ -25,7 +25,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 360,
+     "tris": 90,
      "look": "flower_orange",
      "color": [
       255,
@@ -39,7 +39,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 720,
+     "tris": 176,
      "look": "flower_yel",
      "color": [
       255,
@@ -53,7 +53,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_purple",
      "color": [
       168,
@@ -67,7 +67,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_red",
      "color": [
       240,
@@ -81,7 +81,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel",
-     "tris": 1440,
+     "tris": 360,
      "look": "flower_yel",
      "color": [
       255,
@@ -95,7 +95,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves",
-     "tris": 838,
+     "tris": 208,
      "look": "bush",
      "color": [
       88,
@@ -109,7 +109,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -123,7 +123,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -137,7 +137,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.001",
-     "tris": 838,
+     "tris": 208,
      "look": "bush",
      "color": [
       88,
@@ -151,7 +151,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -165,7 +165,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -193,21 +193,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone",
-     "tris": 2808,
+     "tris": 1404,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2",
-     "tris": 1728,
+     "tris": 864,
      "look": "stone_mid",
      "color": [
       196,
@@ -235,7 +235,7 @@
     {
      "name": "Hedge_Hedge_Leaves",
      "fbx_name": "Hedge_Hedge_Leaves",
-     "tris": 2200,
+     "tris": 550,
      "look": "hedge",
      "color": [
       80,
@@ -249,7 +249,7 @@
     {
      "name": "Hedge_Hedge_Leaves",
      "fbx_name": "Hedge_Hedge_Leaves.001",
-     "tris": 2200,
+     "tris": 550,
      "look": "hedge",
      "color": [
       80,
@@ -305,12 +305,12 @@
     {
      "name": "LampDouble_Iron",
      "fbx_name": "LampDouble_Iron",
-     "tris": 1992,
+     "tris": 974,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -319,7 +319,7 @@
     {
      "name": "LicenseBal_Baluster",
      "fbx_name": "LicenseBal_Baluster",
-     "tris": 6528,
+     "tris": 3264,
      "look": "marble",
      "color": [
       244,
@@ -347,7 +347,7 @@
     {
      "name": "LicenseCol_Column",
      "fbx_name": "LicenseCol_Column",
-     "tris": 2808,
+     "tris": 1158,
      "look": "marble",
      "color": [
       244,
@@ -515,7 +515,7 @@
     {
      "name": "LicenseScales_Gold",
      "fbx_name": "LicenseScales_Gold",
-     "tris": 2952,
+     "tris": 1472,
      "look": "gold",
      "color": [
       255,
@@ -613,7 +613,7 @@
     {
      "name": "LicenseWin_Frame",
      "fbx_name": "LicenseWin_Frame",
-     "tris": 5392,
+     "tris": 4240,
      "look": "white",
      "color": [
       248,
@@ -627,7 +627,7 @@
     {
      "name": "LicenseWin_Glass",
      "fbx_name": "LicenseWin_Glass",
-     "tris": 2112,
+     "tris": 1440,
      "look": "glass_blue",
      "color": [
       128,
@@ -826,9 +826,9 @@
      "tris": 44,
      "look": "trim_cream",
      "color": [
-      248,
-      238,
-      214
+      204,
+      190,
+      158
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -907,7 +907,7 @@
     {
      "name": "License_Dome",
      "fbx_name": "License_Dome",
-     "tris": 1160,
+     "tris": 1158,
      "look": "gold",
      "color": [
       255,
@@ -921,7 +921,7 @@
     {
      "name": "License_Drum",
      "fbx_name": "License_Drum",
-     "tris": 280,
+     "tris": 278,
      "look": "marble",
      "color": [
       244,
@@ -1019,7 +1019,7 @@
     {
      "name": "License_Gold",
      "fbx_name": "License_Gold",
-     "tris": 1600,
+     "tris": 784,
      "look": "gold",
      "color": [
       255,
@@ -1036,9 +1036,9 @@
      "tris": 224,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1110,7 +1110,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1159,7 +1159,7 @@
     {
      "name": "License_Rib",
      "fbx_name": "License_Rib",
-     "tris": 1856,
+     "tris": 928,
      "look": "gold_dark",
      "color": [
       214,
@@ -1229,7 +1229,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -1243,7 +1243,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.001",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -1257,7 +1257,7 @@
     {
      "name": "PlanterRound_Flower",
      "fbx_name": "PlanterRound_Flower",
-     "tris": 1120,
+     "tris": 280,
      "look": "flower_yel",
      "color": [
       255,
@@ -1271,7 +1271,7 @@
     {
      "name": "PlanterRound_FlowerMid",
      "fbx_name": "PlanterRound_FlowerMid",
-     "tris": 280,
+     "tris": 68,
      "look": "flower_orange",
      "color": [
       255,
@@ -1285,7 +1285,7 @@
     {
      "name": "PlanterRound_Pot",
      "fbx_name": "PlanterRound_Pot",
-     "tris": 432,
+     "tris": 428,
      "look": "terracotta",
      "color": [
       218,
@@ -1341,7 +1341,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -1355,7 +1355,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.001",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -1369,7 +1369,7 @@
     {
      "name": "PlanterSq_Flower",
      "fbx_name": "PlanterSq_Flower",
-     "tris": 1280,
+     "tris": 320,
      "look": "flower_pink",
      "color": [
       250,
@@ -1383,7 +1383,7 @@
     {
      "name": "PlanterSq_FlowerMid",
      "fbx_name": "PlanterSq_FlowerMid",
-     "tris": 320,
+     "tris": 80,
      "look": "flower_yel",
      "color": [
       255,
@@ -1418,7 +1418,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1428,9 +1428,9 @@
      "tris": 352,
      "look": "trim_cream",
      "color": [
-      248,
-      238,
-      214
+      204,
+      190,
+      158
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1489,9 +1489,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1500,7 +1500,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.002",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -1514,7 +1514,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.003",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -1528,7 +1528,7 @@
     {
      "name": "PlanterRound_Flower",
      "fbx_name": "PlanterRound_Flower.001",
-     "tris": 1120,
+     "tris": 280,
      "look": "flower_yel",
      "color": [
       255,
@@ -1542,7 +1542,7 @@
     {
      "name": "PlanterRound_FlowerMid",
      "fbx_name": "PlanterRound_FlowerMid.001",
-     "tris": 280,
+     "tris": 70,
      "look": "flower_orange",
      "color": [
       255,
@@ -1556,7 +1556,7 @@
     {
      "name": "PlanterRound_Pot",
      "fbx_name": "PlanterRound_Pot.001",
-     "tris": 432,
+     "tris": 428,
      "look": "terracotta",
      "color": [
       218,
@@ -1724,7 +1724,7 @@
     {
      "name": "UpgradesWin_Frame",
      "fbx_name": "UpgradesWin_Frame",
-     "tris": 2304,
+     "tris": 1852,
      "look": "white",
      "color": [
       248,
@@ -1738,7 +1738,7 @@
     {
      "name": "UpgradesWin_Glass",
      "fbx_name": "UpgradesWin_Glass",
-     "tris": 864,
+     "tris": 612,
      "look": "glass_blue",
      "color": [
       128,
@@ -1951,9 +1951,9 @@
      "tris": 60,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1990,7 +1990,7 @@
     {
      "name": "Upgrades_Pedestal",
      "fbx_name": "Upgrades_Pedestal",
-     "tris": 728,
+     "tris": 724,
      "look": "marble",
      "color": [
       244,
@@ -2138,9 +2138,9 @@
      "tris": 160,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2163,7 +2163,7 @@
     {
      "name": "Incubator_Base",
      "fbx_name": "Incubator_Base",
-     "tris": 408,
+     "tris": 406,
      "look": "stone_mid",
      "color": [
       196,
@@ -2219,7 +2219,7 @@
     {
      "name": "Incubator_Deck",
      "fbx_name": "Incubator_Deck",
-     "tris": 452,
+     "tris": 450,
      "look": "marble",
      "color": [
       244,
@@ -2247,7 +2247,7 @@
     {
      "name": "Incubator_Egg",
      "fbx_name": "Incubator_Egg",
-     "tris": 3744,
+     "tris": 1872,
      "look": "egg_shell",
      "color": [
       255,
@@ -2289,7 +2289,7 @@
     {
      "name": "Incubator_Gold",
      "fbx_name": "Incubator_Gold",
-     "tris": 2432,
+     "tris": 1216,
      "look": "gold",
      "color": [
       255,
@@ -2303,7 +2303,7 @@
     {
      "name": "Incubator_Halo",
      "fbx_name": "Incubator_Halo",
-     "tris": 1536,
+     "tris": 768,
      "look": "halo_glow",
      "color": [
       110,
@@ -2345,7 +2345,7 @@
     {
      "name": "Incubator_Lamp",
      "fbx_name": "Incubator_Lamp",
-     "tris": 280,
+     "tris": 276,
      "look": "brass",
      "color": [
       224,
@@ -2359,12 +2359,12 @@
     {
      "name": "Incubator_Metal",
      "fbx_name": "Incubator_Metal",
-     "tris": 808,
+     "tris": 766,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2490,7 +2490,7 @@
     {
      "name": "Fountain_Base",
      "fbx_name": "Fountain_Base",
-     "tris": 320,
+     "tris": 318,
      "look": "stone_mid",
      "color": [
       196,
@@ -2504,7 +2504,7 @@
     {
      "name": "Fountain_Curtain",
      "fbx_name": "Fountain_Curtain",
-     "tris": 336,
+     "tris": 134,
      "look": "water_fall",
      "color": [
       70,
@@ -2546,7 +2546,7 @@
     {
      "name": "Fountain_Jet",
      "fbx_name": "Fountain_Jet",
-     "tris": 1632,
+     "tris": 652,
      "look": "water_fall",
      "color": [
       70,
@@ -2560,7 +2560,7 @@
     {
      "name": "Fountain_Marble",
      "fbx_name": "Fountain_Marble",
-     "tris": 3632,
+     "tris": 1806,
      "look": "marble",
      "color": [
       244,
@@ -2588,7 +2588,7 @@
     {
      "name": "Fountain_Water",
      "fbx_name": "Fountain_Water",
-     "tris": 472,
+     "tris": 188,
      "look": "water",
      "color": [
       60,

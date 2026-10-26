@@ -214,7 +214,7 @@
       140,
       106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -228,7 +228,7 @@
       140,
       106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -319,7 +319,7 @@
     {
      "name": "Shack_Moss",
      "fbx_name": "Shack_Moss",
-     "tris": 1200,
+     "tris": 300,
      "look": "moss",
      "color": [
       98,
@@ -382,7 +382,7 @@
       140,
       106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -410,7 +410,7 @@
       140,
       106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -459,7 +459,7 @@
     {
      "name": "Shack_Puddle",
      "fbx_name": "Shack_Puddle",
-     "tris": 12,
+     "tris": 11,
      "look": "water",
      "color": [
       60,
@@ -501,7 +501,7 @@
     {
      "name": "Shack_Rust",
      "fbx_name": "Shack_Rust",
-     "tris": 64,
+     "tris": 18,
      "look": "rust",
      "color": [
       172,
@@ -515,7 +515,7 @@
     {
      "name": "Shack_Sheet",
      "fbx_name": "Shack_Sheet",
-     "tris": 64,
+     "tris": 18,
      "look": "sheet",
      "color": [
       150,
@@ -578,7 +578,7 @@
       140,
       106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },

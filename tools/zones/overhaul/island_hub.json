@@ -25,7 +25,7 @@
     {
      "name": "Arch_Gold",
      "fbx_name": "Arch_Gold",
-     "tris": 1056,
+     "tris": 1008,
      "look": "trim_gold",
      "color": [
       255,
@@ -45,7 +45,7 @@
     0.0
    ],
    "min": [
-    71.79,
+    71.8,
     -3.42,
     0.0
    ],
@@ -58,7 +58,7 @@
     {
      "name": "AttractionSign_Bulbs",
      "fbx_name": "AttractionSign_Bulbs",
-     "tris": 2440,
+     "tris": 1220,
      "look": "bulb_glow",
      "color": [
       255,
@@ -153,12 +153,12 @@
     0.0
    ],
    "min": [
-    -246.01,
+    -246.02,
     -50.12,
     0.45
    ],
    "max": [
-    236.06,
+    236.07,
     207.06,
     5.81
    ],
@@ -166,7 +166,7 @@
     {
      "name": "Bench_Iron",
      "fbx_name": "Bench_Iron",
-     "tris": 16640,
+     "tris": 8000,
      "look": "iron",
      "color": [
       52,
@@ -346,7 +346,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -533,7 +533,7 @@
       152,
       96
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -610,7 +610,7 @@
     {
      "name": "BoothBriefcaseStack_Post",
      "fbx_name": "BoothBriefcaseStack_Post",
-     "tris": 216,
+     "tris": 212,
      "look": "gold",
      "color": [
       255,
@@ -804,7 +804,7 @@
       152,
       96
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -951,7 +951,7 @@
     {
      "name": "BoothFilingFrenzy_Post",
      "fbx_name": "BoothFilingFrenzy_Post",
-     "tris": 432,
+     "tris": 424,
      "look": "gold",
      "color": [
       255,
@@ -1145,7 +1145,7 @@
       152,
       96
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1180,7 +1180,7 @@
     {
      "name": "BoothLieDetector_Lamp",
      "fbx_name": "BoothLieDetector_Lamp",
-     "tris": 140,
+     "tris": 136,
      "look": "brass",
      "color": [
       224,
@@ -1222,7 +1222,7 @@
     {
      "name": "BoothLieDetector_LampShade",
      "fbx_name": "BoothLieDetector_LampShade",
-     "tris": 140,
+     "tris": 136,
      "look": "cash_green",
      "color": [
       84,
@@ -1243,7 +1243,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1306,7 +1306,7 @@
     {
      "name": "BoothLieDetector_Post",
      "fbx_name": "BoothLieDetector_Post",
-     "tris": 216,
+     "tris": 212,
      "look": "gold",
      "color": [
       255,
@@ -1444,7 +1444,7 @@
       152,
       96
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }
@@ -1642,18 +1642,18 @@
    "min": [
     -101.02,
     -58.98,
-    -0.11
+    -0.12
    ],
    "max": [
-    24.71,
-    160.72,
-    5.52
+    24.72,
+    160.73,
+    5.53
    ],
    "meshes": [
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 1440,
+     "tris": 350,
      "look": "flower_orange",
      "color": [
       255,
@@ -1667,7 +1667,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 2880,
+     "tris": 706,
      "look": "flower_yel",
      "color": [
       255,
@@ -1681,7 +1681,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple",
-     "tris": 5760,
+     "tris": 1440,
      "look": "flower_purple",
      "color": [
       168,
@@ -1695,7 +1695,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed",
-     "tris": 5760,
+     "tris": 1440,
      "look": "flower_red",
      "color": [
       240,
@@ -1709,7 +1709,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel",
-     "tris": 5760,
+     "tris": 1440,
      "look": "flower_yel",
      "color": [
       255,
@@ -1723,7 +1723,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -1737,7 +1737,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -1751,7 +1751,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.002",
-     "tris": 488,
+     "tris": 122,
      "look": "bush",
      "color": [
       88,
@@ -1765,7 +1765,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.003",
-     "tris": 484,
+     "tris": 120,
      "look": "bush",
      "color": [
       88,
@@ -1779,7 +1779,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.004",
-     "tris": 632,
+     "tris": 158,
      "look": "bush",
      "color": [
       88,
@@ -1793,7 +1793,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.005",
-     "tris": 644,
+     "tris": 160,
      "look": "bush",
      "color": [
       88,
@@ -1807,7 +1807,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.006",
-     "tris": 472,
+     "tris": 118,
      "look": "bush",
      "color": [
       88,
@@ -1821,7 +1821,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves.007",
-     "tris": 504,
+     "tris": 126,
      "look": "bush",
      "color": [
       88,
@@ -1835,7 +1835,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -1849,7 +1849,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -1863,7 +1863,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.002",
-     "tris": 480,
+     "tris": 120,
      "look": "bush",
      "color": [
       88,
@@ -1877,7 +1877,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.003",
-     "tris": 488,
+     "tris": 122,
      "look": "bush",
      "color": [
       88,
@@ -1891,7 +1891,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.004",
-     "tris": 640,
+     "tris": 160,
      "look": "bush",
      "color": [
       88,
@@ -1905,7 +1905,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.005",
-     "tris": 640,
+     "tris": 160,
      "look": "bush",
      "color": [
       88,
@@ -1919,7 +1919,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.006",
-     "tris": 476,
+     "tris": 118,
      "look": "bush",
      "color": [
       88,
@@ -1933,7 +1933,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves.007",
-     "tris": 480,
+     "tris": 118,
      "look": "bush",
      "color": [
       88,
@@ -1947,7 +1947,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -1961,7 +1961,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.001",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -1975,7 +1975,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.002",
-     "tris": 468,
+     "tris": 116,
      "look": "bush",
      "color": [
       88,
@@ -1989,7 +1989,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.003",
-     "tris": 484,
+     "tris": 120,
      "look": "bush",
      "color": [
       88,
@@ -2003,7 +2003,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.004",
-     "tris": 648,
+     "tris": 162,
      "look": "bush",
      "color": [
       88,
@@ -2017,7 +2017,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.005",
-     "tris": 640,
+     "tris": 160,
      "look": "bush",
      "color": [
       88,
@@ -2031,7 +2031,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.006",
-     "tris": 476,
+     "tris": 118,
      "look": "bush",
      "color": [
       88,
@@ -2045,7 +2045,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves.007",
-     "tris": 468,
+     "tris": 116,
      "look": "bush",
      "color": [
       88,
@@ -2059,7 +2059,7 @@
     {
      "name": "FlowerBed_Soil",
      "fbx_name": "FlowerBed_Soil",
-     "tris": 864,
+     "tris": 216,
      "look": "soil",
      "color": [
       110,
@@ -2073,21 +2073,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone",
-     "tris": 11232,
+     "tris": 2808,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2",
-     "tris": 6912,
+     "tris": 1728,
      "look": "stone_mid",
      "color": [
       196,
@@ -2114,13 +2114,13 @@
    "max": [
     20.2,
     20.2,
-    10.7
+    10.65
    ],
    "meshes": [
     {
      "name": "Fountain_Base",
      "fbx_name": "Fountain_Base",
-     "tris": 320,
+     "tris": 318,
      "look": "stone_mid",
      "color": [
       196,
@@ -2134,7 +2134,7 @@
     {
      "name": "Fountain_Curtain",
      "fbx_name": "Fountain_Curtain",
-     "tris": 336,
+     "tris": 134,
      "look": "water_fall",
      "color": [
       70,
@@ -2176,7 +2176,7 @@
     {
      "name": "Fountain_Jet",
      "fbx_name": "Fountain_Jet",
-     "tris": 1632,
+     "tris": 652,
      "look": "water_fall",
      "color": [
       70,
@@ -2190,7 +2190,7 @@
     {
      "name": "Fountain_Marble",
      "fbx_name": "Fountain_Marble",
-     "tris": 3632,
+     "tris": 1806,
      "look": "marble",
      "color": [
       244,
@@ -2218,7 +2218,7 @@
     {
      "name": "Fountain_Water",
      "fbx_name": "Fountain_Water",
-     "tris": 472,
+     "tris": 188,
      "look": "water",
      "color": [
       60,
@@ -2382,7 +2382,7 @@
     {
      "name": "GavelBonk_GavelHandle",
      "fbx_name": "GavelBonk_GavelHandle",
-     "tris": 76,
+     "tris": 62,
      "look": "court_wood",
      "color": [
       150,
@@ -2396,7 +2396,7 @@
     {
      "name": "GavelBonk_GavelHead",
      "fbx_name": "GavelBonk_GavelHead",
-     "tris": 128,
+     "tris": 124,
      "look": "court_wood",
      "color": [
       150,
@@ -2410,7 +2410,7 @@
     {
      "name": "GavelBonk_Gold",
      "fbx_name": "GavelBonk_Gold",
-     "tris": 644,
+     "tris": 620,
      "look": "gold",
      "color": [
       255,
@@ -2466,7 +2466,7 @@
     {
      "name": "GavelBonk_Podium",
      "fbx_name": "GavelBonk_Podium",
-     "tris": 260,
+     "tris": 258,
      "look": "marble",
      "color": [
       244,
@@ -2480,7 +2480,7 @@
     {
      "name": "GavelBonk_Post",
      "fbx_name": "GavelBonk_Post",
-     "tris": 432,
+     "tris": 424,
      "look": "marble",
      "color": [
       244,
@@ -2768,13 +2768,13 @@
     0.0
    ],
    "min": [
-    -84.12,
+    -84.13,
     60.12,
     17.68
    ],
    "max": [
     -60.12,
-    84.12,
+    84.13,
     20.97
    ],
    "meshes": [
@@ -2795,7 +2795,7 @@
     {
      "name": "Halo_Gold",
      "fbx_name": "Halo_Gold",
-     "tris": 2496,
+     "tris": 1247,
      "look": "trim_gold",
      "color": [
       255,
@@ -2809,7 +2809,7 @@
     {
      "name": "Halo_Rim",
      "fbx_name": "Halo_Rim",
-     "tris": 1664,
+     "tris": 802,
      "look": "stage_white",
      "color": [
       244,
@@ -2878,12 +2878,12 @@
    "min": [
     -13.5,
     191.25,
-    3.81
+    3.82
    ],
    "max": [
     13.5,
     194.35,
-    6.53
+    6.54
    ],
    "meshes": [
     {
@@ -2903,7 +2903,7 @@
     {
      "name": "Hedge_Hedge_Leaves",
      "fbx_name": "Hedge_Hedge_Leaves",
-     "tris": 2200,
+     "tris": 550,
      "look": "hedge",
      "color": [
       80,
@@ -2917,7 +2917,7 @@
     {
      "name": "Hedge_Hedge_Leaves",
      "fbx_name": "Hedge_Hedge_Leaves.001",
-     "tris": 2200,
+     "tris": 550,
      "look": "hedge",
      "color": [
       80,
@@ -2937,20 +2937,20 @@
     0.0
    ],
    "min": [
-    -414.74,
-    -328.72,
-    -62.92
+    -414.76,
+    -328.73,
+    -62.93
    ],
    "max": [
-    333.44,
-    448.9,
-    17.98
+    333.43,
+    448.92,
+    17.99
    ],
    "meshes": [
     {
      "name": "HubBlossom_bark_1",
      "fbx_name": "HubBlossom_bark_1",
-     "tris": 14686,
+     "tris": 14687,
      "look": "bark",
      "color": [
       128,
@@ -2964,35 +2964,7 @@
     {
      "name": "HubBlossom_bark_2",
      "fbx_name": "HubBlossom_bark_2",
-     "tris": 14688,
-     "look": "bark",
-     "color": [
-      128,
-      88,
-      52
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_bark_3",
-     "fbx_name": "HubBlossom_bark_3",
-     "tris": 14688,
-     "look": "bark",
-     "color": [
-      128,
-      88,
-      52
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_bark_4",
-     "fbx_name": "HubBlossom_bark_4",
-     "tris": 14690,
+     "tris": 14689,
      "look": "bark",
      "color": [
       128,
@@ -3006,7 +2978,7 @@
     {
      "name": "HubBlossom_blossom_1",
      "fbx_name": "HubBlossom_blossom_1",
-     "tris": 10122,
+     "tris": 10120,
      "look": "blossom",
      "color": [
       250,
@@ -3020,7 +2992,7 @@
     {
      "name": "HubBlossom_blossom_2",
      "fbx_name": "HubBlossom_blossom_2",
-     "tris": 10124,
+     "tris": 10121,
      "look": "blossom",
      "color": [
       250,
@@ -3034,7 +3006,7 @@
     {
      "name": "HubBlossom_blossom_3",
      "fbx_name": "HubBlossom_blossom_3",
-     "tris": 10124,
+     "tris": 10120,
      "look": "blossom",
      "color": [
       250,
@@ -3048,7 +3020,7 @@
     {
      "name": "HubBlossom_blossom_4",
      "fbx_name": "HubBlossom_blossom_4",
-     "tris": 10126,
+     "tris": 10122,
      "look": "blossom",
      "color": [
       250,
@@ -3062,7 +3034,7 @@
     {
      "name": "HubBlossom_blossom_5",
      "fbx_name": "HubBlossom_blossom_5",
-     "tris": 10123,
+     "tris": 10120,
      "look": "blossom",
      "color": [
       250,
@@ -3076,7 +3048,7 @@
     {
      "name": "HubBlossom_blossom_6",
      "fbx_name": "HubBlossom_blossom_6",
-     "tris": 10125,
+     "tris": 10122,
      "look": "blossom",
      "color": [
       250,
@@ -3090,7 +3062,7 @@
     {
      "name": "HubBlossom_blossom_7",
      "fbx_name": "HubBlossom_blossom_7",
-     "tris": 10124,
+     "tris": 10121,
      "look": "blossom",
      "color": [
       250,
@@ -3104,343 +3076,7 @@
     {
      "name": "HubBlossom_blossom_8",
      "fbx_name": "HubBlossom_blossom_8",
-     "tris": 10126,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_9",
-     "fbx_name": "HubBlossom_blossom_9",
-     "tris": 10123,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_10",
-     "fbx_name": "HubBlossom_blossom_10",
-     "tris": 10125,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_11",
-     "fbx_name": "HubBlossom_blossom_11",
-     "tris": 10124,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_12",
-     "fbx_name": "HubBlossom_blossom_12",
-     "tris": 10125,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_13",
-     "fbx_name": "HubBlossom_blossom_13",
-     "tris": 10123,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_14",
-     "fbx_name": "HubBlossom_blossom_14",
-     "tris": 10126,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_15",
-     "fbx_name": "HubBlossom_blossom_15",
-     "tris": 10125,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_16",
-     "fbx_name": "HubBlossom_blossom_16",
-     "tris": 10126,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_17",
-     "fbx_name": "HubBlossom_blossom_17",
-     "tris": 10123,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_18",
-     "fbx_name": "HubBlossom_blossom_18",
-     "tris": 10125,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_19",
-     "fbx_name": "HubBlossom_blossom_19",
-     "tris": 10123,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_20",
-     "fbx_name": "HubBlossom_blossom_20",
-     "tris": 10126,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_21",
-     "fbx_name": "HubBlossom_blossom_21",
-     "tris": 10124,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_22",
-     "fbx_name": "HubBlossom_blossom_22",
-     "tris": 10125,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_23",
-     "fbx_name": "HubBlossom_blossom_23",
-     "tris": 10123,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_24",
-     "fbx_name": "HubBlossom_blossom_24",
-     "tris": 10127,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_25",
-     "fbx_name": "HubBlossom_blossom_25",
      "tris": 10122,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_26",
-     "fbx_name": "HubBlossom_blossom_26",
-     "tris": 10126,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_27",
-     "fbx_name": "HubBlossom_blossom_27",
-     "tris": 10124,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_28",
-     "fbx_name": "HubBlossom_blossom_28",
-     "tris": 10126,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_29",
-     "fbx_name": "HubBlossom_blossom_29",
-     "tris": 10124,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_30",
-     "fbx_name": "HubBlossom_blossom_30",
-     "tris": 10125,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_31",
-     "fbx_name": "HubBlossom_blossom_31",
-     "tris": 10123,
-     "look": "blossom",
-     "color": [
-      250,
-      170,
-      200
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBlossom_blossom_32",
-     "fbx_name": "HubBlossom_blossom_32",
-     "tris": 10127,
      "look": "blossom",
      "color": [
       250,
@@ -3460,62 +3096,20 @@
     0.0
    ],
    "min": [
-    -320.84,
+    -320.86,
     -295.52,
     -0.43
    ],
    "max": [
-    302.65,
+    302.64,
     308.12,
-    2.88
+    2.85
    ],
    "meshes": [
     {
-     "name": "HubBush_bush_1",
-     "fbx_name": "HubBush_bush_1",
+     "name": "HubBush_bush",
+     "fbx_name": "HubBush_bush",
      "tris": 10698,
-     "look": "bush",
-     "color": [
-      88,
-      182,
-      54
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBush_bush_2",
-     "fbx_name": "HubBush_bush_2",
-     "tris": 10701,
-     "look": "bush",
-     "color": [
-      88,
-      182,
-      54
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBush_bush_3",
-     "fbx_name": "HubBush_bush_3",
-     "tris": 10700,
-     "look": "bush",
-     "color": [
-      88,
-      182,
-      54
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubBush_bush_4",
-     "fbx_name": "HubBush_bush_4",
-     "tris": 10701,
      "look": "bush",
      "color": [
       88,
@@ -3535,20 +3129,20 @@
     0.0
    ],
    "min": [
-    -279.24,
-    -263.05,
-    -0.03
+    -279.25,
+    -263.04,
+    -0.02
    ],
    "max": [
-    279.27,
-    263.08,
+    279.26,
+    263.07,
     2.63
    ],
    "meshes": [
     {
      "name": "HubHedge_hedge_1",
      "fbx_name": "HubHedge_hedge_1",
-     "tris": 10419,
+     "tris": 10418,
      "look": "hedge",
      "color": [
       80,
@@ -3562,7 +3156,7 @@
     {
      "name": "HubHedge_hedge_2",
      "fbx_name": "HubHedge_hedge_2",
-     "tris": 10423,
+     "tris": 10420,
      "look": "hedge",
      "color": [
       80,
@@ -3576,7 +3170,7 @@
     {
      "name": "HubHedge_hedge_3",
      "fbx_name": "HubHedge_hedge_3",
-     "tris": 10421,
+     "tris": 10419,
      "look": "hedge",
      "color": [
       80,
@@ -3590,7 +3184,7 @@
     {
      "name": "HubHedge_hedge_4",
      "fbx_name": "HubHedge_hedge_4",
-     "tris": 10422,
+     "tris": 10421,
      "look": "hedge",
      "color": [
       80,
@@ -3604,7 +3198,7 @@
     {
      "name": "HubHedge_hedge_5",
      "fbx_name": "HubHedge_hedge_5",
-     "tris": 10421,
+     "tris": 10418,
      "look": "hedge",
      "color": [
       80,
@@ -3618,7 +3212,7 @@
     {
      "name": "HubHedge_hedge_6",
      "fbx_name": "HubHedge_hedge_6",
-     "tris": 10423,
+     "tris": 10421,
      "look": "hedge",
      "color": [
       80,
@@ -3632,7 +3226,7 @@
     {
      "name": "HubHedge_hedge_7",
      "fbx_name": "HubHedge_hedge_7",
-     "tris": 10422,
+     "tris": 10419,
      "look": "hedge",
      "color": [
       80,
@@ -3646,343 +3240,7 @@
     {
      "name": "HubHedge_hedge_8",
      "fbx_name": "HubHedge_hedge_8",
-     "tris": 10423,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_9",
-     "fbx_name": "HubHedge_hedge_9",
-     "tris": 10421,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_10",
-     "fbx_name": "HubHedge_hedge_10",
      "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_11",
-     "fbx_name": "HubHedge_hedge_11",
-     "tris": 10421,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_12",
-     "fbx_name": "HubHedge_hedge_12",
-     "tris": 10423,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_13",
-     "fbx_name": "HubHedge_hedge_13",
-     "tris": 10421,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_14",
-     "fbx_name": "HubHedge_hedge_14",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_15",
-     "fbx_name": "HubHedge_hedge_15",
-     "tris": 10421,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_16",
-     "fbx_name": "HubHedge_hedge_16",
-     "tris": 10425,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_17",
-     "fbx_name": "HubHedge_hedge_17",
-     "tris": 10421,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_18",
-     "fbx_name": "HubHedge_hedge_18",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_19",
-     "fbx_name": "HubHedge_hedge_19",
-     "tris": 10420,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_20",
-     "fbx_name": "HubHedge_hedge_20",
-     "tris": 10424,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_21",
-     "fbx_name": "HubHedge_hedge_21",
-     "tris": 10421,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_22",
-     "fbx_name": "HubHedge_hedge_22",
-     "tris": 10423,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_23",
-     "fbx_name": "HubHedge_hedge_23",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_24",
-     "fbx_name": "HubHedge_hedge_24",
-     "tris": 10423,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_25",
-     "fbx_name": "HubHedge_hedge_25",
-     "tris": 10420,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_26",
-     "fbx_name": "HubHedge_hedge_26",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_27",
-     "fbx_name": "HubHedge_hedge_27",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_28",
-     "fbx_name": "HubHedge_hedge_28",
-     "tris": 10423,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_29",
-     "fbx_name": "HubHedge_hedge_29",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_30",
-     "fbx_name": "HubHedge_hedge_30",
-     "tris": 10423,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_31",
-     "fbx_name": "HubHedge_hedge_31",
-     "tris": 10422,
-     "look": "hedge",
-     "color": [
-      80,
-      172,
-      50
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubHedge_hedge_32",
-     "fbx_name": "HubHedge_hedge_32",
-     "tris": 10424,
      "look": "hedge",
      "color": [
       80,
@@ -4003,19 +3261,19 @@
    ],
    "min": [
     -401.95,
-    -387.55,
+    -387.56,
     -67.11
    ],
    "max": [
-    507.45,
+    507.49,
     440.67,
-    36.12
+    36.13
    ],
    "meshes": [
     {
      "name": "HubOak_bark_1",
      "fbx_name": "HubOak_bark_1",
-     "tris": 12170,
+     "tris": 12171,
      "look": "bark",
      "color": [
       128,
@@ -4043,7 +3301,7 @@
     {
      "name": "HubOak_bark_3",
      "fbx_name": "HubOak_bark_3",
-     "tris": 12170,
+     "tris": 12172,
      "look": "bark",
      "color": [
       128,
@@ -4057,63 +3315,7 @@
     {
      "name": "HubOak_bark_4",
      "fbx_name": "HubOak_bark_4",
-     "tris": 12174,
-     "look": "bark",
-     "color": [
-      128,
-      88,
-      52
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_bark_5",
-     "fbx_name": "HubOak_bark_5",
-     "tris": 12168,
-     "look": "bark",
-     "color": [
-      128,
-      88,
-      52
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_bark_6",
-     "fbx_name": "HubOak_bark_6",
-     "tris": 12170,
-     "look": "bark",
-     "color": [
-      128,
-      88,
-      52
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_bark_7",
-     "fbx_name": "HubOak_bark_7",
-     "tris": 12174,
-     "look": "bark",
-     "color": [
-      128,
-      88,
-      52
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_bark_8",
-     "fbx_name": "HubOak_bark_8",
-     "tris": 12178,
+     "tris": 12173,
      "look": "bark",
      "color": [
       128,
@@ -4127,231 +3329,63 @@
     {
      "name": "HubOak_oak_light_1",
      "fbx_name": "HubOak_oak_light_1",
-     "tris": 15330,
+     "tris": 15325,
      "look": "oak_light",
      "color": [
       132,
       212,
       70
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "HubOak_oak_light_2",
      "fbx_name": "HubOak_oak_light_2",
-     "tris": 15331,
+     "tris": 15327,
      "look": "oak_light",
      "color": [
       132,
       212,
       70
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "HubOak_oak_light_3",
      "fbx_name": "HubOak_oak_light_3",
-     "tris": 15332,
+     "tris": 15326,
      "look": "oak_light",
      "color": [
       132,
       212,
       70
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "HubOak_oak_light_4",
      "fbx_name": "HubOak_oak_light_4",
-     "tris": 15333,
+     "tris": 15328,
      "look": "oak_light",
      "color": [
       132,
       212,
       70
      ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_5",
-     "fbx_name": "HubOak_oak_light_5",
-     "tris": 15330,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_6",
-     "fbx_name": "HubOak_oak_light_6",
-     "tris": 15332,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_7",
-     "fbx_name": "HubOak_oak_light_7",
-     "tris": 15332,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_8",
-     "fbx_name": "HubOak_oak_light_8",
-     "tris": 15334,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_9",
-     "fbx_name": "HubOak_oak_light_9",
-     "tris": 15330,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_10",
-     "fbx_name": "HubOak_oak_light_10",
-     "tris": 15333,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_11",
-     "fbx_name": "HubOak_oak_light_11",
-     "tris": 15330,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_12",
-     "fbx_name": "HubOak_oak_light_12",
-     "tris": 15334,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_13",
-     "fbx_name": "HubOak_oak_light_13",
-     "tris": 15331,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_14",
-     "fbx_name": "HubOak_oak_light_14",
-     "tris": 15332,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_15",
-     "fbx_name": "HubOak_oak_light_15",
-     "tris": 15332,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_light_16",
-     "fbx_name": "HubOak_oak_light_16",
-     "tris": 15334,
-     "look": "oak_light",
-     "color": [
-      132,
-      212,
-      70
-     ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "HubOak_oak_shade_1",
      "fbx_name": "HubOak_oak_shade_1",
-     "tris": 18228,
+     "tris": 18223,
      "look": "oak_shade",
      "color": [
       64,
@@ -4365,7 +3399,7 @@
     {
      "name": "HubOak_oak_shade_2",
      "fbx_name": "HubOak_oak_shade_2",
-     "tris": 18229,
+     "tris": 18224,
      "look": "oak_shade",
      "color": [
       64,
@@ -4379,7 +3413,7 @@
     {
      "name": "HubOak_oak_shade_3",
      "fbx_name": "HubOak_oak_shade_3",
-     "tris": 18228,
+     "tris": 18224,
      "look": "oak_shade",
      "color": [
       64,
@@ -4393,175 +3427,7 @@
     {
      "name": "HubOak_oak_shade_4",
      "fbx_name": "HubOak_oak_shade_4",
-     "tris": 18231,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_5",
-     "fbx_name": "HubOak_oak_shade_5",
-     "tris": 18228,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_6",
-     "fbx_name": "HubOak_oak_shade_6",
-     "tris": 18230,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_7",
-     "fbx_name": "HubOak_oak_shade_7",
-     "tris": 18228,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_8",
-     "fbx_name": "HubOak_oak_shade_8",
-     "tris": 18232,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_9",
-     "fbx_name": "HubOak_oak_shade_9",
-     "tris": 18227,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_10",
-     "fbx_name": "HubOak_oak_shade_10",
-     "tris": 18230,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_11",
-     "fbx_name": "HubOak_oak_shade_11",
-     "tris": 18229,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_12",
-     "fbx_name": "HubOak_oak_shade_12",
-     "tris": 18230,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_13",
-     "fbx_name": "HubOak_oak_shade_13",
-     "tris": 18229,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_14",
-     "fbx_name": "HubOak_oak_shade_14",
-     "tris": 18230,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_15",
-     "fbx_name": "HubOak_oak_shade_15",
-     "tris": 18230,
-     "look": "oak_shade",
-     "color": [
-      64,
-      150,
-      44
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubOak_oak_shade_16",
-     "fbx_name": "HubOak_oak_shade_16",
-     "tris": 18231,
+     "tris": 18225,
      "look": "oak_shade",
      "color": [
       64,
@@ -4581,20 +3447,20 @@
     0.0
    ],
    "min": [
-    -524.15,
+    -524.19,
     -329.61,
-    -64.38
+    -64.39
    ],
    "max": [
-    331.42,
-    284.6,
+    331.44,
+    284.66,
     15.35
    ],
    "meshes": [
     {
      "name": "HubPine_bark_dark",
      "fbx_name": "HubPine_bark_dark",
-     "tris": 11648,
+     "tris": 5183,
      "look": "bark_dark",
      "color": [
       96,
@@ -4606,51 +3472,23 @@
      "reflectance": 0
     },
     {
-     "name": "HubPine_pine_light_1",
-     "fbx_name": "HubPine_pine_light_1",
-     "tris": 11518,
+     "name": "HubPine_pine_light",
+     "fbx_name": "HubPine_pine_light",
+     "tris": 5760,
      "look": "pine_light",
      "color": [
       72,
       168,
       90
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubPine_pine_light_2",
-     "fbx_name": "HubPine_pine_light_2",
-     "tris": 11522,
-     "look": "pine_light",
-     "color": [
-      72,
-      168,
-      90
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "HubPine_pine_shade_1",
-     "fbx_name": "HubPine_pine_shade_1",
-     "tris": 11134,
-     "look": "pine_shade",
-     "color": [
-      30,
-      112,
-      62
      ],
      "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
-     "name": "HubPine_pine_shade_2",
-     "fbx_name": "HubPine_pine_shade_2",
-     "tris": 11138,
+     "name": "HubPine_pine_shade",
+     "fbx_name": "HubPine_pine_shade",
+     "tris": 5568,
      "look": "pine_shade",
      "color": [
       30,
@@ -4791,7 +3629,7 @@
     {
      "name": "Island_Cliffs_1",
      "fbx_name": "Island_Cliffs_1",
-     "tris": 13434,
+     "tris": 13052,
      "look": "rock_warm",
      "color": [
       170,
@@ -4805,7 +3643,7 @@
     {
      "name": "Island_Cliffs_2",
      "fbx_name": "Island_Cliffs_2",
-     "tris": 13718,
+     "tris": 13056,
      "look": "rock_warm",
      "color": [
       170,
@@ -4825,20 +3663,20 @@
     0.0
    ],
    "min": [
-    -284.88,
-    -267.71,
-    0.0
+    -284.86,
+    -267.81,
+    0.03
    ],
    "max": [
-    284.88,
-    267.71,
-    1.0
+    284.86,
+    267.81,
+    0.97
    ],
    "meshes": [
     {
      "name": "Lots",
      "fbx_name": "Lots",
-     "tris": 1760,
+     "tris": 436,
      "look": "grass",
      "color": [
       124,
@@ -4918,7 +3756,7 @@
     {
      "name": "Roads_1",
      "fbx_name": "Roads_1",
-     "tris": 15538,
+     "tris": 15370,
      "look": "road",
      "color": [
       120,
@@ -4932,7 +3770,7 @@
     {
      "name": "Roads_2",
      "fbx_name": "Roads_2",
-     "tris": 15542,
+     "tris": 15710,
      "look": "road",
      "color": [
       120,
@@ -4979,7 +3817,7 @@
     {
      "name": "Arcade_Pier",
      "fbx_name": "Arcade_Pier",
-     "tris": 6460,
+     "tris": 6152,
      "look": "wood_dark",
      "color": [
       122,
@@ -5007,7 +3845,7 @@
     {
      "name": "Text_MUTATION LAB",
      "fbx_name": "Text_MUTATION LAB",
-     "tris": 2672,
+     "tris": 1292,
      "look": "gold",
      "color": [
       255,
@@ -5040,7 +3878,7 @@
     {
      "name": "Island_Top",
      "fbx_name": "Island_Top",
-     "tris": 1436,
+     "tris": 1126,
      "look": "dirt",
      "color": [
       150,
@@ -5060,34 +3898,20 @@
     0.0
    ],
    "min": [
-    -342.64,
-    -246.11,
+    -342.62,
+    -246.12,
     -160.94
    ],
    "max": [
-    371.8,
-    24.04,
-    1.2
+    371.77,
+    24.01,
+    1.16
    ],
    "meshes": [
     {
-     "name": "Waterfalls_1",
-     "fbx_name": "Waterfalls_1",
-     "tris": 10372,
-     "look": "water",
-     "color": [
-      60,
-      170,
-      240
-     ],
-     "material": "SmoothPlastic",
-     "transparency": 0.18,
-     "reflectance": 0
-    },
-    {
-     "name": "Waterfalls_2",
-     "fbx_name": "Waterfalls_2",
-     "tris": 10376,
+     "name": "Waterfalls",
+     "fbx_name": "Waterfalls",
+     "tris": 8298,
      "look": "water",
      "color": [
       60,
@@ -5120,7 +3944,7 @@
     {
      "name": "Incubator_Base",
      "fbx_name": "Incubator_Base",
-     "tris": 408,
+     "tris": 406,
      "look": "stone_mid",
      "color": [
       196,
@@ -5176,7 +4000,7 @@
     {
      "name": "Incubator_Deck",
      "fbx_name": "Incubator_Deck",
-     "tris": 452,
+     "tris": 450,
      "look": "marble",
      "color": [
       244,
@@ -5204,7 +4028,7 @@
     {
      "name": "Incubator_Egg",
      "fbx_name": "Incubator_Egg",
-     "tris": 3744,
+     "tris": 1872,
      "look": "egg_shell",
      "color": [
       255,
@@ -5246,7 +4070,7 @@
     {
      "name": "Incubator_Gold",
      "fbx_name": "Incubator_Gold",
-     "tris": 2432,
+     "tris": 1216,
      "look": "gold",
      "color": [
       255,
@@ -5260,7 +4084,7 @@
     {
      "name": "Incubator_Halo",
      "fbx_name": "Incubator_Halo",
-     "tris": 1536,
+     "tris": 768,
      "look": "halo_glow",
      "color": [
       110,
@@ -5302,7 +4126,7 @@
     {
      "name": "Incubator_Lamp",
      "fbx_name": "Incubator_Lamp",
-     "tris": 280,
+     "tris": 276,
      "look": "brass",
      "color": [
       224,
@@ -5316,7 +4140,7 @@
     {
      "name": "Incubator_Metal",
      "fbx_name": "Incubator_Metal",
-     "tris": 808,
+     "tris": 766,
      "look": "iron",
      "color": [
       52,
@@ -5433,7 +4257,7 @@
     {
      "name": "Lamp_Gold",
      "fbx_name": "Lamp_Gold",
-     "tris": 11532,
+     "tris": 5766,
      "look": "gold",
      "color": [
       255,
@@ -5447,7 +4271,7 @@
     {
      "name": "Lamp_Iron_1",
      "fbx_name": "Lamp_Iron_1",
-     "tris": 14507,
+     "tris": 14346,
      "look": "iron",
      "color": [
       52,
@@ -5461,35 +4285,7 @@
     {
      "name": "Lamp_Iron_2",
      "fbx_name": "Lamp_Iron_2",
-     "tris": 14508,
-     "look": "iron",
-     "color": [
-      52,
-      54,
-      64
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "Lamp_Iron_3",
-     "fbx_name": "Lamp_Iron_3",
-     "tris": 14507,
-     "look": "iron",
-     "color": [
-      52,
-      54,
-      64
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "Lamp_Iron_4",
-     "fbx_name": "Lamp_Iron_4",
-     "tris": 14510,
+     "tris": 14347,
      "look": "iron",
      "color": [
       52,
@@ -5548,9 +4344,9 @@
      "reflectance": 0
     },
     {
-     "name": "LampDouble_Gold_1",
-     "fbx_name": "LampDouble_Gold_1",
-     "tris": 9958,
+     "name": "LampDouble_Gold",
+     "fbx_name": "LampDouble_Gold",
+     "tris": 9956,
      "look": "gold",
      "color": [
       255,
@@ -5562,37 +4358,9 @@
      "reflectance": 0
     },
     {
-     "name": "LampDouble_Gold_2",
-     "fbx_name": "LampDouble_Gold_2",
-     "tris": 9962,
-     "look": "gold",
-     "color": [
-      255,
-      200,
-      40
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "LampDouble_Iron_1",
-     "fbx_name": "LampDouble_Iron_1",
-     "tris": 14934,
-     "look": "iron",
-     "color": [
-      52,
-      54,
-      64
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "LampDouble_Iron_2",
-     "fbx_name": "LampDouble_Iron_2",
-     "tris": 14946,
+     "name": "LampDouble_Iron",
+     "fbx_name": "LampDouble_Iron",
+     "tris": 14596,
      "look": "iron",
      "color": [
       52,
@@ -5709,7 +4477,7 @@
     {
      "name": "Leaderboard_Post",
      "fbx_name": "Leaderboard_Post",
-     "tris": 864,
+     "tris": 848,
      "look": "wood_deep",
      "color": [
       122,
@@ -5910,7 +4678,7 @@
     {
      "name": "License_Dome",
      "fbx_name": "License_Dome",
-     "tris": 1160,
+     "tris": 1158,
      "look": "gold",
      "color": [
       255,
@@ -5924,7 +4692,7 @@
     {
      "name": "License_Drum",
      "fbx_name": "License_Drum",
-     "tris": 280,
+     "tris": 278,
      "look": "marble",
      "color": [
       244,
@@ -6022,7 +4790,7 @@
     {
      "name": "License_Gold",
      "fbx_name": "License_Gold",
-     "tris": 1600,
+     "tris": 784,
      "look": "gold",
      "color": [
       255,
@@ -6113,7 +4881,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -6162,7 +4930,7 @@
     {
      "name": "License_Rib",
      "fbx_name": "License_Rib",
-     "tris": 1856,
+     "tris": 928,
      "look": "gold_dark",
      "color": [
       214,
@@ -6251,7 +5019,7 @@
     {
      "name": "LicenseBal_Baluster",
      "fbx_name": "LicenseBal_Baluster",
-     "tris": 6528,
+     "tris": 3263,
      "look": "marble",
      "color": [
       244,
@@ -6285,20 +5053,20 @@
     0.0
    ],
    "min": [
-    -16.36,
-    160.63,
-    4.0
+    -16.34,
+    160.66,
+    4.02
    ],
    "max": [
-    16.36,
-    163.37,
-    22.0
+    16.34,
+    163.34,
+    21.97
    ],
    "meshes": [
     {
      "name": "LicenseCol_Column",
      "fbx_name": "LicenseCol_Column",
-     "tris": 2808,
+     "tris": 1158,
      "look": "marble",
      "color": [
       244,
@@ -6523,7 +5291,7 @@
     {
      "name": "LicenseScales_Gold",
      "fbx_name": "LicenseScales_Gold",
-     "tris": 2952,
+     "tris": 1476,
      "look": "gold",
      "color": [
       255,
@@ -6659,7 +5427,7 @@
     {
      "name": "LicenseWin_Frame",
      "fbx_name": "LicenseWin_Frame",
-     "tris": 5392,
+     "tris": 4268,
      "look": "white",
      "color": [
       248,
@@ -6673,7 +5441,7 @@
     {
      "name": "LicenseWin_Glass",
      "fbx_name": "LicenseWin_Glass",
-     "tris": 2112,
+     "tris": 1462,
      "look": "glass_blue",
      "color": [
       128,
@@ -6991,7 +5759,7 @@
     {
      "name": "LuckyBriefcase_Leg",
      "fbx_name": "LuckyBriefcase_Leg",
-     "tris": 432,
+     "tris": 424,
      "look": "court_dark",
      "color": [
       100,
@@ -7005,7 +5773,7 @@
     {
      "name": "LuckyBriefcase_Podium",
      "fbx_name": "LuckyBriefcase_Podium",
-     "tris": 260,
+     "tris": 258,
      "look": "marble",
      "color": [
       244,
@@ -7019,7 +5787,7 @@
     {
      "name": "LuckyBriefcase_Post",
      "fbx_name": "LuckyBriefcase_Post",
-     "tris": 648,
+     "tris": 636,
      "look": "marble",
      "color": [
       244,
@@ -7278,20 +6046,20 @@
     0.0
    ],
    "min": [
-    -79.0,
-    -72.21,
-    0.0
+    -79.01,
+    -72.2,
+    -0.01
    ],
    "max": [
-    79.0,
-    194.1,
-    7.63
+    79.01,
+    194.12,
+    7.62
    ],
    "meshes": [
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7305,7 +6073,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.001",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7319,7 +6087,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.002",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7333,7 +6101,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.003",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7347,7 +6115,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.004",
-     "tris": 1200,
+     "tris": 298,
      "look": "bush",
      "color": [
       88,
@@ -7361,7 +6129,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.005",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7375,7 +6143,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.006",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7389,7 +6157,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.007",
-     "tris": 1200,
+     "tris": 298,
      "look": "bush",
      "color": [
       88,
@@ -7403,7 +6171,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.008",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7417,7 +6185,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.009",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7431,7 +6199,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.010",
-     "tris": 1200,
+     "tris": 298,
      "look": "bush",
      "color": [
       88,
@@ -7445,7 +6213,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.011",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7459,7 +6227,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.012",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7473,7 +6241,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.013",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7487,7 +6255,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.014",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7501,7 +6269,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.015",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7515,7 +6283,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.016",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7529,7 +6297,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.017",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7543,7 +6311,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.018",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7557,7 +6325,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.019",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7571,7 +6339,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.020",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -7585,7 +6353,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves.021",
-     "tris": 1200,
+     "tris": 298,
      "look": "bush",
      "color": [
       88,
@@ -7599,7 +6367,7 @@
     {
      "name": "PlanterRound_Flower",
      "fbx_name": "PlanterRound_Flower",
-     "tris": 12320,
+     "tris": 3080,
      "look": "flower_yel",
      "color": [
       255,
@@ -7613,7 +6381,7 @@
     {
      "name": "PlanterRound_FlowerMid",
      "fbx_name": "PlanterRound_FlowerMid",
-     "tris": 3080,
+     "tris": 756,
      "look": "flower_orange",
      "color": [
       255,
@@ -7627,7 +6395,7 @@
     {
      "name": "PlanterRound_Pot",
      "fbx_name": "PlanterRound_Pot",
-     "tris": 4752,
+     "tris": 2353,
      "look": "terracotta",
      "color": [
       218,
@@ -7641,7 +6409,7 @@
     {
      "name": "PlanterRound_Rim",
      "fbx_name": "PlanterRound_Rim",
-     "tris": 6336,
+     "tris": 3168,
      "look": "terracotta_dark",
      "color": [
       178,
@@ -7702,7 +6470,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7716,7 +6484,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.001",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7730,7 +6498,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.002",
-     "tris": 1380,
+     "tris": 344,
      "look": "bush",
      "color": [
       88,
@@ -7744,7 +6512,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.003",
-     "tris": 1372,
+     "tris": 342,
      "look": "bush",
      "color": [
       88,
@@ -7758,7 +6526,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.004",
-     "tris": 1464,
+     "tris": 364,
      "look": "bush",
      "color": [
       88,
@@ -7772,7 +6540,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.005",
-     "tris": 1472,
+     "tris": 366,
      "look": "bush",
      "color": [
       88,
@@ -7786,7 +6554,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.006",
-     "tris": 1480,
+     "tris": 370,
      "look": "bush",
      "color": [
       88,
@@ -7800,7 +6568,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.007",
-     "tris": 1476,
+     "tris": 368,
      "look": "bush",
      "color": [
       88,
@@ -7814,7 +6582,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.008",
-     "tris": 1464,
+     "tris": 364,
      "look": "bush",
      "color": [
       88,
@@ -7828,7 +6596,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.009",
-     "tris": 1496,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7842,7 +6610,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.010",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7856,7 +6624,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.011",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7870,7 +6638,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.012",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7884,7 +6652,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.013",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7898,7 +6666,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.014",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7912,7 +6680,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.015",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7926,7 +6694,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.016",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7940,7 +6708,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.017",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7954,7 +6722,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.018",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7968,7 +6736,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.019",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7982,7 +6750,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.020",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -7996,7 +6764,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.021",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8010,7 +6778,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.022",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8024,7 +6792,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.023",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8038,7 +6806,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.024",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8052,7 +6820,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.025",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8066,7 +6834,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.026",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8080,7 +6848,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.027",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8094,7 +6862,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.028",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8108,7 +6876,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.029",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8122,7 +6890,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.030",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8136,7 +6904,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.031",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8150,7 +6918,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.032",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8164,7 +6932,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.033",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8178,7 +6946,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.034",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8192,7 +6960,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.035",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8206,7 +6974,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.036",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8220,7 +6988,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves.037",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -8232,23 +7000,9 @@
      "reflectance": 0
     },
     {
-     "name": "PlanterSq_Flower_1",
-     "fbx_name": "PlanterSq_Flower_1",
-     "tris": 11599,
-     "look": "flower_pink",
-     "color": [
-      250,
-      130,
-      180
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "PlanterSq_Flower_2",
-     "fbx_name": "PlanterSq_Flower_2",
-     "tris": 11601,
+     "name": "PlanterSq_Flower",
+     "fbx_name": "PlanterSq_Flower",
+     "tris": 5800,
      "look": "flower_pink",
      "color": [
       250,
@@ -8262,7 +7016,7 @@
     {
      "name": "PlanterSq_FlowerMid",
      "fbx_name": "PlanterSq_FlowerMid",
-     "tris": 5800,
+     "tris": 1424,
      "look": "flower_yel",
      "color": [
       255,
@@ -8297,7 +7051,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -8440,7 +7194,7 @@
     {
      "name": "Railing_Gold",
      "fbx_name": "Railing_Gold",
-     "tris": 12320,
+     "tris": 6160,
      "look": "gold",
      "color": [
       255,
@@ -8474,20 +7228,20 @@
     0.0
    ],
    "min": [
-    -254.01,
+    -254.0,
     -268.36,
-    -0.1
+    -1.3
    ],
    "max": [
     260.53,
-    307.52,
-    7.84
+    307.51,
+    7.5
    ],
    "meshes": [
     {
      "name": "Rocks_Grass",
      "fbx_name": "Rocks_Grass",
-     "tris": 3120,
+     "tris": 780,
      "look": "leaf_sun",
      "color": [
       140,
@@ -8501,7 +7255,7 @@
     {
      "name": "Rocks_Moss",
      "fbx_name": "Rocks_Moss",
-     "tris": 65,
+     "tris": 16,
      "look": "moss",
      "color": [
       96,
@@ -8515,7 +7269,7 @@
     {
      "name": "Rocks_Rock",
      "fbx_name": "Rocks_Rock",
-     "tris": 936,
+     "tris": 806,
      "look": "rock",
      "color": [
       156,
@@ -8582,7 +7336,7 @@
     0.0
    ],
    "min": [
-    -83.25,
+    -83.26,
     -83.25,
     0.0
    ],
@@ -8889,7 +7643,7 @@
     {
      "name": "ShopStall_Gold",
      "fbx_name": "ShopStall_Gold",
-     "tris": 2888,
+     "tris": 1418,
      "look": "gold",
      "color": [
       255,
@@ -8987,7 +7741,7 @@
     {
      "name": "ShopStall_Post",
      "fbx_name": "ShopStall_Post",
-     "tris": 416,
+     "tris": 412,
      "look": "white",
      "color": [
       248,
@@ -9329,7 +8083,7 @@
     {
      "name": "Stage_White",
      "fbx_name": "Stage_White",
-     "tris": 3312,
+     "tris": 1656,
      "look": "stage_white",
      "color": [
       244,
@@ -9742,7 +8496,7 @@
     {
      "name": "Upgrades_Pedestal",
      "fbx_name": "Upgrades_Pedestal",
-     "tris": 728,
+     "tris": 724,
      "look": "marble",
      "color": [
       244,
@@ -10023,7 +8777,7 @@
     {
      "name": "UpgradesWin_Frame",
      "fbx_name": "UpgradesWin_Frame",
-     "tris": 2304,
+     "tris": 1806,
      "look": "white",
      "color": [
       248,
@@ -10037,7 +8791,7 @@
     {
      "name": "UpgradesWin_Glass",
      "fbx_name": "UpgradesWin_Glass",
-     "tris": 864,
+     "tris": 648,
      "look": "glass_blue",
      "color": [
       128,
@@ -10126,7 +8880,7 @@
     {
      "name": "Vegetation",
      "fbx_name": "Vegetation",
-     "tris": 8300,
+     "tris": 8204,
      "look": "dirt",
      "color": [
       150,

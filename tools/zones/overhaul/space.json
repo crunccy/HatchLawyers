@@ -67,7 +67,7 @@
     {
      "name": "SpaceLamp_White",
      "fbx_name": "SpaceLamp_White",
-     "tris": 108,
+     "tris": 106,
      "look": "hull_white",
      "color": [
       244,
@@ -128,14 +128,14 @@
     {
      "name": "SpaceMush_Stem",
      "fbx_name": "SpaceMush_Stem",
-     "tris": 108,
+     "tris": 106,
      "look": "moon_light",
      "color": [
       210,
       210,
       220
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }
@@ -161,7 +161,7 @@
     {
      "name": "SpaceTentacle_AlienTeal",
      "fbx_name": "SpaceTentacle_AlienTeal",
-     "tris": 620,
+     "tris": 540,
      "look": "alien_teal",
      "color": [
       60,
@@ -445,14 +445,14 @@
       210,
       220
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "SpaceRock_MoonDark",
      "fbx_name": "SpaceRock_MoonDark",
-     "tris": 60,
+     "tris": 52,
      "look": "moon_dark",
      "color": [
       130,
@@ -485,7 +485,7 @@
     {
      "name": "SpaceRocket_Base",
      "fbx_name": "SpaceRocket_Base",
-     "tris": 112,
+     "tris": 108,
      "look": "hull_grey",
      "color": [
       150,
@@ -513,7 +513,7 @@
     {
      "name": "SpaceRocket_Bell",
      "fbx_name": "SpaceRocket_Bell",
-     "tris": 448,
+     "tris": 320,
      "look": "hull_dark",
      "color": [
       60,
@@ -784,7 +784,7 @@
     {
      "name": "SpaceObservatory_Base",
      "fbx_name": "SpaceObservatory_Base",
-     "tris": 120,
+     "tris": 118,
      "look": "hull_grey",
      "color": [
       150,
@@ -840,7 +840,7 @@
     {
      "name": "SpaceObservatory_Top",
      "fbx_name": "SpaceObservatory_Top",
-     "tris": 200,
+     "tris": 198,
      "look": "hull_grey",
      "color": [
       150,
@@ -929,7 +929,7 @@
     {
      "name": "SpaceHabitat_Glass",
      "fbx_name": "SpaceHabitat_Glass",
-     "tris": 2208,
+     "tris": 1104,
      "look": "glass",
      "color": [
       150,
@@ -971,7 +971,7 @@
     {
      "name": "SpaceHabitat_Ring",
      "fbx_name": "SpaceHabitat_Ring",
-     "tris": 288,
+     "tris": 282,
      "look": "hull_white",
      "color": [
       244,
@@ -1200,7 +1200,7 @@
     {
      "name": "SpaceFactory_Stack",
      "fbx_name": "SpaceFactory_Stack",
-     "tris": 224,
+     "tris": 220,
      "look": "hull_dark",
      "color": [
       60,
@@ -1495,7 +1495,7 @@
     {
      "name": "SpaceFuel_Tank",
      "fbx_name": "SpaceFuel_Tank",
-     "tris": 3680,
+     "tris": 1840,
      "look": "hull_white",
      "color": [
       244,
@@ -1528,7 +1528,7 @@
     {
      "name": "SpaceUFO_Foot",
      "fbx_name": "SpaceUFO_Foot",
-     "tris": 160,
+     "tris": 144,
      "look": "hull_grey",
      "color": [
       150,
@@ -1570,7 +1570,7 @@
     {
      "name": "SpaceUFO_Hull",
      "fbx_name": "SpaceUFO_Hull",
-     "tris": 400,
+     "tris": 398,
      "look": "hull_grey",
      "color": [
       150,
@@ -1598,7 +1598,7 @@
     {
      "name": "SpaceUFO_Pad",
      "fbx_name": "SpaceUFO_Pad",
-     "tris": 120,
+     "tris": 118,
      "look": "hull_dark",
      "color": [
       60,
@@ -1715,7 +1715,7 @@
     {
      "name": "IslPortalTentacle_AlienTeal",
      "fbx_name": "IslPortalTentacle_AlienTeal",
-     "tris": 1240,
+     "tris": 1080,
      "look": "alien_teal",
      "color": [
       42,
@@ -1757,7 +1757,7 @@
     {
      "name": "IslPortal_Arch",
      "fbx_name": "IslPortal_Arch",
-     "tris": 334,
+     "tris": 310,
      "look": "rock_violet",
      "color": [
       122,
@@ -1778,21 +1778,21 @@
       202,
       224
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "IslPortal_Base",
      "fbx_name": "IslPortal_Base",
-     "tris": 76,
+     "tris": 70,
      "look": "moon_light",
      "color": [
       208,
       202,
       224
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1855,7 +1855,7 @@
     {
      "name": "IslPortal_Leg",
      "fbx_name": "IslPortal_Leg",
-     "tris": 120,
+     "tris": 104,
      "look": "rock_violet",
      "color": [
       122,
@@ -1918,7 +1918,7 @@
       202,
       224
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },

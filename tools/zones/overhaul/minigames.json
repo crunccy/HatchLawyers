@@ -109,7 +109,7 @@
     {
      "name": "GavelBonk_GavelHandle",
      "fbx_name": "GavelBonk_GavelHandle",
-     "tris": 76,
+     "tris": 62,
      "look": "court_wood",
      "color": [
       150,
@@ -123,7 +123,7 @@
     {
      "name": "GavelBonk_GavelHead",
      "fbx_name": "GavelBonk_GavelHead",
-     "tris": 128,
+     "tris": 124,
      "look": "court_wood",
      "color": [
       150,
@@ -137,7 +137,7 @@
     {
      "name": "GavelBonk_Gold",
      "fbx_name": "GavelBonk_Gold",
-     "tris": 644,
+     "tris": 628,
      "look": "gold",
      "color": [
       255,
@@ -193,7 +193,7 @@
     {
      "name": "GavelBonk_Podium",
      "fbx_name": "GavelBonk_Podium",
-     "tris": 260,
+     "tris": 258,
      "look": "marble",
      "color": [
       244,
@@ -207,7 +207,7 @@
     {
      "name": "GavelBonk_Post",
      "fbx_name": "GavelBonk_Post",
-     "tris": 432,
+     "tris": 424,
      "look": "marble",
      "color": [
       244,
@@ -322,9 +322,9 @@
      "tris": 1248,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -562,7 +562,7 @@
     {
      "name": "LuckyBriefcase_Leg",
      "fbx_name": "LuckyBriefcase_Leg",
-     "tris": 432,
+     "tris": 424,
      "look": "court_dark",
      "color": [
       100,
@@ -576,7 +576,7 @@
     {
      "name": "LuckyBriefcase_Podium",
      "fbx_name": "LuckyBriefcase_Podium",
-     "tris": 260,
+     "tris": 258,
      "look": "marble",
      "color": [
       244,
@@ -590,7 +590,7 @@
     {
      "name": "LuckyBriefcase_Post",
      "fbx_name": "LuckyBriefcase_Post",
-     "tris": 648,
+     "tris": 636,
      "look": "marble",
      "color": [
       244,
@@ -766,11 +766,11 @@
      "tris": 44,
      "look": "plank_light",
      "color": [
-      206,
-      152,
-      96
+      172,
+      140,
+      106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -906,9 +906,9 @@
      "tris": 96,
      "look": "plank_dark",
      "color": [
-      150,
+      126,
       98,
-      58
+      74
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -917,7 +917,7 @@
     {
      "name": "BoothFilingFrenzy_Post",
      "fbx_name": "BoothFilingFrenzy_Post",
-     "tris": 216,
+     "tris": 212,
      "look": "gold",
      "color": [
       255,
@@ -990,9 +990,9 @@
      "tris": 44,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1163,11 +1163,11 @@
      "tris": 44,
      "look": "plank_light",
      "color": [
-      206,
-      152,
-      96
+      172,
+      140,
+      106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1233,9 +1233,9 @@
      "tris": 96,
      "look": "plank_dark",
      "color": [
-      150,
+      126,
       98,
-      58
+      74
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1244,7 +1244,7 @@
     {
      "name": "BoothBriefcaseStack_Post",
      "fbx_name": "BoothBriefcaseStack_Post",
-     "tris": 216,
+     "tris": 212,
      "look": "gold",
      "color": [
       255,
@@ -1317,9 +1317,9 @@
      "tris": 44,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1434,11 +1434,11 @@
      "tris": 44,
      "look": "plank_light",
      "color": [
-      206,
-      152,
-      96
+      172,
+      140,
+      106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1473,7 +1473,7 @@
     {
      "name": "BoothLieDetector_Lamp",
      "fbx_name": "BoothLieDetector_Lamp",
-     "tris": 140,
+     "tris": 136,
      "look": "brass",
      "color": [
       224,
@@ -1515,7 +1515,7 @@
     {
      "name": "BoothLieDetector_LampShade",
      "fbx_name": "BoothLieDetector_LampShade",
-     "tris": 140,
+     "tris": 136,
      "look": "cash_green",
      "color": [
       84,
@@ -1536,7 +1536,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1588,9 +1588,9 @@
      "tris": 96,
      "look": "plank_dark",
      "color": [
-      150,
+      126,
       98,
-      58
+      74
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1599,7 +1599,7 @@
     {
      "name": "BoothLieDetector_Post",
      "fbx_name": "BoothLieDetector_Post",
-     "tris": 216,
+     "tris": 212,
      "look": "gold",
      "color": [
       255,

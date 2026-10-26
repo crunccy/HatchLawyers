@@ -16,7 +16,7 @@ R = HALF * 0.36           # its corner radius
 LINE = 0.03               # the faint outline's half-width, cells
 OFF = 0.05                # how far the shadow / lit sliver reaches past the stud's edge, cells
 SKIP = ("glow", "glass", "water", "foam", "pool", "sky", "cloud", "beam", "vortex", "goo", "soda", "fall", "plasma", "pond",
-        "neon", "light", "lamp_glow", "screen")  # (looks that stay smooth)
+        "neon", "lamp_glow", "screen")  # (looks that stay smooth; not "light": oak_light / stone_light are studded - lights glow)
 
 
 def stud_nodes(nt, base_socket, base_value):

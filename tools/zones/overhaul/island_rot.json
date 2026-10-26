@@ -60,7 +60,7 @@
       152,
       96
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }
@@ -100,7 +100,7 @@
     {
      "name": "IslBarrel_Wood",
      "fbx_name": "IslBarrel_Wood",
-     "tris": 320,
+     "tris": 312,
      "look": "wood_warm",
      "color": [
       196,
@@ -120,20 +120,20 @@
     0.0
    ],
    "min": [
-    -177.46,
-    -175.53,
+    -177.44,
+    -175.52,
     0.6
    ],
    "max": [
-    181.56,
-    169.72,
+    181.54,
+    169.71,
     1.98
    ],
    "meshes": [
     {
      "name": "IslGrass",
      "fbx_name": "IslGrass",
-     "tris": 728,
+     "tris": 182,
      "look": "leaf_sun",
      "color": [
       140,
@@ -155,10 +155,10 @@
    "min": [
     123.46,
     123.01,
-    -0.6
+    -1.05
    ],
    "max": [
-    164.24,
+    164.46,
     164.61,
     31.6
    ],
@@ -166,7 +166,7 @@
     {
      "name": "IslPortal_Arch",
      "fbx_name": "IslPortal_Arch",
-     "tris": 334,
+     "tris": 310,
      "look": "rot_rock_dark",
      "color": [
       80,
@@ -194,7 +194,7 @@
     {
      "name": "IslPortal_Base",
      "fbx_name": "IslPortal_Base",
-     "tris": 76,
+     "tris": 70,
      "look": "rot_rock",
      "color": [
       112,
@@ -264,7 +264,7 @@
     {
      "name": "IslPortal_Leg",
      "fbx_name": "IslPortal_Leg",
-     "tris": 120,
+     "tris": 104,
      "look": "rot_rock_dark",
      "color": [
       80,
@@ -278,7 +278,7 @@
     {
      "name": "IslPortal_LegMoss",
      "fbx_name": "IslPortal_LegMoss",
-     "tris": 40,
+     "tris": 10,
      "look": "rot_grass",
      "color": [
       84,
@@ -368,20 +368,20 @@
     0.0
    ],
    "min": [
-    140.33,
-    139.01,
-    22.39
+    140.28,
+    138.97,
+    22.34
    ],
    "max": [
-    154.13,
-    153.15,
-    28.46
+    154.03,
+    153.17,
+    28.53
    ],
    "meshes": [
     {
      "name": "IslPortalCap_Leaves",
      "fbx_name": "IslPortalCap_Leaves",
-     "tris": 1040,
+     "tris": 260,
      "look": "rot_grass",
      "color": [
       84,
@@ -447,7 +447,7 @@
     {
      "name": "Floor_Decor",
      "fbx_name": "Floor_Decor",
-     "tris": 2608,
+     "tris": 2606,
      "look": "rot_tile",
      "color": [
       132,
@@ -777,20 +777,20 @@
     0.0
    ],
    "min": [
-    -102.72,
-    -100.05,
+    -102.69,
+    -100.02,
     1.0
    ],
    "max": [
-    118.44,
-    111.9,
+    118.43,
+    111.87,
     2.0
    ],
    "meshes": [
     {
      "name": "RotFlower_Stem",
      "fbx_name": "RotFlower_Stem",
-     "tris": 768,
+     "tris": 118,
      "look": "rot_grass",
      "color": [
       84,
@@ -810,20 +810,20 @@
     0.0
    ],
    "min": [
-    -96.28,
-    -98.13,
-    2.0
+    -96.29,
+    -98.09,
+    2.05
    ],
    "max": [
-    116.96,
-    91.81,
-    2.5
+    116.97,
+    91.78,
+    2.45
    ],
    "meshes": [
     {
      "name": "RotFlowerGlitchLime",
      "fbx_name": "RotFlowerGlitchLime",
-     "tris": 484,
+     "tris": 120,
      "look": "glitch_lime",
      "color": [
       170,
@@ -843,20 +843,20 @@
     0.0
    ],
    "min": [
-    -102.33,
-    -100.37,
-    2.0
+    -102.31,
+    -100.35,
+    2.05
    ],
    "max": [
-    86.31,
-    92.68,
-    2.5
+    86.29,
+    92.66,
+    2.45
    ],
    "meshes": [
     {
      "name": "RotFlowerHouseYellow",
      "fbx_name": "RotFlowerHouseYellow",
-     "tris": 528,
+     "tris": 132,
      "look": "house_yellow",
      "color": [
       255,
@@ -876,20 +876,20 @@
     0.0
    ],
    "min": [
-    -103.03,
-    -100.17,
-    2.0
+    -102.99,
+    -100.15,
+    2.05
    ],
    "max": [
     118.75,
-    110.92,
-    2.5
+    110.93,
+    2.45
    ],
    "meshes": [
     {
      "name": "RotFlowerMagenta",
      "fbx_name": "RotFlowerMagenta",
-     "tris": 704,
+     "tris": 176,
      "look": "magenta",
      "color": [
       230,
@@ -909,20 +909,20 @@
     0.0
    ],
    "min": [
-    -102.68,
-    -94.49,
-    2.0
+    -102.67,
+    -94.46,
+    2.05
    ],
    "max": [
-    89.13,
-    112.22,
-    2.5
+    89.09,
+    112.21,
+    2.45
    ],
    "meshes": [
     {
      "name": "RotFlowerSkyBlue",
      "fbx_name": "RotFlowerSkyBlue",
-     "tris": 396,
+     "tris": 98,
      "look": "sky_blue",
      "color": [
       110,
@@ -1312,7 +1312,7 @@
     {
      "name": "RotMall_Icing",
      "fbx_name": "RotMall_Icing",
-     "tris": 3644,
+     "tris": 1572,
      "look": "magenta",
      "color": [
       230,
@@ -1434,7 +1434,7 @@
     {
      "name": "RotMallWin_Frame",
      "fbx_name": "RotMallWin_Frame",
-     "tris": 640,
+     "tris": 400,
      "look": "white",
      "color": [
       248,
@@ -1448,7 +1448,7 @@
     {
      "name": "RotMallWin_Glass",
      "fbx_name": "RotMallWin_Glass",
-     "tris": 240,
+     "tris": 100,
      "look": "glass_blue",
      "color": [
       128,
@@ -1482,20 +1482,20 @@
     0.0
    ],
    "min": [
-    -158.96,
-    -162.51,
+    -158.94,
+    -162.59,
     0.6
    ],
    "max": [
-    191.56,
-    148.29,
+    191.54,
+    148.35,
     21.45
    ],
    "meshes": [
     {
      "name": "RotMush_Cap",
      "fbx_name": "RotMush_Cap",
-     "tris": 2268,
+     "tris": 1134,
      "look": "mush_cap",
      "color": [
       250,
@@ -1556,7 +1556,7 @@
     {
      "name": "RotNeon_Antenna",
      "fbx_name": "RotNeon_Antenna",
-     "tris": 40,
+     "tris": 24,
      "look": "iron",
      "color": [
       52,
@@ -1986,7 +1986,7 @@
     {
      "name": "RotScreen_Tongue",
      "fbx_name": "RotScreen_Tongue",
-     "tris": 108,
+     "tris": 26,
      "look": "flower_pink",
      "color": [
       255,
@@ -2272,7 +2272,7 @@
     {
      "name": "RotTwisty_Spire",
      "fbx_name": "RotTwisty_Spire",
-     "tris": 152,
+     "tris": 40,
      "look": "magenta",
      "color": [
       230,
@@ -2424,19 +2424,19 @@
    ],
    "min": [
     -155.57,
-    -146.67,
+    -146.68,
     0.05
    ],
    "max": [
-    -73.45,
-    -94.11,
+    -73.47,
+    -94.1,
     3.83
    ],
    "meshes": [
     {
      "name": "RotUpsideCanopy_lilac",
      "fbx_name": "RotUpsideCanopy_lilac",
-     "tris": 4200,
+     "tris": 1048,
      "look": "lilac",
      "color": [
       190,
@@ -2628,7 +2628,7 @@
     {
      "name": "RotUpsideHouseWin_Frame",
      "fbx_name": "RotUpsideHouseWin_Frame",
-     "tris": 256,
+     "tris": 144,
      "look": "white",
      "color": [
       248,
@@ -2642,7 +2642,7 @@
     {
      "name": "RotUpsideHouseWin_Glass",
      "fbx_name": "RotUpsideHouseWin_Glass",
-     "tris": 96,
+     "tris": 50,
      "look": "glass_blue",
      "color": [
       128,
@@ -2750,7 +2750,7 @@
     {
      "name": "Floor_Plateau",
      "fbx_name": "Floor_Plateau",
-     "tris": 1796,
+     "tris": 1362,
      "look": "rot_floor_dark",
      "color": [
       160,
@@ -2764,7 +2764,7 @@
     {
      "name": "Island_Top",
      "fbx_name": "Island_Top",
-     "tris": 1436,
+     "tris": 1254,
      "look": "rot_rim",
      "color": [
       96,
@@ -2795,23 +2795,9 @@
    ],
    "meshes": [
     {
-     "name": "Island_Underside_1",
-     "fbx_name": "Island_Underside_1",
-     "tris": 10422,
-     "look": "rot_rock",
-     "color": [
-      112,
-      84,
-      156
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "Island_Underside_2",
-     "fbx_name": "Island_Underside_2",
-     "tris": 10670,
+     "name": "Island_Underside",
+     "fbx_name": "Island_Underside",
+     "tris": 7652,
      "look": "rot_rock",
      "color": [
       112,
@@ -2832,7 +2818,7 @@
    ],
    "min": [
     -171.66,
-    -155.13,
+    -155.12,
     -93.99
    ],
    "max": [
@@ -2844,7 +2830,7 @@
     {
      "name": "Foam_Mist",
      "fbx_name": "Foam_Mist",
-     "tris": 11260,
+     "tris": 4504,
      "look": "foam_water",
      "color": [
       236,
@@ -2858,7 +2844,7 @@
     {
      "name": "Water",
      "fbx_name": "Water",
-     "tris": 1008,
+     "tris": 402,
      "look": "goo_deep",
      "color": [
       130,

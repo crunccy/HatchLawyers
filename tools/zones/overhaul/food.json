@@ -88,7 +88,7 @@
    ],
    "min": [
     -3.74,
-    -4.35,
+    -4.34,
     -0.08
    ],
    "max": [
@@ -100,7 +100,7 @@
     {
      "name": "FoodTree17_Leaves",
      "fbx_name": "FoodTree17_Leaves",
-     "tris": 1600,
+     "tris": 400,
      "look": "bush",
      "color": [
       88,
@@ -189,7 +189,7 @@
     {
      "name": "FoodCupcake_Pink",
      "fbx_name": "FoodCupcake_Pink",
-     "tris": 96,
+     "tris": 92,
      "look": "pink",
      "color": [
       255,
@@ -410,25 +410,25 @@
   },
   "food_watermelon_slice": {
    "origin": [
-    157.618,
+    157.709,
     0.0,
     0.0
    ],
    "min": [
-    -6.0,
-    -1.19,
-    0.03
+    -6.09,
+    -1.15,
+    -0.03
    ],
    "max": [
-    6.0,
-    1.19,
+    6.09,
+    1.15,
     6.06
    ],
    "meshes": [
     {
      "name": "FoodMelon_Red",
      "fbx_name": "FoodMelon_Red",
-     "tris": 60,
+     "tris": 24,
      "look": "melon_red",
      "color": [
       240,
@@ -442,7 +442,7 @@
     {
      "name": "FoodMelon_Rind",
      "fbx_name": "FoodMelon_Rind",
-     "tris": 60,
+     "tris": 24,
      "look": "melon_rind",
      "color": [
       70,
@@ -456,7 +456,7 @@
     {
      "name": "FoodMelon_Seed",
      "fbx_name": "FoodMelon_Seed",
-     "tris": 200,
+     "tris": 80,
      "look": "panel_black",
      "color": [
       32,
@@ -470,7 +470,7 @@
     {
      "name": "FoodMelon_White",
      "fbx_name": "FoodMelon_White",
-     "tris": 60,
+     "tris": 24,
      "look": "cream_soft",
      "color": [
       255,
@@ -485,7 +485,7 @@
   },
   "food_burger_barn": {
    "origin": [
-    202.618,
+    202.801,
     0.0,
     0.0
    ],
@@ -503,7 +503,7 @@
     {
      "name": "FoodBarnWin_Frame",
      "fbx_name": "FoodBarnWin_Frame",
-     "tris": 896,
+     "tris": 588,
      "look": "white",
      "color": [
       248,
@@ -517,7 +517,7 @@
     {
      "name": "FoodBarnWin_Glass",
      "fbx_name": "FoodBarnWin_Glass",
-     "tris": 336,
+     "tris": 140,
      "look": "glass_blue",
      "color": [
       128,
@@ -580,7 +580,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -618,9 +618,9 @@
      "tris": 60,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -756,7 +756,7 @@
   },
   "food_pizza_palace": {
    "origin": [
-    258.718,
+    258.901,
     0.0,
     0.0
    ],
@@ -858,7 +858,7 @@
     {
      "name": "FoodPizzaWin_Frame",
      "fbx_name": "FoodPizzaWin_Frame",
-     "tris": 976,
+     "tris": 688,
      "look": "white",
      "color": [
       248,
@@ -872,7 +872,7 @@
     {
      "name": "FoodPizzaWin_Glass",
      "fbx_name": "FoodPizzaWin_Glass",
-     "tris": 384,
+     "tris": 216,
      "look": "glass_blue",
      "color": [
       128,
@@ -949,7 +949,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1043,9 +1043,9 @@
      "tris": 28,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1139,7 +1139,7 @@
   },
   "food_donut_diner": {
    "origin": [
-    314.818,
+    315.001,
     0.0,
     0.0
    ],
@@ -1241,7 +1241,7 @@
     {
      "name": "FoodDonutWin_Frame",
      "fbx_name": "FoodDonutWin_Frame",
-     "tris": 768,
+     "tris": 480,
      "look": "white",
      "color": [
       248,
@@ -1255,7 +1255,7 @@
     {
      "name": "FoodDonutWin_Glass",
      "fbx_name": "FoodDonutWin_Glass",
-     "tris": 288,
+     "tris": 120,
      "look": "glass_blue",
      "color": [
       128,
@@ -1332,7 +1332,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1409,7 +1409,7 @@
     {
      "name": "FoodDonut_Dough",
      "fbx_name": "FoodDonut_Dough",
-     "tris": 2688,
+     "tris": 1344,
      "look": "waffle",
      "color": [
       214,
@@ -1578,7 +1578,7 @@
   },
   "food_taco_tower": {
    "origin": [
-    365.818,
+    366.001,
     0.0,
     0.0
    ],
@@ -1680,7 +1680,7 @@
     {
      "name": "FoodTacoWin_Frame",
      "fbx_name": "FoodTacoWin_Frame",
-     "tris": 3072,
+     "tris": 1884,
      "look": "white",
      "color": [
       248,
@@ -1694,7 +1694,7 @@
     {
      "name": "FoodTacoWin_Glass",
      "fbx_name": "FoodTacoWin_Glass",
-     "tris": 1152,
+     "tris": 458,
      "look": "glass_blue",
      "color": [
       128,
@@ -1743,7 +1743,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1877,7 +1877,7 @@
   },
   "food_giant_burger": {
    "origin": [
-    410.179,
+    410.363,
     0.0,
     0.0
    ],
@@ -1895,7 +1895,7 @@
     {
      "name": "FoodBurger_Bun",
      "fbx_name": "FoodBurger_Bun",
-     "tris": 1000,
+     "tris": 998,
      "look": "bun",
      "color": [
       230,
@@ -1937,7 +1937,7 @@
     {
      "name": "FoodBurger_Patty",
      "fbx_name": "FoodBurger_Patty",
-     "tris": 240,
+     "tris": 236,
      "look": "patty",
      "color": [
       112,
@@ -1965,7 +1965,7 @@
     {
      "name": "FoodBurger_Tomato",
      "fbx_name": "FoodBurger_Tomato",
-     "tris": 240,
+     "tris": 236,
      "look": "tomato",
      "color": [
       236,
@@ -1980,7 +1980,7 @@
   },
   "food_giant_fries": {
    "origin": [
-    447.191,
+    447.375,
     0.0,
     0.0
    ],
@@ -1998,7 +1998,7 @@
     {
      "name": "FoodFries_Box",
      "fbx_name": "FoodFries_Box",
-     "tris": 16,
+     "tris": 12,
      "look": "red",
      "color": [
       226,
@@ -2055,7 +2055,7 @@
   },
   "food_ice_cream": {
    "origin": [
-    478.791,
+    478.975,
     0.0,
     0.0
    ],
@@ -2101,7 +2101,7 @@
     {
      "name": "FoodIceCream_Cone",
      "fbx_name": "FoodIceCream_Cone",
-     "tris": 144,
+     "tris": 142,
      "look": "waffle",
      "color": [
       214,
@@ -2158,7 +2158,7 @@
   },
   "food_soda_fountain": {
    "origin": [
-    516.191,
+    516.375,
     0.0,
     0.0
    ],
@@ -2176,7 +2176,7 @@
     {
      "name": "FoodSoda_Basin",
      "fbx_name": "FoodSoda_Basin",
-     "tris": 528,
+     "tris": 526,
      "look": "white",
      "color": [
       248,
@@ -2260,7 +2260,7 @@
     {
      "name": "FoodSoda_Pour",
      "fbx_name": "FoodSoda_Pour",
-     "tris": 176,
+     "tris": 70,
      "look": "water_fall",
      "color": [
       70,
@@ -2288,7 +2288,7 @@
     {
      "name": "FoodSoda_Soda",
      "fbx_name": "FoodSoda_Soda",
-     "tris": 188,
+     "tris": 74,
      "look": "water",
      "color": [
       60,
@@ -2317,7 +2317,7 @@
   },
   "food_portal": {
    "origin": [
-    571.798,
+    571.982,
     0.0,
     0.0
    ],
@@ -2405,7 +2405,7 @@
     {
      "name": "FoodLolly_White",
      "fbx_name": "FoodLolly_White.001",
-     "tris": 2880,
+     "tris": 1440,
      "look": "white",
      "color": [
       248,
@@ -2433,7 +2433,7 @@
     {
      "name": "IslPortal_Arch",
      "fbx_name": "IslPortal_Arch",
-     "tris": 334,
+     "tris": 310,
      "look": "biscuit",
      "color": [
       222,
@@ -2461,7 +2461,7 @@
     {
      "name": "IslPortal_Base",
      "fbx_name": "IslPortal_Base",
-     "tris": 76,
+     "tris": 70,
      "look": "frost_cream",
      "color": [
       255,
@@ -2503,7 +2503,7 @@
     {
      "name": "IslPortal_Leg",
      "fbx_name": "IslPortal_Leg",
-     "tris": 120,
+     "tris": 104,
      "look": "biscuit",
      "color": [
       222,

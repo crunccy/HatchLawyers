@@ -25,7 +25,7 @@
     {
      "name": "Arch_Gold",
      "fbx_name": "Arch_Gold",
-     "tris": 1056,
+     "tris": 1008,
      "look": "trim_gold",
      "color": [
       255,
@@ -291,7 +291,7 @@
     {
      "name": "Halo_Gold",
      "fbx_name": "Halo_Gold",
-     "tris": 2496,
+     "tris": 1248,
      "look": "trim_gold",
      "color": [
       255,
@@ -305,7 +305,7 @@
     {
      "name": "Halo_Rim",
      "fbx_name": "Halo_Rim",
-     "tris": 1664,
+     "tris": 799,
      "look": "stage_white",
      "color": [
       244,
@@ -557,7 +557,7 @@
     {
      "name": "Stage_White",
      "fbx_name": "Stage_White",
-     "tris": 3312,
+     "tris": 1656,
      "look": "stage_white",
      "color": [
       244,

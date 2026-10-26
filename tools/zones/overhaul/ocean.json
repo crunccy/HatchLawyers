@@ -14,10 +14,10 @@
    "min": [
     -1.17,
     -1.93,
-    -0.4
+    -0.39
    ],
    "max": [
-    1.28,
+    1.29,
     1.69,
     3.56
    ],
@@ -25,7 +25,7 @@
     {
      "name": "OceanCoral18",
      "fbx_name": "OceanCoral18",
-     "tris": 1800,
+     "tris": 896,
      "look": "coral_pink",
      "color": [
       250,
@@ -40,12 +40,12 @@
   },
   "ocean_fan_coral": {
    "origin": [
-    27.471,
+    27.469,
     0.0,
     0.0
    ],
    "min": [
-    -1.02,
+    -1.01,
     -1.36,
     0.0
    ],
@@ -58,7 +58,7 @@
     {
      "name": "OceanFan19",
      "fbx_name": "OceanFan19",
-     "tris": 1800,
+     "tris": 892,
      "look": "coral_purple",
      "color": [
       170,
@@ -73,7 +73,7 @@
   },
   "ocean_brain_coral": {
    "origin": [
-    54.046,
+    54.043,
     0.0,
     0.0
    ],
@@ -105,7 +105,7 @@
     {
      "name": "OceanBrain20_Groove",
      "fbx_name": "OceanBrain20_Groove",
-     "tris": 720,
+     "tris": 698,
      "look": "coral_red",
      "color": [
       232,
@@ -120,7 +120,7 @@
   },
   "ocean_tube_coral": {
    "origin": [
-    80.717,
+    80.714,
     0.0,
     0.0
    ],
@@ -138,7 +138,7 @@
     {
      "name": "OceanTube_Coral",
      "fbx_name": "OceanTube_Coral",
-     "tris": 450,
+     "tris": 440,
      "look": "tube_coral",
      "color": [
       110,
@@ -167,25 +167,25 @@
   },
   "ocean_seaweed": {
    "origin": [
-    106.226,
+    106.157,
     0.0,
     0.0
    ],
    "min": [
-    -0.58,
+    -0.52,
     -0.55,
-    -0.12
+    -0.11
    ],
    "max": [
-    0.67,
-    0.63,
+    0.62,
+    0.6,
     3.03
    ],
    "meshes": [
     {
      "name": "OceanSeaweed",
      "fbx_name": "OceanSeaweed",
-     "tris": 288,
+     "tris": 72,
      "look": "seaweed",
      "color": [
       56,
@@ -200,7 +200,7 @@
   },
   "ocean_shell": {
    "origin": [
-    131.615,
+    131.505,
     0.0,
     0.0
    ],
@@ -218,7 +218,7 @@
     {
      "name": "OceanShell21",
      "fbx_name": "OceanShell21",
-     "tris": 1000,
+     "tris": 994,
      "look": "shell",
      "color": [
       252,
@@ -233,7 +233,7 @@
   },
   "ocean_starfish": {
    "origin": [
-    157.203,
+    157.093,
     0.0,
     0.0
    ],
@@ -266,7 +266,7 @@
   },
   "ocean_conch": {
    "origin": [
-    183.397,
+    183.287,
     0.0,
     0.0
    ],
@@ -284,7 +284,7 @@
     {
      "name": "OceanConch23",
      "fbx_name": "OceanConch23",
-     "tris": 1400,
+     "tris": 1398,
      "look": "conch",
      "color": [
       250,
@@ -313,7 +313,7 @@
   },
   "ocean_sand_dollar": {
    "origin": [
-    208.871,
+    208.761,
     0.0,
     0.0
    ],
@@ -331,7 +331,7 @@
     {
      "name": "OceanDollar",
      "fbx_name": "OceanDollar",
-     "tris": 96,
+     "tris": 94,
      "look": "sand_dollar",
      "color": [
       236,
@@ -360,7 +360,7 @@
   },
   "ocean_driftwood": {
    "origin": [
-    235.337,
+    235.227,
     0.0,
     0.0
    ],
@@ -378,7 +378,7 @@
     {
      "name": "OceanDrift24",
      "fbx_name": "OceanDrift24",
-     "tris": 1800,
+     "tris": 886,
      "look": "driftwood",
      "color": [
       176,
@@ -407,7 +407,7 @@
   },
   "ocean_shipwreck2": {
    "origin": [
-    284.766,
+    284.656,
     0.0,
     0.0
    ],
@@ -442,9 +442,9 @@
      "tris": 240,
      "look": "plank_dark",
      "color": [
-      150,
+      126,
       98,
-      58
+      74
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -456,11 +456,11 @@
      "tris": 24,
      "look": "plank_light",
      "color": [
-      206,
-      152,
-      96
+      172,
+      140,
+      106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -470,9 +470,9 @@
      "tris": 360,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -481,7 +481,7 @@
     {
      "name": "IslBarrel_Wood",
      "fbx_name": "IslBarrel_Wood",
-     "tris": 480,
+     "tris": 468,
      "look": "wood_warm",
      "color": [
       196,
@@ -523,7 +523,7 @@
     {
      "name": "OceanWreck_Hull",
      "fbx_name": "OceanWreck_Hull",
-     "tris": 2156,
+     "tris": 1058,
      "look": "hull_wood",
      "color": [
       110,
@@ -551,7 +551,7 @@
     {
      "name": "OceanWreck_Nest",
      "fbx_name": "OceanWreck_Nest",
-     "tris": 98,
+     "tris": 96,
      "look": "hull_wood",
      "color": [
       110,

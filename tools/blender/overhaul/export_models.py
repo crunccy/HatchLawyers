@@ -11,6 +11,7 @@
 # Material / Transparency the install sets (Plastic = studded; glow -> Neon; see-through, water, glass -> SmoothPlastic).
 #   Blender -b --factory-startup --python tools/blender/overhaul/export_models.py -- models [<group> ...]
 #   Blender -b --factory-startup --python tools/blender/overhaul/export_models.py -- island <hub|bay|pet|rot|food|ocean|space>
+#   (add "full" to skip the phone / tablet budget: phone_budget)
 # groups: trees shack portal props hub gameplay minigames firms hall bay kit pet rot food ocean space
 import bpy, json, os, re, sys
 import numpy as np
@@ -21,13 +22,14 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 sys.path.insert(0, HERE)
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 MODE = ARGS[0] if ARGS else "models"
-WANT = set(ARGS[1:]) or None
+WANT = set(a for a in ARGS[1:] if a != "full") or None
 OUT = os.path.join(ROOT, "exports", "overhaul")
 LOOKS = os.path.join(ROOT, "tools", "zones", "overhaul")
 TMP = os.path.join(OUT, "_tmp")  # (the build scripts' own out dir: sandbox JSON, no renders)
 for d in (OUT, LOOKS, TMP):
     os.makedirs(d, exist_ok=True)
 MAX_TRIS = 19500
+PHONE = "full" not in ARGS  # (the phone / tablet budget: phone_budget; "full" exports every triangle)
 FLAT = 0.79  # (a face whose normal is further than this from every axis is curved: no studs)
 GAP = 24.0   # (studs between models in a group's row)
 SKIP_NAMES = ("Preview", "Scene", "Studs", "StudSource", "Sky_", "Label", "Diagram", "Egg_Spot", "OLD", "Boss_")  # (Boss_: the islands' boss stand-ins - the bosses are ReplicatedStorage.Bosses)
@@ -118,6 +120,39 @@ def tri_counts(me):
     lt = np.empty(len(me.polygons), dtype=np.int64)
     me.polygons.foreach_get("loop_total", lt)
     return lt - 2
+
+
+FOLIAGE = re.compile(r"leaf|leaves|blossom|hedge|bush|fern|frond|palm|flower|grass|daisy|lily|lotus|ivy|moss|tuft|canopy|petal|"
+                     r"seaweed|topiary|pine|needle|kelp|oak", re.I)
+SOFT = re.compile(r"underside|foam|mist|water", re.I)
+
+
+def phone_budget(ob, key):
+    """Phones and tablets (crnuch 2026-10-26): every mesh loses its coplanar triangles (no visible change); lumpy foliage
+    keeps a quarter of its triangles, round props over 1,500 triangles half, undersides / foam / water 40% (Roblox's own
+    LOD lowers them further with distance). Returns (before, after) triangles."""
+    import bmesh, math
+    me = ob.data
+    t0 = int(tri_counts(me).sum())
+    look = me.materials[0].name if me.materials else ""
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bmesh.ops.dissolve_limit(bm, angle_limit=math.radians(1.0), verts=bm.verts[:], edges=bm.edges[:])
+    bm.to_mesh(me)
+    bm.free()
+    smooth = sum(p.use_smooth for p in me.polygons) / max(1, len(me.polygons))
+    t1 = int(tri_counts(me).sum())
+    ratio = 0.25 if (FOLIAGE.search(look) or FOLIAGE.search(key)) and not re.search(r"bark|trunk|wood", look, re.I) else \
+        0.4 if SOFT.search(look) or SOFT.search(key) else 0.5 if smooth > 0.5 and t1 > 1500 else None
+    if ratio:
+        mod = ob.modifiers.new("phone", "DECIMATE")
+        mod.ratio = ratio
+        with bpy.context.temp_override(object=ob, active_object=ob):
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+    return t0, int(tri_counts(ob.data).sum())
+
+
+BUDGET = [0, 0]
 
 
 def split(ob):
@@ -229,6 +264,10 @@ def add_model(key, objs, place=True, merge=False):
         else:
             bpy.data.objects.remove(ob)
     for ob in (by_look(plain, key) if merge else plain):
+        if PHONE:
+            a, b = phone_budget(ob, key)
+            BUDGET[0] += a
+            BUDGET[1] += b
         stud_uvs(ob.data)
         meshes += split(ob)
     if not meshes:  # (only empty text / curves)
@@ -278,6 +317,9 @@ def write_group(group):
     with open(os.path.join(LOOKS, group + ".json"), "w") as fh:
         json.dump(info, fh, indent=1)
     big = max(m["tris"] for m in meshes)
+    if PHONE:
+        print(f"[export] {group}: phone budget {BUDGET[0]} -> {BUDGET[1]} tris")
+        BUDGET[0] = BUDGET[1] = 0
     print(f"[export] {group}: {len(MODELS)} models, {len(meshes)} meshes, {sum(m['tris'] for m in meshes)} tris "
           f"(biggest mesh {big}), {os.path.getsize(path) // 1024} KB -> {path}")
     clear()

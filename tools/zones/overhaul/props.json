@@ -56,9 +56,9 @@
      "tris": 624,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -131,9 +131,9 @@
      "tris": 996,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -161,12 +161,12 @@
     {
      "name": "Bench_Iron",
      "fbx_name": "Bench_Iron",
-     "tris": 1040,
+     "tris": 1000,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -222,7 +222,7 @@
     {
      "name": "Bin_Green",
      "fbx_name": "Bin_Green",
-     "tris": 80,
+     "tris": 78,
      "look": "bin_green",
      "color": [
       64,
@@ -272,9 +272,9 @@
      "tris": 228,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -366,9 +366,9 @@
      "tris": 688,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -469,9 +469,9 @@
      "tris": 640,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -546,7 +546,7 @@
     {
      "name": "PlanterSq_Bush_Leaves",
      "fbx_name": "PlanterSq_Bush_Leaves",
-     "tris": 1500,
+     "tris": 374,
      "look": "bush",
      "color": [
       88,
@@ -560,7 +560,7 @@
     {
      "name": "PlanterSq_Flower",
      "fbx_name": "PlanterSq_Flower",
-     "tris": 560,
+     "tris": 140,
      "look": "flower_pink",
      "color": [
       250,
@@ -574,7 +574,7 @@
     {
      "name": "PlanterSq_FlowerMid",
      "fbx_name": "PlanterSq_FlowerMid",
-     "tris": 140,
+     "tris": 34,
      "look": "flower_yel",
      "color": [
       255,
@@ -609,7 +609,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -619,9 +619,9 @@
      "tris": 176,
      "look": "trim_cream",
      "color": [
-      248,
-      238,
-      214
+      204,
+      190,
+      158
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -649,7 +649,7 @@
     {
      "name": "PlanterRound_Bush_Leaves",
      "fbx_name": "PlanterRound_Bush_Leaves",
-     "tris": 1200,
+     "tris": 300,
      "look": "bush",
      "color": [
       88,
@@ -663,7 +663,7 @@
     {
      "name": "PlanterRound_Flower",
      "fbx_name": "PlanterRound_Flower",
-     "tris": 560,
+     "tris": 140,
      "look": "flower_yel",
      "color": [
       255,
@@ -677,7 +677,7 @@
     {
      "name": "PlanterRound_FlowerMid",
      "fbx_name": "PlanterRound_FlowerMid",
-     "tris": 140,
+     "tris": 34,
      "look": "flower_orange",
      "color": [
       255,
@@ -691,7 +691,7 @@
     {
      "name": "PlanterRound_Pot",
      "fbx_name": "PlanterRound_Pot",
-     "tris": 216,
+     "tris": 214,
      "look": "terracotta",
      "color": [
       218,
@@ -734,25 +734,25 @@
   },
   "props_flower_bed": {
    "origin": [
-    316.085,
+    316.056,
     0.0,
     0.0
    ],
    "min": [
-    -4.32,
-    -1.83,
-    -0.18
+    -4.29,
+    -1.84,
+    -0.17
    ],
    "max": [
-    4.33,
-    1.82,
-    1.46
+    4.35,
+    1.83,
+    1.47
    ],
    "meshes": [
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 180,
+     "tris": 44,
      "look": "flower_orange",
      "color": [
       255,
@@ -766,7 +766,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 360,
+     "tris": 88,
      "look": "flower_yel",
      "color": [
       255,
@@ -780,7 +780,7 @@
     {
      "name": "FlowerBed_FlowerPurple",
      "fbx_name": "FlowerBed_FlowerPurple",
-     "tris": 720,
+     "tris": 180,
      "look": "flower_purple",
      "color": [
       168,
@@ -794,7 +794,7 @@
     {
      "name": "FlowerBed_FlowerRed",
      "fbx_name": "FlowerBed_FlowerRed",
-     "tris": 720,
+     "tris": 180,
      "look": "flower_red",
      "color": [
       240,
@@ -808,7 +808,7 @@
     {
      "name": "FlowerBed_FlowerYel",
      "fbx_name": "FlowerBed_FlowerYel",
-     "tris": 720,
+     "tris": 180,
      "look": "flower_yel",
      "color": [
       255,
@@ -822,7 +822,7 @@
     {
      "name": "FlowerBed_Leaves0_Leaves",
      "fbx_name": "FlowerBed_Leaves0_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -836,7 +836,7 @@
     {
      "name": "FlowerBed_Leaves1_Leaves",
      "fbx_name": "FlowerBed_Leaves1_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -850,7 +850,7 @@
     {
      "name": "FlowerBed_Leaves2_Leaves",
      "fbx_name": "FlowerBed_Leaves2_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -864,7 +864,7 @@
     {
      "name": "FlowerBed_Soil",
      "fbx_name": "FlowerBed_Soil",
-     "tris": 108,
+     "tris": 26,
      "look": "soil",
      "color": [
       110,
@@ -878,21 +878,21 @@
     {
      "name": "FlowerBed_Stone",
      "fbx_name": "FlowerBed_Stone",
-     "tris": 1404,
+     "tris": 350,
      "look": "stone_light",
      "color": [
       232,
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "FlowerBed_Stone2",
      "fbx_name": "FlowerBed_Stone2",
-     "tris": 864,
+     "tris": 216,
      "look": "stone_mid",
      "color": [
       196,
@@ -907,7 +907,7 @@
   },
   "props_hedge": {
    "origin": [
-    348.914,
+    348.903,
     0.0,
     0.0
    ],
@@ -939,7 +939,7 @@
     {
      "name": "Hedge_Hedge_Leaves",
      "fbx_name": "Hedge_Hedge_Leaves",
-     "tris": 2200,
+     "tris": 550,
      "look": "hedge",
      "color": [
       80,
@@ -954,25 +954,25 @@
   },
   "props_rocks": {
    "origin": [
-    380.555,
+    380.533,
     0.0,
     0.0
    ],
    "min": [
-    -3.14,
+    -3.13,
     -2.07,
-    -0.1
+    -1.05
    ],
    "max": [
-    3.41,
-    2.15,
-    1.23
+    3.4,
+    2.14,
+    0.88
    ],
    "meshes": [
     {
      "name": "Rocks_Grass",
      "fbx_name": "Rocks_Grass",
-     "tris": 240,
+     "tris": 60,
      "look": "leaf_sun",
      "color": [
       140,
@@ -986,12 +986,12 @@
     {
      "name": "Rocks_Moss",
      "fbx_name": "Rocks_Moss",
-     "tris": 5,
+     "tris": 1,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1000,7 +1000,7 @@
     {
      "name": "Rocks_Rock",
      "fbx_name": "Rocks_Rock",
-     "tris": 72,
+     "tris": 62,
      "look": "rock",
      "color": [
       156,
@@ -1029,7 +1029,7 @@
   },
   "props_sign_post": {
    "origin": [
-    412.207,
+    412.173,
     0.0,
     0.0
    ],
@@ -1104,7 +1104,7 @@
   },
   "props_notice_board": {
    "origin": [
-    445.21,
+    445.176,
     0.0,
     0.0
    ],
@@ -1157,7 +1157,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1249,7 +1249,7 @@
   },
   "props_attraction_sign": {
    "origin": [
-    477.273,
+    477.239,
     0.0,
     0.0
    ],
@@ -1298,9 +1298,9 @@
      "tris": 160,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1324,7 +1324,7 @@
   },
   "props_gavel_statue": {
    "origin": [
-    507.573,
+    507.539,
     0.0,
     0.0
    ],
@@ -1377,7 +1377,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1398,7 +1398,7 @@
     {
      "name": "Gavel_Wood",
      "fbx_name": "Gavel_Wood",
-     "tris": 412,
+     "tris": 398,
      "look": "wood_warm",
      "color": [
       196,
@@ -1413,7 +1413,7 @@
   },
   "props_briefcase_stack": {
    "origin": [
-    535.595,
+    535.561,
     0.0,
     0.0
    ],
@@ -1502,7 +1502,7 @@
   },
   "props_file_boxes": {
    "origin": [
-    565.013,
+    564.979,
     0.0,
     0.0
    ],
@@ -1579,9 +1579,9 @@
      "tris": 264,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1605,7 +1605,7 @@
   },
   "props_crate": {
    "origin": [
-    591.875,
+    591.841,
     0.0,
     0.0
    ],
@@ -1640,9 +1640,9 @@
      "tris": 120,
      "look": "plank_dark",
      "color": [
-      150,
+      126,
       98,
-      58
+      74
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1654,11 +1654,11 @@
      "tris": 12,
      "look": "plank_light",
      "color": [
-      206,
-      152,
-      96
+      172,
+      140,
+      106
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }

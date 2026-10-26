@@ -67,12 +67,12 @@
     {
      "name": "PetCorgi_Moss",
      "fbx_name": "PetCorgi_Moss",
-     "tris": 76,
+     "tris": 18,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -95,7 +95,7 @@
     {
      "name": "PetCorgi_Orange",
      "fbx_name": "PetCorgi_Orange",
-     "tris": 18000,
+     "tris": 8576,
      "look": "corgi",
      "color": [
       240,
@@ -109,7 +109,7 @@
     {
      "name": "PetCorgi_Pink",
      "fbx_name": "PetCorgi_Pink",
-     "tris": 16,
+     "tris": 4,
      "look": "flower_pink",
      "color": [
       250,
@@ -123,7 +123,7 @@
     {
      "name": "PetCorgi_Rock",
      "fbx_name": "PetCorgi_Rock",
-     "tris": 140,
+     "tris": 138,
      "look": "rock",
      "color": [
       156,
@@ -151,7 +151,7 @@
     {
      "name": "PetCorgi_Tongue",
      "fbx_name": "PetCorgi_Tongue",
-     "tris": 188,
+     "tris": 46,
      "look": "flower_pink",
      "color": [
       250,
@@ -165,7 +165,7 @@
     {
      "name": "PetCorgi_White",
      "fbx_name": "PetCorgi_White",
-     "tris": 10000,
+     "tris": 4848,
      "look": "fur_white",
      "color": [
       252,
@@ -240,7 +240,7 @@
     {
      "name": "PetCat_Grey",
      "fbx_name": "PetCat_Grey",
-     "tris": 16000,
+     "tris": 7654,
      "look": "cat_grey",
      "color": [
       128,
@@ -268,7 +268,7 @@
     {
      "name": "PetCat_Pink",
      "fbx_name": "PetCat_Pink",
-     "tris": 44,
+     "tris": 10,
      "look": "flower_pink",
      "color": [
       250,
@@ -310,7 +310,7 @@
     {
      "name": "PetCat_White",
      "fbx_name": "PetCat_White",
-     "tris": 8000,
+     "tris": 3956,
      "look": "fur_white",
      "color": [
       252,
@@ -371,7 +371,7 @@
     {
      "name": "PetDogHouse_Bowl",
      "fbx_name": "PetDogHouse_Bowl",
-     "tris": 112,
+     "tris": 110,
      "look": "red",
      "color": [
       226,
@@ -544,7 +544,7 @@
     {
      "name": "PetCatTower_Platform",
      "fbx_name": "PetCatTower_Platform",
-     "tris": 480,
+     "tris": 468,
      "look": "purple",
      "color": [
       150,
@@ -706,9 +706,9 @@
      "tris": 24,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -717,7 +717,7 @@
     {
      "name": "PetHutch_Leaf",
      "fbx_name": "PetHutch_Leaf",
-     "tris": 72,
+     "tris": 18,
      "look": "leaf_sun",
      "color": [
       140,
@@ -780,7 +780,7 @@
       100,
       116
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     }
@@ -788,25 +788,25 @@
   },
   "pet_bunny_topiary": {
    "origin": [
-    188.844,
+    188.85,
     0.0,
     0.0
    ],
    "min": [
-    -2.65,
-    -2.82,
-    0.0
+    -2.66,
+    -2.79,
+    0.06
    ],
    "max": [
-    2.65,
-    2.85,
-    10.5
+    2.64,
+    2.84,
+    10.52
    ],
    "meshes": [
     {
      "name": "PetBunnyShape_Leaves",
      "fbx_name": "PetBunnyShape_Leaves",
-     "tris": 1800,
+     "tris": 450,
      "look": "hedge",
      "color": [
       80,
@@ -820,7 +820,7 @@
     {
      "name": "PetBunny_Planter",
      "fbx_name": "PetBunny_Planter",
-     "tris": 44,
+     "tris": 10,
      "look": "brick",
      "color": [
       198,
@@ -834,7 +834,7 @@
     {
      "name": "PetBunny_Rim",
      "fbx_name": "PetBunny_Rim",
-     "tris": 44,
+     "tris": 10,
      "look": "limestone",
      "color": [
       232,
@@ -848,7 +848,7 @@
     {
      "name": "PetBunny_Soil",
      "fbx_name": "PetBunny_Soil",
-     "tris": 12,
+     "tris": 2,
      "look": "soil",
      "color": [
       110,
@@ -862,7 +862,7 @@
     {
      "name": "PetBunny_Tail",
      "fbx_name": "PetBunny_Tail",
-     "tris": 80,
+     "tris": 20,
      "look": "fur_white",
      "color": [
       252,
@@ -937,7 +937,7 @@
     {
      "name": "PetBridge_Rail",
      "fbx_name": "PetBridge_Rail",
-     "tris": 304,
+     "tris": 256,
      "look": "wood_warm",
      "color": [
       196,
@@ -1001,9 +1001,9 @@
      "tris": 1376,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1152,7 +1152,7 @@
     {
      "name": "PetShopBarkeryWin_Frame",
      "fbx_name": "PetShopBarkeryWin_Frame",
-     "tris": 512,
+     "tris": 420,
      "look": "white",
      "color": [
       248,
@@ -1166,7 +1166,7 @@
     {
      "name": "PetShopBarkeryWin_Glass",
      "fbx_name": "PetShopBarkeryWin_Glass",
-     "tris": 192,
+     "tris": 136,
      "look": "glass_blue",
      "color": [
       128,
@@ -1271,7 +1271,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1320,7 +1320,7 @@
     {
      "name": "PetShopBarkery_Flower",
      "fbx_name": "PetShopBarkery_Flower",
-     "tris": 640,
+     "tris": 160,
      "look": "flower_pink",
      "color": [
       250,
@@ -1348,7 +1348,7 @@
     {
      "name": "PetShopBarkery_FlowerMid",
      "fbx_name": "PetShopBarkery_FlowerMid",
-     "tris": 160,
+     "tris": 40,
      "look": "flower_yel",
      "color": [
       255,
@@ -1379,9 +1379,9 @@
      "tris": 104,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1390,7 +1390,7 @@
     {
      "name": "PetShopBarkery_Leaf",
      "fbx_name": "PetShopBarkery_Leaf",
-     "tris": 160,
+     "tris": 40,
      "look": "bush",
      "color": [
       88,
@@ -1577,7 +1577,7 @@
     {
      "name": "PetShopPawclinicWin_Frame",
      "fbx_name": "PetShopPawclinicWin_Frame",
-     "tris": 512,
+     "tris": 420,
      "look": "white",
      "color": [
       248,
@@ -1591,7 +1591,7 @@
     {
      "name": "PetShopPawclinicWin_Glass",
      "fbx_name": "PetShopPawclinicWin_Glass",
-     "tris": 192,
+     "tris": 136,
      "look": "glass_blue",
      "color": [
       128,
@@ -1696,7 +1696,7 @@
       226,
       212
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
@@ -1731,7 +1731,7 @@
     {
      "name": "PetShopPawclinic_Flower",
      "fbx_name": "PetShopPawclinic_Flower",
-     "tris": 640,
+     "tris": 160,
      "look": "flower_pink",
      "color": [
       250,
@@ -1759,7 +1759,7 @@
     {
      "name": "PetShopPawclinic_FlowerMid",
      "fbx_name": "PetShopPawclinic_FlowerMid",
-     "tris": 160,
+     "tris": 38,
      "look": "flower_yel",
      "color": [
       255,
@@ -1790,9 +1790,9 @@
      "tris": 104,
      "look": "iron",
      "color": [
-      52,
-      54,
-      64
+      62,
+      62,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1801,7 +1801,7 @@
     {
      "name": "PetShopPawclinic_Leaf",
      "fbx_name": "PetShopPawclinic_Leaf",
-     "tris": 160,
+     "tris": 40,
      "look": "bush",
      "color": [
       88,
@@ -1843,7 +1843,7 @@
     {
      "name": "PetShopPawclinic_PawPink",
      "fbx_name": "PetShopPawclinic_PawPink",
-     "tris": 196,
+     "tris": 41,
      "look": "flower_pink",
      "color": [
       250,
@@ -2003,25 +2003,25 @@
   },
   "pet_portal": {
    "origin": [
-    403.647,
+    403.712,
     0.0,
     0.0
    ],
    "min": [
-    -23.48,
+    -23.54,
     -32.43,
-    -1.6
+    -2.05
    ],
    "max": [
-    22.74,
-    19.67,
+    22.78,
+    19.74,
     30.6
    ],
    "meshes": [
     {
      "name": "IslBush11_Leaves",
      "fbx_name": "IslBush11_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -2035,7 +2035,7 @@
     {
      "name": "IslBush12_Leaves",
      "fbx_name": "IslBush12_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -2049,7 +2049,7 @@
     {
      "name": "IslBush14_Leaves",
      "fbx_name": "IslBush14_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -2063,7 +2063,7 @@
     {
      "name": "IslBush15_Leaves",
      "fbx_name": "IslBush15_Leaves",
-     "tris": 840,
+     "tris": 210,
      "look": "bush",
      "color": [
       88,
@@ -2077,7 +2077,7 @@
     {
      "name": "IslFern",
      "fbx_name": "IslFern",
-     "tris": 1008,
+     "tris": 208,
      "look": "fern",
      "color": [
       60,
@@ -2091,7 +2091,7 @@
     {
      "name": "IslPine10_Canopy",
      "fbx_name": "IslPine10_Canopy",
-     "tris": 348,
+     "tris": 86,
      "look": "pine_shade",
      "color": [
       30,
@@ -2105,21 +2105,21 @@
     {
      "name": "IslPine10_Light",
      "fbx_name": "IslPine10_Light",
-     "tris": 360,
+     "tris": 90,
      "look": "pine_light",
      "color": [
       72,
       168,
       90
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "IslPine10_Trunk",
      "fbx_name": "IslPine10_Trunk",
-     "tris": 182,
+     "tris": 162,
      "look": "bark_dark",
      "color": [
       96,
@@ -2133,7 +2133,7 @@
     {
      "name": "IslPine13_Canopy",
      "fbx_name": "IslPine13_Canopy",
-     "tris": 348,
+     "tris": 86,
      "look": "pine_shade",
      "color": [
       30,
@@ -2147,21 +2147,21 @@
     {
      "name": "IslPine13_Light",
      "fbx_name": "IslPine13_Light",
-     "tris": 360,
+     "tris": 90,
      "look": "pine_light",
      "color": [
       72,
       168,
       90
      ],
-     "material": "SmoothPlastic",
+     "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
      "name": "IslPine13_Trunk",
      "fbx_name": "IslPine13_Trunk",
-     "tris": 182,
+     "tris": 162,
      "look": "bark_dark",
      "color": [
       96,
@@ -2175,12 +2175,12 @@
     {
      "name": "IslPortalCap_Leaves",
      "fbx_name": "IslPortalCap_Leaves",
-     "tris": 1040,
+     "tris": 260,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2189,7 +2189,7 @@
     {
      "name": "IslPortal_Arch",
      "fbx_name": "IslPortal_Arch",
-     "tris": 334,
+     "tris": 310,
      "look": "rock",
      "color": [
       156,
@@ -2217,7 +2217,7 @@
     {
      "name": "IslPortal_Base",
      "fbx_name": "IslPortal_Base",
-     "tris": 76,
+     "tris": 70,
      "look": "rock_top",
      "color": [
       204,
@@ -2245,7 +2245,7 @@
     {
      "name": "IslPortal_Flower",
      "fbx_name": "IslPortal_Flower",
-     "tris": 560,
+     "tris": 140,
      "look": "flower_pink",
      "color": [
       250,
@@ -2259,7 +2259,7 @@
     {
      "name": "IslPortal_FlowerMid",
      "fbx_name": "IslPortal_FlowerMid",
-     "tris": 140,
+     "tris": 34,
      "look": "flower_yel",
      "color": [
       255,
@@ -2287,7 +2287,7 @@
     {
      "name": "IslPortal_Leg",
      "fbx_name": "IslPortal_Leg",
-     "tris": 120,
+     "tris": 104,
      "look": "rock",
      "color": [
       156,
@@ -2301,12 +2301,12 @@
     {
      "name": "IslPortal_LegMoss",
      "fbx_name": "IslPortal_LegMoss",
-     "tris": 40,
+     "tris": 10,
      "look": "moss",
      "color": [
-      96,
-      186,
-      64
+      98,
+      146,
+      60
      ],
      "material": "Plastic",
      "transparency": 0,
