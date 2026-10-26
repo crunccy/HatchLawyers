@@ -316,7 +316,7 @@ def stage3():
     roof_vents(n, H + 0.3, ((14, 14), (-15, 12)))
     # classic porch: four Tuscan columns, an entablature (the name sign goes on its face), a real pediment
     for x in (-8, -3, 3, 8):
-        B.column(n + "Col", x, -4.5, 0.0, 9.0, r=0.75)
+        B.column(n + "Col", x, -3.4, 0.0, 9.0, r=0.75)  # (plinths wholly on the porch: at its edge they hung over the top step - crnuch)
     fbox(n + "_Entab", "marble", -10, 9.0, -6.0, 10, 10.5, 0, bevel=0.08)
     fbox(n + "_Gold", "gold", -10.05, 9.05, -6.08, 10.05, 9.2, -5.9)
     B.gable(n, "marble", 0, -3.0, 10.5, 20.4, 3.4, 6.0, trim="marble", tympanum="sand")

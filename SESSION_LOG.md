@@ -58,9 +58,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   place yet (meshes need crnuch's upload). **Visual audit 2026-10-25: docs/VISUAL_AUDIT_2026-10-25.md** (ranked
   findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs);
   polish N1-N3, N5-N8, N10, N11 done 2026-10-25 (entry below). Open from the audit: M2-M5, N4, N9, the optional list.
-  **In progress 2026-10-26 (crnuch's side session): GROW A GARDEN STUDS on everything** (crnuch + partner approved
-  option B: a half-stud grid of small rounded-square studs on every face, as a material - replaces the raised studs).
-  Blender renders + the Roblox texture maps; Studio install later (crnuch uploads). Don't change stud code meanwhile.
+  GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -288,6 +286,27 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-26 — crnuch, local session (side session): Grow a Garden studs on everything, live in the place
+- crnuch: "analyze the grow a garden studs and apply those studs to everything"; first examples' studs "too large" ->
+  re-analysed, two variants; crnuch picked **option B** (a half-stud grid of small rounded-square studs, a dark sliver
+  lower-right, a lit one upper-left, a faint outline), partner approved, then "put it in the actual game".
+- **Studio (live, Team Create):** `MaterialService.BrickStuds` now has the GaG maps (colour + normal + roughness,
+  uploaded from crnuch's Studio: ids in docs/ART_STYLE_STUDS.md) at StudsPerTile 1, and the Plastic override points at
+  it - so all ~122k Plastic parts in the world (117k already BrickStuds, the rest plain Plastic), the characters and
+  the stored models get the studs at once; no part was edited. Old studs kept as `MaterialService.BrickStuds_v1`.
+  `StarterPlayerScripts.Studs` (the raised StudTop tiles) **disabled** so studs don't double up. One undo step.
+  Snapshot re-exported (only MANIFEST changed: Studs Enabled false). Not playtested from here (Studio's viewport didn't
+  render for the MCP captures) - **crnuch: look at it in Studio / a playtest**. Legacy surface studs (`TopSurface =
+  Studs` etc.) set Smooth on every stored part (Workspace 3487, ReplicatedStorage 98, ServerStorage 25487; second undo
+  step). Still set at runtime by FirmBuilder / FirmStages / DeskLook / DeskService / MinigameClient.Scene - if those
+  firm parts show old surface studs over the new ones in a playtest, drop the `SurfaceType.Studs` lines there.
+- **Blender:** `tools/blender/overhaul/gagstuds.py` (the pattern as shader nodes, `apply_all()` in every render, the
+  maps' baker); modelled studs off (`ohstuds.ENABLED`, the v2 islands' pass via `no_raised()`).
+- Firm stage 3: the columns' plinths sat over the top step (crnuch) - moved wholly onto the porch (firms 0 floating /
+  0 z-fight / 0 clip).
+- **Heads-up:** a part that must stay smooth now needs SmoothPlastic / Neon / Glass, not Plastic. The overhaul meshes
+  need box-projected UVs (1 unit = 1 stud) at export so their studs line up (CLAUDE.md, docs/ART_STYLE_STUDS.md).
 
 ## 2026-10-26 — crnuch, local session (side session): nothing runs into anything (buildings into cliffs, plants, lamps)
 - crnuch's report: "a lot of buildings overlap each other" (the Pizza Palace's awning ran into its turrets, a turret into

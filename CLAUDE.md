@@ -143,7 +143,12 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   takes the lighting (like TravelFx, the hatch stages) saves + restores it and marks itself (player attribute
   `Traveling`, or `HatchCC` on the camera) so Ambience stays hands off; add a new marker there if you add one.
   Keep a zone's colour in the haze + particles, not the ambient light (a green ambient turned the orange path yellow).
-- **STUDDED BRICK WORLD — non-negotiable (crnuch's call 2026-10-18): [docs/ART_STYLE_STUDS.md](docs/ART_STYLE_STUDS.md).**
+- **STUDS = GROW A GARDEN STUDS ON EVERYTHING, AS A MATERIAL (crnuch + partner 2026-10-26, supersedes the raised
+  studs below): [docs/ART_STYLE_STUDS.md](docs/ART_STYLE_STUDS.md) top section.** A half-stud grid of small
+  rounded-square studs on every face. Live: `MaterialService.BrickStuds` (StudsPerTile 1, GaG maps) + the Plastic
+  override, so every Plastic part is studded; smooth = SmoothPlastic / Neon / Glass. Raised StudTop tiles OFF
+  (`StarterPlayerScripts.Studs` disabled). Blender renders: `gagstuds.apply_all()`; no modelled studs (`ohstuds.ENABLED`).
+- **STUDDED BRICK WORLD (crnuch's call 2026-10-18; the raised-stud part is superseded, the shape rules stand).**
   Real raised 3D studs (not textures) on terrain, roads, roofs, platforms, props; one stud scale everywhere; reusable
   stud assets from Blender; decorative studs separate from collision; LOD for distance + phones. Never smooth the
   geometry or drop the studs; no plain Roblox parts, no smooth low-poly. Read that doc before building anything.
@@ -156,9 +161,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   stacks of Parts - more detail (bevels, trims, layered canopies) for far fewer parts. Map first; characters, eggs and
   bosses later. Benchmark first (a tree family, the portal, one firm building), approved from renders before anything
   goes in. Reference stills: `references/models/` (PS99, Fisch, Steal an Egg - from the Codex research's videos).
-  **Studs stay LOW (crnuch 2026-10-24: "i dont want the studs to be protruding so much on anything"):** every model
-  uses the game's one standard stud (0.10 tall, soft rounded square - `tools/blender/overhaul/ohstuds.py`, the same as
-  the raised stud tiles and the islands); never taller or fatter.
+  **Studs stay LOW (crnuch 2026-10-24: "i dont want the studs to be protruding so much on anything"):** since
+  2026-10-26 they're the flat GaG stud material (above), so models get no modelled studs; export meshes with
+  box-projected UVs (1 unit = 1 stud) so the material's studs line up with the Parts'.
   **Bushes / hedges are ONE solid green** (crnuch 2026-10-24: the two-tone shade + sunlit-top split "looks like two
   different colours"): `ohkit.leafy` makes one lumpy mesh, the lighting does the shading. "Skip importing and just
   model everything" (crnuch 2026-10-24): model the whole map first, export / upload later. Shared helpers:
@@ -242,7 +247,7 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   `Shared.TravelFx`: one animation per destination, growing down the lane (zone 1 a beam-up ... Space Base a hyperspace
   tunnel flight); it sets a local `Traveling` attribute (Bosses.client skips its ragdoll meanwhile).
 - `ReplicatedStorage.Studs.Tiles` + `StarterPlayerScripts.Studs` (2026-10-18): the RAISED studs (docs/ART_STYLE_STUDS.md).
-  Tag an up-facing part `StudTop` and the client lays Roblox-shaped 3D stud tiles on its open top cells near the
+  **Disabled 2026-10-26** (the GaG stud material replaced them; re-enable the script to bring them back). Tag an up-facing part `StudTop` and the client lays Roblox-shaped 3D stud tiles on its open top cells near the
   camera (no collision, nothing replicates); `Config.Studs`. Covered cells are found from part bounds, not rays
   (most firm parts are CanQuery off). Tiles from `tools/blender/stud_tiles.py` -> `tools/zones/BuildStudTiles.lua`.
 - `ReplicatedStorage.Briefcases` — the Carry upgrade's briefcase models (`Config.Zones.Carry[n].Model`), worn on the

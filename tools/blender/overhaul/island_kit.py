@@ -19,6 +19,8 @@ import props as PR
 import trees as T
 import hl_kit as K
 
+import gagstuds
+gagstuds.no_raised()  # (the v2 islands' raised stud pass + modelled studs off: the Grow a Garden pattern replaces them)
 CNT = itertools.count(1)
 rng = random.Random(1907)
 O.K.PAL.update({"lighthouse_red": (230, 62, 62), "lighthouse_white": (250, 248, 242), "hull_white": (248, 248, 244),
@@ -195,6 +197,7 @@ def render_captured(out, prefix):
     """Render the cameras a capture_cams run recorded, named <prefix><key>.jpg (key = the original file's suffix)."""
     keys = []
     sc = bpy.context.scene
+    gagstuds.apply_all()
     for cam_name, path, w, h in CAPTURED:
         key = os.path.basename(path).rsplit(".", 1)[0].split("_", 1)[1]
         sc.camera = bpy.data.objects[cam_name]

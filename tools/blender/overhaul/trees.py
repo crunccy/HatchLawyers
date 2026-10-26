@@ -362,6 +362,8 @@ def build():
 
 
 def render(sc, name, loc, look, lens=32, res=(1600, 900)):
+    import gagstuds
+    gagstuds.apply_all()  # (Grow a Garden studs on every face)
     cam = K.camera(name, loc, look, lens=lens)
     sc.camera = cam
     sc.render.resolution_x, sc.render.resolution_y = res

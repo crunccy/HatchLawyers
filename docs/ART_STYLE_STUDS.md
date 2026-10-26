@@ -1,5 +1,27 @@
 # Art style: studded brick world (non-negotiable)
 
+## CURRENT (crnuch + partner, 2026-10-26): Grow a Garden studs, as a material - supersedes the raised studs below
+crnuch: "analyze the grow a garden studs and apply those studs to everything"; option B of the examples chosen
+("definitely the 2nd one"), partner approved. Studs are now a **surface pattern on every face**, not raised geometry:
+- **The look:** a half-stud grid (2 x 2 studs per stud of surface) of small rounded-square studs, 0.36 of a cell
+  across, each with a dark sliver on its lower-right, a lit sliver on its upper-left and a faint outline; low bump.
+  World-aligned on each face. Water, glow, glass and see-through things stay smooth.
+- **In the game (live 2026-10-26):** `MaterialService.BrickStuds` (BaseMaterial Plastic, **StudsPerTile 1**) carries
+  the maps - ColorMap `rbxassetid://111898175513870` (white: each part's Color tints it), NormalMap
+  `rbxassetid://100187181764437` (OpenGL), RoughnessMap `rbxassetid://105705701169322` - and the Plastic override
+  (`MaterialService:SetBaseMaterialOverride(Plastic, "BrickStuds")`) puts it on every plain Plastic part too. So: a
+  Part gets the studs by being Plastic; to keep one smooth, make it SmoothPlastic / Neon / Glass. The old
+  normal-map-only studs are kept as `MaterialService.BrickStuds_v1` (rename it back to roll back).
+  The raised StudTop tiles are OFF (`StarterPlayerScripts.Studs` disabled; the code and `ReplicatedStorage.Studs`
+  stay). Maps: `art/studs/gag/` baked by `tools/blender/overhaul/gagstuds.py`, uploaded from crnuch's Studio.
+- **Blender:** `gagstuds.apply_all()` puts the same pattern on every material in a render (ohkit.render, the island
+  renders); `gagstuds.no_raised()` turns the modelled studs off (`ohstuds.ENABLED = False`, the v2 islands' pass).
+- **Overhaul meshes (later install):** a MeshPart takes the material by its UVs, not the world - export each mesh with
+  box-projected UVs at 1 UV unit = 1 stud so its studs line up with the Parts' studs.
+
+The rest of this doc is the 2026-10-18 raised-stud rule it replaced; the shape rules (chunky, layered, no smooth
+low-poly) still hold.
+
 **User's call, crnuch, 2026-10-18. Binding for every session.** Supersedes the old CLAUDE.md "Builds" rule
 (plain Plastic Parts with `TopSurface = Studs`): a flat stud texture or normal map no longer counts as "studded".
 

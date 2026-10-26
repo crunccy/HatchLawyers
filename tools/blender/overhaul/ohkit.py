@@ -497,6 +497,8 @@ def render(out, name, loc, look, lens=32, res=(1600, 900), show=None):
         every = set().union(*REGIONS.values())
         for ob in bpy.data.objects:
             ob.hide_render = ob.name in every and ob.name not in keep
+    import gagstuds
+    gagstuds.apply_all()  # (Grow a Garden studs on every face - crnuch 2026-10-26)
     sc.camera = K.camera(name, loc, look, lens=lens)
     sc.render.resolution_x, sc.render.resolution_y = res
     sc.render.filepath = os.path.join(out, name + ".jpg")

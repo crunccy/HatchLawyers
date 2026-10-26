@@ -491,6 +491,8 @@ def stats():
 
 
 def render(sc, name, loc, look, lens=30):
+    import gagstuds
+    gagstuds.apply_all()  # (Grow a Garden studs on every face)
     sc.camera = K.camera(name, loc, look, lens=lens)
     sc.render.resolution_x, sc.render.resolution_y = 1600, 900
     sc.render.filepath = os.path.join(OUT, name + ".jpg")
