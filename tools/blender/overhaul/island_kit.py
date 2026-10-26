@@ -218,6 +218,21 @@ class _NoSave:
         return {"FINISHED"}
 
 
+CURRENT = {"g": None}  # (the globals of the island script run_island is running / ran last)
+
+
+def running(name, default=None):
+    """A global of the island script being run (its REGIONS, PORTAL, SPAWN, I ...), or default outside a run."""
+    g = CURRENT["g"]
+    return g.get(name, default) if g else default
+
+
+def in_egg_area(x, y, pad=3.0):
+    """True if (x, y) is inside one of the running island's egg regions (REGIONS: name -> ((cx, cy), R, why)) + pad:
+    floor clutter that looks like an egg (round, saturated, egg-sized) stays out of there (audit N2)."""
+    return any(math.hypot(x - cx, y - cy) < R + pad for (cx, cy), R, _ in running("REGIONS", {}).values())
+
+
 def run_island(script, out, overrides=None, argv=("norender",), capture_cams=False):
     """Run an island's v2 build script unchanged: no .blend save, its JSON writes into out, no renders of its own.
     overrides = {name: fn} swaps functions the script defines itself (their defs are renamed in the source text it
@@ -238,6 +253,7 @@ def run_island(script, out, overrides=None, argv=("norender",), capture_cams=Fal
     builtins.open = safe_open  # (helper modules write too)
     g = {"__name__": "__main__", "__file__": script, "open": safe_open}
     g.update(overrides or {})
+    CURRENT["g"] = g  # (adapters read the running script's globals through running())
     src = override_source(real_open(script).read(), list((overrides or {}).keys()))
     real_render = K.render
     CAPTURED.clear()
@@ -328,7 +344,8 @@ def crystal(name, look, c, h, lean=(0, 0)):
         cyl(name, look, tuple(tip), h * 0.18, h * 0.3, segs=6, rot=(lean[0], lean[1], 0), smooth=False, r_top=0.0)
 
 
-# the Return Home portal's dressing, per island (Space Base: moon rock, alien moss, alien plants instead of palms)
+# the Return Home portal's dressing, per island (Space Base: moon rock, alien moss, alien plants instead of palms; Pet Park,
+# Brainrot, Food Court: their island scripts' portal_preset, audit N1). side(sgn) draws what stands beside it (default palms).
 PORTAL = {"rock": "rock", "top": "rock_top", "moss": "moss", "flowers": ("flower_pink", "flower_yel"), "fern": True, "side": None}
 
 
@@ -391,8 +408,8 @@ def rock_portal(m, x, y, z, rot=0.0):
         wx, wy, wz, rr_ = where(m, x, y, rot, z)
         c, s_ = math.cos(math.radians(rr_)), math.sin(math.radians(rr_))
         lx, ly = sgn * 13.5, 7.5
-        if PORTAL["side"]:
-            with at(wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1):
+        if PORTAL["side"]:  # (side_local: the side's axes turn with the portal, +x outward for sgn 1, -y toward its front)
+            with at(wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1, rz=rr_ if PORTAL.get("side_local") else 0.0):
                 PORTAL["side"](sgn)
         else:
             tree(O_NONE, wx + lx * c - ly * s_, wy + lx * s_ + ly * c, wz + 0.1, 1.9, "palm")

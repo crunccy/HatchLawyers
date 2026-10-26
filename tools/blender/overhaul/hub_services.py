@@ -222,10 +222,9 @@ def incubator():
         sphere(n + "_Orb", "orb_glow", tuple(tip + Vector((0, 0, 0.75))), 0.7, sub=2)
         for i in (3, 7):
             sphere(n + "_Gold", "gold_dark", pts[i], rad[i] * 1.18, sub=2)
-    # two floating halo rings
-    for zt, extra, tilt in ((0.28, 2.2, 6), (0.56, 2.0, -5)):
-        R = egg_profile(zt) + extra
-        cz = ez + zt * eh
+    # two floating halo rings, clear of the claws / orbs / heat lamps / boiler by 0.5+ through a full turn (audit N3): one
+    # round the egg's waist above the lamps' bowls, one round its crown above the orbs
+    for cz, R, tilt in ((12.8, 10.4, 2.5), (21.3, egg_profile((21.3 - ez) / eh) + 2.15, -5)):
         ring_pts = []
         for i in range(49):
             a = i / 48 * TAU

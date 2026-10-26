@@ -303,8 +303,11 @@ def fuel_depot(F):
             for k in range(4):
                 a = math.radians(k * 90 + 45)
                 tube(n + "_Leg", "hull_dark", [(sx + math.cos(a) * 3.6, math.sin(a) * 3.6, 0.0), (sx + math.cos(a) * 2.9, math.sin(a) * 2.9, 5.2)], 0.3, segs=8)
-            sphere(n + "_Tank", "hull_white", (sx, 0, 8.6), 5.0, sub=3)
-            lathe(n + "_Hazard", "hazard", [(4.96, 9.1), (5.03, 9.3), (5.03, 9.9), (4.9, 10.1)], segs=32)
+            R, cz = 5.0, 8.6  # a smooth tank + a hazard band round ITS middle, following the curve 0.12 proud, edges tucked in (audit N7)
+            lathe(n + "_Tank", "hull_white", [(R * math.sin(t), cz - R * math.cos(t)) for t in [i / 24 * math.pi for i in range(25)]], segs=40, c=(sx, 0, 0))
+            rs = lambda dz: math.sqrt(R * R - dz * dz)
+            lathe(n + "_Hazard", "hazard", [(rs(0.5) - 0.06, cz + 0.5)] + [(rs(dz) + 0.12, cz + dz) for dz in (0.56, 0.8, 1.0, 1.2, 1.44)] +
+                  [(rs(1.5) - 0.06, cz + 1.5)], segs=40, c=(sx, 0, 0))
         for z in (7.6, 10.4):
             tube(n + "_Pipe", "hull_grey", [(-2.5, 0, z), (2.5, 0, z)], 0.45, segs=10)
         with at(0, -5.6, 0):
@@ -337,8 +340,9 @@ def ufo(F):
 # ================================================================== the script's own bits
 def floor_bit(m, x, y, z, edge, roll):
     if roll < 0.3:
+        lo, hi = (0.24, 0.34) if IK.in_egg_area(x, y) else (0.35, 0.6)  # (among the eggs pebbles stay under 0.8 across - audit N2)
         for k in range(rr.randint(2, 4)):
-            O.rock("SpacePebble", "SpacePebbleTop", (x + rr.uniform(-1.2, 1.2), y + rr.uniform(-1.2, 1.2), z), rr.uniform(0.35, 0.6), seed=next(IK.CNT),
+            O.rock("SpacePebble", "SpacePebbleTop", (x + rr.uniform(-1.2, 1.2), y + rr.uniform(-1.2, 1.2), z), rr.uniform(lo, hi), seed=next(IK.CNT),
                    squash=0.6, look=rr.choice(("moon_dark", "rock_violet")), top="moon_light")
     elif roll < 0.45:
         crystal(IK.O_NONE, x, y, rr.uniform(1.2, 2.2), 0.4, rr.choice(("crystal_cyan", "crystal_pink", "crystal_violet")), "glow_cyan")

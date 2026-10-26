@@ -69,7 +69,7 @@ def podium():
     box(N + "_Carpet", "carpet_red", (0, -11.3, 4.03), (8, 8.0, 0.06))
     for sx in (-4.15, 4.15):
         box(N + "_Gold", "gold", (sx, -11.3, 4.05), (0.2, 8.0, 0.08))
-    # stair cheeks: marble blocks with gold-trimmed caps, the scales statues and double lamps
+    # stair cheeks: marble blocks with gold-trimmed caps and the scales statues; double lamps beside them
     for s in (-1, 1):
         x = s * 19.5
         box(N + "_Cheek", "marble", (x, -21, 2.3), (5, 12, 4.6), bevel=0.1)
@@ -78,7 +78,7 @@ def podium():
         for y in (-25.5, -19.5):
             box(N + "_Cheek", "marble_shade", (x - s * 2.52, y, 2.0), (0.1, 3.4, 2.4), bevel=0.04)  # panel on the outer face
         scales(N + "Scales", x, -23.6, 4.9, 0.95)
-        with at(x, -17.3, 4.9, rz=90):
+        with at(s * 25.0, -22.0, 0.0, rz=90):  # (on the ground beside the cheek: on it, the post ran through the scales from the front - audit N6)
             PR.lamp_double()
 
 

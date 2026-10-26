@@ -1,7 +1,7 @@
 # tools/blender/overhaul/audit_views.py - review renders of every MAP MODEL OVERHAUL model on its own: four views at a
 # player's eye height (front, front-left, back-right, side) at a normal viewing distance, with a player for scale.
 #   Blender -b --factory-startup --python tools/blender/overhaul/audit_views.py -- <out dir> [<group> ...]
-# (same groups as check_models.py). Writes <out>/<group>_<name>_<view>.jpg.
+# (same groups as check_models.py, or one model as <group>.<name>). Writes <out>/<group>_<name>_<view>.jpg.
 import bpy, os, sys, math
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -23,7 +23,7 @@ def main():
     O.box("Preview_Ground", "grass", (0, 0, -0.25), (900, 900, 0.5))
     O.finish()
     for group, name, fn, args in CM.models():
-        if WANT and group not in WANT:
+        if WANT and group not in WANT and f"{group}.{name}" not in WANT:
             continue
         before = set(bpy.data.objects.keys())
         try:

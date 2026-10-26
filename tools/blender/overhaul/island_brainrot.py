@@ -27,6 +27,8 @@ rr = random.Random(3303)
 TAU = math.tau
 O.K.PAL.update({"night": (40, 30, 70), "violet": (110, 55, 190), "magenta": (230, 50, 200), "lilac": (190, 150, 255), "sky_blue": (110, 190, 250),
                 "glitch_lime": (170, 250, 70), "mush_cap": (250, 90, 190), "mush_stem": (240, 230, 250), "house_yellow": (255, 210, 60)})
+for k_, v_ in {"rot_rock": (112, 84, 156), "rot_rock_dark": (80, 58, 116), "rot_grass": (84, 214, 176)}.items():  # (the v2 island's own, for the portal)
+    O.K.PAL.setdefault(k_, v_)
 
 
 def rbox(name, look, c, size, r=0.4, rot=(0, 0, 0)):
@@ -179,7 +181,7 @@ def upside_down_house(F):
     with IK.place(F, 0, 0):
         with at(0, 0, 0, rz=90):
             prism(n + "_Roof", "red", [(-0.6, 0.0), (0.6, 0.0), (8.2, 6.0), (-8.2, 6.0)], 14.0)
-        tube(n + "_Ridge", "white", [(0, -7.2, 0.25), (0, 7.2, 0.25)], 0.3, segs=8)
+        tube(n + "_Ridge", "white", [(-7.03, 0, 0.25), (7.03, 0, 0.25)], 0.3, segs=8)  # (along the ridge, the roof's length + 0.03: it ran across, lying in the grass - audit N8)
         rbox(n + "_Wall", "house_yellow", (0, 0, 10.0), (15, 12, 8), 0.3)
         rbox(n + "_Trim", "white", (0, 0, 6.2), (15.4, 12.4, 0.4), 0.1)
         with at(0, -6.0, 6.0):
@@ -286,6 +288,10 @@ def floor_bit(m, x, y, z, edge, roll):
             cyl("RotFlower_Stem", "rot_grass" if "rot_grass" in O.K.PAL else "leaf_sun", (fx, fy, z), 0.1, 1.0, segs=5)
             lk = rr.choice(("magenta", "glitch_lime", "house_yellow", "sky_blue"))
             box("RotFlower" + lk.title().replace("_", ""), lk, (fx, fy, z + 1.25), (0.7, 0.7, 0.5), rot=(0, 0, rr.uniform(0, 90)), bevel=0.12)
+    elif roll < 0.74 and (not edge or IK.in_egg_area(x, y)):  # (an eyeball is round + egg-sized: only by the floor's rim, a flat tile elsewhere - audit N2)
+        lk = rr.choice(("magenta", "glitch_lime", "sky_blue", "violet"))
+        box("RotGlitch" + lk.title().replace("_", ""), lk, (x, y, z + 0.02), (rr.uniform(1.2, 2.6), rr.uniform(1.2, 2.6), 0.1), rot=(0, 0, rr.uniform(0, 90)),
+            bevel=0.03)
     elif roll < 0.74:
         sphere("RotTinyEye_White", "white", (x, y, z + 0.5), 0.5, sub=2)
         sphere("RotTinyEye_Pupil", "panel_black", (x + 0.35, y, z + 0.6), 0.2, sub=1)
@@ -315,7 +321,21 @@ def goo_garden(x, y):
 
 
 # ================================================================== the mapping + run
+def portal_side(sgn):
+    """Beside the Return Home portal (palms on Ocean Shore): a pixel tree and glow crystals at its foot (audit N1)."""
+    with at(0, 0, -0.12):  # (back a little, its crown clear of the arch's crags; down to the ground where the stone base ends)
+        pixel_tree(IK.O_NONE, sgn * 0.6, 1.4, 1.2, look=("magenta", "lilac")[sgn > 0])
+    for k, (dx, dy, h, lk) in enumerate(((-sgn * 3.4, -1.8, 3.2, "glow_cyan"), (-sgn * 2.2, -3.2, 2.2, "glow_magenta"), (sgn * 2.2, -2.6, 2.6, "glow_cyan"))):
+        IK.crystal("RotCrystal" + lk.title().replace("_", ""), lk, (dx, dy, 0.0), h, lean=(14 * (1 if dy < -2 else -1), sgn * 12 * (1 if k else -1)))
+
+
+def portal_preset():
+    IK.PORTAL.update(rock="rot_rock_dark", top="rot_rock", moss="rot_grass", flowers=("magenta", "glitch_lime"), fern=False, side=portal_side,
+                     side_local=True)
+
+
 def patch():
+    portal_preset()
     IK.patch_v2_common()
     BR = importlib.import_module("br_parts")
     for nm, fn in (("wobble_lamp", wobble_lamp), ("pixel_tree", pixel_tree), ("upside_down_tree", upside_down_tree), ("twisty_tower", twisty_tower),

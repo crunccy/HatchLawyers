@@ -170,9 +170,29 @@ def pebbles(m, x, y, z0, n=4):
                    top="rock_top")
 
 
+def _seg_dist(x, y, a, b):
+    ax, ay, bx, by = a[0], a[1], b[0], b[1]
+    t = max(0.0, min(1.0, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / max(1e-6, (bx - ax) ** 2 + (by - ay) ** 2)))
+    return math.hypot(x - ax - t * (bx - ax), y - ay - t * (by - ay))
+
+
+def clear_of_approach(x, y, reach=0.0):
+    """Audit N10: no driftwood within 25 studs of the Return Home portal + its stepping-stone approach (30 out front), the
+    arrival dock's landing and pad, or within 6 of the walk from the landing to the portal (+ reach, the log's half-length)."""
+    P, S, T = IK.running("PORTAL"), IK.running("SPAWN"), IK.running("tip")
+    if not (P and S and T):
+        return True
+    rot = math.radians(IK.running("NE", 44.0) - 90)  # (the portal's rot in osv2_build; its front = local -y)
+    front = (P[0] + math.sin(rot) * 30, P[1] - math.cos(rot) * 30)
+    return (_seg_dist(x, y, P, front) > 25 + reach and min(math.hypot(x - S[0], y - S[1]), math.hypot(x - T[0], y - T[1])) > 25 + reach and
+            _seg_dist(x, y, T, P) > 6 + reach)
+
+
 def driftwood(m, x, y, z0, L=None, rot=None):
     L = L or rr.uniform(6, 11)
     rot = rr.uniform(0, 180) if rot is None else rot
+    if not clear_of_approach(x, y, L / 2):
+        return
     nm = "OceanDrift%d" % next(CNT)
     with IK.place(m, x, y, z0, rot):
         pts = [(-L / 2 + L * t / 6, 0.15 * math.sin(t * 1.7), 0.42 - 0.05 * t / 6) for t in range(7)]

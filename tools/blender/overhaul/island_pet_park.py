@@ -44,6 +44,9 @@ def rbox(name, look, c, size, r=0.5):
 
 
 # ================================================================== statues
+CORGI_S = 1.35
+
+
 def giant_corgi(F, s=1.0):
     """A sitting corgi statue: the orange body (with its ears, legs and haunches) and the white patches (chest, muzzle,
     paws, blaze, tail) are each ONE fused solid, so nothing floats or pokes through; eyes / nose / tongue / collar sit
@@ -52,34 +55,35 @@ def giant_corgi(F, s=1.0):
     with F_place(F, s=s):
         lathe(n + "_Rock", "rock", [(9.0, 0.0), (9.0, 1.6, True), (8.6, 2.0), (8.2, 2.25, True), (0.0, 2.25)], segs=20)
         cyl(n + "_Moss", "moss", (0, 0, 2.2), 8.0, 0.55, segs=20, r_top=7.7)
-        z = 2.75
-        o, w = n + "_Orange", n + "_White"
-        for sx in (-1, 1):
-            rbox(o, "corgi", (sx * 1.55, -2.5, z + 2.6), (1.5, 1.5, 4.6), 0.6)          # front legs (into the body)
-            rbox(o, "corgi", (sx * 2.4, 1.6, z + 1.6), (2.6, 4.6, 3.2), 1.1)            # haunches
-            rbox(w, "fur_white", (sx * 1.55, -3.0, z + 0.45), (1.7, 2.2, 0.95), 0.42)   # front paws (under the legs)
-            rbox(w, "fur_white", (sx * 2.5, -0.2, z + 0.4), (1.6, 2.0, 0.85), 0.38)     # back paws
-            with at(sx * 1.45, -1.3, z + 8.15):                                          # ears: sunk into the head
-                prism(o, "corgi", [(-0.95, 0), (0.95, 0), (0.12 * sx, 3.0)], 0.9, rot=(0, -sx * 12, 0))
-        rbox(o, "corgi", (0, 0.4, z + 3.4), (5.2, 6.2, 4.8), 1.8)                        # body
-        rbox(o, "corgi", (0, -0.9, z + 5.6), (3.4, 3.4, 2.4), 1.0)                      # neck (body into head)
-        rbox(o, "corgi", (0, -1.4, z + 7.2), (4.6, 4.2, 3.4), 1.4)                      # head
-        rbox(w, "fur_white", (0, -1.75, z + 4.0), (3.0, 2.8, 4.2), 1.2)                # chest (just through the body's front)
-        rbox(w, "fur_white", (0, -3.35, z + 6.5), (2.6, 1.9, 1.7), 0.75)               # muzzle (out of the head)
-        rbox(w, "fur_white", (0, -3.1, z + 8.0), (1.0, 0.8, 1.8), 0.35)                # blaze
-        sphere(w, "fur_white", (0, 3.4, z + 3.2), 1.1, sub=2)                          # tail fluff (into the rump)
-        O.fuse(o, voxel=0.14, smooth_iters=3, faces=9000)
-        O.fuse(w, voxel=0.12, smooth_iters=3, faces=5000)
-        for sx in (-1, 1):
-            with at(sx * 1.45, -1.62, z + 8.35):                                         # pink inner ears, on the ears' front
-                prism(n + "_Pink", "flower_pink", [(-0.5, 0.15), (0.5, 0.15), (0.08 * sx, 2.1)], 0.34, rot=(0, -sx * 12, 0))
-            sphere(n + "_Eye", "panel_black", (sx * 1.05, -3.42, z + 7.7), 0.36, sub=2)
-            sphere(n + "_Shine", "fur_white", (sx * 1.05 + 0.1, -3.7, z + 7.85), 0.1, sub=1)
-        sphere(n + "_Nose", "panel_black", (0, -4.25, z + 6.95), 0.45, sub=2, scale=(1.2, 0.8, 0.8))
-        rbox(n + "_Tongue", "flower_pink", (0.3, -4.05, z + 5.75), (0.8, 0.6, 0.9), 0.28)
-        ring = [(2.05 * math.cos(a / 16 * math.tau), -1.25 + 1.95 * math.sin(a / 16 * math.tau), z + 5.7) for a in range(17)]
-        tube(n + "_Collar", "red", ring, 0.3, segs=6, cap=False)
-        sphere(n + "_Gold", "gold", (0, -3.25, z + 5.3), 0.45, sub=2)
+        with at(0, 0, 2.75, s=CORGI_S):  # (the dog 1.35x on the same plinth, so the landmark reads from the spawn - audit N11)
+            z = 0.0
+            o, w = n + "_Orange", n + "_White"
+            for sx in (-1, 1):
+                rbox(o, "corgi", (sx * 1.55, -2.5, z + 2.6), (1.5, 1.5, 4.6), 0.6)          # front legs (into the body)
+                rbox(o, "corgi", (sx * 2.4, 1.6, z + 1.6), (2.6, 4.6, 3.2), 1.1)            # haunches
+                rbox(w, "fur_white", (sx * 1.55, -3.0, z + 0.45), (1.7, 2.2, 0.95), 0.42)   # front paws (under the legs)
+                rbox(w, "fur_white", (sx * 2.5, -0.2, z + 0.4), (1.6, 2.0, 0.85), 0.38)     # back paws
+                with at(sx * 1.45, -1.3, z + 8.15):                                          # ears: sunk into the head
+                    prism(o, "corgi", [(-0.95, 0), (0.95, 0), (0.12 * sx, 3.0)], 0.9, rot=(0, -sx * 12, 0))
+            rbox(o, "corgi", (0, 0.4, z + 3.4), (5.2, 6.2, 4.8), 1.8)                        # body
+            rbox(o, "corgi", (0, -0.9, z + 5.6), (3.4, 3.4, 2.4), 1.0)                      # neck (body into head)
+            rbox(o, "corgi", (0, -1.4, z + 7.2), (4.6, 4.2, 3.4), 1.4)                      # head
+            rbox(w, "fur_white", (0, -1.75, z + 4.0), (3.0, 2.8, 4.2), 1.2)                # chest (just through the body's front)
+            rbox(w, "fur_white", (0, -3.35, z + 6.5), (2.6, 1.9, 1.7), 0.75)               # muzzle (out of the head)
+            rbox(w, "fur_white", (0, -3.1, z + 8.0), (1.0, 0.8, 1.8), 0.35)                # blaze
+            sphere(w, "fur_white", (0, 3.4, z + 3.2), 1.1, sub=2)                          # tail fluff (into the rump)
+            O.fuse(o, voxel=0.14, smooth_iters=3, faces=9000)
+            O.fuse(w, voxel=0.12, smooth_iters=3, faces=5000)
+            for sx in (-1, 1):
+                with at(sx * 1.45, -1.62, z + 8.35):                                         # pink inner ears, on the ears' front
+                    prism(n + "_Pink", "flower_pink", [(-0.5, 0.15), (0.5, 0.15), (0.08 * sx, 2.1)], 0.34, rot=(0, -sx * 12, 0))
+                sphere(n + "_Eye", "panel_black", (sx * 1.05, -3.42, z + 7.7), 0.36, sub=2)
+                sphere(n + "_Shine", "fur_white", (sx * 1.05 + 0.1, -3.7, z + 7.85), 0.1, sub=1)
+            sphere(n + "_Nose", "panel_black", (0, -4.25, z + 6.95), 0.45, sub=2, scale=(1.2, 0.8, 0.8))
+            rbox(n + "_Tongue", "flower_pink", (0.3, -4.05, z + 5.75), (0.8, 0.6, 0.9), 0.28)
+            ring = [(2.05 * math.cos(a / 16 * math.tau), -1.25 + 1.95 * math.sin(a / 16 * math.tau), z + 5.7) for a in range(17)]
+            tube(n + "_Collar", "red", ring, 0.3, segs=6, cap=False)
+            sphere(n + "_Gold", "gold", (0, -3.25, z + 5.3), 0.45, sub=2)
 
 
 def giant_cat(F, s=1.0):
@@ -321,7 +325,9 @@ def park_lamp(m, x, y, z):
 
 
 def floor_bit(m, x, y, z, edge, roll):
-    if roll < 0.22:
+    if roll < 0.22 and (not edge or IK.in_egg_area(x, y)):  # (a ball is round + egg-sized: only by the floor's rim, a flat bone elsewhere - audit N2)
+        chew_bone("PetToy", (x, y, z), rr.uniform(0, 180))
+    elif roll < 0.22:
         sphere("PetToy_Tennis", "tennis", (x, y, z + 0.6), 0.6, sub=2)
         tube("PetToy_Seam", "white", [(x + 0.6 * math.cos(a / 12 * math.tau), y + 0.25 * math.sin(a / 12 * math.tau),
                                        z + 0.6 + 0.55 * math.sin(a / 12 * math.tau)) for a in range(13)], 0.05, segs=4, cap=False)
@@ -359,7 +365,20 @@ def pond_garden(x, y):
 
 
 # ================================================================== the mapping + run
+def portal_side(sgn):
+    """Beside the Return Home portal (palms on Ocean Shore): a pine with two bushes at its foot - a temperate park (audit N1)."""
+    p = O.pt((0, 0, 0))
+    IK.tree(IK.O_NONE, p.x, p.y, p.z, 1.5, "pine")
+    IK.bush(IK.O_NONE, -sgn * 2.6, -1.6, 0.0, 1.1)
+    IK.bush(IK.O_NONE, sgn * 1.4, -2.6, 0.0, 0.8)
+
+
+def portal_preset():
+    IK.PORTAL.update(rock="rock", top="rock_top", moss="moss", flowers=("flower_pink", "flower_yel"), fern=True, side=portal_side, side_local=True)
+
+
 def patch():
+    portal_preset()
     PP = importlib.import_module("pp_parts")
     BD = importlib.import_module("bbv2_detail")
     OD = importlib.import_module("osv2_detail")

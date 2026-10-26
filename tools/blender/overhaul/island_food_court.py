@@ -33,6 +33,8 @@ for k_, v_ in {"ketchup": (222, 40, 40), "mustard": (250, 200, 40), "bun": (230,
                "grape": (140, 70, 200), "crumb": (214, 160, 90), "napkin": (250, 250, 250), "cracker": (230, 180, 100), "brick_red": (190, 70, 50),
                "veg_green": (78, 172, 52), "chrome": (210, 216, 226)}.items():
     O.K.PAL.setdefault(k_, v_)
+for k_, v_ in {"biscuit": (222, 168, 98), "frost_pink": (255, 160, 200), "frost_cream": (255, 244, 226)}.items():  # (the v2 island's own, for the portal)
+    O.K.PAL.setdefault(k_, v_)
 O.ROUGH["chrome"] = 0.25
 SPRINKLES = ("pink", "lemon", "sky_blue", "white", "lettuce", "orange")
 
@@ -164,17 +166,23 @@ def picnic_table(n, c, rot=0.0, umbrella="red"):
             poly(n + "_Umbrella" + L(lk), lk, [P(0, 6.3, 0), P(3.0, 5.0, a1), P(3.0, 5.0, a0)], thick=0.05)
 
 
-def eatery(n, w, d, h, wall, trim, awning, label, sign_bg=None):
-    """The shared restaurant shell (front = local -y): base, walls, windows, a door, a striped awning, the sign board."""
+def eatery(n, w, d, h, wall, trim, awning, label, sign_bg=None, side_y=None):
+    """The shared restaurant shell (front = local -y): base, walls, windows (front + both sides: audit N5), a door, a
+    striped awning, the sign board. side_y = the side windows' centres along y (default: every 8 from the front)."""
     box(n + "_Base", "stone_light", (0, 0, 0.4), (w + 4, d + 6, 0.8), bevel=0.12)
     rbox(n + "_Wall", wall, (0, 1.5, 0.8 + h / 2), (w, d, h), 0.25)
     rbox(n + "_Trim", trim, (0, 1.5, 0.8 + h + 0.4), (w + 1, d + 1, 0.8), 0.2)
+    frame = trim if trim != "gold" else "white"
     with at(0, -d / 2 + 1.5, 0.8):
         for k in range(int(w / 8)):
             x = -w / 2 + 4 + k * 8
             if abs(x) > 3:
-                B.window(n + "Win", x, 1.4, 4.4, 4.4, arch=False, frame=trim if trim != "gold" else "white")
-        B.door(n + "Door", 0, 0, 3.6, 6.2, frame=trim if trim != "gold" else "white", leaf=awning, panel="white")
+                B.window(n + "Win", x, 1.4, 4.4, 4.4, arch=False, frame=frame)
+        B.door(n + "Door", 0, 0, 3.6, 6.2, frame=frame, leaf=awning, panel="white")
+    for s in (-1, 1):
+        with at(s * w / 2, 0, 0.8, rz=90 * s):
+            for y in (side_y or [-d / 2 + 5.5 + k * 8 for k in range(int(d / 8))]):
+                B.window(n + "Win", y * s, 1.4, 4.4, 4.4, arch=False, frame=frame)
     g = int(w / 1.8)
     for i in range(g):
         x0, x1 = -w / 2 + w * i / g, -w / 2 + w * (i + 1) / g
@@ -211,6 +219,10 @@ def burger_barn(F):
             B.window(n + "Win", 0, 12.4, 3.6, 3.0, arch=False, shutters="wood_warm")
             for sx in (-9, 9):
                 B.window(n + "Win", sx, 2.2, 4.0, 4.0, arch=False)
+        for s in (-1, 1):  # the same windows down both sides (audit N5)
+            with at(s * 13.0, 0, 0.8, rz=90 * s):
+                for y in (-2.0, 6.0):
+                    B.window(n + "Win", y * s, 2.2, 4.0, 4.0, arch=False)
             rbox(n + "_Sign", "cream_soft", (0, -0.6, 10.8), (14, 0.5, 2.6), 0.2)
             text("BURGER BARN", "red", (0, -0.9, 10.8), 1.3, extrude=0.04)
         for (x, y, u) in ((-9, -12, "red"), (0, -13, "mustard"), (9, -12, "red")):
@@ -220,7 +232,7 @@ def burger_barn(F):
 def pizza_palace(F, slice_sign=True):
     n = "FoodPizza"
     with IK.place(F, 0, 0):
-        top = eatery(n, 28, 18, 10, "cream_soft", "white", "red", "PIZZA PALACE", "red")
+        top = eatery(n, 28, 18, 10, "cream_soft", "white", "red", "PIZZA PALACE", "red", side_y=(0.5, 7.0))  # (clear of the corner towers)
         for k in range(9):
             if k % 2 == 0:
                 rbox(n + "_Brick", "brick_red", (-14 + k * 3.5, -7.2, top + 0.8), (2.4, 1.2, 1.6), 0.15)
@@ -273,9 +285,10 @@ def taco_tower(F):
         for k, (w, h, look) in enumerate(((20, 10, "orange"), (16, 9, "lemon"), (12, 8, "red"))):
             rbox(n + "_" + L(look), look, (0, 0, z + h / 2), (w, w, h), 0.25)
             rbox(n + "_Trim", "white", (0, 0, z + h + 0.3), (w + 1.2, w + 1.2, 0.6), 0.15)
-            with at(0, -w / 2, z):
-                for sx in (-1, 1):
-                    B.window(n + "Win", sx * w / 4, 2.0, 3.0, h - 5, arch=False)
+            for face in (0, 90, 180, 270):  # windows on all four faces (audit N5: it stands free, seen from every side)
+                with at(0, 0, z, rz=face), at(0, -w / 2, 0):
+                    for sx in (-1, 1):
+                        B.window(n + "Win", sx * w / 4, 2.0, 3.0, h - 5, arch=False)
             z += h + 0.6
         with at(0, -10.0, 0.8):
             B.door(n + "Door", 0, 0, 3.4, 6.0, frame="white", leaf="veg_green", panel="white")
@@ -382,10 +395,10 @@ def floor_bit(m, x, y, z, edge, roll):
                                              (px + 0.3 * math.cos(math.radians(a)), py + 0.3 * math.sin(math.radians(a)), z + 0.1)], 0.1, segs=4)
     elif roll < 0.58:
         box("FoodNapkin", "napkin", (x, y, z + 0.02), (2.6, 2.6, 0.08), rot=(0, 0, rr.uniform(0, 90)), bevel=0.02)
-    elif roll < 0.7:
+    elif roll < 0.7 and edge and not IK.in_egg_area(x, y):  # (grapes are round + egg-sized: only by the floor's rim - audit N2)
         for k in range(rr.randint(1, 3)):
             sphere("FoodGrape", "grape", (x + rr.uniform(-0.8, 0.8), y + rr.uniform(-0.8, 0.8), z + 0.5), 0.5, sub=2)
-    elif roll < 0.8:
+    elif roll < 0.8:  # (crackers: flat - and what lands among the eggs instead of grapes)
         box("FoodCracker", "cracker", (x, y, z + 0.15), (1.6, 1.6, 0.3), rot=(0, 0, rr.uniform(0, 90)), bevel=0.08)
         for i in range(2):
             for j in range(2):
@@ -407,7 +420,18 @@ def soda_garden(x, y):
 
 
 # ================================================================== the mapping + run
+def portal_side(sgn):
+    """Beside the Return Home portal (palms on Ocean Shore): a candy cane hooked outward and a swirl lollipop (audit N1)."""
+    candy_cane(IK.O_NONE, 0, 0, h=12.0, rot=0.0 if sgn > 0 else 180.0, R=2.0)
+    lollipop(IK.O_NONE, -sgn * 3.2, -2.2, h=9.0, r=3.0, looks=("pink", "white"))
+
+
+def portal_preset():
+    IK.PORTAL.update(rock="biscuit", top="frost_cream", moss="frost_pink", flowers=None, fern=False, side=portal_side, side_local=True)
+
+
 def patch():
+    portal_preset()
     IK.patch_v2_common()
     FP = importlib.import_module("fc_parts")
     for nm, fn in (("condiment_lamp", condiment_lamp), ("fruit_tree", fruit_tree), ("cupcake", cupcake), ("lollipop", lollipop), ("candy_cane", candy_cane),

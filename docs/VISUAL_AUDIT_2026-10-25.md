@@ -88,6 +88,12 @@ each with its camera below so it can be repeated (`screen_capture` with `camera_
   Court: biscuit / wafer rock + candy canes + lollipops; Pet Park: grey stone + bushes / pines). Re-render the travel
   card if the portal shows in it (`art/travel/travel_*.png` all show the portal).
 - Accept: each island's portal uses only that island's palette and plants; `check_models.py` still 0 floating.
+- **Done 2026-10-25** (crnuch's side session, Blender only): a `portal_preset()` per island script - Pet Park grey stone + a pine and bushes each side; Brainrot
+  dark violet rock, mint moss, magenta / lime flowers, a pixel tree + glow crystals each side; Food Court biscuit rock
+  with cream + pink icing, a candy cane + swirl lollipop each side (`PORTAL["side_local"]`: the side plants turn with the
+  portal). `check_models` builds all three (0 floating, 0 z-fighting). The travel cards (`art/travel/`) are today's live v2
+  renders: re-render them from the overhaul islands at install. Before / afters: `art/overhaul/fixes/audit_N1_*`,
+  `audit_*_ground_portal_*`.
 
 **N2 · Egg-field clutter that looks like eggs** - Observed (renders) + Source
 - Where: `island_pet_park.floor_bit` (yellow-green tennis balls, r 0.6) and `island_food_court.floor_bit` (purple
@@ -97,11 +103,20 @@ each with its camera below so it can be repeated (`screen_capture` with `camera_
 - Fix: inside the egg area use only flat / long clutter (frisbees, bones, paw prints; crumbs, napkins, crackers);
   keep round items to the edges.
 - Accept: no round item ≥ 0.8 studs across inside any island's EggSpots area.
+- **Done 2026-10-25** (crnuch's side session, Blender only): tennis balls (Pet Park), grapes (Food Court) and Brainrot's eyeballs now only by the floor's rim
+  (the v2 frame's `edge`) and never within 3 studs of an egg region (`island_kit.in_egg_area`, reading the island's
+  `REGIONS`); flat bones / crackers / glitch tiles there instead; Space Base pebbles stay under 0.8 in egg areas. A geometry
+  check over all six islands finds 0 round pieces (sphericity ≥ 0.6) ≥ 0.8 across in any egg region (the pre-fix Pet Park:
+  3 tennis balls). The few egg-sized pieces left in egg regions are none of them round (a die or flower head,
+  crystals, corals, Briefcase Bay's flower tufts).
 
 **N3 · Hub incubator's halo rings cut through its gold cage** - Observed (renders)
 - Where: `hub_services.incubator` (`Incubator_Halo`). Screenshot: `B_incubator_halo_4views.jpg`.
 - Fix: halo radius outside the ribs' outer edge + 0.4 (or tuck it between egg and ribs).
 - Accept: no ring crosses a rib or arm from any of the four views (and through a full turn if it spins in game).
+- **Done 2026-10-25** (crnuch's side session, Blender only): one ring round the egg's waist above the heat lamps' bowls (z 12.8, R 10.4, tilt 2.5),
+  one round its crown above the orbs (z 21.3); a BVH test over a full turn: 0 overlaps, smallest gap 0.58 (the old rings
+  cut the boiler and a lamp arm in a turn). `audit_N3_incubator_*`.
 
 **N4 · Hub "EGG INCUBATOR" attraction promises an interaction that isn't there** - Source (Studio: 0 prompts) / Proposed
 - Where: `WorldRedesign.CentralHub["Egg Incubator"]` (stays at runtime) and its overhaul remake (attraction sign
@@ -116,19 +131,28 @@ each with its camera below so it can be repeated (`screen_capture` with `camera_
 - Fix: repeat the front's window module along the sides, at least the two bays nearest the street; leave the hall
   join wall plain.
 - Accept: from the side at street height every storey shows windows.
+- **Done 2026-10-25** (crnuch's side session, Blender only): Glass Office + Corporate HQ: the front's glass + mullion module round both sides on every floor (3 bays
+  from the street to the hall join, the HQ atrium split by a transom; opaque `glass_side`, the tone the see-through front
+  reads as); the back (hall join) stays plain. Food Court: Pizza Palace / Donut Diner / Burger Barn side windows, Taco Tower
+  windows on all four faces. `audit_N5_*`.
 
 **N6 · License building stair cheeks crowded** - Observed (`art/overhaul/hub/license_front.jpg`)
 - Where: `hub_license` - a scales statue and a double lamp on each cheek; from the approach the lamp post runs
   through the scales. Fix: move each lamp 3 studs back or to the foot of the stairs. Accept: no overlap from the
   front camera.
+- **Done 2026-10-25** (crnuch's side session, Blender only): each double lamp now stands on the ground beside its cheek (x ±25, y -22), clear of the scales from
+  `license_front`'s camera; the cheek holds only the scales. `audit_N6_license_*`, `audit_license_front_*`.
 
 **N7 · Fuel depot's hazard band shows only in patches** - Observed (`B_fuel_depot_band_4views.jpg`)
 - Where: `island_space_base.fuel_depot`: the band (r 5.03) sits inside the faceted sphere's faces in places.
   Fix: band at r 5.15, or a smoother tank. Accept: a continuous band from all four views.
+- **Done 2026-10-25** (crnuch's side session, Blender only): the band's lathe had no centre, so both rings sat at the origin between the tanks; now one
+  round each tank, following its curve 0.12 proud, and the tanks are smooth lathes. `audit_N7_*`.
 
 **N8 · Upside-down house: the roof ridge sticks out like a fallen pipe** - Observed (`B_upside_house_ridge_4views.jpg`)
 - Where: `island_brainrot.upside_down_house`, `_Ridge` tube 14.4 long vs a shorter roof. Fix: trim it to the roof
   length. Accept: nothing lying on the ground beside the roof.
+- **Done 2026-10-25** (crnuch's side session, Blender only): the tube ran ACROSS the roof; it now lies along the ridge, the roof's length. `audit_N8_*`.
 
 **N9 · Counter icons hover above the desks** - Observed + Source (allowed in the attachment check)
 - Where: `hub_gameplay.counter` icons (briefcase / boot / diploma). Fine only if the game bobs or spins them; nothing
@@ -137,10 +161,14 @@ each with its camera below so it can be repeated (`screen_capture` with `camera_
 **N10 · Driftwood across the Return Home approach (Ocean Shore)** - Observed (`art/overhaul/islands/ocean_ground_portal.jpg`)
 - Where: `island_ocean_shore` driftwood swap on the v2 scatter. Fix: skip driftwood within ~25 studs of
   ReturnHome / Arrival and on paths. Accept: clear approach in the same shot.
+- **Done 2026-10-25** (crnuch's side session, Blender only): no driftwood within 25 studs (+ half its length) of the portal and its 30-stud approach, the
+  dock landing or the pad, nor within 6 of the landing-to-portal walk; nearest log now 72 studs from the approach.
+  `audit_ocean_ground_portal_*`.
 
 **N11 · Corgi statue reads small on its plinth** - Observed (`B_corgi_scale_4views.jpg`) / Proposed
 - Where: `island_pet_park.giant_corgi`. Fix: corgi 1.3-1.4× or a smaller plinth, so the landmark reads from the
   spawn. Accept: recognisable from `pet_ground_spawn`'s camera.
+- **Done 2026-10-25** (crnuch's side session, Blender only): the dog 1.35x on the same plinth (about 28 studs tall). `audit_N11_*`, `audit_pet_ground_spawn_*`.
 
 ### Optional (art suggestions)
 

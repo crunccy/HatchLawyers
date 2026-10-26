@@ -56,10 +56,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Park / Brainrot re-rendered after the fixes. Next: crnuch's review, then the characters / eggs / bosses stage, then
   export + crnuch's upload + install. Scripts + renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the
   place yet (meshes need crnuch's upload). **Visual audit 2026-10-25: docs/VISUAL_AUDIT_2026-10-25.md** (ranked
-  findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs).
-  **In progress 2026-10-25 (crnuch's side session): the audit's polish items N1-N3, N5-N8, N10, N11** (incubator halo,
-  firm 4/5 + eatery side windows, License lamps, fuel band, upside-down ridge, corgi scale, per-island portals, egg-field
-  clutter, Ocean Shore driftwood). Don't edit those builders / island scripts meanwhile.
+  findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs);
+  polish N1-N3, N5-N8, N10, N11 done 2026-10-25 (entry below). Open from the audit: M2-M5, N4, N9, the optional list.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -287,6 +285,29 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-25 — crnuch, local session (side session): the visual audit's polish items on the overhaul models
+- Blender only, nothing in Studio. Each item's result is under it in docs/VISUAL_AUDIT_2026-10-25.md ("Done"); before /
+  afters in `art/overhaul/fixes/audit_*` (four eye-height views per model, BEFORE row = the code at `50fe684`, plus island
+  shots). `check_models.py` 0 floating + `-- zfight` 0 over every model; `run_checks.py` ALL PASSED.
+- **Models:** N3 incubator halos (one round the waist above the heat lamps, one round the crown; 0.58 clear of everything
+  through a full turn); N5 Glass Office + Corporate HQ glazed round both sides on every floor (`firm_stages.side_glass`,
+  opaque `glass_side`; hall join wall plain) and side windows on Pizza / Donut / Burger Barn, Taco Tower all round; N6
+  License double lamps on the ground beside the cheeks (x ±25), clear of the scales from the front; N7 the fuel depot's
+  band had no centre (both rings sat between the tanks) - now round each tank, smooth tanks; N8 the upside-down house's
+  ridge ran across the roof - now along it; N11 corgi 1.35x on the same plinth.
+- **Islands:** N1 Return Home portal per island via `portal_preset()` (Pet Park grey stone + pines / bushes; Brainrot
+  violet rock + mint moss + pixel trees + glow crystals; Food Court biscuit + icing + candy canes / lollipops;
+  `PORTAL["side_local"]` turns the side plants with the portal; Space Base unchanged). N2 round egg-sized clutter (tennis
+  balls, grapes, Brainrot eyeballs) only by the floor's rim and never in an egg region (`island_kit.in_egg_area` reads
+  the running island's `REGIONS` through `island_kit.running`); Space pebbles stay under 0.8 there. A geometry check over
+  all six islands: 0 round pieces >= 0.8 across in egg regions. N10 Ocean Shore driftwood keeps 25 studs off the portal
+  approach, dock and pad (nearest log 72). Pet Park / Brainrot / Food Court / Ocean Shore / Space Base / hub re-rendered;
+  their `*_before_after.jpg` (TODAY v2 / NEW) recomposed.
+- Tools: `audit_views.py` takes `<group>.<name>` to render single models; `check_models.py` builds the three new portals.
+- Open for install: the travel cards (`art/travel/`) still show today's v2 islands - re-render them from the overhaul
+  islands when they go in. Not done here (owners): M2 / M3 hub wiring (mr.robe), M4 plaza centre (crnuch + mr.robe), M5 /
+  N4 / N9 at install.
 
 ## 2026-10-25 — crnuch, local session: z-fighting sweep of the overhaul models (audit M1)
 - `check_models.py -- zfight` = **0 pairs** (was 124 in the audit), floating pieces still 0. Blender only, nothing in Studio.

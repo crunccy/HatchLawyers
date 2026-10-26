@@ -26,7 +26,9 @@ ONLY = [int(a) for a in argv if a.isdigit()] or [2, 3, 4, 5, 6]
 os.makedirs(OUT, exist_ok=True)
 DEPTH = 21
 O.K.PAL.update({"brick": (198, 84, 64), "brick_dark": (160, 62, 48), "brick_light": (222, 112, 86), "awning_green": (70, 170, 70),
-                "sand": (236, 206, 150), "sand_dark": (204, 170, 112), "panel": (226, 232, 240), "glass_tint": (120, 180, 230)})
+                "sand": (236, 206, 150), "sand_dark": (204, 170, 112), "panel": (226, 232, 240), "glass_tint": (120, 180, 230),
+                "glass_side": (168, 218, 246)})  # (side_glass: opaque, the tone the see-through front reads as)
+O.ROUGH["glass_side"] = 0.2
 
 
 def fbox(name, look, x0, y0, z0, x1, y1, z1, bevel=0.0, smooth=False):
@@ -211,6 +213,25 @@ def glass_front(n, y0, y1, mullion="white", door=False, glass="glass", every=6.0
              thick=0.02)
 
 
+def side_glass(n, y0, y1, z0, z1=20.2, bays=3, mullion="white", glass="glass_side", transom=None):
+    """The street front's glazing carried round both side walls (audit N5: blank sides): a glass band on each side wall's
+    outer face (x +-24.4, sunk 0.02 into it) from y0 to y1 and z0 to z1, mullions between the bays (into the floor slabs
+    0.2), an optional transom bar at y = transom, a shine streak per bay. The back wall (the hall join) stays plain."""
+    for s in (-1, 1):
+        a2, b2 = sorted((24.38 * s, 24.5 * s))
+        fbox(n + "_SideGlass", glass, a2, y0, z0, b2, y1, z1)
+        a2, b2 = sorted((24.36 * s, 24.72 * s))  # (sunk 0.02 deeper than the glass: no shared plane)
+        for k in range(bays + 1):
+            z = z0 + (z1 - z0) * k / bays
+            fbox(n + "_Mullion", mullion, a2, y0 - 0.2, z - 0.2, b2, y1 + 0.2, z + 0.2, bevel=0.04)
+        if transom:
+            fbox(n + "_Mullion", mullion, a2, transom - 0.2, z0, b2, transom + 0.2, z1, bevel=0.04)
+        for k in range(bays):
+            z = z0 + (z1 - z0) * (k + 0.2) / bays
+            x = s * 24.55
+            poly(n + "_Shine", "white", [(x, z, y0 + 1.2), (x, z + 0.5, y0 + 1.2), (x, z + 1.9, y1 - 1.2), (x, z + 1.4, y1 - 1.2)], thick=0.02)
+
+
 def showcase(n, y0, y1, count, mullion="gold"):
     """The street-facing gallery (FirmFeatures stands the best lawyers on its pedestals): glass + floor + back + band.
     The pedestals stay Parts (ShowcaseSlot) - previewed here."""
@@ -334,10 +355,8 @@ def stage4():
     for s in (-1, 1):  # full-height fins
         a2, b2 = sorted((24.6 * s, 24 * s))
         fbox(n + "_Fin", "white", a2, -1.5, -1.6, b2 + (0.6 if s > 0 else -0.6) * 0, 4 * F + 1.8, 3, bevel=0.1)
-        with at(s * 24.4, 0, 0, rz=90 * s):
-            for y in (7, 14):
-                for f in range(4):
-                    B.window(n + "Win", y * s, f * F + 2.0, 3.2, 5.0, arch=False, mullions=False, sill=False)
+    for f in range(4):  # the curtain wall round the sides, every floor, behind the fins (audit N5)
+        side_glass(n, 0.6 if f == 0 else f * F + 0.48, (f + 1) * F - 0.48, 3.4)
     # canopy over the entrance with a glowing underside, on two slim posts
     fbox(n + "_Canopy", "white", -16, 8.5, -8, 16, 9.3, 0, bevel=0.2)
     fbox(n + "_CanopyGlow", "lamp_glow", -14, 8.38, -6.5, 14, 8.5, -1.5)
@@ -442,6 +461,10 @@ def stage5():
     fdisc("Preview_HologramPad", "marble", 0, 13.5, 6 * F + 0.45, 4.5, 0.6)
     lathe(n + "_HoloRing", "halo_glow", [(4.5, 6 * F + 1.05), (4.75, 6 * F + 1.1), (4.75, 6 * F + 1.25), (4.5, 6 * F + 1.3)], segs=32)
     fbox(n + "_SignBand", "gold", -14, 3 * F - 2.6, -0.65, 14, 3 * F - 0.4, -0.25, bevel=0.08)
+    # glazing round the sides for floors 1-4 (audit N5; the atrium's two storeys split by a transom)
+    side_glass(n, 0.6, 2 * F - 0.48, 1.6, transom=F)
+    side_glass(n, 2 * F + 0.48, 3 * F - 0.48, 1.6)
+    side_glass(n, 3 * F + 0.48, 4 * F - 0.48, 1.6)
     B.studtop(n, "wood_warm", -23.6, 23.6, 0.2, 5.8, 4 * F + 0.8, skip=lambda x, y: any(abs(x - a2) < 3.9 for a2 in (-16, 0, 16)) and 1.0 < y < 4.2)
 
 

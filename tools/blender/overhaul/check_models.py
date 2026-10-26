@@ -30,6 +30,16 @@ def _space_portal(SB):  # (the Return Home portal in Space Base's dressing)
         IK.PORTAL.update(saved)
 
 
+def _island_portal(mod):  # (the Return Home portal in an island's own dressing: its portal_preset)
+    saved = dict(IK.PORTAL)
+    mod.portal_preset()
+    try:
+        IK.rock_portal(N, 0, 0, 0.0, 0)
+    finally:
+        IK.PORTAL.clear()
+        IK.PORTAL.update(saved)
+
+
 def models():
     import props as PR, hub_license as HL, hub_services as HS, hub_gameplay as HG, hub_minigames as HM, firm_stages as FS, firm_hall as FH
     import island_hub as IH, island_briefcase_bay as BB, island_pet_park as PP, island_brainrot as BR
@@ -56,10 +66,12 @@ def models():
     out += [("pet", nm, getattr(PP, nm), a) for nm, a in (("giant_corgi", (N, 1.6)), ("giant_cat", (N, 1.4)), ("dog_house", (N,)), ("cat_tower", (N,)),
                                                            ("rabbit_hutch", (N,)), ("bunny_topiary", (N,)), ("wood_bridge", (N,)), ("barkery", (N,)),
                                                            ("paw_clinic", (N,)), ("bird_house", (N, 0, 0)))]
+    out.append(("pet", "portal", _island_portal, (PP,)))
     out += [("rot", nm, getattr(BR, nm), a) for nm, a in (("wobble_lamp", (N, 0, 0)), ("pixel_tree", (N, 0, 0)), ("upside_down_tree", (N, 0, 0)),
                                                            ("twisty_tower", (N, 14, 9)), ("big_screen", (N, 24, 12, 24)), ("melty_mall", (N, 26, 16, 10)),
                                                            ("upside_down_house", (N,)), ("leaning_tower", (N, 0, 0)), ("giant_dice", (N, 0, 0, 5.0)),
                                                            ("neon_tower", (N, 12, 12, 32)))]
+    out.append(("rot", "portal", _island_portal, (BR,)))
     try:
         import island_food_court as FC
         out += [("food", nm, getattr(FC, nm), a) for nm, a in (("condiment_lamp", (N, 0, 0)), ("fruit_tree", (N, 0, 0)), ("cupcake", (N, 0, 0)),
@@ -67,6 +79,7 @@ def models():
                                                                ("burger_barn", (N,)), ("pizza_palace", (N,)), ("donut_diner", (N,)), ("taco_tower", (N,)),
                                                                ("giant_burger", (N, 0, 0)), ("giant_fries", (N, 0, 0)), ("ice_cream", (N, 0, 0)),
                                                                ("soda_fountain", (N,)))]
+        out.append(("food", "portal", _island_portal, (FC,)))
     except Exception as e:
         print("[check] food court skipped:", e)
     try:
