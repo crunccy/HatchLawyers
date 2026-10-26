@@ -57,6 +57,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   export + crnuch's upload + install. Scripts + renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the
   place yet (meshes need crnuch's upload). **Visual audit 2026-10-25: docs/VISUAL_AUDIT_2026-10-25.md** (ranked
   findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs).
+  **In progress 2026-10-25 (crnuch's side session): the audit's polish items N1-N3, N5-N8, N10, N11** (incubator halo,
+  firm 4/5 + eatery side windows, License lamps, fuel band, upside-down ridge, corgi scale, per-island portals, egg-field
+  clutter, Ocean Shore driftwood). Don't edit those builders / island scripts meanwhile.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
