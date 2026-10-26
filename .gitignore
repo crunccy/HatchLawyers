@@ -7,3 +7,6 @@ __pycache__/
 
 _egg_export/
 _boss_frames/
+
+# overhaul mesh exports (crnuch imports them into Studio; not in git)
+exports/

@@ -59,6 +59,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs);
   polish N1-N3, N5-N8, N10, N11 done 2026-10-25 (entry below). Open from the audit: M2-M5, N4, N9, the optional list.
   GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
+  **In progress 2026-10-26 (crnuch's side session): EXPORTING the overhaul models + islands as .fbx** (crnuch: "go
+  export them") - `tools/blender/overhaul/export_models.py`, stud UVs, <20k tris per mesh, looks list per group.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
