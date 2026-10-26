@@ -13,7 +13,8 @@ The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_
 - Every mesh has **stud UVs** (1 UV unit = 1 stud, box-projected on each face's main axis; curved faces sit on a plain
   spot between studs), so `MaterialService.BrickStuds` (the Plastic override, StudsPerTile 1) lays the same Grow a
   Garden half-stud grid as on the Parts. No mesh is over 19,500 triangles (a MeshPart takes 20,000).
-- Units: 1 Blender metre = 1 stud. The FBX axis change makes Blender (x, y, z) -> Roblox (x, z, -y).
+- Units: 1 Blender metre = 1 stud. After Studio's import a Blender (x, y, z) lands as Roblox (-x, z, y) (the importer
+  turns it 180 degrees), so a Blender front (-Y) faces Roblox -Z.
 
 ## Installed 2026-10-26
 - The six egg islands are these meshes now: `Workspace.WorldRedesign.<BriefcaseBay|PetPark|BrainrotZone|FoodCourt|
@@ -33,10 +34,10 @@ The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_
 
 ## Import (crnuch's Studio: meshes must be uploaded from the place owner's account)
 1. Studio -> Import 3D -> pick `exports/overhaul/<group>.fbx`. Keep the meshes separate (don't merge), anchored.
-   Check one model's size against its `min` / `max` in the JSON (studs); if it came in 100x off, set the importer's
-   unit to metres / studs and import again.
-2. Run `tools/zones/ApplyOverhaulLooks.lua` (Studio MCP execute_luau in Edit mode) with `LOOKS` = this group's JSON and
-   `ROOT` = the imported model: it sets Color / Material / Transparency / Reflectance, anchors, renames `Foo.001`.
+   It lands in Workspace as a Model named <group>, at its own scale (see above).
+2. `python3 -m http.server 8772` in this folder, then run `tools/zones/ApplyOverhaulLooks.lua` (Studio MCP execute_luau,
+   Edit mode) with `GROUPS` set: scale back, looks, collision, `Foo.001` names. For a row file, rescale each model to its
+   own JSON size afterwards (see above).
 3. Swapping models into the game (firm stages, hub buildings, islands) is the install step after that: per model, by
    the names scripts look up (`Firm`, `Sign`, `Trigger`, `FloatRing1-3` ...), one at a time.
 
