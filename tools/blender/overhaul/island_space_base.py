@@ -150,7 +150,7 @@ def rocket(F):
         for k in range(9):
             lk = "rocket_red" if k in (0, 4, 8) else "hull_white"
             lathe(n + "_" + L(lk), lk, [(3.6, 4.4 + k * 3.0), (3.6, 7.4 + k * 3.0)], segs=28)
-        lathe(n + "_Base", "hull_grey", [(0.0, 4.3), (3.62, 4.3), (3.62, 4.5, True), (0.0, 4.5)], segs=28)  # (the engine plate the bells hang from)
+        lathe(n + "_Base", "hull_grey", [(0.0, 4.3), (3.63, 4.3), (3.63, 4.5, True), (0.0, 4.5)], segs=28)  # (the engine plate the bells hang from; 0.03 proud of the hull)
         prof = [(3.6 * (1 - t ** 1.6) + 0.02, 31.4 + 7.0 * t) for t in [i / 10 for i in range(11)]]
         lathe(n + "_Nose", "rocket_red", prof[:-1] + [(0.0, 38.4)], segs=28)
         for z in (15.0, 26.0):
@@ -169,7 +169,7 @@ def rocket(F):
                     box(n + "_Gantry", "hull_grey", (sx, sy, 18.0), (0.6, 0.6, 36.0), bevel=0.05)
             for k in range(9):
                 z = 1.8 + k * 4.0
-                for (cx, cy, sx, sy) in ((0, -1.8, 4.2, 0.4), (0, 1.8, 4.2, 0.4), (-1.8, 0, 0.4, 4.2), (1.8, 0, 0.4, 4.2)):
+                for (cx, cy, sx, sy) in ((0, -1.8, 4.14, 0.4), (0, 1.8, 4.14, 0.4), (-1.8, 0, 0.4, 4.14), (1.8, 0, 0.4, 4.14)):  # (ends inside the posts)
                     box(n + "_Brace", "rocket_red", (cx, cy, z), (sx, sy, 0.4), bevel=0.04)
             for z in (13.8, 25.8):  # (on the brace levels, so they hang off the frame)
                 box(n + "_Gantry", "hull_grey", (-4.0, 0, z), (5.0, 1.4, 0.8), bevel=0.08)

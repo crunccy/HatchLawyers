@@ -264,7 +264,7 @@ def statue_lawyer(n, s, look="navy_dark", accent="gold"):
         b(look, g * 0.5, 0, 0.3, 0.9, 0.9, 1.3)
     b(look, 0, 0, 1.6, 2.0, 1.1, 1.5)
     b(accent, 0, -0.56, 2.0, 0.7, 0.1, 1.1, 0.02)
-    b(look, 0, -0.6, 2.0, 0.25, 0.1, 1.0, 0.02)
+    b(look, 0, -0.6, 2.012, 0.25, 0.1, 0.988, 0.02)  # (the tie's foot 0.03 above the shirt's: not in its plane)
     b(look, -1.35, 0, 1.75, 0.7, 0.8, 1.45)
     b(accent, -1.35, -0.1, 0.75, 1.4, 0.5, 1.0)
     b(look, 1.35, 0, 3.1, 0.7, 0.8, 1.5)

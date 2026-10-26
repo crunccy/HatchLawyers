@@ -59,7 +59,7 @@ def podium():
     # grand stairs: solid chamfered steps, a red carpet runner with gold stair rods
     for k in range(8):
         y0 = -27.2 + 1.4 * k
-        top = 0.5 * (k + 1)
+        top = 0.5 * (k + 1) + (0.03 if k == 7 else 0.0)  # (the top step 0.03 proud of the podium cap: not in its plane)
         box(N + "_Steps", "marble", (0, (y0 - 15.0) / 2, top / 2), (34, -15.0 - y0, top), bevel=0.05)
         box(N + "_Carpet", "carpet_red", (0, y0 + 0.7, top + 0.03), (8, 1.4, 0.06))
         box(N + "_Carpet", "carpet_red", (0, y0 - 0.03, top - 0.25), (8, 0.06, 0.5))
@@ -181,9 +181,9 @@ def wings():
         box(N + "_Base", "stone_mid", (cx, 4, 4.7), (12.7, 26.3, 1.4), bevel=0.06)
         B.cornice(N + "Wing", cx, 4, 17.0, 12.4, 26, look="marble", trim="gold")
         B.hip_roof(N + "Wing", "navy_roof", cx, 4, 18.15, 12.4, 26, 4.6, over=0.6)
-        for corner_y, dy in ((-9, -1), (17, 1)):
-            B.quoins(N, s * 30.6, corner_y, 5.4, 17.0, dir=(s, dy))
-            B.quoins(N, s * 18.2, corner_y, 5.4, 17.0, dir=(-s, dy)) if corner_y == -9 else None
+        for corner_y, dy in ((-9, -1), (17, 1)):  # (quoins 0.03 off the corners: their inner faces were 0.02 off the window jambs)
+            B.quoins(N, s * 30.63, corner_y, 5.4, 17.0, dir=(s, dy))
+            B.quoins(N, s * 18.17, corner_y, 5.4, 17.0, dir=(-s, dy)) if corner_y == -9 else None
         with at(cx, -9.0):  # front: two floors of windows, shutters below, a banner between
             for x in (-3.2, 3.2):
                 B.window(N + "Win", x, 6.6, 2.6, 3.8, arch=False, shutters="navy_dark")
@@ -192,7 +192,7 @@ def wings():
             prism(N + "_BannerEdge", "gold_dark", [(-1.15, 7.3), (0, 8.0), (1.15, 7.3), (1.15, 15.2), (-1.15, 15.2)], 0.1, c=(0, -0.3, 0))
             prism(N + "_Banner", "flag_purple", [(-1.0, 7.55), (0, 8.2), (1.0, 7.55), (1.0, 15.1), (-1.0, 15.1)], 0.16, c=(0, -0.3, 0))
             cyl(N + "_Gold", "gold", (0, -0.39, 12.6), 0.62, 0.06, segs=18, rot=(90, 0, 0))
-            box(N + "_BannerEdge", "gold_dark", (0, -0.43, 12.6), (0.18, 0.04, 0.8))
+            box(N + "_BannerEdge", "gold_dark", (0, -0.46, 12.6), (0.18, 0.04, 0.8))  # (0.03 proud of the gold disc)
         with at(s * 30.6, 4, rz=90 * s):  # outer side: windows on both floors
             for y in (-8, 0, 8):
                 B.window(N + "Win", y, 6.6, 2.6, 3.8, arch=False)

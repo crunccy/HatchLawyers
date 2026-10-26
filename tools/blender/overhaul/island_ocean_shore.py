@@ -91,7 +91,7 @@ def tube_coral(m, x, y, z0, s=1.0):
             c = (math.cos(a) * rad, math.sin(a) * rad, 0)
             lathe("OceanTube_Coral", "tube_coral", [(0.36 * s, 0.0), (0.34 * s, h), (0.38 * s, h + 0.08, True), (0.24 * s, h + 0.08), (0.24 * s, h - 0.3, True),
                                                    (0.0, h - 0.3)], segs=10, c=c)
-            cyl("OceanTube_In", "tube_coral_in", (c[0], c[1], h - 0.32), 0.25 * s, 0.04, segs=10)
+            cyl("OceanTube_In", "tube_coral_in", (c[0], c[1], h - 0.32), 0.25 * s, 0.05, segs=10)  # (0.03 above the tube's floor)
 
 
 def seaweed(m, x, y, z0, h=3.0):

@@ -88,7 +88,7 @@ def giant_cat(F, s=1.0):
     n = "PetCat"
     with F_place(F, s=s):
         box(n + "_Marble", "marble", (0, 0, 0.6), (7, 7, 1.2), bevel=0.2)
-        box(n + "_Gold", "gold", (0, 0, 1.15), (7.2, 7.2, 0.12))
+        box(n + "_Gold", "gold", (0, 0, 1.1614), (7.2, 7.2, 0.12))  # (gold top 0.03 proud of the marble's at s 1.4: never in its plane)
         z = 1.2
         g, w = n + "_Grey", n + "_White"
         rbox(g, "cat_grey", (0, 0.5, z + 2.55), (4.4, 4.6, 5.1), 1.6)                  # body
@@ -129,7 +129,8 @@ def dog_house(F, body="roof_blue", roof="red", name="REX"):
                 box(n + "_Trim", "white", (sx, sy, 2.7), (0.35, 0.35, 4.4), bevel=0.06)
         prism(n + "_Door", "panel_black", B.opening(2.6, 3.4, True), 0.12, c=(0, -2.72, 0.5))
         with at(0, -2.7, 0.5):
-            B.ring(n + "_Trim", "white", B.opening(2.6, 3.4, True, grow=0.3), B.opening(2.6, 3.4, True), -0.15, 0.05)
+            B.ring(n + "_Trim", "white", B.opening(2.6, 3.4, True, grow=0.3), [(x, -0.03 if z == 0 else z) for x, z in B.opening(2.6, 3.4, True)],
+                   -0.15, 0.05)  # (threshold 0.03 into the base, not in its top)
         prism(n + "_Wall" + b.title(), b, [(-2.8, 0), (2.8, 0), (0, 2.1)], 6.0, c=(0, 0.3, 4.9))
         for sgn in (-1, 1):
             box(n + "_Roof" + rf.title(), rf, (sgn * 1.62, 0.3, 6.0), (3.8, 7.2, 0.35), rot=(0, sgn * 35, 0), bevel=0.08)
@@ -185,7 +186,7 @@ def rabbit_hutch(F):
         box(n + "_Floor", "wood_deep", (0, 0, 2.75), (10.2, 5.2, 0.3), bevel=0.06)
         box(n + "_Body", "wood_warm", (0, 0, 4.6), (10, 5, 3.4), bevel=0.12)
         box(n + "_Frame", "wood_deep", (-2.2, -2.56, 4.6), (4.8, 0.2, 2.8), bevel=0.05)
-        box(n + "_Inside", "panel_black", (-2.2, -2.62, 4.6), (4.2, 0.06, 2.3))
+        box(n + "_Inside", "panel_black", (-2.2, -2.6, 4.6), (4.2, 0.06, 2.3))  # (0.03 behind the frame's face, as reviewed: wood front)
         for k in range(9):
             cyl(n + "_Wire", "iron_light", (-4.2 + k * 0.5, -2.62, 3.4), 0.035, 2.4, segs=4)
         for k in range(4):

@@ -138,9 +138,9 @@ def watermelon_slice(F, x, y, R=6.0, depth=2.0, rot=0.0):
                            for a in range(0, 181, 12)]
         prism(n + "_Rind", "melon_rind", [(R * math.cos(math.radians(a)), R * math.sin(math.radians(a))) for a in range(0, 181, 12)], depth, rot=(180, 0, 0), c=(0, 0, R))
         prism(n + "_White", "cream_soft", [((R - 0.8) * math.cos(math.radians(a)), (R - 0.8) * math.sin(math.radians(a))) for a in range(0, 181, 12)], depth + 0.1,
-              rot=(180, 0, 0), c=(0, 0, R))
+              rot=(180, 0, 0), c=(0, 0, R + 0.03))  # (the cut face steps up 0.03 per layer, like the sides: no shared plane)
         prism(n + "_Red", "melon_red", [((R - 1.2) * math.cos(math.radians(a)), (R - 1.2) * math.sin(math.radians(a))) for a in range(0, 181, 12)], depth + 0.2,
-              rot=(180, 0, 0), c=(0, 0, R))
+              rot=(180, 0, 0), c=(0, 0, R + 0.06))
         for (px, pz) in ((-2.2, 4.0), (0, 3.2), (2.4, 4.4), (-1, 2.2), (1.2, 2.0)):
             for sgn in (-1, 1):
                 sphere(n + "_Seed", "panel_black", (px * R / 6, sgn * (depth / 2 + 0.12), R - (R - pz * R / 6)), 0.2, sub=1, scale=(0.7, 0.4, 1.1))
@@ -200,7 +200,7 @@ def burger_barn(F):
         prism(n + "_Wall", "brick_red", [(-13.2, 0), (13.2, 0), (0, 7.0)], 18.0, c=(0, 2, 11.8))
         for sgn in (-1, 1):
             box(n + "_Roof", "red", (sgn * 7.0, 2, 15.4), (15.6, 20.0, 0.45), rot=(0, sgn * 28, 0), bevel=0.1)
-        tube(n + "_Ridge", "white", [(0, -8.0, 19.0), (0, 12.0, 19.0)], 0.25, segs=8)
+        tube(n + "_Ridge", "white", [(0, -8.03, 19.0), (0, 12.03, 19.0)], 0.25, segs=8)  # (ends 0.03 past the gables)
         with at(0, -7.05, 0.8):
             box(n + "_Door", "wood_deep", (0, -0.15, 4.0), (8, 0.3, 8), bevel=0.06)
             for sx in (-2, 2):

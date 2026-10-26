@@ -44,7 +44,7 @@ def spot_frame(n, label, accent):
     with at(-8.2, -13.6, 0, rz=-12):
         box(n + "_SignPost", "wood_deep", (0, 0.3, 2.5), (0.45, 0.45, 5.0), bevel=0.06)
         box(n + "_Sign", "sign_wood", (0, 0, 4.4), (5.6, 0.35, 2.0), bevel=0.08)
-        box(n + "_SignFrame", "wood_deep", (0, 0.05, 4.4), (6.0, 0.25, 2.4), bevel=0.06)
+        box(n + "_SignFrame", "wood_deep", (0, 0.065, 4.4), (6.0, 0.28, 2.4), bevel=0.06)  # (back 0.03 behind the board's back)
         text(label, "white", (0, -0.2, 4.4), 0.62, extrude=0.02)
     # a podium with the PLAY button, a carpet runner
     box(n + "_Carpet", accent, (0, -5, 0.8), (6, 7, 0.06))
@@ -74,12 +74,12 @@ def gavel_bonk():
     # the bench front with three windows (the peekers pop up in them), posts, rails
     for x in (-6.9, -2.0, 2.0, 6.9):
         box(n + "_Bench", "court_wood", (x, 3.0, 3.8), (1.8 if abs(x) > 6 else 1.6, 0.6, 6.0), bevel=0.08)
-    box(n + "_Bench", "court_wood", (0, 3.0, 1.85), (15.6, 0.7, 2.1), bevel=0.08)
-    box(n + "_Bench", "court_wood", (0, 3.0, 6.3), (15.6, 0.7, 1.0), bevel=0.08)
+    box(n + "_Bench", "court_wood", (0, 3.0, 1.835), (15.6, 0.7, 2.07), bevel=0.08)  # (0.03 inside the gold frames' sill + head)
+    box(n + "_Bench", "court_wood", (0, 3.0, 6.315), (15.6, 0.7, 0.97), bevel=0.08)
     for x in (-4.45, 0.0, 4.45):  # gold window frames
         with at(x, 3.0, 2.9):
             B.ring(n + "_Gold", "gold", B.opening(2.7, 2.9, False, n=4, grow=0.22), B.opening(2.7, 2.9, False, n=4), -0.42, 0.42)
-    box(n + "_BenchTop", "court_dark", (0, 5.0, 7.0), (16.4, 5.2, 0.45), bevel=0.1)
+    box(n + "_BenchTop", "court_dark", (0, 5.015, 7.0), (16.4, 5.23, 0.45), bevel=0.1)  # (back 0.03 past the bench back)
     box(n + "_Gold", "gold", (0, 2.4, 7.0), (16.5, 0.1, 0.48))
     for sx in (-7.6, 7.6):
         box(n + "_Bench", "court_wood", (sx, 5.0, 3.6), (0.6, 4.6, 6.8), bevel=0.08)
@@ -88,7 +88,7 @@ def gavel_bonk():
     # the judge's high bench behind, with the gold seal
     box(n + "_High", "court_wood", (0, 6.6, 8.9), (8.4, 2.2, 3.4), bevel=0.1)
     box(n + "_BenchTop", "court_dark", (0, 6.5, 10.75), (9.2, 3.0, 0.4), bevel=0.1)
-    box(n + "_Gold", "gold", (0, 5.42, 10.75), (9.25, 0.1, 0.42))
+    box(n + "_Gold", "gold", (0, 5.42, 10.75), (9.26, 0.1, 0.46))  # (0.03 proud of the top all round)
     for x in (-3.6, 3.6):
         box(n + "_Gold", "gold", (x, 5.45, 8.9), (0.18, 0.1, 3.0))
     cyl(n + "_Gold", "gold", (0, 5.55, 8.9), 1.05, 0.12, segs=24, rot=(90, 0, 0))
@@ -106,7 +106,7 @@ def case_model(n):
     """One of the three cases (Case1-3, 3 x 3 x 1): a gold-cornered briefcase with a '?' plate."""
     with at(0, 0, 0):
         box(n + "_Case", "brief_brown", (0, 0, 1.25), (3.0, 1.0, 2.3), bevel=0.2, segs=2)
-        box(n + "_Band", "wood_deep", (0, 0, 1.25), (3.04, 1.04, 0.1))
+        box(n + "_Band", "wood_deep", (0, 0, 1.25), (3.06, 1.06, 0.1))  # (0.03 proud of the case)
         for sx in (-1.38, 1.38):
             for sz in (0.22, 2.28):
                 box(n + "_Gold", "gold", (sx, 0, sz), (0.36, 1.08, 0.36), bevel=0.06)
@@ -158,7 +158,7 @@ def arcade_booth(game="FilingFrenzy"):
     accent = {"FilingFrenzy": "booth_teal", "BriefcaseStack": "booth_orange", "LieDetector": "booth_pink"}[game]
     box(n + "_Floor", "plank_light", (0, 0, 0.25), (16, 15.2, 0.5), bevel=0.08)
     for i in range(8):
-        box(n + "_Planks", "plank_dark", (0, -7.0 + i * 2.0, 0.51), (15.6, 0.06, 0.02))
+        box(n + "_Planks", "plank_dark", (0, -7.0 + i * 2.0, 0.51), (15.6, 0.06, 0.04))  # (0.03 proud of the floor)
     box(n + "_Wall", "white", (0, 7.1, 6.0), (15.6, 1.0, 11.0))
     for sx in (-7.6, 7.6):
         box(n + "_Wall", "white", (sx, 1.5, 6.0), (0.8, 11.2, 11.0))
@@ -176,7 +176,7 @@ def arcade_booth(game="FilingFrenzy"):
     box(n + "_ScreenFrame", "gold", (0, 6.5, 6.8), (8.8, 0.4, 5.6), bevel=0.12)
     box(n + "_Screen", "screen_glow", (0, 6.28, 6.8), (8.0, 0.1, 4.8))
     for i in range(7):
-        x0, x1 = -8.0 + 16 * i / 7, -8.0 + 16 * (i + 1) / 7
+        x0, x1 = -8.03 + 16.06 * i / 7, -8.03 + 16.06 * (i + 1) / 7  # (ends 0.03 past the side walls' faces)
         lk, nm = (accent, n + "_Awning") if i % 2 == 0 else ("white", n + "_AwningW")
         poly(nm, lk, [(x0, 6.6, 11.6), (x1, 6.6, 11.6), (x1, -7.2, 10.4), (x0, -7.2, 10.4)], thick=0.15)
         xm = (x0 + x1) / 2

@@ -56,7 +56,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   Park / Brainrot re-rendered after the fixes. Next: crnuch's review, then the characters / eggs / bosses stage, then
   export + crnuch's upload + install. Scripts + renders: `tools/blender/overhaul/` + `art/overhaul/`. Nothing in the
   place yet (meshes need crnuch's upload). **Visual audit 2026-10-25: docs/VISUAL_AUDIT_2026-10-25.md** (ranked
-  findings + fix order; 124 z-fighting spots open, the plaza-centre decision M4 blocks the hub install).
+  findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -284,6 +284,38 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-25 — crnuch, local session: z-fighting sweep of the overhaul models (audit M1)
+- `check_models.py -- zfight` = **0 pairs** (was 124 in the audit), floating pieces still 0. Blender only, nothing in Studio.
+- **The check is exact now** (`ohkit.check_zfight`): it measured plane offsets from the world origin, where model k is
+  built at x = 400 k, and each face with its own normal. Normal rounding times ~40,000 studs made faces 0.04-0.07 apart
+  look coplanar, and float32 ray parity that far out called sealed faces visible. It now works from the model's own
+  centre and tests the real gap where two faces overlap; `check_models` sorts the meshes, so every run gives the same
+  report. On the untouched models the exact check finds 127 real pairs: 10 of the audit's list were rounding, 11 real
+  ones were missed. All 127 fixed. A parity limit remains: a point inside two overlapping boxes of ONE mesh counts as
+  "outside", so a hidden face can still be listed. Fix those with a 0.03 nudge too (it costs nothing).
+- **Fixes (0.03 inset / proud, no layout or silhouette changes):** `ohbuild` window shines 0.03 proud of the glass, mullion
+  ends 0.03 into the frame, door thresholds 0.03 down + steps 0.03 proud (every building's doors); `firm_stages` floor
+  slabs +-24.43, glass fronts (glass 0.02 thick at z -0.45..-0.43, ends 0.03 past the mullions, doors' backs 0.03 past
+  the base course), the Storefront transom + door, Main Street's upper brick returns, the name-board gold rim, the Corporate
+  bands, the Supreme Tower mullions; `hub_gameplay` belt 0.03 above the chassis, gold lines the arch soffits, shop cash
+  bands + cabinet foot, counter gold strip; `props` briefcase band 0.03 proud at ANY placed scale (reads `O.CUR`),
+  notice-board ink, file-box stripe, crate gap lines, double-lamp lower banner rod 0.045; `hub_minigames` sign
+  frames, bench / bench tops / gold trims, case bands, booth plank lines + awning ends; `hub_license` top step, banner
+  clasp, wing quoins 0.03 off the window jambs; `firm_hall` back wall's carpet / half walls / footing, lock sign posts;
+  islands: fountain statue tie, Bay briefcase clasps (they sat on the seam's bevel diagonal), lighthouse mullions,
+  welcome caps, portal gold soffits, cat plinth, dog-house door trim, hutch inside panel, twisty spire foot, watermelon
+  layers (the cut face steps 0.03 per layer), barn ridge, tube-coral insides, rocket plate + gantry braces, incubator heat glow.
+- **Where a flicker spot had two possible winners, the reviewed look won:** the rabbit hutch stays plain wood (its black
+  inside + wire mesh were always buried in the frame, and crnuch reviewed the wood), and the cat plinth stays gold-topped.
+- Checked: four-view review renders of all 48 touched models, before vs after. Only the flicker spots changed (e.g.
+  brick slivers gone from Main Street's back corners, the belt arch soffit clean gold). Hero renders re-rendered: 33
+  in `art/overhaul/{firm,hub,props}` (firm2 / firm3 also pick up the script's current cameras, and the shop its
+  re-seated sign; both changes are older than this session). Island / fixes / composite renders not re-rendered: only
+  sub-pixel spots changed at their scale. `run_checks.py` ALL PASSED.
+- Rule for new models: `-- zfight` stays at 0 next to the floating check (CLAUDE.md). Audit M1 marked done.
+- Follow-up (crnuch's call): should the hutch show the wire-mesh window its builder models (black inside + wires in
+  front of the frame) instead of plain wood?
 
 ## 2026-10-25 — crnuch, local session: visual audit of the overhaul models
 - docs/VISUAL_AUDIT_2026-10-25.md: ranked findings (must fix / polish / optional) with evidence level, owner, smallest

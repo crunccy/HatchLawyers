@@ -60,15 +60,15 @@ def window(p, x, z, w, h, arch=True, frame="white", glass="glass_blue", sill="ma
     with O.at(x, 0, z):
         ring(p + "_Frame", frame, opening(w, h, arch, grow=fw), opening(w, h, arch), -depth, 0.05)
         prism(p + "_Glass", glass, opening(w, h, arch), 0.1, c=(0, -0.08, 0))
-        sh = min(w, h) * 0.18  # a cartoon shine: two slanted streaks
+        sh = min(w, h) * 0.18  # a cartoon shine: two slanted streaks, 0.03 proud of the glass (never in its plane: z-fighting)
         for k, (ox, ln) in enumerate(((-w * 0.18, 0.55), (-w * 0.02, 0.3))):
             cx, cz = ox, h * 0.62 - k * 0.15 * h
-            poly(p + "_Shine", "white", [(cx - sh * 0.35, -0.14, cz - h * 0.12 * ln), (cx - sh * 0.1, -0.14, cz - h * 0.12 * ln),
-                                         (cx + sh * 0.65, -0.14, cz + h * 0.12 * ln), (cx + sh * 0.4, -0.14, cz + h * 0.12 * ln)])
+            poly(p + "_Shine", "white", [(cx - sh * 0.35, -0.16, cz - h * 0.12 * ln), (cx - sh * 0.1, -0.16, cz - h * 0.12 * ln),
+                                         (cx + sh * 0.65, -0.16, cz + h * 0.12 * ln), (cx + sh * 0.4, -0.16, cz + h * 0.12 * ln)])
         if mullions:
             top = h - (w / 2 if arch else 0) * 0.0
-            box(p + "_Frame", frame, (0, -0.16, top / 2), (0.16, 0.12, top))
-            box(p + "_Frame", frame, (0, -0.16, (h - w / 2) if arch else h * 0.55), (w, 0.12, 0.16))
+            box(p + "_Frame", frame, (0, -0.16, top / 2), (0.16, 0.12, top + 0.06))  # (ends 0.03 into the frame, not flush with the glass)
+            box(p + "_Frame", frame, (0, -0.16, (h - w / 2) if arch else h * 0.55), (w + 0.06, 0.12, 0.16))
         if sill:
             box(p + "_Sill", sill, (0, -depth - 0.12, -fw * 0.5 - 0.12), (w + fw * 2 + 0.5, 0.6, 0.26), bevel=0.06)
         if arch and keystone:
@@ -89,7 +89,8 @@ def door(p, x, z, w, h, frame="gold", leaf="wood_deep", panel="wood_warm", glass
     fw = max(0.4, w * 0.09)
     spring = h - w / 2
     with O.at(x, 0, z):
-        ring(p + "_DoorFrame", frame, opening(w, h, True, grow=fw), opening(w, h, True), -depth, 0.05)
+        inner = [(x0, -0.03 if z0 == 0 else z0) for x0, z0 in opening(w, h, True)]  # (threshold 0.03 down, not in the floor's plane)
+        ring(p + "_DoorFrame", frame, opening(w, h, True, grow=fw), inner, -depth, 0.05)
         for s in (-1, 1):
             cx = s * w / 4
             box(p + "_Leaf", leaf, (cx, -0.12, spring / 2), (w / 2 - 0.06, 0.2, spring), bevel=0.04)
@@ -104,7 +105,7 @@ def door(p, x, z, w, h, frame="gold", leaf="wood_deep", panel="wood_warm", glass
             a = math.pi * i / 6
             tube(p + "_DoorFrame", frame, [(0, -0.18, spring), (w / 2 * 0.95 * math.cos(a), -0.18, spring + w / 2 * 0.95 * math.sin(a))],
                  0.07, segs=4)
-        box(p + "_Step", "marble", (0, -depth - 0.6, -0.12), (w + fw * 2 + 0.6, 1.4, 0.24), bevel=0.05)
+        box(p + "_Step", "marble", (0, -depth - 0.6, -0.105), (w + fw * 2 + 0.6, 1.4, 0.27), bevel=0.05)  # (top 0.03 proud of the floor)
 
 
 # ------------------------------------------------------------------ columns, cornices, quoins, balustrades

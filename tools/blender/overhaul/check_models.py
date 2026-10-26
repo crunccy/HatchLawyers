@@ -105,7 +105,7 @@ def main():
                 print(f"[check] {group}.{name} FAILED to build: {e!r}")
                 continue
         O.finish()
-        objs = [bpy.data.objects[n] for n in set(bpy.data.objects.keys()) - before
+        objs = [bpy.data.objects[n] for n in sorted(set(bpy.data.objects.keys()) - before)  # (sorted: the same report every run)
                 if bpy.data.objects[n].type == "MESH" and not n.startswith(("Preview", "Studs"))]
         if not objs:
             continue

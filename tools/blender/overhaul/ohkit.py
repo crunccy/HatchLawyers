@@ -568,12 +568,16 @@ def check_zfight(objs, tol=0.02, min_area=0.02, label="", ground=0.0):
     """Report z-fighting: faces of two DIFFERENT colours lying in the same plane (within tol), facing the same way and
     overlapping by more than min_area square studs - in Roblox (single-sided MeshParts) those flicker. Returns
     [(mesh a, mesh b, centre, overlap area)], one per pair of meshes (the biggest overlap)."""
+    # (measured from the model's own centre: far from the origin - check_models builds model k at x = 400 k - a slanted
+    # face's plane offset n.p picks up the rounding of n times 40000 studs, which made 0.04-apart faces look coplanar)
+    xs = [(ob.matrix_world @ v.co) for ob in objs for v in ob.data.vertices]
+    org = Vector(((min(p.x for p in xs) + max(p.x for p in xs)) / 2, (min(p.y for p in xs) + max(p.y for p in xs)) / 2, 0.0)) if xs else Vector()
     tris = []  # (look, name, normal, d, 2D axes, pts2, centre)
     for ob in objs:
         look = ob.data.materials[0].name if ob.data.materials else ob.name
         me = ob.data
         me.calc_loop_triangles()
-        mw = ob.matrix_world
+        mw = Matrix.Translation(-org) @ ob.matrix_world
         for t in me.loop_triangles:
             a, b, c = (mw @ me.vertices[i].co for i in t.vertices)
             n = (b - a).cross(c - a)
@@ -611,7 +615,7 @@ def check_zfight(objs, tol=0.02, min_area=0.02, label="", ground=0.0):
     from mathutils.bvhtree import BVHTree
     solids = []
     for ob in objs:
-        mw = ob.matrix_world
+        mw = Matrix.Translation(-org) @ ob.matrix_world
         solids.append(BVHTree.FromPolygons([mw @ v.co for v in ob.data.vertices], [list(pg.vertices) for pg in ob.data.polygons], epsilon=0.0))
     ray = Vector((0.0123, 0.0217, 1.0)).normalized()
 
@@ -642,7 +646,7 @@ def check_zfight(objs, tol=0.02, min_area=0.02, label="", ground=0.0):
                 if j <= i:
                     continue
                 lj, nj, mj, dj, pj = tris[j]
-                if lj == li or nn.dot(mj) < 0.999 or abs(di - dj) > tol:
+                if lj == li or nn.dot(mj) < 0.999 or abs(di - dj) > 2 * tol:
                     continue
                 Q = ccw([(p.dot(u), p.dot(v)) for p in pj])
                 poly = P
@@ -657,12 +661,14 @@ def check_zfight(objs, tol=0.02, min_area=0.02, label="", ground=0.0):
                     continue
                 cx, cy = sum(p[0] for p in poly) / len(poly), sum(p[1] for p in poly) / len(poly)
                 c = u * cx + v * cy + nn * di
+                if abs(mj.dot(c) - dj) > tol:  # (the real gap where they overlap: d alone mixes in each face's own normal noise)
+                    continue
                 if covered(c + nn * 0.05):  # (hidden inside other geometry)
                     continue
                 pair = tuple(sorted((ni, nj)))
                 tot, _, cc = best.get(pair, (0.0, 0.0, c))
                 best[pair] = (tot + ar, max(_, ar), cc)
-    bad = [(a, b, tuple(round(x, 2) for x in c), round(tot, 3)) for (a, b), (tot, mx, c) in best.items() if tot >= min_area]
+    bad = [(a, b, tuple(round(x, 2) for x in c + org), round(tot, 3)) for (a, b), (tot, mx, c) in best.items() if tot >= min_area]
     print(f"[zfight] {label}: {len(objs)} meshes, {len(bad)} z-fighting pairs")
     for b in bad[:12]:
         print("   ", b)

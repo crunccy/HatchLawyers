@@ -114,7 +114,7 @@ def twisty_tower(F, w=16, floors=12, looks=("violet", "magenta", "lilac"), trim=
                             box(n + "_Trim" + "Night", "night", (xx, -w / 2 - 0.08, 1.8), (0.3, 0.1, 1.7))
         top = 1.0 + floors * FL
         prof = [(w * 0.45 * (1 - t) + 0.4, top + t * 8) for t in [i / 8 for i in range(9)]]
-        lathe(n + "_Spire", "magenta", [(w * 0.5, top)] + prof + [(0.0, top + 8.2)], segs=8, smooth=False)
+        lathe(n + "_Spire", "magenta", [(w * 0.5, top)] + prof + [(0.0, top + 8.2)], segs=8, smooth=False, c=(0, 0, -0.03))  # (foot 0.03 into the trim)
         sphere(n + "_Orb", "glow_cyan", (0, 0, top + 9.5), 1.6, sub=2)
         neon_sign(n + "Sign", 0, -w / 2 - 3, 4.5, 12, 3, "TWISTY", post_h=4.5)
     return top

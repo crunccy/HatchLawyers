@@ -57,7 +57,7 @@ def shop_stall():
     box(n + "_Wall", "wall_warm", (0, 5.9, 5.6), (15.0, 1.0, 10.2))
     box(n + "_Stripe", "shop_purple", (0, 5.38, 2.0), (14.6, 0.06, 0.8))
     # back cabinet with two shelves of wares: eggs, a mini boot + briefcase + firm, cash bundles, coins
-    box(n + "_Cabinet", "wood_deep", (0, 4.9, 1.6), (13.0, 1.6, 2.2), bevel=0.06)
+    box(n + "_Cabinet", "wood_deep", (0, 4.9, 1.585), (13.0, 1.6, 2.23), bevel=0.06)  # (0.03 into the deck: its foot was in the wall's)
     for z in (5.6, 8.6):
         box(n + "_Cabinet", "wood_deep", (0, 4.9, z), (12.6, 1.7, 0.3), bevel=0.05)
         for sx in (-6.4, 6.4):
@@ -76,7 +76,7 @@ def shop_stall():
     for k in range(3):
         with at(4.3, 4.9, 5.75 + k * 0.32, rz=k * 9):
             box(n + "_Cash", "cash_green", (0, 0, 0.15), (2.0, 0.95, 0.3), bevel=0.04)
-            box(n + "_CashBand", "white", (0, 0, 0.15), (0.35, 0.99, 0.32))
+            box(n + "_CashBand", "white", (0, 0, 0.15), (0.35, 1.01, 0.36))  # (0.03 proud of the bundle)
     for x in (-5.4, -4.6, 5.2):
         coin_stack(n + "_Gold", (x, 4.6, 2.7), n=5, seed=int(x * 10))
     # the counter: red with white candy stripes, a wood top with a gold edge, till, bell, coin piles
@@ -152,7 +152,7 @@ def counter(kind):
     box(n + "_Front", colour, (0, -1.07, 1.65), (3.3, 0.1, 2.1), bevel=0.06)
     for sx in (-1.82, 1.82):
         lathe(n + "_Gold", "gold", [(0.22, 0.3), (0.22, 3.0)], segs=10, c=(sx, -1.0, 0))
-    box(n + "_Gold", "gold", (0, -0.98, 2.88), (4.1, 0.14, 0.18), bevel=0.04)
+    box(n + "_Gold", "gold", (0, -1.01, 2.88), (4.1, 0.14, 0.18), bevel=0.04)  # (0.03 proud of the desk front + its bevel)
     box(n + "_Top", "wood_deep", (0, 0.2, 3.25), (4.4, 2.9, 0.3), bevel=0.08)
     box(n + "_Gold", "gold", (0, -1.24, 3.25), (4.45, 0.08, 0.32))
     cyl(n + "_Gold", "gold", (0, -1.12, 1.65), 0.55, 0.06, segs=18, rot=(90, 0, 0))
@@ -215,7 +215,7 @@ def case_belt():
     L = 60.0
     # housing: a chunky iron chassis with hazard-striped skirts, gold rails, legs, end rollers
     box(n + "_Chassis", "iron", (0, 0, 0.25), (L, 6.4, 0.5), bevel=0.1)
-    box(n + "_Belt", "rubber", (0, 0, 0.47), (L, 6.0, 0.06))
+    box(n + "_Belt", "rubber", (0, 0, 0.5), (L, 6.0, 0.06))  # (top 0.03 proud of the chassis top: never in its plane)
     for s in (-1, 1):
         box(n + "_Skirt", "iron", (0, s * 3.4, 0.3), (L + 0.4, 0.4, 0.8), bevel=0.08)
         for i in range(30):
@@ -234,7 +234,8 @@ def case_belt():
     # the two portals: navy + gold arches over the belt ends with a glowing gate and a gem keystone
     for sx, label in ((-30.6, "IN"), (30.6, "OUT")):
         with at(sx, 0, rz=90):
-            B.ring(n + "_Arch", "navy_dark", B.opening(7.6, 10.6, True, n=14, grow=1.3), B.opening(7.6, 10.6, True, n=14), -0.7, 0.7)
+            B.ring(n + "_Arch", "navy_dark", B.opening(7.6, 10.6, True, n=14, grow=1.3), [(x, -0.03 if z <= 0 else z) for x, z in B.opening(7.6, 10.6, True, n=14, grow=0.03)],
+                   -0.7, 0.7)  # (the gold ring lines the opening: the arch's soffit + floor 0.03 behind it)
             B.ring(n + "_Gold", "gold", B.opening(7.6, 10.6, True, n=14, grow=0.35), B.opening(7.6, 10.6, True, n=14), -0.85, 0.85)
             prism(n + "_Glow", "portal_glow", B.opening(7.6, 10.6, True, n=14), 0.16)
             for s in (-1, 1):

@@ -86,8 +86,8 @@ def lamp_double():
         tube(n + "_Iron", "iron", [(s * 2.1, 0, 10.12), (s * 2.1, 0, 9.82)], 0.05, segs=5)
         lantern(n, (s * 2.1, 0, 7.62), 0.85)
     # banner: two gold rods off the post, a swallow-tailed purple cloth with a gold edge and a gold coin emblem
-    for z in (6.9, 3.95):
-        tube(n + "_Gold", "gold", [(0.2, -0.0, z), (1.75, 0, z)], 0.06, segs=6)
+    for z, r in ((6.9, 0.06), (3.95, 0.045)):  # (the lower rod runs through the cloth: thin enough to keep its flats 0.03 off the cloth faces)
+        tube(n + "_Gold", "gold", [(0.2, -0.0, z), (1.75, 0, z)], r, segs=6)
         sphere(n + "_Gold", "gold", (1.8, 0, z), 0.1, sub=1)
     edge = [(0.25, 3.35), (1.0, 3.8), (1.75, 3.35), (1.75, 6.9), (0.25, 6.9)]
     prism(n + "_Gold", "gold_dark", edge, 0.08)
@@ -352,7 +352,7 @@ def notice_board():
         box(n + "_" + lk.title().replace("_", ""), lk, (x, -0.245, z), (w, 0.03, h), rot=(0, ry, 0))
         R = O.xform((x, 0, z), (0, ry, 0))
         for i in range(3):  # scribbled lines
-            box(n + "_Ink", "iron_light", tuple(R @ Vector((-w * 0.08, -0.265, h * 0.22 - i * h * 0.2))), (w * 0.62, 0.012, 0.06),
+            box(n + "_Ink", "iron_light", tuple(R @ Vector((-w * 0.08, -0.27, h * 0.22 - i * h * 0.2))), (w * 0.62, 0.04, 0.06),
                 rot=(0, ry, 0))
         sphere(n + "_Pin", "pin_red", tuple(R @ Vector((0, -0.3, h * 0.42))), 0.08, sub=1)
     text("CASE BOARD", "white", (0, -0.3, 4.85), 0.3, extrude=0.015)
@@ -403,7 +403,8 @@ def briefcase(n, lk, band, c, rot):
     with at(*c, rz=rot[2]):
         rx = rot[0]
         box(n + "_" + lk.title().replace("_", ""), lk, (0, 0, 0), (2.6, 0.9, 1.8), rot=(rx, 0, 0), bevel=0.18, segs=2, smooth=False)
-        box(n + "_Band", band, (0, 0, 0), (2.64, 0.94, 0.08), rot=(rx, 0, 0), bevel=0.03)
+        k = 0.03 / O.CUR[-1].to_scale()[0]  # (the band stands 0.03 proud of the case at any placed scale)
+        box(n + "_Band", band, (0, 0, 0), (2.6 + 2 * k, 0.9 + 2 * k, 0.08), rot=(rx, 0, 0), bevel=0.03)
         R = O.xform((0, 0, 0), (rx, 0, 0))
         for sx in (-0.75, 0.75):
             box(n + "_Gold", "gold", tuple(R @ Vector((sx, -0.47, 0.55))), (0.32, 0.1, 0.26), rot=(rx, 0, 0), bevel=0.03)
@@ -429,7 +430,7 @@ def file_box(n, c, rz):
         for y in (-1.09, 1.09):
             box(n + "_Slot", "iron", (0, y, 0.78), (0.6, 0.06, 0.2), bevel=0.02)
         box(n + "_Label", "paper", (-0.77, 0, 0.6), (0.04, 1.0, 0.5))
-        box(n + "_Stripe", "red", (-0.79, 0, 0.6), (0.02, 1.0, 0.1))
+        box(n + "_Stripe", "red", (-0.8, 0, 0.6), (0.04, 1.0, 0.1))  # (0.03 proud of the label)
 
 
 def file_boxes():
@@ -454,9 +455,9 @@ def crate():
         with at(rz=90 * k):
             box(n + "_Frame", "wood_deep", (0, -1.04, 1.1), (2.4, 0.1, 0.24), rot=(0, 45 if k % 2 else -45, 0), bevel=0.03)
             for z in (0.78, 1.42):
-                box(n + "_Gap", "plank_dark", (0, -1.005, z), (1.72, 0.02, 0.05))
+                box(n + "_Gap", "plank_dark", (0, -1.01, z), (1.72, 0.04, 0.05))  # (gap lines 0.03 proud of the planks)
     for x in (-0.33, 0.33):
-        box(n + "_Gap", "plank_dark", (x, 0, 2.105), (0.05, 1.72, 0.02))
+        box(n + "_Gap", "plank_dark", (x, 0, 2.11), (0.05, 1.72, 0.04))
 
 
 # ================================================================== layout + renders

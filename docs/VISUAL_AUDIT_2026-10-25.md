@@ -36,6 +36,9 @@ each with its camera below so it can be repeated (`screen_capture` with `camera_
   planks; window glass vs "shine" streaks (13 pairs).
 - Fix: per pair, inset the decal-like piece 0.03 (or stand it 0.03 proud); never two colours in one plane.
 - Accept: `Blender -b --factory-startup --python tools/blender/overhaul/check_models.py -- zfight` reports **0 pairs**.
+- **Done 2026-10-25** (crnuch's side session): 0 pairs, 0 floating pieces; review renders unchanged apart from the
+  flicker spots. The checker was made exact first: 10 of the listed pairs were its own rounding, and the exact check
+  found 127 real pairs in these models (11 more than listed), all fixed (SESSION_LOG 2026-10-25, "z-fighting sweep").
 
 **M2 · Carry and Speed counters overlap at the Upgrades building** - Observed (Play)
 - Where: `Workspace.HubWiring.Counter_Carry` (3667, 155, -1136) and `Counter_Speed` (3664, 155, -1133), 5.7 studs

@@ -150,7 +150,7 @@ def expansion_lock(n="ExpansionLock"):
                 x, k = xe, k + 1
     with at(0, 0.6, 0):  # the sign on two posts in the gap
         for sx in (-2.0, 2.0):
-            box(n + "_BarrierPost", "wood_deep", (sx, 0.15, 1.9), (0.4, 0.4, 3.8), bevel=0.05)
+            box(n + "_BarrierPost", "wood_deep", (sx, 0.15, 1.88), (0.4, 0.4, 3.76), bevel=0.05)  # (tops 0.04 under the sign's: their bevels shared a plane)
         box(n + "_Sign", "hazard", (0, 0, 3.0), (5.0, 0.2, 1.6), bevel=0.1)
         text("COMING SOON", "panel_black", (0, -0.12, 3.0), 0.6, extrude=0.015)
     for c in ((5.0, 1.8, 0), (-5.0, 1.8, 0), (11.5, 6.0, 0), (-11.0, 2.6, 0), (23.0, 1.6, 0)):
@@ -181,11 +181,11 @@ def expansion_lock(n="ExpansionLock"):
 # ================================================================== the back wall
 def back_wall(n="BackWall"):
     planks(n, -23.2, 23.2, 0, 3.0, 0.0)
-    carpet(n, 0, 3.0)
-    half_wall(n, 0, 3.0, planter=False, seed=5)
+    carpet(n, 0, 2.97)  # (carpet + half walls end 0.03 inside the wall, not in its back face)
+    half_wall(n, 0, 2.97, planter=False, seed=5)
     post(n, 0)
     box(n + "_Wall", "white", (0, 2.6, 3.25), (48.0, 0.8, 6.5))
-    box(n + "_Footing", "stone_mid", (0, 2.6, -0.75), (48.4, 1.1, 1.5), bevel=0.06)
+    box(n + "_Footing", "stone_mid", (0, 2.6, -0.765), (48.4, 1.1, 1.47), bevel=0.06)  # (top 0.03 under the floor planks)
     box(n + "_Cap", "wood_warm", (0, 2.7, 6.75), (48.6, 1.3, 0.5), bevel=0.08)
     box(n + "_Band", "carpet_red", (0, 2.7, 7.2), (48.0, 1.2, 0.4), bevel=0.06)
     r = random.Random(9)

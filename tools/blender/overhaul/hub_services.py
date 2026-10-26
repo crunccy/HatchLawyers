@@ -239,7 +239,7 @@ def incubator():
         tube(n + "_Metal", "iron", path, 0.32, segs=10)
         with at(x - s * 3.4, 4, 15.0):
             lathe(n + "_Lamp", "brass", [(0.35, 0.55), (1.0, 0.2), (1.55, -0.6), (1.65, -0.85, True), (0.0, -0.85)], segs=20)
-            cyl(n + "_HeatGlow", "heat_glow", (0, 0, -0.95), 1.4, 0.12, segs=20)
+            cyl(n + "_HeatGlow", "heat_glow", (0, 0, -0.95), 1.4, 0.15, segs=20)  # (top 0.05 up inside the bowl, clear of its rim plane)
     # boiler at the back: copper tank, brass bands, a pressure gauge, pipes into the cradle
     with at(0, 11.5, 3.0):
         lathe(n + "_Boiler", "copper", [(2.6, 0.0), (3.0, 0.3), (3.1, 1.0), (3.1, 6.0), (2.9, 6.8), (2.2, 7.4), (1.0, 7.75), (0.0, 7.8)],

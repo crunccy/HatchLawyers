@@ -76,7 +76,7 @@ def wall_lantern(n, x, y, z):
 def name_board(n, cx, cy, cz, w, h, look="wood_deep", trim="gold"):
     """The backing board behind the firm's name Sign (FirmBuilder puts the Sign part at the front's returned CFrame)."""
     fbox(n + "_SignBoard", look, cx - w / 2, cy - h / 2, cz, cx + w / 2, cy + h / 2, cz + 0.3, bevel=0.08)
-    fbox(n + "_Gold", trim, cx - w / 2 - 0.15, cy - h / 2 - 0.15, cz + 0.08, cx + w / 2 + 0.15, cy + h / 2 + 0.15, cz + 0.22, bevel=0.05)
+    fbox(n + "_Gold", trim, cx - w / 2 - 0.15, cy - h / 2 - 0.15, cz + 0.05, cx + w / 2 + 0.15, cy + h / 2 + 0.15, cz + 0.22, bevel=0.05)
 
 
 # ================================================================== 2. STOREFRONT PRACTICE (one storey of brick)
@@ -101,7 +101,7 @@ def stage2():
         for k in range(4):
             x = lo + (hi - lo) * k / 3
             fbox(n + "_Frame", "white", x - 0.22, 0.9, -0.6, x + 0.22, 6.6, -0.2, bevel=0.04)
-        fbox(n + "_Frame", "white", lo, 5.0, -0.5, hi, 5.2, -0.25)  # transom bar
+        fbox(n + "_Frame", "white", lo, 5.0, -0.5, hi, 5.2, -0.22)  # transom bar (its back 0.03 past the glass's)
         for k in range(3):  # cartoon shine on each pane
             x = lo + (hi - lo) * (k + 0.3) / 3
             poly(n + "_Shine", "white", [(x, -0.4, 2.0), (x + 0.5, -0.4, 2.0), (x + 1.6, -0.4, 4.4), (x + 1.1, -0.4, 4.4)], thick=0.02)
@@ -122,7 +122,7 @@ def stage2():
         fbox(n + "_DoorFrame", "awning_green", 2.6, 0, -0.35, 3.0, 7.0, 0.1, bevel=0.05)
         fbox(n + "_DoorFrame", "awning_green", -3.0, 6.6, -0.35, 3.0, 7.0, 0.1, bevel=0.05)
         for (a, b2) in ((-2.6, -0.05), (0.05, 2.6)):
-            fbox(n + "_Door", "awning_green", a, 0, -0.15, b2, 6.6, 0.0)
+            fbox(n + "_Door", "awning_green", a, 0, -0.15, b2, 6.6, 0.03)  # (back 0.03 past the base course's)
             fbox(n + "_Glass", "glass_blue", a + 0.45, 3.2, -0.22, b2 - 0.45, 6.1, -0.12)
         for s in (-1, 1):
             sphere(n + "_Brass", "brass", (s * 0.45, -0.32, 3.2), 0.16, sub=1)
@@ -181,23 +181,24 @@ def fdisc(name, look, x, z, y, r, h, segs=24):
 
 
 def floor_plate(n, y, look="marble"):
-    fbox(n + "_Floor", look, -24.4, y - 0.45, -0.4, 24.4, y + 0.45, DEPTH + 0.4, bevel=0.06)
+    fbox(n + "_Floor", look, -24.43, y - 0.45, -0.4, 24.43, y + 0.45, DEPTH + 0.4, bevel=0.06)  # (0.03 proud of the side walls)
 
 
 def glass_front(n, y0, y1, mullion="white", door=False, glass="glass", every=6.0):
     """A glazed street front from y0 to y1: glass, mullions every `every`, a head bar; a door gap x -3..3 if door."""
+    g0, g1 = y0 - 0.03, y1 - 0.03  # (glass ends 0.03 past the mullion ends, its back 0.03 in front of the spandrels' backs: no shared planes)
     if door:
-        fbox(n + "_Glass", glass, -24, y0, -0.45, -3, y1, -0.3)
-        fbox(n + "_Glass", glass, 3, y0, -0.45, 24, y1, -0.3)
-        fbox(n + "_Glass", glass, -3, 7.5, -0.45, 3, y1, -0.3)
+        fbox(n + "_Glass", glass, -24, g0, -0.45, -3, g1, -0.43)
+        fbox(n + "_Glass", glass, 3, g0, -0.45, 24, g1, -0.43)
+        fbox(n + "_Glass", glass, -3, 7.53, -0.45, 3, g1, -0.43)
         for sx in (-1, 1):
             fbox(n + "_Mullion", mullion, sx * 3 - 0.3, y0, -0.8, sx * 3 + 0.3, 7.8, 0, bevel=0.05)
         fbox(n + "_Mullion", mullion, -3.3, 7.5, -0.8, 3.3, 7.9, 0, bevel=0.05)
         for (a2, b2) in ((-2.9, -0.05), (0.05, 2.9)):  # glass double doors with a gold push bar
-            fbox(n + "_Door", glass, a2, 0, -0.4, b2, 7.4, -0.3)
+            fbox(n + "_Door", glass, a2, 0, -0.4, b2, 7.4, -0.27)  # (back 0.03 past the base course's)
             fbox(n + "_DoorBar", "gold", a2 + 0.4, 3.4, -0.55, b2 - 0.4, 3.6, -0.4, bevel=0.04)
     else:
-        fbox(n + "_Glass", glass, -24, y0, -0.45, 24, y1, -0.3)
+        fbox(n + "_Glass", glass, -24, g0, -0.45, 24, g1, -0.43)
     x = -18.0
     while x <= 18.01:
         if not (door and abs(x) < 4):
@@ -273,8 +274,8 @@ def stage3():
             O.flower(n + "_Flower", ("flower_red", "flower_white", "flower_yel")[k % 3], n + "_FlowerMid", "flower_yel" if k % 3 != 2 else "flower_orange",
                      O.pt((x, -1.15, 1.98)), Vector((0, -0.35, 1)).normalized(), r=0.24)
         # upper floor: brick returns at the corners
-        a2, b2 = sorted((24 * s, 22.8 * s))
-        fbox(n + "_Brick", "brick", a2, G, 0, b2, H, DEPTH)
+        a2, b2 = sorted((23.97 * s, 22.8 * s))
+        fbox(n + "_Brick", "brick", a2, G, 0, b2, H, DEPTH - 0.03)  # (0.03 inside the walls' end + back faces)
         wall_lantern(n, 4.2 * s, 5.4, -0.5)
         with at(s * 24.4, 0, 0, rz=90 * s):
             for y in (5.0, 14.0):
@@ -345,7 +346,7 @@ def stage4():
     # lobby: reception desk + planters, floor 3 planters
     fbox(n + "_Reception", "navy_dark", -18, 0, 17.5, -9, 3, 19.5, bevel=0.15)
     fbox(n + "_ReceptionTop", "marble", -18.3, 3, 17.2, -8.7, 3.4, 19.8, bevel=0.08)
-    with at(9, 18.8, 0):
+    with at(9, 18.77, 0):
         PR.planter_square()
     with at(-17, 17.5, 2 * F + 0.45, s=0.9):
         PR.planter_square()
@@ -417,8 +418,8 @@ def stage5():
     for s in (-1, 1):
         a2, b2 = sorted((21 * s, 20.4 * s))
         fbox(n + "_UpperGlass", "glass_dark", a2, 4 * F, 6, b2, 6 * F, DEPTH)
-    fbox(n + "_Band", "white", -21.3, 5 * F - 0.45, 5.6, 21.3, 5 * F + 0.45, DEPTH, bevel=0.08)
-    fbox(n + "_Band", "white", -21.3, 6 * F - 0.45, 5.6, 21.3, 6 * F + 0.45, DEPTH, bevel=0.08)
+    fbox(n + "_Band", "white", -21.3, 5 * F - 0.45, 5.6, 21.3, 5 * F + 0.45, DEPTH - 0.03, bevel=0.08)  # (back 0.03 short of the glass's)
+    fbox(n + "_Band", "white", -21.3, 6 * F - 0.45, 5.6, 21.3, 6 * F + 0.45, DEPTH - 0.03, bevel=0.08)
     fbox(n + "_Deck", "wood_warm", -24, 4 * F + 0.45, 0, 24, 4 * F + 0.8, 6)
     for k in range(24):
         fbox(n + "_DeckGap", "wood_deep", -24 + k * 2.0, 4 * F + 0.8, 0.05, -24 + k * 2.0 + 0.06, 4 * F + 0.82, 5.95)
@@ -470,7 +471,7 @@ def stage6():
         fbox(n + ("_BandGold" if k % 3 == 0 else "_Band"), "gold" if k % 3 == 0 else "navy_dark", -20.4, y - 0.35, 1.6, 20.4, y + 0.35, 19.4, bevel=0.06)
     for i in range(11):
         x = -20 + i * 4
-        fbox(n + "_Mullion", "navy_dark", x - 0.15, T0, 1.6, x + 0.15, T1, 2.1)
+        fbox(n + "_Mullion", "navy_dark", x - 0.15, T0, 1.57, x + 0.15, T1, 2.07)  # (0.03 proud of the bands, back 0.03 short of the fins')
     for s in (-1, 1):  # gold corner fins, full height
         for z in (1.6, 19.4):
             fbox(n + "_Fin", "gold", s * 20 - 0.5, T0 - 0.4, z - 0.5, s * 20 + 0.5, T1 + 0.6, z + 0.5, bevel=0.1)

@@ -80,7 +80,7 @@ def giant_briefcase(m, veg, x, y, z0, rot, col):
         handle = [(3.0 * math.cos(math.radians(a)), 0, zb + H + 0.5 + 2.6 * math.sin(math.radians(a))) for a in range(0, 181, 15)]
         tube(n + "_Handle", "leather_dark", handle, 0.62, segs=10)
         for sx in (-1, 1):
-            box(n + "_Gold", "gold", (sx * 3.0, 0, zb + H + 0.5), (1.1, 1.7, 0.9), bevel=0.15)
+            box(n + "_Gold", "gold", (sx * 3.0, 0, zb + H + 0.545), (1.1, 1.7, 0.9), bevel=0.15)  # (bevels 0.03 off the seam's: it sat on their diagonal)
         tube(n + "_String", "lighthouse_red", [(2.0, 0, zb + H + 2.8), (3.1, -1.0, zb + H - 0.4)], 0.07, segs=5)
         box(n + "_Tag", "tag", (3.2, -1.05, zb + H - 1.6), (1.8, 0.14, 2.4), rot=(0, 8, 0), bevel=0.12)
         box(n + "_Plaque", "plaque", (0, -5.55, z0 + 1.0), (6.0, 0.15, 1.4), bevel=0.06)
@@ -178,7 +178,7 @@ def lighthouse(m, beam_m, x, y, z0, h, sea_deg):
         cyl(n + "_Glow", "beacon_glow", (0, 0, zt + 0.6), 2.3, 3.0, segs=20)
         for k in range(8):
             a = k / 8 * TAU
-            box(n + "_Iron", "iron", (math.cos(a) * 2.35, math.sin(a) * 2.35, zt + 2.1), (0.22, 0.22, 3.0), rot=(0, 0, math.degrees(a)))
+            box(n + "_Iron", "iron", (math.cos(a) * 2.35, math.sin(a) * 2.35, zt + 2.1), (0.22, 0.22, 3.06), rot=(0, 0, math.degrees(a)))  # (0.03 past the glow's ends)
         lathe(n + "_Red", "lighthouse_red", [(3.3, zt + 3.6), (3.0, zt + 4.3), (2.2, zt + 5.3), (1.0, zt + 6.0), (0.0, zt + 6.2)], segs=28)
         cyl(n + "_Red", "lighthouse_red", (0, 0, zt + 3.4), 3.3, 0.25, segs=28)
         sphere(n + "_Gold", "gold", (0, 0, zt + 6.45), 0.45, sub=2)
@@ -279,7 +279,7 @@ def welcome_sign(m, x, y, z0, rot, col, span=16.0):
                 box(n + "_Pillar", "limestone", (0, 0, 6.0), (2.4, 2.4, 10.0), bevel=0.2)
                 for zz in (3.5, 7.0):
                     box(n + "_Pillar", "limestone_dark", (0, 0, zz), (2.55, 2.55, 0.3), bevel=0.05)
-                box(n + "_Gold", "gold", (0, 0, 11.4), (2.9, 2.9, 0.8), bevel=0.15)
+                box(n + "_Gold", "gold", (0, 0, 11.415), (2.9, 2.9, 0.83), bevel=0.15)  # (top 0.03 above the board frame's)
                 sphere(n + "_Gold", "gold", (0, 0, 12.5), 0.9, sub=2)
                 O.leafy("BayWelcomeIvy%d" % sgn, [((0.9 * sgn, -1.1, 1.6), 0.9), ((0.4 * sgn, -1.2, 3.0), 0.7), ((1.1 * sgn, -0.9, 0.7), 0.8)],
                         voxel=0.15, faces=300, lumpy=0.1, seed=sgn + 3)
@@ -311,7 +311,8 @@ def escape_portal(m, veg, x, y, z, rot=0.0):
             W, Hs = 19.6, 22.4  # inner arch: 9.8 radius springing at 12.6
             B.ring(n + "_Stone", "limestone", B.opening(W, Hs, True, n=16, grow=3.2), B.opening(W, Hs, True, n=16), -1.9, 1.9)
             for fy in (-1.95, 1.95):
-                B.ring(n + "_Gold", "gold", B.opening(W, Hs, True, n=16, grow=0.45), B.opening(W, Hs, True, n=16), fy - 0.12, fy + 0.12)
+                B.ring(n + "_Gold", "gold", B.opening(W, Hs, True, n=16, grow=0.45), [(x, -0.03 if z <= 0 else z) for x, z in B.opening(W, Hs, True, n=16, grow=0.03)],
+                       fy - 0.12, fy + 0.12)  # (0.03 off the stone's soffit + floor)
                 B.ring(n + "_Gold", "gold", B.opening(W, Hs, True, n=16, grow=3.35), B.opening(W, Hs, True, n=16, grow=2.9), fy - 0.12, fy + 0.12)
             prism(n + "_Vortex", "vortex_glow", B.opening(W, Hs, True, n=16), 0.4)
             for r0, a0, a1 in ((4.6, 20, 200), (6.8, 200, 380), (3.4, 110, 290)):
