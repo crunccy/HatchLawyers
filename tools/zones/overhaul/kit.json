@@ -1,0 +1,758 @@
+{
+ "group": "kit",
+ "fbx": "exports/overhaul/kit.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "kit_rock_portal": {
+   "origin": [
+    20.846,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -20.85,
+    -32.42,
+    -1.6
+   ],
+   "max": [
+    30.02,
+    20.19,
+    30.6
+   ],
+   "meshes": [
+    {
+     "name": "IslFern",
+     "fbx_name": "IslFern",
+     "tris": 1008,
+     "look": "fern",
+     "color": [
+      60,
+      150,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm5_Canopy",
+     "fbx_name": "IslPalm5_Canopy",
+     "tris": 468,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm5_Light",
+     "fbx_name": "IslPalm5_Light",
+     "tris": 468,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm5_Nuts",
+     "fbx_name": "IslPalm5_Nuts",
+     "tris": 240,
+     "look": "nut",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm5_Trunk",
+     "fbx_name": "IslPalm5_Trunk",
+     "tris": 370,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm6_Canopy",
+     "fbx_name": "IslPalm6_Canopy",
+     "tris": 468,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm6_Light",
+     "fbx_name": "IslPalm6_Light",
+     "tris": 468,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm6_Nuts",
+     "fbx_name": "IslPalm6_Nuts",
+     "tris": 240,
+     "look": "nut",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm6_Trunk",
+     "fbx_name": "IslPalm6_Trunk",
+     "tris": 370,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalCap_Leaves",
+     "fbx_name": "IslPortalCap_Leaves",
+     "tris": 1040,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Arch",
+     "fbx_name": "IslPortal_Arch",
+     "tris": 334,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_ArchTop",
+     "fbx_name": "IslPortal_ArchTop",
+     "tris": 58,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Base",
+     "fbx_name": "IslPortal_Base",
+     "tris": 76,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Crystal",
+     "fbx_name": "IslPortal_Crystal",
+     "tris": 396,
+     "look": "crystal_purple",
+     "color": [
+      170,
+      100,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Flower",
+     "fbx_name": "IslPortal_Flower",
+     "tris": 560,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_FlowerMid",
+     "fbx_name": "IslPortal_FlowerMid",
+     "tris": 140,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Glow",
+     "fbx_name": "IslPortal_Glow",
+     "tris": 240,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Leg",
+     "fbx_name": "IslPortal_Leg",
+     "tris": 120,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_LegMoss",
+     "fbx_name": "IslPortal_LegMoss",
+     "tris": 40,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Rune",
+     "fbx_name": "IslPortal_Rune",
+     "tris": 792,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Step",
+     "fbx_name": "IslPortal_Step",
+     "tris": 47,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_StepTop",
+     "fbx_name": "IslPortal_StepTop",
+     "tris": 33,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Swirl",
+     "fbx_name": "IslPortal_Swirl",
+     "tris": 548,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Vortex",
+     "fbx_name": "IslPortal_Vortex",
+     "tris": 72,
+     "look": "vortex_glow",
+     "color": [
+      150,
+      80,
+      240
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "kit_topiary": {
+   "origin": [
+    76.167,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.3,
+    -1.3,
+    0.0
+   ],
+   "max": [
+    1.3,
+    1.3,
+    4.63
+   ],
+   "meshes": [
+    {
+     "name": "IslTopiaryBall7_Leaves",
+     "fbx_name": "IslTopiaryBall7_Leaves",
+     "tris": 720,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Planter",
+     "fbx_name": "IslTopiary_Planter",
+     "tris": 44,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Rim",
+     "fbx_name": "IslTopiary_Rim",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Soil",
+     "fbx_name": "IslTopiary_Soil",
+     "tris": 12,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Stem",
+     "fbx_name": "IslTopiary_Stem",
+     "tris": 28,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "kit_lifebuoy_stand": {
+   "origin": [
+    102.416,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.95,
+    -0.65,
+    0.0
+   ],
+   "max": [
+    0.95,
+    0.3,
+    3.35
+   ],
+   "meshes": [
+    {
+     "name": "IslLifebuoy_Orange",
+     "fbx_name": "IslLifebuoy_Orange",
+     "tris": 192,
+     "look": "lifebuoy",
+     "color": [
+      250,
+      110,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslLifebuoy_Post",
+     "fbx_name": "IslLifebuoy_Post",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslLifebuoy_White",
+     "fbx_name": "IslLifebuoy_White",
+     "tris": 192,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "kit_buoy": {
+   "origin": [
+    128.514,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.15,
+    -1.15,
+    -0.4
+   ],
+   "max": [
+    1.15,
+    1.15,
+    2.92
+   ],
+   "meshes": [
+    {
+     "name": "IslBuoy_Glow",
+     "fbx_name": "IslBuoy_Glow",
+     "tris": 20,
+     "look": "beacon_glow",
+     "color": [
+      255,
+      230,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBuoy_Iron",
+     "fbx_name": "IslBuoy_Iron",
+     "tris": 20,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBuoy_Red",
+     "fbx_name": "IslBuoy_Red",
+     "tris": 156,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBuoy_White",
+     "fbx_name": "IslBuoy_White",
+     "tris": 60,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "kit_bollard": {
+   "origin": [
+    154.414,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.75,
+    -0.73,
+    0.0
+   ],
+   "max": [
+    0.75,
+    0.73,
+    1.2
+   ],
+   "meshes": [
+    {
+     "name": "IslBollard_Iron",
+     "fbx_name": "IslBollard_Iron",
+     "tris": 154,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBollard_Rope",
+     "fbx_name": "IslBollard_Rope",
+     "tris": 100,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "kit_barrel": {
+   "origin": [
+    180.214,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.05,
+    -1.05,
+    0.0
+   ],
+   "max": [
+    1.05,
+    1.05,
+    2.4
+   ],
+   "meshes": [
+    {
+     "name": "IslBarrel_Hoop",
+     "fbx_name": "IslBarrel_Hoop",
+     "tris": 120,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBarrel_Wood",
+     "fbx_name": "IslBarrel_Wood",
+     "tris": 160,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "kit_torch": {
+   "origin": [
+    205.464,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.2,
+    -0.41,
+    0.0
+   ],
+   "max": [
+    1.41,
+    0.41,
+    5.16
+   ],
+   "meshes": [
+    {
+     "name": "IslTorch_Glow",
+     "fbx_name": "IslTorch_Glow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTorch_Gold",
+     "fbx_name": "IslTorch_Gold",
+     "tris": 36,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTorch_Iron",
+     "fbx_name": "IslTorch_Iron",
+     "tris": 234,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTorch_Post",
+     "fbx_name": "IslTorch_Post",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

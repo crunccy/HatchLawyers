@@ -1,0 +1,624 @@
+{
+ "group": "ocean",
+ "fbx": "exports/overhaul/ocean.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "ocean_coral": {
+   "origin": [
+    1.169,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.17,
+    -1.93,
+    -0.4
+   ],
+   "max": [
+    1.28,
+    1.69,
+    3.56
+   ],
+   "meshes": [
+    {
+     "name": "OceanCoral18",
+     "fbx_name": "OceanCoral18",
+     "tris": 1800,
+     "look": "coral_pink",
+     "color": [
+      250,
+      110,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_fan_coral": {
+   "origin": [
+    27.471,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.02,
+    -1.36,
+    0.0
+   ],
+   "max": [
+    0.97,
+    1.33,
+    2.68
+   ],
+   "meshes": [
+    {
+     "name": "OceanFan19",
+     "fbx_name": "OceanFan19",
+     "tris": 1800,
+     "look": "coral_purple",
+     "color": [
+      170,
+      100,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_brain_coral": {
+   "origin": [
+    54.046,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.6,
+    -1.6,
+    -0.56
+   ],
+   "max": [
+    1.6,
+    1.6,
+    1.84
+   ],
+   "meshes": [
+    {
+     "name": "OceanBrain20",
+     "fbx_name": "OceanBrain20",
+     "tris": 320,
+     "look": "brain_coral",
+     "color": [
+      240,
+      150,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanBrain20_Groove",
+     "fbx_name": "OceanBrain20_Groove",
+     "tris": 720,
+     "look": "coral_red",
+     "color": [
+      232,
+      72,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_tube_coral": {
+   "origin": [
+    80.717,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.07,
+    -1.01,
+    0.0
+   ],
+   "max": [
+    0.92,
+    1.16,
+    2.58
+   ],
+   "meshes": [
+    {
+     "name": "OceanTube_Coral",
+     "fbx_name": "OceanTube_Coral",
+     "tris": 450,
+     "look": "tube_coral",
+     "color": [
+      110,
+      196,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanTube_In",
+     "fbx_name": "OceanTube_In",
+     "tris": 180,
+     "look": "tube_coral_in",
+     "color": [
+      60,
+      120,
+      160
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_seaweed": {
+   "origin": [
+    106.226,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.58,
+    -0.55,
+    -0.12
+   ],
+   "max": [
+    0.67,
+    0.63,
+    3.03
+   ],
+   "meshes": [
+    {
+     "name": "OceanSeaweed",
+     "fbx_name": "OceanSeaweed",
+     "tris": 288,
+     "look": "seaweed",
+     "color": [
+      56,
+      140,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_shell": {
+   "origin": [
+    131.615,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.72,
+    -0.72,
+    -0.01
+   ],
+   "max": [
+    0.59,
+    0.79,
+    0.29
+   ],
+   "meshes": [
+    {
+     "name": "OceanShell21",
+     "fbx_name": "OceanShell21",
+     "tris": 1000,
+     "look": "shell",
+     "color": [
+      252,
+      236,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_starfish": {
+   "origin": [
+    157.203,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.99,
+    -0.92,
+    -0.12
+   ],
+   "max": [
+    0.88,
+    0.97,
+    0.36
+   ],
+   "meshes": [
+    {
+     "name": "OceanStar22",
+     "fbx_name": "OceanStar22",
+     "tris": 998,
+     "look": "starfish_red",
+     "color": [
+      232,
+      70,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_conch": {
+   "origin": [
+    183.397,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.31,
+    -1.11,
+    -0.03
+   ],
+   "max": [
+    0.72,
+    0.67,
+    1.22
+   ],
+   "meshes": [
+    {
+     "name": "OceanConch23",
+     "fbx_name": "OceanConch23",
+     "tris": 1400,
+     "look": "conch",
+     "color": [
+      250,
+      204,
+      172
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanConch_In",
+     "fbx_name": "OceanConch_In",
+     "tris": 44,
+     "look": "conch_in",
+     "color": [
+      250,
+      150,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_sand_dollar": {
+   "origin": [
+    208.871,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.75,
+    -0.75,
+    0.0
+   ],
+   "max": [
+    0.75,
+    0.75,
+    0.18
+   ],
+   "meshes": [
+    {
+     "name": "OceanDollar",
+     "fbx_name": "OceanDollar",
+     "tris": 96,
+     "look": "sand_dollar",
+     "color": [
+      236,
+      226,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanDollar_Petal",
+     "fbx_name": "OceanDollar_Petal",
+     "tris": 60,
+     "look": "shell_pink",
+     "color": [
+      250,
+      190,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_driftwood": {
+   "origin": [
+    235.337,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.72,
+    -4.08,
+    -0.08
+   ],
+   "max": [
+    1.29,
+    4.09,
+    0.95
+   ],
+   "meshes": [
+    {
+     "name": "OceanDrift24",
+     "fbx_name": "OceanDrift24",
+     "tris": 1800,
+     "look": "driftwood",
+     "color": [
+      176,
+      150,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanDrift_Knot",
+     "fbx_name": "OceanDrift_Knot",
+     "tris": 60,
+     "look": "driftwood_dark",
+     "color": [
+      130,
+      108,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "ocean_shipwreck2": {
+   "origin": [
+    284.766,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -24.14,
+    -13.56,
+    -0.05
+   ],
+   "max": [
+    22.32,
+    9.38,
+    24.21
+   ],
+   "meshes": [
+    {
+     "name": "Crate_Frame",
+     "fbx_name": "Crate_Frame",
+     "tris": 1408,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Gap",
+     "fbx_name": "Crate_Gap",
+     "tris": 240,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Planks",
+     "fbx_name": "Crate_Planks",
+     "tris": 24,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBarrel_Hoop",
+     "fbx_name": "IslBarrel_Hoop",
+     "tris": 360,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBarrel_Wood",
+     "fbx_name": "IslBarrel_Wood",
+     "tris": 480,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Deck",
+     "fbx_name": "OceanWreck_Deck",
+     "tris": 132,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_DeckDark",
+     "fbx_name": "OceanWreck_DeckDark",
+     "tris": 132,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Hull",
+     "fbx_name": "OceanWreck_Hull",
+     "tris": 2156,
+     "look": "hull_wood",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Mast",
+     "fbx_name": "OceanWreck_Mast",
+     "tris": 64,
+     "look": "driftwood_dark",
+     "color": [
+      130,
+      108,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Nest",
+     "fbx_name": "OceanWreck_Nest",
+     "tris": 98,
+     "look": "hull_wood",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Plank",
+     "fbx_name": "OceanWreck_Plank",
+     "tris": 40,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_PlankDark",
+     "fbx_name": "OceanWreck_PlankDark",
+     "tris": 40,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Rope",
+     "fbx_name": "OceanWreck_Rope",
+     "tris": 78,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Sail",
+     "fbx_name": "OceanWreck_Sail",
+     "tris": 72,
+     "look": "sail",
+     "color": [
+      250,
+      248,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

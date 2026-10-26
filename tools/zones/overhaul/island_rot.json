@@ -1,0 +1,2875 @@
+{
+ "group": "island_rot",
+ "fbx": "exports/overhaul/island_rot.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "Crate": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -122.65,
+    -124.59,
+    0.97
+   ],
+   "max": [
+    -120.78,
+    -122.73,
+    2.83
+   ],
+   "meshes": [
+    {
+     "name": "Crate_Frame",
+     "fbx_name": "Crate_Frame",
+     "tris": 704,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Gap",
+     "fbx_name": "Crate_Gap",
+     "tris": 120,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Planks",
+     "fbx_name": "Crate_Planks",
+     "tris": 12,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBarrel": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -136.73,
+    -114.56,
+    1.0
+   ],
+   "max": [
+    -129.97,
+    -108.65,
+    3.4
+   ],
+   "meshes": [
+    {
+     "name": "IslBarrel_Hoop",
+     "fbx_name": "IslBarrel_Hoop",
+     "tris": 240,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBarrel_Wood",
+     "fbx_name": "IslBarrel_Wood",
+     "tris": 320,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslGrass": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -177.46,
+    -175.53,
+    0.6
+   ],
+   "max": [
+    181.56,
+    169.72,
+    1.98
+   ],
+   "meshes": [
+    {
+     "name": "IslGrass",
+     "fbx_name": "IslGrass",
+     "tris": 728,
+     "look": "leaf_sun",
+     "color": [
+      140,
+      214,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortal": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    123.46,
+    123.01,
+    -0.6
+   ],
+   "max": [
+    164.24,
+    164.61,
+    31.6
+   ],
+   "meshes": [
+    {
+     "name": "IslPortal_Arch",
+     "fbx_name": "IslPortal_Arch",
+     "tris": 334,
+     "look": "rot_rock_dark",
+     "color": [
+      80,
+      58,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_ArchTop",
+     "fbx_name": "IslPortal_ArchTop",
+     "tris": 58,
+     "look": "rot_rock",
+     "color": [
+      112,
+      84,
+      156
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Base",
+     "fbx_name": "IslPortal_Base",
+     "tris": 76,
+     "look": "rot_rock",
+     "color": [
+      112,
+      84,
+      156
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Crystal",
+     "fbx_name": "IslPortal_Crystal",
+     "tris": 396,
+     "look": "crystal_purple",
+     "color": [
+      170,
+      100,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Flower",
+     "fbx_name": "IslPortal_Flower",
+     "tris": 640,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_FlowerMid",
+     "fbx_name": "IslPortal_FlowerMid",
+     "tris": 160,
+     "look": "glitch_lime",
+     "color": [
+      170,
+      250,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Glow",
+     "fbx_name": "IslPortal_Glow",
+     "tris": 240,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Leg",
+     "fbx_name": "IslPortal_Leg",
+     "tris": 120,
+     "look": "rot_rock_dark",
+     "color": [
+      80,
+      58,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_LegMoss",
+     "fbx_name": "IslPortal_LegMoss",
+     "tris": 40,
+     "look": "rot_grass",
+     "color": [
+      84,
+      214,
+      176
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Rune",
+     "fbx_name": "IslPortal_Rune",
+     "tris": 792,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Step",
+     "fbx_name": "IslPortal_Step",
+     "tris": 47,
+     "look": "rot_rock_dark",
+     "color": [
+      80,
+      58,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_StepTop",
+     "fbx_name": "IslPortal_StepTop",
+     "tris": 33,
+     "look": "rot_rock",
+     "color": [
+      112,
+      84,
+      156
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Swirl",
+     "fbx_name": "IslPortal_Swirl",
+     "tris": 548,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Vortex",
+     "fbx_name": "IslPortal_Vortex",
+     "tris": 72,
+     "look": "vortex_glow",
+     "color": [
+      150,
+      80,
+      240
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortalCap": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    140.33,
+    139.01,
+    22.39
+   ],
+   "max": [
+    154.13,
+    153.15,
+    28.46
+   ],
+   "meshes": [
+    {
+     "name": "IslPortalCap_Leaves",
+     "fbx_name": "IslPortalCap_Leaves",
+     "tris": 1040,
+     "look": "rot_grass",
+     "color": [
+      84,
+      214,
+      176
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Landmarks": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -179.92,
+    -169.11,
+    -13.0
+   ],
+   "max": [
+    -128.73,
+    -118.99,
+    5.0
+   ],
+   "meshes": [
+    {
+     "name": "Landmarks",
+     "fbx_name": "Landmarks",
+     "tris": 2800,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Play_Decor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -113.95,
+    -108.95,
+    0.76
+   ],
+   "max": [
+    119.93,
+    118.95,
+    1.21
+   ],
+   "meshes": [
+    {
+     "name": "Floor_Decor",
+     "fbx_name": "Floor_Decor",
+     "tris": 2608,
+     "look": "rot_tile",
+     "color": [
+      132,
+      92,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotCrystalGlowCyan": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -158.72,
+    -148.45,
+    0.37
+   ],
+   "max": [
+    189.56,
+    167.86,
+    21.54
+   ],
+   "meshes": [
+    {
+     "name": "RotCrystalGlowCyan",
+     "fbx_name": "RotCrystalGlowCyan",
+     "tris": 1008,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotCrystalGlowMagenta": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -168.83,
+    -144.6,
+    0.41
+   ],
+   "max": [
+    187.53,
+    175.86,
+    21.09
+   ],
+   "meshes": [
+    {
+     "name": "RotCrystalGlowMagenta",
+     "fbx_name": "RotCrystalGlowMagenta",
+     "tris": 504,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotCrystalLilac": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -154.13,
+    -134.11,
+    0.45
+   ],
+   "max": [
+    193.05,
+    167.33,
+    31.45
+   ],
+   "meshes": [
+    {
+     "name": "RotCrystalLilac",
+     "fbx_name": "RotCrystalLilac",
+     "tris": 540,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotCube": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -152.77,
+    -137.7,
+    17.84
+   ],
+   "max": [
+    184.15,
+    150.2,
+    32.42
+   ],
+   "meshes": [
+    {
+     "name": "RotCube_Glow",
+     "fbx_name": "RotCube_Glow",
+     "tris": 744,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotCube_Lilac",
+     "fbx_name": "RotCube_Lilac",
+     "tris": 108,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotCube_Magenta",
+     "fbx_name": "RotCube_Magenta",
+     "tris": 324,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotCube_SkyBlue",
+     "fbx_name": "RotCube_SkyBlue",
+     "tris": 216,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotDice": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    156.81,
+    -26.28,
+    0.6
+   ],
+   "max": [
+    162.99,
+    -20.1,
+    5.66
+   ],
+   "meshes": [
+    {
+     "name": "RotDice_Cube",
+     "fbx_name": "RotDice_Cube",
+     "tris": 188,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotDice_Pip",
+     "fbx_name": "RotDice_Pip",
+     "tris": 312,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotEye": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -174.57,
+    -158.55,
+    15.27
+   ],
+   "max": [
+    170.34,
+    170.26,
+    28.57
+   ],
+   "meshes": [
+    {
+     "name": "RotEye_Iris",
+     "fbx_name": "RotEye_Iris",
+     "tris": 368,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotEye_Pupil",
+     "fbx_name": "RotEye_Pupil",
+     "tris": 272,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotEye_Ring",
+     "fbx_name": "RotEye_Ring",
+     "tris": 672,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotEye_Vein",
+     "fbx_name": "RotEye_Vein",
+     "tris": 192,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotEye_White",
+     "fbx_name": "RotEye_White",
+     "tris": 1360,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotFlower": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -102.72,
+    -100.05,
+    1.0
+   ],
+   "max": [
+    118.44,
+    111.9,
+    2.0
+   ],
+   "meshes": [
+    {
+     "name": "RotFlower_Stem",
+     "fbx_name": "RotFlower_Stem",
+     "tris": 768,
+     "look": "rot_grass",
+     "color": [
+      84,
+      214,
+      176
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotFlowerGlitchLime": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -96.28,
+    -98.13,
+    2.0
+   ],
+   "max": [
+    116.96,
+    91.81,
+    2.5
+   ],
+   "meshes": [
+    {
+     "name": "RotFlowerGlitchLime",
+     "fbx_name": "RotFlowerGlitchLime",
+     "tris": 484,
+     "look": "glitch_lime",
+     "color": [
+      170,
+      250,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotFlowerHouseYellow": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -102.33,
+    -100.37,
+    2.0
+   ],
+   "max": [
+    86.31,
+    92.68,
+    2.5
+   ],
+   "meshes": [
+    {
+     "name": "RotFlowerHouseYellow",
+     "fbx_name": "RotFlowerHouseYellow",
+     "tris": 528,
+     "look": "house_yellow",
+     "color": [
+      255,
+      210,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotFlowerMagenta": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -103.03,
+    -100.17,
+    2.0
+   ],
+   "max": [
+    118.75,
+    110.92,
+    2.5
+   ],
+   "meshes": [
+    {
+     "name": "RotFlowerMagenta",
+     "fbx_name": "RotFlowerMagenta",
+     "tris": 704,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotFlowerSkyBlue": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -102.68,
+    -94.49,
+    2.0
+   ],
+   "max": [
+    89.13,
+    112.22,
+    2.5
+   ],
+   "meshes": [
+    {
+     "name": "RotFlowerSkyBlue",
+     "fbx_name": "RotFlowerSkyBlue",
+     "tris": 396,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotGlitchGlitchLime": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -119.19,
+    -101.46,
+    0.97
+   ],
+   "max": [
+    111.19,
+    112.73,
+    1.07
+   ],
+   "meshes": [
+    {
+     "name": "RotGlitchGlitchLime",
+     "fbx_name": "RotGlitchGlitchLime",
+     "tris": 1540,
+     "look": "glitch_lime",
+     "color": [
+      170,
+      250,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotGlitchMagenta": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -108.98,
+    -91.53,
+    0.97
+   ],
+   "max": [
+    109.52,
+    98.44,
+    1.07
+   ],
+   "meshes": [
+    {
+     "name": "RotGlitchMagenta",
+     "fbx_name": "RotGlitchMagenta",
+     "tris": 1584,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotGlitchSkyBlue": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -112.68,
+    -104.36,
+    0.97
+   ],
+   "max": [
+    119.01,
+    113.4,
+    1.07
+   ],
+   "meshes": [
+    {
+     "name": "RotGlitchSkyBlue",
+     "fbx_name": "RotGlitchSkyBlue",
+     "tris": 1628,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotGlitchViolet": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -99.75,
+    -99.24,
+    0.97
+   ],
+   "max": [
+    112.01,
+    112.52,
+    1.07
+   ],
+   "meshes": [
+    {
+     "name": "RotGlitchViolet",
+     "fbx_name": "RotGlitchViolet",
+     "tris": 1232,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotGooBubble": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -155.11,
+    -149.88,
+    0.1
+   ],
+   "max": [
+    171.42,
+    97.95,
+    1.7
+   ],
+   "meshes": [
+    {
+     "name": "RotGooBubble",
+     "fbx_name": "RotGooBubble",
+     "tris": 1120,
+     "look": "goo_deep",
+     "color": [
+      130,
+      40,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotLamp": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -162.3,
+    -152.08,
+    1.0
+   ],
+   "max": [
+    -128.21,
+    -118.46,
+    9.85
+   ],
+   "meshes": [
+    {
+     "name": "RotLamp_Base",
+     "fbx_name": "RotLamp_Base",
+     "tris": 1080,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLamp_Gold",
+     "fbx_name": "RotLamp_Gold",
+     "tris": 720,
+     "look": "gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLamp_HeadGlowCyan",
+     "fbx_name": "RotLamp_HeadGlowCyan",
+     "tris": 640,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLamp_HeadGlowMagenta",
+     "fbx_name": "RotLamp_HeadGlowMagenta",
+     "tris": 160,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLamp_Post",
+     "fbx_name": "RotLamp_Post",
+     "tris": 1400,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotLeaning": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    80.24,
+    -139.76,
+    0.6
+   ],
+   "max": [
+    89.61,
+    -135.51,
+    23.0
+   ],
+   "meshes": [
+    {
+     "name": "RotLeaning_Lilac",
+     "fbx_name": "RotLeaning_Lilac",
+     "tris": 540,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLeaning_Orb",
+     "fbx_name": "RotLeaning_Orb",
+     "tris": 80,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLeaning_Violet",
+     "fbx_name": "RotLeaning_Violet",
+     "tris": 540,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotLeaning_Win",
+     "fbx_name": "RotLeaning_Win",
+     "tris": 132,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotMall": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -169.43,
+    -10.0,
+    0.6
+   ],
+   "max": [
+    -149.43,
+    20.0,
+    13.75
+   ],
+   "meshes": [
+    {
+     "name": "RotMall_Awning",
+     "fbx_name": "RotMall_Awning",
+     "tris": 540,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMall_Base",
+     "fbx_name": "RotMall_Base",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMall_Icing",
+     "fbx_name": "RotMall_Icing",
+     "tris": 3644,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMall_SprinkleCyan",
+     "fbx_name": "RotMall_SprinkleCyan",
+     "tris": 220,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMall_SprinkleLime",
+     "fbx_name": "RotMall_SprinkleLime",
+     "tris": 176,
+     "look": "glitch_lime",
+     "color": [
+      170,
+      250,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMall_Wall",
+     "fbx_name": "RotMall_Wall",
+     "tris": 108,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotMallSign": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -150.58,
+    -3.28,
+    7.92
+   ],
+   "max": [
+    -149.67,
+    13.13,
+    11.48
+   ],
+   "meshes": [
+    {
+     "name": "RotMallSign_Neon",
+     "fbx_name": "RotMallSign_Neon",
+     "tris": 48,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMallSign_Panel",
+     "fbx_name": "RotMallSign_Panel",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotMallWin": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -151.48,
+    -7.23,
+    2.38
+   ],
+   "max": [
+    -151.13,
+    17.23,
+    7.63
+   ],
+   "meshes": [
+    {
+     "name": "RotMallWin_Frame",
+     "fbx_name": "RotMallWin_Frame",
+     "tris": 640,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMallWin_Glass",
+     "fbx_name": "RotMallWin_Glass",
+     "tris": 240,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "RotMallWin_Shine",
+     "fbx_name": "RotMallWin_Shine",
+     "tris": 20,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotMush": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -158.96,
+    -162.51,
+    0.6
+   ],
+   "max": [
+    191.56,
+    148.29,
+    21.45
+   ],
+   "meshes": [
+    {
+     "name": "RotMush_Cap",
+     "fbx_name": "RotMush_Cap",
+     "tris": 2268,
+     "look": "mush_cap",
+     "color": [
+      250,
+      90,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMush_Glow",
+     "fbx_name": "RotMush_Glow",
+     "tris": 1400,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotMush_Stem",
+     "fbx_name": "RotMush_Stem",
+     "tris": 1176,
+     "look": "mush_stem",
+     "color": [
+      240,
+      230,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotNeon": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -3.32,
+    138.34,
+    0.6
+   ],
+   "max": [
+    13.21,
+    154.87,
+    49.8
+   ],
+   "meshes": [
+    {
+     "name": "RotNeon_Antenna",
+     "fbx_name": "RotNeon_Antenna",
+     "tris": 40,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_Base",
+     "fbx_name": "RotNeon_Base",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_Body",
+     "fbx_name": "RotNeon_Body",
+     "tris": 216,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_Crown",
+     "fbx_name": "RotNeon_Crown",
+     "tris": 216,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_Edge",
+     "fbx_name": "RotNeon_Edge",
+     "tris": 80,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_Red",
+     "fbx_name": "RotNeon_Red",
+     "tris": 20,
+     "look": "glow_red",
+     "color": [
+      255,
+      90,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_StripGlowCyan",
+     "fbx_name": "RotNeon_StripGlowCyan",
+     "tris": 880,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotNeon_StripGlowMagenta",
+     "fbx_name": "RotNeon_StripGlowMagenta",
+     "tris": 880,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotPixelTree": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -604.95,
+    -541.67,
+    -46.61
+   ],
+   "max": [
+    540.46,
+    325.61,
+    46.57
+   ],
+   "meshes": [
+    {
+     "name": "RotPixelTree_Lilac_1",
+     "fbx_name": "RotPixelTree_Lilac_1",
+     "tris": 16630,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Lilac_2",
+     "fbx_name": "RotPixelTree_Lilac_2",
+     "tris": 16634,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Magenta_1",
+     "fbx_name": "RotPixelTree_Magenta_1",
+     "tris": 16630,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Magenta_2",
+     "fbx_name": "RotPixelTree_Magenta_2",
+     "tris": 16632,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Magenta_3",
+     "fbx_name": "RotPixelTree_Magenta_3",
+     "tris": 16632,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Magenta_4",
+     "fbx_name": "RotPixelTree_Magenta_4",
+     "tris": 16634,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Trunk",
+     "fbx_name": "RotPixelTree_Trunk",
+     "tris": 10692,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Violet_1",
+     "fbx_name": "RotPixelTree_Violet_1",
+     "tris": 14254,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Violet_2",
+     "fbx_name": "RotPixelTree_Violet_2",
+     "tris": 14256,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Violet_3",
+     "fbx_name": "RotPixelTree_Violet_3",
+     "tris": 14256,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotPixelTree_Violet_4",
+     "fbx_name": "RotPixelTree_Violet_4",
+     "tris": 14258,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotScreen": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    55.26,
+    137.85,
+    0.6
+   ],
+   "max": [
+    87.21,
+    164.27,
+    35.0
+   ],
+   "meshes": [
+    {
+     "name": "RotScreen_Antenna",
+     "fbx_name": "RotScreen_Antenna",
+     "tris": 80,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Base",
+     "fbx_name": "RotScreen_Base",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_EyeWhite",
+     "fbx_name": "RotScreen_EyeWhite",
+     "tris": 216,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Field",
+     "fbx_name": "RotScreen_Field",
+     "tris": 44,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Frame",
+     "fbx_name": "RotScreen_Frame",
+     "tris": 108,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Grin",
+     "fbx_name": "RotScreen_Grin",
+     "tris": 108,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Pupil",
+     "fbx_name": "RotScreen_Pupil",
+     "tris": 216,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Red",
+     "fbx_name": "RotScreen_Red",
+     "tris": 40,
+     "look": "glow_red",
+     "color": [
+      255,
+      90,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Roof",
+     "fbx_name": "RotScreen_Roof",
+     "tris": 108,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Tongue",
+     "fbx_name": "RotScreen_Tongue",
+     "tris": 108,
+     "look": "flower_pink",
+     "color": [
+      255,
+      128,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_Tower",
+     "fbx_name": "RotScreen_Tower",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_WinGlowCyan",
+     "fbx_name": "RotScreen_WinGlowCyan",
+     "tris": 264,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreen_WinGlowWhite",
+     "fbx_name": "RotScreen_WinGlowWhite",
+     "tris": 264,
+     "look": "glow_white",
+     "color": [
+      255,
+      255,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotScreenSign": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    59.24,
+    138.01,
+    0.6
+   ],
+   "max": [
+    74.12,
+    145.98,
+    7.38
+   ],
+   "meshes": [
+    {
+     "name": "RotScreenSign_Neon",
+     "fbx_name": "RotScreenSign_Neon",
+     "tris": 48,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreenSign_Panel",
+     "fbx_name": "RotScreenSign_Panel",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotScreenSign_Post",
+     "fbx_name": "RotScreenSign_Post",
+     "tris": 72,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotTinyEye": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -39.31,
+    113.23,
+    1.0
+   ],
+   "max": [
+    -38.31,
+    114.23,
+    2.0
+   ],
+   "meshes": [
+    {
+     "name": "RotTinyEye_Pupil",
+     "fbx_name": "RotTinyEye_Pupil",
+     "tris": 20,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTinyEye_White",
+     "fbx_name": "RotTinyEye_White",
+     "tris": 80,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotToyDie": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -116.7,
+    -103.22,
+    1.0
+   ],
+   "max": [
+    117.44,
+    106.43,
+    2.23
+   ],
+   "meshes": [
+    {
+     "name": "RotToyDie",
+     "fbx_name": "RotToyDie",
+     "tris": 3564,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotToyDie_Pip",
+     "fbx_name": "RotToyDie_Pip",
+     "tris": 1188,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotTwisty": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -74.47,
+    144.46,
+    0.6
+   ],
+   "max": [
+    -48.66,
+    170.28,
+    48.7
+   ],
+   "meshes": [
+    {
+     "name": "RotTwisty_Base",
+     "fbx_name": "RotTwisty_Base",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_Lilac",
+     "fbx_name": "RotTwisty_Lilac",
+     "tris": 324,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_Magenta",
+     "fbx_name": "RotTwisty_Magenta",
+     "tris": 324,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_Orb",
+     "fbx_name": "RotTwisty_Orb",
+     "tris": 80,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_Spire",
+     "fbx_name": "RotTwisty_Spire",
+     "tris": 152,
+     "look": "magenta",
+     "color": [
+      230,
+      50,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_TrimGlowCyan",
+     "fbx_name": "RotTwisty_TrimGlowCyan",
+     "tris": 324,
+     "look": "glow_cyan",
+     "color": [
+      90,
+      210,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_TrimNight",
+     "fbx_name": "RotTwisty_TrimNight",
+     "tris": 1944,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_Violet",
+     "fbx_name": "RotTwisty_Violet",
+     "tris": 324,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_WinGlowMagenta",
+     "fbx_name": "RotTwisty_WinGlowMagenta",
+     "tris": 528,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwisty_WinGlowWhite",
+     "fbx_name": "RotTwisty_WinGlowWhite",
+     "tris": 1056,
+     "look": "glow_white",
+     "color": [
+      255,
+      255,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotTwistySign": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -63.49,
+    145.26,
+    0.6
+   ],
+   "max": [
+    -51.93,
+    150.82,
+    8.37
+   ],
+   "meshes": [
+    {
+     "name": "RotTwistySign_Neon",
+     "fbx_name": "RotTwistySign_Neon",
+     "tris": 48,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwistySign_Panel",
+     "fbx_name": "RotTwistySign_Panel",
+     "tris": 108,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotTwistySign_Post",
+     "fbx_name": "RotTwistySign_Post",
+     "tris": 72,
+     "look": "night",
+     "color": [
+      40,
+      30,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotUpsideCanopy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -155.57,
+    -146.67,
+    0.05
+   ],
+   "max": [
+    -73.45,
+    -94.11,
+    3.83
+   ],
+   "meshes": [
+    {
+     "name": "RotUpsideCanopy_lilac",
+     "fbx_name": "RotUpsideCanopy_lilac",
+     "tris": 4200,
+     "look": "lilac",
+     "color": [
+      190,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotUpsideHouse": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -158.72,
+    137.16,
+    0.55
+   ],
+   "max": [
+    -137.2,
+    158.62,
+    17.0
+   ],
+   "meshes": [
+    {
+     "name": "RotUpsideHouse_Chair",
+     "fbx_name": "RotUpsideHouse_Chair",
+     "tris": 216,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Chimney",
+     "fbx_name": "RotUpsideHouse_Chimney",
+     "tris": 108,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Door",
+     "fbx_name": "RotUpsideHouse_Door",
+     "tris": 108,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Floor",
+     "fbx_name": "RotUpsideHouse_Floor",
+     "tris": 108,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Knob",
+     "fbx_name": "RotUpsideHouse_Knob",
+     "tris": 20,
+     "look": "gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Ridge",
+     "fbx_name": "RotUpsideHouse_Ridge",
+     "tris": 28,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Roof",
+     "fbx_name": "RotUpsideHouse_Roof",
+     "tris": 12,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Table",
+     "fbx_name": "RotUpsideHouse_Table",
+     "tris": 188,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Trim",
+     "fbx_name": "RotUpsideHouse_Trim",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouse_Wall",
+     "fbx_name": "RotUpsideHouse_Wall",
+     "tris": 108,
+     "look": "house_yellow",
+     "color": [
+      255,
+      210,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotUpsideHouseWin": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -148.33,
+    138.7,
+    8.79
+   ],
+   "max": [
+    -138.79,
+    148.57,
+    12.52
+   ],
+   "meshes": [
+    {
+     "name": "RotUpsideHouseWin_Frame",
+     "fbx_name": "RotUpsideHouseWin_Frame",
+     "tris": 256,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouseWin_Glass",
+     "fbx_name": "RotUpsideHouseWin_Glass",
+     "tris": 96,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "RotUpsideHouseWin_Shine",
+     "fbx_name": "RotUpsideHouseWin_Shine",
+     "tris": 8,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouseWin_Shutter",
+     "fbx_name": "RotUpsideHouseWin_Shutter",
+     "tris": 464,
+     "look": "violet",
+     "color": [
+      110,
+      55,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "RotUpsideHouseWin_Sill",
+     "fbx_name": "RotUpsideHouseWin_Sill",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "RotUpsideTree": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -155.06,
+    -146.23,
+    2.71
+   ],
+   "max": [
+    -74.13,
+    -94.05,
+    12.64
+   ],
+   "meshes": [
+    {
+     "name": "RotUpsideTree_Trunk",
+     "fbx_name": "RotUpsideTree_Trunk",
+     "tris": 852,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Terrain": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -197.79,
+    -185.45,
+    -10.0
+   ],
+   "max": [
+    208.91,
+    182.67,
+    1.0
+   ],
+   "meshes": [
+    {
+     "name": "Floor_Plateau",
+     "fbx_name": "Floor_Plateau",
+     "tris": 1796,
+     "look": "rot_floor_dark",
+     "color": [
+      160,
+      122,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top",
+     "fbx_name": "Island_Top",
+     "tris": 1436,
+     "look": "rot_rim",
+     "color": [
+      96,
+      64,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Underside": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -200.54,
+    -189.02,
+    -107.27
+   ],
+   "max": [
+    213.03,
+    185.85,
+    3.08
+   ],
+   "meshes": [
+    {
+     "name": "Island_Underside_1",
+     "fbx_name": "Island_Underside_1",
+     "tris": 10422,
+     "look": "rot_rock",
+     "color": [
+      112,
+      84,
+      156
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_2",
+     "fbx_name": "Island_Underside_2",
+     "tris": 10670,
+     "look": "rot_rock",
+     "color": [
+      112,
+      84,
+      156
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Water": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -171.66,
+    -155.13,
+    -93.99
+   ],
+   "max": [
+    193.82,
+    105.72,
+    0.92
+   ],
+   "meshes": [
+    {
+     "name": "Foam_Mist",
+     "fbx_name": "Foam_Mist",
+     "tris": 11260,
+     "look": "foam_water",
+     "color": [
+      236,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water",
+     "fbx_name": "Water",
+     "tris": 1008,
+     "look": "goo_deep",
+     "color": [
+      130,
+      40,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

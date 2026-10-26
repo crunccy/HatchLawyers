@@ -1,0 +1,2604 @@
+{
+ "group": "food",
+ "fbx": "exports/overhaul/food.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "food_condiment_lamp": {
+   "origin": [
+    1.37,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.37,
+    -1.35,
+    0.0
+   ],
+   "max": [
+    1.37,
+    1.35,
+    9.8
+   ],
+   "meshes": [
+    {
+     "name": "FoodLamp_Glow",
+     "fbx_name": "FoodLamp_Glow",
+     "tris": 80,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLamp_Ketchup",
+     "fbx_name": "FoodLamp_Ketchup",
+     "tris": 216,
+     "look": "ketchup",
+     "color": [
+      222,
+      40,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLamp_Label",
+     "fbx_name": "FoodLamp_Label",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLamp_Nozzle",
+     "fbx_name": "FoodLamp_Nozzle",
+     "tris": 72,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_fruit_tree": {
+   "origin": [
+    30.484,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -3.74,
+    -4.35,
+    -0.08
+   ],
+   "max": [
+    3.43,
+    4.27,
+    10.7
+   ],
+   "meshes": [
+    {
+     "name": "FoodTree17_Leaves",
+     "fbx_name": "FoodTree17_Leaves",
+     "tris": 1600,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTree_Orange",
+     "fbx_name": "FoodTree_Orange",
+     "tris": 400,
+     "look": "orange",
+     "color": [
+      255,
+      140,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTree_Trunk",
+     "fbx_name": "FoodTree_Trunk",
+     "tris": 56,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_cupcake": {
+   "origin": [
+    61.596,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -3.68,
+    -3.68,
+    0.0
+   ],
+   "max": [
+    3.68,
+    3.68,
+    9.85
+   ],
+   "meshes": [
+    {
+     "name": "FoodCupcake_Cherry",
+     "fbx_name": "FoodCupcake_Cherry",
+     "tris": 80,
+     "look": "apple_red",
+     "color": [
+      230,
+      50,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_CreamSoft",
+     "fbx_name": "FoodCupcake_CreamSoft",
+     "tris": 456,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_Pink",
+     "fbx_name": "FoodCupcake_Pink",
+     "tris": 96,
+     "look": "pink",
+     "color": [
+      255,
+      120,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_Pleat",
+     "fbx_name": "FoodCupcake_Pleat",
+     "tris": 144,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_SprinkleOrange",
+     "fbx_name": "FoodCupcake_SprinkleOrange",
+     "tris": 36,
+     "look": "orange",
+     "color": [
+      255,
+      140,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_SprinklePink",
+     "fbx_name": "FoodCupcake_SprinklePink",
+     "tris": 36,
+     "look": "pink",
+     "color": [
+      255,
+      120,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_SprinkleSkyBlue",
+     "fbx_name": "FoodCupcake_SprinkleSkyBlue",
+     "tris": 48,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_SprinkleWhite",
+     "fbx_name": "FoodCupcake_SprinkleWhite",
+     "tris": 24,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCupcake_Stem",
+     "fbx_name": "FoodCupcake_Stem",
+     "tris": 26,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_lollipop": {
+   "origin": [
+    93.328,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.05,
+    -0.76,
+    0.0
+   ],
+   "max": [
+    4.05,
+    0.76,
+    14.05
+   ],
+   "meshes": [
+    {
+     "name": "FoodLolly_Band",
+     "fbx_name": "FoodLolly_Band",
+     "tris": 64,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_Red",
+     "fbx_name": "FoodLolly_Red",
+     "tris": 124,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_Stick",
+     "fbx_name": "FoodLolly_Stick",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_White",
+     "fbx_name": "FoodLolly_White",
+     "tris": 1440,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_candy_cane": {
+   "origin": [
+    121.998,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.62,
+    -0.62,
+    0.0
+   ],
+   "max": [
+    5.62,
+    0.62,
+    15.12
+   ],
+   "meshes": [
+    {
+     "name": "FoodCane_Red",
+     "fbx_name": "FoodCane_Red",
+     "tris": 568,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCane_White",
+     "fbx_name": "FoodCane_White",
+     "tris": 484,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_watermelon_slice": {
+   "origin": [
+    157.618,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -6.0,
+    -1.19,
+    0.03
+   ],
+   "max": [
+    6.0,
+    1.19,
+    6.06
+   ],
+   "meshes": [
+    {
+     "name": "FoodMelon_Red",
+     "fbx_name": "FoodMelon_Red",
+     "tris": 60,
+     "look": "melon_red",
+     "color": [
+      240,
+      70,
+      80
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodMelon_Rind",
+     "fbx_name": "FoodMelon_Rind",
+     "tris": 60,
+     "look": "melon_rind",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodMelon_Seed",
+     "fbx_name": "FoodMelon_Seed",
+     "tris": 200,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodMelon_White",
+     "fbx_name": "FoodMelon_White",
+     "tris": 60,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_burger_barn": {
+   "origin": [
+    202.618,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -15.0,
+    -16.02,
+    0.0
+   ],
+   "max": [
+    15.0,
+    13.0,
+    19.25
+   ],
+   "meshes": [
+    {
+     "name": "FoodBarnWin_Frame",
+     "fbx_name": "FoodBarnWin_Frame",
+     "tris": 896,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarnWin_Glass",
+     "fbx_name": "FoodBarnWin_Glass",
+     "tris": 336,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodBarnWin_Shine",
+     "fbx_name": "FoodBarnWin_Shine",
+     "tris": 28,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarnWin_Shutter",
+     "fbx_name": "FoodBarnWin_Shutter",
+     "tris": 232,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarnWin_Sill",
+     "fbx_name": "FoodBarnWin_Sill",
+     "tris": 308,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Base",
+     "fbx_name": "FoodBarn_Base",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Door",
+     "fbx_name": "FoodBarn_Door",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Leg",
+     "fbx_name": "FoodBarn_Leg",
+     "tris": 792,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Pole",
+     "fbx_name": "FoodBarn_Pole",
+     "tris": 60,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Ridge",
+     "fbx_name": "FoodBarn_Ridge",
+     "tris": 28,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Roof",
+     "fbx_name": "FoodBarn_Roof",
+     "tris": 88,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Sign",
+     "fbx_name": "FoodBarn_Sign",
+     "tris": 216,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Table",
+     "fbx_name": "FoodBarn_Table",
+     "tris": 396,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Trim",
+     "fbx_name": "FoodBarn_Trim",
+     "tris": 528,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_UmbrellaMustard",
+     "fbx_name": "FoodBarn_UmbrellaMustard",
+     "tris": 32,
+     "look": "mustard",
+     "color": [
+      250,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_UmbrellaRed",
+     "fbx_name": "FoodBarn_UmbrellaRed",
+     "tris": 64,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_UmbrellaWhite",
+     "fbx_name": "FoodBarn_UmbrellaWhite",
+     "tris": 96,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBarn_Wall",
+     "fbx_name": "FoodBarn_Wall",
+     "tris": 116,
+     "look": "brick_red",
+     "color": [
+      196,
+      86,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_pizza_palace": {
+   "origin": [
+    258.718,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -17.1,
+    -12.0,
+    0.0
+   ],
+   "max": [
+    17.1,
+    12.0,
+    23.2
+   ],
+   "meshes": [
+    {
+     "name": "FoodPizzaDoor_DoorFrame",
+     "fbx_name": "FoodPizzaDoor_DoorFrame",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaDoor_Glass",
+     "fbx_name": "FoodPizzaDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodPizzaDoor_Handle",
+     "fbx_name": "FoodPizzaDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaDoor_Leaf",
+     "fbx_name": "FoodPizzaDoor_Leaf",
+     "tris": 88,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaDoor_Panel",
+     "fbx_name": "FoodPizzaDoor_Panel",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaDoor_Step",
+     "fbx_name": "FoodPizzaDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaWin_Frame",
+     "fbx_name": "FoodPizzaWin_Frame",
+     "tris": 976,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaWin_Glass",
+     "fbx_name": "FoodPizzaWin_Glass",
+     "tris": 384,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodPizzaWin_Shine",
+     "fbx_name": "FoodPizzaWin_Shine",
+     "tris": 32,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizzaWin_Sill",
+     "fbx_name": "FoodPizzaWin_Sill",
+     "tris": 264,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_AwningRed",
+     "fbx_name": "FoodPizza_AwningRed",
+     "tris": 216,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_AwningWhite",
+     "fbx_name": "FoodPizza_AwningWhite",
+     "tris": 216,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Base",
+     "fbx_name": "FoodPizza_Base",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Brick",
+     "fbx_name": "FoodPizza_Brick",
+     "tris": 864,
+     "look": "brick_red",
+     "color": [
+      196,
+      86,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Cheese",
+     "fbx_name": "FoodPizza_Cheese",
+     "tris": 8,
+     "look": "cheese",
+     "color": [
+      255,
+      206,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Crust",
+     "fbx_name": "FoodPizza_Crust",
+     "tris": 12,
+     "look": "crust",
+     "color": [
+      222,
+      152,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Flag",
+     "fbx_name": "FoodPizza_Flag",
+     "tris": 192,
+     "look": "flag_red",
+     "color": [
+      232,
+      56,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Pepperoni",
+     "fbx_name": "FoodPizza_Pepperoni",
+     "tris": 260,
+     "look": "tomato",
+     "color": [
+      236,
+      62,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Pole",
+     "fbx_name": "FoodPizza_Pole",
+     "tris": 96,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Post",
+     "fbx_name": "FoodPizza_Post",
+     "tris": 28,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Roof",
+     "fbx_name": "FoodPizza_Roof",
+     "tris": 20,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Sign",
+     "fbx_name": "FoodPizza_Sign",
+     "tris": 108,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_SignTrim",
+     "fbx_name": "FoodPizza_SignTrim",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Stone",
+     "fbx_name": "FoodPizza_Stone",
+     "tris": 108,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Trim",
+     "fbx_name": "FoodPizza_Trim",
+     "tris": 196,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodPizza_Wall",
+     "fbx_name": "FoodPizza_Wall",
+     "tris": 108,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_donut_diner": {
+   "origin": [
+    314.818,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -15.0,
+    -11.0,
+    0.0
+   ],
+   "max": [
+    15.0,
+    11.0,
+    12.51
+   ],
+   "meshes": [
+    {
+     "name": "FoodDonutDoor_DoorFrame",
+     "fbx_name": "FoodDonutDoor_DoorFrame",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutDoor_Glass",
+     "fbx_name": "FoodDonutDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodDonutDoor_Handle",
+     "fbx_name": "FoodDonutDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutDoor_Leaf",
+     "fbx_name": "FoodDonutDoor_Leaf",
+     "tris": 88,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutDoor_Panel",
+     "fbx_name": "FoodDonutDoor_Panel",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutDoor_Step",
+     "fbx_name": "FoodDonutDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutWin_Frame",
+     "fbx_name": "FoodDonutWin_Frame",
+     "tris": 768,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutWin_Glass",
+     "fbx_name": "FoodDonutWin_Glass",
+     "tris": 288,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodDonutWin_Shine",
+     "fbx_name": "FoodDonutWin_Shine",
+     "tris": 24,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonutWin_Sill",
+     "fbx_name": "FoodDonutWin_Sill",
+     "tris": 264,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_AwningSkyBlue",
+     "fbx_name": "FoodDonut_AwningSkyBlue",
+     "tris": 252,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_AwningWhite",
+     "fbx_name": "FoodDonut_AwningWhite",
+     "tris": 252,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Base",
+     "fbx_name": "FoodDonut_Base",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_CheckBlack",
+     "fbx_name": "FoodDonut_CheckBlack",
+     "tris": 84,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_CheckWhite",
+     "fbx_name": "FoodDonut_CheckWhite",
+     "tris": 72,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Choc",
+     "fbx_name": "FoodDonut_Choc",
+     "tris": 448,
+     "look": "choc",
+     "color": [
+      110,
+      60,
+      32
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Chrome",
+     "fbx_name": "FoodDonut_Chrome",
+     "tris": 44,
+     "look": "chrome",
+     "color": [
+      210,
+      216,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_CreamSoft",
+     "fbx_name": "FoodDonut_CreamSoft",
+     "tris": 448,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Dough",
+     "fbx_name": "FoodDonut_Dough",
+     "tris": 2688,
+     "look": "waffle",
+     "color": [
+      214,
+      150,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Frosting",
+     "fbx_name": "FoodDonut_Frosting",
+     "tris": 448,
+     "look": "frosting",
+     "color": [
+      255,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Sign",
+     "fbx_name": "FoodDonut_Sign",
+     "tris": 108,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SignTrim",
+     "fbx_name": "FoodDonut_SignTrim",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SprinkleLemon",
+     "fbx_name": "FoodDonut_SprinkleLemon",
+     "tris": 132,
+     "look": "lemon",
+     "color": [
+      255,
+      230,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SprinkleLettuce",
+     "fbx_name": "FoodDonut_SprinkleLettuce",
+     "tris": 176,
+     "look": "lettuce",
+     "color": [
+      132,
+      212,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SprinkleOrange",
+     "fbx_name": "FoodDonut_SprinkleOrange",
+     "tris": 220,
+     "look": "orange",
+     "color": [
+      255,
+      140,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SprinklePink",
+     "fbx_name": "FoodDonut_SprinklePink",
+     "tris": 220,
+     "look": "pink",
+     "color": [
+      255,
+      120,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SprinkleSkyBlue",
+     "fbx_name": "FoodDonut_SprinkleSkyBlue",
+     "tris": 352,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_SprinkleWhite",
+     "fbx_name": "FoodDonut_SprinkleWhite",
+     "tris": 220,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Trim",
+     "fbx_name": "FoodDonut_Trim",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodDonut_Wall",
+     "fbx_name": "FoodDonut_Wall",
+     "tris": 108,
+     "look": "frosting",
+     "color": [
+      255,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_taco_tower": {
+   "origin": [
+    365.818,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -12.0,
+    -12.0,
+    0.0
+   ],
+   "max": [
+    12.0,
+    12.0,
+    36.5
+   ],
+   "meshes": [
+    {
+     "name": "FoodTacoDoor_DoorFrame",
+     "fbx_name": "FoodTacoDoor_DoorFrame",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoDoor_Glass",
+     "fbx_name": "FoodTacoDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodTacoDoor_Handle",
+     "fbx_name": "FoodTacoDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoDoor_Leaf",
+     "fbx_name": "FoodTacoDoor_Leaf",
+     "tris": 88,
+     "look": "veg_green",
+     "color": [
+      78,
+      172,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoDoor_Panel",
+     "fbx_name": "FoodTacoDoor_Panel",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoDoor_Step",
+     "fbx_name": "FoodTacoDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoWin_Frame",
+     "fbx_name": "FoodTacoWin_Frame",
+     "tris": 3072,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoWin_Glass",
+     "fbx_name": "FoodTacoWin_Glass",
+     "tris": 1152,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "FoodTacoWin_Shine",
+     "fbx_name": "FoodTacoWin_Shine",
+     "tris": 96,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTacoWin_Sill",
+     "fbx_name": "FoodTacoWin_Sill",
+     "tris": 1056,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Base",
+     "fbx_name": "FoodTaco_Base",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Cheese",
+     "fbx_name": "FoodTaco_Cheese",
+     "tris": 60,
+     "look": "cheese",
+     "color": [
+      255,
+      206,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Lemon",
+     "fbx_name": "FoodTaco_Lemon",
+     "tris": 108,
+     "look": "lemon",
+     "color": [
+      255,
+      230,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Lettuce",
+     "fbx_name": "FoodTaco_Lettuce",
+     "tris": 60,
+     "look": "lettuce",
+     "color": [
+      132,
+      212,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Orange",
+     "fbx_name": "FoodTaco_Orange",
+     "tris": 108,
+     "look": "orange",
+     "color": [
+      255,
+      140,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Red",
+     "fbx_name": "FoodTaco_Red",
+     "tris": 108,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Shell",
+     "fbx_name": "FoodTaco_Shell",
+     "tris": 60,
+     "look": "waffle",
+     "color": [
+      214,
+      150,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Sign",
+     "fbx_name": "FoodTaco_Sign",
+     "tris": 108,
+     "look": "veg_green",
+     "color": [
+      78,
+      172,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Tomato",
+     "fbx_name": "FoodTaco_Tomato",
+     "tris": 60,
+     "look": "tomato",
+     "color": [
+      236,
+      62,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodTaco_Trim",
+     "fbx_name": "FoodTaco_Trim",
+     "tris": 324,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_giant_burger": {
+   "origin": [
+    410.179,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -8.36,
+    -8.08,
+    0.0
+   ],
+   "max": [
+    8.31,
+    8.5,
+    10.33
+   ],
+   "meshes": [
+    {
+     "name": "FoodBurger_Bun",
+     "fbx_name": "FoodBurger_Bun",
+     "tris": 1000,
+     "look": "bun",
+     "color": [
+      230,
+      152,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBurger_Cheese",
+     "fbx_name": "FoodBurger_Cheese",
+     "tris": 220,
+     "look": "cheese",
+     "color": [
+      255,
+      206,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBurger_Lettuce",
+     "fbx_name": "FoodBurger_Lettuce",
+     "tris": 864,
+     "look": "lettuce",
+     "color": [
+      132,
+      212,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBurger_Patty",
+     "fbx_name": "FoodBurger_Patty",
+     "tris": 240,
+     "look": "patty",
+     "color": [
+      112,
+      62,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBurger_Sesame",
+     "fbx_name": "FoodBurger_Sesame",
+     "tris": 320,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodBurger_Tomato",
+     "fbx_name": "FoodBurger_Tomato",
+     "tris": 240,
+     "look": "tomato",
+     "color": [
+      236,
+      62,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_giant_fries": {
+   "origin": [
+    447.191,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.7,
+    -4.7,
+    0.0
+   ],
+   "max": [
+    4.7,
+    4.7,
+    17.29
+   ],
+   "meshes": [
+    {
+     "name": "FoodFries_Box",
+     "fbx_name": "FoodFries_Box",
+     "tris": 16,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodFries_Fry",
+     "fbx_name": "FoodFries_Fry",
+     "tris": 1320,
+     "look": "fry",
+     "color": [
+      255,
+      212,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodFries_Star",
+     "fbx_name": "FoodFries_Star",
+     "tris": 36,
+     "look": "lemon",
+     "color": [
+      255,
+      230,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodFries_Trim",
+     "fbx_name": "FoodFries_Trim",
+     "tris": 24,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_ice_cream": {
+   "origin": [
+    478.791,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.9,
+    -2.9,
+    0.0
+   ],
+   "max": [
+    2.9,
+    2.9,
+    18.5
+   ],
+   "meshes": [
+    {
+     "name": "FoodIceCream_Cherry",
+     "fbx_name": "FoodIceCream_Cherry",
+     "tris": 80,
+     "look": "apple_red",
+     "color": [
+      230,
+      50,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodIceCream_Choc",
+     "fbx_name": "FoodIceCream_Choc",
+     "tris": 416,
+     "look": "choc",
+     "color": [
+      110,
+      60,
+      32
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodIceCream_Cone",
+     "fbx_name": "FoodIceCream_Cone",
+     "tris": 144,
+     "look": "waffle",
+     "color": [
+      214,
+      150,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodIceCream_CreamSoft",
+     "fbx_name": "FoodIceCream_CreamSoft",
+     "tris": 416,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodIceCream_Grid",
+     "fbx_name": "FoodIceCream_Grid",
+     "tris": 144,
+     "look": "crust",
+     "color": [
+      222,
+      152,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodIceCream_Pink",
+     "fbx_name": "FoodIceCream_Pink",
+     "tris": 416,
+     "look": "pink",
+     "color": [
+      255,
+      120,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_soda_fountain": {
+   "origin": [
+    516.191,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -10.5,
+    -10.5,
+    0.0
+   ],
+   "max": [
+    10.5,
+    10.5,
+    21.52
+   ],
+   "meshes": [
+    {
+     "name": "FoodSoda_Basin",
+     "fbx_name": "FoodSoda_Basin",
+     "tris": 528,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_CupRed",
+     "fbx_name": "FoodSoda_CupRed",
+     "tris": 256,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_CupWhite",
+     "fbx_name": "FoodSoda_CupWhite",
+     "tris": 192,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Foam",
+     "fbx_name": "FoodSoda_Foam",
+     "tris": 448,
+     "look": "cream_soft",
+     "color": [
+      255,
+      240,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Lid",
+     "fbx_name": "FoodSoda_Lid",
+     "tris": 224,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Nozzle",
+     "fbx_name": "FoodSoda_Nozzle",
+     "tris": 144,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Pour",
+     "fbx_name": "FoodSoda_Pour",
+     "tris": 176,
+     "look": "water_fall",
+     "color": [
+      70,
+      175,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Rim",
+     "fbx_name": "FoodSoda_Rim",
+     "tris": 288,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Soda",
+     "fbx_name": "FoodSoda_Soda",
+     "tris": 188,
+     "look": "water",
+     "color": [
+      60,
+      170,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodSoda_Straw",
+     "fbx_name": "FoodSoda_Straw",
+     "tris": 116,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "food_portal": {
+   "origin": [
+    571.798,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -21.11,
+    -32.06,
+    -1.6
+   ],
+   "max": [
+    21.21,
+    14.18,
+    30.6
+   ],
+   "meshes": [
+    {
+     "name": "FoodCane_Red",
+     "fbx_name": "FoodCane_Red.001",
+     "tris": 1136,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodCane_White",
+     "fbx_name": "FoodCane_White.001",
+     "tris": 968,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_Band",
+     "fbx_name": "FoodLolly_Band.001",
+     "tris": 128,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_Pink",
+     "fbx_name": "FoodLolly_Pink",
+     "tris": 248,
+     "look": "pink",
+     "color": [
+      255,
+      120,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_Stick",
+     "fbx_name": "FoodLolly_Stick.001",
+     "tris": 72,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FoodLolly_White",
+     "fbx_name": "FoodLolly_White.001",
+     "tris": 2880,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalCap_Leaves",
+     "fbx_name": "IslPortalCap_Leaves",
+     "tris": 1040,
+     "look": "frost_pink",
+     "color": [
+      255,
+      160,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Arch",
+     "fbx_name": "IslPortal_Arch",
+     "tris": 334,
+     "look": "biscuit",
+     "color": [
+      222,
+      168,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_ArchTop",
+     "fbx_name": "IslPortal_ArchTop",
+     "tris": 58,
+     "look": "frost_cream",
+     "color": [
+      255,
+      244,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Base",
+     "fbx_name": "IslPortal_Base",
+     "tris": 76,
+     "look": "frost_cream",
+     "color": [
+      255,
+      244,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Crystal",
+     "fbx_name": "IslPortal_Crystal",
+     "tris": 396,
+     "look": "crystal_purple",
+     "color": [
+      170,
+      100,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Glow",
+     "fbx_name": "IslPortal_Glow",
+     "tris": 240,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Leg",
+     "fbx_name": "IslPortal_Leg",
+     "tris": 120,
+     "look": "biscuit",
+     "color": [
+      222,
+      168,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_LegMoss",
+     "fbx_name": "IslPortal_LegMoss",
+     "tris": 40,
+     "look": "frost_pink",
+     "color": [
+      255,
+      160,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Rune",
+     "fbx_name": "IslPortal_Rune",
+     "tris": 792,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Step",
+     "fbx_name": "IslPortal_Step",
+     "tris": 47,
+     "look": "biscuit",
+     "color": [
+      222,
+      168,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_StepTop",
+     "fbx_name": "IslPortal_StepTop",
+     "tris": 33,
+     "look": "frost_cream",
+     "color": [
+      255,
+      244,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Swirl",
+     "fbx_name": "IslPortal_Swirl",
+     "tris": 548,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Vortex",
+     "fbx_name": "IslPortal_Vortex",
+     "tris": 72,
+     "look": "vortex_glow",
+     "color": [
+      150,
+      80,
+      240
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

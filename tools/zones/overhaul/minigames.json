@@ -1,0 +1,1686 @@
+{
+ "group": "minigames",
+ "fbx": "exports/overhaul/minigames.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "minigames_gavel_bonk": {
+   "origin": [
+    11.138,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -11.14,
+    -14.34,
+    0.0
+   ],
+   "max": [
+    10.3,
+    10.2,
+    10.98
+   ],
+   "meshes": [
+    {
+     "name": "GavelBonk_Base",
+     "fbx_name": "GavelBonk_Base",
+     "tris": 88,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Bench",
+     "fbx_name": "GavelBonk_Bench",
+     "tris": 396,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_BenchTop",
+     "fbx_name": "GavelBonk_BenchTop",
+     "tris": 88,
+     "look": "court_dark",
+     "color": [
+      100,
+      58,
+      32
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Button",
+     "fbx_name": "GavelBonk_Button",
+     "tris": 76,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Carpet",
+     "fbx_name": "GavelBonk_Carpet",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_GavelBand",
+     "fbx_name": "GavelBonk_GavelBand",
+     "tris": 120,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_GavelHandle",
+     "fbx_name": "GavelBonk_GavelHandle",
+     "tris": 76,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_GavelHead",
+     "fbx_name": "GavelBonk_GavelHead",
+     "tris": 128,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Gold",
+     "fbx_name": "GavelBonk_Gold",
+     "tris": 644,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_High",
+     "fbx_name": "GavelBonk_High",
+     "tris": 44,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Inset",
+     "fbx_name": "GavelBonk_Inset",
+     "tris": 12,
+     "look": "plaza",
+     "color": [
+      236,
+      226,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Inside",
+     "fbx_name": "GavelBonk_Inside",
+     "tris": 12,
+     "look": "court_dark",
+     "color": [
+      100,
+      58,
+      32
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Podium",
+     "fbx_name": "GavelBonk_Podium",
+     "tris": 260,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Post",
+     "fbx_name": "GavelBonk_Post",
+     "tris": 432,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Seal",
+     "fbx_name": "GavelBonk_Seal",
+     "tris": 92,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Sign",
+     "fbx_name": "GavelBonk_Sign",
+     "tris": 44,
+     "look": "sign_wood",
+     "color": [
+      150,
+      96,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_SignFrame",
+     "fbx_name": "GavelBonk_SignFrame",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_SignPost",
+     "fbx_name": "GavelBonk_SignPost",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GavelBonk_Trim",
+     "fbx_name": "GavelBonk_Trim",
+     "tris": 12,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "minigames_lucky_briefcase": {
+   "origin": [
+    56.575,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -11.14,
+    -14.34,
+    0.0
+   ],
+   "max": [
+    10.3,
+    10.2,
+    13.35
+   ],
+   "meshes": [
+    {
+     "name": "LuckyBriefcaseBulb_Globe",
+     "fbx_name": "LuckyBriefcaseBulb_Globe",
+     "tris": 280,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcaseBulb_Socket",
+     "fbx_name": "LuckyBriefcaseBulb_Socket",
+     "tris": 504,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcaseCase_Band",
+     "fbx_name": "LuckyBriefcaseCase_Band",
+     "tris": 36,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcaseCase_Case",
+     "fbx_name": "LuckyBriefcaseCase_Case",
+     "tris": 324,
+     "look": "brief_brown",
+     "color": [
+      136,
+      84,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcaseCase_Gold",
+     "fbx_name": "LuckyBriefcaseCase_Gold",
+     "tris": 660,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcaseCase_Handle",
+     "fbx_name": "LuckyBriefcaseCase_Handle",
+     "tris": 240,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Base",
+     "fbx_name": "LuckyBriefcase_Base",
+     "tris": 88,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Board",
+     "fbx_name": "LuckyBriefcase_Board",
+     "tris": 12,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_BoardFrame",
+     "fbx_name": "LuckyBriefcase_BoardFrame",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Button",
+     "fbx_name": "LuckyBriefcase_Button",
+     "tris": 76,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Carpet",
+     "fbx_name": "LuckyBriefcase_Carpet",
+     "tris": 12,
+     "look": "flag_purple",
+     "color": [
+      140,
+      80,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Felt",
+     "fbx_name": "LuckyBriefcase_Felt",
+     "tris": 12,
+     "look": "felt",
+     "color": [
+      40,
+      150,
+      96
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_FeltDark",
+     "fbx_name": "LuckyBriefcase_FeltDark",
+     "tris": 36,
+     "look": "felt_dark",
+     "color": [
+      30,
+      110,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Gold",
+     "fbx_name": "LuckyBriefcase_Gold",
+     "tris": 472,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Inset",
+     "fbx_name": "LuckyBriefcase_Inset",
+     "tris": 12,
+     "look": "plaza",
+     "color": [
+      236,
+      226,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Leg",
+     "fbx_name": "LuckyBriefcase_Leg",
+     "tris": 432,
+     "look": "court_dark",
+     "color": [
+      100,
+      58,
+      32
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Podium",
+     "fbx_name": "LuckyBriefcase_Podium",
+     "tris": 260,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Post",
+     "fbx_name": "LuckyBriefcase_Post",
+     "tris": 648,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Sign",
+     "fbx_name": "LuckyBriefcase_Sign",
+     "tris": 44,
+     "look": "sign_wood",
+     "color": [
+      150,
+      96,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_SignFrame",
+     "fbx_name": "LuckyBriefcase_SignFrame",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_SignPost",
+     "fbx_name": "LuckyBriefcase_SignPost",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Table",
+     "fbx_name": "LuckyBriefcase_Table",
+     "tris": 44,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LuckyBriefcase_Trim",
+     "fbx_name": "LuckyBriefcase_Trim",
+     "tris": 12,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "minigames_booth_FilingFrenzy": {
+   "origin": [
+    98.925,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -8.05,
+    -7.6,
+    0.0
+   ],
+   "max": [
+    8.05,
+    7.6,
+    15.11
+   ],
+   "meshes": [
+    {
+     "name": "BoothFilingFrenzy_Awning",
+     "fbx_name": "BoothFilingFrenzy_Awning",
+     "tris": 144,
+     "look": "booth_teal",
+     "color": [
+      40,
+      190,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_AwningW",
+     "fbx_name": "BoothFilingFrenzy_AwningW",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Bulbs",
+     "fbx_name": "BoothFilingFrenzy_Bulbs",
+     "tris": 400,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Counter",
+     "fbx_name": "BoothFilingFrenzy_Counter",
+     "tris": 44,
+     "look": "booth_teal",
+     "color": [
+      40,
+      190,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_CounterStripe",
+     "fbx_name": "BoothFilingFrenzy_CounterStripe",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Floor",
+     "fbx_name": "BoothFilingFrenzy_Floor",
+     "tris": 44,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_FolderCarpetRed",
+     "fbx_name": "BoothFilingFrenzy_FolderCarpetRed",
+     "tris": 44,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_FolderCashGreen",
+     "fbx_name": "BoothFilingFrenzy_FolderCashGreen",
+     "tris": 44,
+     "look": "cash_green",
+     "color": [
+      84,
+      196,
+      96
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_FolderLicenseYel",
+     "fbx_name": "BoothFilingFrenzy_FolderLicenseYel",
+     "tris": 44,
+     "look": "license_yel",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_FolderSpeedBlue",
+     "fbx_name": "BoothFilingFrenzy_FolderSpeedBlue",
+     "tris": 44,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Gold",
+     "fbx_name": "BoothFilingFrenzy_Gold",
+     "tris": 12,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Marquee",
+     "fbx_name": "BoothFilingFrenzy_Marquee",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_MarqueeBack",
+     "fbx_name": "BoothFilingFrenzy_MarqueeBack",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Paper",
+     "fbx_name": "BoothFilingFrenzy_Paper",
+     "tris": 84,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Pen",
+     "fbx_name": "BoothFilingFrenzy_Pen",
+     "tris": 20,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Planks",
+     "fbx_name": "BoothFilingFrenzy_Planks",
+     "tris": 96,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Post",
+     "fbx_name": "BoothFilingFrenzy_Post",
+     "tris": 216,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Screen",
+     "fbx_name": "BoothFilingFrenzy_Screen",
+     "tris": 12,
+     "look": "screen_glow",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_ScreenFrame",
+     "fbx_name": "BoothFilingFrenzy_ScreenFrame",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Stripe",
+     "fbx_name": "BoothFilingFrenzy_Stripe",
+     "tris": 120,
+     "look": "booth_teal",
+     "color": [
+      40,
+      190,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Top",
+     "fbx_name": "BoothFilingFrenzy_Top",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Tray",
+     "fbx_name": "BoothFilingFrenzy_Tray",
+     "tris": 44,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothFilingFrenzy_Wall",
+     "fbx_name": "BoothFilingFrenzy_Wall",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "minigames_booth_BriefcaseStack": {
+   "origin": [
+    139.025,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -8.05,
+    -7.6,
+    0.0
+   ],
+   "max": [
+    8.05,
+    7.6,
+    15.11
+   ],
+   "meshes": [
+    {
+     "name": "BoothBriefcaseStack_Awning",
+     "fbx_name": "BoothBriefcaseStack_Awning",
+     "tris": 144,
+     "look": "booth_orange",
+     "color": [
+      255,
+      150,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_AwningW",
+     "fbx_name": "BoothBriefcaseStack_AwningW",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Band",
+     "fbx_name": "BoothBriefcaseStack_Band",
+     "tris": 132,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_BriefBlack",
+     "fbx_name": "BoothBriefcaseStack_BriefBlack",
+     "tris": 108,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_BriefBrown",
+     "fbx_name": "BoothBriefcaseStack_BriefBrown",
+     "tris": 108,
+     "look": "brief_brown",
+     "color": [
+      136,
+      84,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Bulbs",
+     "fbx_name": "BoothBriefcaseStack_Bulbs",
+     "tris": 400,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_CarryRed",
+     "fbx_name": "BoothBriefcaseStack_CarryRed",
+     "tris": 108,
+     "look": "carry_red",
+     "color": [
+      232,
+      64,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Counter",
+     "fbx_name": "BoothBriefcaseStack_Counter",
+     "tris": 44,
+     "look": "booth_orange",
+     "color": [
+      255,
+      150,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_CounterStripe",
+     "fbx_name": "BoothBriefcaseStack_CounterStripe",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Floor",
+     "fbx_name": "BoothBriefcaseStack_Floor",
+     "tris": 44,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Gold",
+     "fbx_name": "BoothBriefcaseStack_Gold",
+     "tris": 540,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Handle",
+     "fbx_name": "BoothBriefcaseStack_Handle",
+     "tris": 312,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Marquee",
+     "fbx_name": "BoothBriefcaseStack_Marquee",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_MarqueeBack",
+     "fbx_name": "BoothBriefcaseStack_MarqueeBack",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Planks",
+     "fbx_name": "BoothBriefcaseStack_Planks",
+     "tris": 96,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Post",
+     "fbx_name": "BoothBriefcaseStack_Post",
+     "tris": 216,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Screen",
+     "fbx_name": "BoothBriefcaseStack_Screen",
+     "tris": 12,
+     "look": "screen_glow",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_ScreenFrame",
+     "fbx_name": "BoothBriefcaseStack_ScreenFrame",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Stripe",
+     "fbx_name": "BoothBriefcaseStack_Stripe",
+     "tris": 120,
+     "look": "booth_orange",
+     "color": [
+      255,
+      150,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Top",
+     "fbx_name": "BoothBriefcaseStack_Top",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Tray",
+     "fbx_name": "BoothBriefcaseStack_Tray",
+     "tris": 44,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothBriefcaseStack_Wall",
+     "fbx_name": "BoothBriefcaseStack_Wall",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "minigames_booth_LieDetector": {
+   "origin": [
+    179.125,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -8.05,
+    -7.6,
+    0.0
+   ],
+   "max": [
+    8.05,
+    7.6,
+    15.11
+   ],
+   "meshes": [
+    {
+     "name": "BoothLieDetector_Awning",
+     "fbx_name": "BoothLieDetector_Awning",
+     "tris": 144,
+     "look": "booth_pink",
+     "color": [
+      255,
+      110,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_AwningW",
+     "fbx_name": "BoothLieDetector_AwningW",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Bulbs",
+     "fbx_name": "BoothLieDetector_Bulbs",
+     "tris": 400,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Counter",
+     "fbx_name": "BoothLieDetector_Counter",
+     "tris": 44,
+     "look": "booth_pink",
+     "color": [
+      255,
+      110,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_CounterStripe",
+     "fbx_name": "BoothLieDetector_CounterStripe",
+     "tris": 108,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Floor",
+     "fbx_name": "BoothLieDetector_Floor",
+     "tris": 44,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Gold",
+     "fbx_name": "BoothLieDetector_Gold",
+     "tris": 12,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Ink",
+     "fbx_name": "BoothLieDetector_Ink",
+     "tris": 60,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Lamp",
+     "fbx_name": "BoothLieDetector_Lamp",
+     "tris": 140,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_LampCarpetRed",
+     "fbx_name": "BoothLieDetector_LampCarpetRed",
+     "tris": 20,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_LampCashGreen",
+     "fbx_name": "BoothLieDetector_LampCashGreen",
+     "tris": 20,
+     "look": "cash_green",
+     "color": [
+      84,
+      196,
+      96
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_LampShade",
+     "fbx_name": "BoothLieDetector_LampShade",
+     "tris": 140,
+     "look": "cash_green",
+     "color": [
+      84,
+      196,
+      96
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Machine",
+     "fbx_name": "BoothLieDetector_Machine",
+     "tris": 56,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Marquee",
+     "fbx_name": "BoothLieDetector_Marquee",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_MarqueeBack",
+     "fbx_name": "BoothLieDetector_MarqueeBack",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Paper",
+     "fbx_name": "BoothLieDetector_Paper",
+     "tris": 44,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Planks",
+     "fbx_name": "BoothLieDetector_Planks",
+     "tris": 96,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Post",
+     "fbx_name": "BoothLieDetector_Post",
+     "tris": 216,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Screen",
+     "fbx_name": "BoothLieDetector_Screen",
+     "tris": 12,
+     "look": "screen_glow",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_ScreenFrame",
+     "fbx_name": "BoothLieDetector_ScreenFrame",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Stripe",
+     "fbx_name": "BoothLieDetector_Stripe",
+     "tris": 120,
+     "look": "booth_pink",
+     "color": [
+      255,
+      110,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Top",
+     "fbx_name": "BoothLieDetector_Top",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BoothLieDetector_Wall",
+     "fbx_name": "BoothLieDetector_Wall",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

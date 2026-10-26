@@ -1,0 +1,3817 @@
+{
+ "group": "island_bay",
+ "fbx": "exports/overhaul/island_bay.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "BayBriefcase": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -64.07,
+    -151.22,
+    0.6
+   ],
+   "max": [
+    -41.97,
+    -140.04,
+    18.69
+   ],
+   "meshes": [
+    {
+     "name": "BayBriefcase_Gold",
+     "fbx_name": "BayBriefcase_Gold",
+     "tris": 708,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Handle",
+     "fbx_name": "BayBriefcase_Handle",
+     "tris": 256,
+     "look": "leather_dark",
+     "color": [
+      94,
+      54,
+      28
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Leather",
+     "fbx_name": "BayBriefcase_Leather",
+     "tris": 188,
+     "look": "leather",
+     "color": [
+      132,
+      78,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Paper",
+     "fbx_name": "BayBriefcase_Paper",
+     "tris": 36,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Plaque",
+     "fbx_name": "BayBriefcase_Plaque",
+     "tris": 44,
+     "look": "plaque",
+     "color": [
+      54,
+      50,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Plinth",
+     "fbx_name": "BayBriefcase_Plinth",
+     "tris": 88,
+     "look": "limestone_dark",
+     "color": [
+      200,
+      190,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Seam",
+     "fbx_name": "BayBriefcase_Seam",
+     "tris": 88,
+     "look": "leather_dark",
+     "color": [
+      94,
+      54,
+      28
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Stitch",
+     "fbx_name": "BayBriefcase_Stitch",
+     "tris": 432,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_String",
+     "fbx_name": "BayBriefcase_String",
+     "tris": 16,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayBriefcase_Tag",
+     "fbx_name": "BayBriefcase_Tag",
+     "tris": 44,
+     "look": "tag",
+     "color": [
+      250,
+      244,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayFerry": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    141.02,
+    -126.04,
+    -1.0
+   ],
+   "max": [
+    158.98,
+    -103.23,
+    8.8
+   ],
+   "meshes": [
+    {
+     "name": "BayFerry_Bench",
+     "fbx_name": "BayFerry_Bench",
+     "tris": 88,
+     "look": "deck_wood",
+     "color": [
+      196,
+      140,
+      86
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Blue",
+     "fbx_name": "BayFerry_Blue",
+     "tris": 64,
+     "look": "hull_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Cabin",
+     "fbx_name": "BayFerry_Cabin",
+     "tris": 88,
+     "look": "hull_white",
+     "color": [
+      244,
+      244,
+      248
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Deck",
+     "fbx_name": "BayFerry_Deck",
+     "tris": 20,
+     "look": "deck_wood",
+     "color": [
+      196,
+      140,
+      86
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Flag",
+     "fbx_name": "BayFerry_Flag",
+     "tris": 12,
+     "look": "hull_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Funnel",
+     "fbx_name": "BayFerry_Funnel",
+     "tris": 72,
+     "look": "hull_red",
+     "color": [
+      200,
+      56,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Funnel2",
+     "fbx_name": "BayFerry_Funnel2",
+     "tris": 108,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Glass",
+     "fbx_name": "BayFerry_Glass",
+     "tris": 440,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "BayFerry_Hull",
+     "fbx_name": "BayFerry_Hull",
+     "tris": 20,
+     "look": "hull_white",
+     "color": [
+      244,
+      244,
+      248
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Mast",
+     "fbx_name": "BayFerry_Mast",
+     "tris": 20,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Rail",
+     "fbx_name": "BayFerry_Rail",
+     "tris": 352,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerry_Red",
+     "fbx_name": "BayFerry_Red",
+     "tris": 20,
+     "look": "hull_red",
+     "color": [
+      200,
+      56,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayFerryBuoy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    146.53,
+    -118.57,
+    2.98
+   ],
+   "max": [
+    152.92,
+    -113.57,
+    4.62
+   ],
+   "meshes": [
+    {
+     "name": "BayFerryBuoy_Orange",
+     "fbx_name": "BayFerryBuoy_Orange",
+     "tris": 384,
+     "look": "lifebuoy",
+     "color": [
+      250,
+      110,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFerryBuoy_White",
+     "fbx_name": "BayFerryBuoy_White",
+     "tris": 384,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayFountain": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    65.55,
+    -153.83,
+    0.6
+   ],
+   "max": [
+    86.75,
+    -132.63,
+    10.02
+   ],
+   "meshes": [
+    {
+     "name": "BayFountain_Band",
+     "fbx_name": "BayFountain_Band",
+     "tris": 44,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFountain_Foam",
+     "fbx_name": "BayFountain_Foam",
+     "tris": 736,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFountain_Gold",
+     "fbx_name": "BayFountain_Gold",
+     "tris": 360,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFountain_Handle",
+     "fbx_name": "BayFountain_Handle",
+     "tris": 104,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFountain_Jet",
+     "fbx_name": "BayFountain_Jet",
+     "tris": 816,
+     "look": "water_fall",
+     "color": [
+      70,
+      175,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFountain_Stone",
+     "fbx_name": "BayFountain_Stone",
+     "tris": 1244,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayFountain_Water",
+     "fbx_name": "BayFountain_Water",
+     "tris": 312,
+     "look": "water",
+     "color": [
+      60,
+      170,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayGavel": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    58.79,
+    132.86,
+    0.6
+   ],
+   "max": [
+    81.9,
+    155.18,
+    9.75
+   ],
+   "meshes": [
+    {
+     "name": "BayGavel_Gold",
+     "fbx_name": "BayGavel_Gold",
+     "tris": 464,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayGavel_Plaque",
+     "fbx_name": "BayGavel_Plaque",
+     "tris": 44,
+     "look": "plaque",
+     "color": [
+      54,
+      50,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayGavel_Plinth",
+     "fbx_name": "BayGavel_Plinth",
+     "tris": 88,
+     "look": "limestone_dark",
+     "color": [
+      200,
+      190,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayGavel_Wood",
+     "fbx_name": "BayGavel_Wood",
+     "tris": 584,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayLighthouse": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    97.52,
+    -163.44,
+    5.0
+   ],
+   "max": [
+    112.72,
+    -140.23,
+    42.5
+   ],
+   "meshes": [
+    {
+     "name": "BayLighthouse_Base",
+     "fbx_name": "BayLighthouse_Base",
+     "tris": 268,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Chimney",
+     "fbx_name": "BayLighthouse_Chimney",
+     "tris": 44,
+     "look": "limestone_dark",
+     "color": [
+      200,
+      190,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Cottage",
+     "fbx_name": "BayLighthouse_Cottage",
+     "tris": 52,
+     "look": "cottage_wall",
+     "color": [
+      246,
+      238,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Frame",
+     "fbx_name": "BayLighthouse_Frame",
+     "tris": 176,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Glass",
+     "fbx_name": "BayLighthouse_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "BayLighthouse_Glow",
+     "fbx_name": "BayLighthouse_Glow",
+     "tris": 76,
+     "look": "beacon_glow",
+     "color": [
+      255,
+      230,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Gold",
+     "fbx_name": "BayLighthouse_Gold",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Iron",
+     "fbx_name": "BayLighthouse_Iron",
+     "tris": 712,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Red",
+     "fbx_name": "BayLighthouse_Red",
+     "tris": 632,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Ridge",
+     "fbx_name": "BayLighthouse_Ridge",
+     "tris": 28,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Rock",
+     "fbx_name": "BayLighthouse_Rock",
+     "tris": 140,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_Roof",
+     "fbx_name": "BayLighthouse_Roof",
+     "tris": 88,
+     "look": "cottage_roof",
+     "color": [
+      196,
+      64,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouse_White",
+     "fbx_name": "BayLighthouse_White",
+     "tris": 168,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayLighthouseCottage": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    102.3,
+    -141.85,
+    5.36
+   ],
+   "max": [
+    111.0,
+    -139.67,
+    9.0
+   ],
+   "meshes": [
+    {
+     "name": "BayLighthouseCottage_DoorFrame",
+     "fbx_name": "BayLighthouseCottage_DoorFrame",
+     "tris": 176,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Frame",
+     "fbx_name": "BayLighthouseCottage_Frame",
+     "tris": 256,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Glass",
+     "fbx_name": "BayLighthouseCottage_Glass",
+     "tris": 144,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "BayLighthouseCottage_Handle",
+     "fbx_name": "BayLighthouseCottage_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Leaf",
+     "fbx_name": "BayLighthouseCottage_Leaf",
+     "tris": 88,
+     "look": "hull_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Panel",
+     "fbx_name": "BayLighthouseCottage_Panel",
+     "tris": 176,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Shine",
+     "fbx_name": "BayLighthouseCottage_Shine",
+     "tris": 8,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Shutter",
+     "fbx_name": "BayLighthouseCottage_Shutter",
+     "tris": 464,
+     "look": "hull_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Sill",
+     "fbx_name": "BayLighthouseCottage_Sill",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseCottage_Step",
+     "fbx_name": "BayLighthouseCottage_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayLighthouseDoor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    103.32,
+    -161.54,
+    7.86
+   ],
+   "max": [
+    106.92,
+    -159.89,
+    11.9
+   ],
+   "meshes": [
+    {
+     "name": "BayLighthouseDoor_DoorFrame",
+     "fbx_name": "BayLighthouseDoor_DoorFrame",
+     "tris": 176,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseDoor_Glass",
+     "fbx_name": "BayLighthouseDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "BayLighthouseDoor_Handle",
+     "fbx_name": "BayLighthouseDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseDoor_Leaf",
+     "fbx_name": "BayLighthouseDoor_Leaf",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseDoor_Panel",
+     "fbx_name": "BayLighthouseDoor_Panel",
+     "tris": 176,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayLighthouseDoor_Step",
+     "fbx_name": "BayLighthouseDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayPortal": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -17.9,
+    148.25,
+    -0.62
+   ],
+   "max": [
+    17.9,
+    178.5,
+    31.11
+   ],
+   "meshes": [
+    {
+     "name": "BayPortal_Band",
+     "fbx_name": "BayPortal_Band",
+     "tris": 44,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Crystal",
+     "fbx_name": "BayPortal_Crystal",
+     "tris": 288,
+     "look": "crystal_purple",
+     "color": [
+      170,
+      100,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Flower",
+     "fbx_name": "BayPortal_Flower",
+     "tris": 560,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_FlowerMid",
+     "fbx_name": "BayPortal_FlowerMid",
+     "tris": 140,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Glow",
+     "fbx_name": "BayPortal_Glow",
+     "tris": 240,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Gold",
+     "fbx_name": "BayPortal_Gold",
+     "tris": 1004,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Handle",
+     "fbx_name": "BayPortal_Handle",
+     "tris": 104,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Leg",
+     "fbx_name": "BayPortal_Leg",
+     "tris": 176,
+     "look": "limestone_dark",
+     "color": [
+      200,
+      190,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Rune",
+     "fbx_name": "BayPortal_Rune",
+     "tris": 792,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Stone",
+     "fbx_name": "BayPortal_Stone",
+     "tris": 152,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Swirl",
+     "fbx_name": "BayPortal_Swirl",
+     "tris": 548,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayPortal_Vortex",
+     "fbx_name": "BayPortal_Vortex",
+     "tris": 72,
+     "look": "vortex_glow",
+     "color": [
+      150,
+      80,
+      240
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayPortalCap": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -9.51,
+    165.47,
+    22.88
+   ],
+   "max": [
+    9.19,
+    168.52,
+    28.53
+   ],
+   "meshes": [
+    {
+     "name": "BayPortalCap_Leaves",
+     "fbx_name": "BayPortalCap_Leaves",
+     "tris": 1000,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayPortalMoss-1": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -17.16,
+    166.07,
+    3.04
+   ],
+   "max": [
+    -13.66,
+    169.56,
+    6.27
+   ],
+   "meshes": [
+    {
+     "name": "BayPortalMoss-1_Leaves",
+     "fbx_name": "BayPortalMoss-1_Leaves",
+     "tris": 520,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayPortalMoss1": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    13.6,
+    166.05,
+    3.11
+   ],
+   "max": [
+    17.18,
+    169.59,
+    6.2
+   ],
+   "meshes": [
+    {
+     "name": "BayPortalMoss1_Leaves",
+     "fbx_name": "BayPortalMoss1_Leaves",
+     "tris": 520,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BaySailboat": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    168.7,
+    -99.36,
+    0.0
+   ],
+   "max": [
+    177.09,
+    -92.34,
+    12.0
+   ],
+   "meshes": [
+    {
+     "name": "BaySailboat_Deck",
+     "fbx_name": "BaySailboat_Deck",
+     "tris": 16,
+     "look": "deck_wood",
+     "color": [
+      196,
+      140,
+      86
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BaySailboat_Flag",
+     "fbx_name": "BaySailboat_Flag",
+     "tris": 8,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BaySailboat_Hull",
+     "fbx_name": "BaySailboat_Hull",
+     "tris": 16,
+     "look": "hull_white",
+     "color": [
+      244,
+      244,
+      248
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BaySailboat_Mast",
+     "fbx_name": "BaySailboat_Mast",
+     "tris": 48,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BaySailboat_Red",
+     "fbx_name": "BaySailboat_Red",
+     "tris": 16,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BaySailboat_Sail",
+     "fbx_name": "BaySailboat_Sail",
+     "tris": 576,
+     "look": "sail",
+     "color": [
+      250,
+      248,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayWelcome": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -10.75,
+    -154.7,
+    1.04
+   ],
+   "max": [
+    10.75,
+    -151.7,
+    14.44
+   ],
+   "meshes": [
+    {
+     "name": "BayWelcome_Board",
+     "fbx_name": "BayWelcome_Board",
+     "tris": 44,
+     "look": "sign_wood",
+     "color": [
+      150,
+      96,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayWelcome_Frame",
+     "fbx_name": "BayWelcome_Frame",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayWelcome_Gold",
+     "fbx_name": "BayWelcome_Gold",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayWelcome_Pillar",
+     "fbx_name": "BayWelcome_Pillar",
+     "tris": 352,
+     "look": "limestone_dark",
+     "color": [
+      200,
+      190,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayWelcome_Rope",
+     "fbx_name": "BayWelcome_Rope",
+     "tris": 32,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayWelcomeBuoy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -7.57,
+    -154.02,
+    6.12
+   ],
+   "max": [
+    7.57,
+    -153.58,
+    7.96
+   ],
+   "meshes": [
+    {
+     "name": "BayWelcomeBuoy_Orange",
+     "fbx_name": "BayWelcomeBuoy_Orange",
+     "tris": 384,
+     "look": "lifebuoy",
+     "color": [
+      250,
+      110,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BayWelcomeBuoy_White",
+     "fbx_name": "BayWelcomeBuoy_White",
+     "tris": 384,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayWelcomeIvy-1": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -11.16,
+    -155.18,
+    0.96
+   ],
+   "max": [
+    -9.03,
+    -153.28,
+    4.69
+   ],
+   "meshes": [
+    {
+     "name": "BayWelcomeIvy-1_Leaves",
+     "fbx_name": "BayWelcomeIvy-1_Leaves",
+     "tris": 600,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "BayWelcomeIvy1": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    9.0,
+    -155.11,
+    0.99
+   ],
+   "max": [
+    11.08,
+    -153.35,
+    4.71
+   ],
+   "meshes": [
+    {
+     "name": "BayWelcomeIvy1_Leaves",
+     "fbx_name": "BayWelcomeIvy1_Leaves",
+     "tris": 600,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Bench": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -149.1,
+    -163.14,
+    0.6
+   ],
+   "max": [
+    140.71,
+    130.79,
+    4.66
+   ],
+   "meshes": [
+    {
+     "name": "Bench_Iron",
+     "fbx_name": "Bench_Iron",
+     "tris": 13520,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Bench_Wood",
+     "fbx_name": "Bench_Wood",
+     "tris": 4004,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "FlowerBed": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -69.25,
+    -181.53,
+    0.44
+   ],
+   "max": [
+    84.42,
+    174.68,
+    2.15
+   ],
+   "meshes": [
+    {
+     "name": "FlowerBed_FlowerMidOrange",
+     "fbx_name": "FlowerBed_FlowerMidOrange",
+     "tris": 1800,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerMidYel",
+     "fbx_name": "FlowerBed_FlowerMidYel",
+     "tris": 3580,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerPurple",
+     "fbx_name": "FlowerBed_FlowerPurple",
+     "tris": 7120,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerRed",
+     "fbx_name": "FlowerBed_FlowerRed",
+     "tris": 7200,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerYel",
+     "fbx_name": "FlowerBed_FlowerYel",
+     "tris": 7200,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves",
+     "tris": 640,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.001",
+     "tris": 640,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.002",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.003",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.004",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.005",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.006",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.007",
+     "tris": 636,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.008",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.009",
+     "tris": 648,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves",
+     "tris": 624,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.001",
+     "tris": 640,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.002",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.003",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.004",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.005",
+     "tris": 838,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.006",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.007",
+     "tris": 640,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.008",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.009",
+     "tris": 632,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves",
+     "tris": 644,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.001",
+     "tris": 636,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.002",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.003",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.004",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.005",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.006",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.007",
+     "tris": 636,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.008",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.009",
+     "tris": 644,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Soil",
+     "fbx_name": "FlowerBed_Soil",
+     "tris": 1080,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone",
+     "fbx_name": "FlowerBed_Stone",
+     "tris": 14040,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone2",
+     "fbx_name": "FlowerBed_Stone2",
+     "tris": 8640,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBlossom": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -211.96,
+    -568.06,
+    -40.78
+   ],
+   "max": [
+    218.9,
+    563.91,
+    15.08
+   ],
+   "meshes": [
+    {
+     "name": "IslBlossom_bark",
+     "fbx_name": "IslBlossom_bark",
+     "tris": 14144,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom_1",
+     "fbx_name": "IslBlossom_blossom_1",
+     "tris": 19497,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom_2",
+     "fbx_name": "IslBlossom_blossom_2",
+     "tris": 9750,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom_3",
+     "fbx_name": "IslBlossom_blossom_3",
+     "tris": 9751,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom_4",
+     "fbx_name": "IslBlossom_blossom_4",
+     "tris": 19499,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom_5",
+     "fbx_name": "IslBlossom_blossom_5",
+     "tris": 9750,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom_6",
+     "fbx_name": "IslBlossom_blossom_6",
+     "tris": 9751,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBollard": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    132.51,
+    -131.76,
+    1.2
+   ],
+   "max": [
+    176.98,
+    -75.77,
+    2.8
+   ],
+   "meshes": [
+    {
+     "name": "IslBollard_Iron",
+     "fbx_name": "IslBollard_Iron",
+     "tris": 2002,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBollard_Rope",
+     "fbx_name": "IslBollard_Rope",
+     "tris": 1300,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBuoy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    157.11,
+    -129.61,
+    0.4
+   ],
+   "max": [
+    173.08,
+    -112.4,
+    3.72
+   ],
+   "meshes": [
+    {
+     "name": "IslBuoy_Glow",
+     "fbx_name": "IslBuoy_Glow",
+     "tris": 40,
+     "look": "beacon_glow",
+     "color": [
+      255,
+      230,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBuoy_Iron",
+     "fbx_name": "IslBuoy_Iron",
+     "tris": 40,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBuoy_Red",
+     "fbx_name": "IslBuoy_Red",
+     "tris": 312,
+     "look": "lighthouse_red",
+     "color": [
+      226,
+      60,
+      56
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBuoy_White",
+     "fbx_name": "IslBuoy_White",
+     "tris": 120,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBush": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -585.86,
+    -564.29,
+    -40.81
+   ],
+   "max": [
+    545.23,
+    555.91,
+    41.63
+   ],
+   "meshes": [
+    {
+     "name": "IslBush_bush_1",
+     "fbx_name": "IslBush_bush_1",
+     "tris": 11313,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_2",
+     "fbx_name": "IslBush_bush_2",
+     "tris": 11316,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_3",
+     "fbx_name": "IslBush_bush_3",
+     "tris": 11315,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_4",
+     "fbx_name": "IslBush_bush_4",
+     "tris": 11316,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_5",
+     "fbx_name": "IslBush_bush_5",
+     "tris": 11313,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_6",
+     "fbx_name": "IslBush_bush_6",
+     "tris": 11317,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_7",
+     "fbx_name": "IslBush_bush_7",
+     "tris": 11314,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_8",
+     "fbx_name": "IslBush_bush_8",
+     "tris": 11318,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslDaisy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -135.37,
+    -123.78,
+    1.08
+   ],
+   "max": [
+    132.03,
+    120.45,
+    1.19
+   ],
+   "meshes": [
+    {
+     "name": "IslDaisy_1",
+     "fbx_name": "IslDaisy_1",
+     "tris": 14599,
+     "look": "flower_white",
+     "color": [
+      252,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslDaisy_2",
+     "fbx_name": "IslDaisy_2",
+     "tris": 14601,
+     "look": "flower_white",
+     "color": [
+      252,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFern": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -179.46,
+    -165.35,
+    0.8
+   ],
+   "max": [
+    180.9,
+    194.88,
+    12.87
+   ],
+   "meshes": [
+    {
+     "name": "IslFern",
+     "fbx_name": "IslFern",
+     "tris": 12600,
+     "look": "fern",
+     "color": [
+      60,
+      150,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFlower": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -187.41,
+    -204.34,
+    1.21
+   ],
+   "max": [
+    181.38,
+    171.27,
+    12.88
+   ],
+   "meshes": [
+    {
+     "name": "IslFlower_flower_pink",
+     "fbx_name": "IslFlower_flower_pink",
+     "tris": 8640,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslFlower_flower_purple",
+     "fbx_name": "IslFlower_flower_purple",
+     "tris": 10080,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslFlower_flower_red",
+     "fbx_name": "IslFlower_flower_red",
+     "tris": 11520,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslFlower_flower_white",
+     "fbx_name": "IslFlower_flower_white",
+     "tris": 9600,
+     "look": "flower_white",
+     "color": [
+      252,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslFlower_flower_yel",
+     "fbx_name": "IslFlower_flower_yel",
+     "tris": 12000,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFlowerMid": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -187.32,
+    -204.24,
+    1.14
+   ],
+   "max": [
+    181.3,
+    171.2,
+    12.93
+   ],
+   "meshes": [
+    {
+     "name": "IslFlowerMid_1",
+     "fbx_name": "IslFlowerMid_1",
+     "tris": 10128,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslFlowerMid_2",
+     "fbx_name": "IslFlowerMid_2",
+     "tris": 10132,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslGrass": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -194.41,
+    -203.88,
+    0.6
+   ],
+   "max": [
+    195.23,
+    191.7,
+    44.35
+   ],
+   "meshes": [
+    {
+     "name": "IslGrass",
+     "fbx_name": "IslGrass",
+     "tris": 7224,
+     "look": "leaf_sun",
+     "color": [
+      140,
+      214,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslHedge": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -144.14,
+    -128.82,
+    0.58
+   ],
+   "max": [
+    142.28,
+    131.48,
+    3.0
+   ],
+   "meshes": [
+    {
+     "name": "IslHedge_hedge_1",
+     "fbx_name": "IslHedge_hedge_1",
+     "tris": 11419,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_2",
+     "fbx_name": "IslHedge_hedge_2",
+     "tris": 11420,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_3",
+     "fbx_name": "IslHedge_hedge_3",
+     "tris": 11420,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_4",
+     "fbx_name": "IslHedge_hedge_4",
+     "tris": 11421,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_5",
+     "fbx_name": "IslHedge_hedge_5",
+     "tris": 11419,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_6",
+     "fbx_name": "IslHedge_hedge_6",
+     "tris": 11421,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_7",
+     "fbx_name": "IslHedge_hedge_7",
+     "tris": 11421,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslHedge_hedge_8",
+     "fbx_name": "IslHedge_hedge_8",
+     "tris": 11423,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslLifebuoy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    132.68,
+    -127.66,
+    1.2
+   ],
+   "max": [
+    173.08,
+    -75.19,
+    4.55
+   ],
+   "meshes": [
+    {
+     "name": "IslLifebuoy_Orange",
+     "fbx_name": "IslLifebuoy_Orange",
+     "tris": 576,
+     "look": "lifebuoy",
+     "color": [
+      250,
+      110,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslLifebuoy_Post",
+     "fbx_name": "IslLifebuoy_Post",
+     "tris": 264,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslLifebuoy_White",
+     "fbx_name": "IslLifebuoy_White",
+     "tris": 576,
+     "look": "lighthouse_white",
+     "color": [
+      248,
+      248,
+      244
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslOak": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -590.7,
+    -565.35,
+    -25.14
+   ],
+   "max": [
+    550.12,
+    500.3,
+    48.93
+   ],
+   "meshes": [
+    {
+     "name": "IslOak_bark",
+     "fbx_name": "IslOak_bark",
+     "tris": 19040,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_light_1",
+     "fbx_name": "IslOak_oak_light_1",
+     "tris": 11944,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_light_2",
+     "fbx_name": "IslOak_oak_light_2",
+     "tris": 11946,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_light_3",
+     "fbx_name": "IslOak_oak_light_3",
+     "tris": 11945,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_light_4",
+     "fbx_name": "IslOak_oak_light_4",
+     "tris": 11947,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_shade_1",
+     "fbx_name": "IslOak_oak_shade_1",
+     "tris": 14302,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_shade_2",
+     "fbx_name": "IslOak_oak_shade_2",
+     "tris": 14303,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_shade_3",
+     "fbx_name": "IslOak_oak_shade_3",
+     "tris": 14304,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_shade_4",
+     "fbx_name": "IslOak_oak_shade_4",
+     "tris": 14305,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPalm": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -187.56,
+    -184.61,
+    -0.01
+   ],
+   "max": [
+    197.04,
+    195.62,
+    56.83
+   ],
+   "meshes": [
+    {
+     "name": "IslPalm_nut",
+     "fbx_name": "IslPalm_nut",
+     "tris": 12000,
+     "look": "nut",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_bark",
+     "fbx_name": "IslPalm_palm_bark",
+     "tris": 18500,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_light_1",
+     "fbx_name": "IslPalm_palm_light_1",
+     "tris": 11698,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_light_2",
+     "fbx_name": "IslPalm_palm_light_2",
+     "tris": 11702,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_shade_1",
+     "fbx_name": "IslPalm_palm_shade_1",
+     "tris": 11698,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_shade_2",
+     "fbx_name": "IslPalm_palm_shade_2",
+     "tris": 11702,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPine": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -186.52,
+    -188.23,
+    0.38
+   ],
+   "max": [
+    192.38,
+    203.32,
+    25.76
+   ],
+   "meshes": [
+    {
+     "name": "IslPine_bark_dark",
+     "fbx_name": "IslPine_bark_dark",
+     "tris": 3458,
+     "look": "bark_dark",
+     "color": [
+      96,
+      60,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPine_pine_light",
+     "fbx_name": "IslPine_pine_light",
+     "tris": 6840,
+     "look": "pine_light",
+     "color": [
+      72,
+      168,
+      90
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPine_pine_shade",
+     "fbx_name": "IslPine_pine_shade",
+     "tris": 6612,
+     "look": "pine_shade",
+     "color": [
+      30,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslTopiary": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -23.3,
+    -187.3,
+    0.6
+   ],
+   "max": [
+    23.3,
+    167.3,
+    3.65
+   ],
+   "meshes": [
+    {
+     "name": "IslTopiary_Planter",
+     "fbx_name": "IslTopiary_Planter",
+     "tris": 264,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Rim",
+     "fbx_name": "IslTopiary_Rim",
+     "tris": 264,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Soil",
+     "fbx_name": "IslTopiary_Soil",
+     "tris": 72,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Stem",
+     "fbx_name": "IslTopiary_Stem",
+     "tris": 168,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslTopiaryBall": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -23.21,
+    -187.27,
+    2.76
+   ],
+   "max": [
+    23.22,
+    167.23,
+    5.67
+   ],
+   "meshes": [
+    {
+     "name": "IslTopiaryBall_hedge",
+     "fbx_name": "IslTopiaryBall_hedge",
+     "tris": 4320,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslTuft": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -143.59,
+    -127.5,
+    0.37
+   ],
+   "max": [
+    141.1,
+    132.25,
+    1.98
+   ],
+   "meshes": [
+    {
+     "name": "IslTuft_bush_1",
+     "fbx_name": "IslTuft_bush_1",
+     "tris": 13432,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTuft_bush_2",
+     "fbx_name": "IslTuft_bush_2",
+     "tris": 13435,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTuft_bush_3",
+     "fbx_name": "IslTuft_bush_3",
+     "tris": 13434,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTuft_bush_4",
+     "fbx_name": "IslTuft_bush_4",
+     "tris": 13435,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Lamp": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -143.68,
+    -182.91,
+    0.6
+   ],
+   "max": [
+    163.38,
+    161.8,
+    10.37
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow",
+     "tris": 300,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold",
+     "tris": 3100,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron",
+     "tris": 15600,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Landmarks": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -19.5,
+    -184.0,
+    0.4
+   ],
+   "max": [
+    19.5,
+    182.5,
+    1.65
+   ],
+   "meshes": [
+    {
+     "name": "Landmarks",
+     "fbx_name": "Landmarks",
+     "tris": 1796,
+     "look": "paving_dark",
+     "color": [
+      212,
+      196,
+      166
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Play_Decor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -135.56,
+    -125.03,
+    0.75
+   ],
+   "max": [
+    136.79,
+    127.78,
+    1.72
+   ],
+   "meshes": [
+    {
+     "name": "Green_Decor",
+     "fbx_name": "Green_Decor",
+     "tris": 10668,
+     "look": "paving_dark",
+     "color": [
+      212,
+      196,
+      166
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Terrain": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -201.8,
+    -218.7,
+    -10.0
+   ],
+   "max": [
+    201.97,
+    211.12,
+    1.0
+   ],
+   "meshes": [
+    {
+     "name": "Island_Top",
+     "fbx_name": "Island_Top",
+     "tris": 1436,
+     "look": "dirt_rim",
+     "color": [
+      156,
+      112,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "The_Green",
+     "fbx_name": "The_Green",
+     "tris": 2156,
+     "look": "rock_grey_light",
+     "color": [
+      230,
+      216,
+      188
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Underside": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -203.96,
+    -222.33,
+    -107.98
+   ],
+   "max": [
+    204.51,
+    214.01,
+    3.33
+   ],
+   "meshes": [
+    {
+     "name": "Island_Underside_1",
+     "fbx_name": "Island_Underside_1",
+     "tris": 11802,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_2",
+     "fbx_name": "Island_Underside_2",
+     "tris": 12074,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Water": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -176.75,
+    -153.65,
+    -80.46
+   ],
+   "max": [
+    207.36,
+    144.26,
+    39.4
+   ],
+   "meshes": [
+    {
+     "name": "Foam_Mist",
+     "fbx_name": "Foam_Mist",
+     "tris": 18620,
+     "look": "foam_water",
+     "color": [
+      236,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water",
+     "fbx_name": "Water",
+     "tris": 988,
+     "look": "bay_deep",
+     "color": [
+      30,
+      150,
+      200
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

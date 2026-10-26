@@ -1,0 +1,3878 @@
+{
+ "group": "island_pet",
+ "fbx": "exports/overhaul/island_pet.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "CafeTable": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.43,
+    142.11,
+    0.6
+   ],
+   "max": [
+    14.19,
+    147.19,
+    5.74
+   ],
+   "meshes": [
+    {
+     "name": "CafeTable_Gold",
+     "fbx_name": "CafeTable_Gold",
+     "tris": 40,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Iron",
+     "fbx_name": "CafeTable_Iron",
+     "tris": 1376,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Red",
+     "fbx_name": "CafeTable_Red",
+     "tris": 360,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Seat",
+     "fbx_name": "CafeTable_Seat",
+     "tris": 240,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Top",
+     "fbx_name": "CafeTable_Top",
+     "tris": 184,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_White",
+     "fbx_name": "CafeTable_White",
+     "tris": 360,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Crate": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -122.65,
+    -124.59,
+    0.97
+   ],
+   "max": [
+    -120.78,
+    -122.73,
+    2.83
+   ],
+   "meshes": [
+    {
+     "name": "Crate_Frame",
+     "fbx_name": "Crate_Frame",
+     "tris": 704,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Gap",
+     "fbx_name": "Crate_Gap",
+     "tris": 120,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Planks",
+     "fbx_name": "Crate_Planks",
+     "tris": 12,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "FlowerBed": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -161.66,
+    -37.29,
+    0.46
+   ],
+   "max": [
+    167.37,
+    112.94,
+    1.71
+   ],
+   "meshes": [
+    {
+     "name": "FlowerBed_FlowerMidOrange",
+     "fbx_name": "FlowerBed_FlowerMidOrange",
+     "tris": 900,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerMidYel",
+     "fbx_name": "FlowerBed_FlowerMidYel",
+     "tris": 1800,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerPurple",
+     "fbx_name": "FlowerBed_FlowerPurple",
+     "tris": 3600,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerRed",
+     "fbx_name": "FlowerBed_FlowerRed",
+     "tris": 3600,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerYel",
+     "fbx_name": "FlowerBed_FlowerYel",
+     "tris": 3600,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves",
+     "tris": 556,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.001",
+     "tris": 632,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.002",
+     "tris": 392,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.003",
+     "tris": 488,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.004",
+     "tris": 612,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves",
+     "tris": 532,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.001",
+     "tris": 624,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.002",
+     "tris": 392,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.003",
+     "tris": 464,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.004",
+     "tris": 600,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves",
+     "tris": 544,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.001",
+     "tris": 624,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.002",
+     "tris": 392,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.003",
+     "tris": 480,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.004",
+     "tris": 608,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Soil",
+     "fbx_name": "FlowerBed_Soil",
+     "tris": 540,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone",
+     "fbx_name": "FlowerBed_Stone",
+     "tris": 7020,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone2",
+     "fbx_name": "FlowerBed_Stone2",
+     "tris": 4320,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBarrel": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -136.73,
+    -114.56,
+    1.0
+   ],
+   "max": [
+    -129.97,
+    -108.65,
+    3.4
+   ],
+   "meshes": [
+    {
+     "name": "IslBarrel_Hoop",
+     "fbx_name": "IslBarrel_Hoop",
+     "tris": 240,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBarrel_Wood",
+     "fbx_name": "IslBarrel_Wood",
+     "tris": 320,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBlossom": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -416.09,
+    -392.97,
+    -30.76
+   ],
+   "max": [
+    284.5,
+    553.15,
+    44.14
+   ],
+   "meshes": [
+    {
+     "name": "IslBlossom_bark",
+     "fbx_name": "IslBlossom_bark",
+     "tris": 3264,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBlossom_blossom",
+     "fbx_name": "IslBlossom_blossom",
+     "tris": 18000,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBush": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -183.16,
+    -170.09,
+    0.2
+   ],
+   "max": [
+    188.79,
+    173.03,
+    25.88
+   ],
+   "meshes": [
+    {
+     "name": "IslBush_bush_1",
+     "fbx_name": "IslBush_bush_1",
+     "tris": 17199,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_2",
+     "fbx_name": "IslBush_bush_2",
+     "tris": 17201,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslDaisy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -105.56,
+    -93.42,
+    1.08
+   ],
+   "max": [
+    113.26,
+    110.04,
+    1.19
+   ],
+   "meshes": [
+    {
+     "name": "IslDaisy",
+     "fbx_name": "IslDaisy",
+     "tris": 5280,
+     "look": "flower_white",
+     "color": [
+      252,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFern": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    134.71,
+    134.13,
+    1.38
+   ],
+   "max": [
+    162.35,
+    162.72,
+    2.73
+   ],
+   "meshes": [
+    {
+     "name": "IslFern",
+     "fbx_name": "IslFern",
+     "tris": 1008,
+     "look": "fern",
+     "color": [
+      60,
+      150,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFlower": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -113.73,
+    -169.95,
+    1.73
+   ],
+   "max": [
+    164.41,
+    166.4,
+    2.64
+   ],
+   "meshes": [
+    {
+     "name": "IslFlower_flower_red",
+     "fbx_name": "IslFlower_flower_red",
+     "tris": 3360,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFlowerMid": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -113.63,
+    -169.85,
+    1.14
+   ],
+   "max": [
+    164.32,
+    166.32,
+    2.69
+   ],
+   "meshes": [
+    {
+     "name": "IslFlowerMid",
+     "fbx_name": "IslFlowerMid",
+     "tris": 2160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslGrass": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -163.55,
+    -139.64,
+    0.6
+   ],
+   "max": [
+    179.52,
+    150.15,
+    1.88
+   ],
+   "meshes": [
+    {
+     "name": "IslGrass",
+     "fbx_name": "IslGrass",
+     "tris": 336,
+     "look": "leaf_sun",
+     "color": [
+      140,
+      214,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslOak": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -167.0,
+    -599.69,
+    -9.3
+   ],
+   "max": [
+    441.35,
+    73.51,
+    18.97
+   ],
+   "meshes": [
+    {
+     "name": "IslOak_bark",
+     "fbx_name": "IslOak_bark",
+     "tris": 2720,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_light",
+     "fbx_name": "IslOak_oak_light",
+     "tris": 6919,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslOak_oak_shade",
+     "fbx_name": "IslOak_oak_shade",
+     "tris": 8081,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPine": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -167.6,
+    -155.49,
+    0.38
+   ],
+   "max": [
+    173.56,
+    174.05,
+    16.96
+   ],
+   "meshes": [
+    {
+     "name": "IslPine_bark_dark",
+     "fbx_name": "IslPine_bark_dark",
+     "tris": 728,
+     "look": "bark_dark",
+     "color": [
+      96,
+      60,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPine_pine_light",
+     "fbx_name": "IslPine_pine_light",
+     "tris": 1440,
+     "look": "pine_light",
+     "color": [
+      72,
+      168,
+      90
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPine_pine_shade",
+     "fbx_name": "IslPine_pine_shade",
+     "tris": 1392,
+     "look": "pine_shade",
+     "color": [
+      30,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortal": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    123.46,
+    123.01,
+    -0.6
+   ],
+   "max": [
+    164.24,
+    164.61,
+    31.6
+   ],
+   "meshes": [
+    {
+     "name": "IslPortal_Arch",
+     "fbx_name": "IslPortal_Arch",
+     "tris": 334,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_ArchTop",
+     "fbx_name": "IslPortal_ArchTop",
+     "tris": 58,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Base",
+     "fbx_name": "IslPortal_Base",
+     "tris": 76,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Crystal",
+     "fbx_name": "IslPortal_Crystal",
+     "tris": 396,
+     "look": "crystal_purple",
+     "color": [
+      170,
+      100,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Flower",
+     "fbx_name": "IslPortal_Flower",
+     "tris": 640,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_FlowerMid",
+     "fbx_name": "IslPortal_FlowerMid",
+     "tris": 160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Glow",
+     "fbx_name": "IslPortal_Glow",
+     "tris": 240,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Leg",
+     "fbx_name": "IslPortal_Leg",
+     "tris": 120,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_LegMoss",
+     "fbx_name": "IslPortal_LegMoss",
+     "tris": 40,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Rune",
+     "fbx_name": "IslPortal_Rune",
+     "tris": 792,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Step",
+     "fbx_name": "IslPortal_Step",
+     "tris": 47,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_StepTop",
+     "fbx_name": "IslPortal_StepTop",
+     "tris": 33,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Swirl",
+     "fbx_name": "IslPortal_Swirl",
+     "tris": 548,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Vortex",
+     "fbx_name": "IslPortal_Vortex",
+     "tris": 72,
+     "look": "vortex_glow",
+     "color": [
+      150,
+      80,
+      240
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortalCap": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    140.33,
+    139.01,
+    22.39
+   ],
+   "max": [
+    154.13,
+    153.15,
+    28.46
+   ],
+   "meshes": [
+    {
+     "name": "IslPortalCap_Leaves",
+     "fbx_name": "IslPortalCap_Leaves",
+     "tris": 1040,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslTopiary": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -90.81,
+    -158.56,
+    0.6
+   ],
+   "max": [
+    183.05,
+    55.05,
+    3.2
+   ],
+   "meshes": [
+    {
+     "name": "IslTopiary_Planter",
+     "fbx_name": "IslTopiary_Planter",
+     "tris": 132,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Rim",
+     "fbx_name": "IslTopiary_Rim",
+     "tris": 132,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Soil",
+     "fbx_name": "IslTopiary_Soil",
+     "tris": 36,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTopiary_Stem",
+     "fbx_name": "IslTopiary_Stem",
+     "tris": 84,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslTopiaryBall": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -90.48,
+    -158.21,
+    2.74
+   ],
+   "max": [
+    182.8,
+    54.81,
+    5.22
+   ],
+   "meshes": [
+    {
+     "name": "IslTopiaryBall_hedge",
+     "fbx_name": "IslTopiaryBall_hedge",
+     "tris": 2160,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Lamp": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -162.02,
+    -151.81,
+    1.0
+   ],
+   "max": [
+    -128.48,
+    -118.73,
+    8.85
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow",
+     "tris": 120,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold",
+     "tris": 1240,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron",
+     "tris": 6240,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Landmarks": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -179.92,
+    -169.11,
+    -13.0
+   ],
+   "max": [
+    -128.73,
+    -118.99,
+    5.0
+   ],
+   "meshes": [
+    {
+     "name": "Landmarks",
+     "fbx_name": "Landmarks",
+     "tris": 2800,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetBridge": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -177.04,
+    86.0,
+    0.7
+   ],
+   "max": [
+    -143.04,
+    108.8,
+    6.05
+   ],
+   "meshes": [
+    {
+     "name": "PetBridge_Plank",
+     "fbx_name": "PetBridge_Plank",
+     "tris": 660,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBridge_PlankDark",
+     "fbx_name": "PetBridge_PlankDark",
+     "tris": 660,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBridge_Post",
+     "fbx_name": "PetBridge_Post",
+     "tris": 640,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBridge_Rail",
+     "fbx_name": "PetBridge_Rail",
+     "tris": 304,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBridge_Stone",
+     "fbx_name": "PetBridge_Stone",
+     "tris": 88,
+     "look": "limestone_dark",
+     "color": [
+      200,
+      190,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetBunny": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -163.09,
+    -140.45,
+    0.6
+   ],
+   "max": [
+    179.18,
+    155.94,
+    4.95
+   ],
+   "meshes": [
+    {
+     "name": "PetBunny_Planter",
+     "fbx_name": "PetBunny_Planter",
+     "tris": 220,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunny_Rim",
+     "fbx_name": "PetBunny_Rim",
+     "tris": 220,
+     "look": "limestone",
+     "color": [
+      232,
+      224,
+      204
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunny_Soil",
+     "fbx_name": "PetBunny_Soil",
+     "tris": 60,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunny_Tail",
+     "fbx_name": "PetBunny_Tail",
+     "tris": 400,
+     "look": "fur_white",
+     "color": [
+      252,
+      248,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetBunnyShape": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -161.77,
+    -138.93,
+    1.31
+   ],
+   "max": [
+    177.84,
+    154.41,
+    11.12
+   ],
+   "meshes": [
+    {
+     "name": "PetBunnyShape_Leaves",
+     "fbx_name": "PetBunnyShape_Leaves",
+     "tris": 1800,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunnyShape_Leaves",
+     "fbx_name": "PetBunnyShape_Leaves.001",
+     "tris": 1800,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunnyShape_Leaves",
+     "fbx_name": "PetBunnyShape_Leaves.002",
+     "tris": 1800,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunnyShape_Leaves",
+     "fbx_name": "PetBunnyShape_Leaves.003",
+     "tris": 1800,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetBunnyShape_Leaves",
+     "fbx_name": "PetBunnyShape_Leaves.004",
+     "tris": 1800,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetCat": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    66.31,
+    148.04,
+    0.6
+   ],
+   "max": [
+    79.79,
+    161.52,
+    15.97
+   ],
+   "meshes": [
+    {
+     "name": "PetCat_Collar",
+     "fbx_name": "PetCat_Collar",
+     "tris": 192,
+     "look": "house_blue",
+     "color": [
+      70,
+      120,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Eye",
+     "fbx_name": "PetCat_Eye",
+     "tris": 160,
+     "look": "eye_green",
+     "color": [
+      90,
+      200,
+      90
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Gold",
+     "fbx_name": "PetCat_Gold",
+     "tris": 92,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Grey",
+     "fbx_name": "PetCat_Grey",
+     "tris": 16000,
+     "look": "cat_grey",
+     "color": [
+      128,
+      134,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Marble",
+     "fbx_name": "PetCat_Marble",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Pink",
+     "fbx_name": "PetCat_Pink",
+     "tris": 44,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Pupil",
+     "fbx_name": "PetCat_Pupil",
+     "tris": 24,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_Whisker",
+     "fbx_name": "PetCat_Whisker",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCat_White",
+     "fbx_name": "PetCat_White",
+     "tris": 8000,
+     "look": "fur_white",
+     "color": [
+      252,
+      248,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetCatTower": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    77.99,
+    -141.71,
+    0.6
+   ],
+   "max": [
+    86.36,
+    -133.43,
+    13.2
+   ],
+   "meshes": [
+    {
+     "name": "PetCatTower_Ball",
+     "fbx_name": "PetCatTower_Ball",
+     "tris": 80,
+     "look": "house_yellow",
+     "color": [
+      255,
+      210,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_Box",
+     "fbx_name": "PetCatTower_Box",
+     "tris": 108,
+     "look": "house_pink",
+     "color": [
+      255,
+      140,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_Carpet",
+     "fbx_name": "PetCatTower_Carpet",
+     "tris": 44,
+     "look": "house_pink",
+     "color": [
+      255,
+      140,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_Hole",
+     "fbx_name": "PetCatTower_Hole",
+     "tris": 60,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_Platform",
+     "fbx_name": "PetCatTower_Platform",
+     "tris": 480,
+     "look": "purple",
+     "color": [
+      150,
+      90,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_Rope",
+     "fbx_name": "PetCatTower_Rope",
+     "tris": 1188,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_Sisal",
+     "fbx_name": "PetCatTower_Sisal",
+     "tris": 132,
+     "look": "sisal",
+     "color": [
+      214,
+      186,
+      130
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCatTower_String",
+     "fbx_name": "PetCatTower_String",
+     "tris": 12,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetCorgi": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -75.93,
+    143.0,
+    0.6
+   ],
+   "max": [
+    -47.2,
+    171.73,
+    28.86
+   ],
+   "meshes": [
+    {
+     "name": "PetCorgi_Collar",
+     "fbx_name": "PetCorgi_Collar",
+     "tris": 192,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Eye",
+     "fbx_name": "PetCorgi_Eye",
+     "tris": 160,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Gold",
+     "fbx_name": "PetCorgi_Gold",
+     "tris": 80,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Moss",
+     "fbx_name": "PetCorgi_Moss",
+     "tris": 76,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Nose",
+     "fbx_name": "PetCorgi_Nose",
+     "tris": 80,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Orange",
+     "fbx_name": "PetCorgi_Orange",
+     "tris": 18000,
+     "look": "corgi",
+     "color": [
+      240,
+      150,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Pink",
+     "fbx_name": "PetCorgi_Pink",
+     "tris": 16,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Rock",
+     "fbx_name": "PetCorgi_Rock",
+     "tris": 140,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Shine",
+     "fbx_name": "PetCorgi_Shine",
+     "tris": 40,
+     "look": "fur_white",
+     "color": [
+      252,
+      248,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_Tongue",
+     "fbx_name": "PetCorgi_Tongue",
+     "tris": 188,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetCorgi_White",
+     "fbx_name": "PetCorgi_White",
+     "tris": 10000,
+     "look": "fur_white",
+     "color": [
+      252,
+      248,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetDogHouse": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -159.68,
+    -78.47,
+    0.58
+   ],
+   "max": [
+    -146.54,
+    -3.65,
+    7.81
+   ],
+   "meshes": [
+    {
+     "name": "PetDogHouse_Base",
+     "fbx_name": "PetDogHouse_Base",
+     "tris": 132,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_Bone",
+     "fbx_name": "PetDogHouse_Bone",
+     "tris": 324,
+     "look": "bone",
+     "color": [
+      250,
+      238,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_Bowl",
+     "fbx_name": "PetDogHouse_Bowl",
+     "tris": 336,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_Door",
+     "fbx_name": "PetDogHouse_Door",
+     "tris": 144,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_Kibble",
+     "fbx_name": "PetDogHouse_Kibble",
+     "tris": 420,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_Plate",
+     "fbx_name": "PetDogHouse_Plate",
+     "tris": 132,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_RoofHouse_Blue",
+     "fbx_name": "PetDogHouse_RoofHouse_Blue",
+     "tris": 88,
+     "look": "house_blue",
+     "color": [
+      70,
+      120,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_RoofRed",
+     "fbx_name": "PetDogHouse_RoofRed",
+     "tris": 176,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_Trim",
+     "fbx_name": "PetDogHouse_Trim",
+     "tris": 924,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_WallHouse_Blue",
+     "fbx_name": "PetDogHouse_WallHouse_Blue",
+     "tris": 52,
+     "look": "house_blue",
+     "color": [
+      70,
+      120,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_WallHouse_Pink",
+     "fbx_name": "PetDogHouse_WallHouse_Pink",
+     "tris": 52,
+     "look": "house_pink",
+     "color": [
+      255,
+      140,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDogHouse_WallHouse_Yellow",
+     "fbx_name": "PetDogHouse_WallHouse_Yellow",
+     "tris": 52,
+     "look": "house_yellow",
+     "color": [
+      255,
+      210,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetDuck": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -170.09,
+    -149.88,
+    0.69
+   ],
+   "max": [
+    172.54,
+    98.62,
+    2.43
+   ],
+   "meshes": [
+    {
+     "name": "PetDuck",
+     "fbx_name": "PetDuck",
+     "tris": 1680,
+     "look": "duck",
+     "color": [
+      255,
+      220,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDuck_Beak",
+     "fbx_name": "PetDuck_Beak",
+     "tris": 280,
+     "look": "duck_beak",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetDuck_Eye",
+     "fbx_name": "PetDuck_Eye",
+     "tris": 400,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetHutch": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    154.21,
+    -28.9,
+    0.58
+   ],
+   "max": [
+    163.62,
+    -17.49,
+    8.2
+   ],
+   "meshes": [
+    {
+     "name": "PetHutch_Body",
+     "fbx_name": "PetHutch_Body",
+     "tris": 52,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Carrot",
+     "fbx_name": "PetHutch_Carrot",
+     "tris": 84,
+     "look": "carrot",
+     "color": [
+      255,
+      130,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Door",
+     "fbx_name": "PetHutch_Door",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Floor",
+     "fbx_name": "PetHutch_Floor",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Frame",
+     "fbx_name": "PetHutch_Frame",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Inside",
+     "fbx_name": "PetHutch_Inside",
+     "tris": 12,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Iron",
+     "fbx_name": "PetHutch_Iron",
+     "tris": 24,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Leaf",
+     "fbx_name": "PetHutch_Leaf",
+     "tris": 72,
+     "look": "leaf_sun",
+     "color": [
+      140,
+      214,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Leg",
+     "fbx_name": "PetHutch_Leg",
+     "tris": 176,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Ramp",
+     "fbx_name": "PetHutch_Ramp",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Roof",
+     "fbx_name": "PetHutch_Roof",
+     "tris": 88,
+     "look": "roof_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetHutch_Wire",
+     "fbx_name": "PetHutch_Wire",
+     "tris": 156,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetLily": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -162.07,
+    -148.0,
+    0.81
+   ],
+   "max": [
+    174.28,
+    103.52,
+    0.87
+   ],
+   "meshes": [
+    {
+     "name": "PetLily",
+     "fbx_name": "PetLily",
+     "tris": 660,
+     "look": "lily",
+     "color": [
+      70,
+      170,
+      80
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetLotus": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -161.17,
+    -144.75,
+    0.91
+   ],
+   "max": [
+    173.43,
+    102.57,
+    1.02
+   ],
+   "meshes": [
+    {
+     "name": "PetLotus",
+     "fbx_name": "PetLotus",
+     "tris": 400,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetLotusMid": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -160.89,
+    -144.44,
+    0.97
+   ],
+   "max": [
+    173.15,
+    102.33,
+    1.07
+   ],
+   "meshes": [
+    {
+     "name": "PetLotusMid",
+     "fbx_name": "PetLotusMid",
+     "tris": 100,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetPaws": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -115.27,
+    -96.1,
+    1.01
+   ],
+   "max": [
+    111.8,
+    101.35,
+    1.05
+   ],
+   "meshes": [
+    {
+     "name": "PetPaws_1",
+     "fbx_name": "PetPaws_1",
+     "tris": 18798,
+     "look": "lawn_dark",
+     "color": [
+      92,
+      186,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetPaws_2",
+     "fbx_name": "PetPaws_2",
+     "tris": 18802,
+     "look": "lawn_dark",
+     "color": [
+      92,
+      186,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetShopBarkery": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -7.04,
+    139.34,
+    0.6
+   ],
+   "max": [
+    17.56,
+    165.05,
+    17.42
+   ],
+   "meshes": [
+    {
+     "name": "PetShopBarkery_Awning",
+     "fbx_name": "PetShopBarkery_Awning",
+     "tris": 180,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_AwningW",
+     "fbx_name": "PetShopBarkery_AwningW",
+     "tris": 180,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Base",
+     "fbx_name": "PetShopBarkery_Base",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Base2",
+     "fbx_name": "PetShopBarkery_Base2",
+     "tris": 44,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Bone",
+     "fbx_name": "PetShopBarkery_Bone",
+     "tris": 108,
+     "look": "bone",
+     "color": [
+      250,
+      238,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Cornice",
+     "fbx_name": "PetShopBarkery_Cornice",
+     "tris": 132,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Flower",
+     "fbx_name": "PetShopBarkery_Flower",
+     "tris": 640,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_FlowerBox",
+     "fbx_name": "PetShopBarkery_FlowerBox",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_FlowerMid",
+     "fbx_name": "PetShopBarkery_FlowerMid",
+     "tris": 160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Gold",
+     "fbx_name": "PetShopBarkery_Gold",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Iron",
+     "fbx_name": "PetShopBarkery_Iron",
+     "tris": 104,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Leaf",
+     "fbx_name": "PetShopBarkery_Leaf",
+     "tris": 160,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Paw",
+     "fbx_name": "PetShopBarkery_Paw",
+     "tris": 752,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Ridge",
+     "fbx_name": "PetShopBarkery_Ridge",
+     "tris": 28,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Roof",
+     "fbx_name": "PetShopBarkery_Roof",
+     "tris": 88,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Sign",
+     "fbx_name": "PetShopBarkery_Sign",
+     "tris": 44,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkery_Wall",
+     "fbx_name": "PetShopBarkery_Wall",
+     "tris": 20,
+     "look": "shop_cream",
+     "color": [
+      250,
+      236,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetShopBarkeryDoor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    2.66,
+    149.77,
+    1.16
+   ],
+   "max": [
+    7.5,
+    151.77,
+    8.0
+   ],
+   "meshes": [
+    {
+     "name": "PetShopBarkeryDoor_DoorFrame",
+     "fbx_name": "PetShopBarkeryDoor_DoorFrame",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryDoor_Glass",
+     "fbx_name": "PetShopBarkeryDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "PetShopBarkeryDoor_Handle",
+     "fbx_name": "PetShopBarkeryDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryDoor_Leaf",
+     "fbx_name": "PetShopBarkeryDoor_Leaf",
+     "tris": 88,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryDoor_Panel",
+     "fbx_name": "PetShopBarkeryDoor_Panel",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryDoor_Step",
+     "fbx_name": "PetShopBarkeryDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetShopBarkeryWin": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -5.5,
+    150.62,
+    2.71
+   ],
+   "max": [
+    16.12,
+    160.37,
+    8.05
+   ],
+   "meshes": [
+    {
+     "name": "PetShopBarkeryWin_Frame",
+     "fbx_name": "PetShopBarkeryWin_Frame",
+     "tris": 512,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryWin_Glass",
+     "fbx_name": "PetShopBarkeryWin_Glass",
+     "tris": 192,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "PetShopBarkeryWin_Key",
+     "fbx_name": "PetShopBarkeryWin_Key",
+     "tris": 24,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryWin_Shine",
+     "fbx_name": "PetShopBarkeryWin_Shine",
+     "tris": 16,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryWin_Shutter",
+     "fbx_name": "PetShopBarkeryWin_Shutter",
+     "tris": 464,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopBarkeryWin_Sill",
+     "fbx_name": "PetShopBarkeryWin_Sill",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetShopPawclinic": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -133.15,
+    141.91,
+    0.6
+   ],
+   "max": [
+    -103.3,
+    170.73,
+    18.0
+   ],
+   "meshes": [
+    {
+     "name": "PetShopPawclinic_Awning",
+     "fbx_name": "PetShopPawclinic_Awning",
+     "tris": 180,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_AwningW",
+     "fbx_name": "PetShopPawclinic_AwningW",
+     "tris": 180,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Base",
+     "fbx_name": "PetShopPawclinic_Base",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Base2",
+     "fbx_name": "PetShopPawclinic_Base2",
+     "tris": 44,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Cornice",
+     "fbx_name": "PetShopPawclinic_Cornice",
+     "tris": 132,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Flower",
+     "fbx_name": "PetShopPawclinic_Flower",
+     "tris": 640,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_FlowerBox",
+     "fbx_name": "PetShopPawclinic_FlowerBox",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_FlowerMid",
+     "fbx_name": "PetShopPawclinic_FlowerMid",
+     "tris": 160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Gold",
+     "fbx_name": "PetShopPawclinic_Gold",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Iron",
+     "fbx_name": "PetShopPawclinic_Iron",
+     "tris": 104,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Leaf",
+     "fbx_name": "PetShopPawclinic_Leaf",
+     "tris": 160,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Medal",
+     "fbx_name": "PetShopPawclinic_Medal",
+     "tris": 92,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Paw",
+     "fbx_name": "PetShopPawclinic_Paw",
+     "tris": 752,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_PawPink",
+     "fbx_name": "PetShopPawclinic_PawPink",
+     "tris": 196,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Ridge",
+     "fbx_name": "PetShopPawclinic_Ridge",
+     "tris": 28,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Roof",
+     "fbx_name": "PetShopPawclinic_Roof",
+     "tris": 88,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Sign",
+     "fbx_name": "PetShopPawclinic_Sign",
+     "tris": 44,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinic_Wall",
+     "fbx_name": "PetShopPawclinic_Wall",
+     "tris": 20,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetShopPawclinicDoor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -117.45,
+    150.3,
+    1.16
+   ],
+   "max": [
+    -112.79,
+    154.5,
+    8.0
+   ],
+   "meshes": [
+    {
+     "name": "PetShopPawclinicDoor_DoorFrame",
+     "fbx_name": "PetShopPawclinicDoor_DoorFrame",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicDoor_Glass",
+     "fbx_name": "PetShopPawclinicDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "PetShopPawclinicDoor_Handle",
+     "fbx_name": "PetShopPawclinicDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicDoor_Leaf",
+     "fbx_name": "PetShopPawclinicDoor_Leaf",
+     "tris": 88,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicDoor_Panel",
+     "fbx_name": "PetShopPawclinicDoor_Panel",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicDoor_Step",
+     "fbx_name": "PetShopPawclinicDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetShopPawclinicWin": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -129.32,
+    146.49,
+    2.71
+   ],
+   "max": [
+    -107.29,
+    166.32,
+    8.05
+   ],
+   "meshes": [
+    {
+     "name": "PetShopPawclinicWin_Frame",
+     "fbx_name": "PetShopPawclinicWin_Frame",
+     "tris": 512,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicWin_Glass",
+     "fbx_name": "PetShopPawclinicWin_Glass",
+     "tris": 192,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "PetShopPawclinicWin_Key",
+     "fbx_name": "PetShopPawclinicWin_Key",
+     "tris": 24,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicWin_Shine",
+     "fbx_name": "PetShopPawclinicWin_Shine",
+     "tris": 16,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicWin_Shutter",
+     "fbx_name": "PetShopPawclinicWin_Shutter",
+     "tris": 464,
+     "look": "sky_blue",
+     "color": [
+      110,
+      190,
+      250
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetShopPawclinicWin_Sill",
+     "fbx_name": "PetShopPawclinicWin_Sill",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "PetToy": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -115.02,
+    -99.35,
+    1.0
+   ],
+   "max": [
+    114.14,
+    111.01,
+    2.2
+   ],
+   "meshes": [
+    {
+     "name": "PetToy_Bone",
+     "fbx_name": "PetToy_Bone",
+     "tris": 11880,
+     "look": "bone",
+     "color": [
+      250,
+      238,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetToy_FrisbeeBlue",
+     "fbx_name": "PetToy_FrisbeeBlue",
+     "tris": 2142,
+     "look": "house_blue",
+     "color": [
+      70,
+      120,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetToy_FrisbeeRed",
+     "fbx_name": "PetToy_FrisbeeRed",
+     "tris": 3024,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetToy_Seam",
+     "fbx_name": "PetToy_Seam",
+     "tris": 96,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PetToy_Tennis",
+     "fbx_name": "PetToy_Tennis",
+     "tris": 80,
+     "look": "tennis",
+     "color": [
+      214,
+      240,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Play_Decor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -134.08,
+    -125.0,
+    0.76
+   ],
+   "max": [
+    153.61,
+    125.0,
+    1.21
+   ],
+   "meshes": [
+    {
+     "name": "Floor_Decor",
+     "fbx_name": "Floor_Decor",
+     "tris": 1584,
+     "look": "clover",
+     "color": [
+      80,
+      170,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Terrain": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -197.79,
+    -185.45,
+    -10.0
+   ],
+   "max": [
+    208.91,
+    182.67,
+    1.0
+   ],
+   "meshes": [
+    {
+     "name": "Floor_Plateau",
+     "fbx_name": "Floor_Plateau",
+     "tris": 1796,
+     "look": "lawn_dark",
+     "color": [
+      92,
+      186,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top",
+     "fbx_name": "Island_Top",
+     "tris": 1436,
+     "look": "dirt_rim",
+     "color": [
+      156,
+      112,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Underside": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -200.61,
+    -187.5,
+    -111.87
+   ],
+   "max": [
+    213.51,
+    186.14,
+    3.32
+   ],
+   "meshes": [
+    {
+     "name": "Island_Underside_1",
+     "fbx_name": "Island_Underside_1",
+     "tris": 12208,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_2",
+     "fbx_name": "Island_Underside_2",
+     "tris": 12284,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Water": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -178.06,
+    -154.4,
+    -93.78
+   ],
+   "max": [
+    195.98,
+    109.21,
+    0.92
+   ],
+   "meshes": [
+    {
+     "name": "Foam_Mist",
+     "fbx_name": "Foam_Mist",
+     "tris": 11304,
+     "look": "foam_water",
+     "color": [
+      236,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water",
+     "fbx_name": "Water",
+     "tris": 1008,
+     "look": "pond_deep",
+     "color": [
+      40,
+      150,
+      190
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

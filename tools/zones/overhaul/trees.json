@@ -1,0 +1,469 @@
+{
+ "group": "trees",
+ "fbx": "exports/overhaul/trees.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "Tree_Blossom": {
+   "origin": [
+    7.065,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -7.07,
+    -6.72,
+    -0.27
+   ],
+   "max": [
+    7.07,
+    6.72,
+    18.94
+   ],
+   "meshes": [
+    {
+     "name": "Blossom_Canopy",
+     "fbx_name": "Blossom_Canopy",
+     "tris": 3000,
+     "look": "blossom",
+     "color": [
+      250,
+      170,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Blossom_Trunk",
+     "fbx_name": "Blossom_Trunk",
+     "tris": 544,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Bush": {
+   "origin": [
+    41.626,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -3.5,
+    -2.59,
+    -0.98
+   ],
+   "max": [
+    3.5,
+    2.59,
+    4.04
+   ],
+   "meshes": [
+    {
+     "name": "Bush_Canopy",
+     "fbx_name": "Bush_Canopy",
+     "tris": 757,
+     "look": "bush_shade",
+     "color": [
+      58,
+      142,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Bush_Light",
+     "fbx_name": "Bush_Light",
+     "tris": 643,
+     "look": "bush_light",
+     "color": [
+      124,
+      206,
+      66
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Bush2": {
+   "origin": [
+    71.844,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.72,
+    -2.24,
+    -0.8
+   ],
+   "max": [
+    2.72,
+    2.24,
+    3.09
+   ],
+   "meshes": [
+    {
+     "name": "Bush2_Canopy",
+     "fbx_name": "Bush2_Canopy",
+     "tris": 750,
+     "look": "bush_shade",
+     "color": [
+      58,
+      142,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Bush2_Light",
+     "fbx_name": "Bush2_Light",
+     "tris": 650,
+     "look": "bush_light",
+     "color": [
+      124,
+      206,
+      66
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Oak": {
+   "origin": [
+    106.183,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -7.62,
+    -7.39,
+    -0.3
+   ],
+   "max": [
+    7.62,
+    7.39,
+    20.64
+   ],
+   "meshes": [
+    {
+     "name": "Oak_Canopy",
+     "fbx_name": "Oak_Canopy",
+     "tris": 1627,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Oak_Light",
+     "fbx_name": "Oak_Light",
+     "tris": 1373,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Oak_Trunk",
+     "fbx_name": "Oak_Trunk",
+     "tris": 544,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Palm": {
+   "origin": [
+    145.432,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -7.63,
+    -7.68,
+    -0.76
+   ],
+   "max": [
+    7.63,
+    7.68,
+    16.89
+   ],
+   "meshes": [
+    {
+     "name": "Palm_Canopy",
+     "fbx_name": "Palm_Canopy",
+     "tris": 468,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Palm_Light",
+     "fbx_name": "Palm_Light",
+     "tris": 468,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Palm_Nuts",
+     "fbx_name": "Palm_Nuts",
+     "tris": 240,
+     "look": "nut",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Palm_Trunk",
+     "fbx_name": "Palm_Trunk",
+     "tris": 370,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Pine": {
+   "origin": [
+    183.814,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -6.75,
+    -6.65,
+    -0.23
+   ],
+   "max": [
+    6.75,
+    6.65,
+    15.2
+   ],
+   "meshes": [
+    {
+     "name": "Pine_Canopy",
+     "fbx_name": "Pine_Canopy",
+     "tris": 348,
+     "look": "pine_shade",
+     "color": [
+      30,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pine_Light",
+     "fbx_name": "Pine_Light",
+     "tris": 360,
+     "look": "pine_light",
+     "color": [
+      72,
+      168,
+      90
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pine_Trunk",
+     "fbx_name": "Pine_Trunk",
+     "tris": 182,
+     "look": "bark_dark",
+     "color": [
+      96,
+      60,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Poplar": {
+   "origin": [
+    218.652,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.09,
+    -4.26,
+    -0.25
+   ],
+   "max": [
+    4.09,
+    4.26,
+    21.79
+   ],
+   "meshes": [
+    {
+     "name": "Poplar_Canopy",
+     "fbx_name": "Poplar_Canopy",
+     "tris": 1561,
+     "look": "poplar_shade",
+     "color": [
+      44,
+      140,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Poplar_Light",
+     "fbx_name": "Poplar_Light",
+     "tris": 1039,
+     "look": "poplar_light",
+     "color": [
+      104,
+      196,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Poplar_Trunk",
+     "fbx_name": "Poplar_Trunk",
+     "tris": 222,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Tree_Umbrella": {
+   "origin": [
+    255.896,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -9.16,
+    -7.38,
+    -0.51
+   ],
+   "max": [
+    9.16,
+    7.38,
+    13.66
+   ],
+   "meshes": [
+    {
+     "name": "Umbrella_Canopy",
+     "fbx_name": "Umbrella_Canopy",
+     "tris": 1527,
+     "look": "oak_shade",
+     "color": [
+      64,
+      150,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Umbrella_Light",
+     "fbx_name": "Umbrella_Light",
+     "tris": 1273,
+     "look": "oak_light",
+     "color": [
+      132,
+      212,
+      70
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Umbrella_Trunk",
+     "fbx_name": "Umbrella_Trunk",
+     "tris": 456,
+     "look": "bark",
+     "color": [
+      128,
+      88,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

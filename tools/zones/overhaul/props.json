@@ -1,0 +1,1668 @@
+{
+ "group": "props",
+ "fbx": "exports/overhaul/props.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "props_lamp": {
+   "origin": [
+    0.98,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.98,
+    -0.98,
+    0.0
+   ],
+   "max": [
+    0.98,
+    0.98,
+    11.36
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold",
+     "tris": 124,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron",
+     "tris": 624,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_lamp_double": {
+   "origin": [
+    28.691,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.73,
+    -1.1,
+    0.0
+   ],
+   "max": [
+    2.73,
+    1.1,
+    12.0
+   ],
+   "meshes": [
+    {
+     "name": "LampDouble_Banner",
+     "fbx_name": "LampDouble_Banner",
+     "tris": 16,
+     "look": "banner_purple",
+     "color": [
+      128,
+      72,
+      210
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Glow",
+     "fbx_name": "LampDouble_Glow",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Gold",
+     "fbx_name": "LampDouble_Gold",
+     "tris": 664,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Iron",
+     "fbx_name": "LampDouble_Iron",
+     "tris": 996,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_bench": {
+   "origin": [
+    58.372,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.95,
+    -1.21,
+    0.0
+   ],
+   "max": [
+    2.95,
+    1.16,
+    3.61
+   ],
+   "meshes": [
+    {
+     "name": "Bench_Iron",
+     "fbx_name": "Bench_Iron",
+     "tris": 1040,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Bench_Wood",
+     "fbx_name": "Bench_Wood",
+     "tris": 308,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_bin_": {
+   "origin": [
+    86.242,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.92,
+    -0.92,
+    0.0
+   ],
+   "max": [
+    0.92,
+    0.92,
+    2.53
+   ],
+   "meshes": [
+    {
+     "name": "Bin_Dark",
+     "fbx_name": "Bin_Dark",
+     "tris": 440,
+     "look": "bin_dark",
+     "color": [
+      40,
+      102,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Bin_Green",
+     "fbx_name": "Bin_Green",
+     "tris": 80,
+     "look": "bin_green",
+     "color": [
+      64,
+      156,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_bollard": {
+   "origin": [
+    111.582,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.42,
+    -0.42,
+    0.0
+   ],
+   "max": [
+    0.42,
+    0.42,
+    2.22
+   ],
+   "meshes": [
+    {
+     "name": "Bollard_Gold",
+     "fbx_name": "Bollard_Gold",
+     "tris": 64,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Bollard_Iron",
+     "fbx_name": "Bollard_Iron",
+     "tris": 228,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_hydrant": {
+   "origin": [
+    136.902,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -0.9,
+    -0.84,
+    0.0
+   ],
+   "max": [
+    0.9,
+    0.6,
+    2.28
+   ],
+   "meshes": [
+    {
+     "name": "Hydrant_Gold",
+     "fbx_name": "Hydrant_Gold",
+     "tris": 196,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Hydrant_Red",
+     "fbx_name": "Hydrant_Red",
+     "tris": 382,
+     "look": "hydrant_red",
+     "color": [
+      228,
+      52,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_cafe_table": {
+   "origin": [
+    164.527,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.72,
+    -2.7,
+    0.0
+   ],
+   "max": [
+    2.72,
+    2.7,
+    6.05
+   ],
+   "meshes": [
+    {
+     "name": "CafeTable_Gold",
+     "fbx_name": "CafeTable_Gold",
+     "tris": 20,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Iron",
+     "fbx_name": "CafeTable_Iron",
+     "tris": 688,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Red",
+     "fbx_name": "CafeTable_Red",
+     "tris": 180,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Seat",
+     "fbx_name": "CafeTable_Seat",
+     "tris": 120,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_Top",
+     "fbx_name": "CafeTable_Top",
+     "tris": 92,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CafeTable_White",
+     "fbx_name": "CafeTable_White",
+     "tris": 180,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_railing": {
+   "origin": [
+    195.527,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.28,
+    -0.28,
+    0.0
+   ],
+   "max": [
+    4.28,
+    0.28,
+    3.16
+   ],
+   "meshes": [
+    {
+     "name": "Railing_Gold",
+     "fbx_name": "Railing_Gold",
+     "tris": 880,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Railing_Iron",
+     "fbx_name": "Railing_Iron",
+     "tris": 640,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_fence": {
+   "origin": [
+    228.085,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.28,
+    -0.28,
+    0.0
+   ],
+   "max": [
+    4.28,
+    0.28,
+    3.14
+   ],
+   "meshes": [
+    {
+     "name": "Fence_White",
+     "fbx_name": "Fence_White",
+     "tris": 448,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_planter_square": {
+   "origin": [
+    258.568,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.2,
+    -2.2,
+    0.0
+   ],
+   "max": [
+    2.2,
+    2.2,
+    4.15
+   ],
+   "meshes": [
+    {
+     "name": "PlanterSq_Base",
+     "fbx_name": "PlanterSq_Base",
+     "tris": 220,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Bush_Leaves",
+     "fbx_name": "PlanterSq_Bush_Leaves",
+     "tris": 1500,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Flower",
+     "fbx_name": "PlanterSq_Flower",
+     "tris": 560,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_FlowerMid",
+     "fbx_name": "PlanterSq_FlowerMid",
+     "tris": 140,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Soil",
+     "fbx_name": "PlanterSq_Soil",
+     "tris": 12,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Stone",
+     "fbx_name": "PlanterSq_Stone",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Trim",
+     "fbx_name": "PlanterSq_Trim",
+     "tris": 176,
+     "look": "trim_cream",
+     "color": [
+      248,
+      238,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_planter_round": {
+   "origin": [
+    286.268,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.5,
+    -1.5,
+    0.0
+   ],
+   "max": [
+    1.5,
+    1.5,
+    3.67
+   ],
+   "meshes": [
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Flower",
+     "fbx_name": "PlanterRound_Flower",
+     "tris": 560,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_FlowerMid",
+     "fbx_name": "PlanterRound_FlowerMid",
+     "tris": 140,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Pot",
+     "fbx_name": "PlanterRound_Pot",
+     "tris": 216,
+     "look": "terracotta",
+     "color": [
+      218,
+      114,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Rim",
+     "fbx_name": "PlanterRound_Rim",
+     "tris": 288,
+     "look": "terracotta_dark",
+     "color": [
+      178,
+      84,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Soil",
+     "fbx_name": "PlanterRound_Soil",
+     "tris": 76,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_flower_bed": {
+   "origin": [
+    316.085,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.32,
+    -1.83,
+    -0.18
+   ],
+   "max": [
+    4.33,
+    1.82,
+    1.46
+   ],
+   "meshes": [
+    {
+     "name": "FlowerBed_FlowerMidOrange",
+     "fbx_name": "FlowerBed_FlowerMidOrange",
+     "tris": 180,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerMidYel",
+     "fbx_name": "FlowerBed_FlowerMidYel",
+     "tris": 360,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerPurple",
+     "fbx_name": "FlowerBed_FlowerPurple",
+     "tris": 720,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerRed",
+     "fbx_name": "FlowerBed_FlowerRed",
+     "tris": 720,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerYel",
+     "fbx_name": "FlowerBed_FlowerYel",
+     "tris": 720,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Soil",
+     "fbx_name": "FlowerBed_Soil",
+     "tris": 108,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone",
+     "fbx_name": "FlowerBed_Stone",
+     "tris": 1404,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone2",
+     "fbx_name": "FlowerBed_Stone2",
+     "tris": 864,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_hedge": {
+   "origin": [
+    348.914,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.5,
+    -1.55,
+    -0.15
+   ],
+   "max": [
+    4.5,
+    1.55,
+    2.45
+   ],
+   "meshes": [
+    {
+     "name": "Hedge_Edge",
+     "fbx_name": "Hedge_Edge",
+     "tris": 176,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Hedge_Hedge_Leaves",
+     "fbx_name": "Hedge_Hedge_Leaves",
+     "tris": 2200,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_rocks": {
+   "origin": [
+    380.555,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -3.14,
+    -2.07,
+    -0.1
+   ],
+   "max": [
+    3.41,
+    2.15,
+    1.23
+   ],
+   "meshes": [
+    {
+     "name": "Rocks_Grass",
+     "fbx_name": "Rocks_Grass",
+     "tris": 240,
+     "look": "leaf_sun",
+     "color": [
+      140,
+      214,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Rocks_Moss",
+     "fbx_name": "Rocks_Moss",
+     "tris": 5,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Rocks_Rock",
+     "fbx_name": "Rocks_Rock",
+     "tris": 72,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Rocks_Top",
+     "fbx_name": "Rocks_Top",
+     "tris": 23,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_sign_post": {
+   "origin": [
+    412.207,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.24,
+    -2.32,
+    0.0
+   ],
+   "max": [
+    4.74,
+    0.47,
+    8.83
+   ],
+   "meshes": [
+    {
+     "name": "SignPost_Board",
+     "fbx_name": "SignPost_Board",
+     "tris": 48,
+     "look": "sign_wood",
+     "color": [
+      150,
+      96,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SignPost_Frame",
+     "fbx_name": "SignPost_Frame",
+     "tris": 48,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SignPost_Gold",
+     "fbx_name": "SignPost_Gold",
+     "tris": 20,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SignPost_Post",
+     "fbx_name": "SignPost_Post",
+     "tris": 220,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_notice_board": {
+   "origin": [
+    445.21,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -4.26,
+    -0.8,
+    0.0
+   ],
+   "max": [
+    4.26,
+    0.8,
+    6.26
+   ],
+   "meshes": [
+    {
+     "name": "NoticeBoard_Cork",
+     "fbx_name": "NoticeBoard_Cork",
+     "tris": 12,
+     "look": "board_cork",
+     "color": [
+      204,
+      156,
+      102
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_Frame",
+     "fbx_name": "NoticeBoard_Frame",
+     "tris": 176,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_Ink",
+     "fbx_name": "NoticeBoard_Ink",
+     "tris": 288,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_Paper",
+     "fbx_name": "NoticeBoard_Paper",
+     "tris": 36,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_PaperBlue",
+     "fbx_name": "NoticeBoard_PaperBlue",
+     "tris": 24,
+     "look": "paper_blue",
+     "color": [
+      170,
+      214,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_PaperYel",
+     "fbx_name": "NoticeBoard_PaperYel",
+     "tris": 36,
+     "look": "paper_yel",
+     "color": [
+      255,
+      238,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_Pin",
+     "fbx_name": "NoticeBoard_Pin",
+     "tris": 160,
+     "look": "pin_red",
+     "color": [
+      232,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_Roof",
+     "fbx_name": "NoticeBoard_Roof",
+     "tris": 88,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "NoticeBoard_Wood",
+     "fbx_name": "NoticeBoard_Wood",
+     "tris": 168,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_attraction_sign": {
+   "origin": [
+    477.273,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -3.8,
+    -0.4,
+    0.0
+   ],
+   "max": [
+    3.8,
+    0.4,
+    7.4
+   ],
+   "meshes": [
+    {
+     "name": "AttractionSign_Bulbs",
+     "fbx_name": "AttractionSign_Bulbs",
+     "tris": 1220,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "AttractionSign_Gold",
+     "fbx_name": "AttractionSign_Gold",
+     "tris": 212,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "AttractionSign_Iron",
+     "fbx_name": "AttractionSign_Iron",
+     "tris": 160,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "AttractionSign_Panel",
+     "fbx_name": "AttractionSign_Panel",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_gavel_statue": {
+   "origin": [
+    507.573,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.5,
+    -2.5,
+    0.0
+   ],
+   "max": [
+    2.69,
+    2.5,
+    3.81
+   ],
+   "meshes": [
+    {
+     "name": "Gavel_Block",
+     "fbx_name": "Gavel_Block",
+     "tris": 108,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gavel_Gold",
+     "fbx_name": "Gavel_Gold",
+     "tris": 348,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gavel_Stone",
+     "fbx_name": "Gavel_Stone",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gavel_Stone2",
+     "fbx_name": "Gavel_Stone2",
+     "tris": 88,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gavel_Wood",
+     "fbx_name": "Gavel_Wood",
+     "tris": 412,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_briefcase_stack": {
+   "origin": [
+    535.595,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.34,
+    -1.17,
+    -0.03
+   ],
+   "max": [
+    3.75,
+    1.61,
+    2.4
+   ],
+   "meshes": [
+    {
+     "name": "Briefcases_Band",
+     "fbx_name": "Briefcases_Band",
+     "tris": 132,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Briefcases_BriefBlack",
+     "fbx_name": "Briefcases_BriefBlack",
+     "tris": 108,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Briefcases_BriefBrown",
+     "fbx_name": "Briefcases_BriefBrown",
+     "tris": 216,
+     "look": "brief_brown",
+     "color": [
+      136,
+      84,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Briefcases_Gold",
+     "fbx_name": "Briefcases_Gold",
+     "tris": 528,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Briefcases_Handle",
+     "fbx_name": "Briefcases_Handle",
+     "tris": 312,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_file_boxes": {
+   "origin": [
+    565.013,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.67,
+    -1.26,
+    0.0
+   ],
+   "max": [
+    1.72,
+    1.25,
+    2.98
+   ],
+   "meshes": [
+    {
+     "name": "FileBoxes_Box",
+     "fbx_name": "FileBoxes_Box",
+     "tris": 132,
+     "look": "file_box",
+     "color": [
+      234,
+      220,
+      184
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FileBoxes_Label",
+     "fbx_name": "FileBoxes_Label",
+     "tris": 36,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FileBoxes_Lid",
+     "fbx_name": "FileBoxes_Lid",
+     "tris": 132,
+     "look": "file_lid",
+     "color": [
+      210,
+      194,
+      154
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FileBoxes_Paper",
+     "fbx_name": "FileBoxes_Paper",
+     "tris": 24,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FileBoxes_Slot",
+     "fbx_name": "FileBoxes_Slot",
+     "tris": 264,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FileBoxes_Stripe",
+     "fbx_name": "FileBoxes_Stripe",
+     "tris": 36,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "props_crate": {
+   "origin": [
+    591.875,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -1.14,
+    -1.14,
+    -0.04
+   ],
+   "max": [
+    1.14,
+    1.14,
+    2.24
+   ],
+   "meshes": [
+    {
+     "name": "Crate_Frame",
+     "fbx_name": "Crate_Frame",
+     "tris": 704,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Gap",
+     "fbx_name": "Crate_Gap",
+     "tris": 120,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Planks",
+     "fbx_name": "Crate_Planks",
+     "tris": 12,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

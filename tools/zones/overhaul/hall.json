@@ -1,0 +1,1373 @@
+{
+ "group": "hall",
+ "fbx": "exports/overhaul/hall.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "hall_segment": {
+   "origin": [
+    26.168,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -26.17,
+    -0.9,
+    -1.95
+   ],
+   "max": [
+    26.38,
+    11.0,
+    7.0
+   ],
+   "meshes": [
+    {
+     "name": "HallSegment_Base",
+     "fbx_name": "HallSegment_Base",
+     "tris": 88,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Cap",
+     "fbx_name": "HallSegment_Cap",
+     "tris": 88,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Carpet",
+     "fbx_name": "HallSegment_Carpet",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_FloorA",
+     "fbx_name": "HallSegment_FloorA",
+     "tris": 704,
+     "look": "floor_a",
+     "color": [
+      226,
+      160,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_FloorB",
+     "fbx_name": "HallSegment_FloorB",
+     "tris": 660,
+     "look": "floor_b",
+     "color": [
+      210,
+      144,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Flower",
+     "fbx_name": "HallSegment_Flower",
+     "tris": 640,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_FlowerMid",
+     "fbx_name": "HallSegment_FlowerMid",
+     "tris": 160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Footing",
+     "fbx_name": "HallSegment_Footing",
+     "tris": 88,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Gold",
+     "fbx_name": "HallSegment_Gold",
+     "tris": 152,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Panel",
+     "fbx_name": "HallSegment_Panel",
+     "tris": 264,
+     "look": "trim_cream",
+     "color": [
+      248,
+      238,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Planter",
+     "fbx_name": "HallSegment_Planter",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_PlanterBush-1_Leaves",
+     "fbx_name": "HallSegment_PlanterBush-1_Leaves",
+     "tris": 760,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_PlanterBush1_Leaves",
+     "fbx_name": "HallSegment_PlanterBush1_Leaves",
+     "tris": 760,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Post",
+     "fbx_name": "HallSegment_Post",
+     "tris": 216,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Shrub-1_Leaves",
+     "fbx_name": "HallSegment_Shrub-1_Leaves",
+     "tris": 1040,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Shrub1_Leaves",
+     "fbx_name": "HallSegment_Shrub1_Leaves",
+     "tris": 1040,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HallSegment_Wall",
+     "fbx_name": "HallSegment_Wall",
+     "tris": 24,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "hall_desk": {
+   "origin": [
+    79.45,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.9,
+    -2.8,
+    0.0
+   ],
+   "max": [
+    4.2,
+    2.8,
+    3.76
+   ],
+   "meshes": [
+    {
+     "name": "Desk_Body",
+     "fbx_name": "Desk_Body",
+     "tris": 132,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Chair",
+     "fbx_name": "Desk_Chair",
+     "tris": 70,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_ChairSeat",
+     "fbx_name": "Desk_ChairSeat",
+     "tris": 216,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Drawer",
+     "fbx_name": "Desk_Drawer",
+     "tris": 176,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Front",
+     "fbx_name": "Desk_Front",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Glow",
+     "fbx_name": "Desk_Glow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Handle",
+     "fbx_name": "Desk_Handle",
+     "tris": 176,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Lamp",
+     "fbx_name": "Desk_Lamp",
+     "tris": 84,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_LampShade",
+     "fbx_name": "Desk_LampShade",
+     "tris": 108,
+     "look": "lamp_shade",
+     "color": [
+      60,
+      160,
+      90
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Laptop",
+     "fbx_name": "Desk_Laptop",
+     "tris": 88,
+     "look": "laptop",
+     "color": [
+      52,
+      56,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Mug",
+     "fbx_name": "Desk_Mug",
+     "tris": 112,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Paper",
+     "fbx_name": "Desk_Paper",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_PenBookBlue",
+     "fbx_name": "Desk_PenBookBlue",
+     "tris": 12,
+     "look": "book_blue",
+     "color": [
+      60,
+      120,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_PenBookRed",
+     "fbx_name": "Desk_PenBookRed",
+     "tris": 12,
+     "look": "book_red",
+     "color": [
+      220,
+      60,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_PenCup",
+     "fbx_name": "Desk_PenCup",
+     "tris": 36,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Plate",
+     "fbx_name": "Desk_Plate",
+     "tris": 12,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Rug",
+     "fbx_name": "Desk_Rug",
+     "tris": 44,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Screen",
+     "fbx_name": "Desk_Screen",
+     "tris": 12,
+     "look": "screen_glow",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Top",
+     "fbx_name": "Desk_Top",
+     "tris": 108,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Desk_Trim",
+     "fbx_name": "Desk_Trim",
+     "tris": 12,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "hall_lock": {
+   "origin": [
+    133.86,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -26.21,
+    -0.9,
+    -1.96
+   ],
+   "max": [
+    26.28,
+    11.0,
+    7.0
+   ],
+   "meshes": [
+    {
+     "name": "ExpansionLock_BarrierPost",
+     "fbx_name": "ExpansionLock_BarrierPost",
+     "tris": 528,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Barrow",
+     "fbx_name": "ExpansionLock_Barrow",
+     "tris": 12,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Base",
+     "fbx_name": "ExpansionLock_Base",
+     "tris": 88,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Bricks",
+     "fbx_name": "ExpansionLock_Bricks",
+     "tris": 132,
+     "look": "brick",
+     "color": [
+      198,
+      84,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Cap",
+     "fbx_name": "ExpansionLock_Cap",
+     "tris": 88,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Coins",
+     "fbx_name": "ExpansionLock_Coins",
+     "tris": 324,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Cone",
+     "fbx_name": "ExpansionLock_Cone",
+     "tris": 220,
+     "look": "cone",
+     "color": [
+      255,
+      120,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_ConeBand",
+     "fbx_name": "ExpansionLock_ConeBand",
+     "tris": 220,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_ConeBase",
+     "fbx_name": "ExpansionLock_ConeBase",
+     "tris": 220,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Crate",
+     "fbx_name": "ExpansionLock_Crate",
+     "tris": 84,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_CrateFrame",
+     "fbx_name": "ExpansionLock_CrateFrame",
+     "tris": 1316,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Dirt",
+     "fbx_name": "ExpansionLock_Dirt",
+     "tris": 220,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_FloorA",
+     "fbx_name": "ExpansionLock_FloorA",
+     "tris": 704,
+     "look": "floor_a",
+     "color": [
+      226,
+      160,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_FloorB",
+     "fbx_name": "ExpansionLock_FloorB",
+     "tris": 660,
+     "look": "floor_b",
+     "color": [
+      210,
+      144,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Footing",
+     "fbx_name": "ExpansionLock_Footing",
+     "tris": 88,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Gold",
+     "fbx_name": "ExpansionLock_Gold",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Hazard",
+     "fbx_name": "ExpansionLock_Hazard",
+     "tris": 880,
+     "look": "hazard",
+     "color": [
+      255,
+      204,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_HazardBlack",
+     "fbx_name": "ExpansionLock_HazardBlack",
+     "tris": 880,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Iron",
+     "fbx_name": "ExpansionLock_Iron",
+     "tris": 76,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Lumber",
+     "fbx_name": "ExpansionLock_Lumber",
+     "tris": 528,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Panel",
+     "fbx_name": "ExpansionLock_Panel",
+     "tris": 264,
+     "look": "trim_cream",
+     "color": [
+      248,
+      238,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Post",
+     "fbx_name": "ExpansionLock_Post",
+     "tris": 216,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Shrub2_Leaves",
+     "fbx_name": "ExpansionLock_Shrub2_Leaves",
+     "tris": 1040,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Shrub4_Leaves",
+     "fbx_name": "ExpansionLock_Shrub4_Leaves",
+     "tris": 1040,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Sign",
+     "fbx_name": "ExpansionLock_Sign",
+     "tris": 44,
+     "look": "hazard",
+     "color": [
+      255,
+      204,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Wall",
+     "fbx_name": "ExpansionLock_Wall",
+     "tris": 24,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ExpansionLock_Wheel",
+     "fbx_name": "ExpansionLock_Wheel",
+     "tris": 56,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "hall_back_wall": {
+   "origin": [
+    210.256,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -26.12,
+    -1.71,
+    -1.96
+   ],
+   "max": [
+    26.37,
+    5.08,
+    7.4
+   ],
+   "meshes": [
+    {
+     "name": "BackWallScales_Gold",
+     "fbx_name": "BackWallScales_Gold",
+     "tris": 984,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Band",
+     "fbx_name": "BackWall_Band",
+     "tris": 44,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Base",
+     "fbx_name": "BackWall_Base",
+     "tris": 88,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_BookBookBlue",
+     "fbx_name": "BackWall_BookBookBlue",
+     "tris": 2860,
+     "look": "book_blue",
+     "color": [
+      60,
+      120,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_BookBookGreen",
+     "fbx_name": "BackWall_BookBookGreen",
+     "tris": 2684,
+     "look": "book_green",
+     "color": [
+      70,
+      170,
+      90
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_BookBookRed",
+     "fbx_name": "BackWall_BookBookRed",
+     "tris": 3388,
+     "look": "book_red",
+     "color": [
+      220,
+      60,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_BookBookYel",
+     "fbx_name": "BackWall_BookBookYel",
+     "tris": 2728,
+     "look": "book_yel",
+     "color": [
+      250,
+      200,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Cap",
+     "fbx_name": "BackWall_Cap",
+     "tris": 132,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Carpet",
+     "fbx_name": "BackWall_Carpet",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_FloorA",
+     "fbx_name": "BackWall_FloorA",
+     "tris": 704,
+     "look": "floor_a",
+     "color": [
+      226,
+      160,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_FloorB",
+     "fbx_name": "BackWall_FloorB",
+     "tris": 660,
+     "look": "floor_b",
+     "color": [
+      210,
+      144,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Footing",
+     "fbx_name": "BackWall_Footing",
+     "tris": 132,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Gold",
+     "fbx_name": "BackWall_Gold",
+     "tris": 196,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Panel",
+     "fbx_name": "BackWall_Panel",
+     "tris": 44,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Post",
+     "fbx_name": "BackWall_Post",
+     "tris": 216,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Shelf",
+     "fbx_name": "BackWall_Shelf",
+     "tris": 416,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Shrub4_Leaves",
+     "fbx_name": "BackWall_Shrub4_Leaves",
+     "tris": 1040,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Shrub6_Leaves",
+     "fbx_name": "BackWall_Shrub6_Leaves",
+     "tris": 1040,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BackWall_Wall",
+     "fbx_name": "BackWall_Wall",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves",
+     "tris": 800,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves.001",
+     "tris": 800,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves.002",
+     "tris": 800,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves.003",
+     "tris": 800,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Flower",
+     "fbx_name": "PlanterRound_Flower",
+     "tris": 2240,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_FlowerMid",
+     "fbx_name": "PlanterRound_FlowerMid",
+     "tris": 560,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Pot",
+     "fbx_name": "PlanterRound_Pot",
+     "tris": 864,
+     "look": "terracotta",
+     "color": [
+      218,
+      114,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Rim",
+     "fbx_name": "PlanterRound_Rim",
+     "tris": 1152,
+     "look": "terracotta_dark",
+     "color": [
+      178,
+      84,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Soil",
+     "fbx_name": "PlanterRound_Soil",
+     "tris": 304,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

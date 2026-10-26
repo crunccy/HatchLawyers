@@ -1,0 +1,714 @@
+{
+ "group": "shack",
+ "fbx": "exports/overhaul/shack.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "DingyShack": {
+   "origin": [
+    13.442,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -13.44,
+    -14.15,
+    -1.75
+   ],
+   "max": [
+    13.44,
+    22.63,
+    17.03
+   ],
+   "meshes": [
+    {
+     "name": "Shack_AwningRed",
+     "fbx_name": "Shack_AwningRed",
+     "tris": 48,
+     "look": "awning_red",
+     "color": [
+      196,
+      98,
+      86
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_AwningWhite",
+     "fbx_name": "Shack_AwningWhite",
+     "tris": 36,
+     "look": "awning_white",
+     "color": [
+      226,
+      214,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Barrel",
+     "fbx_name": "Shack_Barrel",
+     "tris": 60,
+     "look": "barrel",
+     "color": [
+      140,
+      96,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Cardboard",
+     "fbx_name": "Shack_Cardboard",
+     "tris": 12,
+     "look": "cardboard",
+     "color": [
+      198,
+      160,
+      112
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Cone",
+     "fbx_name": "Shack_Cone",
+     "tris": 56,
+     "look": "cone",
+     "color": [
+      255,
+      124,
+      34
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_ConeWhite",
+     "fbx_name": "Shack_ConeWhite",
+     "tris": 44,
+     "look": "cone_white",
+     "color": [
+      240,
+      240,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Crate",
+     "fbx_name": "Shack_Crate",
+     "tris": 88,
+     "look": "crate",
+     "color": [
+      186,
+      150,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_CrossBoard",
+     "fbx_name": "Shack_CrossBoard",
+     "tris": 156,
+     "look": "plank_patch",
+     "color": [
+      118,
+      128,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_DeadPlant",
+     "fbx_name": "Shack_DeadPlant",
+     "tris": 36,
+     "look": "plant_dead",
+     "color": [
+      140,
+      110,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Door",
+     "fbx_name": "Shack_Door",
+     "tris": 12,
+     "look": "plank_dark",
+     "color": [
+      126,
+      98,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Dumpster",
+     "fbx_name": "Shack_Dumpster",
+     "tris": 88,
+     "look": "dumpster",
+     "color": [
+      64,
+      112,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Floor",
+     "fbx_name": "Shack_Floor",
+     "tris": 12,
+     "look": "dark_hole",
+     "color": [
+      34,
+      28,
+      26
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_FloorBoards",
+     "fbx_name": "Shack_FloorBoards",
+     "tris": 180,
+     "look": "plank_dark",
+     "color": [
+      126,
+      98,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_FloorLight",
+     "fbx_name": "Shack_FloorLight",
+     "tris": 132,
+     "look": "plank_light",
+     "color": [
+      172,
+      140,
+      106
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Gable",
+     "fbx_name": "Shack_Gable",
+     "tris": 16,
+     "look": "plank_light",
+     "color": [
+      172,
+      140,
+      106
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_GlassDirty",
+     "fbx_name": "Shack_GlassDirty",
+     "tris": 19,
+     "look": "glass_dirty",
+     "color": [
+      150,
+      176,
+      170
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "Shack_Hole",
+     "fbx_name": "Shack_Hole",
+     "tris": 48,
+     "look": "dark_hole",
+     "color": [
+      34,
+      28,
+      26
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Hole2",
+     "fbx_name": "Shack_Hole2",
+     "tris": 36,
+     "look": "dark_hole",
+     "color": [
+      34,
+      28,
+      26
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Iron",
+     "fbx_name": "Shack_Iron",
+     "tris": 96,
+     "look": "iron",
+     "color": [
+      62,
+      62,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Lantern",
+     "fbx_name": "Shack_Lantern",
+     "tris": 12,
+     "look": "lantern",
+     "color": [
+      255,
+      196,
+      110
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Mailbox",
+     "fbx_name": "Shack_Mailbox",
+     "tris": 56,
+     "look": "mailbox",
+     "color": [
+      120,
+      130,
+      144
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Moss",
+     "fbx_name": "Shack_Moss",
+     "tris": 1200,
+     "look": "moss",
+     "color": [
+      98,
+      146,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Patch",
+     "fbx_name": "Shack_Patch",
+     "tris": 132,
+     "look": "plank_patch",
+     "color": [
+      118,
+      128,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Pipe",
+     "fbx_name": "Shack_Pipe",
+     "tris": 24,
+     "look": "iron",
+     "color": [
+      62,
+      62,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_PlankDark",
+     "fbx_name": "Shack_PlankDark",
+     "tris": 564,
+     "look": "plank_dark",
+     "color": [
+      126,
+      98,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_PlankLight",
+     "fbx_name": "Shack_PlankLight",
+     "tris": 636,
+     "look": "plank_light",
+     "color": [
+      172,
+      140,
+      106
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_PorchBoards",
+     "fbx_name": "Shack_PorchBoards",
+     "tris": 120,
+     "look": "plank_dark",
+     "color": [
+      126,
+      98,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_PorchLight",
+     "fbx_name": "Shack_PorchLight",
+     "tris": 132,
+     "look": "plank_light",
+     "color": [
+      172,
+      140,
+      106
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_PorchUnder",
+     "fbx_name": "Shack_PorchUnder",
+     "tris": 12,
+     "look": "dark_hole",
+     "color": [
+      34,
+      28,
+      26
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Post",
+     "fbx_name": "Shack_Post",
+     "tris": 276,
+     "look": "post_wood",
+     "color": [
+      92,
+      64,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Pot",
+     "fbx_name": "Shack_Pot",
+     "tris": 44,
+     "look": "pot",
+     "color": [
+      178,
+      98,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Puddle",
+     "fbx_name": "Shack_Puddle",
+     "tris": 12,
+     "look": "water",
+     "color": [
+      60,
+      170,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Rail",
+     "fbx_name": "Shack_Rail",
+     "tris": 96,
+     "look": "post_wood",
+     "color": [
+      92,
+      64,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_RoofDeck",
+     "fbx_name": "Shack_RoofDeck",
+     "tris": 168,
+     "look": "dark_hole",
+     "color": [
+      34,
+      28,
+      26
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Rust",
+     "fbx_name": "Shack_Rust",
+     "tris": 64,
+     "look": "rust",
+     "color": [
+      172,
+      94,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Sheet",
+     "fbx_name": "Shack_Sheet",
+     "tris": 64,
+     "look": "sheet",
+     "color": [
+      150,
+      158,
+      166
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Shingle",
+     "fbx_name": "Shack_Shingle",
+     "tris": 648,
+     "look": "shingle",
+     "color": [
+      156,
+      86,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_ShingleDark",
+     "fbx_name": "Shack_ShingleDark",
+     "tris": 648,
+     "look": "shingle_dark",
+     "color": [
+      116,
+      66,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Shutter",
+     "fbx_name": "Shack_Shutter",
+     "tris": 44,
+     "look": "awning_red",
+     "color": [
+      196,
+      98,
+      86
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Steps",
+     "fbx_name": "Shack_Steps",
+     "tris": 36,
+     "look": "plank_light",
+     "color": [
+      172,
+      140,
+      106
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Stone",
+     "fbx_name": "Shack_Stone",
+     "tris": 704,
+     "look": "stone_block",
+     "color": [
+      150,
+      146,
+      140
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Tape",
+     "fbx_name": "Shack_Tape",
+     "tris": 24,
+     "look": "trim_cream",
+     "color": [
+      204,
+      190,
+      158
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Tarp",
+     "fbx_name": "Shack_Tarp",
+     "tris": 12,
+     "look": "tarp",
+     "color": [
+      86,
+      124,
+      176
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_TarpStones",
+     "fbx_name": "Shack_TarpStones",
+     "tris": 60,
+     "look": "stone_block",
+     "color": [
+      150,
+      146,
+      140
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Tire",
+     "fbx_name": "Shack_Tire",
+     "tris": 384,
+     "look": "tire",
+     "color": [
+      36,
+      36,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_TireHole",
+     "fbx_name": "Shack_TireHole",
+     "tris": 176,
+     "look": "dark_hole",
+     "color": [
+      34,
+      28,
+      26
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Trash",
+     "fbx_name": "Shack_Trash",
+     "tris": 192,
+     "look": "trash",
+     "color": [
+      44,
+      48,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Trim",
+     "fbx_name": "Shack_Trim",
+     "tris": 1396,
+     "look": "trim_cream",
+     "color": [
+      204,
+      190,
+      158
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Shack_Weeds",
+     "fbx_name": "Shack_Weeds",
+     "tris": 720,
+     "look": "weed",
+     "color": [
+      96,
+      168,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

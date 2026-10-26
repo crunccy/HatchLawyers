@@ -49,6 +49,7 @@ repo** — local Claude memory is per machine, so anything the other side should
 | Client roster + bios | [docs/CLIENTS.md](docs/CLIENTS.md) |
 | Blender model remake plan | [docs/BLENDER_BRIEF.md](docs/BLENDER_BRIEF.md) |
 | Zones map: reference breakdown + rules (lane of zones, walls, decoration, scattered eggs) | [docs/ZONES_REFERENCE.md](docs/ZONES_REFERENCE.md), shots in `references/zones-ref-*.webp` |
+| Overhaul model exports (.fbx + looks per mesh, import steps) | [tools/zones/overhaul/README.md](tools/zones/overhaul/README.md), made by `tools/blender/overhaul/export_models.py` |
 | World redesign (floating islands, Blender only until approved): audit, hub blockout, stages | [environment-redesign/README.md](environment-redesign/README.md) |
 | Zone bosses ("Opposing Counsel"): six concepts + the egg-drop rule | [docs/BOSSES.md](docs/BOSSES.md) |
 | Boss attack animation overhaul + crowd attacks (Megalodon first) | [docs/BOSS_ANIMATION.md](docs/BOSS_ANIMATION.md) |
@@ -316,6 +317,13 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   rebuilding an island). In Studio, admin `/islands on|off` flips it for a playtest. No hub firms yet.
   Before-wiring copies: `ServerStorage.Backups_2026-10-20`, git tag `backup-2026-10-20-before-island-wiring`.
   environment-redesign/README.md has the details.
+  **The OLD MAIN ISLAND is archived (crnuch's call 2026-10-26):** its scenery (Ground, IslandDecor, Shrubbery, IslandEdge,
+  ZoneLandmarks, Baseplate, the Hub's street / plaza / trees / fountain, `ArcadePier.Pier`, the zone lane `Zones.<zone>`,
+  the License Office shell) is in `ServerStorage.Old_MainIsland` (each folder's `From` attribute = where it came from).
+  Left in Workspace only what `Server.HubMap` moves onto the v2 hub: Plots, HubSpawn, `Hub.{TravelPortal, ShopStall,
+  MergeMachine, BigCaseBelt, Leaderboards, SpecialSpots}`, `ArcadePier.Booths`, `Zones.LicenseOffice.Counter_*`. So the
+  descriptions of the Hub / lane / pier below are history; turning the islands or the hub switch OFF needs that archive
+  moved back first.
 - ARCADE PIER (2026-10-13): `Workspace.ArcadePier` north of the hub (the land ends at z 168), booth games run by
   `ServerScriptService.ArcadeServer` (+ `Games`), `StarterPlayerScripts.Arcade`, `ReplicatedStorage.ArcadeClient`,
   `Config.Arcade`. Map from Blender (`tools/blender/arcade_pier.py`). See src/Arcade/README.md.

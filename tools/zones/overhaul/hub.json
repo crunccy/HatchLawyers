@@ -1,0 +1,2605 @@
+{
+ "group": "hub",
+ "fbx": "exports/overhaul/hub.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "hub_license": {
+   "origin": [
+    31.4,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -31.4,
+    -27.3,
+    0.0
+   ],
+   "max": [
+    31.4,
+    23.4,
+    53.23
+   ],
+   "meshes": [
+    {
+     "name": "FlowerBed_FlowerMidOrange",
+     "fbx_name": "FlowerBed_FlowerMidOrange",
+     "tris": 360,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerMidYel",
+     "fbx_name": "FlowerBed_FlowerMidYel",
+     "tris": 720,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerPurple",
+     "fbx_name": "FlowerBed_FlowerPurple",
+     "tris": 1440,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerRed",
+     "fbx_name": "FlowerBed_FlowerRed",
+     "tris": 1440,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerYel",
+     "fbx_name": "FlowerBed_FlowerYel",
+     "tris": 1440,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves",
+     "tris": 838,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.001",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.001",
+     "tris": 838,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.001",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Soil",
+     "fbx_name": "FlowerBed_Soil",
+     "tris": 216,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone",
+     "fbx_name": "FlowerBed_Stone",
+     "tris": 2808,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone2",
+     "fbx_name": "FlowerBed_Stone2",
+     "tris": 1728,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Hedge_Edge",
+     "fbx_name": "Hedge_Edge",
+     "tris": 352,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Hedge_Hedge_Leaves",
+     "fbx_name": "Hedge_Hedge_Leaves",
+     "tris": 2200,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Hedge_Hedge_Leaves",
+     "fbx_name": "Hedge_Hedge_Leaves.001",
+     "tris": 2200,
+     "look": "hedge",
+     "color": [
+      80,
+      172,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Banner",
+     "fbx_name": "LampDouble_Banner",
+     "tris": 32,
+     "look": "banner_purple",
+     "color": [
+      128,
+      72,
+      210
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Glow",
+     "fbx_name": "LampDouble_Glow",
+     "tris": 48,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Gold",
+     "fbx_name": "LampDouble_Gold",
+     "tris": 1328,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LampDouble_Iron",
+     "fbx_name": "LampDouble_Iron",
+     "tris": 1992,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseBal_Baluster",
+     "fbx_name": "LicenseBal_Baluster",
+     "tris": 6528,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseBal_Rail",
+     "fbx_name": "LicenseBal_Rail",
+     "tris": 2464,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseCol_Column",
+     "fbx_name": "LicenseCol_Column",
+     "tris": 2808,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseCol_Trim",
+     "fbx_name": "LicenseCol_Trim",
+     "tris": 456,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDomeWin_Frame",
+     "fbx_name": "LicenseDomeWin_Frame",
+     "tris": 1248,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDomeWin_Glass",
+     "fbx_name": "LicenseDomeWin_Glass",
+     "tris": 576,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "LicenseDomeWin_Key",
+     "fbx_name": "LicenseDomeWin_Key",
+     "tris": 144,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDomeWin_Shine",
+     "fbx_name": "LicenseDomeWin_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDoor_DoorFrame",
+     "fbx_name": "LicenseDoor_DoorFrame",
+     "tris": 176,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDoor_Glass",
+     "fbx_name": "LicenseDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "LicenseDoor_Handle",
+     "fbx_name": "LicenseDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDoor_Leaf",
+     "fbx_name": "LicenseDoor_Leaf",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDoor_Panel",
+     "fbx_name": "LicenseDoor_Panel",
+     "tris": 176,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseDoor_Step",
+     "fbx_name": "LicenseDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseScales_Gold",
+     "fbx_name": "LicenseScales_Gold",
+     "tris": 2952,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseSideDoor_DoorFrame",
+     "fbx_name": "LicenseSideDoor_DoorFrame",
+     "tris": 352,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseSideDoor_Glass",
+     "fbx_name": "LicenseSideDoor_Glass",
+     "tris": 96,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "LicenseSideDoor_Handle",
+     "fbx_name": "LicenseSideDoor_Handle",
+     "tris": 256,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseSideDoor_Leaf",
+     "fbx_name": "LicenseSideDoor_Leaf",
+     "tris": 176,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseSideDoor_Panel",
+     "fbx_name": "LicenseSideDoor_Panel",
+     "tris": 352,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseSideDoor_Step",
+     "fbx_name": "LicenseSideDoor_Step",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWin_Frame",
+     "fbx_name": "LicenseWin_Frame",
+     "tris": 5392,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWin_Glass",
+     "fbx_name": "LicenseWin_Glass",
+     "tris": 2112,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "LicenseWin_Key",
+     "fbx_name": "LicenseWin_Key",
+     "tris": 240,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWin_Shine",
+     "fbx_name": "LicenseWin_Shine",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWin_Shutter",
+     "fbx_name": "LicenseWin_Shutter",
+     "tris": 928,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWin_Sill",
+     "fbx_name": "LicenseWin_Sill",
+     "tris": 1672,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWing_Cornice",
+     "fbx_name": "LicenseWing_Cornice",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWing_Fascia",
+     "fbx_name": "LicenseWing_Fascia",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWing_Ridge",
+     "fbx_name": "LicenseWing_Ridge",
+     "tris": 536,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWing_Roof",
+     "fbx_name": "LicenseWing_Roof",
+     "tris": 16,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWing_Seam",
+     "fbx_name": "LicenseWing_Seam",
+     "tris": 896,
+     "look": "navy_seam",
+     "color": [
+      82,
+      98,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "LicenseWing_Trim",
+     "fbx_name": "LicenseWing_Trim",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Banner",
+     "fbx_name": "License_Banner",
+     "tris": 32,
+     "look": "flag_purple",
+     "color": [
+      140,
+      80,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_BannerEdge",
+     "fbx_name": "License_BannerEdge",
+     "tris": 56,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Base",
+     "fbx_name": "License_Base",
+     "tris": 132,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Cap",
+     "fbx_name": "License_Cap",
+     "tris": 44,
+     "look": "trim_cream",
+     "color": [
+      248,
+      238,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Carpet",
+     "fbx_name": "License_Carpet",
+     "tris": 204,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Ceiling",
+     "fbx_name": "License_Ceiling",
+     "tris": 12,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Cheek",
+     "fbx_name": "License_Cheek",
+     "tris": 352,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Cornice",
+     "fbx_name": "License_Cornice",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Deck",
+     "fbx_name": "License_Deck",
+     "tris": 12,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Dome",
+     "fbx_name": "License_Dome",
+     "tris": 1160,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Drum",
+     "fbx_name": "License_Drum",
+     "tris": 280,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_DrumWall",
+     "fbx_name": "License_DrumWall",
+     "tris": 156,
+     "look": "wall_cream",
+     "color": [
+      246,
+      226,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Entab",
+     "fbx_name": "License_Entab",
+     "tris": 316,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Flag",
+     "fbx_name": "License_Flag",
+     "tris": 288,
+     "look": "flag_purple",
+     "color": [
+      140,
+      80,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Frieze",
+     "fbx_name": "License_Frieze",
+     "tris": 12,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Glass",
+     "fbx_name": "License_Glass",
+     "tris": 92,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "License_Glow",
+     "fbx_name": "License_Glow",
+     "tris": 72,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Gold",
+     "fbx_name": "License_Gold",
+     "tris": 1600,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Iron",
+     "fbx_name": "License_Iron",
+     "tris": 224,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Lantern",
+     "fbx_name": "License_Lantern",
+     "tris": 320,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Pediment",
+     "fbx_name": "License_Pediment",
+     "tris": 8,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Pilaster",
+     "fbx_name": "License_Pilaster",
+     "tris": 792,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Plinth",
+     "fbx_name": "License_Plinth",
+     "tris": 164,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Podium",
+     "fbx_name": "License_Podium",
+     "tris": 44,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Pole",
+     "fbx_name": "License_Pole",
+     "tris": 144,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Quoin",
+     "fbx_name": "License_Quoin",
+     "tris": 2904,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Raking",
+     "fbx_name": "License_Raking",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Rib",
+     "fbx_name": "License_Rib",
+     "tris": 1856,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Steps",
+     "fbx_name": "License_Steps",
+     "tris": 352,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Trim",
+     "fbx_name": "License_Trim",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Tympanum",
+     "fbx_name": "License_Tympanum",
+     "tris": 8,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "License_Wall",
+     "fbx_name": "License_Wall",
+     "tris": 36,
+     "look": "wall_cream",
+     "color": [
+      246,
+      226,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves.001",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Flower",
+     "fbx_name": "PlanterRound_Flower",
+     "tris": 1120,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_FlowerMid",
+     "fbx_name": "PlanterRound_FlowerMid",
+     "tris": 280,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Pot",
+     "fbx_name": "PlanterRound_Pot",
+     "tris": 432,
+     "look": "terracotta",
+     "color": [
+      218,
+      114,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Rim",
+     "fbx_name": "PlanterRound_Rim",
+     "tris": 576,
+     "look": "terracotta_dark",
+     "color": [
+      178,
+      84,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Soil",
+     "fbx_name": "PlanterRound_Soil",
+     "tris": 152,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Base",
+     "fbx_name": "PlanterSq_Base",
+     "tris": 440,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Bush_Leaves",
+     "fbx_name": "PlanterSq_Bush_Leaves",
+     "tris": 1500,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Bush_Leaves",
+     "fbx_name": "PlanterSq_Bush_Leaves.001",
+     "tris": 1500,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Flower",
+     "fbx_name": "PlanterSq_Flower",
+     "tris": 1280,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_FlowerMid",
+     "fbx_name": "PlanterSq_FlowerMid",
+     "tris": 320,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Soil",
+     "fbx_name": "PlanterSq_Soil",
+     "tris": 24,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Stone",
+     "fbx_name": "PlanterSq_Stone",
+     "tris": 88,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Trim",
+     "fbx_name": "PlanterSq_Trim",
+     "tris": 352,
+     "look": "trim_cream",
+     "color": [
+      248,
+      238,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "hub_upgrades": {
+   "origin": [
+    105.28,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -18.48,
+    -12.6,
+    0.0
+   ],
+   "max": [
+    18.48,
+    15.0,
+    26.27
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves.002",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Bush_Leaves",
+     "fbx_name": "PlanterRound_Bush_Leaves.003",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Flower",
+     "fbx_name": "PlanterRound_Flower.001",
+     "tris": 1120,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_FlowerMid",
+     "fbx_name": "PlanterRound_FlowerMid.001",
+     "tris": 280,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Pot",
+     "fbx_name": "PlanterRound_Pot.001",
+     "tris": 432,
+     "look": "terracotta",
+     "color": [
+      218,
+      114,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Rim",
+     "fbx_name": "PlanterRound_Rim.001",
+     "tris": 576,
+     "look": "terracotta_dark",
+     "color": [
+      178,
+      84,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterRound_Soil",
+     "fbx_name": "PlanterRound_Soil.001",
+     "tris": 152,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesBoot_Boot",
+     "fbx_name": "UpgradesBoot_Boot",
+     "tris": 376,
+     "look": "boot_red",
+     "color": [
+      226,
+      50,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesBoot_Sole",
+     "fbx_name": "UpgradesBoot_Sole",
+     "tris": 472,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesBoot_Wing",
+     "fbx_name": "UpgradesBoot_Wing",
+     "tris": 96,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesDoor_DoorFrame",
+     "fbx_name": "UpgradesDoor_DoorFrame",
+     "tris": 176,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesDoor_Glass",
+     "fbx_name": "UpgradesDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "UpgradesDoor_Handle",
+     "fbx_name": "UpgradesDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesDoor_Leaf",
+     "fbx_name": "UpgradesDoor_Leaf",
+     "tris": 88,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesDoor_Panel",
+     "fbx_name": "UpgradesDoor_Panel",
+     "tris": 176,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesDoor_Step",
+     "fbx_name": "UpgradesDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesWin_Frame",
+     "fbx_name": "UpgradesWin_Frame",
+     "tris": 2304,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesWin_Glass",
+     "fbx_name": "UpgradesWin_Glass",
+     "tris": 864,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "UpgradesWin_Key",
+     "fbx_name": "UpgradesWin_Key",
+     "tris": 108,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesWin_Shine",
+     "fbx_name": "UpgradesWin_Shine",
+     "tris": 72,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesWin_Shutter",
+     "fbx_name": "UpgradesWin_Shutter",
+     "tris": 464,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "UpgradesWin_Sill",
+     "fbx_name": "UpgradesWin_Sill",
+     "tris": 792,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Band",
+     "fbx_name": "Upgrades_Band",
+     "tris": 88,
+     "look": "stone_cool_dark",
+     "color": [
+      138,
+      146,
+      162
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Base",
+     "fbx_name": "Upgrades_Base",
+     "tris": 44,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Board",
+     "fbx_name": "Upgrades_Board",
+     "tris": 44,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_BriefBrown",
+     "fbx_name": "Upgrades_BriefBrown",
+     "tris": 108,
+     "look": "brief_brown",
+     "color": [
+      136,
+      84,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Chimney",
+     "fbx_name": "Upgrades_Chimney",
+     "tris": 44,
+     "look": "stone_cool_dark",
+     "color": [
+      138,
+      146,
+      162
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Cornice",
+     "fbx_name": "Upgrades_Cornice",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Dormer",
+     "fbx_name": "Upgrades_Dormer",
+     "tris": 12,
+     "look": "stone_cool",
+     "color": [
+      182,
+      188,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_DormerRoof",
+     "fbx_name": "Upgrades_DormerRoof",
+     "tris": 8,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Fascia",
+     "fbx_name": "Upgrades_Fascia",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Gear",
+     "fbx_name": "Upgrades_Gear",
+     "tris": 488,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_GearHub",
+     "fbx_name": "Upgrades_GearHub",
+     "tris": 60,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Gold",
+     "fbx_name": "Upgrades_Gold",
+     "tris": 744,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Handle",
+     "fbx_name": "Upgrades_Handle",
+     "tris": 104,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Pedestal",
+     "fbx_name": "Upgrades_Pedestal",
+     "tris": 728,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Quoin",
+     "fbx_name": "Upgrades_Quoin",
+     "tris": 2464,
+     "look": "stone_cool_dark",
+     "color": [
+      138,
+      146,
+      162
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Ridge",
+     "fbx_name": "Upgrades_Ridge",
+     "tris": 268,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Roof",
+     "fbx_name": "Upgrades_Roof",
+     "tris": 8,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Seam",
+     "fbx_name": "Upgrades_Seam",
+     "tris": 576,
+     "look": "navy_seam",
+     "color": [
+      82,
+      98,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Trim",
+     "fbx_name": "Upgrades_Trim",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Upgrades_Wall",
+     "fbx_name": "Upgrades_Wall",
+     "tris": 12,
+     "look": "stone_cool",
+     "color": [
+      182,
+      188,
+      200
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "hub_incubator": {
+   "origin": [
+    163.76,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -16.0,
+    -19.2,
+    0.0
+   ],
+   "max": [
+    17.79,
+    16.0,
+    26.2
+   ],
+   "meshes": [
+    {
+     "name": "AttractionSign_Bulbs",
+     "fbx_name": "AttractionSign_Bulbs",
+     "tris": 1220,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "AttractionSign_Gold",
+     "fbx_name": "AttractionSign_Gold",
+     "tris": 212,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "AttractionSign_Iron",
+     "fbx_name": "AttractionSign_Iron",
+     "tris": 160,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "AttractionSign_Panel",
+     "fbx_name": "AttractionSign_Panel",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Base",
+     "fbx_name": "Incubator_Base",
+     "tris": 408,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Boiler",
+     "fbx_name": "Incubator_Boiler",
+     "tris": 364,
+     "look": "copper",
+     "color": [
+      214,
+      128,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Brass",
+     "fbx_name": "Incubator_Brass",
+     "tris": 696,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Claw",
+     "fbx_name": "Incubator_Claw",
+     "tris": 1448,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Deck",
+     "fbx_name": "Incubator_Deck",
+     "tris": 452,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Dial",
+     "fbx_name": "Incubator_Dial",
+     "tris": 92,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Egg",
+     "fbx_name": "Incubator_Egg",
+     "tris": 3744,
+     "look": "egg_shell",
+     "color": [
+      255,
+      246,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_EggBlue",
+     "fbx_name": "Incubator_EggBlue",
+     "tris": 768,
+     "look": "egg_blue",
+     "color": [
+      110,
+      200,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_EggOrange",
+     "fbx_name": "Incubator_EggOrange",
+     "tris": 768,
+     "look": "egg_orange",
+     "color": [
+      255,
+      150,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Gold",
+     "fbx_name": "Incubator_Gold",
+     "tris": 2432,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Halo",
+     "fbx_name": "Incubator_Halo",
+     "tris": 1536,
+     "look": "halo_glow",
+     "color": [
+      110,
+      230,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Heat",
+     "fbx_name": "Incubator_Heat",
+     "tris": 288,
+     "look": "orb_glow",
+     "color": [
+      255,
+      214,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_HeatGlow",
+     "fbx_name": "Incubator_HeatGlow",
+     "tris": 152,
+     "look": "heat_glow",
+     "color": [
+      255,
+      96,
+      60
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Lamp",
+     "fbx_name": "Incubator_Lamp",
+     "tris": 280,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Metal",
+     "fbx_name": "Incubator_Metal",
+     "tris": 808,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Needle",
+     "fbx_name": "Incubator_Needle",
+     "tris": 96,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_Orb",
+     "fbx_name": "Incubator_Orb",
+     "tris": 320,
+     "look": "orb_glow",
+     "color": [
+      255,
+      214,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_SpotEggBlue",
+     "fbx_name": "Incubator_SpotEggBlue",
+     "tris": 480,
+     "look": "egg_blue",
+     "color": [
+      110,
+      200,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_SpotEggOrange",
+     "fbx_name": "Incubator_SpotEggOrange",
+     "tris": 400,
+     "look": "egg_orange",
+     "color": [
+      255,
+      150,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Incubator_SpotGold",
+     "fbx_name": "Incubator_SpotGold",
+     "tris": 320,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "hub_fountain": {
+   "origin": [
+    225.746,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -20.2,
+    -20.2,
+    0.0
+   ],
+   "max": [
+    20.2,
+    20.2,
+    28.12
+   ],
+   "meshes": [
+    {
+     "name": "FountainStatue_Bronze",
+     "fbx_name": "FountainStatue_Bronze",
+     "tris": 572,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FountainStatue_Gold",
+     "fbx_name": "FountainStatue_Gold",
+     "tris": 528,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Base",
+     "fbx_name": "Fountain_Base",
+     "tris": 320,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Curtain",
+     "fbx_name": "Fountain_Curtain",
+     "tris": 336,
+     "look": "water_fall",
+     "color": [
+      70,
+      175,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Foam",
+     "fbx_name": "Fountain_Foam",
+     "tris": 1024,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Gold",
+     "fbx_name": "Fountain_Gold",
+     "tris": 1656,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Jet",
+     "fbx_name": "Fountain_Jet",
+     "tris": 1632,
+     "look": "water_fall",
+     "color": [
+      70,
+      175,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Marble",
+     "fbx_name": "Fountain_Marble",
+     "tris": 3632,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Orb",
+     "fbx_name": "Fountain_Orb",
+     "tris": 640,
+     "look": "halo_glow",
+     "color": [
+      110,
+      230,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Fountain_Water",
+     "fbx_name": "Fountain_Water",
+     "tris": 472,
+     "look": "water",
+     "color": [
+      60,
+      170,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

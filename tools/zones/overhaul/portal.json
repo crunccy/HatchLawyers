@@ -1,0 +1,658 @@
+{
+ "group": "portal",
+ "fbx": "exports/overhaul/portal.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "TravelPortal": {
+   "origin": [
+    15.654,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -15.65,
+    -16.43,
+    0.0
+   ],
+   "max": [
+    15.65,
+    15.22,
+    26.95
+   ],
+   "meshes": [
+    {
+     "name": "Arch_Gold",
+     "fbx_name": "Arch_Gold",
+     "tris": 1056,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Beam",
+     "fbx_name": "Beam",
+     "tris": 160,
+     "look": "portal_field",
+     "color": [
+      40,
+      140,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0.4,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing1_Glow",
+     "fbx_name": "FloatRing1_Glow",
+     "tris": 864,
+     "look": "neon_cyan",
+     "color": [
+      80,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing1_Gold",
+     "fbx_name": "FloatRing1_Gold",
+     "tris": 864,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing1_White",
+     "fbx_name": "FloatRing1_White",
+     "tris": 960,
+     "look": "stage_white",
+     "color": [
+      244,
+      244,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing2_Glow",
+     "fbx_name": "FloatRing2_Glow",
+     "tris": 864,
+     "look": "neon_pink",
+     "color": [
+      255,
+      90,
+      210
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing2_Gold",
+     "fbx_name": "FloatRing2_Gold",
+     "tris": 864,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing2_White",
+     "fbx_name": "FloatRing2_White",
+     "tris": 960,
+     "look": "stage_white",
+     "color": [
+      244,
+      244,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing3_Glow",
+     "fbx_name": "FloatRing3_Glow",
+     "tris": 864,
+     "look": "neon_cyan",
+     "color": [
+      80,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing3_Gold",
+     "fbx_name": "FloatRing3_Gold",
+     "tris": 864,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FloatRing3_White",
+     "fbx_name": "FloatRing3_White",
+     "tris": 960,
+     "look": "stage_white",
+     "color": [
+      244,
+      244,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gem1",
+     "fbx_name": "Gem1",
+     "tris": 16,
+     "look": "gem1",
+     "color": [
+      104,
+      152,
+      236
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gem2",
+     "fbx_name": "Gem2",
+     "tris": 16,
+     "look": "gem2",
+     "color": [
+      120,
+      196,
+      50
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gem3",
+     "fbx_name": "Gem3",
+     "tris": 16,
+     "look": "gem3",
+     "color": [
+      170,
+      80,
+      210
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gem4",
+     "fbx_name": "Gem4",
+     "tris": 16,
+     "look": "gem4",
+     "color": [
+      240,
+      84,
+      74
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gem5",
+     "fbx_name": "Gem5",
+     "tris": 16,
+     "look": "gem5",
+     "color": [
+      70,
+      160,
+      225
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Gem6",
+     "fbx_name": "Gem6",
+     "tris": 16,
+     "look": "gem6",
+     "color": [
+      120,
+      100,
+      230
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "HaloCore",
+     "fbx_name": "HaloCore",
+     "tris": 80,
+     "look": "core",
+     "color": [
+      220,
+      250,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Halo_Back",
+     "fbx_name": "Halo_Back",
+     "tris": 96,
+     "look": "pad_dark",
+     "color": [
+      34,
+      30,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Halo_Gold",
+     "fbx_name": "Halo_Gold",
+     "tris": 2496,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Halo_Rim",
+     "fbx_name": "Halo_Rim",
+     "tris": 1664,
+     "look": "stage_white",
+     "color": [
+      244,
+      244,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Halo_Rings",
+     "fbx_name": "Halo_Rings",
+     "tris": 864,
+     "look": "neon_cyan",
+     "color": [
+      80,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pad_Dark",
+     "fbx_name": "Pad_Dark",
+     "tris": 192,
+     "look": "pad_dark",
+     "color": [
+      34,
+      30,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pad_Rings",
+     "fbx_name": "Pad_Rings",
+     "tris": 864,
+     "look": "neon_cyan",
+     "color": [
+      80,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pylon_Base",
+     "fbx_name": "Pylon_Base",
+     "tris": 648,
+     "look": "stage_white",
+     "color": [
+      244,
+      244,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pylon_Crystal",
+     "fbx_name": "Pylon_Crystal",
+     "tris": 72,
+     "look": "neon_pink",
+     "color": [
+      255,
+      90,
+      210
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pylon_Deep",
+     "fbx_name": "Pylon_Deep",
+     "tris": 7776,
+     "look": "pylon_deep",
+     "color": [
+      70,
+      40,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pylon_Glow",
+     "fbx_name": "Pylon_Glow",
+     "tris": 288,
+     "look": "neon_cyan",
+     "color": [
+      80,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pylon_Gold",
+     "fbx_name": "Pylon_Gold",
+     "tris": 2592,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Pylon_Shaft",
+     "fbx_name": "Pylon_Shaft",
+     "tris": 1296,
+     "look": "pylon_purple",
+     "color": [
+      112,
+      70,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SignPlate",
+     "fbx_name": "SignPlate",
+     "tris": 12,
+     "look": "sign_black",
+     "color": [
+      26,
+      24,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sign_Board",
+     "fbx_name": "Sign_Board",
+     "tris": 108,
+     "look": "sign_black",
+     "color": [
+      26,
+      24,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sign_Bulbs",
+     "fbx_name": "Sign_Bulbs",
+     "tris": 960,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sign_Gold",
+     "fbx_name": "Sign_Gold",
+     "tris": 528,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sign_PlateBack",
+     "fbx_name": "Sign_PlateBack",
+     "tris": 12,
+     "look": "sign_black",
+     "color": [
+      26,
+      24,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sign_Post",
+     "fbx_name": "Sign_Post",
+     "tris": 108,
+     "look": "pylon_deep",
+     "color": [
+      70,
+      40,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Stage_Glow",
+     "fbx_name": "Stage_Glow",
+     "tris": 864,
+     "look": "neon_cyan",
+     "color": [
+      80,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Stage_Gold",
+     "fbx_name": "Stage_Gold",
+     "tris": 1008,
+     "look": "trim_gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Stage_White",
+     "fbx_name": "Stage_White",
+     "tris": 3312,
+     "look": "stage_white",
+     "color": [
+      244,
+      244,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SwirlArm1",
+     "fbx_name": "SwirlArm1",
+     "tris": 30,
+     "look": "swirl",
+     "color": [
+      110,
+      235,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SwirlArm2",
+     "fbx_name": "SwirlArm2",
+     "tris": 30,
+     "look": "swirl",
+     "color": [
+      110,
+      235,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SwirlArm3",
+     "fbx_name": "SwirlArm3",
+     "tris": 30,
+     "look": "swirl",
+     "color": [
+      110,
+      235,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SwirlArm4",
+     "fbx_name": "SwirlArm4",
+     "tris": 30,
+     "look": "swirl",
+     "color": [
+      110,
+      235,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SwirlCore",
+     "fbx_name": "SwirlCore",
+     "tris": 192,
+     "look": "core",
+     "color": [
+      220,
+      250,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SwirlDisc",
+     "fbx_name": "SwirlDisc",
+     "tris": 96,
+     "look": "swirl",
+     "color": [
+      110,
+      235,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

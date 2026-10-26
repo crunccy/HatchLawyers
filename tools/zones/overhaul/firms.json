@@ -1,0 +1,4108 @@
+{
+ "group": "firms",
+ "fbx": "exports/overhaul/firms.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "firms_stage2": {
+   "origin": [
+    25.12,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -25.12,
+    -6.0,
+    -1.5
+   ],
+   "max": [
+    25.12,
+    22.1,
+    14.74
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_Bulbs",
+     "fbx_name": "StorefrontCafe_Bulbs",
+     "tris": 180,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_CafeTable_Gold",
+     "fbx_name": "StorefrontCafe_CafeTable_Gold",
+     "tris": 60,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_CafeTable_Iron",
+     "fbx_name": "StorefrontCafe_CafeTable_Iron",
+     "tris": 2064,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_CafeTable_Red",
+     "fbx_name": "StorefrontCafe_CafeTable_Red",
+     "tris": 540,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_CafeTable_Seat",
+     "fbx_name": "StorefrontCafe_CafeTable_Seat",
+     "tris": 360,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_CafeTable_Top",
+     "fbx_name": "StorefrontCafe_CafeTable_Top",
+     "tris": 276,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_CafeTable_White",
+     "fbx_name": "StorefrontCafe_CafeTable_White",
+     "tris": 540,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_FlowerMidOrange",
+     "fbx_name": "StorefrontCafe_FlowerBed_FlowerMidOrange",
+     "tris": 180,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_FlowerMidYel",
+     "fbx_name": "StorefrontCafe_FlowerBed_FlowerMidYel",
+     "tris": 360,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_FlowerPurple",
+     "fbx_name": "StorefrontCafe_FlowerBed_FlowerPurple",
+     "tris": 720,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_FlowerRed",
+     "fbx_name": "StorefrontCafe_FlowerBed_FlowerRed",
+     "tris": 720,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_FlowerYel",
+     "fbx_name": "StorefrontCafe_FlowerBed_FlowerYel",
+     "tris": 720,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_Leaves0_Leaves",
+     "fbx_name": "StorefrontCafe_FlowerBed_Leaves0_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_Leaves1_Leaves",
+     "fbx_name": "StorefrontCafe_FlowerBed_Leaves1_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_Leaves2_Leaves",
+     "fbx_name": "StorefrontCafe_FlowerBed_Leaves2_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_Soil",
+     "fbx_name": "StorefrontCafe_FlowerBed_Soil",
+     "tris": 108,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_Stone",
+     "fbx_name": "StorefrontCafe_FlowerBed_Stone",
+     "tris": 1404,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_FlowerBed_Stone2",
+     "fbx_name": "StorefrontCafe_FlowerBed_Stone2",
+     "tris": 864,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontCafe_Lights",
+     "fbx_name": "StorefrontCafe_Lights",
+     "tris": 120,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontWin_Frame",
+     "fbx_name": "StorefrontWin_Frame",
+     "tris": 512,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontWin_Glass",
+     "fbx_name": "StorefrontWin_Glass",
+     "tris": 192,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "StorefrontWin_Key",
+     "fbx_name": "StorefrontWin_Key",
+     "tris": 48,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontWin_Shine",
+     "fbx_name": "StorefrontWin_Shine",
+     "tris": 16,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontWin_Shutter",
+     "fbx_name": "StorefrontWin_Shutter",
+     "tris": 928,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "StorefrontWin_Sill",
+     "fbx_name": "StorefrontWin_Sill",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Awning",
+     "fbx_name": "Storefront_Awning",
+     "tris": 180,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_AwningW",
+     "fbx_name": "Storefront_AwningW",
+     "tris": 180,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Brass",
+     "fbx_name": "Storefront_Brass",
+     "tris": 40,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_BrickAccent",
+     "fbx_name": "Storefront_BrickAccent",
+     "tris": 792,
+     "look": "brick_dark",
+     "color": [
+      160,
+      62,
+      48
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Coping",
+     "fbx_name": "Storefront_Coping",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Cornice",
+     "fbx_name": "Storefront_Cornice",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Door",
+     "fbx_name": "Storefront_Door",
+     "tris": 24,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_DoorFrame",
+     "fbx_name": "Storefront_DoorFrame",
+     "tris": 132,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Flower",
+     "fbx_name": "Storefront_Flower",
+     "tris": 2560,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_FlowerBox",
+     "fbx_name": "Storefront_FlowerBox",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_FlowerLeaf",
+     "fbx_name": "Storefront_FlowerLeaf",
+     "tris": 640,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_FlowerMid",
+     "fbx_name": "Storefront_FlowerMid",
+     "tris": 640,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Frame",
+     "fbx_name": "Storefront_Frame",
+     "tris": 552,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Glass",
+     "fbx_name": "Storefront_Glass",
+     "tris": 48,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "Storefront_Glow",
+     "fbx_name": "Storefront_Glow",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Gold",
+     "fbx_name": "Storefront_Gold",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Iron",
+     "fbx_name": "Storefront_Iron",
+     "tris": 500,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Mat",
+     "fbx_name": "Storefront_Mat",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Parapet",
+     "fbx_name": "Storefront_Parapet",
+     "tris": 48,
+     "look": "brick",
+     "color": [
+      198,
+      84,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Porch",
+     "fbx_name": "Storefront_Porch",
+     "tris": 132,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Roof",
+     "fbx_name": "Storefront_Roof",
+     "tris": 12,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Shine",
+     "fbx_name": "Storefront_Shine",
+     "tris": 72,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_SignBoard",
+     "fbx_name": "Storefront_SignBoard",
+     "tris": 44,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Stall",
+     "fbx_name": "Storefront_Stall",
+     "tris": 88,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Trim",
+     "fbx_name": "Storefront_Trim",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Urn",
+     "fbx_name": "Storefront_Urn",
+     "tris": 432,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Storefront_Wall",
+     "fbx_name": "Storefront_Wall",
+     "tris": 168,
+     "look": "brick",
+     "color": [
+      198,
+      84,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "firms_stage3": {
+   "origin": [
+    99.36,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -25.12,
+    -6.59,
+    -1.5
+   ],
+   "max": [
+    25.12,
+    22.1,
+    20.05
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow.001",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold.001",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron.001",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Counter",
+     "fbx_name": "MainStreetCoffee_Counter",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Cup",
+     "fbx_name": "MainStreetCoffee_Cup",
+     "tris": 210,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Glow",
+     "fbx_name": "MainStreetCoffee_Glow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Machine",
+     "fbx_name": "MainStreetCoffee_Machine",
+     "tris": 56,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Menu",
+     "fbx_name": "MainStreetCoffee_Menu",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Preview_Text_white",
+     "fbx_name": "MainStreetCoffee_Preview_Text_white",
+     "tris": 1940,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCoffee_Top",
+     "fbx_name": "MainStreetCoffee_Top",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCol_Column",
+     "fbx_name": "MainStreetCol_Column",
+     "tris": 1872,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetCol_Trim",
+     "fbx_name": "MainStreetCol_Trim",
+     "tris": 304,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetDoor_DoorFrame",
+     "fbx_name": "MainStreetDoor_DoorFrame",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetDoor_Glass",
+     "fbx_name": "MainStreetDoor_Glass",
+     "tris": 48,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "MainStreetDoor_Handle",
+     "fbx_name": "MainStreetDoor_Handle",
+     "tris": 128,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetDoor_Leaf",
+     "fbx_name": "MainStreetDoor_Leaf",
+     "tris": 88,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetDoor_Panel",
+     "fbx_name": "MainStreetDoor_Panel",
+     "tris": 176,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetDoor_Step",
+     "fbx_name": "MainStreetDoor_Step",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetShow_Glass",
+     "fbx_name": "MainStreetShow_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "MainStreetShow_Mullion",
+     "fbx_name": "MainStreetShow_Mullion",
+     "tris": 352,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetShow_Shine",
+     "fbx_name": "MainStreetShow_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetWin_Frame",
+     "fbx_name": "MainStreetWin_Frame",
+     "tris": 1792,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetWin_Glass",
+     "fbx_name": "MainStreetWin_Glass",
+     "tris": 672,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "MainStreetWin_Key",
+     "fbx_name": "MainStreetWin_Key",
+     "tris": 48,
+     "look": "marble_shade",
+     "color": [
+      220,
+      216,
+      206
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetWin_Shine",
+     "fbx_name": "MainStreetWin_Shine",
+     "tris": 56,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreetWin_Sill",
+     "fbx_name": "MainStreetWin_Sill",
+     "tris": 616,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Brick",
+     "fbx_name": "MainStreet_Brick",
+     "tris": 36,
+     "look": "brick",
+     "color": [
+      198,
+      84,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_BrickAccent",
+     "fbx_name": "MainStreet_BrickAccent",
+     "tris": 352,
+     "look": "brick_dark",
+     "color": [
+      160,
+      62,
+      48
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Coping",
+     "fbx_name": "MainStreet_Coping",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Cornice",
+     "fbx_name": "MainStreet_Cornice",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Entab",
+     "fbx_name": "MainStreet_Entab",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Flag",
+     "fbx_name": "MainStreet_Flag",
+     "tris": 96,
+     "look": "flag_red",
+     "color": [
+      232,
+      56,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Floor",
+     "fbx_name": "MainStreet_Floor",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Flower",
+     "fbx_name": "MainStreet_Flower",
+     "tris": 2560,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_FlowerBox",
+     "fbx_name": "MainStreet_FlowerBox",
+     "tris": 176,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_FlowerLeaf",
+     "fbx_name": "MainStreet_FlowerLeaf",
+     "tris": 640,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_FlowerMid",
+     "fbx_name": "MainStreet_FlowerMid",
+     "tris": 640,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Glow",
+     "fbx_name": "MainStreet_Glow",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Gold",
+     "fbx_name": "MainStreet_Gold",
+     "tris": 172,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Groove",
+     "fbx_name": "MainStreet_Groove",
+     "tris": 48,
+     "look": "sand_dark",
+     "color": [
+      222,
+      190,
+      124
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Iron",
+     "fbx_name": "MainStreet_Iron",
+     "tris": 468,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Mat",
+     "fbx_name": "MainStreet_Mat",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Parapet",
+     "fbx_name": "MainStreet_Parapet",
+     "tris": 48,
+     "look": "sand",
+     "color": [
+      240,
+      214,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Pediment",
+     "fbx_name": "MainStreet_Pediment",
+     "tris": 8,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Pole",
+     "fbx_name": "MainStreet_Pole",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Porch",
+     "fbx_name": "MainStreet_Porch",
+     "tris": 132,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Raking",
+     "fbx_name": "MainStreet_Raking",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Roof",
+     "fbx_name": "MainStreet_Roof",
+     "tris": 12,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_ShowBack",
+     "fbx_name": "MainStreet_ShowBack",
+     "tris": 12,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_ShowFloor",
+     "fbx_name": "MainStreet_ShowFloor",
+     "tris": 12,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_SignBoard",
+     "fbx_name": "MainStreet_SignBoard",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Spot",
+     "fbx_name": "MainStreet_Spot",
+     "tris": 120,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Trim",
+     "fbx_name": "MainStreet_Trim",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Tympanum",
+     "fbx_name": "MainStreet_Tympanum",
+     "tris": 8,
+     "look": "sand",
+     "color": [
+      240,
+      214,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Vent",
+     "fbx_name": "MainStreet_Vent",
+     "tris": 192,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_VentGrille",
+     "fbx_name": "MainStreet_VentGrille",
+     "tris": 72,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "MainStreet_Wall",
+     "fbx_name": "MainStreet_Wall",
+     "tris": 96,
+     "look": "sand",
+     "color": [
+      240,
+      214,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "firms_stage4": {
+   "origin": [
+    173.28,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -24.8,
+    -8.0,
+    -1.5
+   ],
+   "max": [
+    24.8,
+    21.52,
+    38.55
+   ],
+   "meshes": [
+    {
+     "name": "GlassOfficeConference_Chair",
+     "fbx_name": "GlassOfficeConference_Chair",
+     "tris": 704,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeConference_ChairLeg",
+     "fbx_name": "GlassOfficeConference_ChairLeg",
+     "tris": 160,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeConference_Table",
+     "fbx_name": "GlassOfficeConference_Table",
+     "tris": 68,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeF3_Glass",
+     "fbx_name": "GlassOfficeF3_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "GlassOfficeF3_Mullion",
+     "fbx_name": "GlassOfficeF3_Mullion",
+     "tris": 352,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeF3_Shine",
+     "fbx_name": "GlassOfficeF3_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeF4_Glass",
+     "fbx_name": "GlassOfficeF4_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "GlassOfficeF4_Mullion",
+     "fbx_name": "GlassOfficeF4_Mullion",
+     "tris": 352,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeF4_Shine",
+     "fbx_name": "GlassOfficeF4_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLibrary_BookAwningGreen",
+     "fbx_name": "GlassOfficeLibrary_BookAwningGreen",
+     "tris": 384,
+     "look": "awning_green",
+     "color": [
+      70,
+      170,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLibrary_BookCarpetRed",
+     "fbx_name": "GlassOfficeLibrary_BookCarpetRed",
+     "tris": 384,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLibrary_BookFlagPurple",
+     "fbx_name": "GlassOfficeLibrary_BookFlagPurple",
+     "tris": 384,
+     "look": "flag_purple",
+     "color": [
+      140,
+      80,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLibrary_BookLicenseYel",
+     "fbx_name": "GlassOfficeLibrary_BookLicenseYel",
+     "tris": 384,
+     "look": "license_yel",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLibrary_BookNavyRoof",
+     "fbx_name": "GlassOfficeLibrary_BookNavyRoof",
+     "tris": 384,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLibrary_Shelf",
+     "fbx_name": "GlassOfficeLibrary_Shelf",
+     "tris": 220,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLobby_Door",
+     "fbx_name": "GlassOfficeLobby_Door",
+     "tris": 24,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "GlassOfficeLobby_DoorBar",
+     "fbx_name": "GlassOfficeLobby_DoorBar",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLobby_Glass",
+     "fbx_name": "GlassOfficeLobby_Glass",
+     "tris": 36,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "GlassOfficeLobby_Mullion",
+     "fbx_name": "GlassOfficeLobby_Mullion",
+     "tris": 440,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeLobby_Shine",
+     "fbx_name": "GlassOfficeLobby_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeShow_Glass",
+     "fbx_name": "GlassOfficeShow_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "GlassOfficeShow_Mullion",
+     "fbx_name": "GlassOfficeShow_Mullion",
+     "tris": 352,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOfficeShow_Shine",
+     "fbx_name": "GlassOfficeShow_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Canopy",
+     "fbx_name": "GlassOffice_Canopy",
+     "tris": 44,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_CanopyGlow",
+     "fbx_name": "GlassOffice_CanopyGlow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Coping",
+     "fbx_name": "GlassOffice_Coping",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Fin",
+     "fbx_name": "GlassOffice_Fin",
+     "tris": 88,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Floor",
+     "fbx_name": "GlassOffice_Floor",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Gold",
+     "fbx_name": "GlassOffice_Gold",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Mat",
+     "fbx_name": "GlassOffice_Mat",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Mullion",
+     "fbx_name": "GlassOffice_Mullion",
+     "tris": 1408,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Parapet",
+     "fbx_name": "GlassOffice_Parapet",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Porch",
+     "fbx_name": "GlassOffice_Porch",
+     "tris": 132,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Post",
+     "fbx_name": "GlassOffice_Post",
+     "tris": 120,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Reception",
+     "fbx_name": "GlassOffice_Reception",
+     "tris": 44,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_ReceptionTop",
+     "fbx_name": "GlassOffice_ReceptionTop",
+     "tris": 44,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Shine",
+     "fbx_name": "GlassOffice_Shine",
+     "tris": 288,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_ShowBack",
+     "fbx_name": "GlassOffice_ShowBack",
+     "tris": 12,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_ShowFloor",
+     "fbx_name": "GlassOffice_ShowFloor",
+     "tris": 12,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_SideGlass",
+     "fbx_name": "GlassOffice_SideGlass",
+     "tris": 96,
+     "look": "glass_side",
+     "color": [
+      168,
+      218,
+      246
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "GlassOffice_SignBoard",
+     "fbx_name": "GlassOffice_SignBoard",
+     "tris": 44,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Spandrel",
+     "fbx_name": "GlassOffice_Spandrel",
+     "tris": 132,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Spot",
+     "fbx_name": "GlassOffice_Spot",
+     "tris": 240,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Trim",
+     "fbx_name": "GlassOffice_Trim",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Vent",
+     "fbx_name": "GlassOffice_Vent",
+     "tris": 288,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_VentGrille",
+     "fbx_name": "GlassOffice_VentGrille",
+     "tris": 108,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "GlassOffice_Wall",
+     "fbx_name": "GlassOffice_Wall",
+     "tris": 60,
+     "look": "panel",
+     "color": [
+      226,
+      232,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow.002",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold.002",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron.002",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Base",
+     "fbx_name": "PlanterSq_Base",
+     "tris": 660,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Bush_Leaves",
+     "fbx_name": "PlanterSq_Bush_Leaves",
+     "tris": 1500,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Bush_Leaves",
+     "fbx_name": "PlanterSq_Bush_Leaves.001",
+     "tris": 1388,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Bush_Leaves",
+     "fbx_name": "PlanterSq_Bush_Leaves.002",
+     "tris": 1384,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Flower",
+     "fbx_name": "PlanterSq_Flower",
+     "tris": 1680,
+     "look": "flower_pink",
+     "color": [
+      250,
+      130,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_FlowerMid",
+     "fbx_name": "PlanterSq_FlowerMid",
+     "tris": 420,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Soil",
+     "fbx_name": "PlanterSq_Soil",
+     "tris": 36,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Stone",
+     "fbx_name": "PlanterSq_Stone",
+     "tris": 132,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "PlanterSq_Trim",
+     "fbx_name": "PlanterSq_Trim",
+     "tris": 528,
+     "look": "trim_cream",
+     "color": [
+      248,
+      238,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "firms_stage5": {
+   "origin": [
+    247.08,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -25.0,
+    -6.0,
+    -1.5
+   ],
+   "max": [
+    25.0,
+    21.52,
+    61.04
+   ],
+   "meshes": [
+    {
+     "name": "CorporateHQAtrium_Door",
+     "fbx_name": "CorporateHQAtrium_Door",
+     "tris": 24,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQAtrium_DoorBar",
+     "fbx_name": "CorporateHQAtrium_DoorBar",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQAtrium_Glass",
+     "fbx_name": "CorporateHQAtrium_Glass",
+     "tris": 36,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQAtrium_Mullion",
+     "fbx_name": "CorporateHQAtrium_Mullion",
+     "tris": 440,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQAtrium_Shine",
+     "fbx_name": "CorporateHQAtrium_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_Bar",
+     "fbx_name": "CorporateHQCafe_Bar",
+     "tris": 44,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_BarTop",
+     "fbx_name": "CorporateHQCafe_BarTop",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_Cord",
+     "fbx_name": "CorporateHQCafe_Cord",
+     "tris": 16,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_Lamp",
+     "fbx_name": "CorporateHQCafe_Lamp",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_Shade",
+     "fbx_name": "CorporateHQCafe_Shade",
+     "tris": 96,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_Stool",
+     "fbx_name": "CorporateHQCafe_Stool",
+     "tris": 210,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQCafe_StoolSeat",
+     "fbx_name": "CorporateHQCafe_StoolSeat",
+     "tris": 156,
+     "look": "booth_orange",
+     "color": [
+      255,
+      150,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQGarden_Bench_Iron",
+     "fbx_name": "CorporateHQGarden_Bench_Iron",
+     "tris": 2080,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQGarden_Bench_Wood",
+     "fbx_name": "CorporateHQGarden_Bench_Wood",
+     "tris": 616,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQGarden_Lawn",
+     "fbx_name": "CorporateHQGarden_Lawn",
+     "tris": 12,
+     "look": "grass_ov",
+     "color": [
+      124,
+      222,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQGarden_Tree-16_Leaves",
+     "fbx_name": "CorporateHQGarden_Tree-16_Leaves",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQGarden_Tree16_Leaves",
+     "fbx_name": "CorporateHQGarden_Tree16_Leaves",
+     "tris": 1200,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQGarden_Trunk",
+     "fbx_name": "CorporateHQGarden_Trunk",
+     "tris": 72,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Glass",
+     "fbx_name": "CorporateHQLounge_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQLounge_Glow",
+     "fbx_name": "CorporateHQLounge_Glow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Lounge_Cushion",
+     "fbx_name": "CorporateHQLounge_Lounge_Cushion",
+     "tris": 972,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Lounge_Sofa",
+     "fbx_name": "CorporateHQLounge_Lounge_Sofa",
+     "tris": 1296,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Mullion",
+     "fbx_name": "CorporateHQLounge_Mullion",
+     "tris": 352,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Preview_Carpet",
+     "fbx_name": "CorporateHQLounge_Preview_Carpet",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Shine",
+     "fbx_name": "CorporateHQLounge_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQLounge_Table",
+     "fbx_name": "CorporateHQLounge_Table",
+     "tris": 132,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQShow_Glass",
+     "fbx_name": "CorporateHQShow_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQShow_Mullion",
+     "fbx_name": "CorporateHQShow_Mullion",
+     "tris": 352,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQShow_Shine",
+     "fbx_name": "CorporateHQShow_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Band",
+     "fbx_name": "CorporateHQ_Band",
+     "tris": 88,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_BeamCap",
+     "fbx_name": "CorporateHQ_BeamCap",
+     "tris": 44,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Coping",
+     "fbx_name": "CorporateHQ_Coping",
+     "tris": 176,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Deck",
+     "fbx_name": "CorporateHQ_Deck",
+     "tris": 12,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_DeckGap",
+     "fbx_name": "CorporateHQ_DeckGap",
+     "tris": 288,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Floor",
+     "fbx_name": "CorporateHQ_Floor",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Gold",
+     "fbx_name": "CorporateHQ_Gold",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_HoloRing",
+     "fbx_name": "CorporateHQ_HoloRing",
+     "tris": 192,
+     "look": "halo_glow",
+     "color": [
+      110,
+      230,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Mat",
+     "fbx_name": "CorporateHQ_Mat",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Mullion",
+     "fbx_name": "CorporateHQ_Mullion",
+     "tris": 1452,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Parapet",
+     "fbx_name": "CorporateHQ_Parapet",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Porch",
+     "fbx_name": "CorporateHQ_Porch",
+     "tris": 132,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_RailGlass",
+     "fbx_name": "CorporateHQ_RailGlass",
+     "tris": 12,
+     "look": "glass_blue",
+     "color": [
+      128,
+      190,
+      240
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQ_RailTop",
+     "fbx_name": "CorporateHQ_RailTop",
+     "tris": 44,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Shine",
+     "fbx_name": "CorporateHQ_Shine",
+     "tris": 216,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_ShowBack",
+     "fbx_name": "CorporateHQ_ShowBack",
+     "tris": 12,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_ShowFloor",
+     "fbx_name": "CorporateHQ_ShowFloor",
+     "tris": 12,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_SideGlass",
+     "fbx_name": "CorporateHQ_SideGlass",
+     "tris": 72,
+     "look": "glass_side",
+     "color": [
+      168,
+      218,
+      246
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQ_SignBand",
+     "fbx_name": "CorporateHQ_SignBand",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Spot",
+     "fbx_name": "CorporateHQ_Spot",
+     "tris": 360,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Trim",
+     "fbx_name": "CorporateHQ_Trim",
+     "tris": 132,
+     "look": "panel",
+     "color": [
+      226,
+      232,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_UpperGlass",
+     "fbx_name": "CorporateHQ_UpperGlass",
+     "tris": 36,
+     "look": "glass_dark",
+     "color": [
+      60,
+      110,
+      170
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "CorporateHQ_VBeam",
+     "fbx_name": "CorporateHQ_VBeam",
+     "tris": 176,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_VFoot",
+     "fbx_name": "CorporateHQ_VFoot",
+     "tris": 88,
+     "look": "panel",
+     "color": [
+      226,
+      232,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CorporateHQ_Wall",
+     "fbx_name": "CorporateHQ_Wall",
+     "tris": 60,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerMidOrange",
+     "fbx_name": "FlowerBed_FlowerMidOrange",
+     "tris": 540,
+     "look": "flower_orange",
+     "color": [
+      255,
+      140,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerMidYel",
+     "fbx_name": "FlowerBed_FlowerMidYel",
+     "tris": 1080,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerPurple",
+     "fbx_name": "FlowerBed_FlowerPurple",
+     "tris": 2160,
+     "look": "flower_purple",
+     "color": [
+      168,
+      104,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerRed",
+     "fbx_name": "FlowerBed_FlowerRed",
+     "tris": 2160,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_FlowerYel",
+     "fbx_name": "FlowerBed_FlowerYel",
+     "tris": 2160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.001",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves0_Leaves",
+     "fbx_name": "FlowerBed_Leaves0_Leaves.002",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.001",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves1_Leaves",
+     "fbx_name": "FlowerBed_Leaves1_Leaves.002",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.001",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Leaves2_Leaves",
+     "fbx_name": "FlowerBed_Leaves2_Leaves.002",
+     "tris": 840,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Soil",
+     "fbx_name": "FlowerBed_Soil",
+     "tris": 324,
+     "look": "soil",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone",
+     "fbx_name": "FlowerBed_Stone",
+     "tris": 4212,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "FlowerBed_Stone2",
+     "fbx_name": "FlowerBed_Stone2",
+     "tris": 2592,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow.003",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold.003",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron.003",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "firms_stage6": {
+   "origin": [
+    320.88,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -24.8,
+    -9.0,
+    -1.5
+   ],
+   "max": [
+    24.8,
+    21.4,
+    159.95
+   ],
+   "meshes": [
+    {
+     "name": "Lamp_Glow",
+     "fbx_name": "Lamp_Glow.004",
+     "tris": 24,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Gold",
+     "fbx_name": "Lamp_Gold.004",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lamp_Iron",
+     "fbx_name": "Lamp_Iron.004",
+     "tris": 1248,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerCourt_Panel",
+     "fbx_name": "SupremeTowerCourt_Panel",
+     "tris": 12,
+     "look": "court_wood",
+     "color": [
+      150,
+      92,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerLobby_Door",
+     "fbx_name": "SupremeTowerLobby_Door",
+     "tris": 24,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "SupremeTowerLobby_DoorBar",
+     "fbx_name": "SupremeTowerLobby_DoorBar",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerLobby_Glass",
+     "fbx_name": "SupremeTowerLobby_Glass",
+     "tris": 36,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "SupremeTowerLobby_Mullion",
+     "fbx_name": "SupremeTowerLobby_Mullion",
+     "tris": 440,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerLobby_Shine",
+     "fbx_name": "SupremeTowerLobby_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerShow_Glass",
+     "fbx_name": "SupremeTowerShow_Glass",
+     "tris": 12,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "SupremeTowerShow_Mullion",
+     "fbx_name": "SupremeTowerShow_Mullion",
+     "tris": 352,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerShow_Shine",
+     "fbx_name": "SupremeTowerShow_Shine",
+     "tris": 48,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTowerSuite_Glow",
+     "fbx_name": "SupremeTowerSuite_Glow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Band",
+     "fbx_name": "SupremeTower_Band",
+     "tris": 352,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_BandGold",
+     "fbx_name": "SupremeTower_BandGold",
+     "tris": 220,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Beacon",
+     "fbx_name": "SupremeTower_Beacon",
+     "tris": 80,
+     "look": "heat_glow",
+     "color": [
+      255,
+      96,
+      60
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Canopy",
+     "fbx_name": "SupremeTower_Canopy",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_CanopyGlow",
+     "fbx_name": "SupremeTower_CanopyGlow",
+     "tris": 12,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Column",
+     "fbx_name": "SupremeTower_Column",
+     "tris": 352,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Crown",
+     "fbx_name": "SupremeTower_Crown",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_CrownRail",
+     "fbx_name": "SupremeTower_CrownRail",
+     "tris": 12,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_CrownSpike",
+     "fbx_name": "SupremeTower_CrownSpike",
+     "tris": 72,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_CrownTier",
+     "fbx_name": "SupremeTower_CrownTier",
+     "tris": 44,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Fin",
+     "fbx_name": "SupremeTower_Fin",
+     "tris": 176,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Floor",
+     "fbx_name": "SupremeTower_Floor",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Gem",
+     "fbx_name": "SupremeTower_Gem",
+     "tris": 180,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Gold",
+     "fbx_name": "SupremeTower_Gold",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_HeliH",
+     "fbx_name": "SupremeTower_HeliH",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_HeliRing",
+     "fbx_name": "SupremeTower_HeliRing",
+     "tris": 192,
+     "look": "hazard",
+     "color": [
+      255,
+      204,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Helipad",
+     "fbx_name": "SupremeTower_Helipad",
+     "tris": 124,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Mat",
+     "fbx_name": "SupremeTower_Mat",
+     "tris": 12,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Mullion",
+     "fbx_name": "SupremeTower_Mullion",
+     "tris": 132,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Porch",
+     "fbx_name": "SupremeTower_Porch",
+     "tris": 132,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_ShowBack",
+     "fbx_name": "SupremeTower_ShowBack",
+     "tris": 12,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_ShowFloor",
+     "fbx_name": "SupremeTower_ShowFloor",
+     "tris": 12,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_SignBoard",
+     "fbx_name": "SupremeTower_SignBoard",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Spire",
+     "fbx_name": "SupremeTower_Spire",
+     "tris": 108,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Spot",
+     "fbx_name": "SupremeTower_Spot",
+     "tris": 480,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_TowerGlass",
+     "fbx_name": "SupremeTower_TowerGlass",
+     "tris": 48,
+     "look": "glass_dark",
+     "color": [
+      60,
+      110,
+      170
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "SupremeTower_Trim",
+     "fbx_name": "SupremeTower_Trim",
+     "tris": 132,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "SupremeTower_Wall",
+     "fbx_name": "SupremeTower_Wall",
+     "tris": 60,
+     "look": "stone_light",
+     "color": [
+      232,
+      226,
+      212
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

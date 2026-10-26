@@ -1,0 +1,1369 @@
+{
+ "group": "gameplay",
+ "fbx": "exports/overhaul/gameplay.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "gameplay_shop_stall": {
+   "origin": [
+    8.8,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -8.8,
+    -7.66,
+    0.0
+   ],
+   "max": [
+    8.8,
+    7.0,
+    19.7
+   ],
+   "meshes": [
+    {
+     "name": "ShopStallBoot_Boot",
+     "fbx_name": "ShopStallBoot_Boot",
+     "tris": 376,
+     "look": "boot_red",
+     "color": [
+      226,
+      50,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStallBoot_Sole",
+     "fbx_name": "ShopStallBoot_Sole",
+     "tris": 472,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStallBoot_Wing",
+     "fbx_name": "ShopStallBoot_Wing",
+     "tris": 96,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Awning",
+     "fbx_name": "ShopStall_Awning",
+     "tris": 144,
+     "look": "shop_purple",
+     "color": [
+      150,
+      96,
+      224
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_AwningW",
+     "fbx_name": "ShopStall_AwningW",
+     "tris": 144,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Band",
+     "fbx_name": "ShopStall_Band",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_BriefBrown",
+     "fbx_name": "ShopStall_BriefBrown",
+     "tris": 108,
+     "look": "brief_brown",
+     "color": [
+      136,
+      84,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Bulbs",
+     "fbx_name": "ShopStall_Bulbs",
+     "tris": 520,
+     "look": "bulb_glow",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_BuntingCashGreen",
+     "fbx_name": "ShopStall_BuntingCashGreen",
+     "tris": 24,
+     "look": "cash_green",
+     "color": [
+      84,
+      196,
+      96
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_BuntingLicenseYel",
+     "fbx_name": "ShopStall_BuntingLicenseYel",
+     "tris": 32,
+     "look": "license_yel",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_BuntingShopPink",
+     "fbx_name": "ShopStall_BuntingShopPink",
+     "tris": 32,
+     "look": "shop_pink",
+     "color": [
+      255,
+      128,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_BuntingSpeedBlue",
+     "fbx_name": "ShopStall_BuntingSpeedBlue",
+     "tris": 24,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Cabinet",
+     "fbx_name": "ShopStall_Cabinet",
+     "tris": 180,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Cash",
+     "fbx_name": "ShopStall_Cash",
+     "tris": 132,
+     "look": "cash_green",
+     "color": [
+      84,
+      196,
+      96
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_CashBand",
+     "fbx_name": "ShopStall_CashBand",
+     "tris": 36,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Counter",
+     "fbx_name": "ShopStall_Counter",
+     "tris": 44,
+     "look": "parasol_red",
+     "color": [
+      234,
+      66,
+      76
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_CounterStripe",
+     "fbx_name": "ShopStall_CounterStripe",
+     "tris": 144,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Deck",
+     "fbx_name": "ShopStall_Deck",
+     "tris": 572,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_EggEggBlue",
+     "fbx_name": "ShopStall_EggEggBlue",
+     "tris": 252,
+     "look": "egg_blue",
+     "color": [
+      110,
+      200,
+      250
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_EggEggOrange",
+     "fbx_name": "ShopStall_EggEggOrange",
+     "tris": 252,
+     "look": "egg_orange",
+     "color": [
+      255,
+      150,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_EggEggShell",
+     "fbx_name": "ShopStall_EggEggShell",
+     "tris": 252,
+     "look": "egg_shell",
+     "color": [
+      255,
+      246,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_EggLicenseYel",
+     "fbx_name": "ShopStall_EggLicenseYel",
+     "tris": 252,
+     "look": "license_yel",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_EggShopPink",
+     "fbx_name": "ShopStall_EggShopPink",
+     "tris": 252,
+     "look": "shop_pink",
+     "color": [
+      255,
+      128,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_EggSpeedBlue",
+     "fbx_name": "ShopStall_EggSpeedBlue",
+     "tris": 252,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Gold",
+     "fbx_name": "ShopStall_Gold",
+     "tris": 2888,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Handle",
+     "fbx_name": "ShopStall_Handle",
+     "tris": 104,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Iron",
+     "fbx_name": "ShopStall_Iron",
+     "tris": 84,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Keys",
+     "fbx_name": "ShopStall_Keys",
+     "tris": 284,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_MiniFirm",
+     "fbx_name": "ShopStall_MiniFirm",
+     "tris": 44,
+     "look": "egg_orange",
+     "color": [
+      255,
+      150,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_MiniRoof",
+     "fbx_name": "ShopStall_MiniRoof",
+     "tris": 8,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Panel",
+     "fbx_name": "ShopStall_Panel",
+     "tris": 264,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Post",
+     "fbx_name": "ShopStall_Post",
+     "tris": 416,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Roof",
+     "fbx_name": "ShopStall_Roof",
+     "tris": 44,
+     "look": "shop_purple",
+     "color": [
+      150,
+      96,
+      224
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Screen",
+     "fbx_name": "ShopStall_Screen",
+     "tris": 12,
+     "look": "screen_glow",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Sign",
+     "fbx_name": "ShopStall_Sign",
+     "tris": 44,
+     "look": "panel_black",
+     "color": [
+      32,
+      30,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Stripe",
+     "fbx_name": "ShopStall_Stripe",
+     "tris": 36,
+     "look": "shop_purple",
+     "color": [
+      150,
+      96,
+      224
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Till",
+     "fbx_name": "ShopStall_Till",
+     "tris": 208,
+     "look": "brass",
+     "color": [
+      224,
+      172,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Top",
+     "fbx_name": "ShopStall_Top",
+     "tris": 44,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "ShopStall_Wall",
+     "fbx_name": "ShopStall_Wall",
+     "tris": 36,
+     "look": "wall_warm",
+     "color": [
+      240,
+      214,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "gameplay_leaderboard": {
+   "origin": [
+    47.628,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -6.03,
+    -1.0,
+    0.0
+   ],
+   "max": [
+    6.03,
+    1.1,
+    19.92
+   ],
+   "meshes": [
+    {
+     "name": "Leaderboard_Face",
+     "fbx_name": "Leaderboard_Face",
+     "tris": 12,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Footing",
+     "fbx_name": "Leaderboard_Footing",
+     "tris": 88,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Frame",
+     "fbx_name": "Leaderboard_Frame",
+     "tris": 44,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Gold",
+     "fbx_name": "Leaderboard_Gold",
+     "tris": 364,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Header",
+     "fbx_name": "Leaderboard_Header",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_HeaderBack",
+     "fbx_name": "Leaderboard_HeaderBack",
+     "tris": 44,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Post",
+     "fbx_name": "Leaderboard_Post",
+     "tris": 216,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Roof",
+     "fbx_name": "Leaderboard_Roof",
+     "tris": 88,
+     "look": "navy_roof",
+     "color": [
+      56,
+      70,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Star",
+     "fbx_name": "Leaderboard_Star",
+     "tris": 36,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Leaderboard_Trim",
+     "fbx_name": "Leaderboard_Trim",
+     "tris": 44,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "gameplay_case_belt": {
+   "origin": [
+    109.456,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -31.8,
+    -5.6,
+    -0.65
+   ],
+   "max": [
+    31.93,
+    5.6,
+    12.1
+   ],
+   "meshes": [
+    {
+     "name": "BigCaseBelt_Arch",
+     "fbx_name": "BigCaseBelt_Arch",
+     "tris": 272,
+     "look": "navy_dark",
+     "color": [
+      38,
+      48,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Belt",
+     "fbx_name": "BigCaseBelt_Belt",
+     "tris": 12,
+     "look": "rubber",
+     "color": [
+      40,
+      40,
+      48
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Chassis",
+     "fbx_name": "BigCaseBelt_Chassis",
+     "tris": 44,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Footing",
+     "fbx_name": "BigCaseBelt_Footing",
+     "tris": 176,
+     "look": "stone_mid",
+     "color": [
+      196,
+      188,
+      174
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Gem",
+     "fbx_name": "BigCaseBelt_Gem",
+     "tris": 40,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Glow",
+     "fbx_name": "BigCaseBelt_Glow",
+     "tris": 128,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Gold",
+     "fbx_name": "BigCaseBelt_Gold",
+     "tris": 536,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Hazard",
+     "fbx_name": "BigCaseBelt_Hazard",
+     "tris": 720,
+     "look": "hazard",
+     "color": [
+      255,
+      204,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Rail",
+     "fbx_name": "BigCaseBelt_Rail",
+     "tris": 688,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Roller",
+     "fbx_name": "BigCaseBelt_Roller",
+     "tris": 120,
+     "look": "iron_light",
+     "color": [
+      96,
+      100,
+      116
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Skirt",
+     "fbx_name": "BigCaseBelt_Skirt",
+     "tris": 88,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "BigCaseBelt_Slat",
+     "fbx_name": "BigCaseBelt_Slat",
+     "tris": 600,
+     "look": "hazard",
+     "color": [
+      255,
+      204,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "gameplay_counter_License": {
+   "origin": [
+    167.614,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.22,
+    -1.28,
+    0.0
+   ],
+   "max": [
+    2.22,
+    1.65,
+    5.16
+   ],
+   "meshes": [
+    {
+     "name": "CounterLicense_Base",
+     "fbx_name": "CounterLicense_Base",
+     "tris": 44,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_Desk",
+     "fbx_name": "CounterLicense_Desk",
+     "tris": 188,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_Front",
+     "fbx_name": "CounterLicense_Front",
+     "tris": 44,
+     "look": "license_yel",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_Gold",
+     "fbx_name": "CounterLicense_Gold",
+     "tris": 272,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_Icon",
+     "fbx_name": "CounterLicense_Icon",
+     "tris": 180,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_IconRibbon",
+     "fbx_name": "CounterLicense_IconRibbon",
+     "tris": 92,
+     "look": "carpet_red",
+     "color": [
+      204,
+      40,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_IconSeal",
+     "fbx_name": "CounterLicense_IconSeal",
+     "tris": 52,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_Paper",
+     "fbx_name": "CounterLicense_Paper",
+     "tris": 36,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterLicense_Top",
+     "fbx_name": "CounterLicense_Top",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "gameplay_counter_Carry": {
+   "origin": [
+    196.064,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.22,
+    -1.28,
+    0.0
+   ],
+   "max": [
+    2.22,
+    1.65,
+    6.23
+   ],
+   "meshes": [
+    {
+     "name": "CounterCarry_Base",
+     "fbx_name": "CounterCarry_Base",
+     "tris": 44,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Desk",
+     "fbx_name": "CounterCarry_Desk",
+     "tris": 188,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Front",
+     "fbx_name": "CounterCarry_Front",
+     "tris": 44,
+     "look": "carry_red",
+     "color": [
+      232,
+      64,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Gold",
+     "fbx_name": "CounterCarry_Gold",
+     "tris": 272,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Icon_Band",
+     "fbx_name": "CounterCarry_Icon_Band",
+     "tris": 44,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Icon_CarryRed",
+     "fbx_name": "CounterCarry_Icon_CarryRed",
+     "tris": 108,
+     "look": "carry_red",
+     "color": [
+      232,
+      64,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Icon_Gold",
+     "fbx_name": "CounterCarry_Icon_Gold",
+     "tris": 176,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Icon_Handle",
+     "fbx_name": "CounterCarry_Icon_Handle",
+     "tris": 104,
+     "look": "brief_black",
+     "color": [
+      46,
+      46,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Paper",
+     "fbx_name": "CounterCarry_Paper",
+     "tris": 36,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterCarry_Top",
+     "fbx_name": "CounterCarry_Top",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "gameplay_counter_Speed": {
+   "origin": [
+    224.514,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -2.22,
+    -1.28,
+    0.0
+   ],
+   "max": [
+    2.22,
+    1.65,
+    6.03
+   ],
+   "meshes": [
+    {
+     "name": "CounterSpeed_Base",
+     "fbx_name": "CounterSpeed_Base",
+     "tris": 44,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Desk",
+     "fbx_name": "CounterSpeed_Desk",
+     "tris": 188,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Front",
+     "fbx_name": "CounterSpeed_Front",
+     "tris": 44,
+     "look": "speed_blue",
+     "color": [
+      64,
+      150,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Gold",
+     "fbx_name": "CounterSpeed_Gold",
+     "tris": 272,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Icon_Boot",
+     "fbx_name": "CounterSpeed_Icon_Boot",
+     "tris": 376,
+     "look": "boot_red",
+     "color": [
+      226,
+      50,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Icon_Sole",
+     "fbx_name": "CounterSpeed_Icon_Sole",
+     "tris": 472,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Icon_Wing",
+     "fbx_name": "CounterSpeed_Icon_Wing",
+     "tris": 96,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Paper",
+     "fbx_name": "CounterSpeed_Paper",
+     "tris": 36,
+     "look": "paper",
+     "color": [
+      250,
+      250,
+      244
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "CounterSpeed_Top",
+     "fbx_name": "CounterSpeed_Top",
+     "tris": 44,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

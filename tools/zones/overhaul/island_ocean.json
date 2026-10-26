@@ -1,0 +1,1885 @@
+{
+ "group": "island_ocean",
+ "fbx": "exports/overhaul/island_ocean.fbx",
+ "made": "2026-10-26",
+ "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
+ "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
+ "models": {
+  "Crate": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -122.65,
+    -124.59,
+    0.36
+   ],
+   "max": [
+    188.04,
+    -0.31,
+    2.83
+   ],
+   "meshes": [
+    {
+     "name": "Crate_Frame",
+     "fbx_name": "Crate_Frame",
+     "tris": 2112,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Gap",
+     "fbx_name": "Crate_Gap",
+     "tris": 360,
+     "look": "plank_dark",
+     "color": [
+      150,
+      98,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Crate_Planks",
+     "fbx_name": "Crate_Planks",
+     "tris": 36,
+     "look": "plank_light",
+     "color": [
+      206,
+      152,
+      96
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBarrel": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -136.73,
+    -114.56,
+    0.35
+   ],
+   "max": [
+    192.43,
+    38.39,
+    3.4
+   ],
+   "meshes": [
+    {
+     "name": "IslBarrel_Hoop",
+     "fbx_name": "IslBarrel_Hoop",
+     "tris": 600,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBarrel_Wood",
+     "fbx_name": "IslBarrel_Wood",
+     "tris": 800,
+     "look": "wood_warm",
+     "color": [
+      196,
+      132,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslBush": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -540.97,
+    -445.14,
+    -54.66
+   ],
+   "max": [
+    458.34,
+    504.04,
+    41.34
+   ],
+   "meshes": [
+    {
+     "name": "IslBush_bush_1",
+     "fbx_name": "IslBush_bush_1",
+     "tris": 13025,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_2",
+     "fbx_name": "IslBush_bush_2",
+     "tris": 13026,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_3",
+     "fbx_name": "IslBush_bush_3",
+     "tris": 13027,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_4",
+     "fbx_name": "IslBush_bush_4",
+     "tris": 13028,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_5",
+     "fbx_name": "IslBush_bush_5",
+     "tris": 13026,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_6",
+     "fbx_name": "IslBush_bush_6",
+     "tris": 13028,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_7",
+     "fbx_name": "IslBush_bush_7",
+     "tris": 13027,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslBush_bush_8",
+     "fbx_name": "IslBush_bush_8",
+     "tris": 13029,
+     "look": "bush",
+     "color": [
+      88,
+      182,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFern": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -173.63,
+    -162.91,
+    0.8
+   ],
+   "max": [
+    188.94,
+    171.36,
+    2.73
+   ],
+   "meshes": [
+    {
+     "name": "IslFern",
+     "fbx_name": "IslFern",
+     "tris": 12096,
+     "look": "fern",
+     "color": [
+      60,
+      150,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFlower": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -184.71,
+    -154.25,
+    1.68
+   ],
+   "max": [
+    200.06,
+    167.56,
+    2.72
+   ],
+   "meshes": [
+    {
+     "name": "IslFlower_flower_red",
+     "fbx_name": "IslFlower_flower_red",
+     "tris": 11520,
+     "look": "flower_red",
+     "color": [
+      240,
+      62,
+      84
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslFlowerMid": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -184.6,
+    -154.16,
+    1.76
+   ],
+   "max": [
+    199.95,
+    167.46,
+    2.78
+   ],
+   "meshes": [
+    {
+     "name": "IslFlowerMid",
+     "fbx_name": "IslFlowerMid",
+     "tris": 2880,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslGrass": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -188.88,
+    -170.69,
+    0.6
+   ],
+   "max": [
+    192.74,
+    173.68,
+    42.89
+   ],
+   "meshes": [
+    {
+     "name": "IslGrass",
+     "fbx_name": "IslGrass",
+     "tris": 8064,
+     "look": "leaf_sun",
+     "color": [
+      140,
+      214,
+      74
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPalm": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -538.49,
+    -450.87,
+    -55.08
+   ],
+   "max": [
+    465.75,
+    507.61,
+    55.33
+   ],
+   "meshes": [
+    {
+     "name": "IslPalm_nut_1",
+     "fbx_name": "IslPalm_nut_1",
+     "tris": 13319,
+     "look": "nut",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_nut_2",
+     "fbx_name": "IslPalm_nut_2",
+     "tris": 13321,
+     "look": "nut",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_bark_1",
+     "fbx_name": "IslPalm_palm_bark_1",
+     "tris": 10266,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_bark_2",
+     "fbx_name": "IslPalm_palm_bark_2",
+     "tris": 10268,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_bark_3",
+     "fbx_name": "IslPalm_palm_bark_3",
+     "tris": 10266,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_bark_4",
+     "fbx_name": "IslPalm_palm_bark_4",
+     "tris": 10270,
+     "look": "palm_bark",
+     "color": [
+      198,
+      152,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_light_1",
+     "fbx_name": "IslPalm_palm_light_1",
+     "tris": 12984,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_light_2",
+     "fbx_name": "IslPalm_palm_light_2",
+     "tris": 12988,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_light_3",
+     "fbx_name": "IslPalm_palm_light_3",
+     "tris": 12986,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_light_4",
+     "fbx_name": "IslPalm_palm_light_4",
+     "tris": 12990,
+     "look": "palm_light",
+     "color": [
+      140,
+      214,
+      84
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_shade_1",
+     "fbx_name": "IslPalm_palm_shade_1",
+     "tris": 12984,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_shade_2",
+     "fbx_name": "IslPalm_palm_shade_2",
+     "tris": 12988,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_shade_3",
+     "fbx_name": "IslPalm_palm_shade_3",
+     "tris": 12986,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPalm_palm_shade_4",
+     "fbx_name": "IslPalm_palm_shade_4",
+     "tris": 12990,
+     "look": "palm_shade",
+     "color": [
+      70,
+      160,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortal": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    123.46,
+    123.01,
+    -0.6
+   ],
+   "max": [
+    164.24,
+    164.61,
+    31.6
+   ],
+   "meshes": [
+    {
+     "name": "IslPortal_Arch",
+     "fbx_name": "IslPortal_Arch",
+     "tris": 334,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_ArchTop",
+     "fbx_name": "IslPortal_ArchTop",
+     "tris": 58,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Base",
+     "fbx_name": "IslPortal_Base",
+     "tris": 76,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Crystal",
+     "fbx_name": "IslPortal_Crystal",
+     "tris": 396,
+     "look": "crystal_purple",
+     "color": [
+      170,
+      100,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Flower",
+     "fbx_name": "IslPortal_Flower",
+     "tris": 640,
+     "look": "flower_pink",
+     "color": [
+      255,
+      128,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_FlowerMid",
+     "fbx_name": "IslPortal_FlowerMid",
+     "tris": 160,
+     "look": "flower_yel",
+     "color": [
+      255,
+      212,
+      54
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Glow",
+     "fbx_name": "IslPortal_Glow",
+     "tris": 240,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Leg",
+     "fbx_name": "IslPortal_Leg",
+     "tris": 120,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_LegMoss",
+     "fbx_name": "IslPortal_LegMoss",
+     "tris": 40,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Rune",
+     "fbx_name": "IslPortal_Rune",
+     "tris": 792,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Step",
+     "fbx_name": "IslPortal_Step",
+     "tris": 47,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_StepTop",
+     "fbx_name": "IslPortal_StepTop",
+     "tris": 33,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Swirl",
+     "fbx_name": "IslPortal_Swirl",
+     "tris": 548,
+     "look": "portal_glow",
+     "color": [
+      170,
+      110,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortal_Vortex",
+     "fbx_name": "IslPortal_Vortex",
+     "tris": 72,
+     "look": "vortex_glow",
+     "color": [
+      150,
+      80,
+      240
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortalCap": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    140.33,
+    139.01,
+    22.39
+   ],
+   "max": [
+    154.13,
+    153.15,
+    28.46
+   ],
+   "meshes": [
+    {
+     "name": "IslPortalCap_Leaves",
+     "fbx_name": "IslPortalCap_Leaves",
+     "tris": 1040,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslTorch": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -161.55,
+    -151.54,
+    1.0
+   ],
+   "max": [
+    -127.75,
+    -119.0,
+    5.76
+   ],
+   "meshes": [
+    {
+     "name": "IslTorch_Glow",
+     "fbx_name": "IslTorch_Glow",
+     "tris": 120,
+     "look": "lamp_glow",
+     "color": [
+      255,
+      208,
+      120
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTorch_Gold",
+     "fbx_name": "IslTorch_Gold",
+     "tris": 360,
+     "look": "gold",
+     "color": [
+      255,
+      196,
+      46
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTorch_Iron",
+     "fbx_name": "IslTorch_Iron",
+     "tris": 2340,
+     "look": "iron",
+     "color": [
+      52,
+      54,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslTorch_Post",
+     "fbx_name": "IslTorch_Post",
+     "tris": 440,
+     "look": "wood_deep",
+     "color": [
+      122,
+      76,
+      42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Landmarks": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -179.92,
+    -169.11,
+    -13.0
+   ],
+   "max": [
+    -128.73,
+    -118.99,
+    5.0
+   ],
+   "meshes": [
+    {
+     "name": "Landmarks",
+     "fbx_name": "Landmarks",
+     "tris": 2800,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanBrain": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -161.73,
+    -149.77,
+    -0.09
+   ],
+   "max": [
+    160.75,
+    102.17,
+    2.44
+   ],
+   "meshes": [
+    {
+     "name": "OceanBrain_brain_coral",
+     "fbx_name": "OceanBrain_brain_coral",
+     "tris": 1920,
+     "look": "brain_coral",
+     "color": [
+      240,
+      150,
+      100
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanBrain_coral_red",
+     "fbx_name": "OceanBrain_coral_red",
+     "tris": 4320,
+     "look": "coral_red",
+     "color": [
+      232,
+      72,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanConch": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -175.31,
+    -156.7,
+    0.65
+   ],
+   "max": [
+    160.27,
+    135.72,
+    1.9
+   ],
+   "meshes": [
+    {
+     "name": "OceanConch_conch",
+     "fbx_name": "OceanConch_conch",
+     "tris": 16798,
+     "look": "conch",
+     "color": [
+      250,
+      204,
+      172
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanConch_conch_in",
+     "fbx_name": "OceanConch_conch_in",
+     "tris": 528,
+     "look": "conch_in",
+     "color": [
+      250,
+      150,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanCoral": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -163.21,
+    -145.47,
+    0.36
+   ],
+   "max": [
+    172.04,
+    147.16,
+    5.1
+   ],
+   "meshes": [
+    {
+     "name": "OceanCoral_coral_orange",
+     "fbx_name": "OceanCoral_coral_orange",
+     "tris": 14184,
+     "look": "coral_orange",
+     "color": [
+      255,
+      140,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanCoral_coral_pink",
+     "fbx_name": "OceanCoral_coral_pink",
+     "tris": 16098,
+     "look": "coral_pink",
+     "color": [
+      250,
+      110,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanCoral_coral_purple",
+     "fbx_name": "OceanCoral_coral_purple",
+     "tris": 9000,
+     "look": "coral_purple",
+     "color": [
+      170,
+      100,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanCoral_coral_red",
+     "fbx_name": "OceanCoral_coral_red",
+     "tris": 16200,
+     "look": "coral_red",
+     "color": [
+      232,
+      72,
+      72
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanDrift": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -106.44,
+    -109.13,
+    0.92
+   ],
+   "max": [
+    119.85,
+    110.24,
+    1.95
+   ],
+   "meshes": [
+    {
+     "name": "OceanDrift_driftwood_1",
+     "fbx_name": "OceanDrift_driftwood_1",
+     "tris": 14847,
+     "look": "driftwood",
+     "color": [
+      176,
+      150,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanDrift_driftwood_2",
+     "fbx_name": "OceanDrift_driftwood_2",
+     "tris": 14848,
+     "look": "driftwood",
+     "color": [
+      176,
+      150,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanDrift_driftwood_3",
+     "fbx_name": "OceanDrift_driftwood_3",
+     "tris": 14848,
+     "look": "driftwood",
+     "color": [
+      176,
+      150,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanDrift_driftwood_4",
+     "fbx_name": "OceanDrift_driftwood_4",
+     "tris": 14849,
+     "look": "driftwood",
+     "color": [
+      176,
+      150,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanDrift_driftwood_dark",
+     "fbx_name": "OceanDrift_driftwood_dark",
+     "tris": 1980,
+     "look": "driftwood_dark",
+     "color": [
+      130,
+      108,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanFan": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -165.11,
+    -143.62,
+    0.8
+   ],
+   "max": [
+    167.71,
+    146.14,
+    3.76
+   ],
+   "meshes": [
+    {
+     "name": "OceanFan_coral_pink",
+     "fbx_name": "OceanFan_coral_pink",
+     "tris": 3600,
+     "look": "coral_pink",
+     "color": [
+      250,
+      110,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanFan_coral_purple",
+     "fbx_name": "OceanFan_coral_purple",
+     "tris": 10800,
+     "look": "coral_purple",
+     "color": [
+      170,
+      100,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanPebble": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -121.88,
+    -111.88,
+    0.91
+   ],
+   "max": [
+    129.65,
+    113.97,
+    1.16
+   ],
+   "meshes": [
+    {
+     "name": "OceanPebble",
+     "fbx_name": "OceanPebble",
+     "tris": 1249,
+     "look": "pebble",
+     "color": [
+      180,
+      176,
+      168
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanPebbleTop": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -121.88,
+    -111.88,
+    0.91
+   ],
+   "max": [
+    129.6,
+    113.92,
+    1.37
+   ],
+   "meshes": [
+    {
+     "name": "OceanPebbleTop",
+     "fbx_name": "OceanPebbleTop",
+     "tris": 511,
+     "look": "rock_top",
+     "color": [
+      204,
+      200,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanSeaweed": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -157.59,
+    -150.42,
+    0.38
+   ],
+   "max": [
+    -12.13,
+    142.05,
+    3.94
+   ],
+   "meshes": [
+    {
+     "name": "OceanSeaweed",
+     "fbx_name": "OceanSeaweed",
+     "tris": 864,
+     "look": "seaweed",
+     "color": [
+      56,
+      140,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanShell": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -174.12,
+    -155.3,
+    0.67
+   ],
+   "max": [
+    175.4,
+    152.52,
+    1.4
+   ],
+   "meshes": [
+    {
+     "name": "OceanShell_shell_1",
+     "fbx_name": "OceanShell_shell_1",
+     "tris": 17998,
+     "look": "shell",
+     "color": [
+      252,
+      236,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanShell_shell_2",
+     "fbx_name": "OceanShell_shell_2",
+     "tris": 18000,
+     "look": "shell",
+     "color": [
+      252,
+      236,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanShell_shell_pink_1",
+     "fbx_name": "OceanShell_shell_pink_1",
+     "tris": 19493,
+     "look": "shell_pink",
+     "color": [
+      250,
+      190,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanShell_shell_pink_2",
+     "fbx_name": "OceanShell_shell_pink_2",
+     "tris": 19495,
+     "look": "shell_pink",
+     "color": [
+      250,
+      190,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanStar": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -174.92,
+    -138.98,
+    0.57
+   ],
+   "max": [
+    181.4,
+    150.25,
+    1.45
+   ],
+   "meshes": [
+    {
+     "name": "OceanStar_starfish_1",
+     "fbx_name": "OceanStar_starfish_1",
+     "tris": 17993,
+     "look": "starfish",
+     "color": [
+      250,
+      120,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanStar_starfish_2",
+     "fbx_name": "OceanStar_starfish_2",
+     "tris": 17995,
+     "look": "starfish",
+     "color": [
+      250,
+      120,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanStar_starfish_red_1",
+     "fbx_name": "OceanStar_starfish_red_1",
+     "tris": 17496,
+     "look": "starfish_red",
+     "color": [
+      232,
+      70,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanStar_starfish_red_2",
+     "fbx_name": "OceanStar_starfish_red_2",
+     "tris": 17498,
+     "look": "starfish_red",
+     "color": [
+      232,
+      70,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanTube": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -165.5,
+    -109.79,
+    0.8
+   ],
+   "max": [
+    172.44,
+    145.37,
+    3.67
+   ],
+   "meshes": [
+    {
+     "name": "OceanTube_Coral",
+     "fbx_name": "OceanTube_Coral",
+     "tris": 4050,
+     "look": "tube_coral",
+     "color": [
+      110,
+      196,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanTube_In",
+     "fbx_name": "OceanTube_In",
+     "tris": 1620,
+     "look": "tube_coral_in",
+     "color": [
+      60,
+      120,
+      160
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "OceanWreck": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    166.58,
+    -0.32,
+    0.35
+   ],
+   "max": [
+    186.01,
+    36.78,
+    24.61
+   ],
+   "meshes": [
+    {
+     "name": "OceanWreck_Deck",
+     "fbx_name": "OceanWreck_Deck",
+     "tris": 132,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_DeckDark",
+     "fbx_name": "OceanWreck_DeckDark",
+     "tris": 132,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Hull",
+     "fbx_name": "OceanWreck_Hull",
+     "tris": 2156,
+     "look": "hull_wood",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Mast",
+     "fbx_name": "OceanWreck_Mast",
+     "tris": 64,
+     "look": "driftwood_dark",
+     "color": [
+      130,
+      108,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Nest",
+     "fbx_name": "OceanWreck_Nest",
+     "tris": 98,
+     "look": "hull_wood",
+     "color": [
+      110,
+      74,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Plank",
+     "fbx_name": "OceanWreck_Plank",
+     "tris": 40,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_PlankDark",
+     "fbx_name": "OceanWreck_PlankDark",
+     "tris": 40,
+     "look": "dock_wood_dark",
+     "color": [
+      128,
+      80,
+      44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Rope",
+     "fbx_name": "OceanWreck_Rope",
+     "tris": 78,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanWreck_Sail",
+     "fbx_name": "OceanWreck_Sail",
+     "tris": 72,
+     "look": "sail",
+     "color": [
+      240,
+      232,
+      210
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Play_Decor": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -126.22,
+    -107.32,
+    0.76
+   ],
+   "max": [
+    126.22,
+    113.11,
+    1.21
+   ],
+   "meshes": [
+    {
+     "name": "Sand_Decor",
+     "fbx_name": "Sand_Decor",
+     "tris": 3044,
+     "look": "sand_light",
+     "color": [
+      250,
+      230,
+      178
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Terrain": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -197.79,
+    -185.45,
+    -10.0
+   ],
+   "max": [
+    208.91,
+    182.67,
+    1.0
+   ],
+   "meshes": [
+    {
+     "name": "Island_Top",
+     "fbx_name": "Island_Top",
+     "tris": 1436,
+     "look": "dirt_rim",
+     "color": [
+      150,
+      104,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Plateau",
+     "fbx_name": "Sand_Plateau",
+     "tris": 1796,
+     "look": "sand_dark",
+     "color": [
+      222,
+      190,
+      124
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Underside": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -199.89,
+    -188.81,
+    -107.98
+   ],
+   "max": [
+    211.6,
+    187.19,
+    3.33
+   ],
+   "meshes": [
+    {
+     "name": "Island_Underside_1",
+     "fbx_name": "Island_Underside_1",
+     "tris": 11800,
+     "look": "rock_grey",
+     "color": [
+      118,
+      120,
+      132
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_2",
+     "fbx_name": "Island_Underside_2",
+     "tris": 12076,
+     "look": "rock_grey",
+     "color": [
+      118,
+      120,
+      132
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Water": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -193.96,
+    -156.2,
+    -80.37
+   ],
+   "max": [
+    207.05,
+    151.23,
+    41.27
+   ],
+   "meshes": [
+    {
+     "name": "Foam_Mist_1",
+     "fbx_name": "Foam_Mist_1",
+     "tris": 18856,
+     "look": "foam_water",
+     "color": [
+      236,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Foam_Mist_2",
+     "fbx_name": "Foam_Mist_2",
+     "tris": 18860,
+     "look": "foam_water",
+     "color": [
+      236,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water",
+     "fbx_name": "Water",
+     "tris": 2056,
+     "look": "pool_deep",
+     "color": [
+      30,
+      160,
+      205
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    }
+   ]
+  }
+ }
+}

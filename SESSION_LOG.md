@@ -59,8 +59,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
   findings + fix order; the plaza-centre decision M4 blocks the hub install). M1 z-fighting fixed 2026-10-25 (0 pairs);
   polish N1-N3, N5-N8, N10, N11 done 2026-10-25 (entry below). Open from the audit: M2-M5, N4, N9, the optional list.
   GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
-  **In progress 2026-10-26 (crnuch's side session): EXPORTING the overhaul models + islands as .fbx** (crnuch: "go
-  export them") - `tools/blender/overhaul/export_models.py`, stud UVs, <20k tris per mesh, looks list per group.
+  Exported as .fbx 2026-10-26 (entry below): next = crnuch imports, then the install; the hub island is heavy (2.1M tris).
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -289,6 +288,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-26 — crnuch, local session (side session): the overhaul models exported as .fbx
+- crnuch: "go export them". New `tools/blender/overhaul/export_models.py` builds every overhaul model on its own (the
+  check_models list + trees, Dingy Shack, travel portal) and every island scene, gives each mesh **stud UVs** (1 UV unit =
+  1 stud, box-projected per face, curved faces on a plain spot: BrickStuds lays the GaG studs through them), cuts any
+  mesh over 19,500 tris, and writes `exports/overhaul/<group>.fbx` (gitignored, 143 MB) + its looks list
+  `tools/zones/overhaul/<group>.json` (Color / Material / Transparency per mesh). Import steps + the looks script
+  (`tools/zones/ApplyOverhaulLooks.lua`): tools/zones/overhaul/README.md.
+- 16 model groups: 1,717 meshes, 0.70M tris. 7 islands: 1,637 meshes - hub 2.11M tris, Bay 0.87M, Ocean 0.71M, Pet
+  0.33M, Brainrot 0.27M, Food 0.19M, Space 0.11M. Scattered plants / shells are joined per kind + colour (the hub went
+  from 2,067 meshes to 618); left out: the hub's example firms (built per player in game) and each island's `Boss_*`
+  stand-in. Checked by re-importing the .fbx and rendering it through its own UVs (portal, Pet Park): studs line up.
+- **Heads-up (both):** the hub island is heavy for phones - its trees + hedges alone are ~1.35M tris (179 oaks, 108
+  blossoms, 188 hedges). Lighter export versions of the foliage are the obvious fix before it goes in.
+- Not done: crnuch's import (meshes must come from crnuch's account), then the install (swap the models in by the names
+  scripts look up; the islands replace `Workspace.WorldRedesign`'s Parts; M4 still blocks the hub).
+
+## 2026-10-26 — crnuch, local session (side session): old main island archived
+- crnuch: "we can remove the main island ... the old one" -> picked "archive the scenery" (asked first: it was mr.robe's
+  switch-off fallback). **Heads-up mr.robe:** `ServerStorage.Old_MainIsland` now holds the old island's scenery (18,230
+  parts in 45 pieces: Ground, IslandDecor, Shrubbery, IslandEdge, ZoneLandmarks, Baseplate, Hub street / plaza / trees /
+  fountain / terrace / gates / lamps, `ArcadePier.Pier`, the six lane zones + SafeZone + LaneEnd, the License Office
+  shell). Kept in Workspace: Plots, HubSpawn and the 25 pieces `HubMap` moves (Hub portal / shop / Mutation Machine /
+  belt / leaderboards / minigame spots, the arcade booths, the three counters). Every script lookup of the archived
+  pieces is a guarded `FindFirstChild` (checked in the snapshot). No scripts were inside. One undo step.
+- Playtest: `[HubMap] the hub runs on the v2 island: 25 models moved`, the firm built on Plot1 at (3687, 150, -1350),
+  spawn / portal / shop / counters / booths all on the island, no errors. The switch-off fallback needs the archive
+  moved back first (CLAUDE.md).
+
 ## 2026-10-26 — crnuch, local session (side session): Grow a Garden studs on everything, live in the place
 - crnuch: "analyze the grow a garden studs and apply those studs to everything"; first examples' studs "too large" ->
   re-analysed, two variants; crnuch picked **option B** (a half-stud grid of small rounded-square studs, a dark sliver
@@ -298,8 +325,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   it - so all ~122k Plastic parts in the world (117k already BrickStuds, the rest plain Plastic), the characters and
   the stored models get the studs at once; no part was edited. Old studs kept as `MaterialService.BrickStuds_v1`.
   `StarterPlayerScripts.Studs` (the raised StudTop tiles) **disabled** so studs don't double up. One undo step.
-  Snapshot re-exported (only MANIFEST changed: Studs Enabled false). Not playtested from here (Studio's viewport didn't
-  render for the MCP captures) - **crnuch: look at it in Studio / a playtest**. Legacy surface studs (`TopSurface =
+  Snapshot re-exported (only MANIFEST changed: Studs Enabled false). Seen in a playtest later the same day (walls, floor,
+  carpet: the half-stud grid with its dark sliver) - crnuch to judge it up close. Legacy surface studs (`TopSurface =
   Studs` etc.) set Smooth on every stored part (Workspace 3487, ReplicatedStorage 98, ServerStorage 25487; second undo
   step). Still set at runtime by FirmBuilder / FirmStages / DeskLook / DeskService / MinigameClient.Scene - if those
   firm parts show old surface studs over the new ones in a playtest, drop the `SurfaceType.Studs` lines there.
