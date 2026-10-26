@@ -304,6 +304,9 @@ Claim big work here before starting (who · what · since), push the claim, remo
   all six islands: 0 round pieces >= 0.8 across in egg regions. N10 Ocean Shore driftwood keeps 25 studs off the portal
   approach, dock and pad (nearest log 72). Pet Park / Brainrot / Food Court / Ocean Shore / Space Base / hub re-rendered;
   their `*_before_after.jpg` (TODAY v2 / NEW) recomposed.
+- **crnuch's call (review): the Pizza Palace's round corner towers read rude** (tall round shafts, flared domed caps, a
+  ball on top). Now square brick turrets with a white band, a pointed red tile roof, a pennant and an arched window, same
+  footprint; rule added to CLAUDE.md (MODEL OVERHAUL). Food Court re-rendered.
 - Tools: `audit_views.py` takes `<group>.<name>` to render single models; `check_models.py` builds the three new portals.
 - Open for install: the travel cards (`art/travel/`) still show today's v2 islands - re-render them from the overhaul
   islands when they go in. Not done here (owners): M2 / M3 hub wiring (mr.robe), M4 plaza centre (crnuch + mr.robe), M5 /

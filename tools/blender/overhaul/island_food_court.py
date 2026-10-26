@@ -236,11 +236,14 @@ def pizza_palace(F, slice_sign=True):
         for k in range(9):
             if k % 2 == 0:
                 rbox(n + "_Brick", "brick_red", (-14 + k * 3.5, -7.2, top + 0.8), (2.4, 1.2, 1.6), 0.15)
-        for sx in (-1, 1):
-            lathe(n + "_Brick", "brick_red", [(2.6, 0.8), (2.6, top + 4, True), (2.9, top + 4.2), (2.9, top + 4.5, True), (0.0, top + 4.5)], segs=16, c=(sx * 14, -7.5, 0))
-            lathe(n + "_Roof", "red", [(2.7, top + 4.45), (3.15, top + 4.55), (2.4, top + 5.8), (1.2, top + 7.2), (0.0, top + 7.8)], segs=16,
-                  c=(sx * 14, -7.5, 0))
-            sphere(n + "_Gold", "gold", (sx * 14, -7.5, top + 8.1), 0.35, sub=1)
+        for sx in (-1, 1):  # square corner turrets: brick, a white band, a pointed tile roof, a pennant (round shafts with domed caps read rude - crnuch)
+            cx, cy, hw = sx * 14, -7.5, 2.3
+            rbox(n + "_Brick", "brick_red", (cx, cy, (0.8 + top + 4.0) / 2), (2 * hw, 2 * hw, top + 3.2), 0.15)
+            box(n + "_Trim", "white", (cx, cy, top + 4.25), (2 * hw + 0.6, 2 * hw + 0.6, 0.5), bevel=0.08)
+            cyl(n + "_Roof", "red", (cx, cy, top + 4.5), (hw + 0.8) * math.sqrt(2), 3.8, segs=4, spin=45, r_top=0.0, smooth=False)
+            B.flag(n, cx, cy, top + 7.9, 2.4, look="flag_red", w=1.6, fh=1.0, seed=sx)
+            with at(cx, cy - hw, 0):
+                B.window(n + "Win", 0, top - 0.6, 1.5, 2.8, arch=True, frame="white", sill=None, keystone=None, mullions=False)
         if slice_sign:  # a slice of pizza standing on the roof
             with at(0, 4, top):
                 prism(n + "_Crust", "crust", [(-5.8, 10.4), (5.8, 10.4), (6.2, 11.6), (-6.2, 11.6)], 1.8)

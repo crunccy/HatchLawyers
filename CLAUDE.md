@@ -168,7 +168,9 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   **Nothing floats, nothing pokes through (crnuch 2026-10-25: "detached or overlapping a lot of pieces"):** every piece of
   a model must touch the rest of it or the ground - run `tools/blender/overhaul/check_models.py` (0 floating pieces is
   the bar; add new models to its list; `-- zfight` lists coplanar two-colour faces that will flicker - 0 since 2026-10-25, keep it there).
-  Review renders of every model: `audit_views.py`. Audit + fix order: docs/VISUAL_AUDIT_2026-10-25.md. Characters / statues made of overlapping shapes are FUSED per colour
+  Review renders of every model: `audit_views.py`.
+  **No silhouettes that read rude** (kids' game; crnuch 2026-10-25: the Pizza Palace's round towers): a tall round shaft
+  never ends in a rounded / flared cap with a ball - give towers square bodies or pointed roofs, and check the four views. Audit + fix order: docs/VISUAL_AUDIT_2026-10-25.md. Characters / statues made of overlapping shapes are FUSED per colour
   (`ohkit.fuse`: a voxel union, no seams), with eyes / noses / collars half-sunk into the surface.
 - **Builds (until the stud rollout lands):** Parts are Plastic with `TopSurface = Studs` (Ground, Plaza, Trees,
   IslandDecor, EggPads — Smooth tops or textured MeshParts look out of place); that flat texture is now only the
