@@ -61,6 +61,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
   GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
   Exported as .fbx 2026-10-26 (entry below): next = crnuch imports, then the install; the hub island is heavy (2.1M tris).
   Six egg islands = the overhaul meshes since 2026-10-26 (entry below); hub island + kit staged in ServerStorage.Overhaul.
+  **In progress 2026-10-26 (crnuch's side session): PHONE / TABLET BUDGET for the overhaul meshes** (crnuch: "optimize
+  it for phones and tablets especially", then add everything): decimated re-export, collision / shadow rules, hub swap.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
