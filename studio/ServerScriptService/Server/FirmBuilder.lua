@@ -33,7 +33,16 @@ local WOOD_DARK = Color3.fromRGB(92, 48, 22)
 -- Kit pieces: Templates.FirmKitParts holds each piece as a Model of plain Plastic Parts (the same
 -- build style as the rest of the map; pivot = the piece's origin). Templates.FirmKit (old textured
 -- MeshParts with an "Offset" attribute) is only a fallback.
+-- The overhaul meshes (2026-10-26, FirmStages "the overhaul meshes") replace the hall pieces when they're staged; the
+-- lobby (WaitingRoom) has no mesh twin and stays Parts. Their desk is built facing Blender's +X, which comes out as -X
+-- here (the mesh mirror), so it is turned round to face the aisle.
+local MESH_PIECES = { OfficeSegment = "hall_segment", ExpansionLock = "hall_lock", BackWall = "hall_back_wall", LawyerDesk = "hall_desk" }
+
 local function kitPiece(name: string): Instance
+	local mesh = MESH_PIECES[name] and FirmStages.overhaulModel("hall", MESH_PIECES[name])
+	if mesh then
+		return mesh
+	end
 	local parts = ServerStorage.Templates:FindFirstChild("FirmKitParts")
 	return (parts and parts:FindFirstChild(name)) or ServerStorage.Templates.FirmKit:FindFirstChild(name) :: Instance
 end
@@ -41,8 +50,9 @@ end
 local function place(parent: Instance, name: string, at: CFrame): Instance
 	local template = kitPiece(name)
 	local p = template:Clone()
+	p.Name = name
 	if p:IsA("Model") then
-		p:PivotTo(at)
+		p:PivotTo(if name == "LawyerDesk" and p:GetAttribute("FirmOrigin") then at * CFrame.Angles(0, math.pi, 0) else at)
 	else
 		(p :: BasePart).CFrame = at * CFrame.new(template:GetAttribute("Offset") :: Vector3)
 	end
@@ -335,7 +345,7 @@ function FirmBuilder.build(plot: Model, segments: number, lawyers: number, maxSe
 	place(shell, "BackWall", frame * CFrame.new(0, 0, zEnd))
 	local depth = zEnd + 3
 	local stageN = stage or FirmStages.stageFor(segments)
-	local signCF = FirmStages.buildFront(firm, frame, stageN)
+	local signCF, signSize = FirmStages.buildFront(firm, frame, stageN)
 	FirmStages.dressHall(firm, frame, stageN, FirmBuilder.WAIT_DEPTH, zEnd)
 
 	-- invisible colliders (the kit meshes don't collide): the raised floor down to the grass, the porch
@@ -354,9 +364,13 @@ function FirmBuilder.build(plot: Model, segments: number, lawyers: number, maxSe
 	end
 	part(colliders, "BackWall", Vector3.new(w, 7, 1), frame * CFrame.new(0, 3.5, depth - 0.4), INVISIBLE)
 
-	-- name sign on the portico (PlotService writes "<Name>'s Law Firm" into Sign > Label)
-	part(firm, "SignFrame", Vector3.new(13.6, 1.3, 0.25), signCF * CFrame.new(0, 0, 0.12), { Color = WOOD_DARK, CanCollide = false })
-	local sign = part(firm, "Sign", Vector3.new(13, 1.0, 0.3), signCF, { Color = SIGN_GREEN, CanCollide = false })
+	-- name sign on the portico (PlotService writes "<Name>'s Law Firm" into Sign > Label); a mesh front has its own
+	-- board behind it, so no frame there
+	if not signSize then
+		part(firm, "SignFrame", Vector3.new(13.6, 1.3, 0.25), signCF * CFrame.new(0, 0, 0.12), { Color = WOOD_DARK, CanCollide = false })
+	end
+	local size = signSize or Vector2.new(13, 1.0)
+	local sign = part(firm, "Sign", Vector3.new(size.X, size.Y, 0.3), signCF, { Color = SIGN_GREEN, CanCollide = false })
 	local gui = Instance.new("SurfaceGui")
 	gui.Face = Enum.NormalId.Front
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
@@ -379,7 +393,9 @@ function FirmBuilder.build(plot: Model, segments: number, lawyers: number, maxSe
 
 	-- markers other systems look for
 	part(firm, "SpawnPoint", Vector3.new(4, 1, 4), frame * CFrame.new(0, 0.5, 3), MARKER)
-	part(firm, "ManagerSpot", Vector3.new(1, 0.2, 1), frame * CFrame.new(-13.5, 0.1, 20.0), MARKER)
+	local front = firm:FindFirstChild("Front")
+	local mx = (front and front:GetAttribute("MirrorX") :: number?) or 1 -- (a mesh front is mirrored: FirmStages)
+	part(firm, "ManagerSpot", Vector3.new(1, 0.2, 1), frame * CFrame.new(-13.5 * mx, 0.1, 20.0), MARKER)
 	local incubators = Instance.new("Folder")
 	incubators.Name = "Incubators"
 	incubators.Parent = firm

@@ -5,9 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **mr.robe (local), since 2026-10-26: firm stages 1-6 + office hall -> the overhaul meshes** (`Server.FirmStages`
-  buildFront / dressHall, `FirmBuilder`, `Server.DeskLook` clone `ServerStorage.Overhaul.Models.firms/.shack/.hall`).
-  Don't edit those three scripts meanwhile.
 - **crnuch (local), since 2026-10-24: MAP MODEL OVERHAUL** (crnuch: "genuinely any of the models ... a whole model
   overhaul"): every map model remade in Blender as meshes (crnuch uploads) - trees, hub buildings, the Travel portal,
   firm stages, props, then the six islands. Stage 1 = benchmark (tree family + portal + one firm building) rendered for
@@ -300,6 +297,41 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-27 — mr.robe, local session (side session): firm stages 1-6 + the office hall are the overhaul meshes
+- **LIVE in Studio + playtested** (snapshot refreshed): every firm front (Dingy Shack ... Supreme Tower) and the hall kit
+  (segment, desk, lock, back wall) now clone crnuch's meshes from `ServerStorage.Overhaul.Models.firms / shack / hall`.
+  Without those models the old Part fronts / FirmKitParts still build (fallback).
+- **Heads-up (both): the meshes are MIRRORED left-right vs the old layout.** Blender's axes (X = firm x, Y = firm z,
+  Z = up) are a mirror of firm-local space, so in game the coffee counter, elevator stops, helipad, library ... stand on
+  the other side of the aisle from the old Part fronts (text on the meshes still reads right). Code follows the meshes:
+  `FirmStages` builds its remaining Parts with `Build.mx = -1` and puts `MirrorX = -1` on the Front; `FloorRooms`
+  flips `Config.Floors.Slots` x and `FirmBuilder` the ManagerSpot by it. Config is unchanged. Blender layouts stay
+  firm-local as before - only the install mirrors.
+- Kept as Parts on a mesh front: elevator frames / doors / lights (`Floor`, `Arrive`, the Front's `Floors`), Showcase
+  pedestals + rings (`ShowcaseSlot`) + a light each, `HologramPad`s, `LoungeCarpet`, the Sign (sized to each mesh's sign
+  board, no SignFrame), porch colliders. Area furniture = meshes tagged `Area` by name prefix (`StorefrontCafe_` ->
+  CafeTerrace ... `SupremeTowerSuite_` -> PartnerSuite), so `applyAreas` works as before; glow meshes get PointLights.
+- Hall: `dressHall` recolours the kit by NAME (`_Wall` / `_Panel` (glass stages) / `_Cap` / `_Post` / `_Carpet`); the
+  kit has its own planters + rugs, so only sconces are added. `DeskLook` finds desk parts by name (`Desk_Top`, `_Body`,
+  `_Drawer`, `_Front`, `_Handle`, `_Lamp`, `_LampShade`); the PARTNER plaque replaces the desk's name plate and the
+  trophy sits in the client's far corner (the mesh desk has a mug in the old spot). The desk mesh is turned 180.
+- `tools/zones/InstallFirmMeshes.lua` (run once, Edit mode; done): sets each staged model's WorldPivot to its firm-local
+  origin + `FirmOrigin` attr, and fixes collision found by probing in a playtest - convex hulls filled openings: doors /
+  frames / door bars, the base-course trim across every doorway (0.8 high), the shack's plank walls + junk (FirmStages
+  adds invisible walls), the HQ roof parapet (hull covered the roof garden: invisible walls instead) and plants stop
+  colliding; closed doors go 0.5 see-through like the old Part doors.
+- Playtest: mr_blox174's firm rebuilt as each stage 1-6: meshes in, elevator prompts = stops (2/3/5/6/7), owned areas
+  shown / unowned hidden, upstairs rooms placed (2/5/7/8), 2 incubators, walk-in route (x 0, z -3..50) and every
+  elevator arrival clear of collision; also checked: room slots, pedestals, lanes, hall aisle + client spots. Corporate HQ
+  seen in game (showcase lawyers, rooms, sign readable). Checks pass (319 Luau files, 43 config, sim).
+- Also (asked by the kit-install session): `Hub.SpecialSpots.*.GavelBonk_Sign / LuckyBriefcase_Sign` SurfaceGui
+  PixelsPerStud 40 -> 65 (the text ran off the 5.5-stud sign mesh).
+- Seen, not fixed: rebuilding a firm mid-case logs `[CaseService] resolve failed: The Parent property of Client is
+  locked` (the old firm is destroyed with the client in it; showed up with 6 forced rebuilds in a row - probably also on
+  a normal expansion rebuild; mr.robe's CaseService). The shack's mesh porch / junk reach z -14 (past the plot edge,
+  onto the walkway), like crnuch's approved render. Some meshes' hulls (roof cornices) stand a little above the roof.
+- No save-data or core-loop changes.
 
 ## 2026-10-26 — mr.robe, local session: the overhaul kit's hub pieces swapped in + the island colours bug
 - mr.robe: "finish uploading what crunccy didn't finish ... make sure everything looks good" (+ "the road is cooked").

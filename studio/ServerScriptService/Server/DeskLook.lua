@@ -47,6 +47,18 @@ local ROLES: { [string]: string } = {
 	[key(Vector3.new(0.1, 1.0, 0.1))] = "lampMetal",
 	[key(Vector3.new(0.8, 0.45, 0.7))] = "lampShade",
 }
+-- the overhaul desk (2026-10-26, ServerStorage.Overhaul.Models.hall.hall_desk) is named per colour, so by NAME; it has
+-- its own gold trim (Desk_Trim), so tiers don't add the band
+local NAME_ROLES: { [string]: string } = {
+	Desk_Top = "top",
+	Desk_Body = "body",
+	Desk_Drawer = "body",
+	Desk_Front = "strip",
+	Desk_Handle = "handle",
+	Desk_Lamp = "lampMetal",
+	Desk_LampShade = "lampShade",
+	Desk_Plate = "plate", -- the brass name plate: the PARTNER plaque takes its place
+}
 
 local function piece(desk: Model, name: string, size: Vector3, cf: CFrame, color: Color3, material: Enum.Material?): Part
 	local p = Instance.new("Part")
@@ -100,10 +112,11 @@ function DeskLook.apply(desk: Model, tier: number)
 	-- the kit desk's own parts, by role; each goes back to its original look first
 	local parts: { [string]: { BasePart } } = {}
 	local kit = desk:FindFirstChild("DeskMesh")
+	local meshDesk = kit ~= nil and kit:FindFirstChild("Desk_Top") ~= nil
 	if kit then
 		for _, p in kit:GetDescendants() do
 			if p:IsA("BasePart") then
-				local role = ROLES[key(p.Size)]
+				local role = NAME_ROLES[p.Name] or ROLES[key(p.Size)]
 				if role then
 					remember(p)
 					restore(p)
@@ -133,7 +146,7 @@ function DeskLook.apply(desk: Model, tier: number)
 	paint("strip", style.trim or style.body, if style.trim then Enum.Material.Metal else nil)
 
 	local base = top.CFrame * SLOT_TO_TOP:Inverse() -- the desk frame
-	if style.trim then
+	if style.trim and not meshDesk then
 		-- a band around the top's edge, wrapping the top and the front strip (x 1.4..1.5): every face of it stays 0.05+
 		-- away from theirs, so nothing flickers
 		piece(desk, "Trim", Vector3.new(3.1, 0.14, 5.7), base * CFrame.new(0, 2.42, 0), style.trim, Enum.Material.Metal)
@@ -155,9 +168,13 @@ function DeskLook.apply(desk: Model, tier: number)
 				light.Parent = shade
 			end
 		elseif extra == "Plaque" then
-			-- standing on the client edge, facing the client: clear of the keyboard, laptop and lamp
+			-- standing on the client edge, facing the client: clear of the keyboard, laptop and lamp (on the overhaul
+			-- desk: in place of its name plate, mid-edge)
+			for _, p in parts.plate or {} do
+				p.Transparency = 1
+			end
 			local plaque = piece(desk, "Plaque", Vector3.new(2.2, 0.6, 0.25),
-				base * CFrame.new(1.05, TOP_Y + 0.3, -0.75) * CFrame.Angles(0, -math.pi / 2, 0), GOLD, Enum.Material.Metal)
+				base * CFrame.new(1.05, TOP_Y + 0.3, if meshDesk then 0 else -0.75) * CFrame.Angles(0, -math.pi / 2, 0), GOLD, Enum.Material.Metal)
 			local gui = Instance.new("SurfaceGui")
 			gui.Face = Enum.NormalId.Front
 			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
@@ -172,8 +189,8 @@ function DeskLook.apply(desk: Model, tier: number)
 			label.Parent = gui
 			gui.Parent = plaque
 		elseif extra == "Trophy" then
-			-- the lawyer's far corner, past the laptop
-			local at = base * CFrame.new(-0.85, TOP_Y, 2.25)
+			-- the lawyer's far corner, past the laptop (the overhaul desk has its mug there: the client's far corner)
+			local at = base * (if meshDesk then CFrame.new(0.85, TOP_Y, 2.1) else CFrame.new(-0.85, TOP_Y, 2.25))
 			piece(desk, "TrophyBase", Vector3.new(0.9, 0.3, 0.9), at * CFrame.new(0, 0.15, 0), Color3.fromRGB(60, 40, 30))
 			piece(desk, "TrophyStem", Vector3.new(0.25, 0.6, 0.25), at * CFrame.new(0, 0.6, 0), GOLD, Enum.Material.Metal)
 			local cup = piece(desk, "TrophyCup", Vector3.new(0.9, 0.9, 0.9), at * CFrame.new(0, 1.3, 0), GOLD, Enum.Material.Metal)

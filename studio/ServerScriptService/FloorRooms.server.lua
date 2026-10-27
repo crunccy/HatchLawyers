@@ -103,12 +103,13 @@ local function placeRooms(player: Player, firm: Model)
 	end
 	local plot = firm.Parent :: Model
 	local frame = FirmBuilder.frame(plot)
+	local mx = (front:GetAttribute("MirrorX") :: number?) or 1 -- the overhaul mesh fronts are mirrored (FirmStages)
 	for id, s in slots do
 		local def = CFG.Rooms[id]
 		local tpl = templates:FindFirstChild(id)
 		if def and tpl and stage >= def.Stage then
 			local m = (tpl :: Model):Clone()
-			m:PivotTo(frame * CFrame.new(s[1], s[2], s[3]) * CFrame.Angles(0, math.rad(s[4] or 0), 0))
+			m:PivotTo(frame * CFrame.new(s[1] * mx, s[2], s[3]) * CFrame.Angles(0, math.rad(s[4] or 0), 0))
 			m:SetAttribute("Owner", player.UserId)
 			m.Parent = folder
 			rooms[id] = m

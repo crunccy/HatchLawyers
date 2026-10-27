@@ -336,7 +336,10 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
 - Firm: `Server.FirmStages` (6 front buildings by size/prestige, rooms sold on the lawn by `Server.FirmFeatures`),
   two incubators per firm (`Firm.Incubators`, tag `Incubator`) where the waiting room was (a narrower front has its own
   spots: `FirmStages.INCUBATORS`, e.g. inside the Dingy Shack); office tiers recolour the kit desk (`Server.DeskLook`,
-  extras only in its free spots); **no waiting room** —
+  extras only in its free spots); **since 2026-10-27 the fronts + hall are crnuch's overhaul MESHES**
+  (`ServerStorage.Overhaul.Models.firms / shack / hall`, pivots set by `tools/zones/InstallFirmMeshes.lua`), which come
+  out MIRRORED across the aisle vs the firm-local layout: Parts built with them use `Build.mx = -1`, and the Front's
+  `MirrorX` attribute (-1) flips anything else placed by firm-local x (FloorRooms' slots, the ManagerSpot); **no waiting room** —
   clients walk from the street straight to a free lawyer (`FirmBuilder.routeToDesk`).
 
 ### Never rename (scripts look these up)

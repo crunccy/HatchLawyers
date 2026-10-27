@@ -91,11 +91,15 @@ local function newBuild(parent: Instance, frame: CFrame, name: string)
 	local m = Instance.new("Model")
 	m.Name = name
 	m.Parent = parent
-	return setmetatable({ model = m, frame = frame, area = nil :: string? }, Build)
+	-- mx = -1 mirrors every x across the aisle (the overhaul meshes' layout, see MESH below)
+	return setmetatable({ model = m, frame = frame, area = nil :: string?, mx = 1 }, Build)
 end
 
 -- axis-aligned box between two corners; solid = collides (structure), otherwise decoration
 function Build:box(name: string, x0: number, y0: number, z0: number, x1: number, y1: number, z1: number, look: string, solid: boolean?): Part
+	if self.mx == -1 then
+		x0, x1 = -x1, -x0
+	end
 	local s = L[look] or L.white
 	local p = Instance.new("Part")
 	p.Name = name
@@ -126,7 +130,7 @@ function Build:post(name: string, x: number, z: number, y0: number, y1: number, 
 	local p = self:box(name, -r, y0, -r, r, y1, r, look, solid)
 	p.Shape = Enum.PartType.Cylinder
 	p.Size = Vector3.new(y1 - y0, r * 2, r * 2)
-	p.CFrame = self.frame * CFrame.new(x, (y0 + y1) / 2, z) * CFrame.Angles(0, 0, math.rad(90))
+	p.CFrame = self.frame * CFrame.new(x * self.mx, (y0 + y1) / 2, z) * CFrame.Angles(0, 0, math.rad(90))
 	return p
 end
 
@@ -299,7 +303,7 @@ function Build:elevator(stops: { any })
 		local d0, d1 = cz + face * 0.45, cz + face * 0.75
 		local door = self:box("Elevator", cx - 2.3, y + 0.1, math.min(d0, d1), cx + 2.3, y + 7.4, math.max(d0, d1), "navy", false)
 		door:SetAttribute("Floor", i)
-		door:SetAttribute("Arrive", Vector3.new(cx, y + 3, cz + face * 3.5))
+		door:SetAttribute("Arrive", Vector3.new(cx * self.mx, y + 3, cz + face * 3.5))
 		local l0, l1 = cz + face * 0.75, cz + face * 0.95
 		local arrow = self:box("ElevatorLight" .. i, cx - 0.6, y + 7.5, math.min(l0, l1), cx + 0.6, y + 7.9, math.max(l0, l1), "lamp", false)
 		self:light(arrow, 6, 0.6)
@@ -657,6 +661,191 @@ FRONTS[6] = function(b)
 	return CFrame.new(0, 2 * F - 1.8, -0.75)
 end
 
+------------------------------------------------------------------ the overhaul meshes (2026-10-26)
+-- crnuch's MAP MODEL OVERHAUL remade the six fronts and the hall kit in Blender as per-colour MeshParts
+-- (tools/blender/overhaul/firm_stages.py, firm_shack.py, firm_hall.py), staged in ServerStorage.Overhaul.Models.
+-- tools/zones/InstallFirmMeshes.lua set each model's WorldPivot to its firm-local origin and marked it "FirmOrigin".
+-- Blender's axes (X = firm x, Y = firm z, Z = up) are a mirror of firm-local space, so the meshes come out MIRRORED
+-- across the aisle (x -> -x): coffee counter, elevator stops, helipad ... stand on the other side from the Part
+-- fronts above. The Parts built with them (elevators, pedestals, hologram pads, lounge carpet) use Build.mx = -1 to
+-- match, and the front carries MirrorX = -1 so FloorRooms and the Manager follow. Without the staged models, the
+-- Part fronts above are built as before.
+local MESH: { [number]: { string } } = {
+	{ "shack", "DingyShack" },
+	{ "firms", "firms_stage2" },
+	{ "firms", "firms_stage3" },
+	{ "firms", "firms_stage4" },
+	{ "firms", "firms_stage5" },
+	{ "firms", "firms_stage6" },
+}
+
+function FirmStages.overhaulModel(group: string, name: string): Model?
+	local root = ServerStorage:FindFirstChild("Overhaul")
+	local models = root and root:FindFirstChild("Models")
+	local g = models and models:FindFirstChild(group)
+	local m = g and g:FindFirstChild(name)
+	return if m and m:IsA("Model") and m:GetAttribute("FirmOrigin") then m else nil
+end
+
+-- the bought areas' furniture, by mesh-name prefix (the lounge's glass front shares its prefix: left out)
+local AREA_PREFIX: { [string]: string } = {
+	StorefrontCafe_ = "CafeTerrace",
+	MainStreetCoffee_ = "CoffeeBreak",
+	GlassOfficeLibrary_ = "LawLibrary",
+	GlassOfficeConference_ = "ConferenceRoom",
+	CorporateHQCafe_ = "AtriumCafe",
+	CorporateHQLounge_ = "ExecLounge",
+	CorporateHQGarden_ = "RoofGarden",
+	SupremeTowerCourt_ = "PrivateCourt",
+	SupremeTowerSuite_ = "PartnerSuite",
+}
+local NOT_AREA = { CorporateHQLounge_Glass = true, CorporateHQLounge_Mullion = true, CorporateHQLounge_Shine = true }
+-- previews of a working Part built below (the LoungeCarpet): dropped
+local DROP = { CorporateHQLounge_Preview_Carpet = true }
+-- real lights in the glowing meshes: { range, brightness }
+local LIGHTS: { [string]: { number } } = {
+	Shack_Lantern = { 12, 0.9 },
+	MainStreetCoffee_Glow = { 8, 1 },
+	GlassOffice_CanopyGlow = { 14, 0.6 },
+	CorporateHQCafe_Lamp = { 10, 0.8 },
+	CorporateHQLounge_Glow = { 16, 0.6 },
+	SupremeTower_CanopyGlow = { 14, 0.6 },
+	SupremeTowerSuite_Glow = { 20, 0.6 },
+	SupremeTower_Beacon = { 10, 1 },
+}
+
+local function areaOf(name: string): string?
+	if NOT_AREA[name] then
+		return nil
+	end
+	for prefix, area in AREA_PREFIX do
+		if name:sub(1, #prefix) == prefix then
+			return area
+		end
+	end
+	return nil
+end
+
+-- clones the stage's mesh model into the front; false when it isn't staged
+local function cloneMeshes(b: any, group: string, name: string): boolean
+	local template = FirmStages.overhaulModel(group, name)
+	if not template then
+		return false
+	end
+	local m = template:Clone()
+	m.Name = "Meshes"
+	m:PivotTo(b.frame)
+	for _, p in m:GetDescendants() do
+		if p:IsA("BasePart") then
+			if DROP[p.Name] then
+				p:Destroy()
+				continue
+			end
+			p.Anchored = true
+			p.CanTouch = false
+			local area = areaOf(p.Name)
+			if area then
+				p:SetAttribute("Area", area)
+			end
+			local l = LIGHTS[p.Name]
+			if l then
+				b:light(p, l[1], l[2])
+			end
+		end
+	end
+	m.Parent = b.model
+	return true
+end
+
+-- the Showcase's working Parts (the glass, floor and spots are mesh): pedestals + rings + a light over each
+function Build:pedestals(y0: number, y1: number, count: number)
+	for i = 1, count do
+		local x = -22 + 44 * (i - 0.5) / count
+		local ped = self:disc("ShowcasePedestal" .. i, x, 2.6, y0 + 0.3, 1.4, 1.4, "white")
+		ped:SetAttribute("ShowcaseSlot", i)
+		self:disc("ShowcaseRing" .. i, x, 2.6, y0 + 1.7, 1.5, 0.08, "gold", false)
+		local spot = self:box("ShowcaseLight" .. i, x - 0.2, y1 - 1.4, 2.4, x + 0.2, y1 - 1, 2.8, "lamp", false)
+		spot.Transparency = 1
+		self:light(spot, 8, 0.7)
+	end
+end
+
+-- each returns the name sign's CFrame (firm-local, just in front of the mesh's sign board) and its size
+local MESH_FRONTS: { [number]: (any) -> (CFrame, Vector2?) } = {}
+
+-- an invisible wall (the meshes' own collision can't be trusted across an opening: a convex hull fills it)
+function Build:collider(name: string, x0: number, y0: number, z0: number, x1: number, y1: number, z1: number)
+	local p = self:box(name, x0, y0, z0, x1, y1, z1, "white")
+	p.Transparency = 1
+	p.CanQuery = false
+	p.CastShadow = false
+end
+
+MESH_FRONTS[1] = function(b) -- the shack has no board: the Sign keeps its frame, over the door
+	-- its plank walls don't collide (InstallFirmMeshes: their hulls filled the doorways): walls x +-12, z -3..21, a
+	-- door x -3..3, side doorways z -0.2..3.2, the aisle through the back x -3..3
+	for _, s in { -1, 1 } do
+		b:collider("ShackWallFront", s * 3, 0, -3.3, s * 12.3, 8, -2.7)
+		b:collider("ShackWallBack", s * 3, 0, 20.7, s * 12.3, 8, 21.3)
+		b:collider("ShackWallSide", s * 11.7, 0, -3.3, s * 12.3, 8, -0.2)
+		b:collider("ShackWallSide", s * 11.7, 0, 3.2, s * 12.3, 8, 21.3)
+	end
+	return CFrame.new(0, 9.2, -3.4), nil
+end
+
+MESH_FRONTS[2] = function(b)
+	b:elevator({ 9.3 })
+	return CFrame.new(0, 8.05, -0.78), Vector2.new(8.4, 1.3)
+end
+
+MESH_FRONTS[3] = function(b)
+	local G, H = 9, 18
+	b:pedestals(G + 0.45, H, 3)
+	b:elevator({ G + 0.45, H + 0.3 })
+	return CFrame.new(0, 9.75, -6.53), Vector2.new(13, 1)
+end
+
+MESH_FRONTS[4] = function(b)
+	local F = 9
+	b:pedestals(F + 0.45, 2 * F, 6)
+	b:elevator({ F + 0.45, 2 * F + 0.45, 3 * F + 0.45, 4 * F + 0.45 })
+	return CFrame.new(0, 4 * F + 1.5, -0.78), Vector2.new(15, 1.4)
+end
+
+MESH_FRONTS[5] = function(b)
+	local F = 9
+	b:pedestals(2 * F + 0.45, 3 * F, 9)
+	b.area = "ExecLounge"
+	local carpet = b:box("LoungeCarpet", -23, 3 * F + 0.45, 0.5, 23, 3 * F + 0.6, DEPTH - 1, "redDeep", false)
+	carpet:SetAttribute("LoungeFloor", true)
+	b.area = nil
+	local pad = b:disc("HologramPad", 0, 13.5, 6 * F + 0.45, 4.5, 0.6, "white")
+	pad:SetAttribute("Hologram", "Blue")
+	-- the roof garden's parapet: its mesh doesn't collide (its hull covered the whole roof), so invisible walls
+	local y = 6 * F + 0.45
+	b:collider("RoofEdge", -21.3, y, 5.6, 21.3, y + 1.2, 6.2)
+	b:collider("RoofEdge", -21.3, y, DEPTH - 0.2, 21.3, y + 1.2, DEPTH + 0.4)
+	for _, s in { -1, 1 } do
+		b:collider("RoofEdge", s * 20.7, y, 5.6, s * 21.3, y + 1.2, DEPTH + 0.4)
+	end
+	b:elevator({ 2 * F + 0.45, 3 * F + 0.45, 4 * F + 0.45, 5 * F + 0.45, 6 * F + 0.45 })
+	return CFrame.new(0, 3 * F - 1.5, -0.95), Vector2.new(20, 1.6)
+end
+
+MESH_FRONTS[6] = function(b)
+	local F = 9.6
+	b:pedestals(F + 0.45, 2 * F, 12)
+	local T0 = 2 * F + 0.45
+	local T1 = T0 + 108
+	local pad = b:disc("HologramPad", -9, 10.5, T1 + 5, 4.5, 0.6, "gold")
+	pad:SetAttribute("Hologram", "Gold")
+	local function towerStop(k: number): any
+		return { y = T0 + 9 * k + 0.35, x = 15, z = 17.4, face = -1 }
+	end
+	b:elevator({ F + 0.45, towerStop(0), towerStop(1), towerStop(2), towerStop(5), { y = T1 + 5, x = 0, z = 4.5, face = 1 } })
+	return CFrame.new(0, 2 * F - 1.8, -1.22), Vector2.new(17, 1.5)
+end
+
 ------------------------------------------------------------------ the open office hall, restyled per stage
 -- (stage 5's pergola beams over the hall were removed: user, "remove the fencing above the plot")
 type HallStyle = { wall: string, cap: string, post: string, rug: string, carpet: boolean? }
@@ -679,12 +868,40 @@ end
 -- Restyle the kit's office-hall walls (picked out by shape: the 5-stud side panels, their cap rail and the
 -- posts between segments), and dress every segment: a rug under each office, a plant by the wall and a
 -- sconce with a real light on every other post. The hall never gets a roof.
+-- The overhaul hall kit (FirmBuilder.kitPiece) is named per colour: <Piece>_Wall / _Panel / _Cap / _Post / _Carpet
+-- are recoloured by NAME (its raised wall panels go glass with a glass wall; the BackWall's own end wall stays), and
+-- the kit brings its own planters and office rugs, so only the sconces are added.
+local SCONCE_X = 22.6 -- on the inner face of the kit's posts
+local function paintMesh(piece: Instance, style: HallStyle)
+	local glass = L[style.wall].mat == Enum.Material.Glass
+	for _, p in piece:GetDescendants() do
+		if p:IsA("BasePart") then
+			local role = p.Name:match("_(%a+)$")
+			if role == "Wall" and piece.Name ~= "BackWall" then
+				paint(p, style.wall)
+			elseif role == "Panel" and glass and piece.Name ~= "BackWall" then
+				paint(p, style.wall)
+			elseif role == "Cap" then
+				paint(p, style.cap)
+			elseif role == "Post" then
+				paint(p, style.post)
+			elseif role == "Carpet" then
+				paint(p, style.rug)
+			end
+		end
+	end
+end
+
 function FirmStages.dressHall(firm: Model, frame: CFrame, stage: number, hallStart: number, hallEnd: number)
 	local style = HALL[stage] or HALL[1]
 	local shell = firm:FindFirstChild("Shell")
+	local meshHall = false
 	if shell then
 		for _, piece in shell:GetChildren() do
-			if piece.Name == "OfficeSegment" or piece.Name == "WaitingRoom" or piece.Name == "ExpansionLock" or piece.Name == "BackWall" then
+			if piece:GetAttribute("FirmOrigin") then
+				meshHall = true
+				paintMesh(piece, style)
+			elseif piece.Name == "OfficeSegment" or piece.Name == "WaitingRoom" or piece.Name == "ExpansionLock" or piece.Name == "BackWall" then
 				for _, p in piece:GetDescendants() do
 					if p:IsA("BasePart") then
 						local l = frame:PointToObjectSpace(p.Position)
@@ -707,6 +924,13 @@ function FirmStages.dressHall(firm: Model, frame: CFrame, stage: number, hallSta
 	while z + 11 <= hallEnd + 0.01 do
 		local zc = z + 5.5
 		for _, s in { -1, 1 } do
+			if meshHall then
+				if seg % 2 == 0 then
+					local sconce = b:box("Sconce", s * SCONCE_X - 0.3, 4.2, z - 0.4, s * SCONCE_X + 0.3, 4.9, z + 0.4, "lamp", false)
+					b:light(sconce, 10, 0.6)
+				end
+				continue
+			end
 			-- rug under the office (lawyer + client spots), plant in the corner by the wall
 			b:box("OfficeRug", math.min(s * 12, s * 19.5), 0.02, zc - 3.2, math.max(s * 12, s * 19.5), 0.12, zc + 3.2, style.rug, false)
 			b:box("OfficePlantPot", s * 21.6 - 0.6, 0, z + 1.2, s * 21.6 + 0.6, 1.1, z + 2.4, "woodDark", false)
@@ -719,7 +943,7 @@ function FirmStages.dressHall(firm: Model, frame: CFrame, stage: number, hallSta
 		seg += 1
 		z += 11
 	end
-	if style.carpet then
+	if style.carpet and not meshHall then
 		b:box("RedCarpet", -2.5, 0.02, hallStart, 2.5, 0.14, hallEnd - 1, "redDeep", false)
 		b:box("RedCarpetTrimL", -2.8, 0.02, hallStart, -2.5, 0.16, hallEnd - 1, "gold", false)
 		b:box("RedCarpetTrimR", 2.5, 0.02, hallStart, 2.8, 0.16, hallEnd - 1, "gold", false)
@@ -753,13 +977,21 @@ function FirmStages.applyAreas(firm: Model, owned: { [string]: boolean })
 	end
 end
 
--- Builds the stage's front building into the firm; returns the sign's CFrame (world)
-function FirmStages.buildFront(firm: Model, frame: CFrame, stage: number): CFrame
+-- Builds the stage's front building into the firm (the overhaul meshes when staged, else Parts); returns the sign's
+-- CFrame (world) and, on a mesh front, the sign's size to fit its board
+function FirmStages.buildFront(firm: Model, frame: CFrame, stage: number): (CFrame, Vector2?)
 	local b = newBuild(firm, frame, "Front")
 	firm:SetAttribute("Stage", stage)
 	firm:SetAttribute("StageName", FirmStages.NAMES[stage])
+	local which = if MESH[stage] then stage else 1
+	if cloneMeshes(b, MESH[which][1], MESH[which][2]) then
+		b.mx = -1
+		b.model:SetAttribute("MirrorX", -1)
+		local signLocal, signSize = MESH_FRONTS[which](b)
+		return frame * signLocal, signSize
+	end
 	local signLocal = (FRONTS[stage] or FRONTS[1])(b)
-	return frame * signLocal
+	return frame * signLocal, nil
 end
 
 return FirmStages
