@@ -5,6 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **mr.robe (local), since 2026-10-26: firm stages 1-6 + office hall -> the overhaul meshes** (`Server.FirmStages`
+  buildFront / dressHall, `FirmBuilder`, `Server.DeskLook` clone `ServerStorage.Overhaul.Models.firms/.shack/.hall`).
+  Don't edit those three scripts meanwhile.
 - **crnuch (local), since 2026-10-24: MAP MODEL OVERHAUL** (crnuch: "genuinely any of the models ... a whole model
   overhaul"): every map model remade in Blender as meshes (crnuch uploads) - trees, hub buildings, the Travel portal,
   firm stages, props, then the six islands. Stage 1 = benchmark (tree family + portal + one firm building) rendered for
