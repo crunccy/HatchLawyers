@@ -108,6 +108,15 @@ Claim big work here before starting (who · what · since), push the claim, remo
   small 3-way-merged edits to Main, PlotService, Zones.client, Travel.client. Don't wire the hub meanwhile.
 
 ## Open items
+- [ ] **crnuch (needs your account), from mr.robe's 2026-10-27 launch-readiness list:** (1) re-export + re-import the
+      seven islands with the multi-look split (the hub's roads all grey / grass all dirt today): `Blender -b
+      --factory-startup --python tools/blender/overhaul/export_models.py -- island hub bay pet rot food ocean space`,
+      Import 3D each `island_<x>_phone.fbx`, `ApplyOverhaulLooks.lua`, `SwapOverhaulIslands.lua`
+      (tools/zones/overhaul/README.md); (2) the UI sunburst `rbxassetid://89557955610458` (`Skin.Rays` / `UIKit.Rays`)
+      fails in game: "The experience doesn't have access permission" - share it with the experience (Creator Hub ->
+      the image -> Permissions) or re-upload it to the group; (3) say whether your claims (UI v3 remaining screens,
+      the visual audit M2-M5, the characters / eggs / bosses overhaul stage) are yours to finish or mr.robe's sessions
+      may take them.
 - [ ] **Hub wiring (mr.robe's claim), from the visual audit 2026-10-25:** the Carry + Speed counter markers are 5.7
       studs apart at the Upgrades door, so their info panels overlap (SHOES unreadable); the three Arcade booth
       markers turn the booths sideways, so the plaza sees their backs. Captures + fixes: docs/VISUAL_AUDIT_2026-10-25.md
