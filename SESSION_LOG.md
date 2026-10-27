@@ -5,6 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **crnuch's call 2026-10-27 ("mr robe can take them"): mr.robe's sessions take over crnuch's remaining claims** - the
+  UI v3 remaining screens (the UI overhaul claim below), the visual audit's M2-M5, and the MAP MODEL OVERHAUL's next stage
+  (characters / eggs / bosses). crnuch's sessions keep the island install (edition-2 re-import) until it's in.
 - **crnuch (local), since 2026-10-24: MAP MODEL OVERHAUL** (crnuch: "genuinely any of the models ... a whole model
   overhaul"): every map model remade in Blender as meshes (crnuch uploads) - trees, hub buildings, the Travel portal,
   firm stages, props, then the six islands. Stage 1 = benchmark (tree family + portal + one firm building) rendered for
@@ -111,9 +114,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
       Import 3D each `island_<x>_phone.fbx`, `ApplyOverhaulLooks.lua`, `SwapOverhaulIslands.lua`
       (tools/zones/overhaul/README.md); (2) the UI sunburst `rbxassetid://89557955610458` (`Skin.Rays` / `UIKit.Rays`)
       fails in game: "The experience doesn't have access permission" - share it with the experience (Creator Hub ->
-      the image -> Permissions) or re-upload it to the group; (3) say whether your claims (UI v3 remaining screens,
-      the visual audit M2-M5, the characters / eggs / bosses overhaul stage) are yours to finish or mr.robe's sessions
-      may take them.
+      the image -> Permissions) or re-upload it to the group; (3) ~~say whether your claims ...~~ answered 2026-10-27: **mr.robe's
+      sessions take them** (crnuch's call, below). (1) in progress: edition-2 islands exported, waiting on crnuch's import.
 - [ ] **Hub wiring (mr.robe's claim), from the visual audit 2026-10-25:** the Carry + Speed counter markers are 5.7
       studs apart at the Upgrades door, so their info panels overlap (SHOES unreadable); the three Arcade booth
       markers turn the booths sideways, so the plaza sees their backs. Captures + fixes: docs/VISUAL_AUDIT_2026-10-25.md
