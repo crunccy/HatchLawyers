@@ -308,9 +308,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
   belt. Minigames: peekers, cases, bulbs (tagged / attributed) and the judge (character stage) stay Parts; the kit's
   own bulb / case meshes are left out. Old look parts: `ServerStorage.Old_KitParts.<model>` (nothing deleted).
   Marked with attr `OverhaulKit` (the script refuses a second run).
-- Playtest: `[HubMap] ... 25 models moved`, portal + booths seen on the island (they look right, signs readable).
-  Shop / belt / counters / boards / spots: placed + numbers checked (sizes within ~10% of the old look), not yet seen in a
-  playtest (Studio dropped the MCP twice while Blender ran).
+- Playtests (`[HubMap] ... 25 models moved`): portal, booths, shop, belt (slats + riders), leaderboards (live lists on
+  the new boards) and the Lucky Briefcase spot all seen on the island and right. The two minigame spots first came in
+  turned 90 degrees (the kit's sign stands on the other side, so the sign anchor picked the wrong yaw; their sign /
+  board text sat on a panel's edge): turned back in Edit (buttons now within ~1.3 studs of the old PlayButtons), and
+  the script now uses `yaw = 270` for them. Counters seen only from afar. **Left:** the two minigame signs are narrower
+  (5.5 vs 9 studs), so "LUCKY CASE" runs off the left edge: set their SurfaceGui PixelsPerStud to ~65 (was 40) in
+  Edit (a playtest was running when this session ended).
 - **"The road is cooked" = an export bug (heads-up crnuch):** a MeshPart takes ONE colour, but the v2 frame's
   ClassicMeshes hold several looks, so the install painted each whole mesh its first look - the hub's Roads mesh (asphalt
   + curbs + sidewalks + dashes + crosswalks + orange paths) all road-grey and studded, Island_Top (grass + dirt) all dirt,

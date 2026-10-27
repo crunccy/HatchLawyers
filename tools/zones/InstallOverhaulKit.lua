@@ -304,9 +304,11 @@ local SIMPLE = {
 	booths = {},
 	boards = {},
 	spots = {
-		-- the judge stays a Part figure until the character stage (crnuch); peekers / cases / bulbs stay (tagged, animated)
-		{ "Hub.SpecialSpots.SpecialSpot1", "minigames", "minigames_gavel_bonk", { anchor = { "Sign", "GavelBonk_Sign" }, guis = { Sign = "GavelBonk_Sign" }, keep = { "^Judge" } } },
-		{ "Hub.SpecialSpots.SpecialSpot2", "minigames", "minigames_lucky_briefcase", { anchor = { "Sign", "LuckyBriefcase_Sign" }, guis = { Sign = "LuckyBriefcase_Sign", Board = "LuckyBriefcase_Board" }, drop = { "^LuckyBriefcaseBulb_", "^LuckyBriefcaseCase_" } } },
+		-- the judge stays a Part figure until the character stage (crnuch); peekers / cases / bulbs stay (tagged, animated).
+		-- yaw, not a sign anchor: the kit's sign stands on the other side of the spot, so the anchor turned it 90 degrees
+		-- (the spots' pivots are turned 90; 270 puts the kit's front on the old front)
+		{ "Hub.SpecialSpots.SpecialSpot1", "minigames", "minigames_gavel_bonk", { yaw = 270, guis = { Sign = "GavelBonk_Sign" }, keep = { "^Judge" } } },
+		{ "Hub.SpecialSpots.SpecialSpot2", "minigames", "minigames_lucky_briefcase", { yaw = 270, guis = { Sign = "LuckyBriefcase_Sign", Board = "LuckyBriefcase_Board" }, drop = { "^LuckyBriefcaseBulb_", "^LuckyBriefcaseCase_" } } },
 	},
 }
 for _, id in { "License", "Carry", "Speed" } do
