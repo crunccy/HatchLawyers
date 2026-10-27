@@ -41,6 +41,7 @@ local MAX_TIER = #Config.Lawyers.StarEarn
 local WHITE = Color3.new(1, 1, 1)
 local GREEN = Color3.fromRGB(98, 205, 48)
 local ORANGE = Color3.fromRGB(255, 160, 24)
+local SOFT_BLUE = Color3.fromRGB(140, 180, 255) -- a fizzle (never red), as in MutationFx
 local PANEL = Color3.fromRGB(43, 33, 66) -- the dark studded purple (Shop / LAWYERS panels)
 local POD_TOP, POD_BOTTOM = Color3.fromRGB(92, 60, 160), Color3.fromRGB(40, 26, 80)
 local GLOW = Effects.TEXTURES.glow -- (Skin.Assets.Glow has no permission in this place: open item)
@@ -676,7 +677,7 @@ local function mutateNow()
 	clearSlots()
 	win.gui.Enabled = true
 	subtitle.Text = if success then string.format('<font color="#%s">%s!</font> Bring 3 more to go again', tierColor(stars + 1):Lerp(WHITE, 0.3):ToHex(), tostring(nameOrReason))
-		else "It fizzled... bring 3 more and try again!"
+		else string.format('<font color="#%s">Fizzled...</font> your %d %s ran off!', SOFT_BLUE:ToHex(), NEED, Formulas.lawyerName(id, stars))
 	task.delay(6, function()
 		if not busy then
 			subtitle.Text = string.format('Bring <font color="#%s">%d</font> of the same lawyer', ORANGE:ToHex(), NEED)

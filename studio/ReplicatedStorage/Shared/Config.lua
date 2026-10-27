@@ -295,6 +295,9 @@ Config.Lawyers = {
 	StarEarn = { 1, 2.5, 6, 15 }, -- earn x by mutation tier (Normal, Shiny, Diamond, Cosmic)
 	StarNames = { "", "Shiny", "Diamond", "Cosmic" },
 	MaxOwned = 150, -- inventory cap (sell, mutate, or wait for space)
+	-- the longest the Mutation Machine waits for picked lawyers to finish their cases (never pulled out mid-case;
+	-- their offices get no new client meanwhile). Cases run 30-240 s (Config.Clients Duration).
+	MutateWait = 300,
 	Mutations = {
 		-- [tier] = what reaching it takes and how it looks. Chance: the Mutation Machine's success chance from the tier
 		-- below. Ramp: dark -> light colours the lawyer is recoloured along. Color: its name tag / UI colour.

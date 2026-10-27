@@ -298,6 +298,31 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-10-27 — mr.robe, local session (side session): Mutation Machine bug - 3 Starlas "didn't show up"
+- **What happened:** it was a real FIZZLE, not a lost result. mr_blox174's live save had 0 StarJudge (Starla): a
+  success leaves one Shiny Starla, and a lost result would have left all 3. The Shiny try is 70%, so 30% of tries fizzle.
+- **Root cause of the confusion: the 2026-10-22 mutation push (8f73372) was NOT in the live place.** Live LawyerService,
+  CaseService, Config and Merger were the 10-21 versions (= the 10-23 snapshot, which already warned about it), and
+  `Shared.MutationFx`, `ReplicatedStorage.MutationLab` and `ServerStorage.Backups_2026-10-21` were missing. So players
+  got the OLD in-world "mutation moment": the lawyer ran off beside the machine, then a small "FIZZLED!" in the
+  window for 2.4 s. Easy to miss. (How the push got lost is unknown; it went missing between 10-22 and 10-23.)
+- **Fix, pushed into Studio (3-way merged, base = 8f73372^, written with a hash guard):** LawyerService + Merger
+  straight from src/ (unchanged live since the base); CaseService (`hold`) + Config (`Lawyers.MutateWait = 300`)
+  merged onto the live versions (keeps the VIP / cash packs / boss retune made live since); new `Shared.MutationFx`;
+  `ReplicatedStorage.MutationLab` rebuilt with `tools/zones/BuildMutationLab.lua` (sign font now Gotham Black, not the
+  retired Fredoka). Backups of the replaced live scripts: `ServerStorage.Backups_2026-10-27.*_before_mutation_restore`.
+  Small addition: after a fizzle the menu's top line reads "Fizzled... your 3 Starla ran off!" (soft blue).
+- **Playtested through the real menu** (prompt, "+", picker card, MUTATE) with 9 test Starlas on mr_blox174:
+  2 successes (the full-screen "SHINY! Shiny Starla, Earns x100" reveal; the save + the client's Lawyers list held
+  `Stars = 2`; the LAWYERS screen showed "Starla / SHINY / x100"), 1 real fizzle (the soft-blue "FIZZLED! Your
+  lawyers ran off... It was a 70% chance" card; all 3 gone from the save). No console errors. Test lawyers removed and
+  saved (save backup: DataStore key `Backup_Player_11776753629_1793118005`); the 3 tries counted toward the "merge"
+  goal. No PlayerData / save-format change.
+- `run_checks.py`: compile 323/323 OK, sim 32 OK, config 41/43 - **2 boss checks FAIL**: they come from the boss retune
+  made live on 2026-10-21 (Megalodon / SeniorPartner Windup 1.0 s), which src/Config now mirrors. Not mutation code.
+  Open: someone retunes those windups or the clips (docs/BOSS_ANIMATION.md) so the checks pass again.
+- Snapshot: received outside OneDrive (149/149 files), copied the changed files into studio/; src/ == live for all five.
+
 ## 2026-10-27 — mr.robe, local session (side session): firm stages 1-6 + the office hall are the overhaul meshes
 - **LIVE in Studio + playtested** (snapshot refreshed): every firm front (Dingy Shack ... Supreme Tower) and the hall kit
   (segment, desk, lock, back wall) now clone crnuch's meshes from `ServerStorage.Overhaul.Models.firms / shack / hall`.

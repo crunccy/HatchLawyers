@@ -83,7 +83,7 @@ if sign then
 	label.Text = "MUTATION MACHINE"
 	label.TextScaled = true
 	label.TextColor3 = Color3.fromRGB(255, 214, 60)
-	label.FontFace = Font.new("rbxasset://fonts/families/FredokaOne.json")
+	label.FontFace = Font.fromEnum(Enum.Font.GothamBlack) -- (the game's big-text font, CLAUDE.md)
 	local stroke = Instance.new("UIStroke")
 	stroke.Thickness = 4
 	stroke.Color = Color3.new(0, 0, 0)

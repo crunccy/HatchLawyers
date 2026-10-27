@@ -912,18 +912,33 @@ Config.BigCase = {
 -- and again and are granted ONLY by ProcessReceipt, once per receipt (PlayerData.Purchases).
 Config.Shop = {
 	Passes = {
-		{ Key = "DoubleCash", Id = 0, Price = 199, Name = "2x Cash", Text = "Every case pays double. Forever!", Banner = "x2 Cash", Color = Color3.fromRGB(70, 210, 60), Icon = "cash" },
-		{ Key = "LuckyEggs", Id = 0, Price = 299, Name = "Lucky Eggs", Text = "2x chance of Rare, Epic + Legendary lawyers", Banner = "x2 Luck", Color = Color3.fromRGB(255, 190, 30), Icon = "egg" },
-		{ Key = "SpeedyCases", Id = 0, Price = 149, Name = "Speedy Cases", Text = "Every case finishes 25% faster", Banner = "-25% Time", Color = Color3.fromRGB(60, 160, 255), Icon = "clock" },
+		{ Key = "DoubleCash", Id = 2025801068, Price = 99, Name = "2x Cash [PERMANENT]!", Text = "Completed cases pay double, forever.", Banner = "x2 Cash", Color = Color3.fromRGB(70, 210, 60), Icon = "cash" },
+		{ Key = "LuckyEggs", Id = 2026442310, Price = 149, Name = "2x Luck!", Text = "Better odds for rare and powerful lawyers.", Banner = "x2 Luck", Color = Color3.fromRGB(255, 190, 30), Icon = "egg" },
+		{ Key = "SpeedyCases", Id = 2036678266, Price = 499, Name = "Instant Cases!", Text = "Cases finish instantly.", Banner = "Instant", Color = Color3.fromRGB(60, 160, 255), Icon = "clock" },
 		{ Key = "BigFirm", Id = 0, Price = 99, Name = "Bigger Firm", Text = "Keep 100 more lawyers", Banner = "+100 Lawyers", Color = Color3.fromRGB(175, 90, 255), Icon = "briefcase" },
+		{ Key = "VIP", Id = 2025645078, Price = 299, Name = "VIP!", Text = "25% case cash, daily cash, gold tags + office decor.", Banner = "VIP", Color = Color3.fromRGB(255, 196, 55), Icon = "briefcase" },
+		{ Key = "Cash100K", Id = 2044730886, Price = 3, Name = "100K Cash Pack", Text = "100,000 coins, once per player", Banner = "+100K", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Coins = 100000 },
+		{ Key = "Cash500K", Id = 2044304962, Price = 10, Name = "500K Cash Pack", Text = "500,000 coins, once per player", Banner = "+500K", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Coins = 500000, Prerequisite = "Free3" },
+		{ Key = "Cash1_5M", Id = 2045096893, Price = 25, Name = "1.5M Cash Pack", Text = "1,500,000 coins, once per player", Banner = "+1.5M", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Coins = 1500000, Prerequisite = "Free4" },
+		{ Key = "Cash5M", Id = 2045822949, Price = 49, Name = "5M Cash Pack", Text = "5,000,000 coins, once per player", Banner = "+5M", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Coins = 5000000, Prerequisite = "Free5" },
+		{ Key = "Cash15M", Id = 2044784902, Price = 99, Name = "15M Cash Pack", Text = "15,000,000 coins, once per player", Banner = "+15M", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Coins = 15000000, Prerequisite = "Free6" },
 	},
+	FreeRewards = {
+		{ Key = "Free1", Name = "Free 25K", Text = "Claim 25,000 coins", Color = Color3.fromRGB(85, 185, 85), Icon = "cash", Coins = 25000, Prerequisite = "Cash100K" },
+		{ Key = "Free2", Name = "Free Egg", Text = "Claim one free Briefcase Egg", Color = Color3.fromRGB(255, 190, 30), Icon = "egg", FreeTokens = 1, Prerequisite = "Free1" },
+		{ Key = "Free3", Name = "Free 50K", Text = "Claim 50,000 coins", Color = Color3.fromRGB(85, 185, 85), Icon = "cash", Coins = 50000, Prerequisite = "Free2" },
+		{ Key = "Free4", Name = "Free 100K", Text = "Claim 100,000 coins", Color = Color3.fromRGB(85, 185, 85), Icon = "cash", Coins = 100000, Prerequisite = "Cash500K" },
+		{ Key = "Free5", Name = "Free 250K", Text = "Claim 250,000 coins", Color = Color3.fromRGB(85, 185, 85), Icon = "cash", Coins = 250000, Prerequisite = "Cash1_5M" },
+		{ Key = "Free6", Name = "Free 500K", Text = "Claim 500,000 coins", Color = Color3.fromRGB(85, 185, 85), Icon = "cash", Coins = 500000, Prerequisite = "Cash5M" },
+	},
+	CashJourney = { "Cash100K", "Free1", "Free2", "Free3", "Cash500K", "Free4", "Cash1_5M", "Free5", "Cash5M", "Free6", "Cash15M" },
 	Products = {
 		{ Key = "CashSmall", Id = 0, Price = 25, Name = "Pile of Cash", Text = "10 minutes of your income", Banner = "+10 min", Color = Color3.fromRGB(170, 175, 190), Icon = "cash", Minutes = 10 },
 		{ Key = "CashMedium", Id = 0, Price = 99, Name = "Bag of Cash", Text = "1 hour of your income", Banner = "+1 hour", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Minutes = 60 },
 		{ Key = "CashLarge", Id = 0, Price = 349, Name = "Vault of Cash", Text = "6 hours of your income", Banner = "+6 hours", Color = Color3.fromRGB(60, 160, 255), Icon = "cash", Minutes = 360 },
 		{ Key = "RareEggs", Id = 0, Price = 149, Name = "3 Rare Eggs", Text = "3 Briefcase Eggs that always hatch Rare", Banner = "3x Rare", Color = Color3.fromRGB(255, 120, 40), Icon = "egg", RareTokens = 3 },
 	},
-	Effects = { DoubleCash = 2, SpeedyCases = 0.75, LuckyEggs = 2, BigFirm = 100 },
+	Effects = { DoubleCash = 2, SpeedyCases = 0, LuckyEggs = 2, BigFirm = 100, VIP = 1.25 },
 }
 
 -- Firm areas (Server.FirmFeatures, building: Server.FirmStages). Rooms bought from the glowing pads in front of
@@ -1174,8 +1189,8 @@ Config.Bosses = {
 	-- (2026-10-12, user: "make the attacks more frequent, make the models bigger, and make them faster and more
 	-- dangerous", "the range should be MUCH longer and they should be MUCH larger", then "they should ragdoll the
 	-- player, touching the boss's hitbox ragdolls them too, and they should be faster than the player" - so they
-	-- outrun players now (base speed 32, max 40). Still fair: every windup lets a player at base speed get out of the
-	-- warning, and a player who was just hit is safe for SafeAfterHit s and left alone by that boss for IgnoreAfterHit s.)
+	-- outrun players now (base speed 32, max 40). A hit player is safe for SafeAfterHit s and ignored for IgnoreAfterHit s.)
+	-- 2026-10-21: quicker attacks and larger ranges; Martello's 28-stud slam keeps a 1 s warning.
 	SafeAfterHit = 4, -- seconds a hit player can't be hit again (they're ragdolled for RagdollTime of it)
 	IgnoreAfterHit = 5, -- seconds the boss that hit you won't chase or target you
 	RagdollTime = 2.2, -- seconds a hit player lies limp before getting up
@@ -1202,38 +1217,38 @@ Config.Bosses = {
 	--   On (optional): the attack kind it goes with, for a boss that takes turns (the Eclipse: its Ring turns only)
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
-			Attack = "Cone", Radius = 45, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
+			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 2.8, Windup = 1.0,
+			Attack = "Cone", Radius = 54, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.4, Front = 1.8, Height = 11.5 },
 			-- PAPER STORM (2+ players): a bundle of case files lobbed onto up to Max other players' spots
 			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 10 } },
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 3, Windup = 1.4,
-			Attack = "Ring", Radius = 34, Color = Color3.fromRGB(255, 90, 90),
+			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 2.4, Windup = 1.3,
+			Attack = "Ring", Radius = 40, Color = Color3.fromRGB(255, 90, 90),
 			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 },
 			-- ECHO BARK (2+ players): the bark's sound wave races to up to Max other players and goes off round them
 			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 } },
 		{ Zone = "BrainrotBoulevard", Model = "JudgeMartello", Name = "Judge Martello", Difficulty = "Medium",
-			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 3, Windup = 1.1,
-			Attack = "Slam", Radius = 26, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
+			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 2.4, Windup = 1.0,
+			Attack = "Slam", Radius = 28, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.6, Front = 1.7, Height = 5.6 },
 			-- GAVEL RAIN (2+ players): a mini gavel flung up as he jumps drops on up to Max other players' spots as he lands
 			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 } },
 		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
-			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 3.5, Windup = 1.2,
-			Attack = "Line", Length = 110, Width = 22, LineSpeed = 120, Color = Color3.fromRGB(255, 200, 60),
+			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 2.8, Windup = 1.0,
+			Attack = "Line", Length = 132, Width = 26, LineSpeed = 150, Color = Color3.fromRGB(255, 200, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 },
 			-- WHEEL SPLIT (2+ players): cheese wedges pop off the wheel and tumble down a Lane at up to Max other players
 			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 110, Length = 100 } },
 		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
-			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.8, Windup = 1.0,
-			Attack = "Line", Length = 130, Width = 20, LineSpeed = 150, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
+			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.2, Windup = 0.8,
+			Attack = "Line", Length = 156, Width = 24, LineSpeed = 185, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
 			Hitbox = { HalfWidth = 2.2, Back = 2.4, Front = 1.8, Height = 8 },
 			-- FEEDING FRENZY (2+ players): sand-shark fins race down a Lane at up to Max other players
 			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 120, Length = 110 } },
 		{ Zone = "SpaceBase", Model = "Eclipse", Name = "Chief Justice Eclipse", Difficulty = "Extreme",
-			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.5, Windup = 1.4,
-			Attack = { "Pull", "Ring" }, Radius = 44, Inner = 12, PullTime = 2, PullSpeed = 16, RingRadius = 38,
+			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.0, Windup = 1.15,
+			Attack = { "Pull", "Ring" }, Radius = 53, Inner = 14, PullTime = 2, PullSpeed = 20, RingRadius = 46,
 			Color = Color3.fromRGB(190, 120, 255), Hitbox = { HalfWidth = 2.4, Back = 1.8, Front = 1.8, Height = 10.3 },
 			-- GAVEL VOLLEY (2+ players, Ring turns): orbiting gavels slam down on up to Max other players' spots with the
 			-- ring (the Pull already drags in everyone within Radius)
