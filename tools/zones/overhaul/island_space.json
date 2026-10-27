@@ -1,6 +1,6 @@
 {
  "group": "island_space",
- "fbx": "exports/overhaul/island_space_phone2.fbx",
+ "fbx": "exports/overhaul/island_space_phone3.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -724,6 +724,123 @@
       205,
       176,
       120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Scenery": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -196.71,
+    -173.33,
+    -0.92
+   ],
+   "max": [
+    202.97,
+    182.08,
+    28.78
+   ],
+   "meshes": [
+    {
+     "name": "Scenery_Rocks_rock_violet_dark",
+     "fbx_name": "Scenery_Rocks_rock_violet_dark",
+     "tris": 11565,
+     "look": "rock_violet_dark",
+     "color": [
+      86,
+      78,
+      114
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moon_light",
+     "fbx_name": "Scenery_Rocks_moon_light",
+     "tris": 2102,
+     "look": "moon_light",
+     "color": [
+      208,
+      202,
+      224
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rock_violet",
+     "fbx_name": "Scenery_Rocks_rock_violet",
+     "tris": 1480,
+     "look": "rock_violet",
+     "color": [
+      122,
+      110,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moon",
+     "fbx_name": "Scenery_Rocks_moon",
+     "tris": 230,
+     "look": "moon",
+     "color": [
+      178,
+      170,
+      198
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moon_dark",
+     "fbx_name": "Scenery_Rocks_moon_dark",
+     "tris": 1272,
+     "look": "moon_dark",
+     "color": [
+      134,
+      126,
+      158
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_hull_dark",
+     "fbx_name": "Scenery_Rocks_hull_dark",
+     "tris": 76,
+     "look": "hull_dark",
+     "color": [
+      78,
+      84,
+      104
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_crystal_cyan",
+     "fbx_name": "Scenery_Rocks_crystal_cyan",
+     "tris": 11088,
+     "look": "crystal_cyan",
+     "color": [
+      122,
+      228,
+      255
      ],
      "material": "Plastic",
      "transparency": 0,

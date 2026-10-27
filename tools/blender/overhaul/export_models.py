@@ -29,11 +29,12 @@ TMP = os.path.join(OUT, "_tmp")  # (the build scripts' own out dir: sandbox JSON
 for d in (OUT, LOOKS, TMP):
     os.makedirs(d, exist_ok=True)
 MAX_TRIS = 19500
-EDITION = "2"  # (bump for every re-export crnuch imports: island_hub_phone2.fbx ...; 2 = mr.robe's multi-look split, 2026-10-27)
+EDITION = "3"  # (bump for every re-export crnuch imports: island_hub_phone2.fbx ...; 2 = mr.robe's multi-look split, 3 = the egg
+#                   islands' cliffs + rocks: "Scene" also skipped "Scenery_Rocks", 2026-10-27)
 PHONE = "full" not in ARGS  # (the phone / tablet budget: phone_budget; "full" exports every triangle)
 FLAT = 0.79  # (a face whose normal is further than this from every axis is curved: no studs)
 GAP = 24.0   # (studs between models in a group's row)
-SKIP_NAMES = ("Preview", "Scene", "Studs", "StudSource", "Sky_", "Label", "Diagram", "Egg_Spot", "OLD", "Boss_")  # (Boss_: the islands' boss stand-ins - the bosses are ReplicatedStorage.Bosses)
+SKIP_NAMES = ("Preview", "Scene_", "Studs", "StudSource", "Sky_", "Label", "Diagram", "Egg_Spot", "OLD", "Boss_")  # (Boss_: the islands' boss stand-ins - the bosses are ReplicatedStorage.Bosses)
 SKIP_COLLS = ("Sky", "Label", "Diagram", "Gameplay_Markers", "Preview", "Camera")
 SCATTER = re.compile(r"(Oak|Blossom|Hedge|Pine|Bush|Palm|Tuft|Topiary|Tree|Canopy|Shell|Star|Drift|Coral|Conch|Fan|Brain)")
 ISLANDS = {"hub": "island_hub", "bay": "island_briefcase_bay", "pet": "island_pet_park", "rot": "island_brainrot",

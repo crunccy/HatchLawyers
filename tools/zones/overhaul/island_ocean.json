@@ -1,6 +1,6 @@
 {
  "group": "island_ocean",
- "fbx": "exports/overhaul/island_ocean_phone2.fbx",
+ "fbx": "exports/overhaul/island_ocean_phone3.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -1551,6 +1551,193 @@
       118,
       120,
       132
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Scenery": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -196.37,
+    -172.91,
+    -2.71
+   ],
+   "max": [
+    203.53,
+    180.95,
+    41.81
+   ],
+   "meshes": [
+    {
+     "name": "Scenery_Rocks_wet_sand",
+     "fbx_name": "Scenery_Rocks_wet_sand",
+     "tris": 366,
+     "look": "wet_sand",
+     "color": [
+      205,
+      176,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_sand_light",
+     "fbx_name": "Scenery_Rocks_sand_light",
+     "tris": 381,
+     "look": "sand_light",
+     "color": [
+      250,
+      230,
+      178
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rock_grey_light",
+     "fbx_name": "Scenery_Rocks_rock_grey_light",
+     "tris": 1982,
+     "look": "rock_grey_light",
+     "color": [
+      150,
+      152,
+      162
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moss",
+     "fbx_name": "Scenery_Rocks_moss",
+     "tris": 4024,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moss_light",
+     "fbx_name": "Scenery_Rocks_moss_light",
+     "tris": 67,
+     "look": "moss_light",
+     "color": [
+      132,
+      212,
+      82
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moss_dark_1",
+     "fbx_name": "Scenery_Rocks_moss_dark_1",
+     "tris": 10465,
+     "look": "moss_dark",
+     "color": [
+      64,
+      150,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_moss_dark_2",
+     "fbx_name": "Scenery_Rocks_moss_dark_2",
+     "tris": 10467,
+     "look": "moss_dark",
+     "color": [
+      64,
+      150,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_vine",
+     "fbx_name": "Scenery_Rocks_vine",
+     "tris": 6348,
+     "look": "vine",
+     "color": [
+      70,
+      160,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rock_grey_dark",
+     "fbx_name": "Scenery_Rocks_rock_grey_dark",
+     "tris": 1946,
+     "look": "rock_grey_dark",
+     "color": [
+      86,
+      88,
+      102
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rock_grey",
+     "fbx_name": "Scenery_Rocks_rock_grey",
+     "tris": 2036,
+     "look": "rock_grey",
+     "color": [
+      118,
+      120,
+      132
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rock_warm_grey",
+     "fbx_name": "Scenery_Rocks_rock_warm_grey",
+     "tris": 1698,
+     "look": "rock_warm_grey",
+     "color": [
+      134,
+      128,
+      128
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_black",
+     "fbx_name": "Scenery_Rocks_black",
+     "tris": 88,
+     "look": "black",
+     "color": [
+      30,
+      30,
+      36
      ],
      "material": "Plastic",
      "transparency": 0,

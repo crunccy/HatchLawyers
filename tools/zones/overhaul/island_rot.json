@@ -1,6 +1,6 @@
 {
  "group": "island_rot",
- "fbx": "exports/overhaul/island_rot_phone2.fbx",
+ "fbx": "exports/overhaul/island_rot_phone3.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -2849,6 +2849,123 @@
       122,
       76,
       42
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Scenery": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -197.35,
+    -172.27,
+    -0.85
+   ],
+   "max": [
+    203.25,
+    182.55,
+    31.52
+   ],
+   "meshes": [
+    {
+     "name": "Scenery_Rocks_rot_rim",
+     "fbx_name": "Scenery_Rocks_rot_rim",
+     "tris": 253,
+     "look": "rot_rim",
+     "color": [
+      96,
+      64,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rot_grass",
+     "fbx_name": "Scenery_Rocks_rot_grass",
+     "tris": 508,
+     "look": "rot_grass",
+     "color": [
+      84,
+      214,
+      176
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rot_rock",
+     "fbx_name": "Scenery_Rocks_rot_rock",
+     "tris": 1632,
+     "look": "rot_rock",
+     "color": [
+      112,
+      84,
+      156
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rot_rock_light",
+     "fbx_name": "Scenery_Rocks_rot_rock_light",
+     "tris": 1636,
+     "look": "rot_rock_light",
+     "color": [
+      152,
+      124,
+      196
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rot_rock_dark",
+     "fbx_name": "Scenery_Rocks_rot_rock_dark",
+     "tris": 1768,
+     "look": "rot_rock_dark",
+     "color": [
+      80,
+      58,
+      116
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_glow_magenta",
+     "fbx_name": "Scenery_Rocks_glow_magenta",
+     "tris": 6864,
+     "look": "glow_magenta",
+     "color": [
+      255,
+      60,
+      220
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_rot_grass_light",
+     "fbx_name": "Scenery_Rocks_rot_grass_light",
+     "tris": 3992,
+     "look": "rot_grass_light",
+     "color": [
+      130,
+      236,
+      196
      ],
      "material": "Plastic",
      "transparency": 0,

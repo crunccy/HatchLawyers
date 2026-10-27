@@ -1,6 +1,6 @@
 {
  "group": "island_food",
- "fbx": "exports/overhaul/island_food_phone2.fbx",
+ "fbx": "exports/overhaul/island_food_phone3.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -3643,6 +3643,123 @@
       205,
       176,
       120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "Scenery": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    -195.74,
+    -171.99,
+    -1.22
+   ],
+   "max": [
+    202.28,
+    182.15,
+    27.51
+   ],
+   "meshes": [
+    {
+     "name": "Scenery_Rocks_biscuit",
+     "fbx_name": "Scenery_Rocks_biscuit",
+     "tris": 1757,
+     "look": "biscuit",
+     "color": [
+      222,
+      168,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_frost_cream",
+     "fbx_name": "Scenery_Rocks_frost_cream",
+     "tris": 2210,
+     "look": "frost_cream",
+     "color": [
+      255,
+      244,
+      226
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_frosting",
+     "fbx_name": "Scenery_Rocks_frosting",
+     "tris": 10788,
+     "look": "frosting",
+     "color": [
+      255,
+      140,
+      192
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_choc",
+     "fbx_name": "Scenery_Rocks_choc",
+     "tris": 12232,
+     "look": "choc",
+     "color": [
+      112,
+      62,
+      34
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_cake",
+     "fbx_name": "Scenery_Rocks_cake",
+     "tris": 1694,
+     "look": "cake",
+     "color": [
+      250,
+      222,
+      180
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_cake_dark",
+     "fbx_name": "Scenery_Rocks_cake_dark",
+     "tris": 1400,
+     "look": "cake_dark",
+     "color": [
+      232,
+      196,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Scenery_Rocks_frost_pink",
+     "fbx_name": "Scenery_Rocks_frost_pink",
+     "tris": 7104,
+     "look": "frost_pink",
+     "color": [
+      255,
+      160,
+      200
      ],
      "material": "Plastic",
      "transparency": 0,
