@@ -115,7 +115,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
       (tools/zones/overhaul/README.md); (2) the UI sunburst `rbxassetid://89557955610458` (`Skin.Rays` / `UIKit.Rays`)
       fails in game: "The experience doesn't have access permission" - share it with the experience (Creator Hub ->
       the image -> Permissions) or re-upload it to the group; (3) ~~say whether your claims ...~~ answered 2026-10-27: **mr.robe's
-      sessions take them** (crnuch's call, below). (1) in progress: edition-2 islands exported, waiting on crnuch's import.
+      sessions take them** (crnuch's call, below). (1) DONE 2026-10-27 (entry below).
 - [ ] **Hub wiring (mr.robe's claim), from the visual audit 2026-10-25:** the Carry + Speed counter markers are 5.7
       studs apart at the Upgrades door, so their info panels overlap (SHOES unreadable); the three Arcade booth
       markers turn the booths sideways, so the plaza sees their backs. Captures + fixes: docs/VISUAL_AUDIT_2026-10-25.md
@@ -394,6 +394,17 @@ Claim big work here before starting (who · what · since), push the claim, remo
   from crnuch's account. SwapOverhaulIslands still works (it matches `Island_Top*` by prefix).
 - Not done: the firm stages + office hall (FirmStages builds fronts in code per player: needs a code change, its own
   task), props / trees outside the islands (none left in the world since the old island was archived).
+
+## 2026-10-27 — crnuch, local session (side session): islands re-imported - colours (edition 2) + cliffs (edition 3)
+- Edition 2 (mr.robe's multi-look split): all seven islands; the hub's ground is grass + dirt again, roads have curbs /
+  paths / lines, flowers have their colours. Edition 3: the six egg islands' CLIFFS + ROCKS were never exported
+  (export_models' skip prefix "Scene" also matched "Scenery_Rocks"; now "Scene_") - back as `Scenery_Rocks` on each.
+- Exports now carry an EDITION in their name (island_<x>_phone3.fbx): Studio's importer reused same-named files.
+- Swapped with the same scripts (portals ~4 studs from ReturnHome, tops matched to 0.00); previous editions in
+  ServerStorage.Old_Overhaul_FullDetail (safe to delete). Playtest: standing on all six arrivals, 0 egg spots off the
+  ground, no errors; Pet Park seen from the air with its full cliff ring + waterfall.
+- Still skipped on purpose: render-only pieces (preview text, egg markers, labels, boss stand-ins, the backdrop sky).
+- 2 boss config checks fail from mr.robe's live boss retune (his open item), not from this.
 
 ## 2026-10-26 — crnuch, local session (side session): phone / tablet budget + the hub island in
 - crnuch: "optimize it for phones and tablets especially" + "once you add everything you'll be done for the week".
