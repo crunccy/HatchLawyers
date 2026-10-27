@@ -1,6 +1,6 @@
 {
  "group": "island_pet",
- "fbx": "exports/overhaul/island_pet_phone.fbx",
+ "fbx": "exports/overhaul/island_pet_phone2.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -836,7 +836,7 @@
     {
      "name": "IslOak_oak_light",
      "fbx_name": "IslOak_oak_light",
-     "tris": 1726,
+     "tris": 1728,
      "look": "oak_light",
      "color": [
       132,
@@ -850,7 +850,7 @@
     {
      "name": "IslOak_oak_shade",
      "fbx_name": "IslOak_oak_shade",
-     "tris": 2019,
+     "tris": 2017,
      "look": "oak_shade",
      "color": [
       64,

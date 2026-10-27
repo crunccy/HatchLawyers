@@ -1,6 +1,6 @@
 {
  "group": "island_food",
- "fbx": "exports/overhaul/island_food_phone.fbx",
+ "fbx": "exports/overhaul/island_food_phone2.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -646,12 +646,12 @@
    ],
    "min": [
     -189.51,
-    -167.89,
+    -167.91,
     0.6
    ],
    "max": [
-    195.06,
-    167.3,
+    195.09,
+    167.29,
     37.11
    ],
    "meshes": [
@@ -700,7 +700,7 @@
     {
      "name": "FoodCupcake_Lemon",
      "fbx_name": "FoodCupcake_Lemon",
-     "tris": 736,
+     "tris": 644,
      "look": "lemon",
      "color": [
       255,
@@ -728,7 +728,7 @@
     {
      "name": "FoodCupcake_Pleat",
      "fbx_name": "FoodCupcake_Pleat",
-     "tris": 738,
+     "tris": 740,
      "look": "white",
      "color": [
       248,
@@ -742,12 +742,12 @@
     {
      "name": "FoodCupcake_SkyBlue",
      "fbx_name": "FoodCupcake_SkyBlue",
-     "tris": 184,
+     "tris": 276,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -756,7 +756,7 @@
     {
      "name": "FoodCupcake_SprinkleLemon",
      "fbx_name": "FoodCupcake_SprinkleLemon",
-     "tris": 276,
+     "tris": 264,
      "look": "lemon",
      "color": [
       255,
@@ -770,7 +770,7 @@
     {
      "name": "FoodCupcake_SprinkleLettuce",
      "fbx_name": "FoodCupcake_SprinkleLettuce",
-     "tris": 276,
+     "tris": 252,
      "look": "lettuce",
      "color": [
       132,
@@ -798,7 +798,7 @@
     {
      "name": "FoodCupcake_SprinklePink",
      "fbx_name": "FoodCupcake_SprinklePink",
-     "tris": 288,
+     "tris": 336,
      "look": "pink",
      "color": [
       255,
@@ -815,9 +815,9 @@
      "tris": 216,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -876,9 +876,9 @@
      "tris": 252,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -1016,9 +1016,9 @@
      "tris": 108,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -1100,9 +1100,9 @@
      "tris": 220,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -1204,8 +1204,8 @@
      "look": "gold",
      "color": [
       255,
-      200,
-      40
+      196,
+      46
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1217,9 +1217,9 @@
      "tris": 88,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -1822,9 +1822,9 @@
      "tris": 620,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -2263,8 +2263,8 @@
      "look": "gold",
      "color": [
       255,
-      200,
-      40
+      196,
+      46
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2703,9 +2703,9 @@
      "tris": 492,
      "look": "sky_blue",
      "color": [
-      110,
-      190,
-      250
+      120,
+      200,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0,
@@ -2957,8 +2957,8 @@
      "look": "gold",
      "color": [
       255,
-      200,
-      40
+      196,
+      46
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3090,20 +3090,20 @@
     0.0
    ],
    "min": [
-    -545.99,
-    -544.89,
+    -546.22,
+    -544.71,
     -57.15
    ],
    "max": [
-    555.51,
-    338.13,
-    44.91
+    554.47,
+    338.11,
+    44.83
    ],
    "meshes": [
     {
      "name": "FoodTree_apple_red",
      "fbx_name": "FoodTree_apple_red",
-     "tris": 1200,
+     "tris": 1280,
      "look": "apple_red",
      "color": [
       222,
@@ -3117,7 +3117,7 @@
     {
      "name": "FoodTree_bush",
      "fbx_name": "FoodTree_bush",
-     "tris": 8794,
+     "tris": 9194,
      "look": "bush",
      "color": [
       88,
@@ -3145,7 +3145,7 @@
     {
      "name": "FoodTree_orange",
      "fbx_name": "FoodTree_orange",
-     "tris": 1400,
+     "tris": 1640,
      "look": "orange",
      "color": [
       255,
@@ -3159,7 +3159,7 @@
     {
      "name": "FoodTree_wood_warm",
      "fbx_name": "FoodTree_wood_warm",
-     "tris": 1232,
+     "tris": 1288,
      "look": "wood_warm",
      "color": [
       196,
@@ -3226,14 +3226,14 @@
     0.0
    ],
    "min": [
-    -160.85,
-    -172.22,
+    -160.94,
+    -172.33,
     0.6
    ],
    "max": [
-    165.97,
-    171.66,
-    1.88
+    166.13,
+    171.65,
+    1.9
    ],
    "meshes": [
     {
@@ -3259,13 +3259,13 @@
     0.0
    ],
    "min": [
-    123.26,
-    122.99,
+    123.46,
+    123.01,
     -0.6
    ],
    "max": [
-    164.26,
-    164.62,
+    164.24,
+    164.61,
     31.6
    ],
    "meshes": [
@@ -3609,12 +3609,12 @@
     {
      "name": "Floor_Decor_rock_grey",
      "fbx_name": "Floor_Decor_rock_grey",
-     "tris": 96,
+     "tris": 36,
      "look": "rock_grey",
      "color": [
-      204,
-      186,
-      152
+      118,
+      120,
+      132
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3623,12 +3623,12 @@
     {
      "name": "Floor_Decor_rock_grey_light",
      "fbx_name": "Floor_Decor_rock_grey_light",
-     "tris": 72,
+     "tris": 132,
      "look": "rock_grey_light",
      "color": [
-      230,
-      216,
-      188
+      150,
+      152,
+      162
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3732,13 +3732,13 @@
     0.0
    ],
    "min": [
-    -200.4,
-    -188.53,
+    -201.08,
+    -188.46,
     -107.42
    ],
    "max": [
-    211.8,
-    187.96,
+    211.64,
+    186.63,
     2.67
    ],
    "meshes": [
@@ -3759,7 +3759,7 @@
     {
      "name": "Island_Underside_choc_rock",
      "fbx_name": "Island_Underside_choc_rock",
-     "tris": 1648,
+     "tris": 1658,
      "look": "choc_rock",
      "color": [
       120,
@@ -3773,7 +3773,7 @@
     {
      "name": "Island_Underside_cake",
      "fbx_name": "Island_Underside_cake",
-     "tris": 188,
+     "tris": 197,
      "look": "cake",
      "color": [
       250,
@@ -3801,7 +3801,7 @@
     {
      "name": "Island_Underside_biscuit",
      "fbx_name": "Island_Underside_biscuit",
-     "tris": 627,
+     "tris": 640,
      "look": "biscuit",
      "color": [
       222,
@@ -3821,20 +3821,20 @@
     0.0
    ],
    "min": [
-    -173.67,
-    -155.06,
+    -173.34,
+    -155.12,
     -93.02
    ],
    "max": [
     197.88,
-    106.37,
+    106.68,
     0.92
    ],
    "meshes": [
     {
      "name": "Foam_Mist_foam_water",
      "fbx_name": "Foam_Mist_foam_water",
-     "tris": 4064,
+     "tris": 4100,
      "look": "foam_water",
      "color": [
       236,

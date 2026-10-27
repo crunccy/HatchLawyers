@@ -2,7 +2,8 @@
 
 The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_models.py` (crnuch: "go export them").
 
-- **`exports/overhaul/<group>_phone.fbx`** (not in git: re-make them with the script; `_FULL` with `full`): one file per group, each model an
+- **`exports/overhaul/<group>_phone<EDITION>.fbx`** (not in git: re-make them with the script; `_FULL` with `full`). Bump
+  `EDITION` in export_models.py for every re-export crnuch imports: Studio's importer reuses a same-named file (2026-10-26).: one file per group, each model an
   empty holding its meshes, laid out in a row along X. Groups: `trees shack portal props hub gameplay minigames firms
   hall bay kit pet rot food ocean space` + one per island `island_<hub|bay|pet|rot|food|ocean|space>` (a whole island:
   its terrain / scenery / landmarks collections + the overhaul models, at the island's own origin).

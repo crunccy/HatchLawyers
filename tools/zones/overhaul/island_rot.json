@@ -1,6 +1,6 @@
 {
  "group": "island_rot",
- "fbx": "exports/overhaul/island_rot_phone.fbx",
+ "fbx": "exports/overhaul/island_rot_phone2.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -120,14 +120,14 @@
     0.0
    ],
    "min": [
-    -177.36,
-    -175.49,
+    -177.44,
+    -175.52,
     0.6
    ],
    "max": [
-    181.67,
-    169.63,
-    1.93
+    181.54,
+    169.71,
+    1.98
    ],
    "meshes": [
     {
@@ -153,12 +153,12 @@
     0.0
    ],
    "min": [
-    123.18,
-    123.06,
+    123.46,
+    123.01,
     -1.05
    ],
    "max": [
-    164.38,
+    164.46,
     164.61,
     31.6
    ],
@@ -529,28 +529,28 @@
      "reflectance": 0
     },
     {
-     "name": "Floor_Decor_rock_grey_light",
-     "fbx_name": "Floor_Decor_rock_grey_light",
-     "tris": 120,
-     "look": "rock_grey_light",
+     "name": "Floor_Decor_rock_grey",
+     "fbx_name": "Floor_Decor_rock_grey",
+     "tris": 36,
+     "look": "rock_grey",
      "color": [
-      230,
-      216,
-      188
+      118,
+      120,
+      132
      ],
      "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
-     "name": "Floor_Decor_rock_grey",
-     "fbx_name": "Floor_Decor_rock_grey",
-     "tris": 48,
-     "look": "rock_grey",
+     "name": "Floor_Decor_rock_grey_light",
+     "fbx_name": "Floor_Decor_rock_grey_light",
+     "tris": 132,
+     "look": "rock_grey_light",
      "color": [
-      204,
-      186,
-      152
+      150,
+      152,
+      162
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -609,8 +609,8 @@
      "tris": 1008,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -708,8 +708,8 @@
      "tris": 744,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -858,8 +858,8 @@
      "tris": 672,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -1264,8 +1264,8 @@
      "look": "gold",
      "color": [
       255,
-      200,
-      40
+      196,
+      46
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1277,8 +1277,8 @@
      "tris": 640,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -1380,8 +1380,8 @@
      "tris": 132,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -1413,8 +1413,8 @@
      "tris": 540,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -1638,8 +1638,8 @@
      "tris": 1400,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -1769,8 +1769,8 @@
      "tris": 880,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -2115,9 +2115,9 @@
      "tris": 26,
      "look": "flower_pink",
      "color": [
-      250,
-      130,
-      180
+      255,
+      128,
+      190
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2143,8 +2143,8 @@
      "tris": 264,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -2387,8 +2387,8 @@
      "tris": 80,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -2415,8 +2415,8 @@
      "tris": 324,
      "look": "glow_cyan",
      "color": [
-      120,
-      220,
+      90,
+      210,
       255
      ],
      "material": "Neon",
@@ -2549,14 +2549,14 @@
     0.0
    ],
    "min": [
-    -155.68,
-    -146.63,
-    0.06
+    -155.57,
+    -146.68,
+    0.05
    ],
    "max": [
-    -73.44,
-    -93.85,
-    3.86
+    -73.47,
+    -94.1,
+    3.83
    ],
    "meshes": [
     {
@@ -2655,8 +2655,8 @@
      "look": "gold",
      "color": [
       255,
-      200,
-      40
+      196,
+      46
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2797,11 +2797,11 @@
      "name": "RotUpsideHouseWin_Shutter",
      "fbx_name": "RotUpsideHouseWin_Shutter",
      "tris": 464,
-     "look": "house_blue",
+     "look": "violet",
      "color": [
-      70,
-      120,
-      220
+      110,
+      55,
+      190
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2938,13 +2938,13 @@
     0.0
    ],
    "min": [
-    -200.49,
-    -188.44,
+    -199.01,
+    -189.02,
     -107.27
    ],
    "max": [
-    212.13,
-    185.15,
+    213.03,
+    184.8,
     3.08
    ],
    "meshes": [
@@ -2993,7 +2993,7 @@
     {
      "name": "Island_Underside_rot_rock_light",
      "fbx_name": "Island_Underside_rot_rock_light",
-     "tris": 248,
+     "tris": 246,
      "look": "rot_rock_light",
      "color": [
       152,
@@ -3021,7 +3021,7 @@
     {
      "name": "Island_Underside_rot_rim_dark",
      "fbx_name": "Island_Underside_rot_rim_dark",
-     "tris": 496,
+     "tris": 524,
      "look": "rot_rim_dark",
      "color": [
       70,
@@ -3035,7 +3035,7 @@
     {
      "name": "Island_Underside_rot_rim",
      "fbx_name": "Island_Underside_rot_rim",
-     "tris": 374,
+     "tris": 384,
      "look": "rot_rim",
      "color": [
       96,
@@ -3055,20 +3055,20 @@
     0.0
    ],
    "min": [
-    -171.65,
-    -154.86,
+    -171.67,
+    -155.12,
     -93.97
    ],
    "max": [
     193.73,
-    105.42,
+    105.72,
     0.92
    ],
    "meshes": [
     {
      "name": "Foam_Mist_foam_water",
      "fbx_name": "Foam_Mist_foam_water",
-     "tris": 4048,
+     "tris": 4100,
      "look": "foam_water",
      "color": [
       236,

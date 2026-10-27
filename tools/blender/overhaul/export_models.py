@@ -29,6 +29,7 @@ TMP = os.path.join(OUT, "_tmp")  # (the build scripts' own out dir: sandbox JSON
 for d in (OUT, LOOKS, TMP):
     os.makedirs(d, exist_ok=True)
 MAX_TRIS = 19500
+EDITION = "2"  # (bump for every re-export crnuch imports: island_hub_phone2.fbx ...; 2 = mr.robe's multi-look split, 2026-10-27)
 PHONE = "full" not in ARGS  # (the phone / tablet budget: phone_budget; "full" exports every triangle)
 FLAT = 0.79  # (a face whose normal is further than this from every axis is curved: no studs)
 GAP = 24.0   # (studs between models in a group's row)
@@ -341,7 +342,7 @@ def write_group(group):
         ob.hide_set(False)
         ob.hide_viewport = False
         ob.select_set(True)
-    name = group + ("_phone" if PHONE else "_FULL")  # (a new name each budget: Studio's importer reused an old file of the same name)
+    name = group + ("_phone" if PHONE else "_FULL") + EDITION  # (a new name each time: Studio's importer reused an old file of the same name)
     path = os.path.join(OUT, name + ".fbx")
     bpy.ops.export_scene.fbx(filepath=path, use_selection=True, object_types={"EMPTY", "MESH"}, apply_unit_scale=True,
                              axis_forward="-Z", axis_up="Y", mesh_smooth_type="FACE", use_mesh_modifiers=False,

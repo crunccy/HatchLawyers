@@ -1,6 +1,6 @@
 {
  "group": "island_hub",
- "fbx": "exports/overhaul/island_hub_phone.fbx",
+ "fbx": "exports/overhaul/island_hub_phone2.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -1653,7 +1653,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 354,
+     "tris": 350,
      "look": "flower_orange",
      "color": [
       255,
@@ -1667,7 +1667,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 710,
+     "tris": 706,
      "look": "flower_yel",
      "color": [
       255,
@@ -2978,7 +2978,7 @@
     {
      "name": "HubBlossom_blossom_1",
      "fbx_name": "HubBlossom_blossom_1",
-     "tris": 10119,
+     "tris": 10120,
      "look": "blossom",
      "color": [
       250,
@@ -2992,7 +2992,7 @@
     {
      "name": "HubBlossom_blossom_2",
      "fbx_name": "HubBlossom_blossom_2",
-     "tris": 10122,
+     "tris": 10121,
      "look": "blossom",
      "color": [
       250,
@@ -3170,7 +3170,7 @@
     {
      "name": "HubHedge_hedge_3",
      "fbx_name": "HubHedge_hedge_3",
-     "tris": 10418,
+     "tris": 10419,
      "look": "hedge",
      "color": [
       80,
@@ -3184,7 +3184,7 @@
     {
      "name": "HubHedge_hedge_4",
      "fbx_name": "HubHedge_hedge_4",
-     "tris": 10422,
+     "tris": 10421,
      "look": "hedge",
      "color": [
       80,
@@ -3198,7 +3198,7 @@
     {
      "name": "HubHedge_hedge_5",
      "fbx_name": "HubHedge_hedge_5",
-     "tris": 10419,
+     "tris": 10418,
      "look": "hedge",
      "color": [
       80,
@@ -3212,7 +3212,7 @@
     {
      "name": "HubHedge_hedge_6",
      "fbx_name": "HubHedge_hedge_6",
-     "tris": 10420,
+     "tris": 10421,
      "look": "hedge",
      "color": [
       80,
@@ -3226,7 +3226,7 @@
     {
      "name": "HubHedge_hedge_7",
      "fbx_name": "HubHedge_hedge_7",
-     "tris": 10420,
+     "tris": 10419,
      "look": "hedge",
      "color": [
       80,
@@ -3240,7 +3240,7 @@
     {
      "name": "HubHedge_hedge_8",
      "fbx_name": "HubHedge_hedge_8",
-     "tris": 10421,
+     "tris": 10422,
      "look": "hedge",
      "color": [
       80,
@@ -3343,7 +3343,7 @@
     {
      "name": "HubOak_oak_light_2",
      "fbx_name": "HubOak_oak_light_2",
-     "tris": 15326,
+     "tris": 15327,
      "look": "oak_light",
      "color": [
       132,
@@ -3357,7 +3357,7 @@
     {
      "name": "HubOak_oak_light_3",
      "fbx_name": "HubOak_oak_light_3",
-     "tris": 15325,
+     "tris": 15326,
      "look": "oak_light",
      "color": [
       132,
@@ -3371,7 +3371,7 @@
     {
      "name": "HubOak_oak_light_4",
      "fbx_name": "HubOak_oak_light_4",
-     "tris": 15327,
+     "tris": 15328,
      "look": "oak_light",
      "color": [
       132,
@@ -3399,7 +3399,7 @@
     {
      "name": "HubOak_oak_shade_2",
      "fbx_name": "HubOak_oak_shade_2",
-     "tris": 18225,
+     "tris": 18224,
      "look": "oak_shade",
      "color": [
       64,
@@ -3427,7 +3427,7 @@
     {
      "name": "HubOak_oak_shade_4",
      "fbx_name": "HubOak_oak_shade_4",
-     "tris": 18226,
+     "tris": 18225,
      "look": "oak_shade",
      "color": [
       64,
