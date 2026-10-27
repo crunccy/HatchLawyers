@@ -399,8 +399,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - crnuch: the starter firm's inside + door were black; the window light glints "don't look that good - just a pane".
 - Studio (ServerStorage.Overhaul.Models.shack.DingyShack, which firms clone at start): Shack_Floor / RoofDeck / PorchUnder
   from near-black (34,28,26) to wood browns, a warm PointLight (ShackLight) under the roof, Shack_Door DoubleSided.
-- All 77 `*_Shine` window glint meshes deleted (firm kit models + the live islands). Not playtested in a firm yet.
-- Blender sources still make Shack_Floor dark + the Shine meshes: change them before the next export.
+- All 77 `*_Shine` window glint meshes deleted (firm kit models + the live islands).
+- The real cause of the black inside: `Shack_Hole` (a 24x9x24 near-black "dark interior" box, for the renders) and
+  `Shack_Hole2` filled the shack - deleted. Plus an `InteriorLight` (invisible part + PointLight) in the shack and each
+  hall piece. Playtested: the doorway shows the carpet, floor and EXPAND FIRM board inside, no black.
+- Blender sources (firm_shack.py: the Hole boxes, dark floor; the window Shine meshes) still make these: change them
+  before the next export.
 
 ## 2026-10-27 — crnuch, local session (side session): islands re-imported - colours (edition 2) + cliffs (edition 3)
 - Edition 2 (mr.robe's multi-look split): all seven islands; the hub's ground is grass + dirt again, roads have curbs /
