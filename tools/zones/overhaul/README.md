@@ -25,7 +25,12 @@ The MAP MODEL OVERHAUL models as meshes, made by `tools/blender/overhaul/export_
 - Archives: `ServerStorage.Old_WorldRedesign_Parts` (the Part islands, hub included), `ServerStorage.Old_Overhaul_FullDetail`
   (the first full-detail mesh islands + kit; safe to delete once nobody wants them back).
 - Staged, not in the world: `ServerStorage.Overhaul.Models.<group>` (the kit models, each at its true size): firm stages,
-  hall pieces, gameplay pieces, props, trees - each swap needs the names scripts look up.
+  hall pieces, props, trees - each swap needs the names scripts look up.
+- Swapped in 2026-10-26 (mr.robe's session, `tools/zones/InstallOverhaulKit.lua`): the portal, shop, belt, the three
+  counters, the three booths, the four leaderboards, both minigame spots (old look parts: `ServerStorage.Old_KitParts`).
+- **Re-export needed (2026-10-26):** the first exports gave a mesh with several looks ONE colour (the hub's roads all
+  grey, its grass all dirt); `by_material` now splits them (`<name>_<look>`). The island JSONs here are the split ones:
+  re-export, re-import and re-run ApplyOverhaulLooks + SwapOverhaulIslands before using them.
 - Phone / tablet budget: islands 5.2M -> 1.94M triangles (the hub 2.11M -> 0.80M), kit 0.70M -> 0.49M; Workspace went
   from ~140k parts to ~3k. Roblox's own LOD (RenderFidelity Automatic) lowers distant meshes further.
 

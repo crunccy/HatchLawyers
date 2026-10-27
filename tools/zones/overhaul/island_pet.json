@@ -1,6 +1,6 @@
 {
  "group": "island_pet",
- "fbx": "exports/overhaul/island_pet.fbx",
+ "fbx": "exports/overhaul/island_pet_phone.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -836,7 +836,7 @@
     {
      "name": "IslOak_oak_light",
      "fbx_name": "IslOak_oak_light",
-     "tris": 1728,
+     "tris": 1726,
      "look": "oak_light",
      "color": [
       132,
@@ -850,7 +850,7 @@
     {
      "name": "IslOak_oak_shade",
      "fbx_name": "IslOak_oak_shade",
-     "tris": 2017,
+     "tris": 2019,
      "look": "oak_shade",
      "color": [
       64,
@@ -1359,14 +1359,84 @@
    ],
    "meshes": [
     {
-     "name": "Landmarks",
-     "fbx_name": "Landmarks",
-     "tris": 2800,
+     "name": "Landmarks_dock_wood_dark",
+     "fbx_name": "Landmarks_dock_wood_dark",
+     "tris": 1124,
      "look": "dock_wood_dark",
      "color": [
       128,
       80,
       44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_dock_wood",
+     "fbx_name": "Landmarks_dock_wood",
+     "tris": 528,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_glow_lantern",
+     "fbx_name": "Landmarks_glow_lantern",
+     "tris": 264,
+     "look": "glow_lantern",
+     "color": [
+      255,
+      190,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_spawn_white",
+     "fbx_name": "Landmarks_spawn_white",
+     "tris": 248,
+     "look": "spawn_white",
+     "color": [
+      240,
+      246,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_spawn_blue",
+     "fbx_name": "Landmarks_spawn_blue",
+     "tris": 444,
+     "look": "spawn_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_rope",
+     "fbx_name": "Landmarks_rope",
+     "tris": 192,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3690,14 +3760,84 @@
    ],
    "meshes": [
     {
-     "name": "Floor_Decor",
-     "fbx_name": "Floor_Decor",
-     "tris": 1576,
+     "name": "Floor_Decor_clover",
+     "fbx_name": "Floor_Decor_clover",
+     "tris": 558,
      "look": "clover",
      "color": [
       80,
       170,
       60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_lawn_dark",
+     "fbx_name": "Floor_Decor_lawn_dark",
+     "tris": 554,
+     "look": "lawn_dark",
+     "color": [
+      92,
+      186,
+      56
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_lawn_light",
+     "fbx_name": "Floor_Decor_lawn_light",
+     "tris": 140,
+     "look": "lawn_light",
+     "color": [
+      146,
+      228,
+      92
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_rock_grey",
+     "fbx_name": "Floor_Decor_rock_grey",
+     "tris": 36,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_rock_grey_light",
+     "fbx_name": "Floor_Decor_rock_grey_light",
+     "tris": 132,
+     "look": "rock_grey_light",
+     "color": [
+      230,
+      216,
+      188
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_wet_sand",
+     "fbx_name": "Floor_Decor_wet_sand",
+     "tris": 156,
+     "look": "wet_sand",
+     "color": [
+      205,
+      176,
+      120
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3712,20 +3852,20 @@
     0.0
    ],
    "min": [
-    -197.79,
+    -197.84,
     -185.45,
     -10.0
    ],
    "max": [
-    208.91,
-    182.67,
+    208.98,
+    182.78,
     1.0
    ],
    "meshes": [
     {
-     "name": "Floor_Plateau",
-     "fbx_name": "Floor_Plateau",
-     "tris": 1362,
+     "name": "Floor_Plateau_lawn_dark",
+     "fbx_name": "Floor_Plateau_lawn_dark",
+     "tris": 727,
      "look": "lawn_dark",
      "color": [
       92,
@@ -3737,14 +3877,42 @@
      "reflectance": 0
     },
     {
-     "name": "Island_Top",
-     "fbx_name": "Island_Top",
-     "tris": 1254,
+     "name": "Floor_Plateau_lawn",
+     "fbx_name": "Floor_Plateau_lawn",
+     "tris": 616,
+     "look": "lawn",
+     "color": [
+      118,
+      214,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top_dirt_rim",
+     "fbx_name": "Island_Top_dirt_rim",
+     "tris": 670,
      "look": "dirt_rim",
      "color": [
       156,
       112,
       70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top_moss",
+     "fbx_name": "Island_Top_moss",
+     "tris": 146,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3759,8 +3927,8 @@
     0.0
    ],
    "min": [
-    -200.61,
-    -187.5,
+    -200.21,
+    -186.99,
     -111.87
    ],
    "max": [
@@ -3770,14 +3938,126 @@
    ],
    "meshes": [
     {
-     "name": "Island_Underside",
-     "fbx_name": "Island_Underside",
-     "tris": 9330,
+     "name": "Island_Underside_rock_grey",
+     "fbx_name": "Island_Underside_rock_grey",
+     "tris": 1852,
      "look": "rock_grey",
      "color": [
       204,
       186,
       152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_rock_grey_dark",
+     "fbx_name": "Island_Underside_rock_grey_dark",
+     "tris": 1346,
+     "look": "rock_grey_dark",
+     "color": [
+      166,
+      146,
+      114
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_moss",
+     "fbx_name": "Island_Underside_moss",
+     "tris": 1270,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_rock_grey_light",
+     "fbx_name": "Island_Underside_rock_grey_light",
+     "tris": 206,
+     "look": "rock_grey_light",
+     "color": [
+      230,
+      216,
+      188
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_vine",
+     "fbx_name": "Island_Underside_vine",
+     "tris": 176,
+     "look": "vine",
+     "color": [
+      70,
+      160,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_moss_dark",
+     "fbx_name": "Island_Underside_moss_dark",
+     "tris": 1032,
+     "look": "moss_dark",
+     "color": [
+      64,
+      150,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_dirt_rim_dark",
+     "fbx_name": "Island_Underside_dirt_rim_dark",
+     "tris": 480,
+     "look": "dirt_rim_dark",
+     "color": [
+      118,
+      82,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_dirt_rim",
+     "fbx_name": "Island_Underside_dirt_rim",
+     "tris": 432,
+     "look": "dirt_rim",
+     "color": [
+      156,
+      112,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_root",
+     "fbx_name": "Island_Underside_root",
+     "tris": 952,
+     "look": "root",
+     "color": [
+      120,
+      82,
+      50
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3792,20 +4072,20 @@
     0.0
    ],
    "min": [
-    -178.06,
+    -178.07,
     -154.4,
-    -93.78
+    -93.77
    ],
    "max": [
-    195.98,
+    195.91,
     109.2,
     0.92
    ],
    "meshes": [
     {
-     "name": "Foam_Mist",
-     "fbx_name": "Foam_Mist",
-     "tris": 4520,
+     "name": "Foam_Mist_foam_water",
+     "fbx_name": "Foam_Mist_foam_water",
+     "tris": 4118,
      "look": "foam_water",
      "color": [
       236,
@@ -3817,14 +4097,56 @@
      "reflectance": 0
     },
     {
-     "name": "Water",
-     "fbx_name": "Water",
-     "tris": 398,
+     "name": "Foam_Mist_mist",
+     "fbx_name": "Foam_Mist_mist",
+     "tris": 402,
+     "look": "mist",
+     "color": [
+      240,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_pond_deep",
+     "fbx_name": "Water_pond_deep",
+     "tris": 96,
      "look": "pond_deep",
      "color": [
       40,
       150,
       190
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_pond",
+     "fbx_name": "Water_pond",
+     "tris": 106,
+     "look": "pond",
+     "color": [
+      70,
+      190,
+      210
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_foam_fall",
+     "fbx_name": "Water_foam_fall",
+     "tris": 192,
+     "look": "foam_fall",
+     "color": [
+      225,
+      248,
+      255
      ],
      "material": "SmoothPlastic",
      "transparency": 0.18,

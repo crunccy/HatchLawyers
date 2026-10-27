@@ -61,9 +61,6 @@ Claim big work here before starting (who · what · since), push the claim, remo
   GaG studs on everything: done + live 2026-10-26 (entry below); the overhaul meshes still need box-projected UVs.
   Exported as .fbx 2026-10-26 (entry below): next = crnuch imports, then the install; the hub island is heavy (2.1M tris).
   ALL SEVEN ISLANDS = the overhaul meshes (phone budget) since 2026-10-26 (entries below); kit staged in ServerStorage.Overhaul.
-- **mr.robe (local), since 2026-10-26: installing the staged overhaul kit** (mr.robe: "finish uploading what crunccy
-  didn't finish ... make sure everything looks good"): swap `ServerStorage.Overhaul.Models` (firm stages + hall, Dingy
-  Shack, Travel portal, hub gameplay pieces, minigame spots, booths) into the game under the names scripts look up.
 - **mr.robe (local), since 2026-10-13:** the minigames + upper floors from docs/PROPOSAL_MINIGAMES_AND_UPPER_FLOORS.md
   (user's call: everything except the Rooftop Helipad), Phase A first: a new Arcade framework (`Server.ArcadeService`,
   `StarterPlayerScripts.Arcade`, `Config.Arcade`, booths) and the games one by one - progress table in that doc.
@@ -291,6 +288,37 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-10-26 — mr.robe, local session: the overhaul kit's hub pieces swapped in + the island colours bug
+- mr.robe: "finish uploading what crunccy didn't finish ... make sure everything looks good" (+ "the road is cooked").
+  No upload was needed from mr.robe's account: every staged mesh already loads (ContentProvider fetch status Success).
+- **Swapped in (Studio, live; one undo step each)** with new `tools/zones/InstallOverhaulKit.lua` (a ModuleScript run in
+  Edit mode, one step at a time; it was in ServerStorage only while installing): Hub.TravelPortal, Hub.ShopStall,
+  Hub.BigCaseBelt, Zones.LicenseOffice.Counter_License / Carry / Speed, ArcadePier.Booths.LieDetector / BriefcaseStack /
+  FilingFrenzy, Hub.Leaderboards.TopLawyer / Wins / Richest / BestPayout, Hub.SpecialSpots.SpecialSpot1 (Gavel Bonk) / 2
+  (Lucky Briefcase). Each keeps its pivot (HubMap still moves it onto the island), tags, attributes and working parts;
+  the meshes are lined up on the old look by bounding box, turned to the yaw that lands an anchor part (sign / marquee /
+  face) nearest its old twin. SurfaceGuis (signs, marquees, screens, leaderboard lists, the Lucky Case board, the portal
+  plate) moved onto their meshes facing the same way; prompt holders (DeskTop, PlayButton, Counter...) went invisible.
+  Portal: FloatRing1-3 + SwirlArms grouped into Models, Gem1-6 kept their Zone attrs (Travel.client). Belt: the live 30
+  slats stay (BigCase.client scrolls each part; the kit's slats are ONE joined mesh), recoloured and laid on the new
+  belt. Minigames: peekers, cases, bulbs (tagged / attributed) and the judge (character stage) stay Parts; the kit's
+  own bulb / case meshes are left out. Old look parts: `ServerStorage.Old_KitParts.<model>` (nothing deleted).
+  Marked with attr `OverhaulKit` (the script refuses a second run).
+- Playtest: `[HubMap] ... 25 models moved`, portal + booths seen on the island (they look right, signs readable).
+  Shop / belt / counters / boards / spots: placed + numbers checked (sizes within ~10% of the old look), not yet seen in a
+  playtest (Studio dropped the MCP twice while Blender ran).
+- **"The road is cooked" = an export bug (heads-up crnuch):** a MeshPart takes ONE colour, but the v2 frame's
+  ClassicMeshes hold several looks, so the install painted each whole mesh its first look - the hub's Roads mesh (asphalt
+  + curbs + sidewalks + dashes + crosswalks + orange paths) all road-grey and studded, Island_Top (grass + dirt) all dirt,
+  likewise the cliffs, plaza, fountain, waterfalls, pier, Mutation Machine look-alike. Fixed in
+  `export_models.py` (`by_material`: one mesh per look, named `<name>_<look>`): hub 12 multi-look meshes -> 78.
+  Every egg island had the same bug (7 multi-look meshes each: bay -> 39, pet 30, rot 27, food 25, ocean 30, space 26).
+  island_hub.json + the six egg islands' JSONs (re-exported here) are the new looks lists. **Needs crnuch:** re-export
+  (`-- island hub bay pet rot food ocean space`), import, ApplyOverhaulLooks, SwapOverhaulIslands - the meshes must come
+  from crnuch's account. SwapOverhaulIslands still works (it matches `Island_Top*` by prefix).
+- Not done: the firm stages + office hall (FirmStages builds fronts in code per player: needs a code change, its own
+  task), props / trees outside the islands (none left in the world since the old island was archived).
 
 ## 2026-10-26 — crnuch, local session (side session): phone / tablet budget + the hub island in
 - crnuch: "optimize it for phones and tablets especially" + "once you add everything you'll be done for the week".

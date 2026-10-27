@@ -70,6 +70,41 @@ def plain_meshes(objs):
     return out
 
 
+SPLIT = [0, 0]  # (meshes with more than one look, pieces they became)
+
+
+def by_material(ob):
+    """A mesh with several looks (the v2 frame's ClassicMeshes: road + curbs + dashes + paths, grass + dirt ...) as one
+    object per look: a MeshPart takes ONE colour, so the install painted every face the first look (mr.robe 2026-10-26:
+    the hub's roads all road-grey, its grass all dirt). Named <name>_<look>."""
+    import bmesh
+    me = ob.data
+    used = sorted(set(p.material_index for p in me.polygons))
+    if len(me.materials) < 2 or len(used) < 2:
+        return [ob]
+    SPLIT[0] += 1
+    out = []
+    for mi in used:
+        bm = bmesh.new()
+        bm.from_mesh(me)
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.material_index != mi], context="FACES")
+        nm = bpy.data.meshes.new(me.name)
+        bm.to_mesh(nm)
+        bm.free()
+        mat = me.materials[mi]
+        nm.materials.clear()
+        nm.materials.append(mat)
+        for p in nm.polygons:
+            p.material_index = 0
+        look = re.sub(r"\.\d+$", "", mat.name) if mat else "?"
+        new = bpy.data.objects.new(f"{ob.name}_{look}", nm)
+        bpy.context.scene.collection.objects.link(new)
+        out.append(new)
+    SPLIT[1] += len(out)
+    bpy.data.objects.remove(ob)
+    return out
+
+
 def stud_uvs(me):
     """One UV map: each face box-projected on its main axis in studs (u, v = x, y on tops; y, z / x, z on the sides,
     v up); curved faces all sit on (0, 0), the plain corner between four studs."""
@@ -263,6 +298,7 @@ def add_model(key, objs, place=True, merge=False):
             plain.append(ob)
         else:
             bpy.data.objects.remove(ob)
+    plain = [p for ob in plain for p in by_material(ob)]
     for ob in (by_look(plain, key) if merge else plain):
         if PHONE:
             a, b = phone_budget(ob, key)
@@ -323,6 +359,8 @@ def write_group(group):
         BUDGET[0] = BUDGET[1] = 0
     print(f"[export] {group}: {len(MODELS)} models, {len(meshes)} meshes, {sum(m['tris'] for m in meshes)} tris "
           f"(biggest mesh {big}), {os.path.getsize(path) // 1024} KB -> {path}")
+    print(f"[export] {group}: {SPLIT[0]} meshes had several looks -> {SPLIT[1]} one-look meshes")
+    SPLIT[0] = SPLIT[1] = 0
     clear()
 
 

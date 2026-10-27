@@ -1,6 +1,6 @@
 {
  "group": "island_hub",
- "fbx": "exports/overhaul/island_hub.fbx",
+ "fbx": "exports/overhaul/island_hub_phone.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -1653,7 +1653,7 @@
     {
      "name": "FlowerBed_FlowerMidOrange",
      "fbx_name": "FlowerBed_FlowerMidOrange",
-     "tris": 350,
+     "tris": 354,
      "look": "flower_orange",
      "color": [
       255,
@@ -1667,7 +1667,7 @@
     {
      "name": "FlowerBed_FlowerMidYel",
      "fbx_name": "FlowerBed_FlowerMidYel",
-     "tris": 706,
+     "tris": 710,
      "look": "flower_yel",
      "color": [
       255,
@@ -2978,7 +2978,7 @@
     {
      "name": "HubBlossom_blossom_1",
      "fbx_name": "HubBlossom_blossom_1",
-     "tris": 10120,
+     "tris": 10119,
      "look": "blossom",
      "color": [
       250,
@@ -2992,7 +2992,7 @@
     {
      "name": "HubBlossom_blossom_2",
      "fbx_name": "HubBlossom_blossom_2",
-     "tris": 10121,
+     "tris": 10122,
      "look": "blossom",
      "color": [
       250,
@@ -3170,7 +3170,7 @@
     {
      "name": "HubHedge_hedge_3",
      "fbx_name": "HubHedge_hedge_3",
-     "tris": 10419,
+     "tris": 10418,
      "look": "hedge",
      "color": [
       80,
@@ -3184,7 +3184,7 @@
     {
      "name": "HubHedge_hedge_4",
      "fbx_name": "HubHedge_hedge_4",
-     "tris": 10421,
+     "tris": 10422,
      "look": "hedge",
      "color": [
       80,
@@ -3198,7 +3198,7 @@
     {
      "name": "HubHedge_hedge_5",
      "fbx_name": "HubHedge_hedge_5",
-     "tris": 10418,
+     "tris": 10419,
      "look": "hedge",
      "color": [
       80,
@@ -3212,7 +3212,7 @@
     {
      "name": "HubHedge_hedge_6",
      "fbx_name": "HubHedge_hedge_6",
-     "tris": 10421,
+     "tris": 10420,
      "look": "hedge",
      "color": [
       80,
@@ -3226,7 +3226,7 @@
     {
      "name": "HubHedge_hedge_7",
      "fbx_name": "HubHedge_hedge_7",
-     "tris": 10419,
+     "tris": 10420,
      "look": "hedge",
      "color": [
       80,
@@ -3240,7 +3240,7 @@
     {
      "name": "HubHedge_hedge_8",
      "fbx_name": "HubHedge_hedge_8",
-     "tris": 10422,
+     "tris": 10421,
      "look": "hedge",
      "color": [
       80,
@@ -3343,7 +3343,7 @@
     {
      "name": "HubOak_oak_light_2",
      "fbx_name": "HubOak_oak_light_2",
-     "tris": 15327,
+     "tris": 15326,
      "look": "oak_light",
      "color": [
       132,
@@ -3357,7 +3357,7 @@
     {
      "name": "HubOak_oak_light_3",
      "fbx_name": "HubOak_oak_light_3",
-     "tris": 15326,
+     "tris": 15325,
      "look": "oak_light",
      "color": [
       132,
@@ -3371,7 +3371,7 @@
     {
      "name": "HubOak_oak_light_4",
      "fbx_name": "HubOak_oak_light_4",
-     "tris": 15328,
+     "tris": 15327,
      "look": "oak_light",
      "color": [
       132,
@@ -3399,7 +3399,7 @@
     {
      "name": "HubOak_oak_shade_2",
      "fbx_name": "HubOak_oak_shade_2",
-     "tris": 18224,
+     "tris": 18225,
      "look": "oak_shade",
      "color": [
       64,
@@ -3427,7 +3427,7 @@
     {
      "name": "HubOak_oak_shade_4",
      "fbx_name": "HubOak_oak_shade_4",
-     "tris": 18225,
+     "tris": 18226,
      "look": "oak_shade",
      "color": [
       64,
@@ -3627,9 +3627,9 @@
    ],
    "meshes": [
     {
-     "name": "Island_Cliffs_1",
-     "fbx_name": "Island_Cliffs_1",
-     "tris": 13052,
+     "name": "Island_Cliffs_rock_warm",
+     "fbx_name": "Island_Cliffs_rock_warm",
+     "tris": 1882,
      "look": "rock_warm",
      "color": [
       170,
@@ -3641,14 +3641,112 @@
      "reflectance": 0
     },
     {
-     "name": "Island_Cliffs_2",
-     "fbx_name": "Island_Cliffs_2",
-     "tris": 13056,
-     "look": "rock_warm",
+     "name": "Island_Cliffs_rock",
+     "fbx_name": "Island_Cliffs_rock",
+     "tris": 3354,
+     "look": "rock",
      "color": [
-      170,
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_rock_dark",
+     "fbx_name": "Island_Cliffs_rock_dark",
+     "tris": 3538,
+     "look": "rock_dark",
+     "color": [
+      98,
+      92,
+      88
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_stone_dark",
+     "fbx_name": "Island_Cliffs_stone_dark",
+     "tris": 578,
+     "look": "stone_dark",
+     "color": [
+      146,
       140,
-      110
+      132
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_grass_dark",
+     "fbx_name": "Island_Cliffs_grass_dark",
+     "tris": 1382,
+     "look": "grass_dark",
+     "color": [
+      96,
+      196,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_glow_gold",
+     "fbx_name": "Island_Cliffs_glow_gold",
+     "tris": 100,
+     "look": "glow_gold",
+     "color": [
+      255,
+      210,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_dirt",
+     "fbx_name": "Island_Cliffs_dirt",
+     "tris": 2064,
+     "look": "dirt",
+     "color": [
+      150,
+      96,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_dirt_dark",
+     "fbx_name": "Island_Cliffs_dirt_dark",
+     "tris": 1056,
+     "look": "dirt_dark",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Cliffs_leaf_deep",
+     "fbx_name": "Island_Cliffs_leaf_deep",
+     "tris": 1994,
+     "look": "leaf_deep",
+     "color": [
+      46,
+      128,
+      30
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3663,25 +3761,53 @@
     0.0
    ],
    "min": [
-    -284.86,
+    -284.88,
     -267.81,
-    0.03
+    0.0
    ],
    "max": [
-    284.86,
+    284.88,
     267.81,
-    0.97
+    1.0
    ],
    "meshes": [
     {
-     "name": "Lots",
-     "fbx_name": "Lots",
-     "tris": 436,
+     "name": "Lots_grass",
+     "fbx_name": "Lots_grass",
+     "tris": 88,
      "look": "grass",
      "color": [
       124,
       222,
       52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lots_stone",
+     "fbx_name": "Lots_stone",
+     "tris": 1056,
+     "look": "stone",
+     "color": [
+      214,
+      208,
+      196
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Lots_stone_warm",
+     "fbx_name": "Lots_stone_warm",
+     "tris": 352,
+     "look": "stone_warm",
+     "color": [
+      236,
+      214,
+      170
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3707,9 +3833,9 @@
    ],
    "meshes": [
     {
-     "name": "Plaza_Paving",
-     "fbx_name": "Plaza_Paving",
-     "tris": 3004,
+     "name": "Plaza_Paving_stone",
+     "fbx_name": "Plaza_Paving_stone",
+     "tris": 1148,
      "look": "stone",
      "color": [
       214,
@@ -3721,14 +3847,98 @@
      "reflectance": 0
     },
     {
-     "name": "Statue_Fountain",
-     "fbx_name": "Statue_Fountain",
-     "tris": 808,
+     "name": "Plaza_Paving_stone_warm",
+     "fbx_name": "Plaza_Paving_stone_warm",
+     "tris": 928,
+     "look": "stone_warm",
+     "color": [
+      236,
+      214,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Plaza_Paving_cobble",
+     "fbx_name": "Plaza_Paving_cobble",
+     "tris": 160,
+     "look": "cobble",
+     "color": [
+      188,
+      182,
+      172
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Plaza_Paving_gold",
+     "fbx_name": "Plaza_Paving_gold",
+     "tris": 768,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Statue_Fountain_marble",
+     "fbx_name": "Statue_Fountain_marble",
+     "tris": 156,
      "look": "marble",
      "color": [
       244,
       242,
       236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Statue_Fountain_glow_cyan",
+     "fbx_name": "Statue_Fountain_glow_cyan",
+     "tris": 320,
+     "look": "glow_cyan",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Statue_Fountain_stone_warm",
+     "fbx_name": "Statue_Fountain_stone_warm",
+     "tris": 156,
+     "look": "stone_warm",
+     "color": [
+      236,
+      214,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Statue_Fountain_gold",
+     "fbx_name": "Statue_Fountain_gold",
+     "tris": 176,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3754,9 +3964,9 @@
    ],
    "meshes": [
     {
-     "name": "Roads_1",
-     "fbx_name": "Roads_1",
-     "tris": 15370,
+     "name": "Roads_road",
+     "fbx_name": "Roads_road",
+     "tris": 1760,
      "look": "road",
      "color": [
       120,
@@ -3768,28 +3978,126 @@
      "reflectance": 0
     },
     {
-     "name": "Roads_2",
-     "fbx_name": "Roads_2",
-     "tris": 15710,
-     "look": "road",
+     "name": "Roads_curb",
+     "fbx_name": "Roads_curb",
+     "tris": 5936,
+     "look": "curb",
      "color": [
-      120,
-      124,
-      134
+      240,
+      238,
+      232
      ],
      "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
-     "name": "Service_Forecourts",
-     "fbx_name": "Service_Forecourts",
-     "tris": 792,
+     "name": "Roads_stone_warm",
+     "fbx_name": "Roads_stone_warm",
+     "tris": 4640,
      "look": "stone_warm",
      "color": [
       236,
       214,
       170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Roads_white",
+     "fbx_name": "Roads_white",
+     "tris": 9064,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Roads_marble",
+     "fbx_name": "Roads_marble",
+     "tris": 88,
+     "look": "marble",
+     "color": [
+      244,
+      242,
+      236
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Roads_gold",
+     "fbx_name": "Roads_gold",
+     "tris": 88,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Roads_path",
+     "fbx_name": "Roads_path",
+     "tris": 352,
+     "look": "path",
+     "color": [
+      255,
+      160,
+      24
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Roads_path_edge",
+     "fbx_name": "Roads_path_edge",
+     "tris": 9152,
+     "look": "path_edge",
+     "color": [
+      255,
+      252,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Service_Forecourts_stone_warm",
+     "fbx_name": "Service_Forecourts_stone_warm",
+     "tris": 264,
+     "look": "stone_warm",
+     "color": [
+      236,
+      214,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Service_Forecourts_curb",
+     "fbx_name": "Service_Forecourts_curb",
+     "tris": 528,
+     "look": "curb",
+     "color": [
+      240,
+      238,
+      232
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -3815,9 +4123,9 @@
    ],
    "meshes": [
     {
-     "name": "Arcade_Pier",
-     "fbx_name": "Arcade_Pier",
-     "tris": 6152,
+     "name": "Arcade_Pier_wood_dark",
+     "fbx_name": "Arcade_Pier_wood_dark",
+     "tris": 1980,
      "look": "wood_dark",
      "color": [
       122,
@@ -3829,9 +4137,135 @@
      "reflectance": 0
     },
     {
-     "name": "Mutation Machine",
-     "fbx_name": "Mutation Machine",
-     "tris": 8858,
+     "name": "Arcade_Pier_wood",
+     "fbx_name": "Arcade_Pier_wood",
+     "tris": 1232,
+     "look": "wood",
+     "color": [
+      214,
+      140,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_gold",
+     "fbx_name": "Arcade_Pier_gold",
+     "tris": 792,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_rock_warm",
+     "fbx_name": "Arcade_Pier_rock_warm",
+     "tris": 780,
+     "look": "rock_warm",
+     "color": [
+      170,
+      140,
+      110
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_rock",
+     "fbx_name": "Arcade_Pier_rock",
+     "tris": 824,
+     "look": "rock",
+     "color": [
+      156,
+      152,
+      146
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_rock_dark",
+     "fbx_name": "Arcade_Pier_rock_dark",
+     "tris": 14,
+     "look": "rock_dark",
+     "color": [
+      98,
+      92,
+      88
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_red",
+     "fbx_name": "Arcade_Pier_red",
+     "tris": 262,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_white",
+     "fbx_name": "Arcade_Pier_white",
+     "tris": 180,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Arcade_Pier_glass",
+     "fbx_name": "Arcade_Pier_glass",
+     "tris": 44,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "Arcade_Pier_glow_warm",
+     "fbx_name": "Arcade_Pier_glow_warm",
+     "tris": 44,
+     "look": "glow_warm",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_stone_dark",
+     "fbx_name": "Mutation Machine_stone_dark",
+     "tris": 188,
      "look": "stone_dark",
      "color": [
       146,
@@ -3839,6 +4273,202 @@
       132
      ],
      "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_metal_dark",
+     "fbx_name": "Mutation Machine_metal_dark",
+     "tris": 496,
+     "look": "metal_dark",
+     "color": [
+      80,
+      86,
+      98
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_hazard",
+     "fbx_name": "Mutation Machine_hazard",
+     "tris": 792,
+     "look": "hazard",
+     "color": [
+      255,
+      204,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_black",
+     "fbx_name": "Mutation Machine_black",
+     "tris": 836,
+     "look": "black",
+     "color": [
+      30,
+      30,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_metal",
+     "fbx_name": "Mutation Machine_metal",
+     "tris": 1328,
+     "look": "metal",
+     "color": [
+      170,
+      176,
+      186
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glow_purple",
+     "fbx_name": "Mutation Machine_glow_purple",
+     "tris": 1592,
+     "look": "glow_purple",
+     "color": [
+      170,
+      90,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glass",
+     "fbx_name": "Mutation Machine_glass",
+     "tris": 336,
+     "look": "glass",
+     "color": [
+      150,
+      210,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.45,
+     "reflectance": 0.2
+    },
+    {
+     "name": "Mutation Machine_purple",
+     "fbx_name": "Mutation Machine_purple",
+     "tris": 42,
+     "look": "purple",
+     "color": [
+      150,
+      90,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_gold",
+     "fbx_name": "Mutation Machine_gold",
+     "tris": 1040,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glow_green",
+     "fbx_name": "Mutation Machine_glow_green",
+     "tris": 680,
+     "look": "glow_green",
+     "color": [
+      120,
+      255,
+      140
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_gold_dark",
+     "fbx_name": "Mutation Machine_gold_dark",
+     "tris": 312,
+     "look": "gold_dark",
+     "color": [
+      214,
+      150,
+      30
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glow_cyan",
+     "fbx_name": "Mutation Machine_glow_cyan",
+     "tris": 424,
+     "look": "glow_cyan",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glow_red",
+     "fbx_name": "Mutation Machine_glow_red",
+     "tris": 44,
+     "look": "glow_red",
+     "color": [
+      255,
+      90,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glow_gold",
+     "fbx_name": "Mutation Machine_glow_gold",
+     "tris": 44,
+     "look": "glow_gold",
+     "color": [
+      255,
+      210,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Mutation Machine_glow_warm",
+     "fbx_name": "Mutation Machine_glow_warm",
+     "tris": 704,
+     "look": "glow_warm",
+     "color": [
+      255,
+      226,
+      150
+     ],
+     "material": "Neon",
      "transparency": 0,
      "reflectance": 0
     },
@@ -3865,24 +4495,38 @@
     0.0
    ],
    "min": [
-    -326.34,
-    -341.18,
+    -326.36,
+    -341.26,
     -10.0
    ],
    "max": [
     346.17,
     330.37,
-    0.0
+    0.01
    ],
    "meshes": [
     {
-     "name": "Island_Top",
-     "fbx_name": "Island_Top",
-     "tris": 1126,
+     "name": "Island_Top_dirt",
+     "fbx_name": "Island_Top_dirt",
+     "tris": 616,
      "look": "dirt",
      "color": [
       150,
       96,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top_grass",
+     "fbx_name": "Island_Top_grass",
+     "tris": 123,
+     "look": "grass",
+     "color": [
+      124,
+      222,
       52
      ],
      "material": "Plastic",
@@ -3903,15 +4547,15 @@
     -160.94
    ],
    "max": [
-    371.77,
+    371.8,
     24.01,
-    1.16
+    1.19
    ],
    "meshes": [
     {
-     "name": "Waterfalls",
-     "fbx_name": "Waterfalls",
-     "tris": 8298,
+     "name": "Waterfalls_water",
+     "fbx_name": "Waterfalls_water",
+     "tris": 400,
      "look": "water",
      "color": [
       60,
@@ -3920,6 +4564,62 @@
      ],
      "material": "SmoothPlastic",
      "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Waterfalls_stone",
+     "fbx_name": "Waterfalls_stone",
+     "tris": 2470,
+     "look": "stone",
+     "color": [
+      214,
+      208,
+      196
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Waterfalls_water_fall",
+     "fbx_name": "Waterfalls_water_fall",
+     "tris": 1566,
+     "look": "water_fall",
+     "color": [
+      70,
+      175,
+      245
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Waterfalls_glow_white",
+     "fbx_name": "Waterfalls_glow_white",
+     "tris": 3308,
+     "look": "glow_white",
+     "color": [
+      255,
+      255,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Waterfalls_white",
+     "fbx_name": "Waterfalls_white",
+     "tris": 492,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
      "reflectance": 0
     }
    ]
@@ -7314,14 +8014,112 @@
    ],
    "meshes": [
     {
-     "name": "Garden_Props",
-     "fbx_name": "Garden_Props",
-     "tris": 1880,
+     "name": "Garden_Props_path",
+     "fbx_name": "Garden_Props_path",
+     "tris": 264,
      "look": "path",
      "color": [
       255,
       160,
       24
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_stone_warm",
+     "fbx_name": "Garden_Props_stone_warm",
+     "tris": 240,
+     "look": "stone_warm",
+     "color": [
+      236,
+      214,
+      170
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_black",
+     "fbx_name": "Garden_Props_black",
+     "tris": 88,
+     "look": "black",
+     "color": [
+      30,
+      30,
+      36
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_gold",
+     "fbx_name": "Garden_Props_gold",
+     "tris": 248,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_stone",
+     "fbx_name": "Garden_Props_stone",
+     "tris": 56,
+     "look": "stone",
+     "color": [
+      214,
+      208,
+      196
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_white",
+     "fbx_name": "Garden_Props_white",
+     "tris": 760,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_roof_teal",
+     "fbx_name": "Garden_Props_roof_teal",
+     "tris": 112,
+     "look": "roof_teal",
+     "color": [
+      30,
+      150,
+      150
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Garden_Props_teal",
+     "fbx_name": "Garden_Props_teal",
+     "tris": 112,
+     "look": "teal",
+     "color": [
+      40,
+      190,
+      180
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -8874,18 +9672,116 @@
    "max": [
     338.99,
     308.49,
-    6.4
+    6.37
    ],
    "meshes": [
     {
-     "name": "Vegetation",
-     "fbx_name": "Vegetation",
-     "tris": 8204,
+     "name": "Vegetation_dirt",
+     "fbx_name": "Vegetation_dirt",
+     "tris": 952,
      "look": "dirt",
      "color": [
       150,
       96,
       52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_grass",
+     "fbx_name": "Vegetation_grass",
+     "tris": 664,
+     "look": "grass",
+     "color": [
+      124,
+      222,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_dirt_dark",
+     "fbx_name": "Vegetation_dirt_dark",
+     "tris": 1720,
+     "look": "dirt_dark",
+     "color": [
+      110,
+      70,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_red",
+     "fbx_name": "Vegetation_red",
+     "tris": 660,
+     "look": "red",
+     "color": [
+      226,
+      58,
+      58
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_purple",
+     "fbx_name": "Vegetation_purple",
+     "tris": 616,
+     "look": "purple",
+     "color": [
+      150,
+      90,
+      220
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_yellow",
+     "fbx_name": "Vegetation_yellow",
+     "tris": 748,
+     "look": "yellow",
+     "color": [
+      255,
+      220,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_white",
+     "fbx_name": "Vegetation_white",
+     "tris": 616,
+     "look": "white",
+     "color": [
+      248,
+      246,
+      240
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Vegetation_pink",
+     "fbx_name": "Vegetation_pink",
+     "tris": 220,
+     "look": "pink",
+     "color": [
+      255,
+      120,
+      180
      ],
      "material": "Plastic",
      "transparency": 0,

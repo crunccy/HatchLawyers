@@ -1,6 +1,6 @@
 {
  "group": "island_space",
- "fbx": "exports/overhaul/island_space.fbx",
+ "fbx": "exports/overhaul/island_space_phone.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -120,13 +120,13 @@
     0.0
    ],
    "min": [
-    123.46,
-    123.01,
+    123.31,
+    123.06,
     -0.6
    ],
    "max": [
-    164.24,
-    164.61,
+    164.15,
+    164.65,
     31.6
    ],
    "meshes": [
@@ -335,13 +335,13 @@
     0.0
    ],
    "min": [
-    145.7,
-    138.97,
+    143.24,
+    142.32,
     1.1
    ],
    "max": [
-    158.63,
-    161.69,
+    158.93,
+    158.92,
     6.85
    ],
    "meshes": [
@@ -351,8 +351,8 @@
      "tris": 480,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -443,13 +443,13 @@
     0.0
    ],
    "min": [
-    139.75,
-    139.26,
+    139.86,
+    139.22,
     1.1
    ],
    "max": [
-    164.34,
-    164.6,
+    164.61,
+    164.42,
     7.25
    ],
    "meshes": [
@@ -515,14 +515,84 @@
    ],
    "meshes": [
     {
-     "name": "Landmarks",
-     "fbx_name": "Landmarks",
-     "tris": 2800,
+     "name": "Landmarks_dock_wood_dark",
+     "fbx_name": "Landmarks_dock_wood_dark",
+     "tris": 1124,
      "look": "dock_wood_dark",
      "color": [
       128,
       80,
       44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_dock_wood",
+     "fbx_name": "Landmarks_dock_wood",
+     "tris": 528,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_glow_lantern",
+     "fbx_name": "Landmarks_glow_lantern",
+     "tris": 264,
+     "look": "glow_lantern",
+     "color": [
+      255,
+      190,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_spawn_white",
+     "fbx_name": "Landmarks_spawn_white",
+     "tris": 248,
+     "look": "spawn_white",
+     "color": [
+      240,
+      246,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_spawn_blue",
+     "fbx_name": "Landmarks_spawn_blue",
+     "tris": 444,
+     "look": "spawn_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_rope",
+     "fbx_name": "Landmarks_rope",
+     "tris": 192,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -548,14 +618,112 @@
    ],
    "meshes": [
     {
-     "name": "Floor_Decor",
-     "fbx_name": "Floor_Decor",
-     "tris": 5184,
+     "name": "Floor_Decor_moon_plate_dark",
+     "fbx_name": "Floor_Decor_moon_plate_dark",
+     "tris": 710,
      "look": "moon_plate_dark",
      "color": [
       166,
       160,
       188
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_moon_light",
+     "fbx_name": "Floor_Decor_moon_light",
+     "tris": 2734,
+     "look": "moon_light",
+     "color": [
+      208,
+      202,
+      224
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_crater",
+     "fbx_name": "Floor_Decor_crater",
+     "tris": 972,
+     "look": "crater",
+     "color": [
+      112,
+      106,
+      136
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_gold",
+     "fbx_name": "Floor_Decor_gold",
+     "tris": 48,
+     "look": "gold",
+     "color": [
+      255,
+      200,
+      40
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_glow_white",
+     "fbx_name": "Floor_Decor_glow_white",
+     "tris": 396,
+     "look": "glow_white",
+     "color": [
+      255,
+      255,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_rock_grey",
+     "fbx_name": "Floor_Decor_rock_grey",
+     "tris": 60,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_rock_grey_light",
+     "fbx_name": "Floor_Decor_rock_grey_light",
+     "tris": 108,
+     "look": "rock_grey_light",
+     "color": [
+      230,
+      216,
+      188
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Floor_Decor_wet_sand",
+     "fbx_name": "Floor_Decor_wet_sand",
+     "tris": 156,
+     "look": "wet_sand",
+     "color": [
+      205,
+      176,
+      120
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -586,8 +754,8 @@
      "tris": 960,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -731,8 +899,8 @@
      "tris": 2664,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -793,8 +961,8 @@
      "look": "gold",
      "color": [
       255,
-      196,
-      46
+      200,
+      40
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -851,13 +1019,13 @@
     0.0
    ],
    "min": [
-    -173.2,
-    140.0,
+    -174.42,
+    140.94,
     0.6
    ],
    "max": [
-    -135.26,
-    178.08,
+    -136.49,
+    179.03,
     20.4
    ],
    "meshes": [
@@ -1007,8 +1175,8 @@
      "tris": 220,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -1024,13 +1192,13 @@
     0.0
    ],
    "min": [
-    -161.93,
-    159.77,
+    -163.15,
+    160.71,
     13.2
    ],
    "max": [
-    -157.88,
-    163.81,
+    -159.1,
+    164.76,
     20.06
    ],
    "meshes": [
@@ -1218,8 +1386,8 @@
      "tris": 816,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -1335,8 +1503,8 @@
      "tris": 640,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -1452,8 +1620,8 @@
      "tris": 700,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -1542,8 +1710,8 @@
      "look": "gold",
      "color": [
       255,
-      196,
-      46
+      200,
+      40
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1603,8 +1771,8 @@
      "look": "gold",
      "color": [
       255,
-      196,
-      46
+      200,
+      40
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1631,8 +1799,8 @@
      "look": "gold",
      "color": [
       255,
-      196,
-      46
+      200,
+      40
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1689,20 +1857,20 @@
     0.0
    ],
    "min": [
-    -106.13,
-    -87.91,
+    -106.09,
+    -87.96,
     0.91
    ],
    "max": [
-    104.21,
-    102.01,
-    1.18
+    104.17,
+    101.99,
+    1.19
    ],
    "meshes": [
     {
      "name": "SpacePebble",
      "fbx_name": "SpacePebble",
-     "tris": 2919,
+     "tris": 2902,
      "look": "moon_dark",
      "color": [
       134,
@@ -1722,20 +1890,20 @@
     0.0
    ],
    "min": [
-    -106.05,
-    -87.9,
+    -106.04,
+    -87.95,
     0.91
    ],
    "max": [
-    104.21,
-    102.01,
-    1.39
+    104.17,
+    101.99,
+    1.4
    ],
    "meshes": [
     {
      "name": "SpacePebbleTop",
      "fbx_name": "SpacePebbleTop",
-     "tris": 1293,
+     "tris": 1310,
      "look": "moon_light",
      "color": [
       208,
@@ -1755,20 +1923,20 @@
     0.0
    ],
    "min": [
-    -105.81,
-    -153.76,
+    -105.8,
+    -153.65,
     0.51
    ],
    "max": [
-    160.91,
-    -8.51,
-    1.42
+    160.78,
+    -8.58,
+    1.43
    ],
    "meshes": [
     {
      "name": "SpaceRock_MoonDark",
      "fbx_name": "SpaceRock_MoonDark",
-     "tris": 100,
+     "tris": 104,
      "look": "moon_dark",
      "color": [
       134,
@@ -1782,7 +1950,7 @@
     {
      "name": "SpaceRock_RockViolet",
      "fbx_name": "SpaceRock_RockViolet",
-     "tris": 153,
+     "tris": 154,
      "look": "rock_violet",
      "color": [
       122,
@@ -1802,20 +1970,20 @@
     0.0
    ],
    "min": [
-    -105.77,
-    -167.04,
-    0.53
+    -175.23,
+    -153.63,
+    0.51
    ],
    "max": [
-    160.91,
-    -8.55,
-    2.03
+    160.76,
+    24.85,
+    1.96
    ],
    "meshes": [
     {
      "name": "SpaceRockTop",
      "fbx_name": "SpaceRockTop",
-     "tris": 101,
+     "tris": 90,
      "look": "moon_light",
      "color": [
       208,
@@ -2080,8 +2248,8 @@
      "tris": 80,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -2291,8 +2459,8 @@
      "tris": 280,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -2352,8 +2520,8 @@
      "tris": 616,
      "look": "glow_cyan",
      "color": [
-      90,
-      210,
+      120,
+      220,
       255
      ],
      "material": "Neon",
@@ -2572,9 +2740,9 @@
    ],
    "meshes": [
     {
-     "name": "Floor_Plateau",
-     "fbx_name": "Floor_Plateau",
-     "tris": 1362,
+     "name": "Floor_Plateau_moon_plate_dark",
+     "fbx_name": "Floor_Plateau_moon_plate_dark",
+     "tris": 727,
      "look": "moon_plate_dark",
      "color": [
       166,
@@ -2586,14 +2754,42 @@
      "reflectance": 0
     },
     {
-     "name": "Island_Top",
-     "fbx_name": "Island_Top",
-     "tris": 1254,
+     "name": "Floor_Plateau_moon_plate",
+     "fbx_name": "Floor_Plateau_moon_plate",
+     "tris": 616,
+     "look": "moon_plate",
+     "color": [
+      196,
+      190,
+      214
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top_moon_dark",
+     "fbx_name": "Island_Top_moon_dark",
+     "tris": 670,
      "look": "moon_dark",
      "color": [
       134,
       126,
       158
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Top_moon",
+     "fbx_name": "Island_Top_moon",
+     "tris": 586,
+     "look": "moon",
+     "color": [
+      178,
+      170,
+      198
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2608,25 +2804,67 @@
     0.0
    ],
    "min": [
-    -200.75,
-    -188.65,
-    -111.65
+    -200.1,
+    -188.72,
+    -111.73
    ],
    "max": [
-    213.13,
-    185.34,
-    2.75
+    213.14,
+    185.65,
+    2.7
    ],
    "meshes": [
     {
-     "name": "Island_Underside",
-     "fbx_name": "Island_Underside",
-     "tris": 4392,
+     "name": "Island_Underside_rock_violet",
+     "fbx_name": "Island_Underside_rock_violet",
+     "tris": 2308,
      "look": "rock_violet",
      "color": [
       122,
       110,
       152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_rock_violet_dark",
+     "fbx_name": "Island_Underside_rock_violet_dark",
+     "tris": 1352,
+     "look": "rock_violet_dark",
+     "color": [
+      86,
+      78,
+      114
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_moon_dark",
+     "fbx_name": "Island_Underside_moon_dark",
+     "tris": 694,
+     "look": "moon_dark",
+     "color": [
+      134,
+      126,
+      158
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_moon_light",
+     "fbx_name": "Island_Underside_moon_light",
+     "tris": 37,
+     "look": "moon_light",
+     "color": [
+      208,
+      202,
+      224
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -2641,20 +2879,20 @@
     0.0
    ],
    "min": [
-    -176.67,
-    -155.12,
-    -92.33
+    -176.53,
+    -155.34,
+    -92.32
    ],
    "max": [
     197.65,
-    108.61,
+    108.4,
     0.92
    ],
    "meshes": [
     {
-     "name": "Foam_Mist",
-     "fbx_name": "Foam_Mist",
-     "tris": 4504,
+     "name": "Foam_Mist_foam_water",
+     "fbx_name": "Foam_Mist_foam_water",
+     "tris": 4082,
      "look": "foam_water",
      "color": [
       236,
@@ -2666,13 +2904,41 @@
      "reflectance": 0
     },
     {
-     "name": "Water",
-     "fbx_name": "Water",
-     "tris": 400,
+     "name": "Foam_Mist_mist",
+     "fbx_name": "Foam_Mist_mist",
+     "tris": 402,
+     "look": "mist",
+     "color": [
+      240,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_goo_plasma",
+     "fbx_name": "Water_goo_plasma",
+     "tris": 206,
      "look": "goo_plasma",
      "color": [
       92,
       222,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_goo_plasma_fall",
+     "fbx_name": "Water_goo_plasma_fall",
+     "tris": 192,
+     "look": "goo_plasma_fall",
+     "color": [
+      122,
+      232,
       255
      ],
      "material": "Neon",

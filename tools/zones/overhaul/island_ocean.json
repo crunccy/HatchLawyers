@@ -1,6 +1,6 @@
 {
  "group": "island_ocean",
- "fbx": "exports/overhaul/island_ocean.fbx",
+ "fbx": "exports/overhaul/island_ocean_phone.fbx",
  "made": "2026-10-26",
  "units": "1 Blender m = 1 stud; Blender (x, y, z) -> Roblox (x, z, -y) after the FBX axis change",
  "studs": "Material Plastic = studded by MaterialService.BrickStuds through the stud UVs (StudsPerTile 1)",
@@ -18,7 +18,7 @@
    ],
    "max": [
     188.04,
-    -0.31,
+    -0.32,
     2.83
    ],
    "meshes": [
@@ -79,7 +79,7 @@
    ],
    "max": [
     192.43,
-    38.39,
+    38.24,
     3.4
    ],
    "meshes": [
@@ -120,20 +120,20 @@
     0.0
    ],
    "min": [
-    -540.98,
-    -445.14,
-    -54.68
+    -584.93,
+    -550.45,
+    -48.34
    ],
    "max": [
-    458.34,
-    504.04,
-    41.36
+    264.06,
+    553.7,
+    39.18
    ],
    "meshes": [
     {
      "name": "IslBush_bush_1",
      "fbx_name": "IslBush_bush_1",
-     "tris": 13024,
+     "tris": 12565,
      "look": "bush",
      "color": [
       88,
@@ -147,7 +147,7 @@
     {
      "name": "IslBush_bush_2",
      "fbx_name": "IslBush_bush_2",
-     "tris": 13026,
+     "tris": 12567,
      "look": "bush",
      "color": [
       88,
@@ -167,20 +167,20 @@
     0.0
    ],
    "min": [
-    -173.63,
-    -162.87,
-    0.8
+    -177.82,
+    -157.8,
+    0.81
    ],
    "max": [
-    188.9,
-    171.36,
-    2.73
+    174.72,
+    160.98,
+    2.4
    ],
    "meshes": [
     {
      "name": "IslFern",
      "fbx_name": "IslFern",
-     "tris": 2612,
+     "tris": 2330,
      "look": "fern",
      "color": [
       60,
@@ -200,20 +200,20 @@
     0.0
    ],
    "min": [
-    -184.68,
-    -154.21,
-    1.7
+    -181.75,
+    -147.55,
+    1.61
    ],
    "max": [
-    200.04,
-    167.54,
-    2.71
+    181.86,
+    161.87,
+    2.72
    ],
    "meshes": [
     {
      "name": "IslFlower_flower_red",
      "fbx_name": "IslFlower_flower_red",
-     "tris": 2880,
+     "tris": 2280,
      "look": "flower_red",
      "color": [
       240,
@@ -233,20 +233,20 @@
     0.0
    ],
    "min": [
-    -184.61,
-    -154.15,
-    1.76
+    -181.65,
+    -147.42,
+    1.67
    ],
    "max": [
-    199.92,
-    167.46,
-    2.78
+    181.83,
+    161.81,
+    2.77
    ],
    "meshes": [
     {
      "name": "IslFlowerMid",
      "fbx_name": "IslFlowerMid",
-     "tris": 716,
+     "tris": 566,
      "look": "flower_yel",
      "color": [
       255,
@@ -266,20 +266,20 @@
     0.0
    ],
    "min": [
-    -188.87,
-    -170.68,
+    -187.64,
+    -178.39,
     0.6
    ],
    "max": [
-    192.72,
-    173.67,
-    42.89
+    198.14,
+    174.69,
+    44.22
    ],
    "meshes": [
     {
      "name": "IslGrass",
      "fbx_name": "IslGrass",
-     "tris": 2016,
+     "tris": 1960,
      "look": "leaf_sun",
      "color": [
       140,
@@ -299,20 +299,20 @@
     0.0
    ],
    "min": [
-    -538.44,
-    -450.81,
-    -55.08
+    -589.9,
+    -548.68,
+    -48.61
    ],
    "max": [
-    465.68,
-    507.55,
-    55.35
+    273.94,
+    565.16,
+    53.44
    ],
    "meshes": [
     {
      "name": "IslPalm_nut",
      "fbx_name": "IslPalm_nut",
-     "tris": 6660,
+     "tris": 7200,
      "look": "nut",
      "color": [
       110,
@@ -326,7 +326,7 @@
     {
      "name": "IslPalm_palm_bark_1",
      "fbx_name": "IslPalm_palm_bark_1",
-     "tris": 10266,
+     "tris": 11099,
      "look": "palm_bark",
      "color": [
       198,
@@ -340,7 +340,7 @@
     {
      "name": "IslPalm_palm_bark_2",
      "fbx_name": "IslPalm_palm_bark_2",
-     "tris": 10268,
+     "tris": 11101,
      "look": "palm_bark",
      "color": [
       198,
@@ -354,7 +354,7 @@
     {
      "name": "IslPalm_palm_light",
      "fbx_name": "IslPalm_palm_light",
-     "tris": 12987,
+     "tris": 14040,
      "look": "palm_light",
      "color": [
       140,
@@ -368,7 +368,7 @@
     {
      "name": "IslPalm_palm_shade",
      "fbx_name": "IslPalm_palm_shade",
-     "tris": 12987,
+     "tris": 14040,
      "look": "palm_shade",
      "color": [
       70,
@@ -388,13 +388,13 @@
     0.0
    ],
    "min": [
-    123.46,
-    123.01,
-    -1.05
+    123.36,
+    122.79,
+    -0.6
    ],
    "max": [
-    164.46,
-    164.61,
+    164.39,
+    164.67,
     31.6
    ],
    "meshes": [
@@ -402,11 +402,11 @@
      "name": "IslPortal_Arch",
      "fbx_name": "IslPortal_Arch",
      "tris": 310,
-     "look": "rock",
+     "look": "rock_violet",
      "color": [
-      156,
-      152,
-      146
+      122,
+      110,
+      152
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -416,11 +416,11 @@
      "name": "IslPortal_ArchTop",
      "fbx_name": "IslPortal_ArchTop",
      "tris": 58,
-     "look": "rock_top",
+     "look": "moon_light",
      "color": [
-      204,
-      200,
-      192
+      208,
+      202,
+      224
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -430,11 +430,11 @@
      "name": "IslPortal_Base",
      "fbx_name": "IslPortal_Base",
      "tris": 70,
-     "look": "rock_top",
+     "look": "moon_light",
      "color": [
-      204,
-      200,
-      192
+      208,
+      202,
+      224
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -457,12 +457,12 @@
     {
      "name": "IslPortal_Flower",
      "fbx_name": "IslPortal_Flower",
-     "tris": 160,
-     "look": "flower_pink",
+     "tris": 640,
+     "look": "alien_pink",
      "color": [
-      255,
-      128,
-      190
+      250,
+      96,
+      200
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -471,12 +471,12 @@
     {
      "name": "IslPortal_FlowerMid",
      "fbx_name": "IslPortal_FlowerMid",
-     "tris": 40,
-     "look": "flower_yel",
+     "tris": 160,
+     "look": "alien_lime",
      "color": [
-      255,
-      212,
-      54
+      150,
+      236,
+      80
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -500,11 +500,11 @@
      "name": "IslPortal_Leg",
      "fbx_name": "IslPortal_Leg",
      "tris": 104,
-     "look": "rock",
+     "look": "rock_violet",
      "color": [
-      156,
-      152,
-      146
+      122,
+      110,
+      152
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -513,12 +513,12 @@
     {
      "name": "IslPortal_LegMoss",
      "fbx_name": "IslPortal_LegMoss",
-     "tris": 10,
-     "look": "moss",
+     "tris": 40,
+     "look": "alien_teal",
      "color": [
-      96,
-      186,
-      64
+      42,
+      206,
+      186
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -542,11 +542,11 @@
      "name": "IslPortal_Step",
      "fbx_name": "IslPortal_Step",
      "tris": 47,
-     "look": "rock",
+     "look": "rock_violet",
      "color": [
-      156,
-      152,
-      146
+      122,
+      110,
+      152
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -556,11 +556,11 @@
      "name": "IslPortal_StepTop",
      "fbx_name": "IslPortal_StepTop",
      "tris": 33,
-     "look": "rock_top",
+     "look": "moon_light",
      "color": [
-      204,
-      200,
-      192
+      208,
+      202,
+      224
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -596,6 +596,81 @@
     }
    ]
   },
+  "IslPortalBulb": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    143.11,
+    142.76,
+    1.1
+   ],
+   "max": [
+    158.82,
+    159.07,
+    7.16
+   ],
+   "meshes": [
+    {
+     "name": "IslPortalBulb_GlowCyan",
+     "fbx_name": "IslPortalBulb_GlowCyan",
+     "tris": 480,
+     "look": "glow_cyan",
+     "color": [
+      120,
+      220,
+      255
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalBulb_Leaf",
+     "fbx_name": "IslPortalBulb_Leaf",
+     "tris": 48,
+     "look": "alien_lime",
+     "color": [
+      150,
+      236,
+      80
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalBulb_Soil",
+     "fbx_name": "IslPortalBulb_Soil",
+     "tris": 72,
+     "look": "soil_purple",
+     "color": [
+      106,
+      70,
+      138
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalBulb_Stem",
+     "fbx_name": "IslPortalBulb_Stem",
+     "tris": 192,
+     "look": "alien_lime",
+     "color": [
+      150,
+      236,
+      80
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
   "IslPortalCap": {
    "origin": [
     0.0,
@@ -603,25 +678,86 @@
     0.0
    ],
    "min": [
-    140.28,
-    138.97,
-    22.34
+    140.33,
+    139.01,
+    22.39
    ],
    "max": [
-    154.03,
-    153.17,
-    28.53
+    154.13,
+    153.15,
+    28.46
    ],
    "meshes": [
     {
      "name": "IslPortalCap_Leaves",
      "fbx_name": "IslPortalCap_Leaves",
-     "tris": 260,
-     "look": "moss",
+     "tris": 1040,
+     "look": "alien_teal",
      "color": [
-      96,
-      186,
-      64
+      42,
+      206,
+      186
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    }
+   ]
+  },
+  "IslPortalTentacle": {
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "min": [
+    140.2,
+    139.49,
+    1.1
+   ],
+   "max": [
+    164.6,
+    164.2,
+    7.25
+   ],
+   "meshes": [
+    {
+     "name": "IslPortalTentacle_AlienTeal",
+     "fbx_name": "IslPortalTentacle_AlienTeal",
+     "tris": 1080,
+     "look": "alien_teal",
+     "color": [
+      42,
+      206,
+      186
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalTentacle_GlowLime",
+     "fbx_name": "IslPortalTentacle_GlowLime",
+     "tris": 200,
+     "look": "glow_lime",
+     "color": [
+      170,
+      255,
+      60
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "IslPortalTentacle_Soil",
+     "fbx_name": "IslPortalTentacle_Soil",
+     "tris": 140,
+     "look": "soil_purple",
+     "color": [
+      106,
+      70,
+      138
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -667,8 +803,8 @@
      "look": "gold",
      "color": [
       255,
-      196,
-      46
+      200,
+      40
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -722,14 +858,84 @@
    ],
    "meshes": [
     {
-     "name": "Landmarks",
-     "fbx_name": "Landmarks",
-     "tris": 2800,
+     "name": "Landmarks_dock_wood_dark",
+     "fbx_name": "Landmarks_dock_wood_dark",
+     "tris": 1124,
      "look": "dock_wood_dark",
      "color": [
       128,
       80,
       44
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_dock_wood",
+     "fbx_name": "Landmarks_dock_wood",
+     "tris": 528,
+     "look": "dock_wood",
+     "color": [
+      176,
+      112,
+      62
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_glow_lantern",
+     "fbx_name": "Landmarks_glow_lantern",
+     "tris": 264,
+     "look": "glow_lantern",
+     "color": [
+      255,
+      190,
+      90
+     ],
+     "material": "Neon",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_spawn_white",
+     "fbx_name": "Landmarks_spawn_white",
+     "tris": 248,
+     "look": "spawn_white",
+     "color": [
+      240,
+      246,
+      255
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_spawn_blue",
+     "fbx_name": "Landmarks_spawn_blue",
+     "tris": 444,
+     "look": "spawn_blue",
+     "color": [
+      52,
+      110,
+      230
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Landmarks_rope",
+     "fbx_name": "Landmarks_rope",
+     "tris": 192,
+     "look": "rope",
+     "color": [
+      196,
+      170,
+      120
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -744,20 +950,20 @@
     0.0
    ],
    "min": [
-    -161.73,
-    -149.77,
-    -0.09
+    -161.87,
+    -146.24,
+    -0.12
    ],
    "max": [
-    160.75,
-    102.17,
-    2.44
+    152.89,
+    22.84,
+    2.52
    ],
    "meshes": [
     {
      "name": "OceanBrain_brain_coral",
      "fbx_name": "OceanBrain_brain_coral",
-     "tris": 960,
+     "tris": 1280,
      "look": "brain_coral",
      "color": [
       240,
@@ -771,7 +977,7 @@
     {
      "name": "OceanBrain_coral_red",
      "fbx_name": "OceanBrain_coral_red",
-     "tris": 2108,
+     "tris": 1399,
      "look": "coral_red",
      "color": [
       232,
@@ -791,20 +997,20 @@
     0.0
    ],
    "min": [
-    -175.31,
-    -156.7,
+    -167.21,
+    -154.2,
     0.65
    ],
    "max": [
-    160.27,
-    135.72,
+    177.6,
+    134.56,
     1.9
    ],
    "meshes": [
     {
      "name": "OceanConch_conch",
      "fbx_name": "OceanConch_conch",
-     "tris": 8378,
+     "tris": 8380,
      "look": "conch",
      "color": [
       250,
@@ -838,20 +1044,20 @@
     0.0
    ],
    "min": [
-    -163.21,
-    -145.47,
-    0.36
+    -168.37,
+    -145.06,
+    0.35
    ],
    "max": [
-    172.04,
-    147.16,
-    5.09
+    171.84,
+    141.37,
+    4.84
    ],
    "meshes": [
     {
      "name": "OceanCoral_coral_orange",
      "fbx_name": "OceanCoral_coral_orange",
-     "tris": 7078,
+     "tris": 6294,
      "look": "coral_orange",
      "color": [
       255,
@@ -865,7 +1071,7 @@
     {
      "name": "OceanCoral_coral_pink",
      "fbx_name": "OceanCoral_coral_pink",
-     "tris": 8044,
+     "tris": 4462,
      "look": "coral_pink",
      "color": [
       250,
@@ -879,7 +1085,7 @@
     {
      "name": "OceanCoral_coral_purple",
      "fbx_name": "OceanCoral_coral_purple",
-     "tris": 4498,
+     "tris": 5394,
      "look": "coral_purple",
      "color": [
       170,
@@ -893,7 +1099,7 @@
     {
      "name": "OceanCoral_coral_red",
      "fbx_name": "OceanCoral_coral_red",
-     "tris": 8092,
+     "tris": 4498,
      "look": "coral_red",
      "color": [
       232,
@@ -913,20 +1119,20 @@
     0.0
    ],
    "min": [
-    -106.44,
-    -109.14,
+    -121.42,
+    -101.37,
     0.92
    ],
    "max": [
-    119.85,
-    110.24,
+    118.48,
+    121.9,
     1.93
    ],
    "meshes": [
     {
      "name": "OceanDrift_driftwood_1",
      "fbx_name": "OceanDrift_driftwood_1",
-     "tris": 14450,
+     "tris": 16583,
      "look": "driftwood",
      "color": [
       176,
@@ -940,7 +1146,7 @@
     {
      "name": "OceanDrift_driftwood_2",
      "fbx_name": "OceanDrift_driftwood_2",
-     "tris": 14452,
+     "tris": 16587,
      "look": "driftwood",
      "color": [
       176,
@@ -954,7 +1160,7 @@
     {
      "name": "OceanDrift_driftwood_dark",
      "fbx_name": "OceanDrift_driftwood_dark",
-     "tris": 990,
+     "tris": 1140,
      "look": "driftwood_dark",
      "color": [
       130,
@@ -974,39 +1180,25 @@
     0.0
    ],
    "min": [
-    -165.11,
-    -143.63,
+    -160.73,
+    -100.1,
     0.8
    ],
    "max": [
-    167.71,
-    146.14,
-    3.76
+    166.74,
+    102.17,
+    3.54
    ],
    "meshes": [
     {
      "name": "OceanFan_coral_pink",
      "fbx_name": "OceanFan_coral_pink",
-     "tris": 1778,
+     "tris": 4460,
      "look": "coral_pink",
      "color": [
       250,
       110,
       150
-     ],
-     "material": "Plastic",
-     "transparency": 0,
-     "reflectance": 0
-    },
-    {
-     "name": "OceanFan_coral_purple",
-     "fbx_name": "OceanFan_coral_purple",
-     "tris": 5344,
-     "look": "coral_purple",
-     "color": [
-      170,
-      100,
-      220
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1021,20 +1213,20 @@
     0.0
    ],
    "min": [
-    -121.88,
-    -111.88,
+    -125.12,
+    -109.66,
     0.91
    ],
    "max": [
-    129.65,
-    113.97,
-    1.16
+    130.95,
+    122.6,
+    1.17
    ],
    "meshes": [
     {
      "name": "OceanPebble",
      "fbx_name": "OceanPebble",
-     "tris": 1073,
+     "tris": 1591,
      "look": "pebble",
      "color": [
       180,
@@ -1054,20 +1246,20 @@
     0.0
    ],
    "min": [
-    -121.88,
-    -111.88,
+    -125.12,
+    -109.66,
     0.91
    ],
    "max": [
-    129.6,
-    113.92,
-    1.37
+    130.95,
+    122.6,
+    1.35
    ],
    "meshes": [
     {
      "name": "OceanPebbleTop",
      "fbx_name": "OceanPebbleTop",
-     "tris": 511,
+     "tris": 749,
      "look": "rock_top",
      "color": [
       204,
@@ -1087,20 +1279,20 @@
     0.0
    ],
    "min": [
-    -157.56,
-    -150.39,
-    0.39
+    -164.22,
+    -150.34,
+    0.38
    ],
    "max": [
-    -12.13,
-    142.05,
-    3.94
+    -6.51,
+    146.97,
+    4.14
    ],
    "meshes": [
     {
      "name": "OceanSeaweed",
      "fbx_name": "OceanSeaweed",
-     "tris": 216,
+     "tris": 432,
      "look": "seaweed",
      "color": [
       56,
@@ -1120,20 +1312,20 @@
     0.0
    ],
    "min": [
-    -174.12,
-    -155.3,
+    -171.95,
+    -155.47,
     0.67
    ],
    "max": [
-    175.41,
-    152.53,
+    182.9,
+    152.8,
     1.4
    ],
    "meshes": [
     {
      "name": "OceanShell_shell",
      "fbx_name": "OceanShell_shell",
-     "tris": 17864,
+     "tris": 19340,
      "look": "shell",
      "color": [
       252,
@@ -1145,9 +1337,23 @@
      "reflectance": 0
     },
     {
-     "name": "OceanShell_shell_pink",
-     "fbx_name": "OceanShell_shell_pink",
-     "tris": 19375,
+     "name": "OceanShell_shell_pink_1",
+     "fbx_name": "OceanShell_shell_pink_1",
+     "tris": 11161,
+     "look": "shell_pink",
+     "color": [
+      250,
+      190,
+      190
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "OceanShell_shell_pink_2",
+     "fbx_name": "OceanShell_shell_pink_2",
+     "tris": 11163,
      "look": "shell_pink",
      "color": [
       250,
@@ -1167,20 +1373,20 @@
     0.0
    ],
    "min": [
-    -174.92,
-    -138.98,
+    -174.48,
+    -156.72,
     0.57
    ],
    "max": [
-    181.4,
-    150.25,
+    178.3,
+    151.32,
     1.45
    ],
    "meshes": [
     {
      "name": "OceanStar_starfish",
      "fbx_name": "OceanStar_starfish",
-     "tris": 17964,
+     "tris": 12964,
      "look": "starfish",
      "color": [
       250,
@@ -1194,7 +1400,7 @@
     {
      "name": "OceanStar_starfish_red",
      "fbx_name": "OceanStar_starfish_red",
-     "tris": 17454,
+     "tris": 16472,
      "look": "starfish_red",
      "color": [
       232,
@@ -1214,20 +1420,20 @@
     0.0
    ],
    "min": [
-    -165.5,
-    -109.79,
+    -160.32,
+    -144.83,
     0.8
    ],
    "max": [
-    172.44,
-    145.39,
-    3.67
+    165.41,
+    146.25,
+    3.63
    ],
    "meshes": [
     {
      "name": "OceanTube_Coral",
      "fbx_name": "OceanTube_Coral",
-     "tris": 1980,
+     "tris": 2156,
      "look": "tube_coral",
      "color": [
       110,
@@ -1241,7 +1447,7 @@
     {
      "name": "OceanTube_In",
      "fbx_name": "OceanTube_In",
-     "tris": 810,
+     "tris": 882,
      "look": "tube_coral_in",
      "color": [
       60,
@@ -1389,9 +1595,9 @@
      "tris": 72,
      "look": "sail",
      "color": [
-      240,
-      232,
-      210
+      250,
+      248,
+      240
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1406,25 +1612,81 @@
     0.0
    ],
    "min": [
-    -126.22,
-    -107.32,
+    -128.39,
+    -107.61,
     0.76
    ],
    "max": [
-    126.22,
-    113.11,
+    121.99,
+    115.96,
     1.21
    ],
    "meshes": [
     {
-     "name": "Sand_Decor",
-     "fbx_name": "Sand_Decor",
-     "tris": 3012,
+     "name": "Sand_Decor_sand_light",
+     "fbx_name": "Sand_Decor_sand_light",
+     "tris": 948,
      "look": "sand_light",
      "color": [
       250,
       230,
       178
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Decor_sand_dark",
+     "fbx_name": "Sand_Decor_sand_dark",
+     "tris": 868,
+     "look": "sand_dark",
+     "color": [
+      222,
+      190,
+      124
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Decor_wet_sand",
+     "fbx_name": "Sand_Decor_wet_sand",
+     "tris": 1030,
+     "look": "wet_sand",
+     "color": [
+      205,
+      176,
+      120
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Decor_rock_grey_light",
+     "fbx_name": "Sand_Decor_rock_grey_light",
+     "tris": 144,
+     "look": "rock_grey_light",
+     "color": [
+      230,
+      216,
+      188
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Decor_rock_grey",
+     "fbx_name": "Sand_Decor_rock_grey",
+     "tris": 24,
+     "look": "rock_grey",
+     "color": [
+      204,
+      186,
+      152
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1439,39 +1701,67 @@
     0.0
    ],
    "min": [
-    -197.79,
+    -197.84,
     -185.45,
     -10.0
    ],
    "max": [
-    208.91,
-    182.67,
+    208.98,
+    182.78,
     1.0
    ],
    "meshes": [
     {
-     "name": "Island_Top",
-     "fbx_name": "Island_Top",
-     "tris": 1254,
+     "name": "Island_Top_dirt_rim",
+     "fbx_name": "Island_Top_dirt_rim",
+     "tris": 670,
      "look": "dirt_rim",
      "color": [
-      150,
-      104,
-      62
+      156,
+      112,
+      70
      ],
      "material": "Plastic",
      "transparency": 0,
      "reflectance": 0
     },
     {
-     "name": "Sand_Plateau",
-     "fbx_name": "Sand_Plateau",
-     "tris": 1362,
+     "name": "Island_Top_moss",
+     "fbx_name": "Island_Top_moss",
+     "tris": 146,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Plateau_sand_dark",
+     "fbx_name": "Sand_Plateau_sand_dark",
+     "tris": 727,
      "look": "sand_dark",
      "color": [
       222,
       190,
       124
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Sand_Plateau_sand",
+     "fbx_name": "Sand_Plateau_sand",
+     "tris": 616,
+     "look": "sand",
+     "color": [
+      240,
+      214,
+      150
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1486,25 +1776,137 @@
     0.0
    ],
    "min": [
-    -199.89,
-    -188.81,
-    -107.98
+    -199.91,
+    -189.45,
+    -111.63
    ],
    "max": [
-    211.6,
-    187.19,
-    3.33
+    209.94,
+    184.7,
+    2.65
    ],
    "meshes": [
     {
-     "name": "Island_Underside",
-     "fbx_name": "Island_Underside",
-     "tris": 9052,
+     "name": "Island_Underside_rock_grey",
+     "fbx_name": "Island_Underside_rock_grey",
+     "tris": 1876,
      "look": "rock_grey",
      "color": [
+      204,
+      186,
+      152
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_rock_grey_dark",
+     "fbx_name": "Island_Underside_rock_grey_dark",
+     "tris": 1316,
+     "look": "rock_grey_dark",
+     "color": [
+      166,
+      146,
+      114
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_rock_grey_light",
+     "fbx_name": "Island_Underside_rock_grey_light",
+     "tris": 216,
+     "look": "rock_grey_light",
+     "color": [
+      230,
+      216,
+      188
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_moss",
+     "fbx_name": "Island_Underside_moss",
+     "tris": 926,
+     "look": "moss",
+     "color": [
+      96,
+      186,
+      64
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_vine",
+     "fbx_name": "Island_Underside_vine",
+     "tris": 174,
+     "look": "vine",
+     "color": [
+      70,
+      160,
+      60
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_moss_dark",
+     "fbx_name": "Island_Underside_moss_dark",
+     "tris": 1078,
+     "look": "moss_dark",
+     "color": [
+      64,
+      150,
+      52
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_dirt_rim",
+     "fbx_name": "Island_Underside_dirt_rim",
+     "tris": 630,
+     "look": "dirt_rim",
+     "color": [
+      156,
+      112,
+      70
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_dirt_rim_dark",
+     "fbx_name": "Island_Underside_dirt_rim_dark",
+     "tris": 260,
+     "look": "dirt_rim_dark",
+     "color": [
       118,
+      82,
+      50
+     ],
+     "material": "Plastic",
+     "transparency": 0,
+     "reflectance": 0
+    },
+    {
+     "name": "Island_Underside_root",
+     "fbx_name": "Island_Underside_root",
+     "tris": 960,
+     "look": "root",
+     "color": [
       120,
-      132
+      82,
+      50
      ],
      "material": "Plastic",
      "transparency": 0,
@@ -1519,20 +1921,20 @@
     0.0
    ],
    "min": [
-    -193.96,
-    -156.2,
-    -80.37
+    -193.56,
+    -156.12,
+    -80.33
    ],
    "max": [
-    207.05,
-    151.22,
-    41.27
+    206.46,
+    151.31,
+    39.71
    ],
    "meshes": [
     {
-     "name": "Foam_Mist",
-     "fbx_name": "Foam_Mist",
-     "tris": 15086,
+     "name": "Foam_Mist_foam_water",
+     "fbx_name": "Foam_Mist_foam_water",
+     "tris": 13990,
      "look": "foam_water",
      "color": [
       236,
@@ -1544,14 +1946,70 @@
      "reflectance": 0
     },
     {
-     "name": "Water",
-     "fbx_name": "Water",
-     "tris": 798,
+     "name": "Foam_Mist_mist",
+     "fbx_name": "Foam_Mist_mist",
+     "tris": 814,
+     "look": "mist",
+     "color": [
+      240,
+      250,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_pool_deep",
+     "fbx_name": "Water_pool_deep",
+     "tris": 146,
      "look": "pool_deep",
      "color": [
       30,
       160,
       205
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_pool",
+     "fbx_name": "Water_pool",
+     "tris": 246,
+     "look": "pool",
+     "color": [
+      60,
+      205,
+      220
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_foam_fall",
+     "fbx_name": "Water_foam_fall",
+     "tris": 48,
+     "look": "foam_fall",
+     "color": [
+      225,
+      248,
+      255
+     ],
+     "material": "SmoothPlastic",
+     "transparency": 0.18,
+     "reflectance": 0
+    },
+    {
+     "name": "Water_shallows",
+     "fbx_name": "Water_shallows",
+     "tris": 332,
+     "look": "shallows",
+     "color": [
+      120,
+      228,
+      232
      ],
      "material": "SmoothPlastic",
      "transparency": 0.18,
