@@ -849,6 +849,274 @@ def tab_crown():
     return group("Item", o, (0, 0, 0), (14, 0, 0)), {"elev": 14, "yaw": 0}
 
 
+# ------------------------------------------------------------------ SHOP v4 (2026-11-02): VIP, the cash journey ladder
+# Paid cash packs are BILLS and grow 100K fan -> 500K bundles -> 1.5M briefcase -> 5M gold pyramid -> 15M treasure chest;
+# the free claims are COINS and grow 25K stack -> 50K stacks -> 100K heap -> 250K piggy bank -> 500K gift box. The free
+# egg claim uses egg_briefcase (the real egg). Same lights, outline and materials as everything above.
+def bill_upright(loc, rot_y=0.0, s=1.0):
+    """one bill standing in the XZ plane, long side up, its pivot at the bottom edge (for fans)"""
+    o = [box("Bill", (0.92, 0.05, 1.9), (0, 0, 0.95), M["bill"], bev=0.02)]
+    o.append(box("BillFace", (0.68, 0.012, 1.6), (0, -0.03, 0.95), M["bill_light"], bev=0.006))
+    o.append(cyl("BillSeal", 0.23, 0.02, (0, -0.04, 0.95), M["bill_dark"], (90, 0, 0), bev=0.004))
+    for sz in (0.3, 1.6):
+        o.append(cyl("BillCorner", 0.09, 0.02, (0, -0.04, sz), M["bill_dark"], (90, 0, 0), bev=0.004, verts=24))
+    return group("BillUp", o, loc, (0, rot_y, 0), s)
+
+
+def coin_heap(cx, cy, radius, height, n, seed=1, r=0.3):
+    """a mound of loose coins at every angle"""
+    rnd = random.Random(seed)
+    out = []
+    for i in range(n):
+        a = rnd.uniform(0, 2 * math.pi)
+        d = radius * math.sqrt(rnd.uniform(0, 1))
+        z = height * (1 - (d / radius) ** 1.6) * rnd.uniform(0.75, 1.0)
+        out.append(coin((cx + d * math.cos(a), cy + d * math.sin(a) * 0.8, z), (rnd.uniform(-35, 35), rnd.uniform(-35, 35), rnd.uniform(0, 90)), r))
+    return out
+
+
+def item_vip():
+    PURPLE = mat("vipcard", "7b2cf0", rough=0.3, coat=0.6)
+    PURPLE_D = mat("vipcard_d", "4a1499", rough=0.35, coat=0.4)
+    RUBY = mat("ruby", "ff2a4a", rough=0.08, coat=0.8)
+    o = []
+    o.append(box("Card", (3.0, 0.24, 1.9), (0, 0, 0.95), M["gold"], bev=0.16))
+    o.append(box("CardFace", (2.7, 0.2, 1.6), (0, -0.04, 0.95), PURPLE, bev=0.12))
+    o.append(box("Stripe", (2.7, 0.21, 0.22), (0, -0.045, 0.38), PURPLE_D, bev=0.05))
+    o.append(text3d("VIP", "VIP", 1.05, 0.12, M["gold_light"], (0, -0.2, 0.98), (90, 0, 0), bev=0.04))
+    # a crown perched on the card's top edge
+    cr = []
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=False, segments=48, radius1=0.62, radius2=0.66, depth=0.34)
+    ring = from_bm("Band", bm, M["gold"])
+    so = ring.modifiers.new("Solid", "SOLIDIFY")
+    so.thickness = 0.1
+    bevel(ring, 0.03, 3)
+    cr.append(place(ring, (0, 0, 0.17)))
+    cr.append(sphere("Velvet", 0.6, (0, 0, 0.3), mat("velvet", "b0122c", rough=0.9, coat=0.0), scale=(1, 1, 0.5)))
+    for k in range(5):
+        a = math.radians(-90 + k * 72)
+        x, y = math.cos(a) * 0.62, math.sin(a) * 0.62
+        cr.append(cyl("Spike", 0.17, 0.48, (x, y, 0.55), M["gold"], bev=0.03, verts=24, r2=0.03))
+        cr.append(sphere("Pearl", 0.08, (x, y, 0.82), M["white"]))
+    g = gem("Jewel", 0.12, (0, -0.68, 0.18), RUBY, scale=(1, 0.6, 1.2))
+    cr.append(g)
+    o.append(group("Crown", cr, (0.95, 0.1, 1.82), (8, 0, -14), 1.0))
+    for loc, s in (((-1.75, -0.4, 2.1), 0.3), ((1.85, -0.4, 0.3), 0.22), ((-1.2, -0.5, -0.15), 0.17)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 10, "yaw": 0}
+
+
+def item_pack_100k():  # tier 1: a fan of bills and a few coins
+    o = []
+    for k, a in enumerate((-36, -18, 0, 18, 36)):
+        o.append(bill_upright((0, 0.06 * k, 0.2), a, 1.0))
+    o += coin_stack(-0.95, -0.65, 3, seed=21)
+    o.append(coin((0.75, -0.75, 0.05)))
+    o.append(coin((0.35, -0.95, 0.3), (68, 0, -15)))
+    o.append(sparkle_obj((1.4, -0.4, 2.1), 0.24))
+    return group("Item", o), {"elev": 12, "yaw": 0}
+
+
+def item_pack_500k():  # tier 2: banded bundles stacked + a coin stack
+    o = []
+    o.append(bill_stack((-0.62, 0.25, 0.0), 6, 8, 0.9, seed=31))
+    o.append(bill_stack((0.75, 0.3, 0.0), 6, -6, 0.9, seed=32))
+    o.append(bill_stack((0.05, 0.25, 0.52), 6, 82, 0.9, seed=33))
+    o += coin_stack(1.15, -0.75, 6, seed=34)
+    o += coin_stack(-1.2, -0.7, 4, seed=35)
+    o.append(coin((0.1, -1.0, 0.05)))
+    o.append(coin((-0.45, -1.1, 0.3), (70, 0, 18)))
+    for loc, s in (((-1.6, -0.6, 1.6), 0.26), ((1.65, -0.6, 1.9), 0.2)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 18, "yaw": 0}
+
+
+def item_pack_1_5m():  # tier 3: a lawyer's briefcase, open and packed with bundles
+    LEATHER = mat("leather", "7a3c16", rough=0.5, coat=0.2)
+    LINING = mat("lining", "5a1a2a", rough=0.8)
+    o = []
+    W, D, Hb = 3.2, 1.9, 0.75
+    o.append(box("Shell", (W, D, Hb), (0, 0, Hb / 2), LEATHER, bev=0.12))
+    o.append(box("Lining", (W - 0.22, D - 0.22, 0.05), (0, 0, Hb - 0.02), LINING, bev=0.02))
+    # lid hinged at the back, opened past upright
+    lid = [box("Lid", (W, 0.2, D * 0.95), (0, 0, D * 0.95 / 2), LEATHER, bev=0.1)]
+    lid.append(box("LidLining", (W - 0.26, 0.05, D * 0.95 - 0.26), (0, -0.11, D * 0.95 / 2), LINING, bev=0.02))
+    for x in (-0.5, 0.5):
+        lid.append(box("Mount", (0.2, 0.22, 0.14), (x, 0, D * 0.95 + 0.02), M["gold"], bev=0.05))
+    lid.append(torus("Handle", 0.5, 0.09, (0, 0, D * 0.95 + 0.06), mat("strap", "3e1d0b", 0.5), (90, 0, 0), u0=0.0, u1=math.pi, closed=False, nu=40, nv=16))
+    o.append(group("LidG", lid, (0, D / 2 - 0.05, Hb - 0.05), (-28, 0, 0)))
+    # bundles packed in two rows and heaped over the rim
+    for i, x in enumerate((-1.0, 0.0, 1.0)):
+        for j, y in enumerate((-0.42, 0.42)):
+            o.append(bill_stack((x, y, Hb - 0.12), 7, 90 + (i * 3 - j * 4), 0.5, seed=40 + i * 2 + j))
+    for i, x in enumerate((-0.5, 0.5)):
+        o.append(bill_stack((x, 0.0, Hb + 0.2), 6, 84 + i * 12, 0.5, seed=48 + i))
+    # gold clasps + corner guards on the front
+    for x in (-1.0, 1.0):
+        o.append(box("Clasp", (0.36, 0.1, 0.26), (x, -D / 2 - 0.02, Hb - 0.12), M["gold"], bev=0.04))
+    for x in (-W / 2 + 0.08, W / 2 - 0.08):
+        o.append(box("Guard", (0.26, 0.26, 0.26), (x, -D / 2 + 0.08, 0.1), M["gold"], bev=0.06))
+    o += coin_stack(-1.85, -1.25, 5, seed=46)
+    o.append(coin((1.75, -1.3, 0.05)))
+    o.append(coin((1.3, -1.45, 0.3), (70, 0, 20)))
+    for loc, s in (((-1.9, -0.8, 2.3), 0.3), ((1.9, -0.9, 2.0), 0.24)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 38, "yaw": 0}
+
+
+def item_pack_5m():  # tier 4: a pyramid of gold bars with bundles and coins
+    o = []
+    for row, n in enumerate((4, 3, 2, 1)):
+        for k in range(n):
+            x = (k - (n - 1) / 2) * 0.6
+            o.append(gold_bar((x, 0.0, row * 0.3), 90, 1.0))
+    o.append(bill_stack((-0.75, 0.95, 0.0), 12, 6, 0.8, seed=51))
+    o.append(bill_stack((0.75, 0.95, 0.0), 10, -8, 0.8, seed=52))
+    o += coin_stack(-1.35, -0.75, 7, seed=53)
+    o += coin_stack(1.4, -0.7, 5, seed=54)
+    o += coin_heap(0.0, -0.95, 0.7, 0.28, 9, seed=55, r=0.26)
+    for loc, s in (((0.0, -0.4, 1.55), 0.3), ((-1.6, -0.6, 1.6), 0.24), ((1.65, -0.7, 1.3), 0.2)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 22, "yaw": 0}
+
+
+def item_pack_15m():  # tier 5: a treasure chest overflowing with gold, gems and cash
+    WOOD = mat("wood", "9a5526", rough=0.6, coat=0.15)
+    WOOD_D = mat("wood_d", "6b3412", rough=0.6, coat=0.1)
+    RUBY = mat("ruby", "ff2a4a", rough=0.08, coat=0.8)
+    SAPH = mat("sapph", "2f7bff", rough=0.08, coat=0.8)
+    EMER = mat("emer", "2fd06a", rough=0.08, coat=0.8)
+    o = []
+    W, D, Hb = 3.0, 1.9, 1.3
+    o.append(box("Chest", (W, D, Hb), (0, 0, Hb / 2), WOOD, bev=0.1))
+    for x in (-W / 2 + 0.25, 0, W / 2 - 0.25):  # gold bands
+        o.append(box("Band", (0.24, D + 0.06, Hb + 0.04), (x, 0, Hb / 2), M["gold"], bev=0.05))
+    o.append(box("Rim", (W + 0.06, D + 0.06, 0.18), (0, 0, Hb - 0.06), M["gold"], bev=0.05))
+    o.append(box("Lock", (0.5, 0.14, 0.56), (0, -D / 2 - 0.06, Hb - 0.3), M["gold"], bev=0.08))
+    o.append(cyl("Keyhole", 0.07, 0.06, (0, -D / 2 - 0.14, Hb - 0.26), M["ink"], (90, 0, 0), bev=0.01, verts=24))
+    # domed lid thrown open at the back
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, segments=48, radius1=D / 2, radius2=D / 2, depth=W)
+    for v in bm.verts:
+        if v.co.y < 0:
+            v.co.y *= 0.15
+    lid = from_bm("Lid", bm, WOOD_D)
+    bevel(lid, 0.06, 3)
+    place(lid, (0, 0, 0), (0, 90, 0))
+    lidb = [lid]
+    for x in (-W / 2 + 0.25, 0, W / 2 - 0.25):
+        lidb.append(place(from_bm("LidBand", torus_bm(D / 2 + 0.02, 0.07, nu=48, nv=10, u0=-0.1, u1=math.pi + 0.1, closed=False), M["gold"]), (x, 0, 0), (0, 90, 0)))
+    o.append(group("LidG", lidb, (0, D / 2 + 0.1, Hb + 0.85), (-100, 0, 0)))
+    # the hoard: a heap of coins, bars, bundles and gems over the rim
+    o += coin_heap(0.0, -0.05, 1.35, 0.85, 46, seed=61, r=0.26)
+    for c in o[-46:]:
+        c.location.z += Hb - 0.05
+    o.append(gold_bar((-0.7, -0.2, Hb + 0.42), 25, 0.8))
+    o.append(gold_bar((0.75, 0.1, Hb + 0.38), -18, 0.8))
+    o.append(bill_stack((0.25, 0.35, Hb + 0.45), 4, 60, 0.5, seed=62))
+    for loc, m, s in (((-0.25, -0.45, Hb + 0.75), RUBY, 0.2), ((0.5, -0.55, Hb + 0.55), SAPH, 0.17), ((-0.95, -0.45, Hb + 0.45), EMER, 0.16)):
+        o.append(gem("Jewel", s, loc, m, scale=(1, 1, 1.2)))
+    # spill at the foot
+    o += coin_stack(-1.95, -1.2, 6, seed=63)
+    o += coin_stack(2.0, -1.1, 4, seed=64)
+    o.append(gold_bar((1.4, -1.45, 0.0), 20, 0.75))
+    o.append(coin((-1.2, -1.5, 0.05)))
+    o.append(coin((-0.5, -1.55, 0.3), (70, 0, -20)))
+    o.append(gem("Jewel", 0.16, (0.4, -1.5, 0.14), RUBY, scale=(1, 1, 1.2)))
+    for loc, s in (((-2.1, -0.8, 2.6), 0.34), ((2.15, -0.9, 2.3), 0.28), ((0.2, -0.9, 3.0), 0.22), ((2.3, -1.4, 0.9), 0.18)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 20, "yaw": 0}
+
+
+def item_free_25k():  # free tier 1: a little coin stack
+    o = coin_stack(-0.25, 0.0, 5, seed=71, r=0.44)
+    o.append(coin((0.55, -0.35, 0.44), (72, 0, -20), r=0.44))
+    o.append(coin((0.2, -0.75, 0.06), (0, 0, 0), r=0.44))
+    o.append(sparkle_obj((-0.95, -0.4, 1.15), 0.2))
+    return group("Item", o), {"elev": 16, "yaw": 0}
+
+
+def item_free_50k():  # free tier 2: two stacks and loose coins
+    o = coin_stack(-0.55, 0.15, 7, seed=72, r=0.42)
+    o += coin_stack(0.4, 0.25, 4, seed=73, r=0.42)
+    o.append(coin((0.95, -0.45, 0.42), (72, 0, -20), r=0.42))
+    o.append(coin((-0.15, -0.75, 0.06), (0, 0, 0), r=0.42))
+    o.append(coin((-1.15, -0.55, 0.06), (0, 0, 0), r=0.42))
+    o.append(sparkle_obj((-1.25, -0.4, 1.35), 0.22))
+    o.append(sparkle_obj((1.25, -0.4, 1.05), 0.17))
+    return group("Item", o), {"elev": 16, "yaw": 0}
+
+
+def item_free_100k():  # free tier 3: a heap of coins with stacks behind
+    o = coin_stack(-0.85, 0.65, 8, seed=74, r=0.4)
+    o += coin_stack(0.9, 0.6, 10, seed=75, r=0.4)
+    o += coin_heap(0.0, -0.15, 1.3, 0.85, 34, seed=76, r=0.36)
+    o.append(coin((0.0, -1.25, 0.42), (75, 0, 0), r=0.46))
+    for loc, s in (((-1.45, -0.5, 1.5), 0.26), ((1.5, -0.6, 1.7), 0.2)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 18, "yaw": 0}
+
+
+def item_free_250k():  # free tier 4: a fat piggy bank with a coin going in
+    PINK = mat("pig", "ff8fb8", rough=0.3, coat=0.6)
+    PINK_D = mat("pig_d", "e5608f", rough=0.35, coat=0.4)
+    o = []
+    o.append(sphere("Body", 1.0, (0, 0, 1.15), PINK, scale=(1.25, 1.0, 0.98)))
+    o.append(cyl("Snout", 0.38, 0.3, (-1.28, -0.0, 1.2), PINK, (0, 90, 0), bev=0.1))
+    for y in (-0.12, 0.12):
+        o.append(sphere("Nostril", 0.07, (-1.44, y, 1.2), PINK_D, scale=(0.5, 1, 1.3)))
+    for y in (-0.48, 0.48):
+        o.append(cyl("Ear", 0.24, 0.42, (-0.65, y, 2.0), PINK_D, (0, -20, 0), bev=0.05, verts=24, r2=0.04))
+        o.append(sphere("Eye", 0.09, (-1.05, y * 0.62, 1.55), M["ink"], scale=(0.6, 1, 1.25)))
+        o.append(sphere("Glint", 0.03, (-1.1, y * 0.62 - 0.03, 1.6), M["white"]))
+    for x in (-0.6, 0.6):
+        for y in (-0.5, 0.5):
+            o.append(cyl("Leg", 0.22, 0.45, (x, y, 0.22), PINK, bev=0.07, verts=32))
+    o.append(torus("Tail", 0.13, 0.04, (1.3, 0, 1.3), PINK_D, (0, 90, 0), nv=10))
+    o.append(box("Slot", (0.62, 0.1, 0.06), (0.05, 0, 2.1), M["ink"], bev=0.02))
+    o.append(coin((0.05, 0, 2.4), (90, 0, 90), r=0.34))
+    pig = group("Pig", o, (0.1, 0.2, 0), (0, 0, 35))
+    out = [pig]
+    out += coin_stack(1.3, -0.95, 6, seed=81, r=0.34)
+    out += coin_stack(-1.35, -0.85, 3, seed=82, r=0.34)
+    out.append(coin((-0.3, -1.25, 0.05), r=0.34))
+    out.append(coin((0.4, -1.3, 0.3), (70, 0, 15), r=0.34))
+    for loc, s in (((-1.5, -0.6, 2.4), 0.26), ((1.55, -0.7, 2.6), 0.22)):
+        out.append(sparkle_obj(loc, s))
+    return group("Item", out), {"elev": 14, "yaw": 0}
+
+
+def item_free_500k():  # free tier 5: a gift box bursting with coins
+    BOX = mat("giftbox", "36c14a", rough=0.3, coat=0.6)
+    RIB = mat("ribbon", "ffcf2e", rough=0.25, coat=0.6)
+    o = []
+    S, Hb = 2.2, 1.5
+    o.append(box("Box", (S, S, Hb), (0, 0, Hb / 2), BOX, bev=0.08))
+    o.append(box("RibV", (0.38, S + 0.04, Hb + 0.02), (0, 0, Hb / 2), RIB, bev=0.04))
+    o.append(box("RibH", (S + 0.04, 0.38, Hb + 0.02), (0, 0, Hb / 2), RIB, bev=0.04))
+    # lid popped up and tilted back, bow on top
+    lid = [box("Lid", (S + 0.2, S + 0.2, 0.42), (0, 0, 0), BOX, bev=0.08)]
+    lid.append(box("LidRibV", (0.4, S + 0.24, 0.44), (0, 0, 0), RIB, bev=0.04))
+    lid.append(box("LidRibH", (S + 0.24, 0.4, 0.44), (0, 0, 0), RIB, bev=0.04))
+    for a in (-35, 35):
+        lid.append(torus("Loop", 0.42, 0.13, (0.42 * math.copysign(1, a), 0, 0.42), RIB, (90, a, 0), zscale=1.0, nv=14))
+    lid.append(sphere("Knot", 0.2, (0, 0, 0.3), RIB))
+    o.append(group("LidG", lid, (0.15, 0.75, Hb + 0.95), (-30, 0, -12)))
+    heap = coin_heap(0.0, -0.05, 1.05, 0.7, 30, seed=91, r=0.3)
+    for c in heap:
+        c.location.z += Hb - 0.05
+    o += heap
+    for k, (x, z) in enumerate(((-0.6, Hb + 0.85), (0.55, Hb + 1.0), (-0.1, Hb + 1.15), (0.95, Hb + 0.7))):
+        o.append(coin((x, -0.4, z), (60 + k * 20, 10 * k, 30 * k), r=0.3))
+    o += coin_stack(-1.6, -1.15, 5, seed=92, r=0.34)
+    o.append(coin((1.45, -1.2, 0.05), r=0.34))
+    o.append(coin((1.05, -1.35, 0.3), (70, 0, 20), r=0.34))
+    for loc, s in (((-1.75, -0.8, 2.9), 0.3), ((1.85, -0.8, 2.3), 0.24)):
+        o.append(sparkle_obj(loc, s))
+    return group("Item", o), {"elev": 14, "yaw": 0}
+
+
 ITEMS = {
     "cash_x2": item_cash_x2,
     "lucky_eggs": item_lucky_eggs,
@@ -860,6 +1128,17 @@ ITEMS = {
     "rare_eggs": item_rare_eggs,
     "tab_star": tab_star,
     "tab_crown": tab_crown,
+    "vip": item_vip,
+    "pack_100k": item_pack_100k,
+    "pack_500k": item_pack_500k,
+    "pack_1_5m": item_pack_1_5m,
+    "pack_5m": item_pack_5m,
+    "pack_15m": item_pack_15m,
+    "free_25k": item_free_25k,
+    "free_50k": item_free_50k,
+    "free_100k": item_free_100k,
+    "free_250k": item_free_250k,
+    "free_500k": item_free_500k,
 }
 ALL = {**EGGS, **ITEMS}
 

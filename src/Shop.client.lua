@@ -1,18 +1,21 @@
 --!strict
--- Robux shop UI. Rebuilt 2026-10-10 on Shared.Skin after the user's reference recording (an egg-simulator Shop):
--- green glossy header with the title + red X, a dark studded body that scrolls through "-- SECTION --" groups
--- (FEATURED wide card with a BEST VALUE! ribbon, GAME PASSES and CASH as 3-card rows, EGGS as a wide card), every
--- card a bright sunburst tile with its Blender-rendered picture (Shared.ArtAssets, tools/shop_icons.py) floating
--- gently, the name over the picture and a chunky green Robux price button; icon shortcuts beside the window jump to
--- each section. Items without artwork fall back to a little spinning block model.
--- v3 (2026-10-23, docs/UI_STYLE_V3.md, crnuch's reference video): gold striped header, breathing pictures on turning
--- sunbursts, gold card titles, glinting buy buttons, red "+N% more" value tags on the cash packs (coins per Robux
--- against the first pack), coloured side tabs that follow the scroll, OWNED in gold, LOCKED / SOON greyed.
+-- Robux shop UI. Rebuilt 2026-10-10 on Shared.Skin after the user's reference recording (an egg-simulator Shop); v3
+-- (2026-10-23, docs/UI_STYLE_V3.md): gold striped header, breathing pictures, glinting buy buttons, coloured side tabs.
+-- v4 (2026-11-02, crnuch's shop redesign brief), top to bottom:
+--   YOUR PICKS      bought pick-a-lawyer tokens waiting to be spent (unchanged)
+--   FEATURED        ONE offer chosen for this player right now: a free gift ready to claim > VIP daily cash ready >
+--                   the next cash-journey pack > the first pass they don't own > Pick a Legendary (featuredItem)
+--   CASH JOURNEY    Config.Shop.CashJourney as numbered steps on a track: done (green check), available (lit, the
+--                   only one that moves) or locked ("Finish step N first!"). FREE tags only on a claimable step.
+--                   "+N% more" value tags only once BOTH live Robux prices are known (MarketplaceService)
+--   PASSES          one-time game passes, 2 to a row with room for long names (Id 0 = not on sale = not shown)
+--   CASH TOP-UPS    the repeatable income products, each with "about +X coins" from your income now (CoinsPerMinute)
+--   PICK A LAWYER   the Legendary / Mythic / Supreme products as wide cards with the lawyer in 3D (2026-11-02)
+-- Every item picture is a Blender render (tools/shop_icons.py -> Shared.ArtAssets.Shop[Key]); no 3D stand-ins.
 -- Items, ids and prices: Config.Shop. Server: Server.ShopService. This script only PROMPTS purchases
 -- (MarketplaceService); the server alone grants anything. Opened by the SHOP tile in the HUD's menu column
 -- (Shared.HudMenu) and by the ShopPrompt on Hub.ShopStall.
--- PICK A LAWYER (2026-11-02, crnuch): the Legendary / Mythic / Supreme products (Config.Shop.Products PickRarity) are
--- wide cards with the lawyer in 3D; a bought pick is a token (player attribute PickTokens "5:1,7:2") shown as a YOUR
+-- PICK A LAWYER (2026-11-02, crnuch): a bought pick is a token (player attribute PickTokens "5:1,7:2") shown as a YOUR
 -- PICKS card at the top, and the picker window lists every lawyer of that rarity - tap PICK, then SURE? (it can't be
 -- undone) -> Remotes.PickLawyer. A new token opens the picker by itself.
 
@@ -24,7 +27,6 @@ local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
-local HatchShells = require(Shared:WaitForChild("HatchShells") :: ModuleScript) :: any
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
 local ArtAssets = require(Shared:WaitForChild("ArtAssets") :: ModuleScript) :: any
@@ -33,96 +35,142 @@ local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 
 local make, text = Skin.make, Skin.text
 local Icons = HudMenu.Icons
-local W, H = 1000, 620
-local FEATURED_KEY = "Cash100K" -- first cash pass starts the claim path
+local W, H = 1000, 640
+local WHITE = Color3.new(1, 1, 1)
+local TITLE_GOLD = Color3.fromHex("FFE15A") -- v3: card titles are yellow with the ink outline
+local MUTED = Color3.fromHex("6E5A96") -- locked (Skin's muted purple: no grey, crnuch)
+local DONE = Color3.fromHex("4B2D86") -- a finished journey step: quiet, out of the way
+local PASS_ORDER = { "VIP", "DoubleCash", "LuckyEggs", "SpeedyCases" } -- the featured spot's pass preference
 
 ------------------------------------------------------------------ the window
 local win = Skin.window({ Name = "Shop", Title = "Shop", Color = "Gold", Icon = Icons.Cart, Size = Vector2.new(W, H), DisplayOrder = 32 }) -- above BigCase (30) toasts
 local scroller = Skin.scroller(win.body)
 
------------------------------------------------------------------- 3D item pictures (little voxel builds, spinning)
-local spinners: { { model: Model, base: CFrame } } = {}
-local function box(model: Model, size: Vector3, cf: CFrame, color: Color3, material: Enum.Material?, shape: Enum.PartType?)
-	local p = Instance.new("Part")
-	p.Anchored = true
-	p.Size = size
-	p.CFrame = cf
-	p.Color = color
-	p.Material = material or Enum.Material.SmoothPlastic
-	if shape then
-		p.Shape = shape
+------------------------------------------------------------------ item lookups + state (the server is the source of truth;
+-- these only read the attributes it sets)
+local function findItem(list: { any }, key: string): any?
+	for _, it in list do
+		if it.Key == key then
+			return it
+		end
 	end
-	p.Parent = model
+	return nil
 end
-local WHITE = Color3.new(1, 1, 1)
-local PICTURES: { [string]: (Model) -> number } = {
-	cash = function(m) -- a fanned stack of bills and a pile of gold coins; returns its size
-		for k = 0, 4 do
-			box(m, Vector3.new(4.2, 0.45, 2.2), CFrame.new(-0.6, -1.2 + k * 0.47, 0) * CFrame.Angles(0, math.rad(k * 9 - 18), 0), Color3.fromRGB(70, 185, 75))
-			box(m, Vector3.new(1.3, 0.47, 1.0), CFrame.new(-0.6, -1.2 + k * 0.47, 0) * CFrame.Angles(0, math.rad(k * 9 - 18), 0), Color3.fromRGB(45, 140, 55))
-		end
-		for k = 0, 5 do
-			box(m, Vector3.new(0.4, 1.5, 1.5), CFrame.new(1.7 + (k % 2) * 0.5, -1.2 + k * 0.42, 1.2) * CFrame.Angles(0, 0, math.pi / 2), Color3.fromRGB(255, 196, 40), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		end
-		return 6
-	end,
-	egg = function(m) -- the real Briefcase egg (Shared.HatchShells, outer layer only)
-		for _, s in HatchShells.EggMachine.shards do
-			for _, b in s.boxes do
-				if b[10] == 0 then
-					box(m, Vector3.new(b[4], b[5], b[6]), CFrame.new(b[1], b[2], b[3]), Color3.new(b[7], b[8], b[9]))
-				end
-			end
-		end
-		return 9.5
-	end,
-	clock = function(m) -- a stopwatch
-		box(m, Vector3.new(0.9, 5, 5), CFrame.Angles(0, math.pi / 2, 0), Color3.fromRGB(235, 60, 60), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		box(m, Vector3.new(0.3, 4, 4), CFrame.new(0, 0, -0.35) * CFrame.Angles(0, math.pi / 2, 0), WHITE, Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-		box(m, Vector3.new(0.25, 1.6, 0.12), CFrame.new(0, 0.7, -0.55), Color3.fromRGB(40, 40, 50))
-		box(m, Vector3.new(1.2, 0.25, 0.12), CFrame.new(0.5, 0, -0.55), Color3.fromRGB(40, 40, 50))
-		box(m, Vector3.new(0.9, 0.8, 0.9), CFrame.new(0, 2.9, 0), Color3.fromRGB(90, 90, 110))
-		box(m, Vector3.new(1.5, 0.5, 0.9), CFrame.new(0, 3.4, 0), Color3.fromRGB(235, 60, 60))
-		return 6.5
-	end,
-	briefcase = function(m) -- a lawyer's briefcase
-		box(m, Vector3.new(5, 3.4, 1.4), CFrame.new(0, -0.4, 0), Color3.fromRGB(120, 72, 40))
-		box(m, Vector3.new(5.1, 0.35, 1.5), CFrame.new(0, 0.5, 0), Color3.fromRGB(90, 52, 28))
-		box(m, Vector3.new(0.7, 0.6, 1.6), CFrame.new(0, 0.5, 0), Color3.fromRGB(255, 200, 40))
-		box(m, Vector3.new(2, 0.4, 0.5), CFrame.new(0, 1.9, 0), Color3.fromRGB(70, 42, 22))
-		box(m, Vector3.new(0.4, 0.8, 0.5), CFrame.new(-0.8, 1.5, 0), Color3.fromRGB(70, 42, 22))
-		box(m, Vector3.new(0.4, 0.8, 0.5), CFrame.new(0.8, 1.5, 0), Color3.fromRGB(70, 42, 22))
-		return 6
-	end,
-}
--- the rendered artwork floats and sways a little (cheap: one sine per card per frame)
-local floaters: { { image: ImageLabel, phase: number } } = {}
-local function picture(parent: GuiObject, kind: string, z: number, art: string?)
-	if art then
-		local img = make("ImageLabel", {
-			Name = "Picture", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1),
-			BackgroundTransparency = 1, Image = art, ScaleType = Enum.ScaleType.Fit, ZIndex = z, Parent = parent,
-		})
-		Skin.breathe(img, 5, 0.45) -- v3: the reference's pictures tilt + swell
-		return
+
+local journeyIndex: { [string]: number } = {}
+for i, key in Config.Shop.CashJourney do
+	journeyIndex[key] = i
+end
+
+local prices: { [string]: number } = {} -- verified live Robux prices (GetProductInfo)
+local offSale: { [string]: boolean } = {}
+local pending: { [string]: boolean } = {}
+local claimRemote = ReplicatedStorage.Remotes:WaitForChild("ClaimFreeShopReward") :: RemoteEvent
+local vipClaim = ReplicatedStorage.Remotes:WaitForChild("ClaimVIPDaily") :: RemoteFunction
+
+local function live(item: any): boolean
+	return item.Id ~= nil and item.Id ~= 0 and not offSale[item.Key]
+end
+
+local function owns(item: any): boolean
+	return player:GetAttribute("Pass" .. item.Key) == true
+end
+
+local function stepDone(key: string): boolean
+	return player:GetAttribute("FreeShopClaim" .. key) == true or player:GetAttribute("CashPassClaim" .. key) == true
+		or player:GetAttribute("Pass" .. key) == true
+end
+
+local function unlocked(item: any): boolean
+	local previous = item.Prerequisite
+	if not previous then
+		return true
 	end
-	local vf = make("ViewportFrame", {
-		Name = "Picture", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Ambient = Color3.fromRGB(200, 200, 205),
-		LightColor = Color3.fromRGB(255, 250, 240), LightDirection = Vector3.new(-0.5, -1, -0.6), ZIndex = z, Parent = parent,
+	if string.sub(previous, 1, 4) == "Free" then
+		return player:GetAttribute("FreeShopClaim" .. previous) == true
+	end
+	return player:GetAttribute("CashPassClaim" .. previous) == true
+end
+
+local function vipReady(): boolean
+	return (player:GetAttribute("VIPLastClaimDay") or -1) < os.time() // 86400
+end
+
+local function lockReason(item: any): string
+	local n = item.Prerequisite and journeyIndex[item.Prerequisite]
+	return if n then "Finish step " .. n .. " first!" else "Claim the one before it first!"
+end
+
+local function priceText(item: any): string
+	return Skin.ROBUX .. tostring(prices[item.Key] or item.Price)
+end
+
+-- what the item's button shows: state ("default" | "pending" | "owned" | "disabled"), label, reason
+local function stateOf(item: any, kind: string): (string, string, string?)
+	if kind == "free" then
+		if player:GetAttribute("FreeShopClaim" .. item.Key) == true then
+			return "owned", "CLAIMED", nil
+		elseif not unlocked(item) then
+			return "disabled", "LOCKED", lockReason(item)
+		end
+		return if pending[item.Key] then "pending" else "default", "CLAIM FREE", nil
+	end
+	if kind == "pass" then
+		if item.Coins and stepDone(item.Key) then
+			return "owned", "OWNED", nil
+		elseif item.Key == "VIP" and owns(item) then
+			if not vipReady() then
+				return "owned", "CLAIMED TODAY", nil
+			end
+			return if pending[item.Key] then "pending" else "default", "DAILY CASH!", nil
+		elseif owns(item) then
+			return "owned", "OWNED", nil
+		elseif not unlocked(item) then
+			return "disabled", "LOCKED", lockReason(item)
+		end
+	end
+	if not live(item) then
+		return "disabled", "OFF SALE", "Not on sale right now"
+	end
+	return if pending[item.Key] then "pending" else "default", priceText(item), nil
+end
+
+-- coins per Robux against the journey's first pack; nil until both live prices are verified
+local function moreCoins(item: any): number?
+	local first = findItem(Config.Shop.Passes, Config.Shop.CashJourney[1])
+	if not (item.Coins and first and first.Coins and item ~= first and prices[item.Key] and prices[first.Key]) then
+		return nil
+	end
+	local more = math.floor(((item.Coins / prices[item.Key]) / (first.Coins / prices[first.Key]) - 1) * 100 + 0.5)
+	return if more >= 5 then more else nil
+end
+
+-- an income product's payout right now (the server's formula: Config.Rewards.MinCoins floor)
+local function estimate(item: any): number
+	local perMinute = tonumber(player:GetAttribute("CoinsPerMinute")) or 0
+	return math.max(Config.Rewards.MinCoins, math.floor(perMinute * item.Minutes))
+end
+
+------------------------------------------------------------------ pictures
+local function picture(parent: GuiObject, key: string, z: number, alive: boolean): ImageLabel?
+	local art = ArtAssets.Shop[key]
+	if not art then
+		warn("[Shop] no artwork for", key) -- run_checks: every shop item has ArtAssets.Shop art
+		return nil
+	end
+	local img = make("ImageLabel", {
+		Name = "Picture", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1, Image = art, ScaleType = Enum.ScaleType.Fit, ZIndex = z, Parent = parent,
 	})
-	local m = Instance.new("Model")
-	local size = (PICTURES[kind] or PICTURES.cash)(m)
-	m.Parent = vf
-	local cam = Instance.new("Camera")
-	cam.FieldOfView = 30
-	cam.CFrame = CFrame.lookAt(Vector3.new(0, size * 0.35, -size * 2.3), Vector3.new(0, 0, 0))
-	cam.Parent = vf
-	vf.CurrentCamera = cam
-	table.insert(spinners, { model = m, base = m:GetPivot() })
+	if alive then
+		Skin.breathe(img, 4, 0.4) -- only what you can act on moves
+	end
+	return img
 end
 
 ------------------------------------------------------------------ lawyers in 3D (the pick-a-lawyer cards + picker)
 -- one posed model per lawyer id (Shared.SkinLook on an invisible stand-in, like the LAWYERS panel), cloned per viewport
+local spinners: { { model: Model, base: CFrame } } = {}
 local lawyerCache: { [string]: Model | false } = {}
 local function lawyerModel(id: string): Model?
 	local cached = lawyerCache[id]
@@ -196,76 +244,45 @@ local function lawyerPicture(parent: GuiObject, rarity: number, z: number)
 end
 
 ------------------------------------------------------------------ cards
-type Card = { item: any, kind: string, price: any, frame: Frame }
+type Card = { item: any, kind: string, price: any, frame: GuiObject }
 local cards: { Card } = {}
-local prices: { [string]: number } = {}
-local pending: { [string]: boolean } = {}
-local claimRemote = ReplicatedStorage.Remotes:WaitForChild("ClaimFreeShopReward") :: RemoteEvent
-local vipClaim = ReplicatedStorage.Remotes:WaitForChild("ClaimVIPDaily") :: RemoteFunction
-
-local function unlocked(item: any): boolean
-	local previous = item.Prerequisite
-	if not previous then return true end
-	if string.sub(previous, 1, 4) == "Free" then
-		return player:GetAttribute("FreeShopClaim" .. previous) == true
-	end
-	return player:GetAttribute("CashPassClaim" .. previous) == true
-end
-
-local function owns(item: any): boolean
-	return player:GetAttribute("Pass" .. item.Key) == true
-end
 
 local function refreshCard(c: Card)
-	local item, price = c.item, c.price
-	-- v3: states, not just colours (Skin Button.setState): owned = gold, locked / soon = grey, waiting = "..."
-	local function show(t: string, state: string, why: string?)
-		price.setText(t)
-		price.setState(state, why)
-	end
-	if c.kind == "free" and player:GetAttribute("FreeShopClaim" .. item.Key) == true then
-		show("CLAIMED", "owned")
-	elseif c.kind == "pass" and item.Key == "VIP" and owns(item) then
-		if (player:GetAttribute("VIPLastClaimDay") or -1) >= os.time() // 86400 then
-			show("CLAIMED TODAY", "owned")
-		elseif pending[item.Key] then
-			show("CLAIM VIP DAILY", "pending")
-		else
-			show("CLAIM VIP DAILY", "default")
+	local state, label, why = stateOf(c.item, c.kind)
+	c.price.setText(label)
+	c.price.setState(state, why)
+end
+
+local function refreshKey(key: string?)
+	for _, c in cards do
+		if key == nil or c.item.Key == key then
+			refreshCard(c)
 		end
-	elseif c.kind == "pass" and owns(item) then
-		show("OWNED", "owned")
-	elseif not unlocked(item) then
-		show("LOCKED", "disabled", "Claim the one before it first!")
-	elseif c.kind ~= "free" and item.Id == 0 then
-		show("SOON", "disabled", "Coming soon!")
-	elseif pending[item.Key] then
-		show(Skin.ROBUX .. (prices[item.Key] or item.Price), "pending")
-	elseif c.kind == "free" then
-		show("CLAIM FREE", "default")
-	else
-		show(Skin.ROBUX .. (prices[item.Key] or item.Price), "default")
 	end
 end
 
 local function hookPurchase(c: Card)
 	local item, kind = c.item, c.kind
 	c.price.button.Activated:Connect(function()
-		if player:GetAttribute("PromoMode") == true then return end
-		if not unlocked(item) or pending[item.Key] or (kind == "pass" and (item.Id == 0 or (owns(item) and item.Key ~= "VIP"))) 
-			or (item.Key == "VIP" and owns(item) and (player:GetAttribute("VIPLastClaimDay") or -1) >= os.time() // 86400)
-			or (kind == "free" and player:GetAttribute("FreeShopClaim" .. item.Key) == true)
-			or (kind == "product" and item.Id == 0) then
+		if player:GetAttribute("PromoMode") == true then
+			return
+		end
+		local state = stateOf(item, kind)
+		if state ~= "default" then -- owned / locked / off sale / already waiting: nothing to do
 			return
 		end
 		pending[item.Key] = true
-		refreshCard(c)
+		refreshKey(item.Key)
 		if kind == "pass" and item.Key == "VIP" and owns(item) then
 			task.spawn(function()
-				local ok, result = pcall(function() return vipClaim:InvokeServer() end)
+				local ok, result = pcall(function()
+					return vipClaim:InvokeServer()
+				end)
 				pending[item.Key] = nil
-				refreshCard(c)
-				if not ok then warn("[Shop] VIP claim failed", result) end
+				refreshKey(item.Key)
+				if not ok then
+					warn("[Shop] VIP claim failed", result)
+				end
 			end)
 		elseif kind == "pass" then
 			MarketplaceService:PromptGamePassPurchase(player, item.Id)
@@ -275,98 +292,268 @@ local function hookPurchase(c: Card)
 			MarketplaceService:PromptProductPurchase(player, item.Id)
 		end
 		task.delay(20, function() -- safety: never leave a card stuck on "..."
-			pending[item.Key] = nil
-			refreshCard(c)
+			if pending[item.Key] then
+				pending[item.Key] = nil
+				refreshKey(item.Key)
+			end
 		end)
 	end)
 end
 
--- a 3-per-row card: picture on a sunburst, name over the picture's foot, one line of text, the price button
-local CELL = Vector2.new(296, 300)
-local TITLE_GOLD = Color3.fromHex("FFE15A") -- v3: card titles are yellow with the ink outline (the reference's "2x Speed Forever")
-local function smallCard(parent: GuiObject, item: any, kind: string, order: number): Card
-	local frame = Skin.card(parent, { Color = item.Color, LayoutOrder = order, GlowAt = Vector2.new(0.5, 0.34) })
-	local z = frame.ZIndex + 2
-	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(10, 4), Size = UDim2.new(1, -20, 0, 172), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
-	picture(art, item.Icon, z, ArtAssets.Shop[item.Key])
-	text({ Name = "Name", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 150), Size = UDim2.new(1, -16, 0, 42),
-		Text = item.Name, TextColor3 = TITLE_GOLD, ZIndex = z + 1, Parent = frame }, 32, 4)
-	text({ Name = "Info", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 192), Size = UDim2.new(1, -24, 0, 38),
-		Text = item.Text, FontFace = Skin.Fonts.Body, TextWrapped = true, ZIndex = z + 1, Parent = frame }, 19, 2)
-	local price = Skin.button({ Parent = frame, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -12),
-		Size = UDim2.new(1, -36, 0, 52), Style = "Green", Font = Skin.Fonts.Number, TextSize = 34, TextStroke = 3, ZIndex = z + 1,
-		Glint = true })
-	local c: Card = { item = item, kind = kind, price = price, frame = frame }
+local function card(c: Card): Card
+	table.insert(cards, c)
 	hookPurchase(c)
 	refreshCard(c)
 	return c
 end
 
--- a full-width card: picture on the left, big name + text + price on the right, optional ribbon
-local function wideCard(parent: GuiObject, item: any, kind: string, order: number, ribbon: string?): Card
-	local frame = Skin.card(parent, { Color = item.Color, Size = UDim2.new(1, -8, 0, 230), LayoutOrder = order, GlowAt = Vector2.new(0.2, 0.5) })
-	frame.ClipsDescendants = false -- the ribbon pokes out over the corner
+local function buyButton(frame: GuiObject, z: number, props: { [string]: any }): any
+	props.Parent = frame
+	props.Style = props.Style or "Green"
+	props.Font = Skin.Fonts.Number
+	props.ZIndex = z + 1
+	props.TextStroke = props.TextStroke or 3
+	return Skin.button(props)
+end
+
+-- a card that keeps its sunburst inside (ClipsDescendants) in a plain holder that ribbons and tags can poke out of
+local function heldCard(parent: GuiObject, opts: { [string]: any }): (Frame, Frame)
+	local holder = make("Frame", { Name = "Holder", Size = opts.Size or UDim2.fromScale(1, 1), LayoutOrder = opts.LayoutOrder,
+		BackgroundTransparency = 1, ZIndex = parent.ZIndex + 1, Parent = parent })
+	opts.Size, opts.LayoutOrder = UDim2.fromScale(1, 1), nil
+	return holder, Skin.card(holder, opts)
+end
+
+-- small print under a section title ("Buy once, yours forever")
+local function caption(s: string, order: number)
+	text({ Name = "Caption", Size = UDim2.new(1, -8, 0, 28), LayoutOrder = order, Text = s, FontFace = Skin.Fonts.Body,
+		TextColor3 = Skin.TextSoft, ZIndex = scroller.ZIndex + 1, Parent = scroller }, 24, 2)
+end
+
+-- a white tick drawn from two bars (no font glyph to go missing)
+local function tick(parent: GuiObject, px: number, z: number)
+	local holder = make("Frame", { Name = "Tick", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.55),
+		Size = UDim2.fromOffset(px, px), BackgroundTransparency = 1, ZIndex = z, Parent = parent })
+	local w = math.max(4, math.floor(px * 0.2))
+	make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.3, 0.62), Size = UDim2.fromOffset(w, px * 0.48),
+		Rotation = -45, BackgroundColor3 = WHITE, ZIndex = z, Parent = holder }, { Skin.corner(w // 2), Skin.stroke(2) })
+	make("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.6, 0.45), Size = UDim2.fromOffset(w, px * 0.86),
+		Rotation = 40, BackgroundColor3 = WHITE, ZIndex = z, Parent = holder }, { Skin.corner(w // 2), Skin.stroke(2) })
+end
+
+------------------------------------------------------------------ FEATURED: what this player can buy or claim right now
+type Pick = { item: any, kind: string, kicker: string, ribbon: string }
+local function featuredItem(): Pick?
+	for _, key in Config.Shop.CashJourney do -- 1. a free gift waiting
+		local free = findItem(Config.Shop.FreeRewards, key)
+		if free and stateOf(free, "free") == "default" then
+			return { item = free, kind = "free", kicker = "FREE GIFT READY!", ribbon = "FREE!" }
+		end
+	end
+	local vip = findItem(Config.Shop.Passes, "VIP")
+	if vip and owns(vip) and vipReady() then -- 2. today's VIP cash
+		return { item = vip, kind = "pass", kicker = "YOUR VIP CASH IS READY!", ribbon = "VIP" }
+	end
+	for i, key in Config.Shop.CashJourney do -- 3. the next pack on the journey
+		local pass = findItem(Config.Shop.Passes, key)
+		if pass and live(pass) and not stepDone(key) and unlocked(pass) then
+			return { item = pass, kind = "pass", kicker = "CASH JOURNEY - STEP " .. i .. " OF " .. #Config.Shop.CashJourney,
+				ribbon = if i == 1 then "START HERE" else "NEXT STEP" }
+		end
+	end
+	for _, key in PASS_ORDER do -- 4. a pass they don't have yet
+		local pass = findItem(Config.Shop.Passes, key)
+		if pass and live(pass) and not owns(pass) then
+			return { item = pass, kind = "pass", kicker = "FOREVER PASS", ribbon = "POPULAR" }
+		end
+	end
+	for _, product in Config.Shop.Products do -- 5. choose your own lawyer
+		if product.PickRarity and live(product) then
+			return { item = product, kind = "product", kicker = "YOU CHOOSE THE LAWYER", ribbon = "YOU CHOOSE!" }
+		end
+	end
+	return nil
+end
+
+local function featuredCard(f: Pick, order: number)
+	local item = f.item
+	local holder, frame = heldCard(scroller, { Color = item.Color, Size = UDim2.new(1, -8, 0, 236), LayoutOrder = order, GlowAt = Vector2.new(0.19, 0.5) })
 	local z = frame.ZIndex + 2
-	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(16, 6), Size = UDim2.new(0.36, 0, 1, -12), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(18, 8), Size = UDim2.new(0, 300, 1, -16), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
 	if item.PickRarity then
 		lawyerPicture(art, item.PickRarity, z)
 	else
-		picture(art, item.Icon, z, ArtAssets.Shop[item.Key])
+		picture(art, item.Key, z, true)
 	end
+	local left = 340
+	text({ Name = "Kicker", Position = UDim2.fromOffset(left, 18), Size = UDim2.new(1, -left - 170, 0, 30), Text = f.kicker,
+		TextColor3 = Skin.Lime, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 26, 3)
+	text({ Name = "Name", Position = UDim2.fromOffset(left, 48), Size = UDim2.new(1, -left - 30, 0, 56), Text = string.upper(item.Name),
+		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 50, 5)
+	local info = item.Text
+	if item.Minutes then
+		info = "About +" .. Formulas.formatCoins(estimate(item)) .. " coins for you right now"
+	end
+	text({ Name = "Info", Position = UDim2.fromOffset(left, 108), Size = UDim2.new(1, -left - 30, 0, 32), Text = info, FontFace = Skin.Fonts.Body,
+		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 26, 2)
+	local price = buyButton(frame, z, { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -22, 1, -18), Size = UDim2.fromOffset(280, 72),
+		TextSize = 38, TextStroke = 4, Glint = true })
+	Skin.ribbon(holder, f.ribbon, "Red", z + 3)
+	local more = moreCoins(item)
+	if more then
+		Skin.tag(holder, "+" .. more .. "% MORE COINS", { Position = UDim2.new(1, -162, 1, -94), ZIndex = z + 4, Height = 38, TextSize = 28 })
+	end
+	card({ item = item, kind = f.kind, price = price, frame = frame })
+end
+
+------------------------------------------------------------------ CASH JOURNEY: numbered steps on a track
+local ROW_H = 112
+local function journeyRow(i: number, item: any, kind: string, order: number)
+	local count = #Config.Shop.CashJourney
+	local done = stepDone(item.Key)
+	local state = stateOf(item, kind)
+	local open = state == "default" or state == "pending"
+	local row = make("Frame", { Name = "Step" .. i, Size = UDim2.new(1, -8, 0, ROW_H), LayoutOrder = order, BackgroundTransparency = 1,
+		ZIndex = scroller.ZIndex + 1, Parent = scroller })
+	local z = row.ZIndex
+	-- the track: a rail through every node (green behind finished steps) and a numbered node
+	local nodeX, nodeY = 38, ROW_H // 2
+	local railTop = if i == 1 then nodeY else -6
+	local railBottom = if i == count then nodeY else ROW_H + 6
+	make("Frame", { Name = "Rail", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromOffset(nodeX, railTop),
+		Size = UDim2.fromOffset(10, railBottom - railTop), BackgroundColor3 = if done then Skin.Palette.Green.base else MUTED,
+		BorderSizePixel = 0, ZIndex = z, Parent = row }, { Skin.stroke(2) })
+	local nodeSw = if done then Skin.Palette.Green elseif open then Skin.Palette.Gold else Skin.swatch(MUTED)
+	local node = make("Frame", { Name = "Node", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(nodeX, nodeY),
+		Size = UDim2.fromOffset(60, 60), BackgroundColor3 = WHITE, ZIndex = z + 1, Parent = row }, {
+		Skin.corner(30), Skin.stroke(4),
+		make("UIGradient", { Rotation = 90, Color = ColorSequence.new(nodeSw.light, nodeSw.base) }),
+	})
+	if done then
+		tick(node, 34, z + 2)
+	else
+		text({ Size = UDim2.fromScale(1, 1), Text = tostring(i), ZIndex = z + 2, Parent = node }, 32, 3)
+	end
+	if open then
+		Skin.breathe(node, 0, 1.1)
+	end
+	-- the step's card
+	local color = if done then DONE elseif not open then MUTED elseif kind == "free" then Skin.Palette.Gold else Skin.Palette.Green
+	local frame = Skin.card(row, { Color = color, Position = UDim2.fromOffset(84, 4), Size = UDim2.new(1, -84, 1, -8), GlowAt = Vector2.new(0.08, 0.5),
+		Spin = open, Twinkle = open, ZIndex = z + 1 })
+	local cz = frame.ZIndex + 2
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(8, 4), Size = UDim2.new(0, 110, 1, -8), BackgroundTransparency = 1, ZIndex = cz, Parent = frame })
+	local img = picture(art, item.Key, cz, open)
+	if img and not open then
+		img.ImageTransparency = if done then 0.15 else 0.35
+	end
+	local title = text({ Name = "Name", Position = UDim2.fromOffset(128, 12), Size = UDim2.new(1, -128 - 250, 0, 40), Text = item.Name,
+		TextColor3 = if open then TITLE_GOLD else WHITE, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = cz + 1, Parent = frame }, 32, 3)
+	local sub = item.Text
+	if state == "disabled" and not done then
+		sub = (if kind == "free" then "Free gift - unlocks" else "Unlocks") .. " after step " .. tostring(item.Prerequisite and journeyIndex[item.Prerequisite] or i - 1)
+	end
+	local subtitle = text({ Name = "Info", Position = UDim2.fromOffset(128, 54), Size = UDim2.new(1, -128 - 250, 0, 44), Text = sub,
+		FontFace = Skin.Fonts.Body, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+		ZIndex = cz + 1, Parent = frame }, 24, 2)
+	if not open then
+		title.TextTransparency = 0.15
+		subtitle.TextTransparency = 0.2
+	end
+	local price = buyButton(frame, cz, { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -16, 0.5, 2), Size = UDim2.fromOffset(220, 60),
+		Style = if kind == "free" then "Orange" else "Green", TextSize = 32, Glint = open })
+	if open and kind == "free" then
+		Skin.tag(row, "FREE!", { Color = "Green", Position = UDim2.new(1, -126, 0, 4), ZIndex = cz + 4, Height = 38, TextSize = 28 }) -- on the row: the card clips
+	elseif open then
+		local more = moreCoins(item)
+		if more then
+			Skin.tag(row, "+" .. more .. "% MORE COINS", { Position = UDim2.new(1, -126, 0, 4), ZIndex = cz + 4, Height = 38, TextSize = 28 })
+		end
+	end
+	card({ item = item, kind = kind, price = price, frame = frame })
+end
+
+local function journeyHeader(order: number)
+	local count, done = #Config.Shop.CashJourney, 0
+	for _, key in Config.Shop.CashJourney do
+		if stepDone(key) then
+			done += 1
+		end
+	end
+	local bar = make("Frame", { Name = "Progress", Size = UDim2.new(1, -8, 0, 40), LayoutOrder = order, BackgroundTransparency = 1,
+		ZIndex = scroller.ZIndex + 1, Parent = scroller })
+	local z = bar.ZIndex
+	text({ Size = UDim2.new(0, 330, 1, 0), Text = if done >= count then "JOURNEY COMPLETE!" else done .. " OF " .. count .. " STEPS DONE",
+		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z, Parent = bar }, 26, 3)
+	local track = make("Frame", { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -4, 0.5, 0), Size = UDim2.new(1, -350, 0, 22),
+		BackgroundColor3 = Skin.PanelDeep, ZIndex = z, Parent = bar }, { Skin.corner(11), Skin.stroke(3) })
+	make("Frame", { Size = UDim2.fromScale(done / count, 1), BackgroundColor3 = Skin.Lime, ZIndex = z + 1, Parent = track }, { Skin.corner(11) })
+end
+
+------------------------------------------------------------------ PASSES (one-time): 2 to a row, room for long names
+local function passCard(parent: GuiObject, item: any, order: number)
+	local state = stateOf(item, "pass")
+	local active = state == "default" or state == "pending"
+	local frame = Skin.card(parent, { Color = item.Color, LayoutOrder = order, GlowAt = Vector2.new(0.2, 0.5), Twinkle = false, Spin = active })
+	local z = frame.ZIndex + 2
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(8, 10), Size = UDim2.new(0, 170, 1, -20), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+	picture(art, item.Key, z, active)
+	local nameH = if #item.Name > 14 then 72 else 38 -- long names get two lines instead of shrinking
+	text({ Name = "Name", Position = UDim2.fromOffset(186, 14), Size = UDim2.new(1, -200, 0, nameH), Text = item.Name, TextColor3 = TITLE_GOLD,
+		TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = z + 1, Parent = frame }, 32, 3)
+	text({ Name = "Info", Position = UDim2.fromOffset(186, 18 + nameH), Size = UDim2.new(1, -200, 0, 50), Text = item.Text, FontFace = Skin.Fonts.Body,
+		TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = z + 1, Parent = frame }, 21, 2)
+	local price = buyButton(frame, z, { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -12), Size = UDim2.new(1, -200, 0, 54),
+		Style = if item.Key == "VIP" and owns(item) then "Gold" else "Green", TextSize = 30, Glint = active })
+	card({ item = item, kind = "pass", price = price, frame = frame })
+end
+
+------------------------------------------------------------------ CASH TOP-UPS (repeatable income products)
+local estimates: { { label: TextLabel, item: any } } = {}
+local function topUpCard(parent: GuiObject, item: any, order: number, best: boolean)
+	local holder, frame = heldCard(parent, { Color = item.Color, LayoutOrder = order, GlowAt = Vector2.new(0.5, 0.3), Twinkle = false })
+	local z = frame.ZIndex + 2
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(16, 6), Size = UDim2.new(1, -32, 0, 140), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+	picture(art, item.Key, z, true)
+	text({ Name = "Name", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 146), Size = UDim2.new(1, -20, 0, 38), Text = item.Name,
+		TextColor3 = TITLE_GOLD, ZIndex = z + 1, Parent = frame }, 32, 3)
+	local est = text({ Name = "Estimate", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 184), Size = UDim2.new(1, -20, 0, 32),
+		Text = "", TextColor3 = Skin.Lime, ZIndex = z + 1, Parent = frame }, 28, 3)
+	table.insert(estimates, { label = est, item = item })
+	text({ Name = "Info", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 216), Size = UDim2.new(1, -24, 0, 26),
+		Text = item.Text, FontFace = Skin.Fonts.Body, ZIndex = z + 1, Parent = frame }, 20, 2)
+	local price = buyButton(frame, z, { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -12), Size = UDim2.new(1, -36, 0, 54),
+		TextSize = 32, Glint = true })
+	if best then
+		Skin.ribbon(holder, "BEST VALUE", "Red", z + 3)
+	end
+	card({ item = item, kind = "product", price = price, frame = frame })
+end
+
+local function refreshEstimates()
+	for _, e in estimates do
+		if e.label.Parent then
+			e.label.Text = "about +" .. Formulas.formatCoins(estimate(e.item))
+		end
+	end
+end
+
+------------------------------------------------------------------ PICK A LAWYER: wide cards (as 2026-11-02)
+local function pickCard(item: any, order: number)
+	local holder, frame = heldCard(scroller, { Color = item.Color, Size = UDim2.new(1, -8, 0, 230), LayoutOrder = order, GlowAt = Vector2.new(0.2, 0.5) })
+	local z = frame.ZIndex + 2
+	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(16, 6), Size = UDim2.new(0.36, 0, 1, -12), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+	lawyerPicture(art, item.PickRarity, z)
 	text({ Name = "Name", Position = UDim2.new(0.39, 0, 0, 22), Size = UDim2.new(0.58, 0, 0, 60), Text = string.upper(item.Name),
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 52, 5)
 	text({ Name = "Perk", Position = UDim2.new(0.39, 0, 0, 84), Size = UDim2.new(0.58, 0, 0, 40), Text = item.Banner,
 		TextColor3 = TITLE_GOLD, FontFace = Skin.Fonts.Number, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 36, 4)
 	text({ Name = "Info", Position = UDim2.new(0.39, 0, 0, 126), Size = UDim2.new(0.31, 0, 0, 72), Text = item.Text, FontFace = Skin.Fonts.Body,
 		TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = z + 1, Parent = frame }, 24, 2)
-	local price = Skin.button({ Parent = frame, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -20, 1, -18),
-		Size = UDim2.fromOffset(250, 64), Style = "Green", Font = Skin.Fonts.Number, TextSize = 40, TextStroke = 4, ZIndex = z + 1,
-		Glint = true })
-	if ribbon then
-		Skin.ribbon(frame, ribbon, "Red", z + 3) -- v3: the reference's red BEST VALUE! ribbon
-	end
-	local c: Card = { item = item, kind = kind, price = price, frame = frame }
-	hookPurchase(c)
-	refreshCard(c)
-	return c
-end
-
------------------------------------------------------------------- layout: sections + shortcuts
-local sections: { [string]: GuiObject } = {}
-local function addSection(key: string, title: string, color: string, order: number): number
-	sections[key] = Skin.section(scroller, title, color, order)
-	return order + 1
-end
-
-local function findItem(list: { any }, key: string): any?
-	for _, it in list do
-		if it.Key == key then
-			return it
-		end
-	end
-	return nil
-end
-
--- v3: the reference's red "+66% more" tag on every cash pack after the first (coins per Robux against the first pack),
--- and a green FREE! tag on the free claims
-local function valueTag(c: Card, pass: any?, free: any?)
-	c.frame.ClipsDescendants = false
-	local z = c.frame.ZIndex + 6
-	if free then
-		Skin.tag(c.frame, "FREE!", { Color = "Green", Position = UDim2.new(0.5, 0, 0, 2), ZIndex = z })
-		return
-	end
-	local first = findItem(Config.Shop.Passes, Config.Shop.CashJourney[1])
-	if not (pass and pass.Coins and first and first.Coins and pass ~= first) then
-		return
-	end
-	local function rate(it: any): number
-		return it.Coins / math.max(1, prices[it.Key] or it.Price or 1)
-	end
-	local more = math.floor((rate(pass) / rate(first) - 1) * 100 + 0.5)
-	if more >= 5 then
-		Skin.tag(c.frame, "+" .. more .. "% more", { Position = UDim2.new(0.5, 0, 0, 2), ZIndex = z })
-	end
+	local price = buyButton(frame, z, { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -20, 1, -18), Size = UDim2.fromOffset(250, 64),
+		TextSize = 40, TextStroke = 4, Glint = true })
+	Skin.ribbon(holder, "YOU CHOOSE!", "Red", z + 3)
+	card({ item = item, kind = "product", price = price, frame = frame })
 end
 
 ------------------------------------------------------------------ the pick-a-lawyer picker
@@ -468,6 +655,41 @@ local function openPicker(rarity: number)
 	picker.open()
 end
 
+------------------------------------------------------------------ live prices (Creator Dashboard is the source of truth)
+local priceAsked: { [string]: boolean } = {}
+local onPrices: () -> () = function() end
+local function fetchPrices()
+	local lists = { { Config.Shop.Passes, Enum.InfoType.GamePass }, { Config.Shop.Products, Enum.InfoType.Product } }
+	for _, l in lists do
+		for _, item in l[1] do
+			if item.Id and item.Id ~= 0 and not priceAsked[item.Key] then
+				priceAsked[item.Key] = true
+				task.spawn(function()
+					local ok, info = pcall(MarketplaceService.GetProductInfo, MarketplaceService, item.Id, l[2])
+					if not ok or not info then
+						priceAsked[item.Key] = nil -- ask again on the next open
+						return
+					end
+					if info.PriceInRobux then
+						prices[item.Key] = info.PriceInRobux
+					end
+					if info.IsForSale == false then
+						offSale[item.Key] = true
+					end
+					onPrices()
+				end)
+			end
+		end
+	end
+end
+
+------------------------------------------------------------------ build
+local sections: { [string]: GuiObject } = {}
+local function addSection(key: string, title: string, color: string, order: number): number
+	sections[key] = Skin.section(scroller, title, color, order)
+	return order + 1
+end
+
 local function build()
 	for _, c in scroller:GetChildren() do
 		if c:IsA("GuiObject") then
@@ -476,7 +698,8 @@ local function build()
 	end
 	table.clear(cards)
 	table.clear(spinners)
-	table.clear(floaters)
+	table.clear(estimates)
+	table.clear(sections)
 	local order = 1
 	-- YOUR PICKS: bought pick-a-lawyer tokens waiting to be spent, on top
 	local tokens = pickTokens()
@@ -508,71 +731,105 @@ local function build()
 			order += 1
 		end
 	end
-	-- FEATURED: one pass, big
-	local featured = findItem(Config.Shop.Passes, FEATURED_KEY) or Config.Shop.Passes[1]
-	order = addSection("Featured", "Featured", "Gold", order)
-	if featured then
-		table.insert(cards, wideCard(scroller, featured, "pass", order, "START HERE"))
+	-- FEATURED: one offer, chosen for this player
+	local f = featuredItem()
+	if f then
+		order = addSection("Featured", "Featured", "Gold", order)
+		featuredCard(f, order)
+		order += 1
 	end
+	-- CASH JOURNEY
+	order = addSection("Journey", "Cash Journey", "Green", order)
+	caption("Buy a pack, unlock free gifts. Every step is once per player.", order)
 	order += 1
-	-- GAME PASSES: the rest, 3 to a row
-	order = addSection("Passes", "Passes", "Purple", order)
-	local passGrid = Skin.grid(scroller, CELL, order)
-	order += 1
-	for i, item in Config.Shop.Passes do
-		if item ~= featured and not item.Coins then
-			table.insert(cards, smallCard(passGrid, item, "pass", i))
-		end
-	end
-	-- Cash passes and the real, one-time free claims in purchase order.
-	order = addSection("Cash", "Cash", "Green", order)
-	local cashGrid = Skin.grid(scroller, CELL, order)
+	journeyHeader(order)
 	order += 1
 	for i, key in Config.Shop.CashJourney do
 		local pass = findItem(Config.Shop.Passes, key)
 		local free = findItem(Config.Shop.FreeRewards, key)
-		local item = pass or free
-		if item then
-			local c = smallCard(cashGrid, item, if pass then "pass" else "free", i)
-			table.insert(cards, c)
-			valueTag(c, pass, free)
+		if free then
+			journeyRow(i, free, "free", order)
+		elseif pass and (live(pass) or stepDone(key)) then
+			journeyRow(i, pass, "pass", order)
+		end
+		order += 1
+	end
+	-- PASSES: one-time, the cash packs are on the journey
+	local passes = {}
+	for _, item in Config.Shop.Passes do
+		if not item.Coins and (live(item) or owns(item)) then
+			table.insert(passes, item)
 		end
 	end
-	local others = {}
-	for i, item in Config.Shop.Products do
-		if item.Id ~= 0 then
-			if item.Minutes then
-				table.insert(cards, smallCard(cashGrid, item, "product", i + #Config.Shop.CashJourney))
-			else
-				table.insert(others, item)
+	if #passes > 0 then
+		order = addSection("Passes", "Passes", "Purple", order)
+		caption("Buy once, yours forever", order)
+		order += 1
+		local grid = Skin.grid(scroller, Vector2.new(466, 200), order)
+		order += 1
+		for i, item in passes do
+			passCard(grid, item, i)
+		end
+	end
+	-- CASH TOP-UPS: repeatable, paid from your income
+	local topUps, pickProducts = {}, {}
+	for _, item in Config.Shop.Products do
+		if live(item) then
+			table.insert(if item.Minutes then topUps else pickProducts, item)
+		end
+	end
+	if #topUps > 0 then
+		order = addSection("TopUps", "Cash Top-Ups", "Sky", order)
+		caption("Buy as often as you like - pays from your income right now", order)
+		order += 1
+		-- BEST VALUE = the most minutes per Robux, once every live price is in
+		local best, bestRate = nil, 0
+		for _, item in topUps do
+			if not prices[item.Key] then
+				best = nil
+				break
+			end
+			local rate = item.Minutes / prices[item.Key]
+			if rate > bestRate then
+				best, bestRate = item, rate
 			end
 		end
-	end
-	-- PICK A LAWYER (and anything else): wide cards
-	if #others > 0 then
-		order = addSection("Eggs", "Pick a Lawyer", "Orange", order)
-		for _, item in others do
-			table.insert(cards, wideCard(scroller, item, "product", order, if item.PickRarity then "YOU CHOOSE!" elseif item.RareTokens then "ALWAYS RARE!" else nil))
-			order += 1
+		local grid = Skin.grid(scroller, Vector2.new(306, 316), order)
+		order += 1
+		for i, item in topUps do
+			topUpCard(grid, item, i, item == best)
 		end
+		refreshEstimates()
 	end
-	-- real prices for set-up items (Creator Dashboard is the source of truth)
-	for _, c in cards do
-		local item = c.item
-		if item.Id and item.Id ~= 0 and not prices[item.Key] then
-			task.spawn(function()
-				local ok, info = pcall(MarketplaceService.GetProductInfo, MarketplaceService, item.Id,
-					if c.kind == "pass" then Enum.InfoType.GamePass else Enum.InfoType.Product)
-				if ok and info and info.PriceInRobux then
-					prices[item.Key] = info.PriceInRobux
-					refreshCard(c)
-				end
-			end)
+	-- PICK A LAWYER
+	if #pickProducts > 0 then
+		order = addSection("Lawyers", "Pick a Lawyer", "Orange", order)
+		for _, item in pickProducts do
+			pickCard(item, order)
+			order += 1
 		end
 	end
 end
 
--- shortcuts beside the window: jump the scroll to a section
+-- rebuild in place (state changed while open): keeps the scroll position, one rebuild per frame at most
+local rebuildQueued = false
+local function rebuild()
+	if rebuildQueued or not win.isOpen() then
+		return
+	end
+	rebuildQueued = true
+	task.defer(function()
+		rebuildQueued = false
+		if win.isOpen() then
+			local y = scroller.CanvasPosition
+			build()
+			scroller.CanvasPosition = y
+		end
+	end)
+end
+onPrices = rebuild -- value tags, BEST VALUE and off-sale offers follow the verified prices
+
+------------------------------------------------------------------ side tabs: jump the scroll to a section
 local function jumpTo(key: string)
 	local target = sections[key]
 	if not target then
@@ -583,8 +840,9 @@ local function jumpTo(key: string)
 	Skin.tween(scroller, 0.35, { CanvasPosition = Vector2.new(0, math.max(0, y - 4)) }, Enum.EasingStyle.Quart)
 end
 local tabs: { [string]: TextButton } = {}
-for i, t in { { "Featured", "Featured", ArtAssets.Tabs.Featured, "Gold" }, { "Passes", "Passes", ArtAssets.Tabs.Passes, "Purple" },
-	{ "Cash", "Cash", ArtAssets.Tabs.Cash, "Green" }, { "Eggs", "Lawyers", ArtAssets.Tabs.Eggs, "Orange" } } do
+for i, t in { { "Featured", "Featured", ArtAssets.Tabs.Featured, "Gold" }, { "Journey", "Journey", ArtAssets.Tabs.Journey, "Green" },
+	{ "Passes", "Passes", ArtAssets.Tabs.Passes, "Purple" }, { "TopUps", "Cash", ArtAssets.Tabs.Cash, "Sky" },
+	{ "Lawyers", "Lawyers", ArtAssets.Tabs.Eggs, "Orange" } } do
 	local tab = Skin.sideTab(win.sideRail, { Label = t[2], Icon = t[3], Color = t[4], LayoutOrder = i })
 	tabs[t[1]] = tab
 	tab.Activated:Connect(function()
@@ -603,7 +861,7 @@ local function lightTab()
 			end
 		end
 	end
-	if best ~= litTab then
+	if best ~= litTab and tabs[best] then
 		litTab = best
 		Skin.selectTab(win.sideRail, tabs[best])
 	end
@@ -612,16 +870,16 @@ scroller:GetPropertyChangedSignal("CanvasPosition"):Connect(lightTab)
 
 ------------------------------------------------------------------ purchase results
 local function clearPending(key: string?)
-	for _, c in cards do
-		if key == nil or c.item.Key == key then
-			pending[c.item.Key] = nil
-			refreshCard(c)
+	for k in pending do
+		if key == nil or k == key then
+			pending[k] = nil
 		end
 	end
+	refreshKey(key)
 end
 local lastTokens = pickTokens()
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(who, passId)
-	if who == player then
+	if who == player then -- bought or cancelled: the button comes back (a purchase also flips the Pass attribute)
 		for _, p in Config.Shop.Passes do
 			if p.Id == passId then
 				clearPending(p.Key)
@@ -648,12 +906,15 @@ player.AttributeChanged:Connect(function(name)
 			end
 		end
 		lastTokens = now
-		if win.isOpen() then
-			build()
+		rebuild()
+	elseif string.sub(name, 1, 4) == "Pass" or string.sub(name, 1, 13) == "FreeShopClaim" or string.sub(name, 1, 13) == "CashPassClaim"
+		or name == "VIPLastClaimDay" then
+		for k in pending do
+			pending[k] = nil
 		end
-	end
-	if string.sub(name, 1, 4) == "Pass" or string.sub(name, 1, 13) == "FreeShopClaim" or string.sub(name, 1, 13) == "CashPassClaim" or name == "VIPLastClaimDay" then
-		clearPending(nil)
+		rebuild() -- the featured offer, the journey track and the pass states all follow
+	elseif name == "CoinsPerMinute" then
+		refreshEstimates()
 	end
 end)
 
@@ -662,27 +923,30 @@ local function open()
 	if win.isOpen() then
 		return
 	end
+	fetchPrices()
 	build()
 	scroller.CanvasPosition = Vector2.zero
 	win.open()
 	litTab = nil
 	task.defer(lightTab)
-	-- cards pop in one after another
+	-- cards pop in one after another (the first screenful; the rest are off-screen anyway)
 	for i, c in cards do
-		task.delay(0.05 * i, function()
+		if i > 8 then
+			break
+		end
+		task.delay(0.04 * i, function()
 			if c.frame.Parent then
-				Skin.pop(c.frame, 0.6)
+				Skin.pop(c.frame, 0.7)
 			end
 		end)
 	end
 end
 win.onClose(function()
 	table.clear(spinners)
-	table.clear(floaters)
 end)
 
 RunService.RenderStepped:Connect(function()
-	if win.isOpen() then
+	if win.isOpen() or picker.isOpen() then
 		local t = os.clock()
 		for i, s in spinners do
 			s.model:PivotTo(s.base * CFrame.Angles(0, t * 0.8 + i, 0))
@@ -709,3 +973,13 @@ game:GetService("ProximityPromptService").PromptTriggered:Connect(function(promp
 	end
 end)
 
+task.defer(fetchPrices) -- prices are ready before the first open
+task.spawn(function() -- and the pictures (no blank cards on the first open)
+	local list = {}
+	for _, id in ArtAssets.Shop do
+		local d = Instance.new("Decal")
+		d.Texture = id
+		table.insert(list, d)
+	end
+	pcall(game:GetService("ContentProvider").PreloadAsync, game:GetService("ContentProvider"), list)
+end)

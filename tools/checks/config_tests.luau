@@ -449,6 +449,39 @@ check("pick-a-lawyer products", function()
 	end
 end)
 
+-- Shop v4 (2026-11-02): every item the Shop can show has its Blender picture (no 3D stand-ins), and the cash
+-- journey is a chain: each step's Prerequisite is the step before it
+check("shop artwork + cash journey chain", function()
+	local function art(key: string)
+		local id = ArtAssets.Shop[key]
+		assert(type(id) == "string" and string.match(id, "^rbxassetid://%d+$"), key .. ": no ArtAssets.Shop picture")
+	end
+	for _, p in Config.Shop.Passes do
+		if p.Id ~= 0 then
+			art(p.Key)
+		end
+	end
+	for _, f in Config.Shop.FreeRewards do
+		art(f.Key)
+	end
+	for _, p in Config.Shop.Products do
+		if p.Id ~= 0 and not p.PickRarity then
+			art(p.Key)
+		end
+	end
+	local byKey = {}
+	for _, list in { Config.Shop.Passes, Config.Shop.FreeRewards } do
+		for _, it in list do
+			byKey[it.Key] = it
+		end
+	end
+	for i, key in Config.Shop.CashJourney do
+		local it = byKey[key]
+		assert(it, "CashJourney step " .. key .. " is not a pass or free reward")
+		assert(it.Prerequisite == Config.Shop.CashJourney[i - 1], key .. ": Prerequisite should be the step before it")
+	end
+end)
+
 ------------------------------------------------------------------ report
 print(string.format("%d checks passed, %d failed", passed, #failures))
 for _, f in failures do

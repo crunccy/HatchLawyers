@@ -18,23 +18,37 @@ ArtAssets.Eggs = {
 	Rare = "rbxassetid://76731595172597", -- egg_rare
 }
 
--- one per Config.Shop item, keyed by its Key
+-- one per Config.Shop item + free reward, keyed by its Key (the Shop shows no item without one; run_checks checks it).
+-- v4 (2026-11-02): the cash journey ladder - paid packs are bills growing fan -> bundles -> briefcase -> gold pyramid ->
+-- treasure chest, the free gifts are coins growing stack -> stacks -> heap -> piggy bank -> gift box. Uploaded by crnuch's Studio.
 ArtAssets.Shop = {
 	DoubleCash = "rbxassetid://79774407997348", -- cash_x2
 	LuckyEggs = "rbxassetid://126520572387984", -- lucky_eggs
 	SpeedyCases = "rbxassetid://72311295235687", -- speedy_cases
-	BigFirm = "rbxassetid://80539935648207", -- bigger_firm
+	BigFirm = "rbxassetid://80539935648207", -- bigger_firm (not on sale)
+	VIP = "rbxassetid://111712976714325", -- vip
 	CashSmall = "rbxassetid://99291637751308", -- cash_pile
 	CashMedium = "rbxassetid://136787201572075", -- cash_bag
 	CashLarge = "rbxassetid://101254224498081", -- cash_vault
-	RareEggs = "rbxassetid://123775632424724", -- rare_eggs
+	Cash100K = "rbxassetid://94655886151043", -- pack_100k
+	Cash500K = "rbxassetid://120535005947960", -- pack_500k
+	Cash1_5M = "rbxassetid://127720234273871", -- pack_1_5m
+	Cash5M = "rbxassetid://113200359537180", -- pack_5m
+	Cash15M = "rbxassetid://76000685842870", -- pack_15m
+	Free1 = "rbxassetid://107324280040917", -- free_25k
+	Free2 = ArtAssets.Eggs.Briefcase, -- the free egg is the real Briefcase egg
+	Free3 = "rbxassetid://86601509592224", -- free_50k
+	Free4 = "rbxassetid://122587781044264", -- free_100k
+	Free5 = "rbxassetid://80588952653769", -- free_250k
+	Free6 = "rbxassetid://104313082292891", -- free_500k
 }
 
 -- the Shop's section shortcuts
 ArtAssets.Tabs = {
 	Featured = "rbxassetid://123639581250966", -- tab_star
+	Journey = "rbxassetid://127720234273871", -- pack_1_5m
 	Passes = "rbxassetid://133639116623916", -- tab_crown
-	Cash = "rbxassetid://99291637751308", -- cash_pile
+	Cash = "rbxassetid://136787201572075", -- cash_bag (the top-ups)
 	Eggs = "rbxassetid://76432403189938", -- egg_briefcase
 }
 

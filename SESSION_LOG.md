@@ -5,9 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **crnuch (local), since 2026-11-02: ROBUX SHOP REDESIGN** - `Shop.client` layout (featured offer, numbered cash journey,
-  passes vs repeatable products, live prices), new Blender icon set for every item + free reward. Don't edit
-  `StarterPlayerScripts.Shop` / `ArtAssets` shop icons meanwhile.
 - **crnuch's call 2026-10-27 ("mr robe can take them"): mr.robe's sessions take over crnuch's remaining claims** - the
   UI v3 remaining screens (the UI overhaul claim below), the visual audit's M2-M5, and the MAP MODEL OVERHAUL's next stage
   (characters / eggs / bosses). crnuch's sessions keep the island install (edition-2 re-import) until it's in.
@@ -309,6 +306,36 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-11-02 — crnuch, local session: Robux shop redesign (Shop v4) + 11 new Blender icons (live in Studio)
+- **`StarterPlayerScripts.Shop` v4** (`src/Shop.client.lua`), top to bottom: YOUR PICKS (unchanged) · FEATURED = ONE offer
+  picked for this player (free gift ready > VIP daily cash ready > next cash-journey pack > first pass not owned > Pick a
+  Legendary), with a kicker line ("CASH JOURNEY - STEP 5 OF 11") · CASH JOURNEY = the 11 `CashJourney` steps as numbered
+  nodes on a track (green tick = done, gold = available, muted purple = "Free gift - unlocks after step N"), a "N OF 11
+  STEPS DONE" bar; FREE! only on a claimable step · PASSES (one-time, 2 per row, long names get 2 lines) · CASH TOP-UPS
+  (the repeatable income products, "about +X" from `CoinsPerMinute` x Minutes, BEST VALUE = most minutes per Robux) ·
+  PICK A LAWYER (cards + picker as they were). Side tabs: Featured / Journey / Passes / Cash / Lawyers.
+- **Prices:** fetched once at start (GetProductInfo); "+N% MORE COINS" and BEST VALUE appear only when the live prices
+  are verified; `IsForSale == false` = OFF SALE / hidden; Id 0 = not shown (Bigger Firm is gone from the shelf: crnuch
+  isn't building it). State changes (Pass*, CashPassClaim*, FreeShopClaim*, VIPLastClaimDay, PickTokens) rebuild the
+  open shop in place. Purchase / receipt / VIP claim / free-claim logic and the server are untouched.
+- No 3D stand-ins any more: cards whose sunburst leaked (ClipsDescendants off for ribbons) now sit in a plain holder.
+  Shop art is preloaded at startup.
+- **Icons:** `tools/shop_icons.py` gained `vip`, `pack_100k` (bill fan) -> `pack_500k` (bundles) -> `pack_1_5m` (open
+  briefcase of cash) -> `pack_5m` (gold-bar pyramid) -> `pack_15m` (treasure chest), and `free_25k` (coin stack) ->
+  `free_50k` -> `free_100k` (heap) -> `free_250k` (piggy bank) -> `free_500k` (gift box); Free Egg = the real Briefcase egg.
+  Same pipeline/lights/outline as the rest. Uploaded from crnuch's Studio (crnuch OK'd it), ids in `ArtAssets.Shop` +
+  `Tabs.Journey`; all 19 shop images preload with status Success in a playtest.
+- `Config.Shop` Pile of Cash card colour grey -> orange (no grey, crnuch). New check in `run_checks`: every shop item has
+  an `ArtAssets.Shop` picture and each `CashJourney` step's Prerequisite is the step before it.
+- **Playtested** (crnuch's account; states by client-side attribute overrides, nothing saved): returning owner (FREE
+  GIFT READY), new player (100K START HERE, steps 2-11 locked), mid-journey (500K NEXT STEP, +50% from live 3 / 10),
+  everything owned + claimed (falls to Pick a Legendary, JOURNEY COMPLETE), owned passes + VIP DAILY CASH!, pending "..."
+  -> dismissed purchase -> price back, scrolling + tabs, phone scale (0.53: every label fits; value tags enlarged) and
+  desktop (all 103 labels at full size). Console clean.
+- Pushed with the fingerprint guard (live == snapshot before each UpdateSourceAsync); snapshot re-exported (port 8778:
+  8767 was held by another process): only Shop, ArtAssets, Config + MANIFEST changed, src == live. `run_checks` green.
+- Not tested: a real Robux purchase (crnuch's account is PromoMode + owns every pass) - test on a non-promo account.
 
 ## 2026-11-02 — crnuch, local session: the three Pick-a-Lawyer developer products
 - Created on Creator Hub (crnuch's sign-in, built-in browser; group universe 10769782944, managed pricing on like the cash

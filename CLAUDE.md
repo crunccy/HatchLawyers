@@ -382,6 +382,9 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - The word "lose" never appears on screen; mistrials are soft blue, never red. Odds board shows exact odds.
 - The prestige reset is called **"Rebirth"** on screen (user's call 2026-10-16); "Supreme" means only the top rarity
   (and the "Supreme Tower" firm). Code names (`PrestigeService`, `Supreme.client`) stay.
+- **Shop v4 (2026-11-02):** featured offer per player, CASH JOURNEY as numbered steps, passes vs repeatable top-ups;
+  every shop item needs a Blender picture in `ArtAssets.Shop` (tools/shop_icons.py; run_checks checks it). Bigger Firm
+  is not being built (crnuch): it stays Id 0 / off the shelf.
 - Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,
   Bigger Firm) and products (coin packs; since 2026-11-02 PICK A LEGENDARY / MYTHIC / SUPREME - the buyer chooses the lawyer,
   crnuch's call, replacing 3 Rare Eggs) are allowed. Anything paid that's random must show its exact

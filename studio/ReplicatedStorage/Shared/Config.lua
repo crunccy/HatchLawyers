@@ -936,7 +936,7 @@ Config.Shop = {
 	},
 	CashJourney = { "Cash100K", "Free1", "Free2", "Free3", "Cash500K", "Free4", "Cash1_5M", "Free5", "Cash5M", "Free6", "Cash15M" },
 	Products = {
-		{ Key = "CashSmall", Id = 3727039012, Price = 25, Name = "Pile of Cash", Text = "10 minutes of your income", Banner = "+10 min", Color = Color3.fromRGB(170, 175, 190), Icon = "cash", Minutes = 10 },
+		{ Key = "CashSmall", Id = 3727039012, Price = 25, Name = "Pile of Cash", Text = "10 minutes of your income", Banner = "+10 min", Color = Color3.fromRGB(255, 160, 24), Icon = "cash", Minutes = 10 },
 		{ Key = "CashMedium", Id = 3727039097, Price = 99, Name = "Bag of Cash", Text = "1 hour of your income", Banner = "+1 hour", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Minutes = 60 },
 		{ Key = "CashLarge", Id = 3727039202, Price = 349, Name = "Vault of Cash", Text = "6 hours of your income", Banner = "+6 hours", Color = Color3.fromRGB(60, 160, 255), Icon = "cash", Minutes = 360 },
 		-- PICK A LAWYER (crnuch 2026-11-02, replaced "3 Rare Eggs": "no one wants rare lawyers"): the buyer CHOOSES any lawyer
