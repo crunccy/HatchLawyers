@@ -5,6 +5,9 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **crnuch (local), since 2026-11-02: ROBUX SHOP REDESIGN** - `Shop.client` layout (featured offer, numbered cash journey,
+  passes vs repeatable products, live prices), new Blender icon set for every item + free reward. Don't edit
+  `StarterPlayerScripts.Shop` / `ArtAssets` shop icons meanwhile.
 - **crnuch's call 2026-10-27 ("mr robe can take them"): mr.robe's sessions take over crnuch's remaining claims** - the
   UI v3 remaining screens (the UI overhaul claim below), the visual audit's M2-M5, and the MAP MODEL OVERHAUL's next stage
   (characters / eggs / bosses). crnuch's sessions keep the island install (edition-2 re-import) until it's in.
