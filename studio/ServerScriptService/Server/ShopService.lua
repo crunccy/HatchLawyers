@@ -131,6 +131,12 @@ local function grantProduct(player: Player, data: PlayerData.Data, product: any)
 		player:SetAttribute("FreeEgg", true)
 		player:SetAttribute("RareEggTokens", data.Eggs.RareTokens)
 		return product.RareTokens .. " guaranteed RARE eggs"
+	elseif product.PickRarity then -- a pick-a-lawyer token (spent in the Shop's picker: pickLawyer below)
+		data.Eggs.PickTokens = data.Eggs.PickTokens or {}
+		local key = tostring(product.PickRarity)
+		data.Eggs.PickTokens[key] = (data.Eggs.PickTokens[key] or 0) + 1
+		local tier = Config.Eggs.Skins[product.PickRarity]
+		return "Choose your " .. string.upper(if tier then tier.Id else "lawyer") .. " lawyer!"
 	end
 	return product.Name
 end
@@ -187,7 +193,55 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 	return Enum.ProductPurchaseDecision.PurchaseGranted
 end
 
+-- Remotes.PickLawyer(lawyerId) -> (ok, message): spends one pick-a-lawyer token of that lawyer's rarity on it (Config.Shop
+-- Products PickRarity). Server-checked: a real catalog lawyer, a token of exactly its rarity, room in the lawyer cap.
+local lastPick: { [Player]: number } = {}
+local function pickLawyer(player: Player, id: unknown): (boolean, string?)
+	if type(id) ~= "string" or #id > 60 then
+		return false, "bad"
+	end
+	local t = os.clock()
+	if lastPick[player] and t - lastPick[player] < 1 then
+		return false, "Slow down!"
+	end
+	lastPick[player] = t
+	local data = PlayerData.get(player)
+	local skin = Formulas.getSkin(id)
+	if not data or not skin or type(skin.Rarity) ~= "number" then
+		return false, "Unknown lawyer"
+	end
+	local tokens = data.Eggs and data.Eggs.PickTokens
+	local key = tostring(skin.Rarity)
+	if not tokens or (tokens[key] or 0) <= 0 then
+		return false, "No pick of that rarity"
+	end
+	if Config.Lawyers.MaxOwned + ShopService.effect(player, "BigFirm", 0) - PlayerData.lawyerCount(data) <= 0 then
+		return false, "Too many lawyers! Sell or mutate some in LAWYERS first"
+	end
+	tokens[key] -= 1
+	if tokens[key] <= 0 then
+		tokens[key] = nil
+	end
+	local LawyerService = require(script.Parent.LawyerService) :: any
+	LawyerService.hatch(data, id, 1)
+	PlayerData.sync(player)
+	if not PlayerData.saveNow(player) then
+		warn("[ShopService] pick save pending", player.UserId)
+	end
+	return true, skin.Name
+end
+
 function ShopService.start()
+	local pickRemote = ReplicatedStorage.Remotes:FindFirstChild("PickLawyer") :: RemoteFunction?
+	if not pickRemote then
+		pickRemote = Instance.new("RemoteFunction")
+		pickRemote.Name = "PickLawyer"
+		pickRemote.Parent = ReplicatedStorage.Remotes
+	end
+	(pickRemote :: RemoteFunction).OnServerInvoke = pickLawyer
+	Players.PlayerRemoving:Connect(function(player)
+		lastPick[player] = nil
+	end)
 	local claimRemote = ReplicatedStorage.Remotes:FindFirstChild("ClaimFreeShopReward") :: RemoteEvent?
 	if not claimRemote then
 		claimRemote = Instance.new("RemoteEvent")

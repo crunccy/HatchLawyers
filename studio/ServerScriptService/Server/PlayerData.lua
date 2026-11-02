@@ -46,7 +46,7 @@ export type Data = {
 	Skins: { Owned: { [string]: number }, Equipped: { [string]: string } },
 	-- Seen: how many hatches the player has looked at in the skin inventory (drives the NEW badge).
 	-- SinceTop: eggs since the last top-rarity skin (drives the pity guarantee).
-	Eggs: { Opened: number, RunOpened: number, FreeUsed: boolean, Seen: number, FreeTokens: number, RareTokens: number, SinceTop: number },
+	Eggs: { Opened: number, RunOpened: number, FreeUsed: boolean, Seen: number, FreeTokens: number, RareTokens: number, SinceTop: number, PickTokens: { [string]: number }? },
 	-- LastDay: UTC day number (os.time() // 86400) of the last daily claim, -1 = never.
 	Daily: { Streak: number, LastDay: number },
 	-- Active: seconds of active play banked toward the next playtime gift.
@@ -71,12 +71,12 @@ export type Data = {
 	Minigames: { [string]: number },
 	-- Egg zones (ZoneService): License level (0 = none; prestige resets it), Carry / Speed upgrade levels (1 = start),
 	-- Carried = eggs bought but not hatched yet ({ Egg = "Briefcase" | themed id, Golden }), hatched at an incubator.
-	Zones: { License: number, Carry: number, Speed: number, Carried: { { Egg: string, Golden: boolean? } } },
+	Zones: { License: number, Carry: number, Speed: number, Carried: { { Egg: string, Golden: boolean?, Mut: number? } } },
 }
 
 type Session = { data: Data, releasing: boolean, promo: boolean }
 
-local SCHEMA_VERSION = 20
+local SCHEMA_VERSION = 21
 local STORE_NAME = "PlayerData"
 local AUTOSAVE_INTERVAL = 60
 local LOCK_EXPIRY = 5 * 60 -- a lock this old belongs to a crashed server and can be taken over
@@ -86,6 +86,14 @@ local SAVE_ATTEMPTS = 3
 
 -- MIGRATIONS[n] upgrades a version-n record to version n + 1.
 local MIGRATIONS: { [number]: (any) -> any } = {
+	-- v21 (2026-11-02): PICK-A-LAWYER Robux items - Eggs.PickTokens = { [rarity index as a string] = count } (bought, not
+	-- spent yet; Remotes.PickLawyer spends one). Also new optional Zones.Carried[i].Mut (3 Diamond / 4 Cosmic egg: the
+	-- mutation it always hatches with) - absent on every older egg, so nothing to rewrite.
+	[20] = function(data)
+		data.Eggs = data.Eggs or {}
+		data.Eggs.PickTokens = data.Eggs.PickTokens or {}
+		return data
+	end,
 	[19] = function(data)
 		data.VIP = data.VIP or { LastClaimDay = -1 }
 		return data
@@ -310,7 +318,7 @@ local function template(): Data
 		Tutorial = { FirstCaseDone = false, FreeLevelUps = Config.Tutorial.FreeLevelUps },
 		Stats = { Wins = 0, Settlements = 0, Mistrials = 0, CoinsEarned = 0, BestPayout = 0 },
 		Skins = { Owned = {}, Equipped = {} },
-		Eggs = { Opened = 0, RunOpened = 0, FreeUsed = false, Seen = 0, FreeTokens = 0, RareTokens = 0, SinceTop = 0 },
+		Eggs = { Opened = 0, RunOpened = 0, FreeUsed = false, Seen = 0, FreeTokens = 0, RareTokens = 0, SinceTop = 0, PickTokens = {} },
 		Daily = { Streak = 0, LastDay = -1 },
 		Playtime = { Active = 0, Gifts = 0 },
 		LastOnline = 0,
@@ -456,6 +464,15 @@ local function syncAttributes(player: Player, data: Data)
 	player:SetAttribute("FreeLevelUps", data.Tutorial.FreeLevelUps)
 	player:SetAttribute("FirstCaseDone", data.Tutorial.FirstCaseDone)
 	player:SetAttribute("DeskCount", #data.Desks) -- offices
+	-- unspent pick-a-lawyer tokens ("5:1,7:2" = rarity index : count), for the Shop's PICK YOUR LAWYER button
+	local picks = {}
+	for rarity, count in (data.Eggs and data.Eggs.PickTokens) or {} do
+		if count > 0 then
+			table.insert(picks, rarity .. ":" .. count)
+		end
+	end
+	table.sort(picks)
+	player:SetAttribute("PickTokens", table.concat(picks, ","))
 	player:SetAttribute("EggPrice", Formulas.eggPrice(data.Eggs and (data.Eggs.RunOpened or data.Eggs.Opened) or 0, data.Prestige and data.Prestige.Level))
 	-- the lawyer inventory, for the LAWYERS panel: { Uid, Id, Stars, Skills, Office }
 	local list, placed = {}, 0

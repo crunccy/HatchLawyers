@@ -17,6 +17,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
 local PlayerData = require(script.Parent.PlayerData)
+local PlotService = require(script.Parent.PlotService)
+local VIPService = require(script.Parent.VIPService)
 
 local ShopService = {}
 
@@ -24,6 +26,10 @@ local PURCHASE_HISTORY = 200
 local passByKey: { [string]: any } = {}
 local passById: { [number]: any } = {}
 local productById: { [number]: any } = {}
+local freeByKey: { [string]: any } = {}
+for _, reward in Config.Shop.FreeRewards do
+	freeByKey[reward.Key] = reward
+end
 for _, p in Config.Shop.Passes do
 	passByKey[p.Key] = p
 	if p.Id ~= 0 then
@@ -37,11 +43,56 @@ for _, p in Config.Shop.Products do
 end
 
 local owned: { [Player]: { [string]: boolean } } = {}
+local RewardGranted = ReplicatedStorage.Remotes:WaitForChild("RewardGranted") :: RemoteEvent
+
+local function notify(player: Player, title: string, message: string)
+	RewardGranted:FireClient(player, { kind = "Shop", title = title, text = message })
+end
+
+local function grantCashPass(player: Player, pass: any)
+	local data = PlayerData.get(player)
+	if not data or data.CashPassClaims[pass.Key] then return end
+	data.CashPassClaims[pass.Key] = true
+	data.Coins += pass.Coins
+	PlayerData.sync(player)
+	if not PlayerData.saveNow(player) then
+		warn("[ShopService] cash pass save pending", pass.Key, player.UserId)
+	end
+	player:SetAttribute("CashPassClaim" .. pass.Key, true)
+	notify(player, pass.Name, "+" .. Formulas.formatCoins(pass.Coins) .. " coins")
+end
 
 local function setOwned(player: Player, key: string)
 	owned[player] = owned[player] or {}
 	owned[player][key] = true
 	player:SetAttribute("Pass" .. key, true)
+	local pass = passByKey[key]
+	if pass and pass.Coins then grantCashPass(player, pass) end
+	if key == "VIP" then
+		if player.Character then task.spawn(VIPService.decorateCharacter, player, player.Character) end
+		VIPService.decorateFirm(player, PlotService.getFirm(player))
+	end
+end
+
+local function claimFree(player: Player, key: string)
+	local reward = freeByKey[key]
+	local data = PlayerData.get(player)
+	if not reward or not data or data.FreeShopClaims[key] then return end
+	local previous = reward.Prerequisite
+	if previous and not (data.CashPassClaims[previous] or data.FreeShopClaims[previous]) then return end
+	data.FreeShopClaims[key] = true
+	if reward.Coins then data.Coins += reward.Coins end
+	if reward.FreeTokens then
+		data.Eggs.FreeTokens += reward.FreeTokens
+		player:SetAttribute("EggTokens", data.Eggs.FreeTokens)
+		player:SetAttribute("FreeEgg", true)
+	end
+	PlayerData.sync(player)
+	if not PlayerData.saveNow(player) then
+		warn("[ShopService] free reward save pending", key, player.UserId)
+	end
+	player:SetAttribute("FreeShopClaim" .. key, true)
+	notify(player, reward.Name, reward.Text)
 end
 
 -- Does this player own the pass with this Config key? (Server-side truth, not the attribute.)
@@ -80,6 +131,12 @@ local function grantProduct(player: Player, data: PlayerData.Data, product: any)
 		player:SetAttribute("FreeEgg", true)
 		player:SetAttribute("RareEggTokens", data.Eggs.RareTokens)
 		return product.RareTokens .. " guaranteed RARE eggs"
+	elseif product.PickRarity then -- a pick-a-lawyer token (spent in the Shop's picker: pickLawyer below)
+		data.Eggs.PickTokens = data.Eggs.PickTokens or {}
+		local key = tostring(product.PickRarity)
+		data.Eggs.PickTokens[key] = (data.Eggs.PickTokens[key] or 0) + 1
+		local tier = Config.Eggs.Skins[product.PickRarity]
+		return "Choose your " .. string.upper(if tier then tier.Id else "lawyer") .. " lawyer!"
 	end
 	return product.Name
 end
@@ -105,6 +162,10 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 	local data = player and PlayerData.get(player)
 	if not (player and data) then
 		return Enum.ProductPurchaseDecision.NotProcessedYet -- not here / not loaded: Roblox retries later
+	end
+	if PlayerData.isPromo(player) then
+		-- Leave receipts pending so a promo session cannot spend Robux on a grant that is intentionally not saved.
+		return Enum.ProductPurchaseDecision.NotProcessedYet
 	end
 	local purchaseId = tostring(receipt.PurchaseId)
 	data.Purchases = data.Purchases or {}
@@ -132,16 +193,78 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 	return Enum.ProductPurchaseDecision.PurchaseGranted
 end
 
+-- Remotes.PickLawyer(lawyerId) -> (ok, message): spends one pick-a-lawyer token of that lawyer's rarity on it (Config.Shop
+-- Products PickRarity). Server-checked: a real catalog lawyer, a token of exactly its rarity, room in the lawyer cap.
+local lastPick: { [Player]: number } = {}
+local function pickLawyer(player: Player, id: unknown): (boolean, string?)
+	if type(id) ~= "string" or #id > 60 then
+		return false, "bad"
+	end
+	local t = os.clock()
+	if lastPick[player] and t - lastPick[player] < 1 then
+		return false, "Slow down!"
+	end
+	lastPick[player] = t
+	local data = PlayerData.get(player)
+	local skin = Formulas.getSkin(id)
+	if not data or not skin or type(skin.Rarity) ~= "number" then
+		return false, "Unknown lawyer"
+	end
+	local tokens = data.Eggs and data.Eggs.PickTokens
+	local key = tostring(skin.Rarity)
+	if not tokens or (tokens[key] or 0) <= 0 then
+		return false, "No pick of that rarity"
+	end
+	if Config.Lawyers.MaxOwned + ShopService.effect(player, "BigFirm", 0) - PlayerData.lawyerCount(data) <= 0 then
+		return false, "Too many lawyers! Sell or mutate some in LAWYERS first"
+	end
+	tokens[key] -= 1
+	if tokens[key] <= 0 then
+		tokens[key] = nil
+	end
+	local LawyerService = require(script.Parent.LawyerService) :: any
+	LawyerService.hatch(data, id, 1)
+	PlayerData.sync(player)
+	if not PlayerData.saveNow(player) then
+		warn("[ShopService] pick save pending", player.UserId)
+	end
+	return true, skin.Name
+end
+
 function ShopService.start()
+	local pickRemote = ReplicatedStorage.Remotes:FindFirstChild("PickLawyer") :: RemoteFunction?
+	if not pickRemote then
+		pickRemote = Instance.new("RemoteFunction")
+		pickRemote.Name = "PickLawyer"
+		pickRemote.Parent = ReplicatedStorage.Remotes
+	end
+	(pickRemote :: RemoteFunction).OnServerInvoke = pickLawyer
+	Players.PlayerRemoving:Connect(function(player)
+		lastPick[player] = nil
+	end)
+	local claimRemote = ReplicatedStorage.Remotes:FindFirstChild("ClaimFreeShopReward") :: RemoteEvent?
+	if not claimRemote then
+		claimRemote = Instance.new("RemoteEvent")
+		claimRemote.Name = "ClaimFreeShopReward"
+		claimRemote.Parent = ReplicatedStorage.Remotes
+	end
+	claimRemote.OnServerEvent:Connect(function(player: Player, key: any)
+		if type(key) == "string" then claimFree(player, key) end
+	end)
+	local vipClaim = ReplicatedStorage.Remotes:FindFirstChild("ClaimVIPDaily") :: RemoteFunction?
+	if not vipClaim then
+		vipClaim = Instance.new("RemoteFunction")
+		vipClaim.Name = "ClaimVIPDaily"
+		vipClaim.Parent = ReplicatedStorage.Remotes
+	end
+	vipClaim.OnServerInvoke = VIPService.claimDaily
+	VIPService.start()
 	MarketplaceService.ProcessReceipt = processReceipt
 	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player: Player, passId: number, purchased: boolean)
 		local pass = passById[passId]
 		if purchased and pass then
 			setOwned(player, pass.Key)
-			local RewardGranted = ReplicatedStorage.Remotes:FindFirstChild("RewardGranted") :: RemoteEvent?
-			if RewardGranted then
-				RewardGranted:FireClient(player, { kind = "Shop", text = pass.Text, title = pass.Name })
-			end
+			if not pass.Coins then notify(player, pass.Name, pass.Text) end
 		end
 	end)
 	Players.PlayerAdded:Connect(checkPasses)
@@ -151,6 +274,24 @@ function ShopService.start()
 	Players.PlayerRemoving:Connect(function(player)
 		owned[player] = nil
 	end)
+end
+
+function ShopService.onDataLoaded(player: Player)
+	local data = PlayerData.get(player)
+	if not data then return end
+	VIPService.onDataLoaded(player)
+	for key, claimed in data.FreeShopClaims do
+		if claimed then player:SetAttribute("FreeShopClaim" .. key, true) end
+	end
+	for key, claimed in data.CashPassClaims do
+		if claimed then player:SetAttribute("CashPassClaim" .. key, true) end
+	end
+	for key in owned[player] or {} do
+		local pass = passByKey[key]
+		if pass and pass.Coins then grantCashPass(player, pass) end
+	end
+	-- A fresh ownership check covers purchases made before data finished loading.
+	task.spawn(checkPasses, player)
 end
 
 -- Test hook for Studio only (Server.ShopService is never reachable from clients): runs the real receipt
@@ -171,3 +312,4 @@ function ShopService._testGivePass(player: Player, key: string)
 end
 
 return ShopService
+

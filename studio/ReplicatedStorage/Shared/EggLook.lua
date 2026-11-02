@@ -15,11 +15,15 @@
 --   EggLook.buildHatch(egg, golden?, height?) -> Hatch   the hatch's egg: a finer shell, the 3 crack stages (hidden),
 --     the 12 shell chunks (hidden; tools/blender/egg_break.py simulated how they fly) and the pieces, each piece
 --     stuck to the chunk it sits on. Shared.HatchFx drives it.
---   EggLook.color(egg, golden?) -> Color3   the egg's main colour (trails, sparks)
+--   EggLook.color(egg, golden?, mut?) -> Color3   the egg's main colour (trails, sparks)
+-- mut (2026-11-02, Config.Zones.MutationEggs): 3 = a DIAMOND egg, 4 = a COSMIC egg (both golden too) - the build / buildHatch /
+-- color calls take it last. No painted texture: the shell, bands and pieces in the mutation's colour ramp
+-- (Config.Lawyers.Mutations[mut].Ramp, the colours a mutated lawyer is recoloured along), shinier than gold.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Formulas = require(script.Parent:WaitForChild("Formulas")) :: any
+local Config = require(script.Parent:WaitForChild("Config")) :: any
 
 local EggLook = {}
 
@@ -36,6 +40,27 @@ local MAIN = { -- (the shell textures' main colours)
 }
 
 local lib: Folder? = nil
+
+-- a mutation egg's colour ramp (dark -> light), or nil
+local function rampOf(mut: number?): { Color3 }?
+	local def = mut and Config.Lawyers.Mutations[mut]
+	return def and def.Ramp
+end
+
+-- which ramp step a mutation egg's shell / bands use: Diamond an icy mid-blue with dark bands, Cosmic a deep purple
+-- with bright bands (the ramp's middle read as pastel lavender on Cosmic, 2026-11-02)
+local SHELL_STEP = { [3] = 3, [4] = 2 }
+local BAND_STEP = { [3] = 2, [4] = 4 }
+
+-- paints a mutation egg's shell / chunk: no texture, a gem-like shine
+local function mutShell(p: BasePart, ramp: { Color3 }, mut: number?)
+	if p:IsA("MeshPart") then
+		p.TextureID = ""
+	end
+	p.Color = ramp[SHELL_STEP[mut or 3] or 3]
+	p.Material = Enum.Material.SmoothPlastic
+	p.Reflectance = if mut == 4 then 0.18 else 0.28
+end
 local function library(): Folder?
 	if not lib then
 		lib = ReplicatedStorage:WaitForChild("EggModels", 10) :: Folder?
@@ -56,8 +81,9 @@ local function eggDef(folder: Folder, egg: string): Instance?
 end
 
 -- the egg's pieces into `m`; returns the texture id and the clones (relief, pieces)
-local function dress(m: Model, folder: Folder, egg: string, golden: boolean?, withRelief: boolean): (string, { BasePart }, { BasePart })
+local function dress(m: Model, folder: Folder, egg: string, golden: boolean?, withRelief: boolean, mut: number?): (string, { BasePart }, { BasePart })
 	local def = eggDef(folder, egg)
+	local ramp = rampOf(mut)
 	local tex = ""
 	local relief, pieces = {}, {}
 	if not def then
@@ -75,10 +101,17 @@ local function dress(m: Model, folder: Folder, egg: string, golden: boolean?, wi
 		local c = src:Clone()
 		quiet(c)
 		if textured and c:IsA("MeshPart") then
-			c.TextureID = tex
+			c.TextureID = if ramp then "" else tex
+			if ramp then -- (the bands a shade darker than the shell)
+				c.Color = ramp[BAND_STEP[mut or 3] or 2]
+				c.Reflectance = 0.2
+			end
 			table.insert(relief, c)
 		else
-			if golden and c.Material ~= Enum.Material.Neon then
+			if ramp and c.Material ~= Enum.Material.Neon then
+				c.Color = ramp[4]
+				c.Reflectance = 0.25
+			elseif golden and c.Material ~= Enum.Material.Neon then
 				c.Color = c.Color:Lerp(WARM, 0.55)
 				c.Reflectance = math.max(c.Reflectance, 0.14)
 			end
@@ -86,7 +119,7 @@ local function dress(m: Model, folder: Folder, egg: string, golden: boolean?, wi
 		end
 		c.Parent = m
 	end
-	return tex, relief, pieces
+	return if ramp then "" else tex, relief, pieces
 end
 
 local function fallback(m: Model, egg: string, golden: boolean?): BasePart
@@ -112,24 +145,32 @@ local function finish(m: Model, shell: BasePart, height: number?)
 	end
 end
 
-function EggLook.build(egg: string, golden: boolean?, height: number?, simple: boolean?): Model
+function EggLook.build(egg: string, golden: boolean?, height: number?, simple: boolean?, mut: number?): Model
 	local m = Instance.new("Model")
 	m.Name = "Egg"
 	local folder = library()
 	local src = folder and folder:FindFirstChild("Shell")
 	if not folder or not src then
-		finish(m, fallback(m, egg, golden), height)
+		local p = fallback(m, egg, golden)
+		local ramp = rampOf(mut)
+		if ramp then
+			mutShell(p, ramp, mut)
+		end
+		finish(m, p, height)
 		return m
 	end
 	local shell = (src :: BasePart):Clone()
 	shell.Name = "Shell"
 	quiet(shell)
 	shell.Parent = m
-	local tex = dress(m, folder :: Folder, egg, golden, not simple)
+	local tex = dress(m, folder :: Folder, egg, golden, not simple, mut)
 	if shell:IsA("MeshPart") then
 		shell.TextureID = tex
 	end
-	if golden then
+	local ramp = rampOf(mut)
+	if ramp then
+		mutShell(shell, ramp, mut)
+	elseif golden then
 		shell.Reflectance = 0.16
 	end
 	finish(m, shell, height)
@@ -148,9 +189,10 @@ export type Hatch = {
 	scale: number,
 	egg: string,
 	golden: boolean,
+	mut: number?,
 }
 
-function EggLook.buildHatch(egg: string, golden: boolean?, height: number?): Hatch?
+function EggLook.buildHatch(egg: string, golden: boolean?, height: number?, mut: number?): Hatch?
 	local folder = library()
 	local src = folder and folder:FindFirstChild("HatchShell")
 	if not folder or not src then
@@ -162,11 +204,14 @@ function EggLook.buildHatch(egg: string, golden: boolean?, height: number?): Hat
 	shell.Name = "Shell"
 	quiet(shell)
 	shell.Parent = m
-	local tex, relief, pieces = dress(m, folder :: Folder, egg, golden, true)
+	local tex, relief, pieces = dress(m, folder :: Folder, egg, golden, true, mut)
 	if shell:IsA("MeshPart") then
 		shell.TextureID = tex
 	end
-	if golden then
+	local ramp = rampOf(mut)
+	if ramp then
+		mutShell(shell, ramp, mut)
+	elseif golden then
 		shell.Reflectance = 0.16
 	end
 	local cracks = {}
@@ -197,7 +242,9 @@ function EggLook.buildHatch(egg: string, golden: boolean?, height: number?): Hat
 				if cc:IsA("MeshPart") then
 					cc.TextureID = tex
 				end
-				if golden then
+				if ramp then
+					mutShell(cc, ramp, mut)
+				elseif golden then
 					cc.Reflectance = 0.16
 				end
 				cc.Parent = m
@@ -234,10 +281,15 @@ function EggLook.buildHatch(egg: string, golden: boolean?, height: number?): Hat
 		scale = h / BASE_HEIGHT,
 		egg = egg,
 		golden = golden == true,
+		mut = mut,
 	}
 end
 
-function EggLook.color(egg: string, golden: boolean?): Color3
+function EggLook.color(egg: string, golden: boolean?, mut: number?): Color3
+	local def = mut and Config.Lawyers.Mutations[mut]
+	if def then
+		return def.Color
+	end
 	if golden then
 		return GOLD
 	end

@@ -133,12 +133,13 @@ local function eggColor(egg: string, golden: boolean): Color3
 	return (def and def.Color) or Color3.new(1, 1, 1)
 end
 
-local function parseCarried(value: any): { { egg: string, golden: boolean } }
+local function parseCarried(value: any): { { egg: string, golden: boolean, mut: number? } }
 	local list = {}
 	if typeof(value) == "string" and value ~= "" then
 		for item in string.gmatch(value, "[^,]+") do
-			local golden = string.sub(item, -1) == "*"
-			table.insert(list, { egg = if golden then string.sub(item, 1, -2) else item, golden = golden })
+			-- "Pet" / "Pet*" golden / "Pet*3" "Pet*4" a Diamond / Cosmic egg (Config.Zones.MutationEggs)
+			local name, star, tier = string.match(item, "^([^%*]+)(%*?)(%d*)$")
+			table.insert(list, { egg = name or item, golden = star == "*", mut = tonumber(tier) })
 		end
 	end
 	return list
@@ -173,10 +174,10 @@ local function eggOffset(c: Carrier, i: number, moving: number): CFrame
 	return CFrame.new(x, y, z) * CFrame.Angles(tilt, math.rad(j[3]), math.rad(j[2]) + sway)
 end
 
-local function makeEgg(c: Carrier, i: number, egg: string, golden: boolean): Egg
+local function makeEgg(c: Carrier, i: number, egg: string, golden: boolean, mut: number?): Egg
 	local w = c.torso.Size.X * EGG_WIDTH
 	local h = w * 3.8 / 3 -- (the egg models are 3 wide, 3.8 tall)
-	local m = EggLook.build(egg, golden, h, true)
+	local m = EggLook.build(egg, golden, h, true, mut)
 	m.Name = "CarriedEgg"
 	local shell = m.PrimaryPart :: BasePart
 	local rel = CFrame.new(0, -h / 2, 0) * shell.CFrame -- (built at the origin: the Shell's place from the egg's bottom)
@@ -216,7 +217,7 @@ local function rebuildEggs(c: Carrier, value: any)
 	clearEggs(c)
 	c.key = if typeof(value) == "string" then value else ""
 	for i, item in parseCarried(value) do
-		table.insert(c.eggs, makeEgg(c, i, item.egg, item.golden))
+		table.insert(c.eggs, makeEgg(c, i, item.egg, item.golden, item.mut))
 	end
 end
 

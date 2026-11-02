@@ -37,28 +37,36 @@ local function attr(name: string): any
 	return player:GetAttribute(name)
 end
 
-local function carried(): { { egg: string, golden: boolean } }
+-- "Pet" / "Pet*" (golden) / "Pet*3" / "Pet*4" (a Diamond / Cosmic egg, Config.Zones.MutationEggs)
+local function carried(): { { egg: string, golden: boolean, mut: number? } }
 	local list = {}
 	local s = attr("Carried")
 	if type(s) == "string" and s ~= "" then
 		for _, item in string.split(s, ",") do
-			local golden = string.sub(item, -1) == "*"
-			table.insert(list, { egg = if golden then string.sub(item, 1, -2) else item, golden = golden })
+			local name, star, tier = string.match(item, "^([^%*]+)(%*?)(%d*)$")
+			table.insert(list, { egg = name or item, golden = star == "*", mut = tonumber(tier) })
 		end
 	end
 	return list
+end
+
+-- "Golden " / "Diamond " / "Cosmic " / ""
+local function eggPrefix(golden: boolean, mut: number?): string
+	local def = mut and CFG.MutationEggs and CFG.MutationEggs[mut]
+	return if def then def.Name .. " " elseif golden then "Golden " else ""
 end
 
 local function eggName(egg: string): string
 	return if egg == "Briefcase" then "Briefcase Egg" else egg .. " Egg"
 end
 
-local function priceOf(egg: string, golden: boolean): number
+local function priceOf(egg: string, golden: boolean, mut: number?): number
 	local base = if egg == "Briefcase" then attr("EggPrice") else attr(egg .. "EggPrice")
 	if type(base) ~= "number" then
 		base = Config.Eggs.Price * (if egg == "Briefcase" then 1 else ((Formulas.themedEgg(egg) or {}).PriceMultiplier or 1))
 	end
-	return math.floor(base * (if golden then CFG.Golden.PriceMultiplier else 1))
+	local def = mut and CFG.MutationEggs and CFG.MutationEggs[mut]
+	return math.floor(base * (if def then def.PriceMultiplier elseif golden then CFG.Golden.PriceMultiplier else 1))
 end
 
 ------------------------------------------------------------------ sounds use the shared SFX group, cooldowns and voice limit
@@ -175,7 +183,11 @@ if workspace.CurrentCamera then
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitBag)
 end
 
-local function eggColor(egg: string, golden: boolean): Color3
+local function eggColor(egg: string, golden: boolean, mut: number?): Color3
+	local mdef = mut and Config.Lawyers.Mutations[mut]
+	if mdef then
+		return mdef.Color
+	end
 	if golden then
 		return CFG.EggColors.Golden
 	end
@@ -187,14 +199,14 @@ local function eggColor(egg: string, golden: boolean): Color3
 end
 
 -- one carry slot: Empty / Filled (the egg in its colour) / Golden
-local function eggChip(item: { egg: string, golden: boolean }?, order: number): Frame
+local function eggChip(item: { egg: string, golden: boolean, mut: number? }?, order: number): Frame
 	local slot = Skin.make("Frame", {
 		Name = "Chip" .. order, Size = UDim2.fromOffset(CHIP_W, CHIP_H), BackgroundColor3 = Skin.PanelDeep, LayoutOrder = order, ZIndex = 2,
 	}, { Skin.corner(9) })
-	local rim = Skin.stroke(2.5, if item and item.golden then Color3.fromRGB(255, 205, 50) elseif item then INK else Color3.fromRGB(74, 77, 102))
+	local rim = Skin.stroke(2.5, if item and item.golden then eggColor(item.egg, true, item.mut) elseif item then INK else Color3.fromRGB(74, 77, 102))
 	rim.Parent = slot
 	if item then
-		local c = eggColor(item.egg, item.golden)
+		local c = eggColor(item.egg, item.golden, item.mut)
 		local sw = Skin.swatch(c)
 		local egg = Skin.make("Frame", {
 			Name = "Egg", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.53), Size = UDim2.fromOffset(CHIP_W - 8, CHIP_H - 10),
@@ -255,9 +267,10 @@ local eggs: { [Model]: EggView } = {}
 local function refreshEggText(v: EggView)
 	local egg = v.model:GetAttribute("Egg") :: string? or "Briefcase"
 	local golden = v.model:GetAttribute("Golden") == true
-	local price = Formulas.formatCoins(priceOf(egg, golden))
+	local mut = v.model:GetAttribute("Mut") :: number?
+	local price = Formulas.formatCoins(priceOf(egg, golden, mut))
 	if v.prompt then
-		v.prompt.ObjectText = (if golden then "Golden " else "") .. eggName(egg) .. "  ·  " .. price
+		v.prompt.ObjectText = eggPrefix(golden, mut) .. eggName(egg) .. "  ·  " .. price
 	end
 end
 
@@ -281,8 +294,9 @@ local function addEgg(m: Instance)
 	bb.MaxDistance = 55
 	bb.LightInfluence = 0
 	bb.Parent = boards
-	local tag = label(bb, (if golden then "Golden " else "") .. eggName(egg), UDim2.fromScale(0.5, 0.28), UDim2.fromScale(1, 0.56), WHITE, 2)
-	label(bb, rarity, UDim2.fromScale(0.5, 0.78), UDim2.fromScale(0.8, 0.44), Config.RarityColors[rarity] or WHITE, 2)
+	local mut = m:GetAttribute("Mut") :: number?
+	local tag = label(bb, eggPrefix(golden, mut) .. eggName(egg), UDim2.fromScale(0.5, 0.28), UDim2.fromScale(1, 0.56), WHITE, 2)
+	label(bb, rarity, UDim2.fromScale(0.5, 0.78), UDim2.fromScale(0.8, 0.44), if mut then eggColor(egg, true, mut) else Config.RarityColors[rarity] or WHITE, 2)
 	local v: EggView = { model = m, home = home, phase = math.random() * 6, height = shell.Size.Y, tag = tag, prompt = m:FindFirstChild("BuyPrompt", true) :: ProximityPrompt? }
 	eggs[m] = v
 	refreshEggText(v)
@@ -484,7 +498,7 @@ local function refreshIncubator(v: IncView)
 	if #list > 0 then
 		text = "HATCH! (" .. #list .. ")"
 		if prompt then
-			prompt.ActionText = "Hatch " .. (if list[1].golden then "GOLDEN " else "") .. eggName(list[1].egg)
+			prompt.ActionText = "Hatch " .. string.upper(eggPrefix(list[1].golden, list[1].mut)) .. eggName(list[1].egg)
 			prompt.ObjectText = "Carrying " .. #list .. " egg" .. (if #list > 1 then "s" else "")
 		end
 	elseif free then
@@ -704,7 +718,7 @@ Remote.OnClientEvent:Connect(function(kind: string, info: any)
 		toast(info, Icons.Goals)
 	elseif kind == "Alert" then
 		Sfx.play("stinger", { gap = 2 })
-		banner("GOLDEN EGG!", info.text, GOLD, 4)
+		banner(info.title or "GOLDEN EGG!", info.text, if info.mut then eggColor("", true, info.mut) else GOLD, if info.mut then 6 else 4)
 	elseif kind == "Bought" then
 		Sfx.play("cash", { gap = 0.35, volume = 0.7 })
 		boughtCount += 1
@@ -791,7 +805,18 @@ local function drawOdds(b: OddsBoard)
 	local foot = if lucky
 		then string.format("LUCKY EGGS: %s x%s (yours!)", luckNames, tostring(luckFactor))
 		else string.format("Golden eggs: %s x%s", luckNames, tostring(goldLuck))
-	label(panel, foot, UDim2.fromScale(0.5, 0.9), UDim2.fromScale(0.92, 0.09), if lucky then Color3.fromRGB(150, 255, 110) else Color3.fromRGB(200, 200, 220), 2)
+	label(panel, foot, UDim2.fromScale(0.5, 0.875), UDim2.fromScale(0.92, 0.075), if lucky then Color3.fromRGB(150, 255, 110) else Color3.fromRGB(200, 200, 220), 2)
+	-- the Diamond / Cosmic eggs (Config.Zones.MutationEggs): the golden column's odds, and always that mutation
+	if CFG.MutationEggs then
+		local names = {}
+		for tier = 3, 4 do
+			if CFG.MutationEggs[tier] then
+				table.insert(names, CFG.MutationEggs[tier].Name)
+			end
+		end
+		label(panel, string.format("%s eggs: golden odds + ALWAYS %s", table.concat(names, " / "), table.concat(names, " / ")),
+			UDim2.fromScale(0.5, 0.95), UDim2.fromScale(0.92, 0.065), Color3.fromRGB(170, 225, 255), 2)
+	end
 end
 
 local function addOddsBoard(part: Instance)

@@ -412,6 +412,43 @@ check("boss clips match the server's timing (Shared.BossAnims vs Config.Bosses +
 	end
 end)
 
+-- Diamond / Cosmic zone eggs (2026-11-02): real mutation tiers, rarer and pricier than golden, Cosmic rarer than Diamond
+check("mutation eggs", function()
+	local M = Config.Zones.MutationEggs
+	assert(M, "Config.Zones.MutationEggs missing")
+	local G = Config.Zones.Golden
+	local prevChance, prevPrice = G.Chance, G.PriceMultiplier
+	for tier = 3, 4 do
+		local d = M[tier]
+		assert(d, "MutationEggs[" .. tier .. "] missing")
+		assert(Config.Lawyers.Mutations[tier], "MutationEggs[" .. tier .. "] is not a mutation tier")
+		assert(d.Chance > 0 and d.Chance < prevChance, d.Name .. ": Chance must be below the tier before it")
+		assert(d.PriceMultiplier > prevPrice, d.Name .. ": PriceMultiplier must climb")
+		assert(d.Lifetime and d.Lifetime > 0, d.Name .. ": Lifetime")
+		prevChance, prevPrice = d.Chance, d.PriceMultiplier
+	end
+	assert(M[3].Chance + M[4].Chance + G.Chance < 1, "special egg chances add past 1")
+end)
+
+-- Pick-a-lawyer products: a real rarity with lawyers to choose from, unique keys
+check("pick-a-lawyer products", function()
+	local seen = {}
+	for _, p in Config.Shop.Products do
+		assert(not seen[p.Key], "duplicate product key " .. p.Key)
+		seen[p.Key] = true
+		if p.PickRarity then
+			assert(Skins[p.PickRarity], p.Key .. ": PickRarity is not a rarity")
+			local n = 0
+			for _, skin in Config.SkinCatalog do
+				if skin.Rarity == p.PickRarity then
+					n += 1
+				end
+			end
+			assert(n >= 2, p.Key .. ": fewer than 2 lawyers to pick from")
+		end
+	end
+end)
+
 ------------------------------------------------------------------ report
 print(string.format("%d checks passed, %d failed", passed, #failures))
 for _, f in failures do

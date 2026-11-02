@@ -939,7 +939,12 @@ Config.Shop = {
 		{ Key = "CashSmall", Id = 3727039012, Price = 25, Name = "Pile of Cash", Text = "10 minutes of your income", Banner = "+10 min", Color = Color3.fromRGB(170, 175, 190), Icon = "cash", Minutes = 10 },
 		{ Key = "CashMedium", Id = 3727039097, Price = 99, Name = "Bag of Cash", Text = "1 hour of your income", Banner = "+1 hour", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Minutes = 60 },
 		{ Key = "CashLarge", Id = 3727039202, Price = 349, Name = "Vault of Cash", Text = "6 hours of your income", Banner = "+6 hours", Color = Color3.fromRGB(60, 160, 255), Icon = "cash", Minutes = 360 },
-		{ Key = "RareEggs", Id = 0, Price = 149, Name = "3 Rare Eggs", Text = "3 Briefcase Eggs that always hatch Rare", Banner = "3x Rare", Color = Color3.fromRGB(255, 120, 40), Icon = "egg", RareTokens = 3 },
+		-- PICK A LAWYER (crnuch 2026-11-02, replaced "3 Rare Eggs": "no one wants rare lawyers"): the buyer CHOOSES any lawyer
+		-- of that rarity (nothing random, so no odds to show). Bought = a saved token (Eggs.PickTokens, PlayerData v21),
+		-- spent in the picker (StarterPlayerScripts.Shop -> Remotes.PickLawyer). Id 0 = not on sale yet.
+		{ Key = "PickLegendary", Id = 0, Price = 99, Name = "Pick a Legendary", Text = "Choose ANY Legendary lawyer", Banner = "LEGENDARY", Color = Color3.fromRGB(255, 170, 30), Icon = "egg", PickRarity = 5 },
+		{ Key = "PickMythic", Id = 0, Price = 299, Name = "Pick a Mythic", Text = "Choose ANY Mythic lawyer", Banner = "MYTHIC", Color = Color3.fromRGB(230, 50, 80), Icon = "egg", PickRarity = 6 },
+		{ Key = "PickSupreme", Id = 0, Price = 799, Name = "Pick a Supreme", Text = "Choose ANY Supreme lawyer", Banner = "SUPREME", Color = Color3.fromRGB(150, 80, 255), Icon = "egg", PickRarity = 7 },
 	},
 	Effects = { DoubleCash = 2, SpeedyCases = 0, LuckyEggs = 2, BigFirm = 100, VIP = 1.25 },
 }
@@ -1147,6 +1152,14 @@ Config.Zones = {
 		{ Id = "SpaceBase", Name = "Space Base", Color = Color3.fromRGB(80, 70, 160), Egg = "Space", License = 5, MaxEggs = 14, Respawn = { 3, 7 }, Bounds = { -36, -2550, 36, -2150 } },
 	},
 	Golden = { Chance = 0.06, PriceMultiplier = 5, Luck = 4, Lifetime = 60 }, -- Luck multiplies the Rare + Legendary odds
+	-- MUTATION EGGS (crnuch 2026-11-02: "for each mutation rarity, there's eggs for all those"): a golden egg that ALWAYS
+	-- hatches with that mutation tier (Config.Lawyers.Mutations, 3 Diamond / 4 Cosmic; a better roll still wins) and has
+	-- the golden egg's rarity luck. Rolled before the golden one, rarest first; one special egg per zone at a time.
+	-- Chance = per spawn. Saved as Carried[i].Mut (PlayerData v21). Price = the egg's price x PriceMultiplier.
+	MutationEggs = {
+		[3] = { Name = "Diamond", Chance = 0.01, PriceMultiplier = 25, Lifetime = 60 },
+		[4] = { Name = "Cosmic", Chance = 0.002, PriceMultiplier = 100, Lifetime = 60 },
+	},
 	License = { -- level n opens every zone whose License is n or less
 		{ Name = "Bronze License", Cost = 5e6 },
 		{ Name = "Silver License", Cost = 1e8 }, -- (2-5: first guesses, 2026-10-12 - put them in the zones sim run)

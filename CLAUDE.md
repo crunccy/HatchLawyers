@@ -354,7 +354,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Lawyers on a case are never moved mid-case: unseat/replace requests on a busy office are QUEUED and applied when
   the case ends; after a case (and after placing) auto-assign leaves the office alone `Config.Case.RestAfterCase` s.
 - Server-authoritative: payouts, rolls, pity, levels, unlocks. Never trust client-sent amounts or results.
-- Save schema: **v18 live** (2026-10-13: its step adds `data.Floors`, the upstairs rooms). v18 also carries the
+- Save schema: **v21 live** (2026-11-02: `Eggs.PickTokens` for the pick-a-lawyer items + optional `Zones.Carried[i].Mut`;
+  v19 / v20 were the cash-pass claims + VIP). v18 (2026-10-13) added `data.Floors`, the upstairs rooms. v18 also carries the
   lawyer mutations + selling (live since 2026-10-16; that step adds nothing - `Stars` now means the MUTATION tier,
   1 Normal / 2 Shiny / 3 Diamond / 4 Cosmic, nothing rewritten; new optional `Lawyers[uid].Locked`).
   (v14 firm areas, v15 minigames, v16 egg zones, v17 the economy pass's `Eggs.RunOpened`.) Never reuse a
@@ -369,6 +370,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
   plus a lasting effect layer per tier (`Effects.mutationAura`, tag `FxMutation`: Shiny = gold glints + a sweep,
   Diamond = crystals + frost + a ring, Cosmic = a tilted orbit + stars + a dark-matter haze). Selling + locking:
   `Remotes.SellLawyers` / `LockLawyer`, `Config.Lawyers.Sell`; a locked lawyer can't be sold OR mutated.
+  **Mutation eggs (crnuch 2026-11-02):** besides golden, zones spawn rare DIAMOND / COSMIC eggs (`Config.Zones.MutationEggs`)
+  that always hatch that tier; they are golden eggs with `Mut` 3 / 4 (attribute, carried entry, "Pet*3" in `Carried`).
   **A pick working a case is WAITED for, never refused or pulled out (2026-10-21, mr.robe's "they don't work"):**
   offices are almost never idle, so `LawyerService.mergeSelected` waits (up to `Config.Lawyers.MutateWait`) for the
   picks' cases to end, holding the picks' free offices (`CaseService.hold`) so no new client sits down, then rolls;
@@ -380,7 +383,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - The prestige reset is called **"Rebirth"** on screen (user's call 2026-10-16); "Supreme" means only the top rarity
   (and the "Supreme Tower" firm). Code names (`PrestigeService`, `Supreme.client`) stay.
 - Robux (user's call 2026-10-12, keeps the `Config.Shop` products): passes (2x Cash, Lucky Eggs, Speedy Cases,
-  Bigger Firm) and products (coin packs, 3 Rare Eggs) are allowed. Anything paid that's random must show its exact
+  Bigger Firm) and products (coin packs; since 2026-11-02 PICK A LEGENDARY / MYTHIC / SUPREME - the buyer chooses the lawyer,
+  crnuch's call, replacing 3 Rare Eggs) are allowed. Anything paid that's random must show its exact
   odds (Lucky Eggs: the boosted odds). Fictional clients only — no real people or brands.
 - All numbers come from `Config`; never hard-code a tunable in a script. Retune → see docs/ECONOMY.md.
   Never change `Payout.Growth` / `Training.Growth` without running the sim — their ratio sets the whole curve.

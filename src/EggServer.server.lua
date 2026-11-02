@@ -18,7 +18,7 @@
 -- v16 (egg zones, Config.Zones): the Briefcase and Pet eggs are no longer sold by hub machines (those machines
 -- are archived in ServerStorage.Old_HubEggMachines). They are bought in Briefcase Bay / Pet Park and hatched at
 -- an incubator in the player's firm by Server.ZoneService, which calls the ServerStorage.EggApi bindable:
---   EggApi:Invoke("hatch", player, eggId?, golden?, at?)  an egg already paid for (eggId nil = Briefcase);
+--   EggApi:Invoke("hatch", player, eggId?, golden?, at?, mut?)  an egg already paid for (eggId nil = Briefcase; mut = Diamond / Cosmic egg);
 --                                                         golden multiplies the Rare + Legendary odds
 --   EggApi:Invoke("free", player, at?)                     the free first egg / a reward token, if the player has one
 --   EggApi:Invoke("price", player, eggId?, ahead?) -> number  what that egg costs this player right now (ahead: eggs
@@ -178,7 +178,8 @@ end
 -- opts.paid: the egg was already bought (in a zone) - no price, no free egg / token; opts.golden: a golden zone
 -- egg (better odds); opts.tokensOnly: only hatch if it's the free first egg or a reward token (never charge);
 -- opts.at: where the egg hatched (for the Rare / Legendary burst). Returns whether an egg hatched.
-type RollOpts = { paid: boolean?, golden: boolean?, tokensOnly: boolean?, at: Vector3? }
+-- opts.mut: a Diamond / Cosmic zone egg (Config.Zones.MutationEggs): hatches with at least that mutation tier.
+type RollOpts = { paid: boolean?, golden: boolean?, tokensOnly: boolean?, at: Vector3?, mut: number? }
 local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	local o: RollOpts = opts or {}
 	local themed = Formulas.themedEgg(eggId)
@@ -269,6 +270,10 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 	-- a hatch can come out MUTATED (Config.Lawyers.HatchMutation; golden zone eggs much more often). Rolled on its own,
 	-- so the rarity odds above never change. The tutorial egg never mutates.
 	local stars = if free then 1 else Formulas.rollHatchMutation(rng, o.golden == true)
+	local mutEgg = if type(o.mut) == "number" and Config.Lawyers.Mutations[o.mut] then o.mut else nil
+	if mutEgg and not free then
+		stars = math.max(stars, mutEgg) -- (a mutation egg always hatches that tier; a luckier roll still wins)
+	end
 	local uid, lawyer = LawyerService.hatch(data, id, stars)
 	-- how many copies (same lawyer, same mutation) the player now has, for the "mutation ready" hint
 	local copies = 0
@@ -314,11 +319,12 @@ local function onRoll(player: Player, eggId: string?, opts: RollOpts?): boolean
 		emptyOffice = firstEmptyOffice(data),
 		at = o.at, -- where it hatched (the incubator): a Legendary+ hatch plays out there, in the world
 		golden = o.golden == true,
+		mut = mutEgg, -- a Diamond / Cosmic egg (its look in the hatch)
 		chance = chance,
 		stars = lawyer.Stars, -- the mutation tier it hatched with (1 = none)
 	})
 	if o.at and HatchShow then -- (v5: everyone near the incubator watches every hatch there, StarterPlayerScripts.Eggs)
-		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, rarity = rarity, skinId = id, stars = lawyer.Stars })
+		HatchShow:FireAllClients({ userId = player.UserId, at = o.at, egg = if themed then themed.Id else nil, golden = o.golden == true, mut = mutEgg, rarity = rarity, skinId = id, stars = lawyer.Stars })
 	end
 	if (rarityId == "Mythic" or rarityId == "Supreme") and HatchAnnounce then
 		local skin = Formulas.getSkin(id)
@@ -363,7 +369,7 @@ end
 	local args = { ... }
 	if action == "hatch" then
 		local eggId = args[1]
-		return onRoll(player, if eggId == "Briefcase" then nil else eggId, { paid = true, golden = args[2] == true, at = args[3] })
+		return onRoll(player, if eggId == "Briefcase" then nil else eggId, { paid = true, golden = args[2] == true, at = args[3], mut = args[4] })
 	elseif action == "free" then
 		return onRoll(player, nil, { tokensOnly = true, at = args[1] })
 	elseif action == "price" then

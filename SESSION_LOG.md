@@ -5,10 +5,6 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
-- **crnuch (local), since 2026-11-02: DIAMOND + COSMIC zone eggs and PICK-A-LAWYER Robux items** (crnuch's calls: the
-  buyer picks the lawyer; Legendary 99 / Mythic 299 / Supreme 799 R$, replacing 3 Rare Eggs; Diamond / Cosmic eggs always
-  hatch that mutation). Touches ZoneService, EggServer, ShopService, PlayerData (v19), EggLook, Zones / Eggs / CarryPose /
-  Shop clients. Don't edit those meanwhile.
 - **crnuch's call 2026-10-27 ("mr robe can take them"): mr.robe's sessions take over crnuch's remaining claims** - the
   UI v3 remaining screens (the UI overhaul claim below), the visual audit's M2-M5, and the MAP MODEL OVERHAUL's next stage
   (characters / eggs / bosses). crnuch's sessions keep the island install (edition-2 re-import) until it's in.
@@ -280,7 +276,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
 - [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
       own Claude on this repo now (2026-10-12). CaseService changed again since: no waiting room (entry below).
-- [ ] **Shop Ids:** all filled 2026-11-01 except BigFirm (crnuch: not building it) and RareEggs (needs odds on its card first).
+- [ ] **Shop Ids:** all filled 2026-11-01 except BigFirm (crnuch: not building it) and the three PICK-A-LAWYER products
+      (2026-11-02, replaced RareEggs): crnuch creates them on Creator Hub (99 / 299 / 799 R$), ids into Config.Shop.Products.
 - [x] Eye-check the Lawyer Merger panel + merge animation - superseded 2026-10-22: the Mutation Machine was rebuilt
       (menu v3 + Shared.MutationFx) and playtested (entry above).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
@@ -309,6 +306,34 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-11-02 — crnuch, local session: DIAMOND + COSMIC zone eggs, PICK-A-LAWYER Robux items
+- crnuch's calls: "no one wants rare lawyers" - the 3 Rare Eggs product is replaced by **Pick a Legendary 99 R$ / Pick a
+  Mythic 299 R$ / Pick a Supreme 799 R$**, and the BUYER CHOOSES the lawyer (nothing random, so no odds list needed). And
+  "for each mutation rarity, there's eggs": **Diamond and Cosmic zone eggs** that ALWAYS hatch that mutation.
+- **Heads-up, save data: PlayerData v21** (live was already v20 - CLAUDE.md said v18): `Eggs.PickTokens` = { ["5"|"6"|"7"]
+  = unspent picks }, and optional `Zones.Carried[i].Mut` (3 / 4). Migration [20] adds PickTokens; nothing rewritten.
+- Mutation eggs: `Config.Zones.MutationEggs` [3] Diamond 1% / x25 price, [4] Cosmic 0.2% / x100 (first guesses; golden is
+  6% / x5), each also golden (same rarity luck), one special egg per zone at a time, rolled rarest first. ZoneService
+  (spawn, price, carry, boss drops, grab, hatch), EggServer (`opts.mut`: stars = max(roll, mut)), EggLook (`mut` last arg
+  on build / buildHatch / color: no texture, the mutation's colour ramp - Diamond icy blue, Cosmic deep purple), Zones
+  client (label "Always Diamond", price, bag chip, alert banner in the tier colour, incubator prompt, odds-board line),
+  CarryPose + Eggs clients (look + "COSMIC BRIEFCASE EGG" title). Carried attribute: "Pet*3" / "Pet*4". Admin:
+  `/eggs 1 diamond` / `/eggs 1 cosmic`.
+- Pick a lawyer: `Config.Shop.Products` PickLegendary / PickMythic / PickSupreme (PickRarity 5/6/7), **Id 0 = hidden until
+  crnuch creates the 3 developer products** (Creator Hub, the group's universe, 99 / 299 / 799) and pastes the ids in.
+  ShopService: a purchase adds a token; `Remotes.PickLawyer(id)` (new RemoteFunction) spends one - server-checked
+  (catalog lawyer, token of its rarity, lawyer cap). Shop client: wide cards with the rarity's lawyer in 3D ("YOU
+  CHOOSE!"), a YOUR PICKS card on top while tokens are unspent, a picker window (every lawyer of the rarity, 3D, egg,
+  Earns x; PICK then SURE?) that opens by itself when a pick arrives. Section / tab renamed "Pick a Lawyer" / "Lawyers".
+- New config checks (tools/checks/config_tests.luau): mutation eggs rarer + pricier per tier, pick products have 2+
+  lawyers. run_checks green (45).
+- Playtested (fresh promo profile): a Supreme token opened the picker by itself (6 Supremes, one per egg) -> picked
+  Celestial Kitsune, token spent; a Cosmic Briefcase egg hatched KaiSueNat at Cosmic (4); a Diamond Pet egg dropped as a
+  loose egg kept Mut 3 + its blue glow; the four Space eggs side by side (plain / golden / Diamond / Cosmic). No errors.
+  Not seen live: a natural Diamond / Cosmic spawn (1% / 0.2%) and its alert banner; the boss-drop flight still draws
+  these eggs gold (Bosses.client), the landed egg is right.
+- All pushed to Studio (11 scripts, fingerprint-guarded) + Remotes.PickLawyer; snapshot re-exported; src == studio.
 
 ## 2026-11-02 — crnuch, local session: fresh-player tutorial run + steps 1-2 wait for the player
 - crnuch: "the first 2 steps of the tutorial are basically illegible because they go by so quickly without any player

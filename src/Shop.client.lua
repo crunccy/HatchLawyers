@@ -11,6 +11,10 @@
 -- Items, ids and prices: Config.Shop. Server: Server.ShopService. This script only PROMPTS purchases
 -- (MarketplaceService); the server alone grants anything. Opened by the SHOP tile in the HUD's menu column
 -- (Shared.HudMenu) and by the ShopPrompt on Hub.ShopStall.
+-- PICK A LAWYER (2026-11-02, crnuch): the Legendary / Mythic / Supreme products (Config.Shop.Products PickRarity) are
+-- wide cards with the lawyer in 3D; a bought pick is a token (player attribute PickTokens "5:1,7:2") shown as a YOUR
+-- PICKS card at the top, and the picker window lists every lawyer of that rarity - tap PICK, then SURE? (it can't be
+-- undone) -> Remotes.PickLawyer. A new token opens the picker by itself.
 
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
@@ -24,6 +28,8 @@ local HatchShells = require(Shared:WaitForChild("HatchShells") :: ModuleScript) 
 local Skin = require(Shared:WaitForChild("Skin") :: ModuleScript) :: any
 local HudMenu = require(Shared:WaitForChild("HudMenu") :: ModuleScript) :: any
 local ArtAssets = require(Shared:WaitForChild("ArtAssets") :: ModuleScript) :: any
+local Formulas = require(Shared:WaitForChild("Formulas") :: ModuleScript) :: any
+local SkinLook = require(Shared:WaitForChild("SkinLook") :: ModuleScript) :: any
 
 local make, text = Skin.make, Skin.text
 local Icons = HudMenu.Icons
@@ -113,6 +119,80 @@ local function picture(parent: GuiObject, kind: string, z: number, art: string?)
 	cam.Parent = vf
 	vf.CurrentCamera = cam
 	table.insert(spinners, { model = m, base = m:GetPivot() })
+end
+
+------------------------------------------------------------------ lawyers in 3D (the pick-a-lawyer cards + picker)
+-- one posed model per lawyer id (Shared.SkinLook on an invisible stand-in, like the LAWYERS panel), cloned per viewport
+local lawyerCache: { [string]: Model | false } = {}
+local function lawyerModel(id: string): Model?
+	local cached = lawyerCache[id]
+	if cached == nil then
+		cached = false
+		local base = Instance.new("Model")
+		local body = Instance.new("Part")
+		body.Name = "StandIn"
+		body.Anchored = true
+		body.Transparency = 1
+		body.Size = Vector3.new(2, 5, 1)
+		body.CFrame = CFrame.new(0, 2.5, 0)
+		body.Parent = base
+		base.PrimaryPart = body
+		pcall(SkinLook.dress, base, id)
+		if base:FindFirstChild("SkinModel") then
+			for _, d in base:GetDescendants() do
+				if d:IsA("BillboardGui") or d:IsA("ParticleEmitter") or d:IsA("Beam") or d:IsA("Light") or d:IsA("Sound")
+					or d:IsA("BaseScript") or d:IsA("ProximityPrompt") or d:IsA("Highlight") or d:IsA("Humanoid") then
+					d:Destroy()
+				end
+			end
+			base.PrimaryPart = nil
+			body:Destroy()
+			cached = base
+		else
+			base:Destroy()
+		end
+		lawyerCache[id] = cached
+	end
+	return if cached then (cached :: Model):Clone() else nil
+end
+
+-- every lawyer of one rarity (Config.SkinCatalog order)
+local function lawyersOf(rarity: number): { any }
+	local list = {}
+	for _, skin in Config.SkinCatalog do
+		if skin.Rarity == rarity then
+			table.insert(list, skin)
+		end
+	end
+	return list
+end
+
+local function viewLawyer(parent: GuiObject, id: string, z: number)
+	local vf = make("ViewportFrame", {
+		Name = "Picture", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Ambient = Color3.fromRGB(200, 200, 205),
+		LightColor = Color3.fromRGB(255, 250, 240), LightDirection = Vector3.new(-0.5, -1, -0.6), ZIndex = z, Parent = parent,
+	})
+	local m = lawyerModel(id)
+	if not m then
+		return
+	end
+	m.Parent = vf
+	local box, size = m:GetBoundingBox()
+	local cam = Instance.new("Camera")
+	cam.FieldOfView = 30
+	local h = math.max(size.Y, size.X * 0.8)
+	cam.CFrame = CFrame.lookAt(box.Position + Vector3.new(0, h * 0.08, -h * 2.4), box.Position)
+	cam.Parent = vf
+	vf.CurrentCamera = cam
+	table.insert(spinners, { model = m, base = m:GetPivot() })
+end
+
+-- the product card's picture: the rarity's showiest lawyer (its last in the catalog), turning
+local function lawyerPicture(parent: GuiObject, rarity: number, z: number)
+	local list = lawyersOf(rarity)
+	if #list > 0 then
+		viewLawyer(parent, list[#list].Id, z)
+	end
 end
 
 ------------------------------------------------------------------ cards
@@ -228,7 +308,11 @@ local function wideCard(parent: GuiObject, item: any, kind: string, order: numbe
 	frame.ClipsDescendants = false -- the ribbon pokes out over the corner
 	local z = frame.ZIndex + 2
 	local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(16, 6), Size = UDim2.new(0.36, 0, 1, -12), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
-	picture(art, item.Icon, z, ArtAssets.Shop[item.Key])
+	if item.PickRarity then
+		lawyerPicture(art, item.PickRarity, z)
+	else
+		picture(art, item.Icon, z, ArtAssets.Shop[item.Key])
+	end
 	text({ Name = "Name", Position = UDim2.new(0.39, 0, 0, 22), Size = UDim2.new(0.58, 0, 0, 60), Text = string.upper(item.Name),
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 52, 5)
 	text({ Name = "Perk", Position = UDim2.new(0.39, 0, 0, 84), Size = UDim2.new(0.58, 0, 0, 40), Text = item.Banner,
@@ -285,6 +369,105 @@ local function valueTag(c: Card, pass: any?, free: any?)
 	end
 end
 
+------------------------------------------------------------------ the pick-a-lawyer picker
+-- unspent picks from the PickTokens attribute: { [rarity index] = count }
+local function pickTokens(): { [number]: number }
+	local out = {}
+	local s = player:GetAttribute("PickTokens")
+	if type(s) == "string" then
+		for rarity, count in string.gmatch(s, "(%d+):(%d+)") do
+			out[tonumber(rarity) :: number] = tonumber(count) :: number
+		end
+	end
+	return out
+end
+
+local function rarityName(rarity: number): string
+	local tier = Config.Eggs.Skins[rarity]
+	return if tier then tier.Id else "?"
+end
+
+local picker = Skin.window({ Name = "LawyerPicker", Title = "Pick a Lawyer", Color = "Purple", Icon = Icons.Lawyers or Icons.Cart,
+	Size = Vector2.new(940, 600), DisplayOrder = 34 })
+local pickScroller = Skin.scroller(picker.body)
+local pickToast = Skin.toast({ Name = "PickToast", Color = "Gold" })
+local pickBusy = false
+
+local function openPicker(rarity: number)
+	for _, c in pickScroller:GetChildren() do
+		if c:IsA("GuiObject") then
+			c:Destroy()
+		end
+	end
+	local name = rarityName(rarity)
+	picker.title.Text = "PICK A " .. string.upper(name)
+	local color = (Config.RarityColors and Config.RarityColors[name]) or WHITE
+	Skin.section(pickScroller, "Choose any one - it's yours to keep", color, 1)
+	local grid = Skin.grid(pickScroller, Vector2.new(214, 318), 2)
+	local tier = Config.Eggs.Skins[rarity]
+	for i, skin in lawyersOf(rarity) do
+		local frame = Skin.card(grid, { Color = color, LayoutOrder = i, GlowAt = Vector2.new(0.5, 0.3) })
+		local z = frame.ZIndex + 2
+		local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(8, 4), Size = UDim2.new(1, -16, 0, 168), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+		viewLawyer(art, skin.Id, z)
+		text({ Name = "Name", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 170), Size = UDim2.new(1, -12, 0, 34),
+			Text = skin.Name, TextColor3 = TITLE_GOLD, TextWrapped = true, ZIndex = z + 1, Parent = frame }, 24, 3)
+		local egg = Formulas.themedEgg(skin.Egg)
+		text({ Name = "Info", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 204), Size = UDim2.new(1, -16, 0, 40),
+			Text = (if egg then egg.Name else "Briefcase Egg") .. "\nEarns x" .. tostring(tier and tier.Earn or 1), FontFace = Skin.Fonts.Body,
+			TextWrapped = true, ZIndex = z + 1, Parent = frame }, 17, 2)
+		local btn = Skin.button({ Parent = frame, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10),
+			Size = UDim2.new(1, -28, 0, 48), Style = "Green", TextSize = 28, TextStroke = 3, ZIndex = z + 1, Glint = true })
+		btn.setText("PICK")
+		local armed = false
+		btn.button.Activated:Connect(function()
+			if pickBusy then
+				return
+			end
+			if not armed then -- a pick can't be undone: tap again to be sure
+				armed = true
+				btn.setText("SURE?")
+				btn.setStyle("Orange")
+				task.delay(3, function()
+					if armed and btn.button.Parent then
+						armed = false
+						btn.setText("PICK")
+						btn.setStyle("Green")
+					end
+				end)
+				return
+			end
+			armed = false
+			pickBusy = true
+			btn.setState("pending")
+			local remote = ReplicatedStorage.Remotes:WaitForChild("PickLawyer", 5) :: RemoteFunction?
+			local ok, msg = false, "Try again in a moment"
+			if remote then
+				local called, a, b = pcall(remote.InvokeServer, remote, skin.Id)
+				if called then
+					ok, msg = a, b
+				end
+			end
+			pickBusy = false
+			if ok then
+				picker.hide()
+				pickToast.set("You got " .. tostring(msg) .. "! Find them in LAWYERS")
+				pickToast.show()
+				task.delay(4, pickToast.hide)
+			else
+				btn.setState("default")
+				btn.setText("PICK")
+				btn.setStyle("Green")
+				pickToast.set(tostring(msg))
+				pickToast.show()
+				task.delay(3, pickToast.hide)
+			end
+		end)
+	end
+	pickScroller.CanvasPosition = Vector2.zero
+	picker.open()
+end
+
 local function build()
 	for _, c in scroller:GetChildren() do
 		if c:IsA("GuiObject") then
@@ -295,6 +478,36 @@ local function build()
 	table.clear(spinners)
 	table.clear(floaters)
 	local order = 1
+	-- YOUR PICKS: bought pick-a-lawyer tokens waiting to be spent, on top
+	local tokens = pickTokens()
+	local rarities = {}
+	for rarity in tokens do
+		table.insert(rarities, rarity)
+	end
+	table.sort(rarities, function(a, b)
+		return a > b
+	end)
+	if #rarities > 0 then
+		order = addSection("Picks", "Your Picks", "Purple", order)
+		for _, rarity in rarities do
+			local name = rarityName(rarity)
+			local frame = Skin.card(scroller, { Color = (Config.RarityColors and Config.RarityColors[name]) or WHITE, Size = UDim2.new(1, -8, 0, 130), LayoutOrder = order, GlowAt = Vector2.new(0.15, 0.5) })
+			local z = frame.ZIndex + 2
+			local art = make("Frame", { Name = "Art", Position = UDim2.fromOffset(12, 4), Size = UDim2.new(0, 150, 1, -8), BackgroundTransparency = 1, ZIndex = z, Parent = frame })
+			lawyerPicture(art, rarity, z)
+			text({ Name = "Name", Position = UDim2.fromOffset(176, 20), Size = UDim2.new(1, -460, 0, 52), Text = "PICK YOUR " .. string.upper(name) .. "!",
+				TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 40, 4)
+			text({ Name = "Info", Position = UDim2.fromOffset(176, 74), Size = UDim2.new(1, -460, 0, 34), Text = "You have " .. tokens[rarity] .. " to choose",
+				FontFace = Skin.Fonts.Body, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = z + 1, Parent = frame }, 22, 2)
+			local btn = Skin.button({ Parent = frame, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -20, 0.5, 0),
+				Size = UDim2.fromOffset(250, 64), Style = "Green", TextSize = 36, TextStroke = 4, ZIndex = z + 1, Glint = true })
+			btn.setText("CHOOSE")
+			btn.button.Activated:Connect(function()
+				openPicker(rarity)
+			end)
+			order += 1
+		end
+	end
 	-- FEATURED: one pass, big
 	local featured = findItem(Config.Shop.Passes, FEATURED_KEY) or Config.Shop.Passes[1]
 	order = addSection("Featured", "Featured", "Gold", order)
@@ -335,11 +548,11 @@ local function build()
 			end
 		end
 	end
-	-- EGGS (and anything else): wide cards
+	-- PICK A LAWYER (and anything else): wide cards
 	if #others > 0 then
-		order = addSection("Eggs", "Eggs", "Orange", order)
+		order = addSection("Eggs", "Pick a Lawyer", "Orange", order)
 		for _, item in others do
-			table.insert(cards, wideCard(scroller, item, "product", order, if item.RareTokens then "ALWAYS RARE!" else nil))
+			table.insert(cards, wideCard(scroller, item, "product", order, if item.PickRarity then "YOU CHOOSE!" elseif item.RareTokens then "ALWAYS RARE!" else nil))
 			order += 1
 		end
 	end
@@ -371,7 +584,7 @@ local function jumpTo(key: string)
 end
 local tabs: { [string]: TextButton } = {}
 for i, t in { { "Featured", "Featured", ArtAssets.Tabs.Featured, "Gold" }, { "Passes", "Passes", ArtAssets.Tabs.Passes, "Purple" },
-	{ "Cash", "Cash", ArtAssets.Tabs.Cash, "Green" }, { "Eggs", "Eggs", ArtAssets.Tabs.Eggs, "Orange" } } do
+	{ "Cash", "Cash", ArtAssets.Tabs.Cash, "Green" }, { "Eggs", "Lawyers", ArtAssets.Tabs.Eggs, "Orange" } } do
 	local tab = Skin.sideTab(win.sideRail, { Label = t[2], Icon = t[3], Color = t[4], LayoutOrder = i })
 	tabs[t[1]] = tab
 	tab.Activated:Connect(function()
@@ -406,6 +619,7 @@ local function clearPending(key: string?)
 		end
 	end
 end
+local lastTokens = pickTokens()
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(who, passId)
 	if who == player then
 		for _, p in Config.Shop.Passes do
@@ -425,6 +639,19 @@ MarketplaceService.PromptProductPurchaseFinished:Connect(function(userId, produc
 	end
 end)
 player.AttributeChanged:Connect(function(name)
+	if name == "PickTokens" then -- a pick was bought (open the picker) or spent (refresh the shop)
+		local now = pickTokens()
+		for rarity, count in now do
+			if count > (lastTokens[rarity] or 0) and not picker.isOpen() then
+				task.defer(openPicker, rarity)
+				break
+			end
+		end
+		lastTokens = now
+		if win.isOpen() then
+			build()
+		end
+	end
 	if string.sub(name, 1, 4) == "Pass" or string.sub(name, 1, 13) == "FreeShopClaim" or string.sub(name, 1, 13) == "CashPassClaim" or name == "VIPLastClaimDay" then
 		clearPending(nil)
 	end

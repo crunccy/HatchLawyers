@@ -113,7 +113,8 @@ function ZoneService.sync(player: Player)
 	player:SetAttribute("ZoneSpeed", z.Speed)
 	local list = {}
 	for _, item in z.Carried do
-		table.insert(list, item.Egg .. (if item.Golden then "*" else ""))
+		-- "Pet*" = golden, "Pet*3" / "Pet*4" = a Diamond / Cosmic egg (Config.Zones.MutationEggs)
+		table.insert(list, item.Egg .. (if item.Golden then "*" .. (if item.Mut then tostring(item.Mut) else "") else ""))
 	end
 	player:SetAttribute("Carried", table.concat(list, ","))
 	local character = player.Character
@@ -131,22 +132,28 @@ end
 -- `floorPos` (docs/ZONES_REFERENCE.md: nothing floats). Returns (model, shell, home): the shell is its PrimaryPart
 -- and the model's pivot is the shell's centre (StarterPlayerScripts.Zones rocks the egg around its bottom from there).
 local EGG_HEIGHT, GOLDEN_HEIGHT = 3.4, 4.0
-local function eggModel(egg: string, golden: boolean, floorPos: Vector3): (Model, BasePart, CFrame)
-	local m = EggLook.build(egg, golden, if golden then GOLDEN_HEIGHT else EGG_HEIGHT)
+-- the glow colour of a golden / mutation egg
+local function glowColor(mut: number?): Color3
+	local def = mut and Config.Lawyers.Mutations[mut]
+	return if def then def.Color else CFG.EggColors.Golden
+end
+
+local function eggModel(egg: string, golden: boolean, floorPos: Vector3, mut: number?): (Model, BasePart, CFrame)
+	local m = EggLook.build(egg, golden, if golden then GOLDEN_HEIGHT else EGG_HEIGHT, nil, mut)
 	m:PivotTo(CFrame.new(floorPos) * CFrame.Angles(0, rng:NextNumber(-0.6, 0.6), 0)) -- (its front roughly toward the path)
 	local shell = m.PrimaryPart :: BasePart
 	shell.PivotOffset = CFrame.new() -- pivot = the shell's centre from here on
 	local home = shell.CFrame
 	if golden then
 		local light = Instance.new("PointLight")
-		light.Color = CFG.EggColors.Golden
-		light.Range = 16
+		light.Color = glowColor(mut)
+		light.Range = if mut then 22 else 16
 		light.Brightness = 2
 		light.Parent = shell
 		local sparkle = Instance.new("ParticleEmitter")
 		sparkle.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-		sparkle.Color = ColorSequence.new(CFG.EggColors.Golden)
-		sparkle.Rate = 12
+		sparkle.Color = ColorSequence.new(glowColor(mut))
+		sparkle.Rate = if mut then 22 else 12
 		sparkle.Lifetime = NumberRange.new(0.8, 1.4)
 		sparkle.Speed = NumberRange.new(2, 4)
 		sparkle.SpreadAngle = Vector2.new(180, 180)
@@ -156,16 +163,17 @@ local function eggModel(egg: string, golden: boolean, floorPos: Vector3): (Model
 	return m, shell, home
 end
 
-local function buildEgg(zone: Zone, spot: BasePart, golden: boolean): Model
+local function buildEgg(zone: Zone, spot: BasePart, golden: boolean, mut: number?): Model
 	local egg = zone.def.Egg
 	local floorY = spot.Position.Y - spot.Size.Y / 2
-	local m, shell, home = eggModel(egg, golden, Vector3.new(spot.Position.X, floorY, spot.Position.Z))
+	local m, shell, home = eggModel(egg, golden, Vector3.new(spot.Position.X, floorY, spot.Position.Z), mut)
 	m.Name = "ZoneEgg"
 	m:SetAttribute("Zone", zone.def.Id)
 	m:SetAttribute("Egg", egg)
 	m:SetAttribute("Golden", golden)
+	m:SetAttribute("Mut", mut)
 	-- the label's second line (StarterPlayerScripts.Zones shows "<egg name>" then this, in its rarity colour)
-	m:SetAttribute("Rarity", if golden then "Rare" else "Common")
+	m:SetAttribute("Rarity", if mut then "Always " .. CFG.MutationEggs[mut].Name elseif golden then "Rare" else "Common")
 	m.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
 	m:SetAttribute("Home", home)
 	local prompt = Instance.new("ProximityPrompt")
@@ -198,12 +206,24 @@ local function spawnEgg(zone: Zone)
 			hasGolden = true
 		end
 	end
-	local golden = not hasGolden and rng:NextNumber() < CFG.Golden.Chance
-	local m = buildEgg(zone, spot, golden)
+	-- a Cosmic, Diamond or golden egg (rarest first); one of them per zone at a time
+	local mut: number? = nil
+	if not hasGolden and CFG.MutationEggs then
+		for _, tier in { 4, 3 } do
+			local def = CFG.MutationEggs[tier]
+			if def and rng:NextNumber() < def.Chance then
+				mut = tier
+				break
+			end
+		end
+	end
+	local golden = mut ~= nil or (not hasGolden and rng:NextNumber() < CFG.Golden.Chance)
+	local m = buildEgg(zone, spot, golden, mut)
 	zone.eggs[spot] = m
 	if golden then
-		Remote:FireAllClients("Alert", { text = "A GOLDEN EGG appeared in " .. zone.def.Name .. "!", zone = zone.def.Id })
-		task.delay(CFG.Golden.Lifetime, function()
+		local name = if mut then string.upper(CFG.MutationEggs[mut].Name) else "GOLDEN"
+		Remote:FireAllClients("Alert", { title = name .. " EGG!", text = "A " .. name .. " EGG appeared in " .. zone.def.Name .. "!", zone = zone.def.Id, mut = mut })
+		task.delay(if mut then CFG.MutationEggs[mut].Lifetime else CFG.Golden.Lifetime, function()
 			if zone.eggs[spot] == m then
 				zone.eggs[spot] = nil
 				m:Destroy()
@@ -239,8 +259,11 @@ local function buy(player: Player, zone: Zone, spot: BasePart, m: Model)
 		return
 	end
 	local golden = m:GetAttribute("Golden") == true
+	local mut = m:GetAttribute("Mut") :: number?
+	local mutDef = mut and CFG.MutationEggs and CFG.MutationEggs[mut]
 	-- (#z.Carried: each egg already in the bag moves the price one step up the ramp, like the machine - audit 2026-10-12)
-	local price = ((eggApi("price", player, zone.def.Egg, #z.Carried) :: number?) or math.huge) * (if golden then CFG.Golden.PriceMultiplier else 1)
+	local price = ((eggApi("price", player, zone.def.Egg, #z.Carried) :: number?) or math.huge)
+		* (if mutDef then mutDef.PriceMultiplier elseif golden then CFG.Golden.PriceMultiplier else 1)
 	price = math.floor(price)
 	if not PlayerData.spendCoins(player, price) then
 		note(player, "Need " .. Formulas.formatCoins(price) .. " coins for this egg")
@@ -249,10 +272,10 @@ local function buy(player: Player, zone: Zone, spot: BasePart, m: Model)
 	zone.eggs[spot] = nil
 	m:Destroy()
 	zone.nextSpawn = math.max(zone.nextSpawn, os.clock() + rng:NextNumber(zone.def.Respawn[1], zone.def.Respawn[2]))
-	table.insert(z.Carried, { Egg = zone.def.Egg, Golden = golden })
+	table.insert(z.Carried, { Egg = zone.def.Egg, Golden = golden, Mut = if mutDef then mut else nil })
 	PlayerData.sync(player)
 	ZoneService.sync(player)
-	Remote:FireClient(player, "Bought", { egg = zone.def.Egg, golden = golden, count = #z.Carried, max = carryMax(z) })
+	Remote:FireClient(player, "Bought", { egg = zone.def.Egg, golden = golden, mut = if mutDef then mut else nil, count = #z.Carried, max = carryMax(z) })
 end
 
 ---------------------------------------------------------------- loose eggs (knocked out of a player's arms by a boss)
@@ -262,7 +285,7 @@ end
 -- StarterPlayerScripts.Bosses), then ANYONE who walks into it takes it for free - it was already paid for (user's call,
 -- docs/BOSSES.md) - through the normal carry checks (arms full, lawyer room). Unclaimed, it vanishes. No text.
 local BCFG = Config.Bosses
-type Loose = { model: Model, parts: { BasePart }, zone: Zone, egg: string, golden: boolean, grabbableAt: number, expiresAt: number, shown: boolean }
+type Loose = { model: Model, parts: { BasePart }, zone: Zone, egg: string, golden: boolean, mut: number?, grabbableAt: number, expiresAt: number, shown: boolean }
 local loose: { Loose } = {}
 ZoneService.onGrab = nil :: ((player: Player, at: Vector3, egg: string, golden: boolean) -> ())?
 
@@ -320,12 +343,13 @@ function ZoneService.dropAll(player: Player, zoneId: string, from: Vector3): { {
 		local zz = math.clamp(from.Z + math.sin(a) * r, minZ, maxZ)
 		local at = Vector3.new(x, floorAt(zone, x, zz), zz)
 		local golden = item.Golden == true
-		local m, _, _ = eggModel(item.Egg, golden, at)
+		local m, _, _ = eggModel(item.Egg, golden, at, item.Mut)
 		m.Name = "LooseEgg"
 		local grabbableAt = now + BCFG.GrabbableAfter + (i - 1) * BCFG.DropStagger
 		m:SetAttribute("Zone", zone.def.Id)
 		m:SetAttribute("Egg", item.Egg)
 		m:SetAttribute("Golden", golden)
+		m:SetAttribute("Mut", item.Mut)
 		m:SetAttribute("GrabbableAt", grabbableAt)
 		m:SetAttribute("ExpiresAt", grabbableAt + BCFG.DroppedEggLifetime)
 		local parts = {}
@@ -347,7 +371,7 @@ function ZoneService.dropAll(player: Player, zoneId: string, from: Vector3): { {
 		end
 		CollectionService:AddTag(m, "LooseEgg")
 		m.Parent = folder
-		table.insert(loose, { model = m, parts = parts, zone = zone, egg = item.Egg, golden = golden,
+		table.insert(loose, { model = m, parts = parts, zone = zone, egg = item.Egg, golden = golden, mut = item.Mut,
 			grabbableAt = grabbableAt, expiresAt = grabbableAt + BCFG.DroppedEggLifetime, shown = false })
 		table.insert(out, { egg = item.Egg, golden = golden, at = at })
 	end
@@ -368,7 +392,7 @@ local function tryGrab(player: Player, l: Loose): boolean
 	if room - #z.Carried <= 0 then
 		return false
 	end
-	table.insert(z.Carried, { Egg = l.egg, Golden = l.golden })
+	table.insert(z.Carried, { Egg = l.egg, Golden = l.golden, Mut = l.mut })
 	ZoneService.sync(player)
 	return true
 end
@@ -453,7 +477,7 @@ local function hatchAt(player: Player, incubator: Model)
 	local at = (incubator.PrimaryPart and incubator.PrimaryPart.Position or incubator:GetPivot().Position) + Vector3.new(0, 5, 0)
 	if #z.Carried > 0 then
 		local item = table.remove(z.Carried, 1)
-		local ok = eggApi("hatch", player, item.Egg, item.Golden == true, at)
+		local ok = eggApi("hatch", player, item.Egg, item.Golden == true, at, item.Mut)
 		if not ok then
 			table.insert(z.Carried, 1, item) -- lawyer cap or still hatching: keep the egg
 			if ((eggApi("room", player) :: number?) or 0) > 0 then

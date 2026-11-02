@@ -837,9 +837,10 @@ local function rgbOf(c: any): Color3
 	return if typeof(c) == "ColorSequence" then c.Keypoints[1].Value else c
 end
 
-local function eggNameOf(eggId: string, golden: boolean): string
+local function eggNameOf(eggId: string, golden: boolean, mut: number?): string
 	local def = Formulas.themedEgg(eggId)
-	return string.upper((if golden then "Golden " else "") .. (if def then def.Name else "Briefcase Egg"))
+	local mdef = mut and Config.Zones.MutationEggs and Config.Zones.MutationEggs[mut] -- (a Diamond / Cosmic egg)
+	return string.upper((if mdef then mdef.Name .. " " elseif golden then "Golden " else "") .. (if def then def.Name else "Briefcase Egg"))
 end
 
 -- where it happens: the incubator the server named (result.at), else your nearest one, else the floor in front of you
@@ -1668,7 +1669,8 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 	local fxColor: any = if tier.rainbow then HatchFx.RAINBOW else rarityColor
 	local eggId = (result.egg :: string?) or "Briefcase"
 	local golden = result.golden == true
-	local eggColor = EggLook.color(eggId, golden)
+	local mut = result.mut :: number?
+	local eggColor = EggLook.color(eggId, golden, mut)
 	local sp = findSpot(result.at)
 	hatchSpot = sp
 	-- (no second hatch at an incubator while this one plays)
@@ -1686,11 +1688,11 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 	tween(vignette, 0.5, { BackgroundTransparency = 0.3 })
 	local wide = shot(sp, 11.5, 4.6, 2.4)
 	camTo(wide, 4)
-	eggTitle.Text = eggNameOf(eggId, golden)
+	eggTitle.Text = eggNameOf(eggId, golden, mut)
 	eggTitle.TextColor3 = WHITE
 	eggTitle.Visible = true
 	-- 1) into the incubator
-	local small = EggLook.build(eggId, golden, DISPLAY_EGG, true)
+	local small = EggLook.build(eggId, golden, DISPLAY_EGG, true, mut)
 	small.Parent = fxFolder
 	local character = player.Character
 	local torso = character and (character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso") or character:FindFirstChild("HumanoidRootPart"))
@@ -1701,7 +1703,7 @@ local function playHatch(result: { [string]: any }, skin: any, rarityName: strin
 		camTo(CFrame.lookAt(wide.Position - Vector3.new(0, 1.5, 0), p), 10)
 	end)
 	-- 3) the egg you crack
-	local h = EggLook.buildHatch(eggId, golden, HATCH_EGG)
+	local h = EggLook.buildHatch(eggId, golden, HATCH_EGG, mut)
 	if not h then
 		small:Destroy()
 		return function() end
@@ -1899,11 +1901,12 @@ local function playShow(info: { [string]: any })
 		local sp: Spot = { inc = inc, front = Incubator.front(inc), floor = Incubator.eggSpot(inc) }
 		local eggId = info.egg or "Briefcase"
 		local golden = info.golden == true
-		local small = EggLook.build(eggId, golden, DISPLAY_EGG, true)
+		local mut = info.mut :: number?
+		local small = EggLook.build(eggId, golden, DISPLAY_EGG, true, mut)
 		small.Parent = fxFolder
 		small:PivotTo(cradle(sp))
 		local top = cookPhase(sp, small, tier, fxColor, false, nil)
-		local h = EggLook.buildHatch(eggId, golden, HATCH_EGG)
+		local h = EggLook.buildHatch(eggId, golden, HATCH_EGG, mut)
 		if not h then
 			small:Destroy()
 			return
@@ -1918,7 +1921,7 @@ local function playShow(info: { [string]: any })
 		local live = liveEgg(sp, h)
 		for i = 1, 3 do
 			task.wait(0.5)
-			crack(h, live, i, fxColor, EggLook.color(eggId, golden), false)
+			crack(h, live, i, fxColor, EggLook.color(eggId, golden, mut), false)
 		end
 		local endBuild = buildUp(h, live, tier, fxColor, false)
 		stopLive(live, h, sp)

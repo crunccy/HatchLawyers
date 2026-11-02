@@ -6,7 +6,7 @@
 --                                    lawyer is added. rarity = common / uncommon / rare / legendary (or 1-4; Epic,
 --                                    Mythic, Supreme once they exist), egg = briefcase / pet / brainrot / food /
 --                                    ocean / space. e.g. "/hatch legendary space golden"
---   /eggs <count> [egg] [golden]     put real eggs in your arms (up to 30, past your carry limit) to hatch at the
+--   /eggs <count> [egg] [golden|diamond|cosmic]  put real eggs in your arms (up to 30, past your carry limit) to hatch at the
 --                                    incubator - normal random odds, real lawyers
 --   /coins <amount>                  add coins (1e9, 5m, 2b, 3t, 1qd ... work)
 --   /help                            this list
@@ -124,7 +124,7 @@ end
 local COMMANDS: { [string]: (player: Player, args: { string }) -> () } = {}
 
 COMMANDS.help = function(player)
-	note(player, "/hatch <rarity> [egg] [golden] (preview)  |  /eggs <count> [egg] [golden]  |  /coins <amount>")
+	note(player, "/hatch <rarity> [egg] [golden] (preview)  |  /eggs <count> [egg] [golden|diamond|cosmic]  |  /coins <amount>")
 end
 
 COMMANDS.hatch = function(player, args)
@@ -177,23 +177,28 @@ COMMANDS.eggs = function(player, args)
 		return
 	end
 	local count = math.clamp(math.floor(tonumber(args[1]) or 1), 1, 30)
-	local egg, golden = "Briefcase", false
+	local egg, golden, mut = "Briefcase", false, nil
 	for i = 2, #args do
 		local w = string.lower(args[i])
 		if EGGS[w] then
 			egg = EGGS[w]
 		elseif w == "golden" or w == "gold" then
 			golden = true
+		elseif w == "diamond" then -- (Config.Zones.MutationEggs: a golden egg that always hatches Diamond / Cosmic)
+			golden, mut = true, 3
+		elseif w == "cosmic" then
+			golden, mut = true, 4
 		end
 	end
 	data.Zones = data.Zones or { License = 0, Carry = 1, Speed = 1, Carried = {} }
 	data.Zones.Carried = data.Zones.Carried or {}
 	for _ = 1, count do
-		table.insert(data.Zones.Carried, { Egg = egg, Golden = golden or nil })
+		table.insert(data.Zones.Carried, { Egg = egg, Golden = golden or nil, Mut = mut })
 	end
 	local ZoneService = require(Server:WaitForChild("ZoneService") :: ModuleScript) :: any
 	ZoneService.sync(player)
-	note(player, string.format("+%d %s%s Egg%s in your arms - hatch them at your incubator", count, if golden then "Golden " else "", egg, if count > 1 then "s" else ""))
+	local kind = if mut == 4 then "Cosmic " elseif mut == 3 then "Diamond " elseif golden then "Golden " else ""
+	note(player, string.format("+%d %s%s Egg%s in your arms - hatch them at your incubator", count, kind, egg, if count > 1 then "s" else ""))
 end
 
 COMMANDS.coins = function(player, args)

@@ -12,6 +12,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Formulas = require(ReplicatedStorage.Shared.Formulas)
+local PromoPolicy = require(game:GetService("ServerScriptService"):WaitForChild("PromoPolicy"))
 
 -- A hatched lawyer (v12). Id: one of Config.SkinCatalog (the lawyer catalog). Stars: merge level.
 -- Skills: owned skills. PendingSkill: a rolled skill waiting for the player to pick a slot.
@@ -45,7 +46,7 @@ export type Data = {
 	Skins: { Owned: { [string]: number }, Equipped: { [string]: string } },
 	-- Seen: how many hatches the player has looked at in the skin inventory (drives the NEW badge).
 	-- SinceTop: eggs since the last top-rarity skin (drives the pity guarantee).
-	Eggs: { Opened: number, RunOpened: number, FreeUsed: boolean, Seen: number, FreeTokens: number, RareTokens: number, SinceTop: number },
+	Eggs: { Opened: number, RunOpened: number, FreeUsed: boolean, Seen: number, FreeTokens: number, RareTokens: number, SinceTop: number, PickTokens: { [string]: number }? },
 	-- LastDay: UTC day number (os.time() // 86400) of the last daily claim, -1 = never.
 	Daily: { Streak: number, LastDay: number },
 	-- Active: seconds of active play banked toward the next playtime gift.
@@ -63,16 +64,19 @@ export type Data = {
 	-- Developer-product receipts already granted: PurchaseId -> os.time(). ShopService checks this before
 	-- granting, so a receipt Roblox re-sends is never granted twice. Pruned to the newest 200.
 	Purchases: { [string]: number },
+	CashPassClaims: { [string]: boolean },
+	FreeShopClaims: { [string]: boolean },
+	VIP: { LastClaimDay: number },
 	-- Hub minigames: game id -> os.time() it can be played again (MinigameService).
 	Minigames: { [string]: number },
 	-- Egg zones (ZoneService): License level (0 = none; prestige resets it), Carry / Speed upgrade levels (1 = start),
 	-- Carried = eggs bought but not hatched yet ({ Egg = "Briefcase" | themed id, Golden }), hatched at an incubator.
-	Zones: { License: number, Carry: number, Speed: number, Carried: { { Egg: string, Golden: boolean? } } },
+	Zones: { License: number, Carry: number, Speed: number, Carried: { { Egg: string, Golden: boolean?, Mut: number? } } },
 }
 
-type Session = { data: Data, releasing: boolean }
+type Session = { data: Data, releasing: boolean, promo: boolean }
 
-local SCHEMA_VERSION = 18
+local SCHEMA_VERSION = 21
 local STORE_NAME = "PlayerData"
 local AUTOSAVE_INTERVAL = 60
 local LOCK_EXPIRY = 5 * 60 -- a lock this old belongs to a crashed server and can be taken over
@@ -82,6 +86,23 @@ local SAVE_ATTEMPTS = 3
 
 -- MIGRATIONS[n] upgrades a version-n record to version n + 1.
 local MIGRATIONS: { [number]: (any) -> any } = {
+	-- v21 (2026-11-02): PICK-A-LAWYER Robux items - Eggs.PickTokens = { [rarity index as a string] = count } (bought, not
+	-- spent yet; Remotes.PickLawyer spends one). Also new optional Zones.Carried[i].Mut (3 Diamond / 4 Cosmic egg: the
+	-- mutation it always hatches with) - absent on every older egg, so nothing to rewrite.
+	[20] = function(data)
+		data.Eggs = data.Eggs or {}
+		data.Eggs.PickTokens = data.Eggs.PickTokens or {}
+		return data
+	end,
+	[19] = function(data)
+		data.VIP = data.VIP or { LastClaimDay = -1 }
+		return data
+	end,
+	[18] = function(data)
+		data.CashPassClaims = data.CashPassClaims or {}
+		data.FreeShopClaims = data.FreeShopClaims or {}
+		return data
+	end,
 	-- v18 (2026-10-13): lawyer MUTATIONS + selling. `Stars` keeps its numbers but now means the mutation tier (Gold 2 ->
 	-- Shiny, Rainbow 3 -> Diamond, same power), so nothing is rewritten. New optional Lawyers[uid].Locked (nil = not).
 	-- v18 (2026-10-13): the UPSTAIRS ROOMS (Config.Floors, ServerScriptService.FloorRooms): data.Floors = Hall of Fame
@@ -297,7 +318,7 @@ local function template(): Data
 		Tutorial = { FirstCaseDone = false, FreeLevelUps = Config.Tutorial.FreeLevelUps },
 		Stats = { Wins = 0, Settlements = 0, Mistrials = 0, CoinsEarned = 0, BestPayout = 0 },
 		Skins = { Owned = {}, Equipped = {} },
-		Eggs = { Opened = 0, RunOpened = 0, FreeUsed = false, Seen = 0, FreeTokens = 0, RareTokens = 0, SinceTop = 0 },
+		Eggs = { Opened = 0, RunOpened = 0, FreeUsed = false, Seen = 0, FreeTokens = 0, RareTokens = 0, SinceTop = 0, PickTokens = {} },
 		Daily = { Streak = 0, LastDay = -1 },
 		Playtime = { Active = 0, Gifts = 0 },
 		LastOnline = 0,
@@ -306,6 +327,9 @@ local function template(): Data
 		Prestige = { Level = 0 },
 		Firm = { Segments = Config.Firm.StartSegments, Areas = {} },
 		Purchases = {},
+		CashPassClaims = {},
+		FreeShopClaims = {},
+		VIP = { LastClaimDay = -1 },
 		Minigames = {},
 		Floors = { Index = {}, CaseFiles = {}, Training = {}, Mail = { Day = 0, Letters = {} }, Rules = {}, Likes = 0, Court = 0 },
 		Zones = { License = 0, Carry = 1, Speed = 1, Carried = {} },
@@ -395,6 +419,10 @@ local function acquire(dataStore: DataStore, key: string): (string, any)
 end
 
 local function write(player: Player, session: Session, release: boolean): boolean
+	-- Promo users play on a fresh in-memory template. Never touch their real save or its lock.
+	if session.promo then
+		return true
+	end
 	local dataStore = getStore()
 	if not dataStore then
 		-- Studio memory-only: nothing is ever saved, by design. Live: not saved (yet) - say so, so ShopService
@@ -436,6 +464,15 @@ local function syncAttributes(player: Player, data: Data)
 	player:SetAttribute("FreeLevelUps", data.Tutorial.FreeLevelUps)
 	player:SetAttribute("FirstCaseDone", data.Tutorial.FirstCaseDone)
 	player:SetAttribute("DeskCount", #data.Desks) -- offices
+	-- unspent pick-a-lawyer tokens ("5:1,7:2" = rarity index : count), for the Shop's PICK YOUR LAWYER button
+	local picks = {}
+	for rarity, count in (data.Eggs and data.Eggs.PickTokens) or {} do
+		if count > 0 then
+			table.insert(picks, rarity .. ":" .. count)
+		end
+	end
+	table.sort(picks)
+	player:SetAttribute("PickTokens", table.concat(picks, ","))
 	player:SetAttribute("EggPrice", Formulas.eggPrice(data.Eggs and (data.Eggs.RunOpened or data.Eggs.Opened) or 0, data.Prestige and data.Prestige.Level))
 	-- the lawyer inventory, for the LAWYERS panel: { Uid, Id, Stars, Skills, Office }
 	local list, placed = {}, 0
@@ -488,31 +525,36 @@ end
 
 -- Yields. Returns nil (and kicks the player) if the data could not be loaded safely.
 function PlayerData.load(player: Player): Data?
+	local promo = PromoPolicy.isAllowed(player.UserId)
 	-- a quick rejoin to the SAME server: wait for the old session's last save first (audit 2026-10-12: the lock is ours
 	-- either way, so the new load read the last autosave, then the old save landed on top and cleared the lock -
 	-- a rollback waiting to happen)
 	local waitUntil = os.clock() + 30
-	while releasingIds[player.UserId] and player.Parent and os.clock() < waitUntil do
+	while not promo and releasingIds[player.UserId] and player.Parent and os.clock() < waitUntil do
 		task.wait(0.25)
 	end
-	local dataStore = getStore()
+	local dataStore = if promo then nil else getStore()
 	-- live server, DataStores down: retry like a failed load, then ask the player to rejoin - never hand them a
 	-- fresh firm that would never save (their real save is untouched either way)
 	for _ = 2, LOAD_ATTEMPTS do
+		if promo then break end
 		if dataStore or memoryOnly or player.Parent == nil then
 			break
 		end
 		task.wait(LOAD_RETRY_DELAY)
 		dataStore = getStore()
 	end
-	if not dataStore and not memoryOnly then
+	if not promo and not dataStore and not memoryOnly then
 		if player.Parent then
 			player:Kick("We couldn't load your law firm. Please rejoin in a minute!")
 		end
 		return nil
 	end
 	local data: Data? = nil
-	if dataStore then
+	if promo then
+		data = template()
+		data.Zones.License = #Config.Zones.License
+	elseif dataStore then
 		local status, saved = "error", nil
 		for attempt = 1, LOAD_ATTEMPTS do
 			status, saved = acquire(dataStore, lockKey(player))
@@ -542,8 +584,12 @@ function PlayerData.load(player: Player): Data?
 	end
 	local loaded = data :: Data
 
-	local session: Session = { data = loaded, releasing = false }
+	local session: Session = { data = loaded, releasing = false, promo = promo }
 	sessions[player] = session
+	if promo then
+		player:SetAttribute("PromoMode", true)
+		player:SetAttribute("PromoModeNotice", "Temporary promo profile: progress is never saved.")
+	end
 	if player.Parent == nil then
 		-- Left while we were loading: hand the lock straight back.
 		PlayerData.release(player)
@@ -563,6 +609,11 @@ end
 function PlayerData.get(player: Player): Data?
 	local session = sessions[player]
 	return if session and not session.releasing then session.data else nil
+end
+
+function PlayerData.isPromo(player: Player): boolean
+	local session = sessions[player]
+	return session ~= nil and session.promo
 end
 
 function PlayerData.addCoins(player: Player, amount: number)
@@ -642,3 +693,4 @@ function PlayerData.start()
 end
 
 return PlayerData
+
