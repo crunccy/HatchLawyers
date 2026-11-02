@@ -48,8 +48,8 @@ Skin.Fonts = {
 }
 Skin.Assets = {
 	Studs = "rbxassetid://114488299634202", -- tools/ui_textures.py
-	Rays = "rbxassetid://89557955610458", -- white sunburst
-	Glow = "rbxassetid://75348129891036", -- soft radial glow
+	Rays = "rbxassetid://134620410097600", -- white sunburst
+	Glow = "rbxassetid://132825432359825", -- soft radial glow
 }
 Skin.ROBUX = utf8.char(0xE002) -- the Robux glyph in Roblox's fonts
 

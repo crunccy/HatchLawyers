@@ -384,7 +384,8 @@ local function track(model: Instance)
 			end
 			local plate = model:FindFirstChild("SignPlate") :: BasePart?
 			local gui = plate and plate:FindFirstChildWhichIsA("SurfaceGui")
-			if plate and gui then
+			-- the overhaul portal has its own back plate (Sign_PlateBack, the text is on it): no copy needed
+			if plate and gui and not model:FindFirstChild("Sign_PlateBack") then
 				local back = plate:Clone()
 				back.Name = "SignPlateBack"
 				local backGui = back:FindFirstChildWhichIsA("SurfaceGui") :: SurfaceGui

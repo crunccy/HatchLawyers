@@ -17,8 +17,8 @@ local UIKit = {}
 
 UIKit.Assets = {
 	Checker = "rbxassetid://114488299634202", -- the studs tile (tools/ui_textures.py), same as the Shop / LAWYERS panels
-	Rays = "rbxassetid://89557955610458", -- 512px white sunburst
-	Glow = "rbxassetid://75348129891036", -- 256px soft white radial glow
+	Rays = "rbxassetid://134620410097600", -- 512px white sunburst
+	Glow = "rbxassetid://132825432359825", -- 256px soft white radial glow
 }
 UIKit.IconOrder = {
 	"Coin", "Gavel", "Briefcase", "Scales", "Lawyer", "Egg",

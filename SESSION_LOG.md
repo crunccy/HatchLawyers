@@ -108,6 +108,12 @@ Claim big work here before starting (who · what · since), push the claim, remo
   small 3-way-merged edits to Main, PlotService, Zones.client, Travel.client. Don't wire the hub meanwhile.
 
 ## Open items
+- [ ] **LAUNCH THIS WEEK (crnuch's goal 2026-11-01), what's left:** (1) 3-player playtest (Test > Clients and Servers >
+      3): bosses' crowd add-ons, plots, others watching hatches / Mythic banner; (2) phone pass in the Device emulator
+      (HUD, LAWYERS incl. the bench-grid bug below, Mutation Machine, hatches); (3) a fresh account through the tutorial;
+      (4) first LIVE server: check the console for animation / asset permission errors (the game is group-owned now,
+      the animations are crnuch's user uploads); (5) crnuch only: Maturity & Compliance questionnaire, icon +
+      thumbnails, then Public.
 - [ ] **crnuch (needs your account), from mr.robe's 2026-10-27 launch-readiness list:** (1) re-export + re-import the
       seven islands with the multi-look split (the hub's roads all grey / grass all dirt today): `Blender -b
       --factory-startup --python tools/blender/overhaul/export_models.py -- island hub bay pet rot food ocean space`,
@@ -227,7 +233,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] **Eggs v5: eye-check in a real window.** Watch a few real hatches (all rarities, golden), check a phone-sized window, have a second player watch one. Delete `ServerStorage.Old_EggModels_v4` once happy.
 - [x] **Audit fixes + carry pose pushed to Studio** — 2026-10-12 (mr.robe's entry below), except the parts tied to
       the economy pass (exact-odds luck 720699e, the 41 lawyer renames in `Config`): they go with that push.
-- [ ] **Set Server Size to 8** (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
+- [x] **Set Server Size to 8** - already 8 (checked 2026-11-01) (Game Settings → Places → Server Size; user only): it's 60 but there are 8 plots, so
       players 9+ get kicked by `Main` and lose their offline earnings (audit, `Main:28`).
 - [x] **Carry animation published** — 2026-10-12: crnuch published `Source` from the place owner's account
       (user 2234491534) as **86324090376520**, set in `CarryEggs.AnimationId` and playtested (loads, 2 s looped, legs
@@ -270,7 +276,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
 - [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
       own Claude on this repo now (2026-10-12). CaseService changed again since: no waiting room (entry below).
-- [ ] **Fill in Config.Shop Ids** (4 passes, 4 products) from the Creator Dashboard; keep Price in sync.
+- [ ] **Shop Ids:** all filled 2026-11-01 except BigFirm (crnuch: not building it) and RareEggs (needs odds on its card first).
 - [x] Eye-check the Lawyer Merger panel + merge animation - superseded 2026-10-22: the Mutation Machine was rebuilt
       (menu v3 + Shared.MutationFx) and playtested (entry above).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
@@ -299,6 +305,35 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-11-01 — crnuch, local session: launch prep (publish by end of week, crnuch's goal)
+- **crnuch's calls today:** publish by the end of this week; Claude does the launch list itself; **no Bigger Firm pass**
+  (stays COMING SOON).
+- **Creator Hub (crnuch's account, built-in browser):** the game is owned by the GROUP "crnuch" (15454840) since ~10-25
+  (ownership transfer), universe 10769782944. Server Size was already 8 (Open item closed). New developer products:
+  Pile of Cash 3727039012 (25), Bag of Cash 3727039097 (99), Vault of Cash 3727039202 (349) - managed pricing on,
+  answered "does not allow trading or gifting" (true: no player trading). The 9 existing passes match Config.
+  **3 Rare Eggs left at Id 0 on purpose:** paid + random (which Rare lawyer), so its card must show the possible lawyers
+  + exact odds before it's sold.
+- **UI sunburst / glow fixed:** `89557955610458` / `75348129891036` were uploaded by **mr_blox174**, so the owner can't
+  share them. Skin + UIKit Assets now use Effects' own `rays` / `glow` (crnuch's uploads, fetch Success in play).
+- **Boss checks green again:** mr.robe's live retune had cut all six Windups ~17% without retiming the clips (hit lands
+  before the windup clip ends; Megalodon's crowd add-on under the 1 s warning rule). Windups = clip lengths again
+  (Senior Partner 1.2, Bulldog 1.4, Martello 1.1, Big Cheese 1.2, Megalodon 1.0, Eclipse 1.4); the faster AttackEvery
+  kept. **Heads-up mr.robe:** to make bosses harder, retime the clips (boss_anims.py) or tune AttackEvery, not Windup.
+- **Hub (audit M2 / M3 / M5):** M2 - `HubWiring.Counter_Carry` / `Counter_Speed` moved beside the Upgrades door, in front
+  of the briefcase / boot props, 28 studs apart (panels readable, door clear; crnuch's call over mr.robe's wiring claim).
+  M3 - already fine since the 10-26 kit swap (play spots face the plaza, dot 1.00; all three signs read). M5 - the TRAVEL
+  text was on SignPlate only: a copy on the kit's `Sign_PlateBack`, and Travel.client no longer adds its own back copy
+  when `Sign_PlateBack` exists (it floated 3.3 studs behind the board on the overhaul portal). M4 left as is (portal in
+  the plaza centre, fountain parked).
+- Pushed into Studio by guarded line edits (each old line had to match once): Config, Skin, UIKit, Travel. Playtested:
+  console clean, products resolve with prices, carry animation loads in Studio (a group game may refuse user-owned
+  animations on live servers: check in the first live test). Snapshot re-exported: only those 4 + MANIFEST changed;
+  src == live. Gotcha: a SurfaceGui's text draws a moment after a camera jump - take a second screen_capture first.
+- **Still before publishing (Open items):** 3-player test (Test > Clients and Servers), phone-size pass (Device
+  emulator) incl. the LAWYERS bench-grid bug, a fresh-account run, crnuch: the Maturity questionnaire, store page,
+  then Public.
 
 ## 2026-11-01 — crnuch, local session: lag + "islands missing, trees floating" = 18 loose .fbx imports
 - crnuch: "the islands are missing which leaves trees floating and the game is noticeable laggy even on my mac".
