@@ -61,6 +61,7 @@ local COIN_PAD = 18 -- from the screen's left / bottom edge
 
 -- Coin counter: the glossy money icon + a big stroked number, no panel, bottom-left; counts up and pops on a gain
 local Icons = (require(ReplicatedStorage.Shared:WaitForChild("HudMenu")) :: any).Icons
+local Tutorial = require(ReplicatedStorage.Shared:WaitForChild("Tutorial")) :: any
 local coins = Skin.counter({
 	Parent = gui, Name = "Coins", Icon = Icons.Money, AnchorPoint = Vector2.new(0, 1),
 	Position = UDim2.new(0, COIN_PAD, 1, -COIN_PAD), Height = COIN_H, Width = 340,
@@ -83,20 +84,6 @@ local hint = Skin.toast({ Parent = gui, Name = "Hint", Position = UDim2.new(0.5,
 -- Tutorial hint: "STEP 2/5  text" with the step in gold.
 local function step(n: number, text: string): string
 	return string.format('<font color="#FFD23C">STEP %d/%d</font>   %s', n, Config.Tutorial.Steps, Skin.highlight(text))
-end
-
--- The office the tutorial case is in (it isn't always the selected one). Only asked before the first case
--- is done, when the only busy office is the tutorial's (its Tutorial attribute is set once the case starts).
-local function tutorialDesk(firm: Instance?): Instance?
-	if not firm then
-		return nil
-	end
-	for _, d in firm:GetChildren() do
-		if d:GetAttribute("Phase") == "Walking" or d:GetAttribute("Phase") == "Case" then
-			return d
-		end
-	end
-	return nil
 end
 
 -- Case results: small labeled numbers that fade in just above the coin counter, drift up and fade out
@@ -168,17 +155,12 @@ player:GetAttributeChangedSignal("Coins"):Connect(function()
 end)
 Skin.installPrompts() -- the custom world prompt for every Style = Custom ProximityPrompt (UI overhaul part 3 flips them)
 
-local function getFirm(): Instance?
-	local plotName = player:GetAttribute("Plot")
-	local plots = workspace:FindFirstChild("Plots")
-	local plot = plotName and plots and plots:FindFirstChild(plotName)
-	return plot and plot:FindFirstChild("Firm")
-end
-
 -- the toast's icon, by what the hint is about
 local function hintIcon(s: string): string
 	local l = string.lower(s)
-	if string.find(l, "court", 1, true) or string.find(l, "case", 1, true) then
+	if string.find(l, "travel", 1, true) or string.find(l, "portal", 1, true) then
+		return Icons.Travel
+	elseif string.find(l, "court", 1, true) or string.find(l, "case", 1, true) then
 		return Icons.Gavel
 	elseif string.find(l, "egg", 1, true) or string.find(l, "incubator", 1, true) then
 		return Icons.Eggs
@@ -191,7 +173,7 @@ local function hintIcon(s: string): string
 	return Icons.Goals
 end
 
-local onLastStep = false -- showing STEP 5/5 right now
+local onLastStep = false -- showing the last STEP right now
 local tutorialDoneUntil = 0 -- show the "tutorial complete" line until this os.clock()
 
 local function refresh()
@@ -200,51 +182,21 @@ local function refresh()
 		return
 	end
 	local coins = player:GetAttribute("Coins") or 0
-	local free = (player:GetAttribute("FreeLevelUps") or 0) > 0
 	local deskCount = (player:GetAttribute("DeskCount") or 1) :: number
 	local hintText: string? = nil
-	-- clients waiting in your waiting room for a lawyer
-	local waiting = 0
-	local firmModel = getFirm()
-	local room = firmModel and firmModel:FindFirstChild("WaitingClients")
-	if room then
-		for _, c in room:GetChildren() do
-			if c:GetAttribute("Waiting") == true then
-				waiting += 1
-			end
-		end
+	-- TUTORIAL (STEP 1-8, Shared.Tutorial - the green line reads the same). Every step names what to tap / where to go.
+	local tStep, tText = Tutorial.current(player)
+	if tStep and tText then
+		hintText = step(tStep, tText)
+		onLastStep = tStep == Tutorial.STEPS
 	end
-	-- TUTORIAL (STEP 1-5). Every step names exactly what to tap / where to go.
-	local firstDone = player:GetAttribute("FirstCaseDone") == true
-	if not firstDone and firmModel then
-		local tDesk = tutorialDesk(firmModel)
-		local tPhase = tDesk and tDesk:GetAttribute("Phase")
-		if tPhase == "Case" and tDesk and not tDesk:GetAttribute("CourtDone") then
-			hintText = step(2, "Dave's case is going to COURT! Tap GO TO COURT")
-		elseif tPhase == "Case" then
-			hintText = step(2, "Your lawyer is wrapping up Dave's case...")
-		elseif tPhase == "Walking" then
-			hintText = step(1, "Neighbor Dave is walking straight to your lawyer!")
-		else
-			hintText = step(1, "Your first client is on the way...")
-		end
-	end
-	if not hintText and free and firstDone then
-		hintText = step(3, "You won! Open LAWYERS and tap UPGRADE OFFICE: your first one is FREE")
-	end
-	-- tutorial, continued: hatch the free egg, then put the new lawyer in an empty office
 	local owned = (player:GetAttribute("LawyersOwned") or 0) :: number
 	local working = (player:GetAttribute("LawyerCount") or 0) :: number
 	local hasEmpty = working < deskCount
-	if not hintText and firstDone and player:GetAttribute("FreeEgg") == true and owned <= 1 then
-		hintText = step(4, "Follow the green line to your INCUBATOR and hatch your FREE egg!")
-	elseif not hintText and owned > working and hasEmpty and owned <= 2 then
-		hintText = step(5, "Walk to a glowing EMPTY OFFICE to equip your new lawyer")
-		onLastStep = true
-	elseif not hintText and owned > working and hasEmpty then
+	if not hintText and owned > working and hasEmpty then
 		hintText = "A lawyer is waiting for a desk! Open LAWYERS to equip them"
 	elseif not hintText and hasEmpty and coins >= ((player:GetAttribute("EggPrice") or math.huge) :: number) then
-		hintText = "Buy eggs in Briefcase Bay (west) and hatch them at your incubator!"
+		hintText = "Tap TRAVEL to buy more eggs on the islands, then hatch them at your incubator!"
 	end
 	local segments = (player:GetAttribute("FirmSegments") :: number?) or Config.Firm.StartSegments
 	local expandCost = Config.Firm.ExpandCosts[segments + 1]
@@ -254,13 +206,13 @@ local function refresh()
 	if not hintText and player:GetAttribute("ManagerHired") == false and coins >= Config.Manager.HireCost then
 		hintText = "You can hire a Manager! Walk to your firm's door and press F"
 	end
-	-- STEP 5 just finished: a few seconds of "you're done"
+	-- the last STEP just finished: a few seconds of "you're done"
 	if onLastStep and not (hintText and string.find(hintText, "STEP ", 1, true)) then
 		onLastStep = false
 		tutorialDoneUntil = os.clock() + 7
 	end
 	if os.clock() < tutorialDoneUntil then
-		hintText = '<font color="#FFD23C">TUTORIAL COMPLETE!</font>   Win cases, upgrade offices and hatch lawyers!'
+		hintText = '<font color="#FFD23C">TUTORIAL COMPLETE!</font>   ' .. Skin.highlight(Tutorial.DONE_TEXT)
 	end
 	if hintText then
 		-- tutorial lines carry their own tags (gold STEP, lime words); plain hints get their CAPS words in lime

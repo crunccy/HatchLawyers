@@ -306,6 +306,27 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-11-01 — crnuch, local session: tutorial revamp (8 steps, the island egg loop) + plots too bright
+- crnuch: "revamp the tutorial to better fit the current game objective" + "the plots are extremely bright".
+- **Tutorial = `Shared.Tutorial`** (new ModuleScript, src/Tutorial.lua): one function, `current(player)` -> step, hint,
+  the part the green line points at; StarterPlayerScripts.Hud (STEP n/8 hint) and Guide (the line) both read it, so
+  they can't drift. `Config.Tutorial.Steps = 8`. Steps 1-5 as before (Dave, court, free upgrade, free egg, equip);
+  **new 6-8 = the game's real loop:** 6 TRAVEL to Briefcase Bay (line to the hub portal), 7 buy an egg (line to the
+  nearest plain ZoneEgg, price in the hint), 8 RETURN HOME with it (line to the island's ReturnHome) and hatch it at the
+  incubator. Island vs home = horizontal distance from `workspace.HubCentre` > 520 (works with streaming). Done when
+  `EggsOpened >= 1` (the free egg isn't counted), then "TUTORIAL COMPLETE!" + what to do next. Nothing saved, no save
+  change; old players (EggsOpened >= 1) never see 6-8. Removed: Hud's dead waiting-room code (no waiting rooms since
+  10-12), the stale "Buy eggs in Briefcase Bay (west)" hint (now "Tap TRAVEL to buy more eggs on the islands").
+  Playtested by overriding the attributes client-side: hint + line right at home (6), on Briefcase Bay (7, 8), home
+  carrying (8 -> incubator), hatched (TUTORIAL COMPLETE). crnuch's real save sits at STEP 3 (free upgrade never used).
+- **Plots too bright = the 10-27 `InteriorLight`s:** 15 warm PointLights per firm at brightness 2, range up to 40,
+  no shadows, so they lit the walls, roof, lawn and path from inside in daylight. Toned in the templates
+  (`ServerStorage.Overhaul.Models`; old values in each light's `Before` attribute): hall back wall / lock / segment
+  2/40 -> 0.8/14, hall desk 2/16 -> 0.5/8, Dingy Shack 2/33 -> 1/16, shack roof deck 1.2/18 -> 0.7/12. Before / after
+  from the same camera: roof red-brown again, walls wood, fences brown; the shack's inside still lit (no black).
+- Pushed by localhost fetch with a fingerprint guard (each live script had to equal the snapshot). Snapshot re-exported:
+  only Tutorial (new), Config, Hud, Guide + MANIFEST changed; src == live. Console clean. `run_checks.py` green.
+
 ## 2026-11-01 — crnuch, local session: launch prep (publish by end of week, crnuch's goal)
 - **crnuch's calls today:** publish by the end of this week; Claude does the launch list itself; **no Bigger Firm pass**
   (stays COMING SOON).

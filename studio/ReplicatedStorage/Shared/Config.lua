@@ -773,7 +773,7 @@ Config.Tutorial = {
 	FirstCaseInCourt = true,
 	CourtWait = 90,
 	FreeLevelUps = 1, -- free office upgrades
-	Steps = 5, -- the numbered hints in the HUD (STEP 1/5 .. 5/5)
+	Steps = 8, -- the numbered hints in the HUD (STEP 1/8 .. 8/8): Shared.Tutorial has the eight steps
 }
 
 -- Test targets (seconds) the simulator checks against. Not promises to players.
