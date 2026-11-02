@@ -19,7 +19,7 @@ local BOUNDS = {
 	{ "firms", "firms_stage4", -24.8, 24.8, -8.0, -1.5 },
 	{ "firms", "firms_stage5", -25.0, 25.0, -6.0, -1.5 },
 	{ "firms", "firms_stage6", -24.8, 24.8, -9.0, -1.5 },
-	{ "shack", "DingyShack", -13.44, 13.44, -14.15, -1.75 },
+	{ "shack", "DingyShack", -13.51, 13.51, -11.1, -1.75 }, -- (v3 starter cabin, 2026-11-02)
 	{ "hall", "hall_segment", -26.19, 26.39, -0.9, -1.95 },
 	{ "hall", "hall_desk", -2.9, 4.2, -2.8, 0.0 },
 	{ "hall", "hall_lock", -26.2, 26.3, -0.9, -1.98 },

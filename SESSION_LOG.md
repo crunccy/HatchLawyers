@@ -306,6 +306,24 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-11-02 — crnuch, local session: starter shack v3 = a simple bright cabin (renders, waiting for approval)
+- crnuch: the shack "is too advanced for the style of the game". v2 (weathered planks with gaps, sagging roof with missing
+  shingles, rust + tarp, boarded / cracked windows, trash bags, dumpster, tyres, cone, puddle, weeds, muted greys) read as a
+  realistic run-down house next to the chunky, bright stages 2-6.
+- `tools/blender/overhaul/firm_shack.py` rewritten as v3: a starter cabin in the game palette - six rows of wide horizontal
+  planks (two wood tones), chunky corner posts, a FRONT-GABLE red roof (four big shingle rows a side, cream bargeboards +
+  ridge cap; the name sign's spot (0, 9.2, -3.4) is now on the gable), a square stone chimney, ONE wood patch on the roof,
+  cream-framed windows (front ones with flower boxes), a porch with a low railing, two steps, a red mat, the lantern, and a
+  crate stack / barrel / two flower pots. 6,792 tris, 27 meshes. No dark filler boxes (v2's Hole boxes blacked out the
+  inside, 2026-10-27). Same footprint / doors / aisle / incubator roof, and the names InstallFirmMeshes + FirmStages look up
+  (Shack_FloorBoards / FloorLight / PorchBoards / PorchLight / Steps collide; Shack_Lantern gets the light).
+- New `--check` flag on the script: 0 floating, 0 z-fighting, 0 clipping. Renders: `art/overhaul/firm/shack_*.jpg`
+  (shack_studs.jpg dropped).
+- `tools/zones/InstallFirmMeshes.lua` BOUNDS for DingyShack updated to v3 (-13.51 .. 13.51, z min -11.1, y min -1.75).
+- **Not in Studio yet:** after crnuch approves the renders: export (`export_models.py shack`, bump EDITION), crnuch imports
+  the .fbx, swap it into `ServerStorage.Overhaul.Models.shack.DingyShack` (raw import out of Workspace), run
+  InstallFirmMeshes, re-add the ShackLight / InteriorLight from 10-27 (toned values from 11-01), playtest.
+
 ## 2026-11-01 — crnuch, local session: tutorial revamp (8 steps, the island egg loop) + plots too bright
 - crnuch: "revamp the tutorial to better fit the current game objective" + "the plots are extremely bright".
 - **Tutorial = `Shared.Tutorial`** (new ModuleScript, src/Tutorial.lua): one function, `current(player)` -> step, hint,
