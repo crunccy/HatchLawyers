@@ -306,6 +306,26 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-11-02 — crnuch, local session: fresh-player tutorial run + steps 1-2 wait for the player
+- crnuch: "the first 2 steps of the tutorial are basically illegible because they go by so quickly without any player
+  input". Causes: Neighbor Dave set off 1.5 s after the session started (often before the character spawned); the
+  courtroom opened BY ITSELF 1.2 s after his case started (so STEP 2 "Tap GO TO COURT" showed ~1 s and nobody tapped);
+  Speedy Cases owners (crnuch owns it) skipped the tutorial's court wait entirely, so the case resolved in seconds; and
+  the server-wide "BIG CASES ON THE BELT!" banner sat on top of the STEP hint.
+- **Heads-up, core loop (CaseService, mr.robe's):** Dave now waits `Config.Tutorial.FirstClientDelay` (5) s after the
+  character is in (`session.tutorialReadyAt`); the tutorial court hold is the same for everyone (the SpeedyCases bypass
+  is gone); `Config.Tutorial.CourtWait` 90 -> 120. Courtroom.client: no auto-open unless `Config.Tutorial.AutoOpenCourt`
+  (new, false) - the player taps GO TO COURT. BigCase.client: no Wave banner / siren while `Shared.Tutorial.current`
+  returns a step. All four pushed to Studio (fingerprint-guarded), snapshot re-exported, src == studio.
+- Fresh-profile run in Studio (crnuch is on PromoPolicy, so Studio play = a fresh in-memory template, real save untouched;
+  coins + License reset to a new player's): 0 s idle -> 5.7 s Dave walking -> 9.8 s case waiting for court with STEP 2
+  up; GO TO COURT tap -> courtroom + coach banner -> answer -> STEP 3; free upgrade -> STEP 4; free egg hatched (reveal:
+  PUT IN OFFICE 2 / KEEP) -> STEP 5 -> 6; TRAVEL -> STEP 7 "BUY EGG (1.50K)"; bought -> STEP 8 RETURN HOME; home -> STEP 8
+  incubator; hatched (EggsOpened 1). Studio's MCP connection dropped on the last hatch's reveal, so the final
+  "TUTORIAL COMPLETE" line wasn't re-seen this run (it was checked 11-01).
+- Also found: crnuch's account starts every Studio play with 22.1M - the five cash passes it owns pay out on join
+  (100K + 500K + 1.5M + 5M + 15M). Expected for an owner; a real new player starts at 0.
+
 ## 2026-11-02 — crnuch, local session: starter shack v3 = a simple bright cabin (live in Studio)
 - crnuch: the shack "is too advanced for the style of the game". v2 (weathered planks with gaps, sagging roof with missing
   shingles, rust + tarp, boarded / cracked windows, trash bags, dumpster, tyres, cone, puddle, weeds, muted greys) read as a

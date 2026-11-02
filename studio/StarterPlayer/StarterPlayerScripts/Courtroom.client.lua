@@ -2,8 +2,8 @@
 -- Optional mini courtroom. While a case runs, "Attend Court" opens a toy courtroom with one
 -- evidence question; the right card earns a small bonus, anything else is the normal payout.
 -- The server checks the answer and decides the verdict; this script only shows it.
--- Tutorial: the first case (Neighbor Dave) always goes to court. The courtroom opens by itself a moment
--- after that case starts, with a gold coach banner explaining what's happening (Config.Tutorial).
+-- Tutorial: the first case (Neighbor Dave) always goes to court: the player taps GO TO COURT (HUD step 2; the case
+-- waits for them, Config.Tutorial.CourtWait), and the courtroom shows a gold coach banner explaining what's happening.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -776,8 +776,9 @@ RunService.Heartbeat:Connect(function()
 		and not (desk :: Instance):GetAttribute("CourtDone")
 		and caseStart ~= attendedStart
 		and (left > 2 or isTutorial) -- the tutorial case waits for the player (CaseService)
-	-- tutorial: the first case always goes to court, so open the courtroom by itself (once)
-	if state == "closed" and canAttend and isTutorial and autoOpened ~= caseStart then
+	-- tutorial: the first case always goes to court; the player taps GO TO COURT (step 2), unless
+	-- Config.Tutorial.AutoOpenCourt opens the courtroom by itself (once)
+	if Config.Tutorial.AutoOpenCourt and state == "closed" and canAttend and isTutorial and autoOpened ~= caseStart then
 		autoOpened = caseStart
 		task.delay(1.2, function()
 			if state == "closed" then

@@ -67,6 +67,7 @@ type Session = {
 	waiting: { [number]: any }, -- always empty (no waiting room since v16); mirrored for the LAWYERS panel
 	nextId: number,
 	nextArrival: number,
+	tutorialReadyAt: number?, -- when Neighbor Dave may set off (Config.Tutorial.FirstClientDelay after the character is in)
 }
 
 local TICK = 0.2
@@ -601,6 +602,16 @@ local function spawnArrival(session: Session): boolean
 	end
 	local tutorial = not data.Tutorial.FirstCaseDone
 	if tutorial then
+		-- (crnuch 2026-11-02: steps 1-2 flew by) Dave waits until the player has been in the world a few seconds
+		if not session.tutorialReadyAt then
+			if not session.player.Character then
+				return false
+			end
+			session.tutorialReadyAt = now() + Config.Tutorial.FirstClientDelay
+		end
+		if now() < (session.tutorialReadyAt :: number) then
+			return false
+		end
 		for _, d in session.desks do
 			if d.phase == "Walking" or d.phase == "Case" then
 				return false
@@ -830,8 +841,8 @@ function CaseService.run()
 					end
 					-- the tutorial case is a guaranteed court case: hold the verdict until the player has been
 					-- to court (CourtService extends it from there), or Config.Tutorial.CourtWait runs out
+					-- (the same for everyone: Speedy Cases used to skip it, so its owners never saw steps 1-2)
 					if desk.tutorial and not desk.court and Config.Tutorial.FirstCaseInCourt
-						and not (require(script.Parent.ShopService) :: any).has(session.player, "SpeedyCases")
 						and t < desk.endsAt + Config.Tutorial.CourtWait then
 						desk.model:SetAttribute("AwaitingCourt", true)
 						continue

@@ -18,6 +18,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config") :: ModuleScript) :: any
 local Puppet = require(Shared:WaitForChild("Puppet") :: ModuleScript) :: any
 local Sfx = require(Shared:WaitForChild("Sfx") :: ModuleScript) :: any
+local Tutorial = require(Shared:WaitForChild("Tutorial") :: ModuleScript) :: any
 local BigCase = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("BigCase") :: RemoteEvent
 
 local CFG = Config.BigCase
@@ -698,6 +699,9 @@ end
 local waveToken = 0
 BigCase.OnClientEvent:Connect(function(kind: string, payload: { [string]: any })
 	if kind == "Wave" then
+		if Tutorial.current(player) then
+			return -- (crnuch 2026-11-02: the banner covered the tutorial's STEP hint; the wave is still on the belt)
+		end
 		waveToken += 1
 		local token = waveToken
 		play("siren")

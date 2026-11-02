@@ -767,11 +767,14 @@ Config.Caps = {
 
 Config.Tutorial = {
 	FirstCaseGuaranteedWin = true,
-	-- The first client's case always goes to court: the courtroom opens by itself when it starts
-	-- (StarterPlayerScripts.Courtroom) with a fixed question about Dave's ticket (Server.CourtService),
-	-- and the case waits up to CourtWait extra seconds for the player before it resolves anyway.
+	-- The first client's case always goes to court with a fixed question about Dave's ticket (Server.CourtService);
+	-- the case waits up to CourtWait extra seconds for the player to tap GO TO COURT before it resolves anyway (the same
+	-- with Speedy Cases). AutoOpenCourt: open the courtroom by itself instead (crnuch 2026-11-02: off - steps 1-2 went
+	-- by "without any player input").
 	FirstCaseInCourt = true,
-	CourtWait = 90,
+	CourtWait = 120,
+	AutoOpenCourt = false,
+	FirstClientDelay = 5, -- seconds after the player's character is in before Neighbor Dave sets off (step 1 readable)
 	FreeLevelUps = 1, -- free office upgrades
 	Steps = 8, -- the numbered hints in the HUD (STEP 1/8 .. 8/8): Shared.Tutorial has the eight steps
 }
