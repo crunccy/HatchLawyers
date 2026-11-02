@@ -933,9 +933,9 @@ Config.Shop = {
 	},
 	CashJourney = { "Cash100K", "Free1", "Free2", "Free3", "Cash500K", "Free4", "Cash1_5M", "Free5", "Cash5M", "Free6", "Cash15M" },
 	Products = {
-		{ Key = "CashSmall", Id = 0, Price = 25, Name = "Pile of Cash", Text = "10 minutes of your income", Banner = "+10 min", Color = Color3.fromRGB(170, 175, 190), Icon = "cash", Minutes = 10 },
-		{ Key = "CashMedium", Id = 0, Price = 99, Name = "Bag of Cash", Text = "1 hour of your income", Banner = "+1 hour", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Minutes = 60 },
-		{ Key = "CashLarge", Id = 0, Price = 349, Name = "Vault of Cash", Text = "6 hours of your income", Banner = "+6 hours", Color = Color3.fromRGB(60, 160, 255), Icon = "cash", Minutes = 360 },
+		{ Key = "CashSmall", Id = 3727039012, Price = 25, Name = "Pile of Cash", Text = "10 minutes of your income", Banner = "+10 min", Color = Color3.fromRGB(170, 175, 190), Icon = "cash", Minutes = 10 },
+		{ Key = "CashMedium", Id = 3727039097, Price = 99, Name = "Bag of Cash", Text = "1 hour of your income", Banner = "+1 hour", Color = Color3.fromRGB(70, 210, 60), Icon = "cash", Minutes = 60 },
+		{ Key = "CashLarge", Id = 3727039202, Price = 349, Name = "Vault of Cash", Text = "6 hours of your income", Banner = "+6 hours", Color = Color3.fromRGB(60, 160, 255), Icon = "cash", Minutes = 360 },
 		{ Key = "RareEggs", Id = 0, Price = 149, Name = "3 Rare Eggs", Text = "3 Briefcase Eggs that always hatch Rare", Banner = "3x Rare", Color = Color3.fromRGB(255, 120, 40), Icon = "egg", RareTokens = 3 },
 	},
 	Effects = { DoubleCash = 2, SpeedyCases = 0, LuckyEggs = 2, BigFirm = 100, VIP = 1.25 },
