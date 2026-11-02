@@ -5,6 +5,10 @@ it is the to-do list for the next session. Move finished items into the dated en
 
 ## In progress
 Claim big work here before starting (who · what · since), push the claim, remove it when done. See CLAUDE.md → "One team".
+- **crnuch (local), since 2026-11-02: DIAMOND + COSMIC zone eggs and PICK-A-LAWYER Robux items** (crnuch's calls: the
+  buyer picks the lawyer; Legendary 99 / Mythic 299 / Supreme 799 R$, replacing 3 Rare Eggs; Diamond / Cosmic eggs always
+  hatch that mutation). Touches ZoneService, EggServer, ShopService, PlayerData (v19), EggLook, Zones / Eggs / CarryPose /
+  Shop clients. Don't edit those meanwhile.
 - **crnuch's call 2026-10-27 ("mr robe can take them"): mr.robe's sessions take over crnuch's remaining claims** - the
   UI v3 remaining screens (the UI overhaul claim below), the visual audit's M2-M5, and the MAP MODEL OVERHAUL's next stage
   (characters / eggs / bosses). crnuch's sessions keep the island install (edition-2 re-import) until it's in.
