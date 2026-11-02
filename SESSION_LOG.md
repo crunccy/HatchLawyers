@@ -276,8 +276,8 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [x] Lawyer panel at phone size — in `src/` 2026-10-12 (compact text mode); eye-check after the push (item above).
 - [x] Tell mr.robe: the Hud's bottom office card is gone and CaseService/LawyerService changed — mr.robe drives his
       own Claude on this repo now (2026-10-12). CaseService changed again since: no waiting room (entry below).
-- [ ] **Shop Ids:** all filled 2026-11-01 except BigFirm (crnuch: not building it) and the three PICK-A-LAWYER products
-      (2026-11-02, replaced RareEggs): crnuch creates them on Creator Hub (99 / 299 / 799 R$), ids into Config.Shop.Products.
+- [x] **Shop Ids:** all filled except BigFirm (crnuch: not building it); the three PICK-A-LAWYER products made 2026-11-02
+      (entry below).
 - [x] Eye-check the Lawyer Merger panel + merge animation - superseded 2026-10-22: the Mutation Machine was rebuilt
       (menu v3 + Shared.MutationFx) and playtested (entry above).
 - [ ] Eye-check the 3D egg hatch end to end on a real hatch (shatter frame, Common timing, phone layout).
@@ -306,6 +306,13 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Blender remake queue (docs/BLENDER_BRIEF.md): egg machine, palm, props, desk tiers, courtroom pieces.
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
+
+## 2026-11-02 — crnuch, local session: the three Pick-a-Lawyer developer products
+- Created on Creator Hub (crnuch's sign-in, built-in browser; group universe 10769782944, managed pricing on like the cash
+  packs): **Pick a Legendary 3727438162 (99), Pick a Mythic 3727438391 (299), Pick a Supreme 3727438521 (799)**. Ids in
+  `Config.Shop.Products`; Config pushed to Studio (guarded, live == snapshot first). Playtest: the LAWYERS tab shows all
+  three cards with their 3D lawyer, price and YOU CHOOSE! ribbon; GetProductInfo returns the right names + prices.
+  A real purchase was not made. Snapshot: only Config changed. `run_checks.py` green.
 
 ## 2026-11-02 — crnuch, local session: DIAMOND + COSMIC zone eggs, PICK-A-LAWYER Robux items
 - crnuch's calls: "no one wants rare lawyers" - the 3 Rare Eggs product is replaced by **Pick a Legendary 99 R$ / Pick a

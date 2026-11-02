@@ -942,9 +942,9 @@ Config.Shop = {
 		-- PICK A LAWYER (crnuch 2026-11-02, replaced "3 Rare Eggs": "no one wants rare lawyers"): the buyer CHOOSES any lawyer
 		-- of that rarity (nothing random, so no odds to show). Bought = a saved token (Eggs.PickTokens, PlayerData v21),
 		-- spent in the picker (StarterPlayerScripts.Shop -> Remotes.PickLawyer). Id 0 = not on sale yet.
-		{ Key = "PickLegendary", Id = 0, Price = 99, Name = "Pick a Legendary", Text = "Choose ANY Legendary lawyer", Banner = "LEGENDARY", Color = Color3.fromRGB(255, 170, 30), Icon = "egg", PickRarity = 5 },
-		{ Key = "PickMythic", Id = 0, Price = 299, Name = "Pick a Mythic", Text = "Choose ANY Mythic lawyer", Banner = "MYTHIC", Color = Color3.fromRGB(230, 50, 80), Icon = "egg", PickRarity = 6 },
-		{ Key = "PickSupreme", Id = 0, Price = 799, Name = "Pick a Supreme", Text = "Choose ANY Supreme lawyer", Banner = "SUPREME", Color = Color3.fromRGB(150, 80, 255), Icon = "egg", PickRarity = 7 },
+		{ Key = "PickLegendary", Id = 3727438162, Price = 99, Name = "Pick a Legendary", Text = "Choose ANY Legendary lawyer", Banner = "LEGENDARY", Color = Color3.fromRGB(255, 170, 30), Icon = "egg", PickRarity = 5 },
+		{ Key = "PickMythic", Id = 3727438391, Price = 299, Name = "Pick a Mythic", Text = "Choose ANY Mythic lawyer", Banner = "MYTHIC", Color = Color3.fromRGB(230, 50, 80), Icon = "egg", PickRarity = 6 },
+		{ Key = "PickSupreme", Id = 3727438521, Price = 799, Name = "Pick a Supreme", Text = "Choose ANY Supreme lawyer", Banner = "SUPREME", Color = Color3.fromRGB(150, 80, 255), Icon = "egg", PickRarity = 7 },
 	},
 	Effects = { DoubleCash = 2, SpeedyCases = 0, LuckyEggs = 2, BigFirm = 100, VIP = 1.25 },
 }
