@@ -395,6 +395,8 @@ client ids in `Config` (see docs/CLIENTS.md), skin model names in `SkinModels`.
 - Edit-session `require` caches failures; test module changes in a playtest or require a fresh clone.
 - The Studio MCP's own `execute_luau` runs in a separate VM: during a playtest, `require(PlayerData).get(player)` from
   it returns nil. Parent a temporary Script in the Server datamodel instead (it shares the game's modules).
+- **After an .fbx import, move the raw import model out of Workspace** (ServerStorage): the importer drops it in
+  unanchored with collision on; 18 forgotten island imports ran server physics at 2 FPS (2026-11-01).
 - Stopping a playtest from MCP sometimes doesn't take; ask the user to press Stop.
 - A Client `execute_luau` that is still running when anything changes `CameraType` gets it reset by the tool
   ("Resetting from Custom back to Scriptable"), so a cutscene's camera breaks or stays stuck. Keep client calls short

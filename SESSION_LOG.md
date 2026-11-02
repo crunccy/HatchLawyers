@@ -300,6 +300,19 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
+## 2026-11-01 — crnuch, local session: lag + "islands missing, trees floating" = 18 loose .fbx imports
+- crnuch: "the islands are missing which leaves trees floating and the game is noticeable laggy even on my mac".
+- **Cause:** every .fbx import from 10-26 / 10-27 (`island_<x>_phone`, `_phone2`: 18 models, ~3,900 MeshParts) was
+  still sitting loose in Workspace, **unanchored with collision on**, stacked over the old map origin. On Play they
+  fell and blew each other apart: server physics at **2 FPS**, client physics 8, pieces flung to y 10k-116k (the
+  floating trees / missing ground seen in game were these copies tearing apart, not the real islands).
+- **Fix (Studio, one undo step):** all 18 anchored and moved to `ServerStorage.Old_LooseIslandImports_2026-11-01`
+  (nothing deleted; no script references them). Workspace 6,898 -> 2,852 parts.
+- Playtested: server heartbeat 59/s + physics 59, client 59/s + physics 60; all seven `WorldRedesign` islands present
+  and anchored; teleported to Space Base: whole island streamed in (171/171) within 0.5 s; the hub's runtime
+  difference vs Edit is only HubMap's look-alike swap. No console errors. No script / save change, so no snapshot.
+- Rule added to CLAUDE.md: after importing an .fbx, move the raw import out of Workspace.
+
 ## 2026-10-27 — mr.robe, local session (side session): Mutation Machine bug - 3 Starlas "didn't show up"
 - **What happened:** it was a real FIZZLE, not a lost result. mr_blox174's live save had 0 StarJudge (Starla): a
   success leaves one Shiny Starla, and a lost result would have left all 3. The Shiny try is 70%, so 30% of tries fizzle.
