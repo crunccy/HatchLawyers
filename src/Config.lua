@@ -1217,37 +1217,37 @@ Config.Bosses = {
 	--   On (optional): the attack kind it goes with, for a boss that takes turns (the Eclipse: its Ring turns only)
 	List = {
 		{ Zone = "BriefcaseBay", Model = "SeniorPartner", Name = "The Senior Partner", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 2.8, Windup = 1.0,
+			Scale = 3.5, WalkSpeed = 38, Chase = 0.85, AttackEvery = 2.8, Windup = 1.2, -- = the windup clip (Shared.BossAnims)
 			Attack = "Cone", Radius = 54, Angle = 110, StayNearMiddle = 14, Color = Color3.fromRGB(255, 120, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.4, Front = 1.8, Height = 11.5 },
 			-- PAPER STORM (2+ players): a bundle of case files lobbed onto up to Max other players' spots
 			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 10 } },
 		{ Zone = "PetPark", Model = "BarristerBulldog", Name = "Barrister Bulldog", Difficulty = "Easy",
-			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 2.4, Windup = 1.3,
+			Scale = 3.5, WalkSpeed = 44, Chase = 0.9, AttackEvery = 2.4, Windup = 1.4, -- = the windup clip (Shared.BossAnims)
 			Attack = "Ring", Radius = 40, Color = Color3.fromRGB(255, 90, 90),
 			Hitbox = { HalfWidth = 2.6, Back = 3.9, Front = 6.2, Height = 7.6 },
 			-- ECHO BARK (2+ players): the bark's sound wave races to up to Max other players and goes off round them
 			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 } },
 		{ Zone = "BrainrotBoulevard", Model = "JudgeMartello", Name = "Judge Martello", Difficulty = "Medium",
-			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 2.4, Windup = 1.0,
+			Scale = 3.4, WalkSpeed = 40, Chase = 0.9, AttackEvery = 2.4, Windup = 1.1, -- = the windup clip (Shared.BossAnims)
 			Attack = "Slam", Radius = 28, HopHeight = 6, Color = Color3.fromRGB(255, 170, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.6, Front = 1.7, Height = 5.6 },
 			-- GAVEL RAIN (2+ players): a mini gavel flung up as he jumps drops on up to Max other players' spots as he lands
 			Crowd = { Shape = "Disc", Max = 2, Range = 90, Radius = 12 } },
 		{ Zone = "FoodCourt", Model = "BigCheese", Name = "Prosecutor Big Cheese", Difficulty = "Medium",
-			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 2.8, Windup = 1.0,
+			Scale = 3.2, WalkSpeed = 40, Chase = 0.85, AttackEvery = 2.8, Windup = 1.2, -- = the windup clip (Shared.BossAnims)
 			Attack = "Line", Length = 132, Width = 26, LineSpeed = 150, Color = Color3.fromRGB(255, 200, 60),
 			Hitbox = { HalfWidth = 3.3, Back = 1.2, Front = 1.2, Height = 6.4 },
 			-- WHEEL SPLIT (2+ players): cheese wedges pop off the wheel and tumble down a Lane at up to Max other players
 			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 110, Length = 100 } },
 		{ Zone = "OceanShore", Model = "Megalodon", Name = "Magistrate Megalodon", Difficulty = "Hard",
-			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.2, Windup = 0.8,
+			Scale = 3.2, WalkSpeed = 42, Chase = 0.95, AttackEvery = 2.2, Windup = 1.0, -- crowd add-on: >= 1 s of warning
 			Attack = "Line", Length = 156, Width = 24, LineSpeed = 185, Dizzy = 2, Color = Color3.fromRGB(90, 190, 255),
 			Hitbox = { HalfWidth = 2.2, Back = 2.4, Front = 1.8, Height = 8 },
 			-- FEEDING FRENZY (2+ players): sand-shark fins race down a Lane at up to Max other players
 			Crowd = { Shape = "Lane", Max = 2, Range = 90, Width = 12, Speed = 120, Length = 110 } },
 		{ Zone = "SpaceBase", Model = "Eclipse", Name = "Chief Justice Eclipse", Difficulty = "Extreme",
-			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.0, Windup = 1.15,
+			Scale = 3.2, WalkSpeed = 44, Chase = 0.95, AttackEvery = 2.0, Windup = 1.4, -- = the windup clip (Shared.BossAnims)
 			Attack = { "Pull", "Ring" }, Radius = 53, Inner = 14, PullTime = 2, PullSpeed = 20, RingRadius = 46,
 			Color = Color3.fromRGB(190, 120, 255), Hitbox = { HalfWidth = 2.4, Back = 1.8, Front = 1.8, Height = 10.3 },
 			-- GAVEL VOLLEY (2+ players, Ring turns): orbiting gavels slam down on up to Max other players' spots with the
