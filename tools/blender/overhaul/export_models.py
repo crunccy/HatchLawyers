@@ -29,8 +29,9 @@ TMP = os.path.join(OUT, "_tmp")  # (the build scripts' own out dir: sandbox JSON
 for d in (OUT, LOOKS, TMP):
     os.makedirs(d, exist_ok=True)
 MAX_TRIS = 19500
-EDITION = "3"  # (bump for every re-export crnuch imports: island_hub_phone2.fbx ...; 2 = mr.robe's multi-look split, 3 = the egg
+EDITION = "4"  # (bump for every re-export crnuch imports: island_hub_phone2.fbx ...; 2 = mr.robe's multi-look split, 3 = the egg
 #                   islands' cliffs + rocks: "Scene" also skipped "Scenery_Rocks", 2026-10-27)
+#                   4 = the starter shack v3 cabin, 2026-11-02
 PHONE = "full" not in ARGS  # (the phone / tablet budget: phone_budget; "full" exports every triangle)
 FLAT = 0.79  # (a face whose normal is further than this from every axis is curved: no studs)
 GAP = 24.0   # (studs between models in a group's row)

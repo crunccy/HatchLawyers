@@ -306,7 +306,7 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
-## 2026-11-02 — crnuch, local session: starter shack v3 = a simple bright cabin (renders, waiting for approval)
+## 2026-11-02 — crnuch, local session: starter shack v3 = a simple bright cabin (live in Studio)
 - crnuch: the shack "is too advanced for the style of the game". v2 (weathered planks with gaps, sagging roof with missing
   shingles, rust + tarp, boarded / cracked windows, trash bags, dumpster, tyres, cone, puddle, weeds, muted greys) read as a
   realistic run-down house next to the chunky, bright stages 2-6.
@@ -320,9 +320,14 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - New `--check` flag on the script: 0 floating, 0 z-fighting, 0 clipping. Renders: `art/overhaul/firm/shack_*.jpg`
   (shack_studs.jpg dropped).
 - `tools/zones/InstallFirmMeshes.lua` BOUNDS for DingyShack updated to v3 (-13.51 .. 13.51, z min -11.1, y min -1.75).
-- **Not in Studio yet:** after crnuch approves the renders: export (`export_models.py shack`, bump EDITION), crnuch imports
-  the .fbx, swap it into `ServerStorage.Overhaul.Models.shack.DingyShack` (raw import out of Workspace), run
-  InstallFirmMeshes, re-add the ShackLight / InteriorLight from 10-27 (toned values from 11-01), playtest.
+- **Live in Studio (crnuch approved):** exported as `exports/overhaul/shack_phone4.fbx` (EDITION 4; phone budget 6,160
+  tris), crnuch imported it, ApplyOverhaulLooks set 27 meshes (size matches Blender), the new model is
+  `ServerStorage.Overhaul.Models.shack.DingyShack` (raw import removed from Workspace), the v2 shack is archived in
+  `ServerStorage.Old_Shack_v2`. InstallFirmMeshes' shack row run (pivot, FirmOrigin, 19 wall/prop meshes no collision -
+  FirmStages' invisible walls do it). Lights re-added: `InteriorLight` (1 / 16) + `ShackLight` (0.7 / 12) parts, + the
+  lantern's from FirmStages. Playtested on crnuch's stage-1 firm: the name sign sits on the gable, inside lit, both
+  incubators under the roof, no console errors. Mirrored like the other mesh fronts (the lantern is right of the door).
+  No scripts changed (snapshot not re-exported).
 
 ## 2026-11-01 — crnuch, local session: tutorial revamp (8 steps, the island egg loop) + plots too bright
 - crnuch: "revamp the tutorial to better fit the current game objective" + "the plots are extremely bright".
