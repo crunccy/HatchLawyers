@@ -25,6 +25,8 @@ that boss. Numbers: `Config.Bosses`.
   - every attack has a **clear wind-up** (at least 1 s, a warning ring on the floor + a sound) so a player who
     watches can always dodge;
   - after a hit you're **safe for 3 s**, so you can scramble for your eggs without being hit again straight away;
+  - **a new player's first egg trip is safe** (crnuch 2026-11-03, `Config.Bosses.SpareTutorial`): until a player has
+    hatched a bought egg (`EggsOpened` 0, the tutorial's own test) no boss chases, aims at or hits them;
   - bosses never enter the **Safe Zone**, never stand on a **gate**, and never come near firms or incubators;
   - a player carrying **nothing** gets bumped back with a funny effect, nothing else.
 - **Dropped eggs** keep their zone and Golden status, glow so they're easy to spot, and vanish after ~30 s if nobody

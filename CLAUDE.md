@@ -228,7 +228,8 @@ grass, orange paths with white dashed edges, wood crates, blocky palms. Look at 
   (`tools/blender/boss_anims.py` -> `Shared.BossAnims`, generated; the client cross-fades them with its POSES), checked
   for clipping per frame and for timing against Config by run_checks. **Crowd add-ons** (`Config.Bosses.List[n].Crowd`,
   crnuch's call): with 2+ players a boss also aims a warned ranged attack at up to 2 others; 1 player = no change.
-  All six bosses are on clips since 2026-10-20 (the last three by mr.robe's session). A boss that takes turns has a clip
+  **Bosses spare a player until they've hatched a bought egg** (`Config.Bosses.SpareTutorial`, 2026-11-03: the
+  tutorial's egg trip). All six bosses are on clips since 2026-10-20 (the last three by mr.robe's session). A boss that takes turns has a clip
   set per attack (`windup_Pull`, `attack_Ring`, ...: the Eclipse); `Crowd.On` ties an add-on to one attack kind.
 - `ReplicatedStorage.EggModels` (v5 meshes) + `Shared.EggLook` — every egg the game shows (zones, loose, carried, the hatch)
   comes from `EggLook.build(egg, golden, height, simple)` / `EggLook.buildHatch`. The hatch (StarterPlayerScripts.Eggs, v5) plays in the

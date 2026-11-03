@@ -1209,6 +1209,7 @@ Config.Bosses = {
 	-- 2026-10-21: quicker attacks and larger ranges; Martello's 28-stud slam keeps a 1 s warning.
 	SafeAfterHit = 4, -- seconds a hit player can't be hit again (they're ragdolled for RagdollTime of it)
 	IgnoreAfterHit = 5, -- seconds the boss that hit you won't chase or target you
+	SpareTutorial = true, -- bosses leave a player alone until they've hatched a bought egg (the tutorial's egg trip)
 	RagdollTime = 2.2, -- seconds a hit player lies limp before getting up
 	DroppedEggLifetime = 30, -- seconds a loose egg stays (it blinks in its last 5 s)
 	DropScatter = { 6, 14 }, -- studs from the player the eggs land

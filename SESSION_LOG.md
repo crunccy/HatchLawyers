@@ -307,17 +307,20 @@ Claim big work here before starting (who · what · since), push the claim, remo
 - [ ] Enable Studio API access (Game Settings → Security) when ready to test saving.
 - [ ] Resolve design-doc inconsistencies (listed in docs/ECONOMY.md → "Known inconsistencies").
 
-## 2026-11-03 — crnuch, local session: pre-publish run-through playtest (no changes)
-Full new-player run in a Studio playtest on crnuch's promo profile (nothing saved). Nothing in the place was changed.
+## 2026-11-03 — crnuch, local session: pre-publish run-through playtest + tutorial boss grace
+Full new-player run in a Studio playtest on crnuch's promo profile (nothing saved).
 - **Tutorial, all 8 steps pass:** the first case goes to court (deed card wins, +7.5K), the free office upgrade
   (Desk 1 Lv 2), the free egg hatches a Bow Tie Benny, PUT IN OFFICE 2, TRAVEL to Briefcase Bay, buy an egg,
   RETURN HOME (egg carried home), hatch at the incubator (Intern Suit), then the guide ends.
 - **Windows:** Lawyers (both tabs), Travel (6/6 zones), Daily Rewards, Rebirth and Shop (FREE GIFT READY) all open and
   close. Trips to all six islands land within 2 studs of Arrival; Home works. Cases cycle (+29.7K in 25 s), physics
   60 FPS, and the console had no game errors.
-- **Worth a look (not bugs):** every island's EggSpots are inside its boss area (27/27 on Briefcase Bay), so a new
-  player's first egg can be knocked out within a second of buying it (it happened in this run; the guide fell back to
-  step 6, as designed). Consider a grace period for the tutorial trip or a few egg spots outside the boss box.
+- **Every island's EggSpots are inside its boss area** (27/27 on Briefcase Bay), so a new player's first egg was
+  knocked out within a second of buying it (the guide fell back to step 6). **Fixed (crnuch's call, "add grace"):**
+  `Config.Bosses.SpareTutorial = true` + `BossService.spared(player)` - until a player has hatched a bought egg
+  (`EggsOpened` 0, the same test as `Shared.Tutorial`) no boss targets, crowd-aims at or hits them (hitbox touches
+  included). Live in Studio; playtested: 30 s standing on the Senior Partner's path with an egg = 0 attacks, 0 drops;
+  with `EggsOpened` set to 1 the same player was knocked over and dropped the egg. Snapshot re-exported.
   `TravelFlash.Flash` stays Visible after a trip, but it is transparent and non-Active, so taps pass through.
 - Still to do before publishing: a real purchase test on a non-promo account (mr_blox174).
 

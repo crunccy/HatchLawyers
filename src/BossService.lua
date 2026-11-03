@@ -197,9 +197,15 @@ local function stand(b: Boss, here: Vector3)
 end
 
 ------------------------------------------------------------------ attacking
+-- The tutorial's egg trip (2026-11-03, crnuch): a player who hasn't hatched a bought egg yet (EggsOpened 0, the same
+-- test Shared.Tutorial uses) is left alone - no chasing, no aiming, no hits - so their first egg makes it home.
+local function spared(player: Player): boolean
+	return CFG.SpareTutorial == true and ((player:GetAttribute("EggsOpened") or 0) :: number) < 1
+end
+
 local function hit(b: Boss, player: Player, root: BasePart, from: Vector3, look: Vector3)
 	local t = now()
-	if (safeUntil[player] or 0) > t then
+	if (safeUntil[player] or 0) > t or spared(player) then
 		return
 	end
 	safeUntil[player] = t + CFG.SafeAfterHit
@@ -277,7 +283,7 @@ local function crowdTargets(b: Boss, here: Vector3, target: BasePart, kind: stri
 	local list = {}
 	for _, p in playersInZone(b) do
 		local d = flat(p.root.Position - here).Magnitude
-		if p.root ~= target and d <= crowd.Range and d > 1 and (b.ignore[p.player] or 0) <= t and (safeUntil[p.player] or 0) <= t then
+		if p.root ~= target and d <= crowd.Range and d > 1 and (b.ignore[p.player] or 0) <= t and (safeUntil[p.player] or 0) <= t and not spared(p.player) then
 			table.insert(list, { root = p.root, d = d })
 		end
 	end
@@ -425,7 +431,7 @@ local function run(b: Boss)
 		local t = now()
 		for _, p in targets do
 			local d = flat(p.root.Position - here).Magnitude
-			if d < nearestD and (b.ignore[p.player] or 0) <= t then -- (a player it just hit gets a head start)
+			if d < nearestD and (b.ignore[p.player] or 0) <= t and not spared(p.player) then -- (a player it just hit gets a head start)
 				nearest, nearestD = p.root, d
 			end
 		end
